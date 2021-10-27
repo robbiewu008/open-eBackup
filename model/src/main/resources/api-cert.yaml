@@ -1,0 +1,796 @@
+---
+swagger: "2.0"
+info:
+  version: "v1"
+  title: "证书组件管理接口"
+  contact: {}
+  license: {}
+host: "localhost"
+basePath: "/"
+tags:
+- name: "component-plat-api"
+  description: "component-plat-api"
+- name: "component-rest-api"
+  description: "component-rest-api"
+- name: "component-internal-controller"
+  description: "Component Internal Controller"
+paths:
+  /v1/certs/components:
+    get:
+      tags:
+      - "component-rest-api"
+      summary: "查询组件列表"
+      operationId: "queryComponentsUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ComponentEntity"
+              originalRef: "ComponentEntity"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    post:
+      tags:
+      - "component-rest-api"
+      summary: "注册外部组件"
+      operationId: "registerComponentUsingPOST_1"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "ca"
+        in: "formData"
+        description: "CA证书"
+        required: true
+        type: "file"
+      - name: "name"
+        in: "query"
+        description: "外部组件名称"
+        required: true
+        type: "string"
+        pattern: "[_a-zA-Z][_a-zA-Z0-9 -]{3,31}"
+        allowEmptyValue: false
+      - name: "type"
+        in: "query"
+        description: "组件类型。【取值范围】0：内部组件 1：vmware 2：email 3：对象存储 4：A8000 5:其他 6:外部存\
+          储"
+        required: true
+        type: "integer"
+        format: "int32"
+        allowEmptyValue: false
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/certs/components/{componentId}:
+    put:
+      tags:
+      - "component-rest-api"
+      summary: "修改组件证书配置"
+      operationId: "modifyCertificateConfigUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "componentId"
+        in: "path"
+        description: "组件ID"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "config"
+        description: "组件证书配置"
+        required: true
+        schema:
+          $ref: "#/definitions/ComponentCertificateConfig"
+          originalRef: "ComponentCertificateConfig"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    delete:
+      tags:
+      - "component-rest-api"
+      summary: "删除组件"
+      operationId: "deleteComponentUsingDELETE"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "componentId"
+        in: "path"
+        description: "组件ID"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/certs/components/{componentId}/action/import:
+    post:
+      tags:
+      - "component-rest-api"
+      summary: "导入证书"
+      operationId: "importCertificateUsingPOST"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "formData"
+        name: "agentCertificate"
+        description: "agent证书"
+        required: false
+        schema:
+          type: "file"
+      - in: "formData"
+        name: "agentKey"
+        description: "agent私钥"
+        required: false
+        schema:
+          type: "file"
+      - name: "agentPass"
+        in: "header"
+        description: "agent私钥密码"
+        required: false
+        type: "string"
+      - in: "formData"
+        name: "caCertificate"
+        description: "CA证书"
+        required: false
+        schema:
+          type: "file"
+      - name: "componentId"
+        in: "path"
+        description: "组件ID"
+        required: true
+        type: "string"
+      - in: "formData"
+        name: "serverCertificate"
+        description: "服务证书"
+        required: false
+        schema:
+          type: "file"
+      - in: "formData"
+        name: "serverKey"
+        description: "服务私钥"
+        required: false
+        schema:
+          type: "file"
+      - name: "serverPass"
+        in: "header"
+        description: "服务端私钥密码"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/certs/components/{componentId}/ca/action/download:
+    get:
+      tags:
+      - "component-rest-api"
+      summary: "下载CA证书"
+      operationId: "downloadCaUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "componentId"
+        in: "path"
+        description: "组件ID"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/certs/components/{componentId}/crls:
+    get:
+      tags:
+      - "component-rest-api"
+      summary: "查询证书吊销列表"
+      operationId: "getCRLUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "componentId"
+        in: "path"
+        description: "组件ID"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CrlEntity"
+              originalRef: "CrlEntity"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/certs/components/{componentId}/crls/action/import:
+    post:
+      tags:
+      - "component-rest-api"
+      summary: "导入证书吊销列表"
+      operationId: "importCertificateCtlListUsingPOST"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "componentId"
+        in: "path"
+        description: "组件ID"
+        required: true
+        type: "string"
+      - name: "crl"
+        in: "formData"
+        description: "证书吊销列表"
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/certs/components/{componentId}/crls/{crlId}:
+    delete:
+      tags:
+      - "component-rest-api"
+      summary: "删除证书吊销列表"
+      operationId: "deleteCRLUsingDELETE"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "componentId"
+        in: "path"
+        description: "组件ID"
+        required: true
+        type: "string"
+      - name: "crlId"
+        in: "path"
+        description: "吊销列表ID"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/certs/components/{componentId}/request-file/action/export:
+    get:
+      tags:
+      - "component-rest-api"
+      summary: "导出证书请求文件"
+      operationId: "exportCertificateRequestUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "algorithm"
+        in: "query"
+        description: "算法"
+        required: true
+        type: "string"
+        pattern: "rsa-2048|rsa-4096"
+        allowEmptyValue: false
+      - name: "componentId"
+        in: "path"
+        description: "组件ID"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/internal/certs/components/genCert:
+    post:
+      tags:
+      - "component-internal-controller"
+      summary: "agent证书签发"
+      operationId: "genCert4AgentUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - in: "body"
+        name: "certSignBo"
+        description: "agent证书签发请求体"
+        required: false
+        schema:
+          $ref: "#/definitions/CertSignBo"
+          originalRef: "CertSignBo"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/ClientCertGenResult"
+            originalRef: "ClientCertGenResult"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/pm/cert/components:
+    post:
+      tags:
+      - "component-plat-api"
+      summary: "注册组件"
+      operationId: "registerComponentUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - in: "body"
+        name: "component"
+        description: "证书组件"
+        required: false
+        schema:
+          $ref: "#/definitions/ComponentDetail«CertificateDetail»"
+          originalRef: "ComponentDetail«CertificateDetail»"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    put:
+      tags:
+      - "component-plat-api"
+      summary: "通知证书更新状态"
+      operationId: "notifyUpdateStatusUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - in: "body"
+        name: "certUpdateStatus"
+        description: "证书更新状态"
+        required: false
+        schema:
+          $ref: "#/definitions/CertUpdateStatus"
+          originalRef: "CertUpdateStatus"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+securityDefinitions:
+  Authorization:
+    type: "apiKey"
+    name: "TOKEN"
+    in: "header"
+definitions:
+  CertSignBo:
+    type: "object"
+    properties:
+      password:
+        type: "string"
+        description: "私钥密码"
+    title: "CertSignBo"
+  CertUpdateErrorCause:
+    type: "object"
+    properties:
+      arguments:
+        type: "array"
+        description: "参数"
+        items:
+          type: "string"
+      lang:
+        type: "string"
+        description: "语言"
+      template:
+        type: "string"
+        description: "模板"
+    title: "CertUpdateErrorCause"
+  CertUpdateStatus:
+    type: "object"
+    properties:
+      cause:
+        type: "array"
+        description: "更新证书任务的失败原因"
+        items:
+          $ref: "#/definitions/CertUpdateErrorCause"
+          originalRef: "CertUpdateErrorCause"
+      status:
+        type: "string"
+        description: "更新证书任务的状态"
+        pattern: "normal|failed|running"
+      taskId:
+        type: "string"
+        description: "任务ID"
+    title: "CertUpdateStatus"
+  CertificateDetail:
+    type: "object"
+    properties:
+      certType:
+        type: "integer"
+        format: "int32"
+        description: "证书类型。【取值范围】0:未知类型, 1:服务证书, 2:CA证书, 3:自签发证书"
+      effectiveTime:
+        type: "integer"
+        format: "int64"
+        description: "证书生效时间"
+      expirationTime:
+        type: "integer"
+        format: "int64"
+        description: "证书过期时间"
+      fingerprint:
+        type: "string"
+        description: "证书指纹"
+      issuer:
+        type: "string"
+        description: "证书颁发机构"
+      keyAlgorithm:
+        type: "string"
+        description: "私钥算法"
+      keyLength:
+        type: "integer"
+        format: "int32"
+        description: "私钥长度"
+      serialNumber:
+        type: "integer"
+        description: "序列号"
+      signatureAlg:
+        type: "string"
+        description: "指纹加密算法"
+      sortNum:
+        type: "integer"
+        format: "int32"
+        description: "证书链顺序"
+      subject:
+        type: "string"
+        description: "证书使用机构"
+    title: "CertificateDetail"
+  CertificateEntity:
+    type: "object"
+    properties:
+      certType:
+        type: "integer"
+        format: "int32"
+        description: "证书类型。【取值范围】0:未知类型, 1:服务证书, 2:CA证书, 3:自签发证书"
+      certificateId:
+        type: "string"
+        description: "证书ID"
+      chainTail:
+        type: "boolean"
+        description: "是否链尾"
+      componentId:
+        type: "string"
+        description: "组件ID"
+      effectiveTime:
+        type: "integer"
+        format: "int64"
+        description: "证书生效时间"
+      expirationTime:
+        type: "integer"
+        format: "int64"
+        description: "证书过期时间"
+      fingerprint:
+        type: "string"
+        description: "证书指纹"
+      issuer:
+        type: "string"
+        description: "证书颁发机构"
+      keyAlgorithm:
+        type: "string"
+        description: "私钥算法"
+      keyLength:
+        type: "integer"
+        format: "int32"
+        description: "私钥长度"
+      serialNumber:
+        type: "integer"
+        description: "序列号"
+      signatureAlg:
+        type: "string"
+        description: "指纹加密算法"
+      sortNum:
+        type: "integer"
+        format: "int32"
+        description: "证书链顺序"
+      subject:
+        type: "string"
+        description: "证书使用机构"
+      validity:
+        type: "boolean"
+        description: "证书有效性"
+    title: "CertificateEntity"
+  ClientCertGenResult:
+    type: "object"
+    properties:
+      status:
+        type: "integer"
+        format: "int32"
+      uuid:
+        type: "string"
+    title: "ClientCertGenResult"
+  ComponentCertificateConfig:
+    type: "object"
+    properties:
+      expirationWarningDays:
+        type: "string"
+        description: "组件证书告警预警天数"
+    title: "ComponentCertificateConfig"
+    description: "组件证书配置"
+  ComponentDetail«CertificateDetail»:
+    type: "object"
+    properties:
+      certificateDetails:
+        type: "array"
+        description: "证书信息列表，大小限制为10。"
+        items:
+          $ref: "#/definitions/CertificateDetail"
+          originalRef: "CertificateDetail"
+      expirationWarningDays:
+        type: "integer"
+        format: "int32"
+        description: "组件证书过期预警天数"
+        minimum: 7.0
+        maximum: 180.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      name:
+        type: "string"
+        description: "组件名称。【格式要求】允许包含下划线、字母、数字、空格、中划线，必须以字母或下划线开头，长度要求在4到32个字符以内。"
+        minLength: 4
+        maxLength: 32
+        pattern: "[_a-zA-Z][_a-zA-Z0-9 -]{3,31}"
+      remainingDays:
+        type: "integer"
+        format: "int32"
+        description: "组件到期剩余天数"
+      type:
+        type: "integer"
+        format: "int32"
+        description: "组件类型。【取值范围】0：内部组件 1：vmware 2：email 3：对象存储 4：A8000 5:其他 6:外部存\
+          储"
+        minimum: 0.0
+        maximum: 6.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+    title: "ComponentDetail«CertificateDetail»"
+  ComponentEntity:
+    type: "object"
+    properties:
+      certificateDetails:
+        type: "array"
+        description: "证书信息列表，大小限制为10。"
+        items:
+          $ref: "#/definitions/CertificateEntity"
+          originalRef: "CertificateEntity"
+      componentId:
+        type: "string"
+        description: "组件ID"
+      expirationWarningDays:
+        type: "integer"
+        format: "int32"
+        description: "组件证书过期预警天数"
+        minimum: 7.0
+        maximum: 180.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      name:
+        type: "string"
+        description: "组件名称。【格式要求】允许包含下划线、字母、数字、空格、中划线，必须以字母或下划线开头，长度要求在4到32个字符以内。"
+        minLength: 4
+        maxLength: 32
+        pattern: "[_a-zA-Z][_a-zA-Z0-9 -]{3,31}"
+      remainingDays:
+        type: "integer"
+        format: "int32"
+        description: "组件到期剩余天数"
+      type:
+        type: "integer"
+        format: "int32"
+        description: "组件类型。【取值范围】0：内部组件 1：vmware 2：email 3：对象存储 4：A8000 5:其他 6:外部存\
+          储"
+        minimum: 0.0
+        maximum: 6.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      validity:
+        type: "integer"
+        format: "int32"
+        description: "组件证书有效性"
+    title: "ComponentEntity"
+  CrlEntity:
+    type: "object"
+    properties:
+      componentId:
+        type: "string"
+        description: "组件ID"
+      crlExpireTime:
+        type: "integer"
+        format: "int64"
+        description: "吊销列表过期时间"
+      crlId:
+        type: "string"
+        description: "证书吊销列表ID"
+      hashCode:
+        type: "integer"
+        format: "int32"
+        description: "吊销列表哈希码"
+      issuer:
+        type: "string"
+        description: "CRL颁发机构名称"
+    title: "CrlEntity"

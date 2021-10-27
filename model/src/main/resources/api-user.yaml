@@ -1,0 +1,1505 @@
+---
+swagger: "2.0"
+info:
+  version: "v1"
+  title: "用户管理接口"
+  contact: {}
+  license: {}
+host: "localhost"
+basePath: "/"
+tags:
+- name: "${auth-api}"
+  description: "认证模块"
+- name: "${role-api}"
+  description: "角色管理"
+- name: "${security-api}"
+  description: "安全策略"
+- name: "${users-api}"
+  description: "用户管理"
+- name: "${users-internal-api}"
+  description: "${users-internal-api}"
+paths:
+  /v1/auth/certificate:
+    get:
+      tags:
+      - "${auth-api}"
+      summary: "获取证书"
+      operationId: "certificateUsingGET"
+      produces:
+      - "*/*"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "string"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/auth/token:
+    post:
+      tags:
+      - "${auth-api}"
+      summary: "获取token"
+      operationId: "genTokenUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - in: "body"
+        name: "authRequest"
+        description: "认证请求体"
+        required: true
+        schema:
+          $ref: "#/definitions/AuthRequest"
+          originalRef: "AuthRequest"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/LoginResponseBody"
+            originalRef: "LoginResponseBody"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/auth/token/verify/action:
+    get:
+      tags:
+      - "${auth-api}"
+      summary: "校验token"
+      operationId: "verifyTokenUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/internal/auth/token:
+    post:
+      tags:
+      - "${auth-api}"
+      summary: "获取token"
+      operationId: "genTokenUsingPOST_1"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - in: "body"
+        name: "userInfo"
+        description: "userInfo"
+        required: true
+        schema:
+          $ref: "#/definitions/UserInfo"
+          originalRef: "UserInfo"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/LoginResponseBody"
+            originalRef: "LoginResponseBody"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/internal/auth/user:
+    get:
+      tags:
+      - "${auth-api}"
+      summary: "queryUserInfoByName"
+      operationId: "queryUserInfoByNameUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "username"
+        in: "query"
+        description: "username"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/UserInfo"
+            originalRef: "UserInfo"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/internal/users/{userId}:
+    get:
+      tags:
+      - "${users-internal-api}"
+      summary: "查询单个用户"
+      operationId: "getInternalUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "userId"
+        in: "path"
+        description: "用户ID"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/UserInnerResponseBody"
+            originalRef: "UserInnerResponseBody"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/roles:
+    get:
+      tags:
+      - "${role-api}"
+      summary: "批量查询角色"
+      operationId: "getUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/RoleListReponseBody"
+            originalRef: "RoleListReponseBody"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/roles/{id}:
+    get:
+      tags:
+      - "${role-api}"
+      summary: "查询指定角色"
+      operationId: "getRoleByIdUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "角色ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/RoleBo"
+            originalRef: "RoleBo"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/roles/{id}/users:
+    get:
+      tags:
+      - "${role-api}"
+      summary: "查询角色关联的用户列表"
+      operationId: "getUserListByRoleIdUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "角色ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "pageSize"
+        in: "query"
+        description: "分页数量"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-example: 20
+      - name: "startIndex"
+        in: "query"
+        description: "分页起始页面"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-example: 0
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/UserListReponseBody«UserResponseBody»"
+            originalRef: "UserListReponseBody«UserResponseBody»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/security:
+    get:
+      tags:
+      - "${security-api}"
+      summary: "查询安全策略"
+      operationId: "getUsingGET_1"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SecurityPolicyBo"
+            originalRef: "SecurityPolicyBo"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    put:
+      tags:
+      - "${security-api}"
+      summary: "修改安全策略"
+      operationId: "modifyUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "vo"
+        description: "安全策略请求体"
+        required: true
+        schema:
+          $ref: "#/definitions/SecurityPolicyBo"
+          originalRef: "SecurityPolicyBo"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/security/featureSwitch:
+    post:
+      tags:
+      - "${security-api}"
+      summary: "修改特性开关"
+      operationId: "updateFeatureSwitchUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "featureSwitchRequest"
+        description: "特性开关请求体"
+        required: true
+        schema:
+          $ref: "#/definitions/FeatureSwitchRequest"
+          originalRef: "FeatureSwitchRequest"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/security/featureSwitch/{featureName}:
+    get:
+      tags:
+      - "${security-api}"
+      summary: "查询特性开关"
+      operationId: "getFeatureSwitchUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "featureName"
+        in: "path"
+        description: "特性名称"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/FeatureSwitchResponseBody"
+            originalRef: "FeatureSwitchResponseBody"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/security/securityIp:
+    get:
+      tags:
+      - "${security-api}"
+      summary: "查询可访问IP列表"
+      operationId: "getSecurityIpsUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/GetSecurityIpResponseBody"
+            originalRef: "GetSecurityIpResponseBody"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    post:
+      tags:
+      - "${security-api}"
+      summary: "修改可访问IP列表"
+      operationId: "updateSecurityIpsUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "securityIpListRequest"
+        description: "访问控制请求体"
+        required: true
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/SecurityIpRequest"
+            originalRef: "SecurityIpRequest"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/security/weakpassword:
+    post:
+      tags:
+      - "${security-api}"
+      summary: "新增弱口令"
+      operationId: "addWeakPasswordUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        description: "弱口令"
+        required: true
+        type: "string"
+        maxLength: 64
+        minLength: 8
+        allowEmptyValue: false
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/security/weakpassword/{id}:
+    delete:
+      tags:
+      - "${security-api}"
+      summary: "删除弱口令"
+      operationId: "deleteWeakPasswordUsingDELETE"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "弱口令id"
+        required: true
+        type: "string"
+        maxLength: 32
+        minLength: 32
+      responses:
+        "200":
+          description: "OK"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/security/weakpasswords:
+    get:
+      tags:
+      - "${security-api}"
+      summary: "查询弱口令字典"
+      operationId: "getWeekPasswordsUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/GetWeakPasswordsResponseBody"
+            originalRef: "GetWeakPasswordsResponseBody"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/users:
+    get:
+      tags:
+      - "${users-api}"
+      summary: "批量查询用户"
+      operationId: "getAllUserUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "filter"
+        description: "过滤条件"
+        required: false
+        schema:
+          type: "string"
+      - name: "orderBy"
+        in: "query"
+        description: "排序字段名称"
+        required: false
+        type: "string"
+        x-example: "userName"
+      - name: "orderType"
+        in: "query"
+        description: "排序的方式：asc：升序，desc：降序"
+        required: false
+        type: "string"
+      - name: "pageSize"
+        in: "query"
+        description: "分页数量"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-example: 20
+      - name: "startIndex"
+        in: "query"
+        description: "分页起始页面"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-example: 0
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/UserListReponseBody«UserResponseBody»"
+            originalRef: "UserListReponseBody«UserResponseBody»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    post:
+      tags:
+      - "${users-api}"
+      summary: "创建用户"
+      operationId: "createUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "user"
+        description: "创建用户信息请求体"
+        required: true
+        schema:
+          $ref: "#/definitions/UserRequestBody"
+          originalRef: "UserRequestBody"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/UserResponseBody"
+            originalRef: "UserResponseBody"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/users/{logoutType}/action/logout:
+    get:
+      tags:
+      - "${users-api}"
+      summary: "登出记录日志"
+      operationId: "logoutUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "logoutType"
+        in: "path"
+        description: "用户登出类型  MANUAL or TIMEOUT"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/users/{userId}:
+    get:
+      tags:
+      - "${users-api}"
+      summary: "查询单个用户"
+      operationId: "getUsingGET_2"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "userId"
+        in: "path"
+        description: "用户ID"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/UserInnerResponseBody"
+            originalRef: "UserInnerResponseBody"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    put:
+      tags:
+      - "${users-api}"
+      summary: "修改用户信息"
+      operationId: "updateUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "userId"
+        in: "path"
+        description: "用户ID"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "userRequest"
+        description: "更新用户信息请求体"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateUserRequestBody"
+          originalRef: "UpdateUserRequestBody"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    delete:
+      tags:
+      - "${users-api}"
+      summary: "删除用户"
+      operationId: "deleteUserUsingDELETE_1"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "userId"
+        in: "path"
+        description: "用户ID"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/users/{userId}/action/lock:
+    put:
+      tags:
+      - "${users-api}"
+      summary: "锁定用户"
+      operationId: "lockUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "userId"
+        in: "path"
+        description: "用户ID"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/users/{userId}/action/reset_password:
+    put:
+      tags:
+      - "${users-api}"
+      summary: "重置用户密码"
+      operationId: "resetPasswordUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "password"
+        description: "重置密码请求体"
+        required: true
+        schema:
+          $ref: "#/definitions/ResetPasswordRequestBody"
+          originalRef: "ResetPasswordRequestBody"
+      - name: "userId"
+        in: "path"
+        description: "用户ID"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/users/{userId}/action/unlock:
+    put:
+      tags:
+      - "${users-api}"
+      summary: "解锁用户"
+      operationId: "unlockUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "password"
+        description: "当前登录的系统管理员的密码。"
+        required: true
+        schema:
+          type: "string"
+      - name: "userId"
+        in: "path"
+        description: "用户ID"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/users/{userId}/action/update_password:
+    put:
+      tags:
+      - "${users-api}"
+      summary: "修改用户密码"
+      operationId: "updatePasswordUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "passwordRequest"
+        description: "修改密码请求体"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdatePasswordRequestBody"
+          originalRef: "UpdatePasswordRequestBody"
+      - name: "userId"
+        in: "path"
+        description: "用户ID"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+securityDefinitions:
+  Authorization:
+    type: "apiKey"
+    name: "TOKEN"
+    in: "header"
+definitions:
+  AuthRequest:
+    type: "object"
+    required:
+    - "password"
+    - "userName"
+    properties:
+      authType:
+        type: "string"
+        enum:
+        - "STORAGE_SYSTEM"
+      password:
+        type: "string"
+        description: "密码。1、密码长度和复杂度，分别是由“查询安全策略”接口的passLenVal字段和passComplexVal字段决定\
+          。2、密码长度：8-64"
+      userName:
+        type: "string"
+        description: "用户名称。1、只能以字母、下划线、中文开头，由中文、数字、字母或者下划线组成的字符串。2、用户名长度：5-64"
+    title: "AuthRequest"
+  FeatureSwitchRequest:
+    type: "object"
+    required:
+    - "enable"
+    - "featureName"
+    properties:
+      enable:
+        type: "boolean"
+        description: "已启用"
+      featureName:
+        type: "string"
+        description: "特性名称"
+    title: "FeatureSwitchRequest"
+  FeatureSwitchResponseBody:
+    type: "object"
+    properties:
+      enable:
+        type: "boolean"
+        description: "已启用"
+      featureName:
+        type: "string"
+        description: "特性名称"
+    title: "FeatureSwitchResponseBody"
+  GetSecurityIpResponseBody:
+    type: "object"
+    properties:
+      securityIpList:
+        type: "array"
+        description: "可访问IP列表"
+        items:
+          $ref: "#/definitions/SecurityIpBo"
+          originalRef: "SecurityIpBo"
+      total:
+        type: "integer"
+        format: "int32"
+        description: "可访问IP列表数目"
+    title: "GetSecurityIpResponseBody"
+  GetWeakPasswordsResponseBody:
+    type: "object"
+    properties:
+      total:
+        type: "integer"
+        format: "int32"
+        description: "弱口令总数"
+      weakPasswords:
+        type: "array"
+        description: "弱口令列表"
+        items:
+          $ref: "#/definitions/WeakPasswordBo"
+          originalRef: "WeakPasswordBo"
+    title: "GetWeakPasswordsResponseBody"
+  LoginResponseBody:
+    type: "object"
+    properties:
+      expireDay:
+        type: "integer"
+        format: "int64"
+        description: "密码过期剩余天数"
+      modifyPassword:
+        type: "boolean"
+        description: "是否需要修改密码"
+      token:
+        type: "string"
+        description: "token"
+      userId:
+        type: "string"
+        description: "用户ID"
+    title: "LoginResponseBody"
+  ResetPasswordRequestBody:
+    type: "object"
+    required:
+    - "adminPassword"
+    - "confirmPassword"
+    - "newPassword"
+    properties:
+      adminPassword:
+        type: "string"
+        description: "当前登录的系统管理员的密码。"
+      confirmPassword:
+        type: "string"
+        description: "确认密码"
+      newPassword:
+        type: "string"
+        description: "新密码，密码长度及复杂度与创建用户相同。"
+    title: "ResetPasswordRequestBody"
+  RoleBo:
+    type: "object"
+    properties:
+      createTime:
+        type: "string"
+        format: "date-time"
+        description: "创建时间"
+      creatorId:
+        type: "string"
+        description: "创建者ID"
+      roleDes:
+        type: "string"
+        description: "角色信息描述"
+      roleId:
+        type: "integer"
+        format: "int64"
+        description: "角色ID"
+      roleName:
+        type: "string"
+        description: "角色名称"
+      userNum:
+        type: "integer"
+        format: "int32"
+        description: "角色关联用户数量"
+    title: "RoleBo"
+  RoleListReponseBody:
+    type: "object"
+    properties:
+      roleBoList:
+        type: "array"
+        description: "角色列表"
+        items:
+          $ref: "#/definitions/RoleBo"
+          originalRef: "RoleBo"
+      total:
+        type: "integer"
+        format: "int32"
+        description: "角色总数"
+    title: "RoleListReponseBody"
+  SecurityIpBo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "可访问IP地址ID"
+      ipType:
+        type: "string"
+        description: "可访问IP地址类型"
+        enum:
+        - "IPV4"
+        - "IPV6"
+        - "IPV4_SEGMENT"
+        - "IPV6_SEGMENT"
+      securityIp:
+        type: "string"
+        description: "可访问IP地址"
+    title: "SecurityIpBo"
+  SecurityIpRequest:
+    type: "object"
+    required:
+    - "securityIp"
+    properties:
+      securityIp:
+        type: "string"
+        description: "可访问IP地址"
+    title: "SecurityIpRequest"
+  SecurityPolicyBo:
+    type: "object"
+    properties:
+      minLifetime:
+        type: "integer"
+        format: "int32"
+        description: "密码修改间隔"
+        minimum: 1.0
+        maximum: 9999.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      passComplexVal:
+        type: "integer"
+        format: "int32"
+        description: "密码复杂度1、值为2时，密码必须包含特殊字符、大写字母、小写字母和数字2、值为4时，密码必须包含特殊字符，并且至少包含大\
+          写字母、小写字母以及数字中任意两者的组合"
+      passCtrl:
+        type: "boolean"
+        description: "是否设置密码有效期"
+      passErrNum:
+        type: "integer"
+        format: "int32"
+        description: "输错次数"
+        minimum: 1.0
+        maximum: 9.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      passHistoryDay:
+        type: "integer"
+        format: "int32"
+        description: "历史密码保留最长时间"
+        minimum: 0.0
+        maximum: 365.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      passHistoryNum:
+        type: "integer"
+        format: "int32"
+        description: "历史密码保留最大个数"
+        minimum: 0.0
+        maximum: 12.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      passLenVal:
+        type: "integer"
+        format: "int32"
+        description: "密码长度:8-64"
+      passLockTime:
+        type: "integer"
+        format: "int32"
+        description: "锁定时间"
+        minimum: 3.0
+        maximum: 2000.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      sessionTime:
+        type: "integer"
+        format: "int32"
+        description: "超时时间"
+        minimum: 1.0
+        maximum: 100.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      usefulLife:
+        type: "integer"
+        format: "int32"
+        description: "有效期"
+        minimum: 60.0
+        maximum: 360.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+    title: "SecurityPolicyBo"
+  UpdatePasswordRequestBody:
+    type: "object"
+    required:
+    - "confirmPassword"
+    - "newPassword"
+    - "originalPassword"
+    properties:
+      confirmPassword:
+        type: "string"
+        description: "确认密码"
+      newPassword:
+        type: "string"
+        description: "新密码，密码长度及复杂度与创建用户相同。"
+      originalPassword:
+        type: "string"
+        description: "原密码"
+    title: "UpdatePasswordRequestBody"
+  UpdateUserRequestBody:
+    type: "object"
+    properties:
+      description:
+        type: "string"
+        description: "描述。最大长度：255"
+      sessionControl:
+        type: "boolean"
+        description: "是否开启会话限制，true开启，false不开启，默认不开启。"
+      sessionLimit:
+        type: "integer"
+        format: "int32"
+        example: 1
+        description: "最大会话个数。"
+        minimum: 1.0
+        maximum: 8.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+    title: "UpdateUserRequestBody"
+  UserInfo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      mustModifyPassword:
+        type: "boolean"
+      name:
+        type: "string"
+      passwordVersion:
+        type: "integer"
+        format: "int64"
+      roles:
+        type: "array"
+        items:
+          $ref: "#/definitions/RoleBo"
+          originalRef: "RoleBo"
+      userName:
+        type: "string"
+    title: "UserInfo"
+  UserInnerResponseBody:
+    type: "object"
+    properties:
+      accessControl:
+        type: "string"
+        description: "访问控制  ALLOW_ACCESS_GUI, ALLOW_ACCESS_REST_API"
+      defaultUser:
+        type: "boolean"
+        description: "是否为内置默认用户，true-为内置默认用户，false-非内置默认用户"
+      description:
+        type: "string"
+        description: "描述。最大长度：255"
+      lock:
+        type: "boolean"
+        description: "是否被锁定，true-被锁定，false-未锁定"
+      rolesSet:
+        type: "array"
+        description: "用户角色列表，一个用户只能有一个角色。"
+        items:
+          $ref: "#/definitions/RoleBo"
+          originalRef: "RoleBo"
+      sessionControl:
+        type: "boolean"
+        description: "是否开启会话限制，true开启，false不开启，默认不开启。"
+      sessionLimit:
+        type: "integer"
+        format: "int32"
+        description: "最大会话个数。"
+      sysAdmin:
+        type: "boolean"
+        description: "是否为内置默认系统管理员，true-为默认系统管理员，false-非默认系统管理员"
+      userId:
+        type: "string"
+        description: "用户ID"
+      userName:
+        type: "string"
+        description: "用户名称。1、只能以字母、下划线、中文开头，由中文、数字、字母或者下划线组成的字符串。2、用户名长度：5-64"
+    title: "UserInnerResponseBody"
+  UserListReponseBody«UserResponseBody»:
+    type: "object"
+    properties:
+      currentCount:
+        type: "integer"
+        format: "int64"
+        description: "当前总数"
+      pageSize:
+        type: "integer"
+        format: "int32"
+        description: "分页数量"
+      startIndex:
+        type: "integer"
+        format: "int32"
+        description: "当前页数"
+      total:
+        type: "integer"
+        format: "int32"
+        description: "总数"
+      userList:
+        type: "array"
+        description: "分页查询结果列表"
+        items:
+          $ref: "#/definitions/UserResponseBody"
+          originalRef: "UserResponseBody"
+    title: "UserListReponseBody«UserResponseBody»"
+  UserRequestBody:
+    type: "object"
+    required:
+    - "confirmPassword"
+    - "rolesIdsSet"
+    - "userName"
+    - "userPassword"
+    properties:
+      accessControlEnum:
+        type: "string"
+        example: "ALLOW_ACCESS_GUI"
+        description: "访问控制  ALLOW_ACCESS_GUI, ALLOW_ACCESS_REST_API"
+        enum:
+        - "ALLOW_ACCESS_GUI"
+        - "ALLOW_ACCESS_REST_API"
+      confirmPassword:
+        type: "string"
+        description: "密码。1、密码长度和复杂度，分别是由“查询安全策略”接口的passLenVal字段和passComplexVal字段决定\
+          。2、密码长度：8-64"
+      description:
+        type: "string"
+        description: "描述。最大长度：255"
+      rolesIdsSet:
+        type: "array"
+        description: "用户角色列表，一个用户只能有一个角色。"
+        items:
+          type: "integer"
+          format: "int64"
+          minimum: 1
+          maximum: 1
+      sessionControl:
+        type: "boolean"
+        description: "是否开启会话限制，true开启，false不开启，默认不开启。"
+      sessionLimit:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "最大会话个数。"
+        minimum: 1.0
+        maximum: 8.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      userName:
+        type: "string"
+        description: "用户名称。1、只能以字母、下划线、中文开头，由中文、数字、字母或者下划线组成的字符串。2、用户名长度：5-64"
+        pattern: "^[a-zA-Z_\\u4e00-\\u9fa5]{1}[\\u4e00-\\u9fa5\\w-]*$"
+      userPassword:
+        type: "string"
+        description: "密码。1、密码长度和复杂度，分别是由“查询安全策略”接口的passLenVal字段和passComplexVal字段决定\
+          。2、密码长度：8-64"
+    title: "UserRequestBody"
+  UserResponseBody:
+    type: "object"
+    properties:
+      accessControl:
+        type: "string"
+        description: "访问控制  ALLOW_ACCESS_GUI, ALLOW_ACCESS_REST_API"
+      defaultUser:
+        type: "boolean"
+        description: "是否为内置默认用户，true-为内置默认用户，false-非内置默认用户"
+      description:
+        type: "string"
+        description: "描述。最大长度：255"
+      lock:
+        type: "boolean"
+        description: "是否被锁定，true-被锁定，false-未锁定"
+      login:
+        type: "boolean"
+        description: "用户是否在线，true-在线，false-离线"
+      rolesSet:
+        type: "array"
+        description: "用户角色列表，一个用户只能有一个角色。"
+        items:
+          $ref: "#/definitions/RoleBo"
+          originalRef: "RoleBo"
+      sessionControl:
+        type: "boolean"
+        description: "是否开启会话限制，true开启，false不开启，默认不开启。"
+      sessionLimit:
+        type: "integer"
+        format: "int32"
+        description: "最大会话个数。"
+      sysAdmin:
+        type: "boolean"
+        description: "是否为内置默认系统管理员，true-为默认系统管理员，false-非默认系统管理员"
+      userId:
+        type: "string"
+        description: "用户ID"
+      userName:
+        type: "string"
+        description: "用户名称。1、只能以字母、下划线、中文开头，由中文、数字、字母或者下划线组成的字符串。2、用户名长度：5-64"
+    title: "UserResponseBody"
+  WeakPasswordBo:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "弱口令id"
+      password:
+        type: "string"
+        description: "弱口令"
+    title: "WeakPasswordBo"
