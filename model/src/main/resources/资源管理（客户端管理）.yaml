@@ -1,0 +1,132 @@
+swagger: '2.0'
+info:
+  title: 资源管理（客户端管理）
+  version: v1
+paths:
+  /v1/internal/agent/upgrade:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ip
+          in: query
+          name: ip
+          required: true
+          type: string
+        - description: 主机端口
+          in: query
+          name: port
+          required: true
+          type: string
+        - description: 下载链接
+          in: query
+          name: downloadLink
+          required: true
+          type: string
+        - description: AgentID
+          in: query
+          name: agentId
+          required: true
+          type: string
+        - description: Agent名称
+          in: query
+          name: agentName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            title: Response Agent Upgrade V1 Internal Agent Upgrade Get
+            type: object
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - agent_api
+      description: 执行客户端升级
+      operationId: agent_upgrade_v1_internal_agent_upgrade_get
+      summary: 透传Agent执行客户端升级接口
+  /v1/internal/agent/upgrade-status:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ip
+          in: query
+          name: ip
+          required: true
+          type: string
+        - description: 主机端口
+          in: query
+          name: port
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            title: >-
+              Response Check Agent Upgrade Status V1 Internal Agent Upgrade
+              Status Get
+            type: object
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - agent_api
+      description: 查询客户端升级状态
+      operationId: check_agent_upgrade_status_v1_internal_agent_upgrade_status_get
+      summary: 透传Agent查询客户端升级状态接口
+  /v1/readiness:
+    get:
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+      operationId: readiness_v1_readiness_get
+      summary: Readiness
+definitions:
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}
+

@@ -1,0 +1,278 @@
+swagger: '2.0'
+info:
+  title: 资源管理（hdfs）
+  version: v1
+paths:
+  /v1/hdfs/resource:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          maximum: 10000
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 1
+          name: page_size
+          required: true
+          type: integer
+        - collectionFormat: multi
+          description: 排序字段
+          in: query
+          items: {}
+          name: orders
+          required: false
+          type: array
+        - description: hdfs集群查询条件
+          in: query
+          maxLength: 1024
+          minLength: 1
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_HdfsSchema_'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - hdfs
+      operationId: page_query_hdfs_cluster_v1_hdfs_resource_get
+      summary: 查询hdfs集群资源列表
+  /v1/readiness:
+    get:
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+      operationId: readiness_v1_readiness_get
+      summary: Readiness
+definitions:
+  BasePage_HdfsSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/HdfsSchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[HdfsSchema]'
+    type: object
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  HdfsSchema:
+    properties:
+      access_model:
+        description: 访问方式
+        title: Access Model
+        type: string
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      cluster_type:
+        description: hdfs集群类型
+        title: Cluster Type
+        type: string
+      create_model:
+        description: kerberos认证方式
+        title: Create Model
+        type: string
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      fileset_counts:
+        description: hdfs集群文件集数量
+        title: Fileset Counts
+        type: integer
+      kerberos_uuid:
+        description: kerberos的资源id
+        title: Kerberos Uuid
+        type: string
+      link_status:
+        description: 集群状态
+        title: Link Status
+        type: integer
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      port:
+        description: 受保护环境端口号
+        title: Port
+        type: integer
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 环境ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+    required:
+      - name
+      - uuid
+    title: HdfsSchema
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}
+

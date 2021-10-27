@@ -1,0 +1,572 @@
+swagger: '2.0'
+info:
+  title: 资源管理（kubernetes-datasets）
+  version: v1
+paths:
+  /v1/kubernetes/namespaces/datasets:
+    delete:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          required: true
+          schema:
+            allOf:
+              - $ref: '#/definitions/DeleteDatasetReq'
+            description: 批量删除namespace数据集请求
+            title: Delete Dataset Request
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              $ref: '#/definitions/DatasetResourceId'
+            title: >-
+              Response Delete K8S Namespace Dataset V1 Kubernetes Namespaces
+              Datasets Delete
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - kubernetes-datasets
+      description: 删除namespace数据集
+      operationId: delete_k8s_namespace_dataset_v1_kubernetes_namespaces_datasets_delete
+      summary: 删除namespace数据集
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          required: true
+          schema:
+            allOf:
+              - $ref: '#/definitions/CommonDatasetRequestSchema'
+            description: 创建namespace数据集请求
+            title: Create Dataset Request
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - kubernetes-datasets
+      description: 创建namespace数据集
+      operationId: create_k8s_namespace_dataset_v1_kubernetes_namespaces_datasets_post
+      summary: 创建namespace数据集
+  '/v1/kubernetes/namespaces/datasets/{dataset_uuid}':
+    put:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 修改数据集uuid
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: dataset_uuid
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          required: true
+          schema:
+            allOf:
+              - $ref: '#/definitions/CommonDatasetRequestSchema'
+            description: 修改namespace数据集请求
+            title: Modify Dataset Request
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/DatasetResourceId'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - kubernetes-datasets
+      description: 修改namespace数据集
+      operationId: >-
+        modify_k8s_namespace_dataset_v1_kubernetes_namespaces_datasets__dataset_uuid__put
+      summary: 修改namespace数据集
+  '/v1/kubernetes/namespaces/{namespace_id}/datasets':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 命名空间uuid
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: namespace_id
+          required: true
+          type: string
+        - description: 数据集名称
+          in: query
+          maxLength: 64
+          minLength: 1
+          name: dataset_name
+          pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+          required: false
+          type: string
+        - collectionFormat: multi
+          description: 'SLA遵从度, 支持筛选过滤'
+          in: query
+          items:
+            type: boolean
+          name: sla_compliance
+          required: false
+          type: array
+        - description: 'SLA的名称, 支持模糊查询'
+          in: query
+          maxLength: 64
+          name: sla_name
+          required: false
+          type: string
+        - description: SLA激活状态
+          enum:
+            - 1
+            - 0
+          in: query
+          name: sla_status
+          required: false
+          type: integer
+        - description: 保护状态
+          enum:
+            - 0
+            - 1
+            - 2
+          in: query
+          name: protection_status
+          required: false
+          type: integer
+        - description: 分页页面编码
+          in: query
+          maximum: 10000
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - kubernetes-datasets
+      description: 分页查询Namespace数据集信息列表
+      operationId: >-
+        query_k8s_namespace_dataset_v1_kubernetes_namespaces__namespace_id__datasets_get
+      summary: 分页查询Namespace数据集信息列表
+  '/v1/kubernetes/namespaces/{namespace_id}/labels':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 命名空间uuid
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: namespace_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              type: string
+            title: >-
+              Response Get Labels List V1 Kubernetes Namespaces  Namespace Id 
+              Labels Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - kubernetes-datasets
+      description: 获取labels列表
+      operationId: get_labels_list_v1_kubernetes_namespaces__namespace_id__labels_get
+      summary: 获取labels列表
+  '/v1/kubernetes/namespaces/{namespace_id}/pvcs':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 命名空间uuid
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: namespace_id
+          required: true
+          type: string
+        - description: workload名称
+          in: query
+          name: workload_name
+          required: true
+          type: string
+        - description: workload类型
+          enum:
+            - Pod
+            - Deployment
+            - DaemonSet
+            - StatefulSet
+          in: query
+          name: workload_type
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              $ref: '#/definitions/PvcInfoSchema'
+            title: >-
+              Response Get Pvc List V1 Kubernetes Namespaces  Namespace Id  Pvcs
+              Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - kubernetes-datasets
+      description: 获取pvc列表
+      operationId: get_pvc_list_v1_kubernetes_namespaces__namespace_id__pvcs_get
+      summary: 获取pvc列表
+  '/v1/kubernetes/namespaces/{namespace_id}/workloads':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 命名空间id
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: namespace_id
+          required: true
+          type: string
+        - description: workload类型
+          enum:
+            - Pod
+            - Deployment
+            - DaemonSet
+            - StatefulSet
+          in: query
+          name: workload_type
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              $ref: '#/definitions/KubernetesCommonObjResp'
+            title: >-
+              Response Get Workload List V1 Kubernetes Namespaces  Namespace Id 
+              Workloads Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - kubernetes-datasets
+      description: 获取workload列表
+      operationId: get_workload_list_v1_kubernetes_namespaces__namespace_id__workloads_get
+      summary: 获取workload列表
+  /v1/readiness:
+    get:
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+      operationId: readiness_v1_readiness_get
+      summary: Readiness
+definitions:
+  BasePage:
+    properties:
+      items:
+        description: 数据列表
+        items: {}
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: BasePage
+    type: object
+  CommonDatasetRequestSchema:
+    properties:
+      application_type:
+        $ref: '#/definitions/K8sDatasetApplicationTypeEnum'
+      dataset_name:
+        description: 数据集名称
+        maxLength: 64
+        minLength: 1
+        pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        title: Dataset Name
+        type: string
+      is_slave_node_backup:
+        default: false
+        description: 是否从从节点备份(MySQL类型数据集必填)
+        title: Is Slave Node Backup
+        type: boolean
+      labels:
+        default: []
+        description: '标签(只在Common类型数据集时可填，格式为[{''App'':''Postgres''},{''App'':''Others''}])'
+        items: {}
+        title: Labels
+        type: array
+      mysql_password:
+        description: MySQL集群密码(MySQL类型数据集必填)
+        title: Mysql Password
+        type: string
+      mysql_username:
+        description: MySQL集群用户名(MySQL类型数据集必填)
+        title: Mysql Username
+        type: string
+      namespace_id:
+        description: 命名空间UUID(创建数据集时必传)
+        maxLength: 64
+        minLength: 1
+        title: Namespace Id
+        type: string
+      selection_mode:
+        $ref: '#/definitions/K8sDatasetSelectionModelEnum'
+      workloads:
+        default: []
+        description: workload列表
+        items: {}
+        title: Workloads
+        type: array
+    required:
+      - namespace_id
+      - dataset_name
+    title: CommonDatasetRequestSchema
+    type: object
+  DatasetResourceId:
+    properties:
+      uuid:
+        description: Dataset UUID
+        maxLength: 64
+        minLength: 1
+        title: Uuid
+        type: string
+    title: DatasetResourceId
+    type: object
+  DeleteDatasetReq:
+    properties:
+      dataset_uuids:
+        description: 数据集的UUID列表
+        items:
+          type: string
+        title: Dataset Uuids
+        type: array
+    required:
+      - dataset_uuids
+    title: DeleteDatasetReq
+    type: object
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  K8sDatasetApplicationTypeEnum:
+    description: An enumeration.
+    enum:
+      - 1
+      - 2
+    title: K8sDatasetApplicationTypeEnum
+    type: integer
+  K8sDatasetSelectionModelEnum:
+    description: An enumeration.
+    enum:
+      - workloads
+      - labels
+    title: K8sDatasetSelectionModelEnum
+    type: string
+  K8sWorkloadTypeEnum:
+    description: An enumeration.
+    enum:
+      - Pod
+      - Deployment
+      - DaemonSet
+      - StatefulSet
+    title: K8sWorkloadTypeEnum
+    type: string
+  KubernetesCommonObjResp:
+    properties:
+      name:
+        description: Kubernetes对象名称
+        title: Name
+        type: string
+      type:
+        description: Kubernetes对象类型
+        title: Type
+        type: string
+    title: KubernetesCommonObjResp
+    type: object
+  ProtectionStatusEnum:
+    description: An enumeration.
+    enum:
+      - 0
+      - 1
+      - 2
+    title: ProtectionStatusEnum
+    type: integer
+  PvcInfoSchema:
+    properties:
+      pod_list:
+        default: []
+        description: pod列表
+        items: {}
+        title: Pod List
+        type: array
+      pvc_name:
+        description: PVC名称
+        title: Pvc Name
+        type: string
+      pvc_size:
+        description: PVC大小
+        title: Pvc Size
+        type: string
+    required:
+      - pvc_name
+      - pvc_size
+    title: PvcInfoSchema
+    type: object
+  Status:
+    description: An enumeration.
+    enum:
+      - 1
+      - 0
+    title: Status
+    type: integer
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}
+

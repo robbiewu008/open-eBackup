@@ -1,0 +1,17 @@
+swagger: '2.0'
+info:
+  title: 系统（恢复）接口
+  version: v1
+paths:
+  /v1/readiness:
+    get:
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+      operationId: readiness_v1_readiness_get
+      summary: Readiness
+

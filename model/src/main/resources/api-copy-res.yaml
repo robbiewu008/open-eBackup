@@ -1,0 +1,126 @@
+swagger: '2.0'
+info:
+  title: 资源管理（副本资源）
+  version: v1
+paths:
+  /v1/readiness:
+    get:
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+      operationId: readiness_v1_readiness_get
+      summary: Readiness
+  /v1/resource-catalogs:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              $ref: '#/definitions/ResourceCatalogSchema'
+            title: Response List Resource Catalog V1 Resource Catalogs Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - resource-catalog
+      operationId: list_resource_catalog_v1_resource_catalogs_get
+      summary: 查询资源目录
+definitions:
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  ResourceCatalogSchema:
+    example:
+      catalog_id: 50dc3d15-21dc-4fcb-97c4-35581f489afc
+      catalog_name: BigData
+      children:
+        - catalog_id: 60dc3d15-31dc-5fcb-07c4-45581f489afc
+          catalog_name: Hadoop
+          display_order: 0
+          label: Hadoop
+          link: /resource/bigdata.html
+          parent_id: 50dc3d15-21dc-4fcb-97c4-35581f489afc
+          show: true
+      display_order: 0
+      label: resource.catalog.BigData.label
+      link: ''
+      show: true
+    properties:
+      catalog_id:
+        description: 目录ID
+        title: Catalog Id
+        type: string
+      catalog_name:
+        description: 目录名称
+        title: Catalog Name
+        type: string
+      children:
+        description: 子目录列表
+        items: {}
+        title: Children
+        type: array
+      display_order:
+        description: 显示顺序
+        title: Display Order
+        type: integer
+      label:
+        description: 标签
+        title: Label
+        type: string
+      link:
+        description: 资源目录对应的URL
+        title: Link
+        type: string
+      parent_id:
+        description: 父目录ID
+        title: Parent Id
+        type: string
+      show:
+        description: 是否隐藏
+        title: Show
+        type: boolean
+    title: ResourceCatalogSchema
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}
+

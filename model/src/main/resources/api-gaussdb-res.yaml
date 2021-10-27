@@ -1,0 +1,795 @@
+swagger: '2.0'
+info:
+  title: 资源管理（gaussdb）
+  version: v1
+paths:
+  /v1/gaussdb/clusters:
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          schema:
+            allOf:
+              - $ref: '#/definitions/DatabaseCluster'
+            description: GaussDB集群信息
+            title: Cluster Request
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - gaussdb-api
+      description: 创建GaussDB集群
+      operationId: create_gauss_db_cluster_v1_gaussdb_clusters_post
+      summary: 创建GaussDB集群
+  '/v1/gaussdb/clusters/{cluster_id}':
+    delete:
+      produces:
+        - application/json
+      parameters:
+        - description: 集群/主机ID
+          in: path
+          maxLength: 128
+          minLength: 1
+          name: cluster_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - gaussdb-api
+      description: 根据集群ID删除GaussDB集群
+      operationId: delete_gauss_db_cluster_v1_gaussdb_clusters__cluster_id__delete
+      summary: 删除GaussDB集群
+  /v1/gaussdb/instances:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - collectionFormat: multi
+          description: 排序字段：
+          in: query
+          items:
+            type: string
+          name: orders
+          required: false
+          type: array
+        - description: 条件参数：
+          in: query
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_DatabaseInstanceSchema_'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - gaussdb-api
+      operationId: query_resources_v1_gaussdb_instances_get
+      summary: 查询GaussDB数据库实例信息列表
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          schema:
+            allOf:
+              - $ref: '#/definitions/AddGaussDBInstanceRequest'
+            description: GaussDB实例信息
+            title: Instance Request
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - gaussdb-api
+      description: 创建GaussDB实例
+      operationId: create_gauss_db_instance_v1_gaussdb_instances_post
+      summary: 创建GaussDB实例
+  /v1/gaussdb/instances/unregistered:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: query
+          maxLength: 64
+          minLength: 1
+          name: host_id
+          required: true
+          type: string
+        - description: 元数据存储路径
+          in: query
+          maxLength: 42
+          minLength: 1
+          name: meta_storage_path
+          required: true
+          type: string
+        - description: 虚拟主机端口号
+          in: query
+          name: port
+          required: true
+          type: integer
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - gaussdb-api
+      description: 查询GaussDB未注册实例列表
+      operationId: get_unregistered_instance_v1_gaussdb_instances_unregistered_get
+      summary: 查询GaussDB未注册实例列表
+  '/v1/gaussdb/instances/{instance_id}':
+    delete:
+      produces:
+        - application/json
+      parameters:
+        - description: GaussDB实例ID
+          in: path
+          maxLength: 128
+          minLength: 1
+          name: instance_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - gaussdb-api
+      description: 根据GaussDB实例ID删除GaussDB实例
+      operationId: delete_gauss_db_instance_by_id_v1_gaussdb_instances__instance_id__delete
+      summary: 删除GaussDB实例
+  /v1/gaussdb/servers:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          maximum: 10000
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 1
+          name: page_size
+          required: true
+          type: integer
+        - description: 主机/集群查询条件
+          in: query
+          maxLength: 1024
+          minLength: 1
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_DbServerInfo_'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - gaussdb-api
+      operationId: get_host_and_cluster_list_v1_gaussdb_servers_get
+      summary: 分页查询GaussDB主机/集群信息列表
+  '/v1/gaussdb/virtual-hosts/{resource_id}':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: path
+          maxLength: 128
+          minLength: 1
+          name: resource_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/GaussDBVirtualHostSchema'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - gaussdb-api
+      operationId: get_virtual_host_info_v1_gaussdb_virtual_hosts__resource_id__get
+      summary: 查询GaussDB虚拟主机信息
+  /v1/internal/gaussdb/virtual-hosts:
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+            allOf:
+              - $ref: '#/definitions/AddGaussDBVirtualHost'
+            description: GaussDB虚拟主机信息
+            title: Virtual Host Request
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/GaussDBVirtualHostSchema'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - gaussdb-api
+      operationId: create_virtual_host_v1_internal_gaussdb_virtual_hosts_post
+      summary: 创建GaussDB虚拟主机【内部接口】
+  '/v1/internal/gaussdb/virtual-hosts/{instance_id}':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: path
+          maxLength: 128
+          minLength: 1
+          name: instance_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/GaussDBVirtualHostSchema'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - gaussdb-api
+      operationId: >-
+        get_virtual_host_by_instance_id_v1_internal_gaussdb_virtual_hosts__instance_id__get
+      summary: 查询GaussDB虚拟主机信息【内部接口】
+  /v1/readiness:
+    get:
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+      operationId: readiness_v1_readiness_get
+      summary: Readiness
+definitions:
+  AddGaussDBInstanceRequest:
+    properties:
+      instance_infos:
+        default: []
+        description: 实例信息
+        items:
+          $ref: '#/definitions/InstanceInfoSchema'
+        maxItems: 32
+        minItems: 1
+        title: Instance Infos
+        type: array
+      is_cluster:
+        default: false
+        description: 是否为集群
+        title: Is Cluster
+        type: boolean
+      meta_storage_path:
+        description: 元数据存储路径
+        maxLength: 42
+        minLength: 1
+        title: Meta Storage Path
+        type: string
+      port:
+        description: 虚拟主机的端口号
+        maximum: 65535
+        minimum: 1024
+        title: Port
+        type: integer
+      resource_id:
+        description: 主机/集群ID
+        maxLength: 64
+        minLength: 1
+        title: Resource Id
+        type: string
+      version:
+        default: GaussDB T
+        description: 版本号
+        maxLength: 64
+        minLength: 1
+        title: Version
+        type: string
+    required:
+      - resource_id
+      - meta_storage_path
+      - port
+    title: AddGaussDBInstanceRequest
+    type: object
+  AddGaussDBVirtualHost:
+    properties:
+      meta_storage_path:
+        description: 元数据存储路径
+        maxLength: 42
+        minLength: 1
+        title: Meta Storage Path
+        type: string
+      port:
+        description: 虚拟主机的端口号
+        maximum: 65535
+        minimum: 1024
+        title: Port
+        type: integer
+      resource_id:
+        description: 集群/主机ID
+        maxLength: 64
+        minLength: 1
+        title: Resource Id
+        type: string
+    required:
+      - resource_id
+      - meta_storage_path
+      - port
+    title: AddGaussDBVirtualHost
+    type: object
+  BasePage_DatabaseInstanceSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/DatabaseInstanceSchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[DatabaseInstanceSchema]'
+    type: object
+  BasePage_DbServerInfo_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/DbServerInfo'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[DbServerInfo]'
+    type: object
+  DatabaseCluster:
+    properties:
+      cluster_name:
+        description: 集群名称
+        maxLength: 64
+        minLength: 1
+        pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        title: Cluster Name
+        type: string
+      nodes:
+        description: 节点列表
+        items:
+          type: string
+        title: Nodes
+        type: array
+    required:
+      - nodes
+    title: DatabaseCluster
+    type: object
+  DatabaseInstanceSchema:
+    properties:
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      is_cluster:
+        default: false
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      os_username:
+        description: 操作系统用户名
+        title: Os Username
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 环境ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+    required:
+      - name
+      - uuid
+    title: DatabaseInstanceSchema
+    type: object
+  DbServerInfo:
+    properties:
+      authorized_user:
+        description: 授权用户
+        title: Authorized User
+        type: string
+      db_count:
+        description: 注册数据库数量
+        title: Db Count
+        type: integer
+      host_endpoint:
+        description: 主机/集群IP地址
+        title: Host Endpoint
+        type: string
+      host_id:
+        description: 主机/集群ID
+        title: Host Id
+        type: string
+      host_name:
+        description: 主机/集群名称
+        title: Host Name
+        type: string
+      is_authorized:
+        description: 是否认证
+        title: Is Authorized
+        type: boolean
+      is_cluster:
+        description: 是否是集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        description: 状态
+        title: Link Status
+        type: integer
+      os_type:
+        description: 操作系统类型
+        title: Os Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+    title: DbServerInfo
+    type: object
+  GaussDBVirtualHostSchema:
+    properties:
+      meta_storage_path:
+        description: 元数据存储路径
+        maxLength: 42
+        minLength: 1
+        title: Meta Storage Path
+        type: string
+      modify_enable:
+        default: true
+        description: 元数据路径和端口号是否可以修改
+        title: Modify Enable
+        type: boolean
+      name:
+        description: 虚拟主机的名称
+        maxLength: 64
+        minLength: 1
+        title: Name
+        type: string
+      port:
+        description: 虚拟主机的端口号
+        maximum: 65535
+        minimum: 1024
+        title: Port
+        type: integer
+      resource_id:
+        description: 关联的集群/主机ID
+        maxLength: 64
+        minLength: 1
+        title: Resource Id
+        type: string
+      uuid:
+        description: 虚拟主机的UUID
+        maxLength: 64
+        minLength: 1
+        title: Uuid
+        type: string
+    required:
+      - uuid
+      - name
+      - resource_id
+      - meta_storage_path
+      - port
+    title: GaussDBVirtualHostSchema
+    type: object
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  InstanceInfoSchema:
+    properties:
+      instance_name:
+        description: 实例名称
+        maxLength: 64
+        minLength: 1
+        title: Instance Name
+        type: string
+    required:
+      - instance_name
+    title: InstanceInfoSchema
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}
+

@@ -1,0 +1,218 @@
+swagger: '2.0'
+info:
+  title: 资源管理（数据库）
+  version: v1
+paths:
+  '/v1/databases/{db_id}/action/auth':
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 数据库ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: db_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          schema:
+            allOf:
+              - $ref: '#/definitions/DatabaseAuthRequest'
+            description: 数据库认证参数
+            title: Database Auth Request
+      responses:
+        '200':
+          description: The response is auth result
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - databases
+      operationId: auth_v1_databases__db_id__action_auth_post
+      summary: 修改数据库认证信息
+  '/v1/databases/{db_id}/timestamps':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 数据库的ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: db_id
+          required: true
+          type: string
+        - description: 数据库的类型
+          in: query
+          name: database_type
+          required: false
+          type: string
+        - description: 开始时间
+          in: query
+          name: time_start
+          required: false
+          type: string
+        - description: 结束时间
+          in: query
+          name: time_end
+          required: false
+          type: string
+      responses:
+        '200':
+          description: The response is the list of copies timestamp
+          schema:
+            $ref: '#/definitions/DatabaseTimeStampResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - databases
+      operationId: query_database_timestamp_v1_databases__db_id__timestamps_get
+      summary: 查询数据库时间区间
+  /v1/readiness:
+    get:
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+      operationId: readiness_v1_readiness_get
+      summary: Readiness
+definitions:
+  DatabaseAuthRequest:
+    properties:
+      auth_type:
+        description: 认证方式，0：数据库认证，1：OS认证
+        maximum: 1
+        minimum: 0
+        title: Auth Type
+        type: integer
+      db_password:
+        description: 数据库密码
+        maxLength: 60
+        title: Db Password
+        type: string
+      db_username:
+        description: 数据库用户名
+        maxLength: 60
+        title: Db Username
+        type: string
+    required:
+      - auth_type
+    title: DatabaseAuthRequest
+    type: object
+  DatabaseError:
+    properties:
+      Code:
+        description: 错误码
+        title: Code
+        type: integer
+      Description:
+        description: 错误描述
+        title: Description
+        type: string
+    required:
+      - Code
+      - Description
+    title: DatabaseError
+    type: object
+  DatabaseTimeStamp:
+    properties:
+      TIMERANGE:
+        description: 时间区间信息列表
+        items:
+          $ref: '#/definitions/TimeRange'
+        title: Timerange
+        type: array
+    required:
+      - TIMERANGE
+    title: DatabaseTimeStamp
+    type: object
+  DatabaseTimeStampResponse:
+    properties:
+      Data:
+        allOf:
+          - $ref: '#/definitions/DatabaseTimeStamp'
+        description: 时间戳信息
+        title: Data
+      Error:
+        allOf:
+          - $ref: '#/definitions/DatabaseError'
+        description: 错误信息
+        title: Error
+    required:
+      - Data
+      - Error
+    title: DatabaseTimeStampResponse
+    type: object
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  TimeRange:
+    properties:
+      ENDTIME:
+        description: 结束时间
+        title: Endtime
+        type: string
+      STARTTIME:
+        description: 开始时间
+        title: Starttime
+        type: string
+      TIMEZONE:
+        description: 时区
+        title: Timezone
+        type: string
+    required:
+      - STARTTIME
+      - ENDTIME
+      - TIMEZONE
+    title: TimeRange
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}
+

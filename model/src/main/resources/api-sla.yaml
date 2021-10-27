@@ -1,0 +1,867 @@
+swagger: '2.0'
+info:
+  title: SLA管理接口
+  version: v1
+paths:
+  '/v1/internal/sla/action/revoke/{user_id}':
+    put:
+      produces:
+        - application/json
+      parameters:
+        - description: 用户ID
+          in: path
+          name: user_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sla-api
+      operationId: revoke_sla_user_id_v1_internal_sla_action_revoke__user_id__put
+      summary: Revoke Sla User Id
+  /v1/internal/sla/action/verify:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 用户ID
+          in: query
+          name: user_id
+          required: true
+          type: string
+        - collectionFormat: multi
+          description: SLA列表
+          in: query
+          items:
+            type: string
+          name: sla_uuid_list
+          required: true
+          type: array
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sla-api
+      operationId: internal_verify_sla_ownership_v1_internal_sla_action_verify_get
+      summary: Internal Verify Sla Ownership
+  /v1/internal/slas/policies/ext-parameters:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: KEY
+          in: query
+          name: key
+          required: true
+          type: string
+        - description: VALUE
+          in: query
+          name: value
+          required: true
+          type: string
+      responses:
+        '200':
+          description: sla base
+          schema:
+            $ref: '#/definitions/SlaBase'
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sla-api
+      operationId: >-
+        query_sla_by_policy_extra_parameter_v1_internal_slas_policies_ext_parameters_get
+      summary: 根据key/value查询绑定的策略
+  '/v1/internal/slas/{sla_id}':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: SLA的id
+          in: path
+          name: sla_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: SLA详细信息
+          schema:
+            $ref: '#/definitions/SlaQuery'
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sla-api
+      operationId: query_internal_sla_by_id_v1_internal_slas__sla_id__get
+      summary: 根据id查询单个SLA
+  /v1/readiness:
+    get:
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+      operationId: readiness_v1_readiness_get
+      summary: Readiness
+  /v1/slas:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: SLA名称，支持模糊查询
+          in: query
+          name: name
+          required: false
+          type: string
+        - collectionFormat: multi
+          description: sla类型，支持筛选过滤
+          in: query
+          items:
+            $ref: '#/definitions/SlaType'
+          name: types
+          required: false
+          type: array
+        - collectionFormat: multi
+          description: sla应用类型，支持过筛选过滤
+          in: query
+          items:
+            $ref: '#/definitions/ResourceSubTypeEnum'
+          name: applications
+          required: false
+          type: array
+        - collectionFormat: multi
+          description: 备份模式列表
+          in: query
+          items:
+            $ref: '#/definitions/PolicyActionEnum'
+          name: actions
+          required: false
+          type: array
+        - description: 分页页面编码
+          in: query
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - description: 请求token
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_SlaQuery_'
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sla-api
+      operationId: page_query_slas_v1_slas_get
+      summary: 分页查询SLA信息
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 请求token
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            allOf:
+              - $ref: '#/definitions/SlaCreate'
+            description: SLA详细信息
+            title: Sla Req
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/SlaId'
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sla-api
+      description: |-
+        创建SLA
+        接口：/v1/slas 方法：Post
+        :param database_session: 数据库连接会话
+        :param token: 用户令牌
+        :param sla_req: SLA请求
+        :return: SLA编号
+      operationId: create_v1_slas_post
+      summary: 创建新的SLA
+    put:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 请求token
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            allOf:
+              - $ref: '#/definitions/SlaUpdate'
+            description: SLA详细信息
+            title: Sla Req
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/SlaId'
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sla-api
+      description: |-
+        修改SLA
+        接口：/v1/slas 方法：Put
+        :param user_info: 注入的登录用户信息
+        :param sla_req: SLA请求
+        :return: SAL编号
+      operationId: modify_v1_slas_put
+      summary: 修改SLA信息
+  '/v1/slas/{sla_id}':
+    delete:
+      produces:
+        - application/json
+      parameters:
+        - description: SLA的id
+          in: path
+          name: sla_id
+          required: true
+          type: string
+        - description: 请求token
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/SlaId'
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sla-api
+      operationId: delete_v1_slas__sla_id__delete
+      summary: 删除SLA信息
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: SLA的id
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: sla_id
+          required: true
+          type: string
+        - description: 请求token
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: SLA详细信息
+          schema:
+            $ref: '#/definitions/SlaQuery'
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sla-api
+      description: |-
+        查询SLA详细信息
+        接口：/v1/slas/{sla_id} 方法：Get
+        :param database_session: 数据库连接会话
+        :param token: 用户令牌
+        :param sla_id: 请求SLA的编号
+        :return: SLA详细信息
+      operationId: query_sla_by_id_v1_slas__sla_id__get
+      summary: 根据id查询单个SLA
+definitions:
+  BackupTimeUnit:
+    description: An enumeration.
+    enum:
+      - m
+      - h
+      - d
+      - w
+    title: BackupTimeUnit
+    type: string
+  BaseExtendParam:
+    properties:
+      qos_id:
+        description: 限速策略id
+        title: Qos Id
+        type: string
+    title: BaseExtendParam
+    type: object
+  BasePage_SlaQuery_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/SlaQuery'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[SlaQuery]'
+    type: object
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  Policy:
+    properties:
+      action:
+        $ref: '#/definitions/PolicyActionEnum'
+      ext_parameters:
+        allOf:
+          - $ref: '#/definitions/BaseExtendParam'
+        description: 扩展参数
+        title: Ext Parameters
+      name:
+        description: 策略名称
+        maxLength: 64
+        minLength: 1
+        pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        title: Name
+        type: string
+      retention:
+        allOf:
+          - $ref: '#/definitions/Retention'
+        description: 保留策略
+        title: Retention
+      schedule:
+        allOf:
+          - $ref: '#/definitions/Schedule'
+        description: 策略调度信息
+        title: Schedule
+      type:
+        $ref: '#/definitions/PolicyTypeEnum'
+      uuid:
+        description: 唯一编码
+        format: uuid
+        title: Uuid
+        type: string
+    required:
+      - name
+      - schedule
+      - type
+    title: Policy
+    type: object
+  PolicyActionEnum:
+    description: An enumeration.
+    enum:
+      - full
+      - log
+      - cumulative_increment
+      - difference_increment
+      - replication
+      - archiving
+    title: PolicyActionEnum
+    type: string
+  PolicyQuery:
+    properties:
+      action:
+        $ref: '#/definitions/PolicyActionEnum'
+      ext_parameters:
+        description: 扩展参数，不同类型应用各自扩展
+        format: json-string
+        title: Ext Parameters
+        type: string
+      name:
+        description: 策略名称
+        title: Name
+        type: string
+      retention:
+        allOf:
+          - $ref: '#/definitions/Retention'
+        description: 保留策略
+        title: Retention
+      schedule:
+        allOf:
+          - $ref: '#/definitions/ScheduleQuery'
+        description: 策略调度信息
+        title: Schedule
+      type:
+        $ref: '#/definitions/PolicyTypeEnum'
+      uuid:
+        description: 唯一编码
+        title: Uuid
+        type: string
+    required:
+      - name
+      - schedule
+      - type
+    title: PolicyQuery
+    type: object
+  PolicyTypeEnum:
+    description: An enumeration.
+    enum:
+      - backup
+      - archiving
+      - replication
+    title: PolicyTypeEnum
+    type: string
+  ResourceSubTypeEnum:
+    description: An enumeration.
+    enum:
+      - DBBackupAgent
+      - VMBackupAgent
+      - ABBackupClient
+      - DWSBackupAgent
+      - Fileset
+      - HDFSFileset
+      - DFSFileset
+      - Oracle
+      - OracleApp
+      - SQLServer
+      - DB2
+      - MySQL
+      - GaussDB
+      - SAP HANA
+      - Kingbase
+      - Sybase IQ
+      - Informix
+      - TimesTen
+      - GBase
+      - Dameng
+      - Cassandra
+      - OscarDB
+      - Exchange
+      - VMware vCenter Server
+      - VMware
+      - VMware ESX
+      - VMware ESXi
+      - Hyper-V
+      - HDFS
+      - ms.HostSystem
+      - FusionSphere
+      - vim.ClusterComputeResource
+      - vim.HostSystem
+      - vim.Folder
+      - vim.ResourcePool
+      - OpenStack
+      - HuaweiCloudStack
+      - vim.VirtualMachine
+      - ms.VirtualMachine
+      - Hadoop
+      - FusionInsight
+      - vim.VirtualApp
+      - vim.Datacenter
+      - Common
+      - Replica
+      - K8S-Common-dataset
+      - K8S-MySQL-dataset
+      - K8S-cluster
+      - K8S-namespace
+      - ImportCopy
+    title: ResourceSubTypeEnum
+    type: string
+  Retention:
+    properties:
+      duration_unit:
+        $ref: '#/definitions/RetentionTimeUnit'
+      retention_duration:
+        description: 保留周期
+        title: Retention Duration
+        type: integer
+      retention_type:
+        $ref: '#/definitions/RetentionTypeEnum'
+    required:
+      - retention_type
+    title: Retention
+    type: object
+  RetentionTimeUnit:
+    description: An enumeration.
+    enum:
+      - d
+      - w
+      - MO
+      - 'y'
+    title: RetentionTimeUnit
+    type: string
+  RetentionTypeEnum:
+    description: An enumeration.
+    enum:
+      - 1
+      - 2
+    title: RetentionTypeEnum
+    type: integer
+  Schedule:
+    properties:
+      days_of_month:
+        description: '每月的某些天，可多选，格式 1-20,21,23'
+        pattern: '^\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*$'
+        title: Days Of Month
+        type: string
+      days_of_week:
+        description: '每周的周几，可多选，格式 List[mon tue wed thu fri sat sun]'
+        items:
+          type: string
+        title: Days Of Week
+        type: array
+      days_of_year:
+        description: 每年的某天，格式 YYYY/MM/DD
+        format: date
+        title: Days Of Year
+        type: string
+      interval:
+        description: '调度间隔周期[分/小时/天/周/月]'
+        title: Interval
+        type: integer
+      interval_unit:
+        $ref: '#/definitions/BackupTimeUnit'
+      start_time:
+        description: '首次开始时间，格式 [YYYY/MM/DD HH:mm:ss]/[YYYY/MM/DD]'
+        title: Start Time
+      trigger:
+        $ref: '#/definitions/TriggerEnum'
+      trigger_action:
+        $ref: '#/definitions/TriggerActionEnum'
+      window_end:
+        description: '时间窗结束时间，格式 HH:mm:ss'
+        format: time
+        title: Window End
+        type: string
+      window_start:
+        description: '时间窗开始时间，格式[HH:mm:ss]'
+        format: time
+        title: Window Start
+        type: string
+    required:
+      - trigger
+    title: Schedule
+    type: object
+  ScheduleQuery:
+    properties:
+      days_of_month:
+        description: '每月的某些天，可多选，格式 1-20,21,23'
+        pattern: '^\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*$'
+        title: Days Of Month
+        type: string
+      days_of_week:
+        description: '每周的周几数据库1,2,3 返回前台格式 List[mon tue wed thu fri sat sun]'
+        title: Days Of Week
+        type: string
+      days_of_year:
+        description: 每年的某天，格式 YYYY/MM/DD
+        format: date
+        title: Days Of Year
+        type: string
+      interval:
+        description: '调度间隔周期[分/小时/天/周/月]'
+        title: Interval
+        type: integer
+      interval_unit:
+        $ref: '#/definitions/BackupTimeUnit'
+      start_time:
+        description: '首次开始时间，格式 [YYYY/MM/DD HH:mm:ss]/[YYYY/MM/DD]'
+        title: Start Time
+      trigger:
+        $ref: '#/definitions/TriggerEnum'
+      trigger_action:
+        $ref: '#/definitions/TriggerActionEnum'
+      window_end:
+        description: '时间窗结束时间，格式 HH:mm:ss'
+        format: time
+        title: Window End
+        type: string
+      window_start:
+        description: '时间窗开始时间，格式[HH:mm:ss]'
+        format: time
+        title: Window Start
+        type: string
+    required:
+      - trigger
+    title: ScheduleQuery
+    type: object
+  SlaBase:
+    properties:
+      application:
+        $ref: '#/definitions/ResourceSubTypeEnum'
+      created_time:
+        description: SLA创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      name:
+        description: SLA名称
+        maxLength: 64
+        minLength: 1
+        pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        title: Name
+        type: string
+      type:
+        $ref: '#/definitions/SlaType'
+    required:
+      - name
+      - type
+      - application
+    title: SlaBase
+    type: object
+  SlaCreate:
+    properties:
+      application:
+        $ref: '#/definitions/ResourceSubTypeEnum'
+      created_time:
+        description: SLA创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      name:
+        description: SLA名称
+        maxLength: 64
+        minLength: 1
+        pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        title: Name
+        type: string
+      policy_list:
+        description: SLA对应的策略集合
+        items:
+          $ref: '#/definitions/Policy'
+        maxItems: 16
+        minItems: 1
+        title: Policy List
+        type: array
+      type:
+        $ref: '#/definitions/SlaType'
+      user_id:
+        description: 创建SLA的用户
+        maxLength: 64
+        minLength: 1
+        title: User Id
+        type: string
+    required:
+      - name
+      - type
+      - application
+      - policy_list
+    title: SlaCreate
+    type: object
+  SlaId:
+    properties:
+      uuid:
+        description: SLA唯一编码
+        format: uuid
+        title: Uuid
+        type: string
+    required:
+      - uuid
+    title: SlaId
+    type: object
+  SlaQuery:
+    properties:
+      application:
+        $ref: '#/definitions/ResourceSubTypeEnum'
+      archival_count:
+        description: SLA关联的归档目标数量
+        title: Archival Count
+        type: integer
+      created_time:
+        description: SLA创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      is_global:
+        description: 是否是预置策略，true-预置策略  false-非预置策略
+        title: Is Global
+        type: boolean
+      name:
+        description: SLA名称
+        maxLength: 64
+        minLength: 1
+        pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        title: Name
+        type: string
+      policy_list:
+        description: SLA对应的策略集合
+        items:
+          $ref: '#/definitions/PolicyQuery'
+        title: Policy List
+        type: array
+      replication_count:
+        description: SLA关联的复制目标数量
+        title: Replication Count
+        type: integer
+      resource_count:
+        description: SLA关联资源的数量
+        title: Resource Count
+        type: integer
+      type:
+        $ref: '#/definitions/SlaType'
+      uuid:
+        description: 唯一编码
+        format: uuid
+        title: Uuid
+        type: string
+    required:
+      - name
+      - type
+      - application
+      - uuid
+      - is_global
+      - policy_list
+    title: SlaQuery
+    type: object
+  SlaType:
+    description: An enumeration.
+    enum:
+      - 1
+      - 2
+    title: SlaType
+    type: integer
+  SlaUpdate:
+    properties:
+      application:
+        $ref: '#/definitions/ResourceSubTypeEnum'
+      created_time:
+        description: SLA创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      name:
+        description: SLA名称
+        maxLength: 64
+        minLength: 1
+        pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        title: Name
+        type: string
+      policy_list:
+        description: SLA对应的策略集合
+        items:
+          $ref: '#/definitions/Policy'
+        maxItems: 16
+        minItems: 1
+        title: Policy List
+        type: array
+      type:
+        $ref: '#/definitions/SlaType'
+      user_id:
+        description: 创建SLA的用户
+        maxLength: 64
+        minLength: 1
+        title: User Id
+        type: string
+      uuid:
+        description: 唯一编码
+        format: uuid
+        title: Uuid
+        type: string
+    required:
+      - name
+      - type
+      - application
+      - policy_list
+      - uuid
+    title: SlaUpdate
+    type: object
+  TriggerActionEnum:
+    description: An enumeration.
+    enum:
+      - year
+      - month
+      - week
+    title: TriggerActionEnum
+    type: string
+  TriggerEnum:
+    description: An enumeration.
+    enum:
+      - 1
+      - 2
+      - 3
+      - 4
+    title: TriggerEnum
+    type: integer
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}
+
