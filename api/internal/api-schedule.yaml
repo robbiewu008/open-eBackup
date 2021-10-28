@@ -1,0 +1,186 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 统一调度接口
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: Scheduler API
+    description: Scheduler Controller
+paths:
+  /v1/schedules:
+    post:
+      tags:
+        - Scheduler API
+      summary: createSchedule
+      operationId: createScheduleUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: schedule
+          description: schedule
+          required: true
+          schema:
+            $ref: '#/definitions/Schedule'
+            originalRef: Schedule
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ScheduleResponse'
+            originalRef: ScheduleResponse
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    delete:
+      tags:
+        - Scheduler API
+      summary: batchDeleteSchedule
+      operationId: batchDeleteScheduleUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: deleteReq
+          description: deleteReq
+          required: true
+          schema:
+            $ref: '#/definitions/BatchOperationRequest'
+            originalRef: BatchOperationRequest
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/schedules/next-time/{schedule_id}':
+    get:
+      tags:
+        - Scheduler API
+      summary: getNextTime
+      operationId: getNextTimeUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: schedule_id
+          in: path
+          description: schedule_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/schedules/{schedule_id}':
+    delete:
+      tags:
+        - Scheduler API
+      summary: deleteSchedule
+      operationId: deleteScheduleUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: schedule_id
+          in: path
+          description: schedule_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  BatchOperationRequest:
+    type: object
+    properties:
+      scheduleIds:
+        type: array
+        items:
+          type: string
+    title: BatchOperationRequest
+  Schedule:
+    type: object
+    properties:
+      action:
+        type: string
+      context:
+        type: boolean
+      daily_end_time:
+        type: string
+      daily_start_time:
+        type: string
+      day_of_month:
+        type: string
+      day_of_week:
+        type: string
+      day_of_year:
+        type: string
+      end_date:
+        type: string
+      interval:
+        type: string
+      params:
+        type: object
+      replace_existing:
+        type: boolean
+      schedule_name:
+        type: string
+      schedule_type:
+        type: string
+      start_date:
+        type: string
+      task:
+        type: object
+    title: Schedule
+  ScheduleResponse:
+    type: object
+    properties:
+      schedule_id:
+        type: string
+    title: ScheduleResponse

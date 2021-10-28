@@ -1,0 +1,4301 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: AnyBackup插件接口
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: any-backup-access-point-controller
+    description: Any Backup Access Point Controller
+  - name: any-backup-cert-replace-internal-controller
+    description: Any Backup Cert Replace Internal Controller
+  - name: any-backup-cluster-open-controller
+    description: Any Backup Cluster Open Controller
+  - name: any-backup-initialize-controller
+    description: Any Backup Initialize Controller
+  - name: any-backup-license-controller
+    description: Any Backup License Controller
+  - name: any-backup-mount-path-status-controller
+    description: Any Backup Mount Path Status Controller
+  - name: hyper-v-controller
+    description: Hyper V Controller
+  - name: target-cerify-internal-rest-controller
+    description: Target Cerify Internal Rest Controller
+paths:
+  /v1/ab/anyBackupIp:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryAnyBackupIpAddr
+      operationId: queryAnyBackupIpAddrUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/ab/archive/volume/{nodeId}/{type}':
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryBackupArchive
+      operationId: queryBackupArchiveUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+        - name: nodeId
+          in: path
+          description: nodeId
+          required: true
+          type: string
+        - name: type
+          in: path
+          description: type
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«BackUpDataInfo»'
+            originalRef: AnyBackupPageInfo«BackUpDataInfo»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: addDataArchive
+      operationId: addDataArchiveUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: nodeId
+          in: path
+          description: nodeId
+          required: true
+          type: string
+        - in: body
+          name: standardBackUpRequest
+          description: standardBackUpRequest
+          required: true
+          schema:
+            $ref: '#/definitions/StandardBackUpRequest'
+            originalRef: StandardBackUpRequest
+        - name: type
+          in: path
+          description: type
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/ab/archive/volume/{nodeId}/{volumeType}':
+    delete:
+      tags:
+        - any-backup-access-point-controller
+      summary: delDataArchive
+      operationId: delDataArchiveUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: deleteArcReq
+          description: deleteArcReq
+          required: true
+          schema:
+            $ref: '#/definitions/DeleteArcReq'
+            originalRef: DeleteArcReq
+        - name: nodeId
+          in: path
+          description: nodeId
+          required: true
+          type: string
+        - name: volumeType
+          in: path
+          description: volumeType
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/ab/change/loglevel/{level}':
+    put:
+      tags:
+        - any-backup-access-point-controller
+      summary: changeLogLevel
+      operationId: changeLogLevelUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: level
+          in: path
+          description: level
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/ab/change/volume/status/{volName}':
+    put:
+      tags:
+        - any-backup-access-point-controller
+      summary: changeVolumeStatus
+      operationId: changeVolumeStatusUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: volName
+          in: path
+          description: volName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/ab/clusters/cloud_block/{blockId}':
+    put:
+      tags:
+        - any-backup-access-point-controller
+      summary: updateCloudBlocks
+      operationId: updateCloudBlocksUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: anyBackupBlock
+          description: anyBackupBlock
+          required: true
+          schema:
+            $ref: '#/definitions/AnyBackupBlock'
+            originalRef: AnyBackupBlock
+        - name: blockId
+          in: path
+          description: blockId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/clusters/cloud_blocks:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryCloudBlocks
+      operationId: queryCloudBlocksUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«CloudBlock»'
+            originalRef: AnyBackupPageInfo«CloudBlock»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/clusters/cloud_pools:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryStoragepools
+      operationId: queryStoragepoolsUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«StoragePool»'
+            originalRef: AnyBackupPageInfo«StoragePool»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/clusters/clustermgm/force_delete_cluster:
+    delete:
+      tags:
+        - any-backup-access-point-controller
+      summary: forceDeleteTargetCluster
+      operationId: forceDeleteTargetClusterUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/ForceDeleteTargetClusterRequest'
+            originalRef: ForceDeleteTargetClusterRequest
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/clusters/clustermgm/link_clusters:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryLinkedClusters
+      operationId: queryLinkedClustersUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+        - name: type
+          in: query
+          description: type
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«LinkCluster»'
+            originalRef: AnyBackupPageInfo«LinkCluster»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: createTargetCluster
+      operationId: createTargetClusterUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: ip
+          description: ip
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/ab/clusters/clustermgm/{clusterId}/delete_cluster':
+    delete:
+      tags:
+        - any-backup-access-point-controller
+      summary: deleteTargetCluster
+      operationId: deleteTargetClusterUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: clusterId
+          in: path
+          description: clusterId
+          required: true
+          type: string
+        - name: destVip
+          in: query
+          description: destVip
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/ab/clusters/node/{nodeId}/volumes/{volumeType}':
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryBackVolumes
+      operationId: queryBackVolumesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+        - name: nodeId
+          in: path
+          description: nodeId
+          required: true
+          type: string
+        - name: volumeType
+          in: path
+          description: volumeType
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«Volume»'
+            originalRef: AnyBackupPageInfo«Volume»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: createBackVolumes
+      operationId: createBackVolumesUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: nodeId
+          in: path
+          description: nodeId
+          required: true
+          type: string
+        - in: body
+          name: volumeCreate
+          description: volumeCreate
+          required: true
+          schema:
+            $ref: '#/definitions/VolumeCreate'
+            originalRef: VolumeCreate
+        - name: volumeType
+          in: path
+          description: volumeType
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/clusters/nodedetails:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryBackUpNodes
+      operationId: queryBackUpNodesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«BackUpNode»'
+            originalRef: AnyBackupPageInfo«BackUpNode»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/clusters/nodes:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryClusterNodeStatus
+      operationId: queryClusterNodeStatusUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«BackUpNodeInfo»'
+            originalRef: AnyBackupPageInfo«BackUpNodeInfo»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/commons/fingerprints:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryFingerprints
+      operationId: queryFingerprintsUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: appType
+          in: query
+          description: appType
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Fingerprint'
+              originalRef: Fingerprint
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/hosts:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryHosts
+      operationId: queryHostsUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          format: int32
+          x-example: 10
+        - name: startPage
+          in: query
+          description: 开始页
+          required: false
+          type: integer
+          format: int32
+          x-example: 0
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse«ProtectedEnvironment»'
+            originalRef: PageListResponse«ProtectedEnvironment»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    delete:
+      tags:
+        - any-backup-access-point-controller
+      summary: deleteHosts
+      operationId: deleteHostsUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: clientIds
+          description: clientIds
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/hosts/action/distribute:
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: distributeHosts
+      operationId: distributeHostsUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: clientIsBuildin
+          in: query
+          required: false
+          type: boolean
+        - name: ids
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: nodeIp
+          in: query
+          required: false
+          type: string
+        - name: requestId
+          in: query
+          required: false
+          type: string
+        - name: userNames
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: boolean
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/alwayson/get_transaction_logs_time:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryTransactionLogsTime
+      operationId: queryTransactionLogsTimeUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: backupId
+          in: query
+          description: backupId
+          required: true
+          type: string
+        - name: instanceGroupName
+          in: query
+          description: instanceGroupName
+          required: true
+          type: string
+        - name: timeStamp
+          in: query
+          description: timeStamp
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupGetTransactionLogsTimeResponse'
+            originalRef: AnyBackupGetTransactionLogsTimeResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/ab/internal/archive/task/{jobId}':
+    delete:
+      tags:
+        - any-backup-access-point-controller
+      summary: deleteArchiveTask
+      operationId: deleteArchiveTaskUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: jobId
+          in: path
+          description: jobId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/clusters/host-create:
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: createClusterHostApi
+      operationId: createClusterHostApiUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: clusterHostCreateInfo
+          description: clusterHostCreateInfo
+          required: true
+          schema:
+            $ref: '#/definitions/ClusterHostCreateInfo'
+            originalRef: ClusterHostCreateInfo
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ClusterHostCreateResult'
+            originalRef: ClusterHostCreateResult
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/clusters/host-delete:
+    delete:
+      tags:
+        - any-backup-access-point-controller
+      summary: deleteClusterHostApi
+      operationId: deleteClusterHostApiUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: clusterHostDeleteInfo
+          description: clusterHostDeleteInfo
+          required: true
+          schema:
+            $ref: '#/definitions/ClusterHostDeleteInfo'
+            originalRef: ClusterHostDeleteInfo
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ClusterHostDeleteResult'
+            originalRef: ClusterHostDeleteResult
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/commons/groups:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryGroups
+      operationId: queryGroupsUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«AnyBackupGroupInfo»'
+            originalRef: AnyBackupPageInfo«AnyBackupGroupInfo»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/databaseusers:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: getDatabaseUsers
+      operationId: getDatabaseUsersUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: clientId
+          in: query
+          description: clientId
+          required: true
+          type: string
+        - name: jobType
+          in: query
+          description: jobType
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupDBUser«AnyBackupDatabaseUsers»'
+            originalRef: AnyBackupDBUser«AnyBackupDatabaseUsers»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/datasources:
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: getDatasources
+      operationId: getDatasourcesUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: filter
+          description: filter
+          required: true
+          schema:
+            $ref: '#/definitions/AnyBackupDataFilter'
+            originalRef: AnyBackupDataFilter
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«AnyBackupDatasources»'
+            originalRef: AnyBackupPageInfo«AnyBackupDatasources»
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/db-instances:
+    put:
+      tags:
+        - any-backup-access-point-controller
+      summary: verifyDbInstance
+      operationId: verifyDbInstanceUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: dbInstanceInfo
+          description: dbInstanceInfo
+          required: true
+          schema:
+            $ref: '#/definitions/DbInstanceVerifyInfo'
+            originalRef: DbInstanceVerifyInfo
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DbInstanceVerifyResult'
+            originalRef: DbInstanceVerifyResult
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/ab/internal/hosts/{clientId}':
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryClient
+      operationId: queryClientUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: clientId
+          in: path
+          description: clientId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupChildClients'
+            originalRef: AnyBackupChildClients
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/initialize/backStorage:
+    put:
+      tags:
+        - any-backup-initialize-controller
+      summary: initializeBackStorage
+      operationId: initializeBackStorageUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: initializeParams
+          description: initializeParams
+          required: true
+          schema:
+            $ref: '#/definitions/InitializeParam'
+            originalRef: InitializeParam
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/InitializeResult'
+            originalRef: InitializeResult
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/initialize/volumeInfos:
+    get:
+      tags:
+        - any-backup-initialize-controller
+      summary: queryVolumeInfo
+      operationId: queryVolumeInfoUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/StandardBackupVolInitInfo'
+              originalRef: StandardBackupVolInitInfo
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/kms/update/config:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryKeyUpdateConfig
+      operationId: queryKeyUpdateConfigUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+            format: int32
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    put:
+      tags:
+        - any-backup-access-point-controller
+      summary: modifyKeyUpdateConfig
+      operationId: modifyKeyUpdateConfigUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: updateCycle
+          description: updateCycle
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: boolean
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/kms/update/job_info:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryJobInfo
+      operationId: queryJobInfoUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: query
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: boolean
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/kms/update/manual:
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: manualUpdateKey
+      operationId: manualUpdateKeyUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/mount:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: mountNas
+      operationId: mountNasUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: domainName
+          in: query
+          required: false
+          type: string
+        - name: mountPath
+          in: query
+          required: false
+          type: string
+        - name: nodeId
+          in: query
+          required: false
+          type: string
+        - name: port
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: sourceIp
+          in: query
+          required: false
+          type: string
+        - name: sourcePath
+          in: query
+          required: false
+          type: string
+        - name: type
+          in: query
+          required: false
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/MountNasInfoResponse'
+            originalRef: MountNasInfoResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/mountpath/automount:
+    post:
+      tags:
+        - any-backup-mount-path-status-controller
+      summary: autoMountPath
+      operationId: autoMountPathUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: initializeParam
+          description: initializeParam
+          required: true
+          schema:
+            $ref: '#/definitions/InitializeParam'
+            originalRef: InitializeParam
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/mountpath/status:
+    get:
+      tags:
+        - any-backup-mount-path-status-controller
+      summary: queryMountPathStatus
+      operationId: queryMountPathStatusUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/ab/internal/platform/{platformId}':
+    put:
+      tags:
+        - any-backup-access-point-controller
+      summary: modifyPlatform
+      operationId: modifyPlatformUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: platformCreateRequest
+          description: platformCreateRequest
+          required: true
+          schema:
+            $ref: '#/definitions/PlatformCreateRequest'
+            originalRef: PlatformCreateRequest
+        - name: platformId
+          in: path
+          description: platformId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PlatformUpdateResponse'
+            originalRef: PlatformUpdateResponse
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    delete:
+      tags:
+        - any-backup-access-point-controller
+      summary: deletePlatform
+      operationId: deletePlatformUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: platformId
+          in: path
+          description: platformId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/platforms:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryPlatform
+      operationId: queryPlatformUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: containsBuildin
+          in: query
+          description: containsBuildin
+          required: true
+          type: integer
+          format: int32
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«PlatformGetResponse»'
+            originalRef: AnyBackupPageInfo«PlatformGetResponse»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: createPlatform
+      operationId: createPlatformUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: platformCreateRequest
+          description: platformCreateRequest
+          required: true
+          schema:
+            $ref: '#/definitions/PlatformCreateRequest'
+            originalRef: PlatformCreateRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PlatformCreateResponse'
+            originalRef: PlatformCreateResponse
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/internal/virtual-host:
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: createVirtualHost
+      operationId: createVirtualHostUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/VirtualHostCreateRequest'
+            originalRef: VirtualHostCreateRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/VirtualHostCreateResult'
+            originalRef: VirtualHostCreateResult
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/ab/internal/virtual-host/{clientId}':
+    put:
+      tags:
+        - any-backup-access-point-controller
+      summary: modifyVirtualHost
+      operationId: modifyVirtualHostUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: clientId
+          in: path
+          description: clientId
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/VirtualHostCreateRequest'
+            originalRef: VirtualHostCreateRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/kafka:
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: createBackVolumes
+      operationId: createBackVolumesUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: msg
+          description: msg
+          required: true
+          schema:
+            type: string
+        - in: body
+          name: topic
+          description: topic
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/local-storage:
+    put:
+      tags:
+        - any-backup-access-point-controller
+      summary: updateLocalStorage
+      operationId: updateLocalStorageUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: anyBackupBlock
+          description: anyBackupBlock
+          required: true
+          schema:
+            $ref: '#/definitions/AnyBackupBlock'
+            originalRef: AnyBackupBlock
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/platform/action/distribute:
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: distributePlatforms
+      operationId: distributePlatformsUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: idSet
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: nodeIp
+          in: query
+          required: false
+          type: string
+        - name: requestId
+          in: query
+          required: false
+          type: string
+        - name: userName
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: boolean
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/platform/action/recover:
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: recoverPlatform
+      operationId: recoverPlatformUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: idSet
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: nodeIp
+          in: query
+          required: false
+          type: string
+        - name: requestId
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: boolean
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/storageresmgm/application/volume/exist:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: isVolNameExist
+      operationId: isVolNameExistUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: name
+          in: query
+          description: name
+          required: true
+          type: string
+        - name: nodeId
+          in: query
+          description: nodeId
+          required: true
+          type: string
+        - name: storageType
+          in: query
+          description: storageType
+          required: true
+          type: integer
+          format: int32
+        - name: type
+          in: query
+          description: type
+          required: true
+          type: integer
+          format: int32
+        - name: volumeType
+          in: query
+          description: volumeType
+          required: false
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupVolExistInfo'
+            originalRef: AnyBackupVolExistInfo
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/storageresmgm/application/volumes:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryBackupApplication
+      operationId: queryBackupApplicationUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+        - name: nodeId
+          in: query
+          description: nodeId
+          required: true
+          type: string
+        - name: type
+          in: query
+          description: type
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«BackUpDataInfo»'
+            originalRef: AnyBackupPageInfo«BackUpDataInfo»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: addDataApplication
+      operationId: addDataApplicationUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: standardBackUpRequest
+          description: standardBackUpRequest
+          required: true
+          schema:
+            $ref: '#/definitions/StandardBackUpRequest'
+            originalRef: StandardBackUpRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    delete:
+      tags:
+        - any-backup-access-point-controller
+      summary: delDataApplication
+      operationId: delDataApplicationUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: query
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/storageresmgm/datatransferips:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryClusterNodeIp
+      operationId: queryClusterNodeIpUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: nodeId
+          in: query
+          description: nodeId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«NodeDataPlane»'
+            originalRef: AnyBackupPageInfo«NodeDataPlane»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: addDataPlaneIp
+      operationId: addDataPlaneIpUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/DataTransferipRequest'
+            originalRef: DataTransferipRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    put:
+      tags:
+        - any-backup-access-point-controller
+      summary: modifyDataPlaneIp
+      operationId: modifyDataPlaneIpUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/DataTransferipRequest'
+            originalRef: DataTransferipRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    delete:
+      tags:
+        - any-backup-access-point-controller
+      summary: deleteDataPlaneIp
+      operationId: deleteDataPlaneIpUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: query
+          description: id
+          required: true
+          type: string
+        - name: ip
+          in: query
+          description: ip
+          required: true
+          type: string
+        - name: nodeId
+          in: query
+          description: nodeId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/storageresmgm/migration/check:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryNodeRelocationStatus
+      operationId: queryNodeRelocationStatusUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: nodeId
+          in: query
+          description: nodeId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/VolumeRelocationRes'
+            originalRef: VolumeRelocationRes
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/storageresmgm/migration/migrate:
+    post:
+      tags:
+        - any-backup-access-point-controller
+      summary: relocationNode
+      operationId: relocationNodeUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: volumeRelocationReq
+          description: volumeRelocationReq
+          required: true
+          schema:
+            $ref: '#/definitions/VolumeRelocationReq'
+            originalRef: VolumeRelocationReq
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/VolumeRelocationRes'
+            originalRef: VolumeRelocationRes
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/ab/storageresmgm/storage/path:
+    get:
+      tags:
+        - any-backup-access-point-controller
+      summary: queryBackupDataPath
+      operationId: queryBackupDataPathUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+        - name: nodeId
+          in: query
+          description: nodeId
+          required: true
+          type: string
+        - name: path
+          in: query
+          description: path
+          required: false
+          type: string
+        - name: type
+          in: query
+          description: type
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«BackUpPathInfo»'
+            originalRef: AnyBackupPageInfo«BackUpPathInfo»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/ab/cert/copy/xor:
+    put:
+      tags:
+        - any-backup-cert-replace-internal-controller
+      summary: copyXorFiles
+      operationId: copyXorFilesUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/ab/cert/replace:
+    put:
+      tags:
+        - any-backup-cert-replace-internal-controller
+      summary: replaceCertificates
+      operationId: replaceCertificatesUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: certReplaceRequest
+          description: certReplaceRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CertReplaceRequest'
+            originalRef: CertReplaceRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CertReplaceResponse'
+            originalRef: CertReplaceResponse
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/ab/hyper-v/networks:
+    get:
+      tags:
+        - hyper-v-controller
+      summary: getHyperVNetworks
+      operationId: getHyperVNetworksUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: clientId
+          in: query
+          description: clientId
+          required: true
+          type: string
+        - name: vplatformId
+          in: query
+          description: vplatformId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/HyperVNetworkQueryResponse'
+            originalRef: HyperVNetworkQueryResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/ab/link-clusters:
+    get:
+      tags:
+        - target-cerify-internal-rest-controller
+      summary: queryLinkClusters
+      operationId: queryLinkClustersUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: type
+          in: query
+          description: type
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/LinkCluster'
+              originalRef: LinkCluster
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/internal/ab/link-clusters/{clusterId}':
+    delete:
+      tags:
+        - target-cerify-internal-rest-controller
+      summary: deleteLinkedTargetCluster
+      operationId: deleteLinkedTargetClusterUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: clusterId
+          in: path
+          description: clusterId
+          required: true
+          type: string
+        - name: destVip
+          in: query
+          description: destVip
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/ab/link/certify:
+    put:
+      tags:
+        - target-cerify-internal-rest-controller
+      summary: certifyLink
+      operationId: certifyLinkUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/ClusterCertifyRequest'
+            originalRef: ClusterCertifyRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/ab/requestion/certify:
+    put:
+      tags:
+        - target-cerify-internal-rest-controller
+      summary: certifyRequestion
+      operationId: certifyRequestionUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/JobRequestionCertifyRequest'
+            originalRef: JobRequestionCertifyRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/anybackup/license/active:
+    post:
+      tags:
+        - any-backup-license-controller
+      summary: activeLicense
+      operationId: activeLicenseUsingPOST
+      consumes:
+        - multipart/form-data
+      produces:
+        - '*/*'
+      parameters:
+        - name: file
+          in: formData
+          description: file
+          required: true
+          type: file
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/anybackup/license/capacity:
+    get:
+      tags:
+        - any-backup-license-controller
+      summary: queryCapacityInfo
+      operationId: queryCapacityInfoUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/LicenseCapacityInfo'
+            originalRef: LicenseCapacityInfo
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/anybackup/license/delete:
+    delete:
+      tags:
+        - any-backup-license-controller
+      summary: deleteLicense
+      operationId: deleteLicenseUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: query
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/anybackup/license/export:
+    get:
+      tags:
+        - any-backup-license-controller
+      summary: export
+      operationId: exportUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/MachineCodeAndLicenseCode'
+            originalRef: MachineCodeAndLicenseCode
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/anybackup/license/import:
+    post:
+      tags:
+        - any-backup-license-controller
+      summary: importLicense
+      operationId: importLicenseUsingPOST
+      consumes:
+        - multipart/form-data
+      produces:
+        - '*/*'
+      parameters:
+        - name: file
+          in: formData
+          description: file
+          required: true
+          type: file
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/anybackup/license/import/license_code:
+    post:
+      tags:
+        - any-backup-license-controller
+      summary: importLicenseCode
+      operationId: importLicenseCodeUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: licenseCode
+          in: query
+          description: licenseCode
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/anybackup/license/import/result:
+    post:
+      tags:
+        - any-backup-license-controller
+      summary: queryImportLicenseResult
+      operationId: queryImportLicenseResultUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: requestId
+          in: query
+          description: requestId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/anybackup/license/list:
+    get:
+      tags:
+        - any-backup-license-controller
+      summary: queryAllLicense
+      operationId: queryAllLicenseUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupAuthLicenseResponse'
+            originalRef: AnyBackupAuthLicenseResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/anybackup/license/machine_code:
+    get:
+      tags:
+        - any-backup-license-controller
+      summary: queryMachineCode
+      operationId: queryMachineCodeUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/replication/clusters/clustermgm/force_delete_cluster:
+    delete:
+      tags:
+        - any-backup-cluster-open-controller
+      summary: forceDeleteTargetCluster
+      operationId: forceDeleteTargetClusterUsingDELETE_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/ForceDeleteTargetClusterRequest'
+            originalRef: ForceDeleteTargetClusterRequest
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/replication/clusters/clustermgm/link_clusters:
+    get:
+      tags:
+        - any-backup-cluster-open-controller
+      summary: queryLinkedClusters
+      operationId: queryLinkedClustersUsingGET_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+        - name: type
+          in: query
+          description: type
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«LinkCluster»'
+            originalRef: AnyBackupPageInfo«LinkCluster»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  AnyBackupAuthLicenseInfo:
+    type: object
+    properties:
+      activeCode:
+        type: string
+      activeFlag:
+        type: boolean
+      activeTime:
+        type: string
+      bindType:
+        type: string
+      bondCount:
+        type: integer
+        format: int32
+      bondDevice:
+        type: string
+      bondFlag:
+        type: boolean
+      canBind:
+        type: boolean
+      canUnBind:
+        type: boolean
+      deviceId:
+        type: integer
+        format: int32
+      deviceType:
+        type: integer
+        format: int32
+      expireTime:
+        type: integer
+        format: int64
+      expired:
+        type: boolean
+      id:
+        type: string
+      licenseCapacity:
+        type: integer
+        format: int64
+      licenseCode:
+        type: string
+      licenseCount:
+        type: integer
+        format: int32
+      licenseDay:
+        type: integer
+        format: int32
+      licenseModule:
+        type: string
+      licenseStatus:
+        type: integer
+        format: int32
+      licenseType:
+        type: integer
+        format: int32
+      multiBond:
+        type: boolean
+      usedCapcity:
+        type: integer
+        format: int64
+    title: AnyBackupAuthLicenseInfo
+  AnyBackupAuthLicenseResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/AnyBackupAuthLicenseInfo'
+          originalRef: AnyBackupAuthLicenseInfo
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupAuthLicenseResponse
+  AnyBackupBlock:
+    type: object
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    title: AnyBackupBlock
+  AnyBackupChildClients:
+    type: object
+    properties:
+      assignable:
+        type: boolean
+      authUsers:
+        type: array
+        items:
+          type: string
+      clientArch:
+        type: integer
+        format: int32
+      clientBinds:
+        type: array
+        items:
+          type: string
+      clientCPUNum:
+        type: integer
+        format: int32
+      clientGroupId:
+        type: string
+      clientId:
+        type: string
+      clientIp:
+        type: string
+      clientIsBuildin:
+        type: boolean
+      clientMac:
+        type: string
+      clientName:
+        type: string
+      clientOSKind:
+        type: string
+      clientOSName:
+        type: string
+      clientOSType:
+        type: string
+      clientStatus:
+        type: integer
+        format: int32
+      clientType:
+        type: integer
+        format: int32
+      clientVersion:
+        type: string
+      clusterPort:
+        type: string
+      customer:
+        type: string
+      deleted:
+        type: integer
+        format: int32
+      isBuiltin:
+        type: boolean
+      isEmail:
+        type: boolean
+      platformIp:
+        type: string
+      port:
+        type: integer
+        format: int32
+      username:
+        type: string
+    title: AnyBackupChildClients
+  AnyBackupClientBinds:
+    type: object
+    properties:
+      authUsers:
+        type: array
+        items:
+          type: string
+      clientArch:
+        type: integer
+        format: int32
+      clientBinds:
+        type: array
+        items:
+          type: string
+      clientCPUNum:
+        type: integer
+        format: int32
+      clientGroupId:
+        type: string
+      clientId:
+        type: string
+      clientIp:
+        type: string
+      clientIsBuildin:
+        type: string
+      clientMac:
+        type: string
+      clientName:
+        type: string
+      clientOSKind:
+        type: string
+      clientOSName:
+        type: string
+      clientOSType:
+        type: string
+      clientStatus:
+        type: integer
+        format: int32
+      clientType:
+        type: integer
+        format: int32
+      clientVersion:
+        type: string
+      clusterPort:
+        type: string
+      customer:
+        type: string
+      deleted:
+        type: integer
+        format: int32
+      isBuiltin:
+        type: string
+      isEmail:
+        type: string
+      platformIp:
+        type: object
+      port:
+        type: integer
+        format: int32
+      username:
+        type: string
+    title: AnyBackupClientBinds
+  AnyBackupDBUser«AnyBackupDatabaseUsers»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/AnyBackupDatabaseUsers'
+          originalRef: AnyBackupDatabaseUsers
+    title: AnyBackupDBUser«AnyBackupDatabaseUsers»
+  AnyBackupDataFilter:
+    type: object
+    properties:
+      clientId:
+        type: string
+      count:
+        type: integer
+        format: int32
+      customer:
+        type: string
+      fullPath:
+        type: string
+      index:
+        type: integer
+        format: int32
+      jobType:
+        type: string
+      onClientMgm:
+        type: boolean
+      osUserName:
+        type: string
+      partialSign:
+        type: integer
+        format: int32
+      svcType:
+        type: integer
+        format: int32
+      type:
+        type: integer
+        format: int32
+      uuid:
+        type: string
+      vplatformId:
+        type: string
+    title: AnyBackupDataFilter
+  AnyBackupDatabaseUsers:
+    type: object
+    properties:
+      user:
+        type: string
+    title: AnyBackupDatabaseUsers
+  AnyBackupDatasources:
+    type: object
+    properties:
+      authType:
+        type: string
+      checkable:
+        type: boolean
+      checked:
+        type: boolean
+      code:
+        type: string
+      customer:
+        type: string
+      dispPath:
+        type: string
+      expandedFlag:
+        type: boolean
+      fullPath:
+        type: string
+      isAuthorized:
+        type: string
+      nodeType:
+        type: integer
+        format: int32
+      userName:
+        type: string
+      uuid:
+        type: string
+    title: AnyBackupDatasources
+  AnyBackupGetTransactionLogsTimeResponse:
+    type: object
+    properties:
+      timestamp:
+        $ref: '#/definitions/GetTransactionLogsTimeTimeStamp'
+        originalRef: GetTransactionLogsTimeTimeStamp
+    title: AnyBackupGetTransactionLogsTimeResponse
+  AnyBackupGroupInfo:
+    type: object
+    properties:
+      groupAuthUser:
+        type: string
+      groupId:
+        type: string
+      groupName:
+        type: string
+      groupType:
+        type: string
+    title: AnyBackupGroupInfo
+  AnyBackupPageInfo«AnyBackupDatasources»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/AnyBackupDatasources'
+          originalRef: AnyBackupDatasources
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«AnyBackupDatasources»
+  AnyBackupPageInfo«AnyBackupGroupInfo»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/AnyBackupGroupInfo'
+          originalRef: AnyBackupGroupInfo
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«AnyBackupGroupInfo»
+  AnyBackupPageInfo«BackUpDataInfo»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/BackUpDataInfo'
+          originalRef: BackUpDataInfo
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«BackUpDataInfo»
+  AnyBackupPageInfo«BackUpNodeInfo»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/BackUpNodeInfo'
+          originalRef: BackUpNodeInfo
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«BackUpNodeInfo»
+  AnyBackupPageInfo«BackUpNode»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/BackUpNode'
+          originalRef: BackUpNode
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«BackUpNode»
+  AnyBackupPageInfo«BackUpPathInfo»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/BackUpPathInfo'
+          originalRef: BackUpPathInfo
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«BackUpPathInfo»
+  AnyBackupPageInfo«CloudBlock»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/CloudBlock'
+          originalRef: CloudBlock
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«CloudBlock»
+  AnyBackupPageInfo«LinkCluster»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/LinkCluster'
+          originalRef: LinkCluster
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«LinkCluster»
+  AnyBackupPageInfo«NodeDataPlane»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/NodeDataPlane'
+          originalRef: NodeDataPlane
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«NodeDataPlane»
+  AnyBackupPageInfo«PlatformGetResponse»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/PlatformGetResponse'
+          originalRef: PlatformGetResponse
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«PlatformGetResponse»
+  AnyBackupPageInfo«StoragePool»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/StoragePool'
+          originalRef: StoragePool
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«StoragePool»
+  AnyBackupPageInfo«Volume»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Volume'
+          originalRef: Volume
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«Volume»
+  AnyBackupVolExistInfo:
+    type: object
+    properties:
+      isExisted:
+        type: boolean
+    title: AnyBackupVolExistInfo
+  BackUpDataInfo:
+    type: object
+    properties:
+      desc:
+        type: string
+      dispatch:
+        type: integer
+        format: int32
+      freeSize:
+        type: integer
+        format: int64
+      id:
+        type: string
+      mountPath:
+        type: string
+      name:
+        type: string
+      poolId:
+        type: string
+      poolName:
+        type: string
+      raidName:
+        type: string
+      status:
+        type: string
+      storageType:
+        type: integer
+        format: int32
+      totalSize:
+        type: integer
+        format: int64
+      type:
+        type: integer
+        format: int32
+      usedSize:
+        type: integer
+        format: int64
+      volumeName:
+        type: string
+      volumePath:
+        type: string
+      volumeType:
+        type: integer
+        format: int32
+    title: BackUpDataInfo
+  BackUpNode:
+    type: object
+    properties:
+      nodeId:
+        type: string
+      nodeIp:
+        type: string
+      nodeName:
+        type: string
+      nodeRole:
+        type: integer
+        format: int32
+      nodeStatus:
+        type: integer
+        format: int32
+    title: BackUpNode
+  BackUpNodeInfo:
+    type: object
+    properties:
+      description:
+        type: string
+      errorMsg:
+        type: string
+      hostName:
+        type: string
+      id:
+        type: string
+      machineCode:
+        type: string
+      nodeIp:
+        type: string
+      nodeName:
+        type: string
+      os:
+        type: string
+      status:
+        type: integer
+        format: int32
+      version:
+        type: string
+    title: BackUpNodeInfo
+  BackUpPathInfo:
+    type: object
+    properties:
+      freeSize:
+        type: integer
+        format: int64
+      name:
+        type: string
+      path:
+        type: string
+    title: BackUpPathInfo
+  CertReplaceRequest:
+    type: object
+    properties:
+      client_pass:
+        type: string
+      is_rollback:
+        type: boolean
+      server_pass:
+        type: string
+      src_path:
+        type: string
+    title: CertReplaceRequest
+  CertReplaceResponse:
+    type: object
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
+    title: CertReplaceResponse
+  CloudBlock:
+    type: object
+    properties:
+      id:
+        type: string
+      ip:
+        type: string
+      name:
+        type: string
+    title: CloudBlock
+  ClusterCertifyRequest:
+    type: object
+    properties:
+      cretify:
+        type: integer
+        format: int32
+        description: 验证类型
+        minimum: 0.0
+        maximum: 5.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      ip:
+        type: string
+        description: 验证IP
+        pattern: >-
+          ([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}|^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){6,6}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,1}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,4}):((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|:((:[0-9a-fA-F]{1,4}){1,5}):((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|:((:[0-9a-fA-F]{1,4}){1,7}|:)|[Ff][Ee]08:(:[0-9a-fA-F]{1,4}){2,2}%[0-9a-zA-Z]{1,}|(0{1,4}:){6,6}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,4}:(0{1,4}:)((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,3}:(0{1,4}:){1,2}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,2}:(0{1,4}:){1,3}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:):(0{1,4}:){1,4}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|::(0{1,4}:){1,5}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){5,5}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,4}:[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,3}:(0{1,4}:)[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,2}:(0{1,4}:){1,2}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:):(0{1,4}:){1,3}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|::(0{1,4}:){1,4}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|::([Ff]{4}:){0,1}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d))$
+    title: ClusterCertifyRequest
+  ClusterHostCreateInfo:
+    type: object
+    properties:
+      childClients:
+        type: array
+        items:
+          $ref: '#/definitions/AnyBackupChildClients'
+          originalRef: AnyBackupChildClients
+      clientName:
+        type: string
+      clientType:
+        type: integer
+        format: int32
+      engineType:
+        type: integer
+        format: int32
+      groupId:
+        type: string
+    title: ClusterHostCreateInfo
+  ClusterHostCreateResult:
+    type: object
+    properties:
+      authUsers:
+        type: array
+        items:
+          type: string
+      builtin:
+        type: boolean
+      clientArch:
+        type: integer
+        format: int32
+      clientBinds:
+        type: array
+        items:
+          $ref: '#/definitions/AnyBackupClientBinds'
+          originalRef: AnyBackupClientBinds
+      clientCPUNum:
+        type: integer
+        format: int32
+      clientGroupId:
+        type: string
+      clientId:
+        type: string
+      clientIp:
+        type: string
+      clientIsBuildin:
+        type: boolean
+      clientMac:
+        type: string
+      clientName:
+        type: string
+      clientOSKind:
+        type: integer
+        format: int32
+      clientOSName:
+        type: string
+      clientOSType:
+        type: string
+      clientStatus:
+        type: integer
+        format: int32
+      clientType:
+        type: integer
+        format: int32
+      clientVersion:
+        type: string
+      clusterPort:
+        type: string
+      customer:
+        type: string
+      deleted:
+        type: integer
+        format: int32
+      email:
+        type: boolean
+      platformIp:
+        type: string
+      port:
+        type: integer
+        format: int32
+      username:
+        type: string
+    title: ClusterHostCreateResult
+  ClusterHostDeleteInfo:
+    type: object
+    properties:
+      clientId:
+        type: string
+      clientType:
+        type: integer
+        format: int32
+    title: ClusterHostDeleteInfo
+  ClusterHostDeleteResult:
+    type: object
+    properties:
+      name:
+        type: string
+    title: ClusterHostDeleteResult
+  DataTransferipRequest:
+    type: object
+    properties:
+      ipId:
+        type: string
+      ipList:
+        type: array
+        items:
+          type: string
+      newIp:
+        type: string
+      nodeId:
+        type: string
+    title: DataTransferipRequest
+  DbInstanceVerifyInfo:
+    type: object
+    properties:
+      clientId:
+        type: string
+      customer:
+        type: string
+      hostName:
+        type: string
+      instanceName:
+        type: string
+      isManual:
+        type: boolean
+      isTest:
+        type: boolean
+      jobType:
+        type: string
+      mysqlSock:
+        type: string
+      osUserName:
+        type: string
+      password:
+        type: string
+      port:
+        type: integer
+        format: int32
+      username:
+        type: string
+    title: DbInstanceVerifyInfo
+  DbInstanceVerifyResult:
+    type: object
+    properties:
+      authType:
+        type: string
+      customer:
+        type: string
+      instanceName:
+        type: string
+      isTest:
+        type: string
+      isVerified:
+        type: string
+      path:
+        type: string
+      port:
+        type: string
+      userName:
+        type: string
+    title: DbInstanceVerifyResult
+  DeleteArcReq:
+    type: object
+    properties:
+      volumeName:
+        type: string
+    title: DeleteArcReq
+  File:
+    type: object
+    properties:
+      absolute:
+        type: boolean
+      absoluteFile:
+        $ref: '#/definitions/File'
+        originalRef: File
+      absolutePath:
+        type: string
+      canonicalFile:
+        $ref: '#/definitions/File'
+        originalRef: File
+      canonicalPath:
+        type: string
+      directory:
+        type: boolean
+      executable:
+        type: boolean
+      file:
+        type: boolean
+      freeSpace:
+        type: integer
+        format: int64
+      hidden:
+        type: boolean
+      lastModified:
+        type: integer
+        format: int64
+      name:
+        type: string
+      parent:
+        type: string
+      parentFile:
+        $ref: '#/definitions/File'
+        originalRef: File
+      path:
+        type: string
+      readable:
+        type: boolean
+      totalSpace:
+        type: integer
+        format: int64
+      usableSpace:
+        type: integer
+        format: int64
+      writable:
+        type: boolean
+    title: File
+  Fingerprint:
+    type: object
+    properties:
+      flGuid:
+        type: string
+      flName:
+        type: string
+      fpAppType:
+        type: integer
+        format: int32
+      fpName:
+        type: string
+      fpStatus:
+        type: integer
+        format: int32
+      nodeNum:
+        type: integer
+        format: int32
+    title: Fingerprint
+  ForceDeleteTargetClusterRequest:
+    type: object
+    properties:
+      Vip:
+        type: string
+      link_type:
+        type: string
+    title: ForceDeleteTargetClusterRequest
+  GetTransactionLogsTimeTimeStamp:
+    type: object
+    properties:
+      fullTime:
+        type: string
+      logTime:
+        type: string
+    title: GetTransactionLogsTimeTimeStamp
+  HyperVNetworkQueryResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          type: string
+      finished:
+        type: boolean
+    title: HyperVNetworkQueryResponse
+  InitializeParam:
+    type: object
+    properties:
+      mountPathOneNode:
+        type: boolean
+      nodeNameToNodeParmInfos:
+        type: object
+        additionalProperties:
+          $ref: '#/definitions/InitializeParamNodeInfo'
+          originalRef: InitializeParamNodeInfo
+    title: InitializeParam
+  InitializeParamNodeInfo:
+    type: object
+    properties:
+      abAddressToNasMap:
+        type: object
+        additionalProperties:
+          type: string
+      allSet:
+        type: boolean
+      nasPathForCloudIdxVolume:
+        type: string
+      nasPathForMetaDataVolume:
+        type: string
+      nasPathForSelfBackVolume:
+        type: string
+      nasPathForStandardVolume:
+        type: string
+      nasSourcePath:
+        type: string
+      podName:
+        type: string
+    title: InitializeParamNodeInfo
+  InitializeResult:
+    type: object
+    properties:
+      actionResults:
+        type: array
+        items:
+          $ref: '#/definitions/InitializeResultDesc'
+          originalRef: InitializeResultDesc
+      ok:
+        type: boolean
+    title: InitializeResult
+  InitializeResultDesc:
+    type: object
+    properties:
+      code:
+        type: string
+        enum:
+          - '0'
+          - '-1'
+          - '10000'
+          - '10001'
+          - '10002'
+          - '10003'
+          - '10004'
+          - '10005'
+          - '10006'
+      desc:
+        type: string
+    title: InitializeResultDesc
+  InputStream:
+    type: object
+    title: InputStream
+  JobRequestionCertifyRequest:
+    type: object
+    properties:
+      certify:
+        type: boolean
+        description: 是否进行校验
+      jobId:
+        type: string
+        description: 任务ID
+    title: JobRequestionCertifyRequest
+  LicenseCapacityInfo:
+    type: object
+    properties:
+      remainCapcity:
+        type: integer
+        format: int64
+      totalCapcity:
+        type: integer
+        format: int64
+      usedCapcity:
+        type: integer
+        format: int64
+    title: LicenseCapacityInfo
+  LinkCluster:
+    type: object
+    properties:
+      clusterId:
+        type: string
+      customer:
+        type: string
+      id:
+        type: string
+      state:
+        type: string
+      type:
+        type: string
+      vip:
+        type: string
+    title: LinkCluster
+  MachineCodeAndLicenseCode:
+    type: object
+    properties:
+      license:
+        type: array
+        description: 未激活授权码
+        items:
+          type: string
+      machineCode:
+        type: string
+        description: 机器码
+    title: MachineCodeAndLicenseCode
+  MountNasInfoResponse:
+    type: object
+    properties:
+      error:
+        type: string
+      responseData:
+        $ref: '#/definitions/MountNasInfoResponseData'
+        originalRef: MountNasInfoResponseData
+      status:
+        type: string
+    title: MountNasInfoResponse
+  MountNasInfoResponseData:
+    type: object
+    properties:
+      mountPath:
+        type: string
+    title: MountNasInfoResponseData
+  NodeDataPlane:
+    type: object
+    properties:
+      id:
+        type: string
+      ip:
+        type: string
+    title: NodeDataPlane
+  PageListResponse«ProtectedEnvironment»:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 分页查询结果列表
+        items:
+          $ref: '#/definitions/ProtectedEnvironment'
+          originalRef: ProtectedEnvironment
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数
+    title: PageListResponse«ProtectedEnvironment»
+  PageListResponse«Resource»:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 分页查询结果列表
+        items:
+          $ref: '#/definitions/Resource'
+          originalRef: Resource
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数
+    title: PageListResponse«Resource»
+  PlatformCreateRequest:
+    type: object
+    properties:
+      clientType:
+        type: integer
+        format: int32
+      clients:
+        type: array
+        items:
+          type: string
+      engineType:
+        type: integer
+        format: int32
+      ip:
+        type: string
+      name:
+        type: string
+      port:
+        type: integer
+        format: int32
+      type:
+        type: integer
+        format: int32
+      version:
+        type: string
+    title: PlatformCreateRequest
+  PlatformCreateResponse:
+    type: object
+    properties:
+      auth_user:
+        type: string
+      create_time:
+        type: integer
+        format: int64
+      create_user:
+        type: string
+      customer:
+        type: string
+      deleted:
+        type: integer
+        format: int32
+      entry_point:
+        type: string
+      id:
+        type: string
+      ip:
+        type: string
+      name:
+        type: string
+      p_group_id:
+        type: string
+      port:
+        type: integer
+        format: int32
+      type:
+        type: integer
+        format: int32
+      update_time:
+        type: integer
+        format: int64
+      version:
+        type: string
+    title: PlatformCreateResponse
+  PlatformGetDataNode:
+    type: object
+    properties:
+      id:
+        type: string
+      ip:
+        type: string
+      name:
+        type: string
+    title: PlatformGetDataNode
+  PlatformGetResponse:
+    type: object
+    properties:
+      assignable:
+        type: string
+      auther:
+        type: string
+      createUser:
+        type: string
+      id:
+        type: string
+      ip:
+        type: string
+      name:
+        type: string
+      nodes:
+        type: array
+        items:
+          $ref: '#/definitions/PlatformGetDataNode'
+          originalRef: PlatformGetDataNode
+      platformConfigCustomer:
+        type: string
+      platformCustomer:
+        type: string
+      port:
+        type: integer
+        format: int32
+      type:
+        type: integer
+        format: int32
+      username:
+        type: string
+      version:
+        type: string
+    title: PlatformGetResponse
+  PlatformUpdateResponse:
+    type: object
+    properties:
+      auther:
+        type: string
+      create_user:
+        type: string
+      id:
+        type: string
+      ip:
+        type: string
+      name:
+        type: string
+      platform_config_customer:
+        type: string
+      platform_customer:
+        type: string
+      port:
+        type: string
+      type:
+        type: string
+      username:
+        type: string
+      version:
+        type: string
+    title: PlatformUpdateResponse
+  ProtectedEnvironment:
+    type: object
+    properties:
+      endpoint:
+        type: string
+      link_status:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      os_name:
+        type: string
+      os_type:
+        type: string
+      password:
+        type: string
+      port:
+        type: integer
+        format: int32
+      sub_type:
+        type: string
+      type:
+        type: string
+      user_name:
+        type: string
+      uuid:
+        type: string
+    title: ProtectedEnvironment
+  Resource:
+    type: object
+    properties:
+      environment_endpoint:
+        type: string
+        description: 资源所属环境的IP地址
+      environment_name:
+        type: string
+        description: 资源所属环境名称
+      gns_path:
+        type: string
+        description: 资源的gns路径
+      hasChildren:
+        type: boolean
+        description: 是否有子资源
+      instance_names:
+        type: string
+        description: 实例名称
+      name:
+        type: string
+        description: 资源名称
+      parent_uuid:
+        type: string
+        description: 父资源uuid
+      path:
+        type: string
+        description: 资源路径
+      root_uuid:
+        type: string
+        description: 根资源uuid
+      size:
+        type: string
+        description: 资源大小
+      sub_type:
+        type: string
+        description: >-
+          资源子类[取值范围]：Fileset|ABBackupClient|MySQL|DB2|SQLServer|ms.VirtualMachine|ms.HostSystem|GaussDB
+      type:
+        type: string
+        description: 资源类型
+      uuid:
+        type: string
+        description: 资源uuid
+    title: Resource
+  StandardBackUpRequest:
+    type: object
+    properties:
+      desc:
+        type: string
+      edit:
+        type: boolean
+      isHw:
+        type: string
+      mountPath:
+        type: string
+      name:
+        type: string
+      ngDialogId:
+        type: string
+      nodeId:
+        type: string
+      pathSize:
+        type: integer
+        format: int64
+      size:
+        type: integer
+        format: int64
+      storageType:
+        type: integer
+        format: int32
+      type:
+        type: integer
+        format: int32
+      volumeName:
+        type: string
+      volumePath:
+        type: string
+    title: StandardBackUpRequest
+  StandardBackupVolInitInfo:
+    type: object
+    properties:
+      nodeId:
+        type: string
+      volName:
+        type: string
+    title: StandardBackupVolInitInfo
+  StoragePool:
+    type: object
+    properties:
+      freeSize:
+        type: integer
+        format: int64
+      id:
+        type: string
+      name:
+        type: string
+      status:
+        type: integer
+        format: int32
+      totalSize:
+        type: integer
+        format: int64
+      usedSize:
+        type: integer
+        format: int64
+    title: StoragePool
+  URI:
+    type: object
+    properties:
+      absolute:
+        type: boolean
+      authority:
+        type: string
+      fragment:
+        type: string
+      host:
+        type: string
+      opaque:
+        type: boolean
+      path:
+        type: string
+      port:
+        type: integer
+        format: int32
+      query:
+        type: string
+      rawAuthority:
+        type: string
+      rawFragment:
+        type: string
+      rawPath:
+        type: string
+      rawQuery:
+        type: string
+      rawSchemeSpecificPart:
+        type: string
+      rawUserInfo:
+        type: string
+      scheme:
+        type: string
+      schemeSpecificPart:
+        type: string
+      userInfo:
+        type: string
+    title: URI
+  URL:
+    type: object
+    properties:
+      authority:
+        type: string
+      content:
+        type: object
+      defaultPort:
+        type: integer
+        format: int32
+      deserializedFields:
+        $ref: '#/definitions/URLStreamHandler'
+        originalRef: URLStreamHandler
+      file:
+        type: string
+      host:
+        type: string
+      path:
+        type: string
+      port:
+        type: integer
+        format: int32
+      protocol:
+        type: string
+      query:
+        type: string
+      ref:
+        type: string
+      serializedHashCode:
+        type: integer
+        format: int32
+      userInfo:
+        type: string
+    title: URL
+  URLStreamHandler:
+    type: object
+    title: URLStreamHandler
+  VirtualHostCreateRequest:
+    type: object
+    properties:
+      childClients:
+        type: array
+        items:
+          $ref: '#/definitions/AnyBackupChildClients'
+          originalRef: AnyBackupChildClients
+      clientId:
+        type: string
+      clientName:
+        type: string
+      clientType:
+        type: integer
+        format: int32
+      engineType:
+        type: integer
+        format: int32
+      groupId:
+        type: string
+      metaStoragePath:
+        type: string
+      port:
+        type: integer
+        format: int32
+    title: VirtualHostCreateRequest
+  VirtualHostCreateResult:
+    type: object
+    properties:
+      assignable:
+        type: boolean
+      authUsers:
+        type: array
+        items:
+          type: string
+      builtin:
+        type: boolean
+      clientArch:
+        type: integer
+        format: int32
+      clientBinds:
+        type: array
+        items:
+          $ref: '#/definitions/AnyBackupClientBinds'
+          originalRef: AnyBackupClientBinds
+      clientCPUNum:
+        type: integer
+        format: int32
+      clientGroupId:
+        type: string
+      clientId:
+        type: string
+      clientIp:
+        type: string
+      clientIsBuildin:
+        type: boolean
+      clientMac:
+        type: string
+      clientName:
+        type: string
+      clientOSKind:
+        type: integer
+        format: int32
+      clientOSName:
+        type: string
+      clientOSType:
+        type: string
+      clientStatus:
+        type: integer
+        format: int32
+      clientType:
+        type: integer
+        format: int32
+      clientVersion:
+        type: string
+      cloudHostInfo:
+        type: string
+      clusterPort:
+        type: string
+      customer:
+        type: string
+      deleted:
+        type: integer
+        format: int32
+      email:
+        type: boolean
+      metaStoragePath:
+        type: string
+      platformIp:
+        type: string
+      port:
+        type: integer
+        format: int32
+      username:
+        type: string
+    title: VirtualHostCreateResult
+  Volume:
+    type: object
+    properties:
+      cloudBlockId:
+        type: string
+      desc:
+        type: string
+      freeSize:
+        type: integer
+        format: int64
+      location:
+        type: string
+      nodeId:
+        type: string
+      poolId:
+        type: string
+      size:
+        type: integer
+        format: int64
+      status:
+        type: integer
+        format: int32
+      storageType:
+        type: integer
+        format: int32
+      totalSize:
+        type: integer
+        format: int64
+      usedSize:
+        type: integer
+        format: int64
+      volumeId:
+        type: string
+      volumeName:
+        type: string
+      volumeType:
+        type: integer
+        format: int32
+    title: Volume
+  VolumeCreate:
+    type: object
+    properties:
+      cloudBlockId:
+        type: string
+      desc:
+        type: string
+      nodeId:
+        type: string
+      poolId:
+        type: string
+      size:
+        type: integer
+        format: int64
+      storageType:
+        type: integer
+        format: int32
+      volumeName:
+        type: string
+    title: VolumeCreate
+  VolumeRelocationReq:
+    type: object
+    properties:
+      nodeId:
+        type: string
+    title: VolumeRelocationReq
+  VolumeRelocationRes:
+    type: object
+    properties:
+      status:
+        type: boolean
+    title: VolumeRelocationRes

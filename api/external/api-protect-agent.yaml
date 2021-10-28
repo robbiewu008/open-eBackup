@@ -1,0 +1,261 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 保护代理管理接口
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: client-manager-api
+    description: Host Agent Manager Controller
+paths:
+  /v1/host-agent:
+    post:
+      tags:
+        - client-manager-api
+      summary: 保护代理上传
+      operationId: uploadAgentClientUsingPOST
+      consumes:
+        - multipart/form-data
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: agentClient
+          in: formData
+          description: 保护代理
+          required: true
+          type: file
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/host-agent/download:
+    post:
+      tags:
+        - client-manager-api
+      summary: 保护代理下载
+      operationId: downloadAgentClientUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: params
+          description: 保护代理下载参数
+          required: true
+          schema:
+            $ref: '#/definitions/AgentDownloadParams'
+            originalRef: AgentDownloadParams
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FileSystemResource'
+            originalRef: FileSystemResource
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  AgentDownloadParams:
+    type: object
+    required:
+      - privateKey
+      - type
+    properties:
+      osType:
+        type: string
+        description: 操作系统类型
+        enum:
+          - WINDOWS
+          - OTHERS
+      privateKey:
+        type: string
+        description: 私钥
+      type:
+        type: string
+        description: 代理类型
+        enum:
+          - HOST
+          - VM
+    title: AgentDownloadParams
+  File:
+    type: object
+    properties:
+      absolute:
+        type: boolean
+      absoluteFile:
+        $ref: '#/definitions/File'
+        originalRef: File
+      absolutePath:
+        type: string
+      canonicalFile:
+        $ref: '#/definitions/File'
+        originalRef: File
+      canonicalPath:
+        type: string
+      directory:
+        type: boolean
+      file:
+        type: boolean
+      freeSpace:
+        type: integer
+        format: int64
+      hidden:
+        type: boolean
+      name:
+        type: string
+      parent:
+        type: string
+      parentFile:
+        $ref: '#/definitions/File'
+        originalRef: File
+      path:
+        type: string
+      totalSpace:
+        type: integer
+        format: int64
+      usableSpace:
+        type: integer
+        format: int64
+    title: File
+  FileSystemResource:
+    type: object
+    properties:
+      description:
+        type: string
+      file:
+        $ref: '#/definitions/File'
+        originalRef: File
+      filename:
+        type: string
+      inputStream:
+        $ref: '#/definitions/InputStream'
+        originalRef: InputStream
+      open:
+        type: boolean
+      outputStream:
+        $ref: '#/definitions/OutputStream'
+        originalRef: OutputStream
+      path:
+        type: string
+      readable:
+        type: boolean
+      uri:
+        $ref: '#/definitions/URI'
+        originalRef: URI
+      url:
+        $ref: '#/definitions/URL'
+        originalRef: URL
+      writable:
+        type: boolean
+    title: FileSystemResource
+  InputStream:
+    type: object
+    title: InputStream
+  OutputStream:
+    type: object
+    title: OutputStream
+  URI:
+    type: object
+    properties:
+      absolute:
+        type: boolean
+      authority:
+        type: string
+      fragment:
+        type: string
+      host:
+        type: string
+      opaque:
+        type: boolean
+      path:
+        type: string
+      port:
+        type: integer
+        format: int32
+      query:
+        type: string
+      rawAuthority:
+        type: string
+      rawFragment:
+        type: string
+      rawPath:
+        type: string
+      rawQuery:
+        type: string
+      rawSchemeSpecificPart:
+        type: string
+      rawUserInfo:
+        type: string
+      scheme:
+        type: string
+      schemeSpecificPart:
+        type: string
+      userInfo:
+        type: string
+    title: URI
+  URL:
+    type: object
+    properties:
+      authority:
+        type: string
+      content:
+        type: object
+      defaultPort:
+        type: integer
+        format: int32
+      file:
+        type: string
+      host:
+        type: string
+      path:
+        type: string
+      port:
+        type: integer
+        format: int32
+      protocol:
+        type: string
+      query:
+        type: string
+      ref:
+        type: string
+      userInfo:
+        type: string
+    title: URL

@@ -1,0 +1,1690 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 集群管理接口
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: '${capacity-api}'
+    description: '${capacity-api}'
+  - name: '${clusters-api}'
+    description: '${clusters-api}'
+  - name: '${performance.api.desc}'
+    description: Performance Controller
+paths:
+  /v1/cluster/performance:
+    get:
+      tags:
+        - '${performance.api.desc}'
+      summary: 查询性能监控数据
+      operationId: getPerformanceUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: endTime
+          in: query
+          description: 结束时间
+          required: true
+          type: integer
+          format: int64
+          x-example: 1593313603000
+        - name: indicatorList
+          in: query
+          description: 性能指标类型，1：iops， 2：平均io响应 3：带宽
+          required: true
+          type: array
+          items:
+            type: integer
+            format: int32
+          collectionFormat: multi
+        - name: nodeIp
+          in: query
+          description: 节点ip，为空表示查整系统数据
+          required: false
+          type: string
+        - name: startTime
+          in: query
+          description: 开始时间
+          required: true
+          type: integer
+          format: int64
+          x-example: 1593227203000
+        - name: staticsMode
+          in: query
+          description: 统计模式，avg：平均值，max：最大值
+          required: true
+          type: string
+          x-example: avg
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              originalRef: StatisticsData
+              $ref: '#/definitions/StatisticsData'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/cluster/performance/config:
+    get:
+      tags:
+        - '${performance.api.desc}'
+      summary: 查询性能监控开关
+      operationId: getPerformanceConfigUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    put:
+      tags:
+        - '${performance.api.desc}'
+      summary: 修改性能开关
+      operationId: enablePerformanceUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: enable
+          in: query
+          description: 性能开关，true：开启，false：关闭
+          required: false
+          type: boolean
+          allowEmptyValue: false
+        - name: hasRemoveHistoryData
+          in: query
+          description: 是否删除历史性能数据
+          required: false
+          type: boolean
+          default: false
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/clusters:
+    get:
+      tags:
+        - '${clusters-api}'
+      summary: 查询集群信息
+      operationId: getClustersInfoUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: clusterIp
+          in: query
+          description: 集群IP地址刷选查询
+          required: false
+          type: string
+        - name: clusterName
+          in: query
+          description: 集群名称刷选查询
+          required: false
+          type: string
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          maximum: 200.0
+          exclusiveMaximum: false
+          minimum: 0.0
+          exclusiveMinimum: false
+          format: int32
+          x-example: 10
+        - name: startPage
+          in: query
+          description: 分页起始页面
+          required: false
+          type: integer
+          minimum: 0.0
+          exclusiveMinimum: false
+          format: int32
+          x-example: 0
+        - name: statusList
+          in: query
+          description: 集群状态：【0：未知；27：在线；28：离线；30：部分异常；不选，所有状态类型】
+          required: false
+          type: array
+          items:
+            type: integer
+            format: int32
+          collectionFormat: multi
+        - name: typeList
+          in: query
+          description: 集群类型：【1：本地集群；2：目标集群；不选，所有集群类型】
+          required: false
+          type: array
+          items:
+            type: integer
+            format: int32
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: PageListResponse«ClustersInfoVo»
+            $ref: '#/definitions/PageListResponse«ClustersInfoVo»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    post:
+      tags:
+        - '${clusters-api}'
+      summary: 创建目标集群
+      operationId: createTargetClusterUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: 创建目标集群请求参数
+          required: false
+          schema:
+            originalRef: TargetClusterRequest
+            $ref: '#/definitions/TargetClusterRequest'
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/clusters/anti-ransomware/resource:
+    get:
+      tags:
+        - '${clusters-api}'
+      summary: 查询防勒索资源列表
+      operationId: queryAntiRansomwareResourceUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: otherResIds
+          in: query
+          description: 性能指标类型，1：iops， 2：平均io响应 3：带宽
+          required: true
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: pageNo
+          in: query
+          description: 性能指标类型，1：iops， 2：平均io响应 3：带宽
+          required: true
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          description: 性能指标类型，1：iops， 2：平均io响应 3：带宽
+          required: true
+          type: integer
+          format: int32
+        - name: policyResIds
+          in: query
+          description: 性能指标类型，1：iops， 2：平均io响应 3：带宽
+          required: true
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: resourceSubType
+          in: query
+          description: 性能指标类型，1：iops， 2：平均io响应 3：带宽
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: AntiRansomwareResourcePage«AntiRansomwareResource»
+            $ref: '#/definitions/AntiRansomwareResourcePage«AntiRansomwareResource»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/clusters/capacity:
+    get:
+      tags:
+        - '${capacity-api}'
+      summary: 查询整系统容量及数据压缩
+      operationId: queryClusterStorageUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: ClusterStorageVo
+            $ref: '#/definitions/ClusterStorageVo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/clusters/capacity/tendency:
+    get:
+      tags:
+        - '${capacity-api}'
+      summary: 查询整系统容量使用趋势
+      operationId: queryClusterStorageTendencyUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: ClusterStorageTendencyVo
+            $ref: '#/definitions/ClusterStorageTendencyVo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/clusters/copies/import:
+    post:
+      tags:
+        - '${clusters-api}'
+      summary: 目标端导入复制副本
+      operationId: importCopyUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: importParam
+          description: 导入副本参数
+          required: false
+          schema:
+            originalRef: CopyReplicationImportParam
+            $ref: '#/definitions/CopyReplicationImportParam'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: boolean
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/clusters/details:
+    get:
+      tags:
+        - '${clusters-api}'
+      summary: 获取集群详情
+      operationId: getClusterDetailInfoUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: ClusterDetailInfo
+            $ref: '#/definitions/ClusterDetailInfo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/clusters/link/certify:
+    put:
+      tags:
+        - '${clusters-api}'
+      summary: 目标端集群确认复制链路
+      operationId: certifyLinkUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: 认证链路请求信息
+          required: false
+          schema:
+            originalRef: ClusterCertifyRequest
+            $ref: '#/definitions/ClusterCertifyRequest'
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/clusters/requestion/certify:
+    put:
+      tags:
+        - '${clusters-api}'
+      summary: 目标端集群确认请求
+      operationId: certifyRequestionUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: 集群确认请求信息
+          required: false
+          schema:
+            originalRef: JobRequestionCertifyRequest
+            $ref: '#/definitions/JobRequestionCertifyRequest'
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/clusters/status:
+    get:
+      tags:
+        - '${clusters-api}'
+      summary: 获取集群状态信息
+      operationId: getClusterStatusUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: sourceEsn
+          in: query
+          description: 源端集群esn
+          required: true
+          type: string
+          maxLength: 256
+          minLength: 1
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+            enum:
+              - UNKNOWN
+              - NORMAL
+              - RUNNING
+              - ONLINE
+              - OFFLINE
+              - PARTIALLY_ABNORMAL
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/clusters/target/relation:
+    post:
+      tags:
+        - '${clusters-api}'
+      summary: 添加源端与目标集群之间的关系
+      operationId: manageClusterRelationUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: 管理集群关系请求参数
+          required: false
+          schema:
+            originalRef: ClusterRelationRequest
+            $ref: '#/definitions/ClusterRelationRequest'
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/clusters/{clusterId}':
+    put:
+      tags:
+        - '${clusters-api}'
+      summary: 修改目标集群
+      operationId: modifyTargetClusterUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: clusterId
+          in: path
+          description: 集群Id
+          required: true
+          type: integer
+          maximum: 2147483647
+          exclusiveMaximum: false
+          minimum: 1.0
+          exclusiveMinimum: false
+          format: int32
+        - in: body
+          name: request
+          description: 修改目标集群请求参数
+          required: false
+          schema:
+            originalRef: TargetClusterRequest
+            $ref: '#/definitions/TargetClusterRequest'
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    delete:
+      tags:
+        - '${clusters-api}'
+      summary: 删除目标集群
+      operationId: deleteTargetClusterUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: clusterId
+          in: path
+          description: 集群Id
+          required: true
+          type: integer
+          maximum: 2147483647
+          exclusiveMaximum: false
+          minimum: 1.0
+          exclusiveMinimum: false
+          format: int32
+        - name: forceDelete
+          in: query
+          description: 是否强制删除目标集群
+          required: false
+          type: boolean
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/clusters/{clusterId}/nodes':
+    get:
+      tags:
+        - '${clusters-api}'
+      summary: 查询集群节点信息
+      operationId: queryClusterNodeInfoUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: clusterId
+          in: path
+          description: 集群节点查询集群ID
+          required: true
+          type: integer
+          maximum: 10.0
+          exclusiveMaximum: false
+          minimum: 1.0
+          exclusiveMinimum: false
+          format: int32
+        - name: nodeName
+          in: query
+          description: 节点名称刷选查询
+          required: false
+          type: string
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          maximum: 200.0
+          exclusiveMaximum: false
+          minimum: 0.0
+          exclusiveMinimum: false
+          format: int32
+          x-example: 10
+        - name: startPage
+          in: query
+          description: 分页起始页面
+          required: false
+          type: integer
+          minimum: 0.0
+          exclusiveMinimum: false
+          format: int32
+          x-example: 0
+        - name: statusList
+          in: query
+          description: 节点状态查询：【0：未知；1：正常；2：运行；27：在线；28：离线；不选，查询所有状态】
+          required: false
+          type: array
+          items:
+            type: integer
+            format: int32
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: PageListResponse«ClusterStorageNodeVo»
+            $ref: '#/definitions/PageListResponse«ClusterStorageNodeVo»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/clusters/details:
+    get:
+      tags:
+        - '${clusters-api}'
+      summary: 获取本端存储信息
+      operationId: getClusterDetailsInfoUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: ClusterDetailInfo
+            $ref: '#/definitions/ClusterDetailInfo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/clusters/local/nodes:
+    get:
+      tags:
+        - '${clusters-api}'
+      summary: 获取本地集群节点信息
+      operationId: queryLocalClusterNodesUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              originalRef: ClusterStorageNodeVo
+              $ref: '#/definitions/ClusterStorageNodeVo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/clusters/target-details:
+    get:
+      tags:
+        - '${clusters-api}'
+      summary: 获取目标集群信息列表
+      operationId: queryTargetClustersDetailsUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              originalRef: TargetClusterVo
+              $ref: '#/definitions/TargetClusterVo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/clusters/resource:
+    get:
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - '${clusters-api}'
+      summary: 查询外部集群的资源列表
+      description: 目标集群提供，根据资源类型查询资源。
+      operationId: queryTargetAntiRansomwareResourceUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: resourceSubType
+          in: query
+          description: 资源类型
+          required: true
+          type: string
+        - name: name
+          in: query
+          required: true
+          description: 资源名称
+          type: string
+        - name: path
+          in: query
+          required: true
+          description: 资源位置
+          type: string
+      responses:
+        '200':
+          description: 资源信息
+          schema:
+            items:
+              $ref: '#/definitions/ResourceAntiRansomware'
+            originalRef: AntiRansomwareResourcePage«AntiRansomwareResource»
+            type: array
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/local-storage/service-ips:
+    get:
+      tags:
+        - '${clusters-api}'
+      summary: 获取存储业务IP信息
+      operationId: getTargetStorageInfoUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: StorageServiceIpInfo
+            $ref: '#/definitions/StorageServiceIpInfo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/storage-users:
+    post:
+      tags:
+        - '${clusters-api}'
+      summary: 创建存储用户
+      operationId: createStorageUserUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: 创建存储用户请求参数
+          required: false
+          schema:
+            originalRef: DoradoAccountRequest
+            $ref: '#/definitions/DoradoAccountRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: StorageUserInfo
+            $ref: '#/definitions/StorageUserInfo'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/storage-users/{userId}':
+    get:
+      tags:
+        - '${clusters-api}'
+      summary: 查询存储用户
+      operationId: queryStorageUserUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: userId
+          in: path
+          description: 存储管理员用户ID
+          required: true
+          type: string
+          maxLength: 256
+          minLength: 1
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: DoradoUserParams
+            $ref: '#/definitions/DoradoUserParams'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    put:
+      tags:
+        - '${clusters-api}'
+      summary: 修改存储用户密码
+      operationId: updateUserPwdUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: 修改存储用户密码请求参数
+          required: false
+          schema:
+            originalRef: StorageModifyPwdRequest
+            $ref: '#/definitions/StorageModifyPwdRequest'
+        - name: userId
+          in: path
+          description: 存储管理员用户ID
+          required: true
+          type: string
+          maxLength: 256
+          minLength: 1
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    delete:
+      tags:
+        - '${clusters-api}'
+      summary: 删除存储用户
+      operationId: deleteStorageUserUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: roleId
+          in: query
+          description: 存储用户角色ID
+          required: true
+          type: string
+          maxLength: 256
+          minLength: 1
+          allowEmptyValue: false
+        - name: userId
+          in: path
+          description: 存储管理员用户ID
+          required: true
+          type: string
+          maxLength: 256
+          minLength: 1
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  AntiRansomwareResource:
+    type: object
+    properties:
+      resource_name:
+        type: string
+        description: 资源名称
+    title: AntiRansomwareResource
+  AntiRansomwareResourcePage«AntiRansomwareResource»:
+    type: object
+    properties:
+      items:
+        type: array
+        description: 详情
+        items:
+          originalRef: AntiRansomwareResource
+          $ref: '#/definitions/AntiRansomwareResource'
+      page_no:
+        type: integer
+        format: int64
+        description: 页码
+      page_size:
+        type: integer
+        format: int64
+        description: 每页总数
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      selected_count:
+        type: integer
+        format: int64
+        description: 已选择数量
+      total:
+        type: integer
+        format: int64
+        description: 总数
+    title: AntiRansomwareResourcePage«AntiRansomwareResource»
+  ClusterCertifyRequest:
+    type: object
+    properties:
+      cretify:
+        type: integer
+        format: int32
+        description: 验证类型
+        minimum: 0.0
+        maximum: 5.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      ip:
+        type: string
+        description: 验证IP
+        pattern: >-
+          ([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}|^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){6,6}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,1}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,4}):((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|:((:[0-9a-fA-F]{1,4}){1,5}):((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|:((:[0-9a-fA-F]{1,4}){1,7}|:)|[Ff][Ee]08:(:[0-9a-fA-F]{1,4}){2,2}%[0-9a-zA-Z]{1,}|(0{1,4}:){6,6}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,4}:(0{1,4}:)((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,3}:(0{1,4}:){1,2}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,2}:(0{1,4}:){1,3}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:):(0{1,4}:){1,4}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|::(0{1,4}:){1,5}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){5,5}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,4}:[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,3}:(0{1,4}:)[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,2}:(0{1,4}:){1,2}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:):(0{1,4}:){1,3}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|::(0{1,4}:){1,4}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|::([Ff]{4}:){0,1}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d))$
+    title: ClusterCertifyRequest
+  ClusterDetailInfo:
+    type: object
+    properties:
+      dataProtectionEngines:
+        type: array
+        description: 数据保护引擎信息
+        items:
+          originalRef: DataProtectionParams
+          $ref: '#/definitions/DataProtectionParams'
+      sourceClusters:
+        description: 源端集群信息
+        originalRef: SourceClustersParams
+        $ref: '#/definitions/SourceClustersParams'
+      storageSystem:
+        description: 存储信息
+        originalRef: StorageSystemInfo
+        $ref: '#/definitions/StorageSystemInfo'
+    title: ClusterDetailInfo
+  ClusterRelationRequest:
+    type: object
+    properties:
+      operateType:
+        type: string
+        description: 请求操作标识
+        enum:
+          - ADD_RELATION
+          - DELETE_RELATION
+          - MODIFY_RELATION
+      sourceClusterEsn:
+        type: string
+        description: 源端集群esn
+    title: ClusterRelationRequest
+  ClusterStorageNodeVo:
+    type: object
+    properties:
+      managementIPv4:
+        type: string
+        description: 集群节点管理IPV4地址
+      managementIPv6:
+        type: string
+        description: 集群节点管理IPV6地址
+      nodeId:
+        type: string
+        description: 集群节点ID
+      nodeName:
+        type: string
+        description: 集群节点名称
+      nodeRole:
+        type: integer
+        format: int32
+        description: 集群节点角色【0：普通成员；1：集群主；2：集群备】
+      status:
+        type: integer
+        format: int32
+        description: 集群节点状态
+    title: ClusterStorageNodeVo
+  ClusterStorageTendencyDayVo:
+    type: object
+    properties:
+      percentage:
+        type: number
+        format: double
+        example: 80.0
+        description: 容量使用百分比
+      timestamp:
+        type: integer
+        format: int64
+        example: 1593446400000
+        description: 当日时间戳
+      totalCapacity:
+        type: number
+        format: double
+        example: 2.097152e8
+        description: 总容量，单位MB
+      usedCapacity:
+        type: number
+        format: double
+        example: 2000000.0
+        description: 已使用容量，单位MB
+    title: ClusterStorageTendencyDayVo
+  ClusterStorageTendencyVo:
+    type: object
+    properties:
+      existingDatas:
+        type: array
+        description: 历史容量使用数据
+        items:
+          originalRef: ClusterStorageTendencyDayVo
+          $ref: '#/definitions/ClusterStorageTendencyDayVo'
+      forecastDatas:
+        type: array
+        description: 预测容量使用数据
+        items:
+          originalRef: ClusterStorageTendencyDayVo
+          $ref: '#/definitions/ClusterStorageTendencyDayVo'
+      peakPoint:
+        type: integer
+        format: int32
+        example: 80
+        description: 容量峰值点
+    title: ClusterStorageTendencyVo
+  ClusterStorageVo:
+    type: object
+    properties:
+      consumedCapacity:
+        type: integer
+        format: int64
+        description: 物理用量，单位KB
+      freeCapacity:
+        type: integer
+        format: int64
+        description: 空闲容量，单位KB
+      logic:
+        type: string
+        description: 数据压缩比大小关系
+      spaceReductionRate:
+        type: number
+        format: double
+        description: 数据压缩比
+      totalCapacity:
+        type: integer
+        format: int64
+        description: 总容量，单位KB
+      usedCapacity:
+        type: integer
+        format: int64
+        description: 已使用容量，单位KB
+      writeCapacity:
+        type: integer
+        format: int64
+        description: 逻辑用量，单位KB
+    title: ClusterStorageVo
+  ClustersInfoVo:
+    type: object
+    properties:
+      clusterId:
+        type: integer
+        format: int32
+        description: 集群Id
+      clusterName:
+        type: string
+        description: 集群名称
+      clusterType:
+        type: integer
+        format: int32
+        description: 集群类型
+      ip:
+        type: string
+        description: 集群管理IP
+      port:
+        type: integer
+        format: int32
+        description: 集群port
+      status:
+        type: integer
+        format: int32
+        description: 获取集群状态信息
+      username:
+        type: string
+        description: 集群用户名
+    title: ClustersInfoVo
+  CopyReplicationImportParam:
+    type: object
+    properties:
+      generated_time:
+        type: integer
+        format: int64
+        description: 副本生成时间
+        maximum: 9.223372036854776e18
+        exclusiveMaximum: false
+      metadata:
+        type: string
+        description: 元数据
+      properties:
+        type: object
+        description: 副本属性
+        additionalProperties:
+          type: object
+      timestamp:
+        type: integer
+        format: int64
+        description: 时间戳
+        maximum: 9.223372036854776e18
+        exclusiveMaximum: false
+    title: CopyReplicationImportParam
+  DataMoverIps:
+    type: object
+    properties:
+      anyBackup:
+        type: string
+      dme:
+        type: string
+    title: DataMoverIps
+  DataProtectionParams:
+    type: object
+    properties:
+      engineType:
+        type: string
+        description: 保护引擎类型
+      ipV4Address:
+        type: string
+        description: 保护引擎IPV4
+      ipV6Address:
+        type: string
+        description: 保护引擎IPV6
+    title: DataProtectionParams
+  DoradoAccountRequest:
+    type: object
+    properties:
+      description:
+        type: string
+        description: 描述信息
+      password:
+        type: string
+        description: 密码
+      userName:
+        type: string
+        description: 用户名
+      userType:
+        type: string
+        description: 用户类型
+        enum:
+          - DEVICE_ADMIN_TYPE
+          - USER_DEFINED_TYPE
+    title: DoradoAccountRequest
+  DoradoUserParams:
+    type: object
+    properties:
+      accountState:
+        type: string
+        description: 密码状态
+      isOnline:
+        type: string
+        description: 用户在线/离线状态【0：离线; 1：在线】
+      isPasswordNeverExpire:
+        type: boolean
+        description: 密码是否永不过期
+      lockStatus:
+        type: string
+        description: 用户锁定状态【0：未锁定; 1：锁定】
+      passwordNeverExpire:
+        type: boolean
+      roleId:
+        type: string
+        description: 存储用户角色ID
+      userId:
+        type: string
+        description: 存储管理员用户ID
+    title: DoradoUserParams
+  JobRequestionCertifyRequest:
+    type: object
+    properties:
+      certify:
+        type: boolean
+        description: 是否进行校验
+      jobId:
+        type: string
+        description: 任务ID
+    title: JobRequestionCertifyRequest
+  NetPlaneInfo:
+    type: object
+    properties:
+      ipAddress:
+        type: string
+        description: 网络平面IP
+      netPlaneName:
+        type: string
+        description: 网络平面名称
+    title: NetPlaneInfo
+  NodePodInfo:
+    type: object
+    properties:
+      namespace:
+        type: string
+        description: 命名空间
+      netPlaneInfo:
+        type: array
+        description: 网络平面信息
+        items:
+          originalRef: NetPlaneInfo
+          $ref: '#/definitions/NetPlaneInfo'
+      nodeName:
+        type: string
+        description: 集群节点名称
+      podName:
+        type: string
+        description: pod名称
+      podStatus:
+        type: string
+        description: pod状态
+    title: NodePodInfo
+  PageListResponse«ClusterStorageNodeVo»:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 分页查询结果列表
+        items:
+          originalRef: ClusterStorageNodeVo
+          $ref: '#/definitions/ClusterStorageNodeVo'
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数
+    title: PageListResponse«ClusterStorageNodeVo»
+  PageListResponse«ClustersInfoVo»:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 分页查询结果列表
+        items:
+          originalRef: ClustersInfoVo
+          $ref: '#/definitions/ClustersInfoVo'
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数
+    title: PageListResponse«ClustersInfoVo»
+  SourceClustersParams:
+    type: object
+    properties:
+      addedCount:
+        type: integer
+        format: int32
+        description: 本集群已被多少个集群添加为外部集群
+      clusterStatus:
+        type: integer
+        format: int32
+        description: 获取集群状态信息
+      mgrIpList:
+        type: array
+        description: 集群管理IP
+        items:
+          type: string
+      nodeCount:
+        type: integer
+        format: int32
+        description: 存储控制器数量
+      storageDisplayIps:
+        type: string
+        description: 存储显示IP
+    title: SourceClustersParams
+  StatisticsData:
+    type: object
+    properties:
+      indicator:
+        type: integer
+        format: int32
+        description: 性能指标类型，1：iops， 2：平均io响应 3：带宽
+      indicatorValues:
+        type: array
+        description: 性能数据值
+        items:
+          type: string
+      timestamps:
+        type: array
+        description: 性能数据时间点
+        items:
+          type: integer
+          format: int64
+      unit:
+        type: string
+        description: '性能指标单位，如mb，gb, io/s'
+    title: StatisticsData
+  StorageFrontServiceInfo:
+    type: object
+    properties:
+      currentControllerId:
+        type: string
+        description: 控制器Id
+      homePortType:
+        type: string
+        description: 端口类型
+      ipV4Address:
+        type: string
+        description: IPV4
+      ipV6Address:
+        type: string
+        description: IPV6
+      name:
+        type: string
+        description: 名称
+    title: StorageFrontServiceInfo
+  StorageModifyPwdRequest:
+    type: object
+    properties:
+      newPassword:
+        type: string
+        description: 新密码
+      userId:
+        type: string
+        description: 存储管理员用户ID
+    title: StorageModifyPwdRequest
+  StorageServiceIpInfo:
+    type: object
+    properties:
+      esn:
+        type: string
+        description: 存储esn
+      serviceIps:
+        type: array
+        description: 服务信息
+        items:
+          originalRef: StorageFrontServiceInfo
+          $ref: '#/definitions/StorageFrontServiceInfo'
+    title: StorageServiceIpInfo
+  StorageSystemInfo:
+    type: object
+    properties:
+      netplaneInfo:
+        type: array
+        description: 节点pod信息
+        items:
+          originalRef: NodePodInfo
+          $ref: '#/definitions/NodePodInfo'
+      password:
+        type: string
+        description: 存储密码
+      storageEsn:
+        type: string
+        description: 存储esn
+      storagePort:
+        type: integer
+        format: int32
+        description: 存储端口
+      username:
+        type: string
+        description: 存储设备管理员用户名
+    title: StorageSystemInfo
+  StorageUserInfo:
+    type: object
+    properties:
+      createTime:
+        type: string
+        description: 用户创建时间
+      roleId:
+        type: string
+        description: 存储用户角色ID
+      userId:
+        type: string
+        description: 存储管理员用户ID
+      userType:
+        type: string
+        description: 用户类型
+        enum:
+          - DEVICE_ADMIN_TYPE
+          - USER_DEFINED_TYPE
+    title: StorageUserInfo
+  TargetClusterRequest:
+    type: object
+    required:
+      - clusterName
+      - ip
+      - port
+      - username
+    properties:
+      clusterName:
+        type: string
+        example: 保护集群_2
+        description: 集群名称
+        pattern: '^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+      ip:
+        type: string
+        description: 集群管理IP
+        pattern: >-
+          ([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}|^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){6,6}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,1}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,4}):((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|:((:[0-9a-fA-F]{1,4}){1,5}):((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|:((:[0-9a-fA-F]{1,4}){1,7}|:)|[Ff][Ee]08:(:[0-9a-fA-F]{1,4}){2,2}%[0-9a-zA-Z]{1,}|(0{1,4}:){6,6}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,4}:(0{1,4}:)((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,3}:(0{1,4}:){1,2}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,2}:(0{1,4}:){1,3}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:):(0{1,4}:){1,4}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|::(0{1,4}:){1,5}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){5,5}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,4}:[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,3}:(0{1,4}:)[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,2}:(0{1,4}:){1,2}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:):(0{1,4}:){1,3}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|::(0{1,4}:){1,4}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|::([Ff]{4}:){0,1}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d))$
+      password:
+        type: string
+        description: 集群密码
+      port:
+        type: integer
+        format: int32
+        example: 30081
+        description: 集群port
+        minimum: 1.0
+        maximum: 65535.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      username:
+        type: string
+        description: 集群用户名
+    title: TargetClusterRequest
+  TargetClusterVo:
+    type: object
+    properties:
+      clusterId:
+        type: string
+      esn:
+        type: string
+      ips:
+        originalRef: DataMoverIps
+        $ref: '#/definitions/DataMoverIps'
+      mgrIpList:
+        type: array
+        items:
+          type: string
+      netplaneinfo:
+        type: array
+        items:
+          originalRef: NodePodInfo
+          $ref: '#/definitions/NodePodInfo'
+      password:
+        type: string
+      port:
+        type: integer
+        format: int32
+      status:
+        type: integer
+        format: int32
+      username:
+        type: string
+    title: TargetClusterVo
+  ResourceAntiRansomware:
+    description: 目标集群端资源数据库模型
+    required:
+      - id
+      - name
+      - path
+      - sub_type
+      - type
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      path:
+        type: string
+      sub_type:
+        type: string
+      type:
+        type: string

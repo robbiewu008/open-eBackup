@@ -1,0 +1,1292 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 保护接入框架接口
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: ResourceInternalController
+    description: ResourceInternalController rest api
+  - name: access-point-controller
+    description: Access Point Controller
+  - name: dm-live-mount-controller
+    description: Dm Live Mount Controller
+  - name: job-controller
+    description: Job Controller
+paths:
+  /v1/internal/archive-task/action/create:
+    post:
+      tags:
+        - access-point-controller
+      summary: creatArchiveTask
+      operationId: creatArchiveTaskUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: archiveRequest
+          description: archiveRequest
+          required: true
+          schema:
+            $ref: '#/definitions/ArchiveRequestDto'
+            originalRef: ArchiveRequestDto
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/copies/action/import:
+    post:
+      tags:
+        - access-point-controller
+      summary: importReplicationCopy
+      operationId: importReplicationCopyUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: importParam
+          description: importParam
+          required: true
+          schema:
+            $ref: '#/definitions/CopyReplicationImport'
+            originalRef: CopyReplicationImport
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: boolean
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/internal/jobs/{jobId}/action/stop':
+    put:
+      tags:
+        - job-controller
+      summary: stopTask
+      operationId: stopTaskUsingPUT_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: jobId
+          in: path
+          description: jobId
+          required: true
+          type: string
+        - in: body
+          name: stopPlanBo
+          description: stopPlanBo
+          required: true
+          schema:
+            $ref: '#/definitions/StopPlanBo'
+            originalRef: StopPlanBo
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/clone:
+    post:
+      tags:
+        - dm-live-mount-controller
+      summary: cloneCopy
+      operationId: cloneCopyUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountCloneRequest»'
+            originalRef: Identity«LiveMountCloneRequest»
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CopyInfo'
+            originalRef: CopyInfo
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/execute:
+    put:
+      tags:
+        - dm-live-mount-controller
+      summary: executeLiveMount
+      operationId: executeLiveMountUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountExecuteParam»'
+            originalRef: Identity«LiveMountExecuteParam»
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/migrate:
+    put:
+      tags:
+        - dm-live-mount-controller
+      summary: migrateLiveMount
+      operationId: migrateLiveMountUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountMigrateParam»'
+            originalRef: Identity«LiveMountMigrateParam»
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/performance:
+    put:
+      tags:
+        - dm-live-mount-controller
+      summary: updatePerformanceSetting
+      operationId: updatePerformanceSettingUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountEntity»'
+            originalRef: Identity«LiveMountEntity»
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/pre-check:
+    post:
+      tags:
+        - dm-live-mount-controller
+      summary: createLiveMountPreCheck
+      operationId: createLiveMountPreCheckUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountCreateCheckParam»'
+            originalRef: Identity«LiveMountCreateCheckParam»
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: boolean
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/refresh:
+    put:
+      tags:
+        - dm-live-mount-controller
+      summary: refreshTargetResource
+      operationId: refreshTargetResourceUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountRefreshParam»'
+            originalRef: Identity«LiveMountRefreshParam»
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/unmount:
+    put:
+      tags:
+        - dm-live-mount-controller
+      summary: unmountLiveMount
+      operationId: unmountLiveMountUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountUnmountParam»'
+            originalRef: Identity«LiveMountUnmountParam»
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/resources/login:
+    post:
+      tags:
+        - ResourceInternalController
+      summary: '${api.resource.login}'
+      operationId: connectResourceUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: param
+          description: '${api.resource.login.param}'
+          required: false
+          schema:
+            $ref: '#/definitions/LoginParamRequest'
+            originalRef: LoginParamRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ResourceConnectResp'
+            originalRef: ResourceConnectResp
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/internal/resources/{env_id}/remove':
+    delete:
+      tags:
+        - ResourceInternalController
+      summary: removeResource
+      operationId: removeResourceUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: env_id
+          in: path
+          description: 受保护环境ID
+          required: false
+          type: string
+        - name: sub_type
+          in: query
+          description: 资源子类型
+          required: false
+          type: string
+          allowEmptyValue: false
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/restore-task/action/create:
+    post:
+      tags:
+        - access-point-controller
+      summary: createRestoreTask
+      operationId: createRestoreTaskUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: restoreRequestDto
+          description: restoreRequestDto
+          required: true
+          schema:
+            $ref: '#/definitions/RestoreRequestDto'
+            originalRef: RestoreRequestDto
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  ArchiveRequestDto:
+    type: object
+    properties:
+      copy_id:
+        type: string
+      object_type:
+        type: string
+      policy:
+        type: string
+    title: ArchiveRequestDto
+  Copy:
+    type: object
+    properties:
+      amount:
+        type: integer
+        format: int32
+      backup_type:
+        type: integer
+        format: int32
+      chain_id:
+        type: string
+      deletable:
+        type: boolean
+      display_timestamp:
+        type: string
+      duration_unit:
+        type: string
+      expiration_time:
+        type: string
+        format: date-time
+      features:
+        type: integer
+        format: int32
+      generated_by:
+        type: string
+      generated_time:
+        type: string
+      generation:
+        type: integer
+        format: int32
+      generation_type:
+        type: string
+      gn:
+        type: integer
+        format: int32
+      indexed:
+        type: string
+      is_archived:
+        type: boolean
+      is_replicated:
+        type: boolean
+      job_type:
+        type: string
+      location:
+        type: string
+      next_copy_gn:
+        type: integer
+        format: int32
+      next_copy_id:
+        type: string
+      parent_copy_uuid:
+        type: string
+      prev_copy_gn:
+        type: integer
+        format: int32
+      prev_copy_id:
+        type: string
+      properties:
+        type: string
+      resource_environment_ip:
+        type: string
+      resource_environment_name:
+        type: string
+      resource_id:
+        type: string
+      resource_location:
+        type: string
+      resource_name:
+        type: string
+      resource_properties:
+        type: string
+      resource_status:
+        type: string
+      resource_sub_type:
+        type: string
+      resource_type:
+        type: string
+      retention_duration:
+        type: integer
+        format: int32
+      retention_type:
+        type: integer
+        format: int32
+      sla_name:
+        type: string
+      sla_properties:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
+      user_id:
+        type: string
+      uuid:
+        type: string
+    title: Copy
+  CopyInfo:
+    type: object
+    properties:
+      backup_type:
+        type: integer
+        format: int32
+      chain_id:
+        type: string
+      deletable:
+        type: boolean
+      display_timestamp:
+        type: string
+      duration_unit:
+        type: string
+      expiration_time:
+        type: string
+        format: date-time
+      features:
+        type: integer
+        format: int32
+      generated_by:
+        type: string
+      generated_time:
+        type: string
+      generation:
+        type: integer
+        format: int32
+      generation_type:
+        type: string
+      indexed:
+        type: string
+      is_archived:
+        type: boolean
+      is_replicated:
+        type: boolean
+      job_type:
+        type: string
+      location:
+        type: string
+      parent_copy_uuid:
+        type: string
+      properties:
+        type: string
+      resource_environment_ip:
+        type: string
+      resource_environment_name:
+        type: string
+      resource_id:
+        type: string
+      resource_location:
+        type: string
+      resource_name:
+        type: string
+      resource_properties:
+        type: string
+      resource_status:
+        type: string
+      resource_sub_type:
+        type: string
+      resource_type:
+        type: string
+      retention_duration:
+        type: integer
+        format: int32
+      retention_type:
+        type: integer
+        format: int32
+      sla_name:
+        type: string
+      sla_properties:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
+      user_id:
+        type: string
+      uuid:
+        type: string
+    title: CopyInfo
+  CopyReplicationImport:
+    type: object
+    properties:
+      generated_time:
+        type: integer
+        format: int64
+        description: 副本生成时间
+        maximum: 9.223372036854776e18
+        exclusiveMaximum: false
+      metadata:
+        type: string
+        description: 元数据
+      properties:
+        type: object
+        description: 副本属性
+      timestamp:
+        type: integer
+        format: int64
+        description: 时间戳
+        maximum: 9.223372036854776e18
+        exclusiveMaximum: false
+    title: CopyReplicationImport
+  CopyResourceSummary:
+    type: object
+    properties:
+      copy_count:
+        type: integer
+        format: int32
+      resource_environment_ip:
+        type: string
+      resource_environment_name:
+        type: string
+      resource_id:
+        type: string
+      resource_location:
+        type: string
+      resource_name:
+        type: string
+      resource_properties:
+        type: string
+      resource_status:
+        type: string
+      resource_sub_type:
+        type: string
+      resource_type:
+        type: string
+      sla_name:
+        type: string
+    title: CopyResourceSummary
+  Filter:
+    type: object
+    properties:
+      content:
+        type: object
+      filterMode:
+        type: integer
+        format: int32
+      filterType:
+        type: integer
+        format: int32
+    title: Filter
+  Identity«LiveMountCloneRequest»:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/LiveMountCloneRequest'
+        originalRef: LiveMountCloneRequest
+      type:
+        type: string
+    title: Identity«LiveMountCloneRequest»
+  Identity«LiveMountCreateCheckParam»:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/LiveMountCreateCheckParam'
+        originalRef: LiveMountCreateCheckParam
+      type:
+        type: string
+    title: Identity«LiveMountCreateCheckParam»
+  Identity«LiveMountEntity»:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/LiveMountEntity'
+        originalRef: LiveMountEntity
+      type:
+        type: string
+    title: Identity«LiveMountEntity»
+  Identity«LiveMountExecuteParam»:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/LiveMountExecuteParam'
+        originalRef: LiveMountExecuteParam
+      type:
+        type: string
+    title: Identity«LiveMountExecuteParam»
+  Identity«LiveMountMigrateParam»:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/LiveMountMigrateParam'
+        originalRef: LiveMountMigrateParam
+      type:
+        type: string
+    title: Identity«LiveMountMigrateParam»
+  Identity«LiveMountRefreshParam»:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/LiveMountRefreshParam'
+        originalRef: LiveMountRefreshParam
+      type:
+        type: string
+    title: Identity«LiveMountRefreshParam»
+  Identity«LiveMountUnmountParam»:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/LiveMountUnmountParam'
+        originalRef: LiveMountUnmountParam
+      type:
+        type: string
+    title: Identity«LiveMountUnmountParam»
+  LiveMountCloneRequest:
+    type: object
+    properties:
+      sourceCopy:
+        $ref: '#/definitions/Copy'
+        originalRef: Copy
+      targetCopyUuid:
+        type: string
+    title: LiveMountCloneRequest
+  LiveMountCreateCheckParam:
+    type: object
+    properties:
+      copy:
+        $ref: '#/definitions/Copy'
+        originalRef: Copy
+      liveMountObject:
+        $ref: '#/definitions/LiveMountObject'
+        originalRef: LiveMountObject
+      resource:
+        $ref: '#/definitions/CopyResourceSummary'
+        originalRef: CopyResourceSummary
+      targetResources:
+        type: array
+        items:
+          $ref: '#/definitions/ResourceEntity'
+          originalRef: ResourceEntity
+    title: LiveMountCreateCheckParam
+  LiveMountEntity:
+    type: object
+    properties:
+      anonymization_status:
+        type: integer
+        format: int32
+        description: 匿名状态
+      copy_id:
+        type: string
+        description: 副本id
+      created_time:
+        type: string
+        description: 创建时间
+      enable_status:
+        type: string
+        description: '激活状态[取值范围]activated:激活 disabled:禁用'
+      id:
+        type: string
+        description: 即时挂载主键
+      mounted_copy_display_timestamp:
+        type: string
+        description: 已挂载副本时间戳
+      mounted_copy_id:
+        type: string
+        description: 已挂载副本id
+      mounted_resource_id:
+        type: string
+        description: 已挂载资源id
+      mounted_source_copy_id:
+        type: string
+        description: 已挂载资源副本id
+      parameters:
+        type: string
+        description: >-
+          扩展参数[取值类型]1.VMWare:{performance:{max_bandwidth:最大带宽,min_bandwidth:最小带宽,burst_time:峰值时间,latency:时延,min_iops:最小每秒输入/输出操作,burst_bandwidth:峰值带宽,max_iops:最大每秒输入/输出操作,burst_iops:峰值每秒输入/输出操作},name:挂载名称,config:{power_on:开/关机,startup_network_adaptor:开/关网络适配器,specify_location_config:{storage_location:存储Id,network:[{adapter_name:网卡名称
+          1,target_network_uuid:网卡id}]},cpu:{use_original:cpu是/否使用原配置},memory:{use_original:内存是/否使用原配置}}} 
+          2.Oracle:{performance:{max_bandwidth:最大带宽,min_bandwidth:最小带宽,burst_time:峰值时间,latency:时延,min_iops:最小每秒输入/输出操作,burst_bandwidth:峰值带宽,max_iops:最大每秒输入/输出操作,burst_iops:峰值每秒输入/输出操作},name:挂载名称,config:{power_on:开/关机},pre_script:前置脚本,post_script:后置脚本,failed_script:失败脚本}
+      policy_id:
+        type: string
+        description: 挂载更新策略id
+      resource_id:
+        type: string
+        description: 源资源id
+      resource_ip:
+        type: string
+        description: 源资源ip
+      resource_name:
+        type: string
+        description: 源资源名称
+      resource_path:
+        type: string
+        description: 源资源路径
+      resource_sub_type:
+        type: string
+        description: 资源子类型
+      resource_type:
+        type: string
+        description: 资源类型
+      schedule_id:
+        type: string
+        description: 定时调度id
+      status:
+        type: string
+        description: >-
+          挂载状态[取值范围]ready:准备中 mounting:挂载中 unmounting:卸载中 migrating:迁移中
+          available:可用 mount_failed:挂载失败 invalid:无效
+      target_location:
+        type: string
+        description: 目标资源位置
+      target_resource_id:
+        type: string
+        description: 目标资源id
+      target_resource_ip:
+        type: string
+        description: 目标资源ip
+      target_resource_name:
+        type: string
+        description: 目标资源名称
+      target_resource_path:
+        type: string
+        description: 目标资源路径
+      updated_time:
+        type: string
+        description: 更新时间
+      user_id:
+        type: string
+        description: 用户id
+    title: LiveMountEntity
+  LiveMountExecuteParam:
+    type: object
+    properties:
+      clone_copy:
+        $ref: '#/definitions/Copy'
+        originalRef: Copy
+      job_id:
+        type: string
+      live_mount:
+        $ref: '#/definitions/LiveMountEntity'
+        originalRef: LiveMountEntity
+      mounted_copy:
+        $ref: '#/definitions/Copy'
+        originalRef: Copy
+      request_id:
+        type: string
+      source_copy:
+        $ref: '#/definitions/Copy'
+        originalRef: Copy
+    title: LiveMountExecuteParam
+  LiveMountMigrateParam:
+    type: object
+    properties:
+      job_id:
+        type: string
+      live_mount:
+        $ref: '#/definitions/LiveMountEntity'
+        originalRef: LiveMountEntity
+      live_mount_migrate_ext_param:
+        type: object
+      request_id:
+        type: string
+    title: LiveMountMigrateParam
+  LiveMountObject:
+    type: object
+    properties:
+      copy_id:
+        type: string
+        description: 副本id
+      parameters:
+        type: object
+        description: >-
+          扩展参数[取值类型]1.VMWare:{performance:{max_bandwidth:最大带宽,min_bandwidth:最小带宽,burst_time:峰值时间,latency:时延,min_iops:最小每秒输入/输出操作,burst_bandwidth:峰值带宽,max_iops:最大每秒输入/输出操作,burst_iops:峰值每秒输入/输出操作},name:挂载名称,config:{power_on:开/关机,startup_network_adaptor:开/关网络适配器,specify_location_config:{storage_location:存储Id,network:[{adapter_name:网卡名称
+          1,target_network_uuid:网卡id}]},cpu:{use_original:cpu是/否使用原配置},memory:{use_original:内存是/否使用原配置}}} 
+          2.Oracle:{performance:{max_bandwidth:最大带宽,min_bandwidth:最小带宽,burst_time:峰值时间,latency:时延,min_iops:最小每秒输入/输出操作,burst_bandwidth:峰值带宽,max_iops:最大每秒输入/输出操作,burst_iops:峰值每秒输入/输出操作},name:挂载名称,config:{power_on:开/关机},pre_script:前置脚本,post_script:后置脚本,failed_script:失败脚本}
+      policy_id:
+        type: string
+        description: 挂载更新策略id
+      source_resource_id:
+        type: string
+        description: 源资源id
+      target_location:
+        type: string
+        description: "挂载原位置[取值范围] original 原位置，others 新位置\r\n"
+        enum:
+          - original
+          - others
+      target_resource_uuid_list:
+        type: array
+        description: 目标资源id
+        items:
+          type: string
+    title: LiveMountObject
+  LiveMountRefreshParam:
+    type: object
+    properties:
+      has_clean_protection:
+        type: boolean
+      live_mount:
+        $ref: '#/definitions/LiveMountEntity'
+        originalRef: LiveMountEntity
+    title: LiveMountRefreshParam
+  LiveMountUnmountParam:
+    type: object
+    properties:
+      job_id:
+        type: string
+      live_mount:
+        $ref: '#/definitions/LiveMountEntity'
+        originalRef: LiveMountEntity
+      mounted_copy:
+        $ref: '#/definitions/Copy'
+        originalRef: Copy
+      request_id:
+        type: string
+      reserve_app:
+        type: boolean
+    title: LiveMountUnmountParam
+  LoginParamRequest:
+    type: object
+    properties:
+      endpoint:
+        type: string
+        description: IP地址
+      env_id:
+        type: string
+        description: 受保护环境ID
+      ext_parameters:
+        type: object
+        description: 扩展参数
+        additionalProperties:
+          type: object
+      kerberos_id:
+        type: string
+        description: Kerberos ID
+      login_model:
+        type: string
+        description: 登录方式
+      password:
+        type: string
+        description: 密码
+      port:
+        type: integer
+        format: int32
+        description: 端口
+      sub_type:
+        type: string
+        description: 资源子类型
+      type:
+        type: string
+        description: 资源类型
+      username:
+        type: string
+        description: 用户名
+    title: LoginParamRequest
+  PageListResponse«Resource»:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 分页查询结果列表
+        items:
+          $ref: '#/definitions/Resource'
+          originalRef: Resource
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数
+    title: PageListResponse«Resource»
+  Resource:
+    type: object
+    properties:
+      environment_endpoint:
+        type: string
+        description: 资源所属环境的IP地址
+      environment_name:
+        type: string
+        description: 资源所属环境名称
+      gns_path:
+        type: string
+        description: 资源的gns路径
+      hasChildren:
+        type: boolean
+        description: 是否有子资源
+      instance_names:
+        type: string
+        description: 实例名称
+      name:
+        type: string
+        description: 资源名称
+      parent_uuid:
+        type: string
+        description: 父资源uuid
+      path:
+        type: string
+        description: 资源路径
+      root_uuid:
+        type: string
+        description: 根资源uuid
+      size:
+        type: string
+        description: 资源大小
+      sub_type:
+        type: string
+        description: >-
+          资源子类[取值范围]：Fileset|ABBackupClient|MySQL|DB2|SQLServer|ms.VirtualMachine|ms.HostSystem|GaussDB
+      type:
+        type: string
+        description: 资源类型
+      uuid:
+        type: string
+        description: 资源uuid
+    title: Resource
+  ResourceConnectResp:
+    type: object
+    properties:
+      env_id:
+        type: string
+        description: 受保护环境ID
+    title: ResourceConnectResp
+  ResourceEntity:
+    type: object
+    properties:
+      authorized_user:
+        type: string
+      children_uuids:
+        type: array
+        items:
+          type: string
+      created_time:
+        type: string
+      environment_endpoint:
+        type: string
+      environment_is_cluster:
+        type: boolean
+      environment_name:
+        type: string
+      environment_os_name:
+        type: string
+      environment_os_type:
+        type: string
+      environment_sub_type:
+        type: string
+      environment_type:
+        type: string
+      environment_uuid:
+        type: string
+      ext_parameters:
+        type: object
+        additionalProperties:
+          type: object
+      name:
+        type: string
+      parent_name:
+        type: string
+      parent_uuid:
+        type: string
+      path:
+        type: string
+      root_uuid:
+        type: string
+      sub_type:
+        type: string
+      type:
+        type: string
+      user_id:
+        type: string
+      uuid:
+        type: string
+      version:
+        type: string
+    title: ResourceEntity
+  RestoreRequestDto:
+    type: object
+    properties:
+      copy_id:
+        type: string
+      ext_parameters:
+        type: object
+        additionalProperties:
+          type: string
+      filters:
+        type: array
+        items:
+          $ref: '#/definitions/Filter'
+          originalRef: Filter
+      object_type:
+        type: string
+      request_id:
+        type: string
+      restore_location:
+        type: string
+      restore_objects:
+        type: array
+        items:
+          type: string
+      restore_type:
+        type: string
+      source:
+        $ref: '#/definitions/Source'
+        originalRef: Source
+      target:
+        $ref: '#/definitions/RestoreTarget'
+        originalRef: RestoreTarget
+    title: RestoreRequestDto
+  RestoreTarget:
+    type: object
+    properties:
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/TargetDetail'
+          originalRef: TargetDetail
+      env_id:
+        type: string
+      env_type:
+        type: string
+      restore_target:
+        type: string
+    title: RestoreTarget
+  Source:
+    type: object
+    properties:
+      source_location:
+        type: string
+      source_name:
+        type: string
+    title: Source
+  StopPlanBo:
+    type: object
+    properties:
+      associativeId:
+        type: string
+        description: 实例id
+      requestId:
+        type: string
+        description: 请求ID
+      sourceSubType:
+        type: string
+        description: >-
+          资源类型[取值范围]Host:主机 Fileset:文件集 DFSFileset:DFS文件集 Database:数据库
+          Application:Application VirtualPlatform:虚拟化 CloudPlatform:云平台 VM:虚拟机
+          BigData:大数据
+        enum:
+          - DBBackupAgent
+          - VMBackupAgent
+          - ABBackupClient
+          - Fileset
+          - DFSFileset
+          - Oracle
+          - SQLServer
+          - DB2
+          - MySQL
+          - GaussDB
+          - SAP HANA
+          - Kingbase
+          - Sybase IQ
+          - Informix
+          - TimesTen
+          - Gbase
+          - Dameng
+          - Cassandra
+          - OscarDB
+          - Exchange
+          - VMware vCenter Server
+          - VMware ESX
+          - VMware ESXi
+          - Hyper-V
+          - ms.VirtualMachine
+          - ms.HostSystem
+          - FusionSphere
+          - vim.ClusterComputeResource
+          - vim.HostSystem
+          - vim.Folder
+          - vim.ResourcePool
+          - OpenStack
+          - HuaweiCloudStack
+          - vim.VirtualMachine
+          - Hadoop
+          - vim.VirtualApp
+          - FusionInsight
+          - HDFS
+          - HBase
+          - ImportCopy
+      type:
+        type: string
+        description: >-
+          任务类型[取值范围]BACKUP:备份 RESTORE:恢复 INSTANT_RESTORE:即时恢复 live_mount:即时挂载
+          copy_replication:副本复制 archive:归档 COPY_DELETE:副本删除 COPY_EXPIRE:副本过期
+          unmount:卸载 DB_IDENTIFICATION:敏感数据识别 DB_DESESITIZATION:数据脱敏
+          archive_import:副本导入 migrate:迁移 resource_scan:注册
+          resource_protection:资源保护 resource_protection_modify:修改保护
+        enum:
+          - BACKUP
+          - RESTORE
+          - INSTANT_RESTORE
+          - live_mount
+          - copy_replication
+          - archive
+          - cloud_archive_restore
+          - COPY_DELETE
+          - COPY_EXPIRE
+          - archive_import
+          - unmount
+          - migrate
+          - resource_scan
+          - host_register
+          - protect_agent_update
+    title: StopPlanBo
+  TargetDetail:
+    type: object
+    properties:
+      src_id:
+        type: array
+        items:
+          type: string
+      target_id:
+        type: string
+      target_type:
+        type: string
+    title: TargetDetail

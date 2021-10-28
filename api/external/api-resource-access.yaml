@@ -1,0 +1,651 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ResourceAccessFramework
+basePath: /
+tags:
+  - name: protected-environment-api
+  - name: protected-resource-api
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  '/v2/environments/{envId}/resources':
+    get:
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-environment-api
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      summary: 浏览环境资源
+      description: 浏览环境资源，支持HDFS、HBase受保护环境资源的浏览
+      operationId: ListEnvironmentResource
+      parameters:
+        - name: envId
+          in: path
+          required: true
+          type: string
+          description: 受保护环境ID
+        - name: parentId
+          in: query
+          required: false
+          description: 父资源ID
+          type: string
+        - name: resourceType
+          in: query
+          required: true
+          description: 资源类型
+          type: string
+        - name: pageNo
+          in: query
+          required: true
+          description: 起始页
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          description: 分页大小
+          type: integer
+          format: int32
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: 环境资源响应体
+          schema:
+            $ref: '#/definitions/EnvironmentResourceList'
+  /v2/resources:
+    post:
+      tags:
+        - protected-resource-api
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      summary: 创建资源
+      description: 创建资源
+      operationId: CreateResources
+      parameters:
+        - name: CreateResourcesRequestBody
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProtectedResourceRequest'
+          description: 创建资源的请求体
+      responses:
+        '200':
+          description: 资源UUID
+          schema:
+            type: array
+            items:
+              type: string
+    put:
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 支持批量更新资源，更新资源过程中回调beforeUpdate接口，beforeUpdate接口调用失败则事务回滚
+      description: 更新资源
+      operationId: UpdateResources
+      parameters:
+        - name: UpdateResourcesRequestBody
+          in: body
+          required: true
+          description: 资源信息
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProtectedResourceResponse'
+      responses:
+        '200':
+          description: 操作成功无返回结果，操作失败异常报错。
+    get:
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 支持资源分页查询，支持资源属性、环境属性、受保护对象属性的过滤查询
+      description: 资源分页查询。
+      operationId: ListResources
+      parameters:
+        - name: pageNo
+          in: query
+          required: false
+          type: integer
+          format: int32
+          default: 0
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 页索引
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+          default: 10
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 页大小
+        - name: conditions
+          in: query
+          required: false
+          type: string
+          default: '{}'
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 查询条件(json格式)
+        - name: orders
+          in: query
+          required: false
+          type: array
+          default: '[]'
+          items:
+            type: string
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 排序字段（格式：升序为+field，降序为-field）
+      responses:
+        '200':
+          description: 分页查询结果
+          schema:
+            $ref: '#/definitions/ProtectedResourcePageListResponse'
+  /v2/environments:
+    post:
+      x-request-examples-text-1: |-
+        {
+          "name": "HDFS_Cluster",
+          "type": "BigData",
+          "endpoint": "192.168.0.1",
+          "subType": "HDFS",
+          "port": 8888,
+          "extendInfo": {
+            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
+            "kerberosId": "string",//环境鉴权使用的kerberosid
+            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
+            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
+          }
+        }
+      x-request-examples-1: |-
+        {
+          "name": "HDFS_Cluster",
+          "type": "BigData",
+          "endpoint": "192.168.0.1",
+          "subType": "HDFS",
+          "port": 8888,
+          "extendInfo": {
+            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
+            "kerberosId": "string",//环境鉴权使用的kerberosid
+            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
+            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
+          }
+        }
+      x-request-examples-url-1: 'POST https://host:25801/v2/environments'
+      x-request-examples-description-1: 注册HDFS集群
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-environment-api
+      summary: 注册环境
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      description: 注册受保护环境，支持HDFS、HBase，NAS受保护环境的注册
+      operationId: RegisterProtectedEnviroment
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - name: RegisterProtectedEnviromentRequestBody
+          in: body
+          required: true
+          description: 环境名称
+          schema:
+            $ref: '#/definitions/ProtectedEnvironmentRequest'
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+          examples:
+            application/json: ''
+  '/v2/resources/{resourceId}':
+    get:
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 根据资源ID查询资源信息
+      description: 查询单个资源信息
+      operationId: ShowResource
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+          description: 资源ID
+      responses:
+        '200':
+          description: 资源信息
+          schema:
+            $ref: '#/definitions/ProtectedResourceResponse'
+    delete:
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 删除资源ID对应的资源
+      description: 删除资源ID对应的资源，资源已关联SLA的情况下，不允许删除
+      operationId: DeleteResource
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+          description: 资源ID
+      responses:
+        '200':
+          description: 操作成功无返回结果，操作失败异常报错。
+  '/v2/environments/{envId}':
+    put:
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-environment-api
+      summary: 更新受保护环境
+      description: 更新受保护环境，支持HDFS、HBase，NAS受保护环境的更新
+      operationId: UpdateProtectedEnvironment
+      parameters:
+        - name: envId
+          in: path
+          required: true
+          type: string
+          description: 受保护环境ID
+        - name: UpdateProtectedEnvironmentRequestBody
+          in: body
+          required: true
+          description: 更新受保护环境请求体
+          schema:
+            $ref: '#/definitions/ProtectedEnvironmentRequest'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+    delete:
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-environment-api
+      summary: 删除受保护环境
+      description: 删除受保护环境，支持HDFS、HBase，NAS受保护环境的删除
+      operationId: DeleteProtectedEnvironment
+      parameters:
+        - name: envId
+          in: path
+          required: true
+          type: string
+          description: 受保护环境ID
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+definitions:
+  ProtectedEnvironmentRequest:
+    description: 受保护对象请求体
+    properties:
+      uuid:
+        type: string
+        description: 受保护环境UUID
+      name:
+        type: string
+        description: 受保护环境名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      type:
+        type: string
+        description: 环境的类型
+      endpoint:
+        type: string
+        description: 环境的IP地址或域名
+      subType:
+        type: string
+        description: 环境的子类型
+      port:
+        type: integer
+        format: int32
+        description: 环境的接入端口
+      username:
+        type: string
+        description: 环境的用户名
+      password:
+        type: string
+        description: 环境的密码
+      osType:
+        type: string
+        description: 环境的操作系统
+      version:
+        type: string
+        description: 环境的版本
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 环境扩展参数，存放不同环境的自定义扩展属性
+    required:
+      - name
+      - type
+      - subType
+  ProtectedResourceResponse:
+    description: 创建资源请求体
+    properties:
+      uuid:
+        type: string
+        description: 资源uuid
+      name:
+        type: string
+        description: 资源名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      type:
+        type: string
+        description: 资源主类型
+      subType:
+        type: string
+        description: 资源子类型
+      path:
+        type: string
+        description: 资源路径
+      rootUuid:
+        type: string
+        description: 资源所属根资源uuid，即环境的uuid
+      parentUuid:
+        type: string
+        description: 父资源ID
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 资源扩展属性
+      createdTime:
+        type: string
+        format: date-time
+        description: 资源创建时间
+      version:
+        type: string
+        description: 资源的版本
+      parentName:
+        type: string
+        description: 父资源名称
+      userId:
+        type: string
+        description: 资源所属用户ID
+      authorizedUser:
+        type: string
+        description: 资源所属用户名称
+      sla:
+        $ref: '#/definitions/ProtectedObject'
+      environment:
+        $ref: '#/definitions/ProtectedEnvironment'
+    required:
+      - name
+      - type
+      - subType
+      - rootUuid
+  ProtectedEnvironmentList:
+    properties:
+      total:
+        type: integer
+        format: int64
+        description: 总的记录数
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      page_size:
+        type: integer
+        format: int64
+        description: 每页记录数
+      page_no:
+        type: integer
+        format: int64
+        description: 第几页
+      items:
+        $ref: '#/definitions/ProtectedEnvironmentResponse'
+  EnvironmentResourceList:
+    description: 环境资源列表
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总记录数
+      records:
+        $ref: '#/definitions/ProtectedEnvironmentResponse'
+  ProtectedObject:
+    properties:
+      slaId:
+        type: string
+        description: SLA的ID
+      slaName:
+        type: string
+        description: SLA的名称
+      slaCompliance:
+        type: boolean
+        description: SLA遵从度
+      status:
+        type: integer
+        format: int32
+        description: 状态
+    required:
+      - slaId
+      - slaName
+      - slaCompliance
+      - status
+  ProtectedEnvironment:
+    properties:
+      endpoint:
+        type: string
+        description: 环境地址
+      port:
+        type: integer
+        format: int32
+        description: 环境端口
+      linkStatus:
+        type: string
+        description: 连接状态
+      userName:
+        type: string
+        description: 用户名
+      location:
+        type: string
+        description: 位置
+      osType:
+        type: string
+        description: 操作系统类型
+      osName:
+        type: string
+        description: 操作系统名称
+      scanInterval:
+        type: string
+        description: 扫描间隔时间
+  ProtectedResourcePageListResponse:
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 满足分页查询条件的统计数量
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/ProtectedResourceResponse'
+        description: 当前分页的查询记录
+  ProtectedEnvironmentResponse:
+    description: 受保护对象请求体
+    properties:
+      uuid:
+        type: string
+        description: 受保护环境UUID
+      name:
+        type: string
+        description: 受保护环境名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      type:
+        type: string
+        description: 环境的类型
+      endpoint:
+        type: string
+        description: 环境的IP地址或域名
+      subType:
+        type: string
+        description: 环境的子类型
+      port:
+        type: integer
+        format: int32
+        description: 环境的接入端口
+      username:
+        type: string
+        description: 环境的用户名
+      osType:
+        type: string
+        description: 环境的操作系统
+      version:
+        type: string
+        description: 环境的版本
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 环境扩展参数，存放不同环境的自定义扩展属性
+    required:
+      - name
+      - type
+      - subType
+  ProtectedResourceRequest:
+    description: 创建资源请求体
+    properties:
+      uuid:
+        type: string
+        description: 资源uuid
+      name:
+        type: string
+        description: 资源名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      type:
+        type: string
+        description: 资源主类型
+      subType:
+        type: string
+        description: 资源子类型
+      path:
+        type: string
+        description: 资源路径
+      rootUuid:
+        type: string
+        description: 资源所属根资源uuid，即环境的uuid
+      parentUuid:
+        type: string
+        description: 父资源ID
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 资源扩展属性
+      version:
+        type: string
+        description: 资源的版本
+    required:
+      - name
+      - type
+      - subType
+      - rootUuid
+  ProtectedEnvironmentUpdateRequest:
+    description: 受保护对象请求体
+    properties:
+      uuid:
+        type: string
+        description: 受保护环境UUID
+      name:
+        type: string
+        description: 受保护环境名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      endpoint:
+        type: string
+        description: 环境的IP地址或域名
+      port:
+        type: integer
+        format: int32
+        description: 环境的接入端口
+      username:
+        type: string
+        description: 环境的用户名
+      password:
+        type: string
+        description: 环境的密码
+      osType:
+        type: string
+        description: 环境的操作系统
+      version:
+        type: string
+        description: 环境的版本
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 环境扩展参数，存放不同环境的自定义扩展属性
