@@ -1,0 +1,112 @@
+swagger: '2.0'
+info:
+  title: 副本保护对象接口
+  version: v1
+tags:
+  - name: protected_copy_object_api
+paths:
+  /v1/internal/protected-copy-objects/action/sync-sla:
+    put:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: >-
+              #/definitions/Body_sync_replica_sla_change_v1_internal_protected_copy_objects_action_sync_sla_put
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - protected_copy_object_api
+      operationId: >-
+        sync_replica_sla_change_v1_internal_protected_copy_objects_action_sync_sla_put
+      summary: 副本保护对象同步SLA信息变更【内部接口】
+definitions:
+  Body_sync_replica_sla_change_v1_internal_protected_copy_objects_action_sync_sla_put:
+    properties:
+      sla_id:
+        description: SLA的ID
+        title: Sla Id
+        type: string
+    required:
+      - sla_id
+    title: >-
+      Body_sync_replica_sla_change_v1_internal_protected_copy_objects_action_sync_sla_put
+    type: object
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  ProtectedCopyBatchOperationReq:
+    properties:
+      resource_ids:
+        description: 批量操作资源ID列表
+        items:
+          type: string
+        title: Resource Ids
+        type: array
+    required:
+      - resource_ids
+    title: ProtectedCopyBatchOperationReq
+    type: object
+  ProtectedCopyObjectId:
+    properties:
+      uuid:
+        description: 保护副本对象的ID
+        title: Uuid
+        type: string
+    title: ProtectedCopyObjectId
+    type: object
+  ProtectedCopyObjectUpdate:
+    properties:
+      resource_id:
+        description: 保护对象对应资源的ID
+        maxLength: 128
+        minLength: 1
+        title: Resource Id
+        type: string
+      sla_id:
+        description: 新SLA的ID
+        format: uuid
+        title: Sla Id
+        type: string
+    required:
+      - sla_id
+      - resource_id
+    title: ProtectedCopyObjectUpdate
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}

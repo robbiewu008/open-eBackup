@@ -1,0 +1,233 @@
+swagger: '2.0'
+info:
+  title: 资源管理（文件集）
+  version: v1
+tags:
+  - name: filesets
+paths:
+  /v1/filesets:
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          required: true
+          schema:
+            allOf:
+              - $ref: '#/definitions/FilesetDetail'
+            description: 文件集信息
+            title: File Set Detail
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/UuidObject'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - filesets
+      operationId: create_fileset_v1_filesets_post
+      summary: 创建文件集
+  '/v1/filesets/{fileset_id}':
+    delete:
+      produces:
+        - application/json
+      parameters:
+        - description: 文件集ID
+          in: path
+          name: fileset_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - filesets
+      operationId: delete_fileset_v1_filesets__fileset_id__delete
+      summary: 删除文件集
+    put:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 文件集ID
+          in: path
+          name: fileset_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          required: true
+          schema:
+            allOf:
+              - $ref: '#/definitions/FilesetConfig'
+            description: 文件集配置
+            title: Config
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - filesets
+      operationId: modify_fileset_v1_filesets__fileset_id__put
+      summary: 修改文件集
+definitions:
+  FilesetConfig:
+    properties:
+      paths:
+        description: 文件集路径列表
+        items:
+          type: string
+        title: Paths
+        type: array
+      filters:
+        description: 文件集过滤器信息列表
+        items:
+          $ref: '#/definitions/FilesetFilterDetail'
+        title: Filters
+        type: array
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+    required:
+      - name
+      - paths
+    title: FilesetConfig
+    type: object
+  FilesetDetail:
+    properties:
+      paths:
+        description: 文件集路径列表
+        items:
+          type: string
+        title: Paths
+        type: array
+      filters:
+        description: 文件集过滤器信息列表
+        items:
+          $ref: '#/definitions/FilesetFilterDetail'
+        title: Filters
+        type: array
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      root_uuid:
+        description: 环境ID
+        title: Root Uuid
+        type: string
+    required:
+      - name
+      - paths
+    title: FilesetDetail
+    type: object
+  FilesetFilterDetail:
+    properties:
+      content:
+        description: 文件集过滤器内容
+        maxLength: 8192
+        title: Content
+        type: string
+      model:
+        $ref: '#/definitions/FilesetFilterModel'
+      type:
+        $ref: '#/definitions/FilesetFilterType'
+    required:
+      - type
+      - model
+      - content
+    title: FilesetFilterDetail
+    type: object
+  FilesetFilterModel:
+    description: An enumeration.
+    enum:
+      - 1
+      - 2
+    title: FilesetFilterModel
+    type: integer
+  FilesetFilterType:
+    description: An enumeration.
+    enum:
+      - 1
+      - 2
+      - 3
+      - 4
+    title: FilesetFilterType
+    type: integer
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  UuidObject:
+    properties:
+      uuid:
+        description: UUID
+        title: Uuid
+        type: string
+    required:
+      - uuid
+    title: UuidObject
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}

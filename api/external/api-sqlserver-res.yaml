@@ -1,0 +1,975 @@
+swagger: '2.0'
+info:
+  title: 资源管理（sqlserver）
+  version: v1
+tags:
+  - name: sqlserver-api
+paths:
+  /v1/sqlserver/cluster:
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          required: true
+          schema:
+            allOf:
+              - $ref: '#/definitions/DatabaseCluster'
+            description: 创建SQL Server集群
+            title: Cluster Request
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sqlserver-api
+      operationId: create_sql_server_cluster_v1_sqlserver_cluster_post
+      summary: 创建SQL Server集群
+  '/v1/sqlserver/cluster/{cluster_id}':
+    delete:
+      produces:
+        - application/json
+      parameters:
+        - description: 集群ID
+          in: path
+          maxLength: 128
+          minLength: 1
+          name: cluster_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - sqlserver-api
+      operationId: delete_sql_server_cluster_v1_sqlserver_cluster__cluster_id__delete
+      summary: 根据集群ID删除SQL Server AlwaysOn集群
+  /v1/sqlserver/clusters/databases:
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          maxLength: 10000
+          minLength: 1
+          name: X-Auth-Token
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            allOf:
+              - $ref: '#/definitions/AddClusterSqlServerDataBasesRequest'
+            description: 注册SQL Server数据库集群请求信息
+            title: Register Cluster Db
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - sqlserver-api
+      operationId: register_cluster_sql_server_v1_sqlserver_clusters_databases_post
+      summary: 注册SQL Server数据库集群
+  '/v1/sqlserver/clusters/{cluster_id}/alwayson-availability-group':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 集群ID
+          in: path
+          maxLength: 128
+          minLength: 1
+          name: cluster_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              $ref: '#/definitions/AvailabilityGroup'
+            title: >-
+              Response Query Cluster Availability Group V1 Sqlserver Clusters 
+              Cluster Id  Alwayson Availability Group Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - sqlserver-api
+      operationId: >-
+        query_cluster_availability_group_v1_sqlserver_clusters__cluster_id__alwayson_availability_group_get
+      summary: 根据集群ID查询SQL Server虚拟集群中可用性组信息
+  '/v1/sqlserver/clusters/{cluster_id}/alwayson-availability-groups/{group_name}/databases':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 集群ID
+          in: path
+          maxLength: 128
+          minLength: 1
+          name: cluster_id
+          required: true
+          type: string
+        - description: 可用性组名称
+          in: path
+          maxLength: 512
+          minLength: 1
+          name: group_name
+          required: true
+          type: string
+        - description: 可用性组的ID
+          in: query
+          maxLength: 512
+          minLength: 1
+          name: id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              type: string
+            title: >-
+              Response Query Sql Server Cluster Database V1 Sqlserver Clusters 
+              Cluster Id  Alwayson Availability Groups  Group Name  Databases
+              Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - sqlserver-api
+      operationId: >-
+        query_sql_server_cluster_database_v1_sqlserver_clusters__cluster_id__alwayson_availability_groups__group_name__databases_get
+      summary: 查询SQL Server虚拟集群可用性组中的数据库名称列表
+  /v1/sqlserver/databases:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - collectionFormat: multi
+          description: 排序字段：
+          in: query
+          items:
+            type: string
+          name: orders
+          required: false
+          type: array
+        - description: 条件参数：
+          in: query
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_RegisterDatabaseSchema_'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sqlserver-api
+      operationId: query_resources_v1_sqlserver_databases_get
+      summary: 查询SQL Server数据库资源信息列表
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          schema:
+            allOf:
+              - $ref: '#/definitions/AddDataBasesRequest'
+            description: 注册SQL Server数据库请求信息
+            title: Register Db
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - sqlserver-api
+      operationId: register_sql_server_v1_sqlserver_databases_post
+      summary: 注册SQL Server数据库
+  /v1/sqlserver/databases/action/unregistered-dbs:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: query
+          maxLength: 128
+          minLength: 1
+          name: host_id
+          required: true
+          type: string
+        - description: 实例名称
+          in: query
+          maxLength: 512
+          minLength: 1
+          name: instance_name
+          required: true
+          type: string
+        - description: 操作系统用户名
+          in: query
+          maxLength: 512
+          minLength: 1
+          name: os_username
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              type: string
+            title: >-
+              Response Get Unregistered Database V1 Sqlserver Databases Action
+              Unregistered Dbs Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sqlserver-api
+      operationId: >-
+        get_unregistered_database_v1_sqlserver_databases_action_unregistered_dbs_get
+      summary: 查询未注册的SQL Server数据库名称列表
+  '/v1/sqlserver/databases/{db_id}':
+    delete:
+      produces:
+        - application/json
+      parameters:
+        - description: SQL Server数据库ID
+          in: path
+          maxLength: 128
+          minLength: 1
+          name: db_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - sqlserver-api
+      operationId: delete_sql_server_v1_sqlserver_databases__db_id__delete
+      summary: 删除SQL Server数据库
+  /v1/sqlserver/servers:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          maximum: 10000
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 1
+          name: page_size
+          required: true
+          type: integer
+        - description: 主机/集群查询条件
+          in: query
+          maxLength: 1024
+          minLength: 1
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          maxLength: 10000
+          minLength: 1
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_DbServerInfo_'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - sqlserver-api
+      operationId: get_sql_server_server_list_v1_sqlserver_servers_get
+      summary: 分页查询SQL Server数据库主机/集群信息列表
+  /v1/sqlserver/timestamp:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 资源ID
+          in: query
+          maxLength: 128
+          minLength: 1
+          name: resource_id
+          required: true
+          type: string
+        - description: 备份的ID
+          in: query
+          maxLength: 128
+          minLength: 1
+          name: backup_id
+          required: true
+          type: string
+        - description: 副本的时间戳
+          in: query
+          maxLength: 128
+          minLength: 1
+          name: time_stamp
+          required: true
+          type: string
+        - description: 可用性组或者实例名称
+          in: query
+          maxLength: 512
+          minLength: 1
+          name: instance_group_name
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: The response is the copied timestamp
+          schema:
+            $ref: '#/definitions/TimeSlot'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - sqlserver-api
+      operationId: query_database_time_range_v1_sqlserver_timestamp_get
+      summary: 查询SQL Server副本时间戳信息
+definitions:
+  AddClusterSqlServerDataBasesRequest:
+    properties:
+      cluster_id:
+        description: 集群ID
+        maxLength: 64
+        minLength: 1
+        title: Cluster Id
+        type: string
+      database_names:
+        description: 数据库名称列表
+        items:
+          type: string
+        title: Database Names
+        type: array
+      instance_infos:
+        description: SQL Server数据库实例信息列表
+        items:
+          $ref: '#/definitions/RegisterClusterSqlServerDatabaseInfo'
+        title: Instance Infos
+        type: array
+    required:
+      - cluster_id
+      - instance_infos
+      - database_names
+    title: AddClusterSqlServerDataBasesRequest
+    type: object
+  AddDataBasesRequest:
+    properties:
+      database_names:
+        description: 数据库名称列表
+        items:
+          type: string
+        title: Database Names
+        type: array
+      host_id:
+        description: 集群/主机ID
+        maxLength: 64
+        minLength: 1
+        title: Host Id
+        type: string
+      instance_infos:
+        description: 数据库实例信息列表
+        items:
+          $ref: >-
+            #/definitions/app__resource__schemas__database_models__RegisterDatabaseSchema
+        title: Instance Infos
+        type: array
+      is_cluster:
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+    required:
+      - host_id
+      - instance_infos
+      - database_names
+    title: AddDataBasesRequest
+    type: object
+  AvailabilityGroup:
+    properties:
+      group_name:
+        description: 可用性组名称
+        title: Group Name
+        type: string
+      is_authorized:
+        description: 是否认证
+        title: Is Authorized
+        type: boolean
+      node_type:
+        description: 节点类型
+        title: Node Type
+        type: string
+      uuid:
+        description: 可用性组的UUID
+        title: Uuid
+        type: string
+    title: AvailabilityGroup
+    type: object
+  BasePage_DbServerInfo_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/DbServerInfo'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[DbServerInfo]'
+    type: object
+  BasePage_RegisterDatabaseSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: >-
+            #/definitions/app__resource__schemas__database_schema__RegisterDatabaseSchema
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[RegisterDatabaseSchema]'
+    type: object
+  DatabaseCluster:
+    properties:
+      cluster_name:
+        description: 集群名称
+        maxLength: 64
+        minLength: 1
+        pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        title: Cluster Name
+        type: string
+      nodes:
+        description: 节点列表
+        items:
+          type: string
+        title: Nodes
+        type: array
+    required:
+      - nodes
+    title: DatabaseCluster
+    type: object
+  DbServerInfo:
+    properties:
+      authorized_user:
+        description: 授权用户
+        title: Authorized User
+        type: string
+      db_count:
+        description: 注册数据库数量
+        title: Db Count
+        type: integer
+      host_endpoint:
+        description: 主机/集群IP地址
+        title: Host Endpoint
+        type: string
+      host_id:
+        description: 主机/集群ID
+        title: Host Id
+        type: string
+      host_name:
+        description: 主机/集群名称
+        title: Host Name
+        type: string
+      is_authorized:
+        description: 是否认证
+        title: Is Authorized
+        type: boolean
+      is_cluster:
+        description: 是否是集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        description: 状态
+        title: Link Status
+        type: integer
+      os_type:
+        description: 操作系统类型
+        title: Os Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+    title: DbServerInfo
+    type: object
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  RegisterClusterSqlServerDatabaseInfo:
+    properties:
+      database_name:
+        description: SQL Server数据库名称
+        maxLength: 64
+        minLength: 1
+        title: Database Name
+        type: string
+      group_name:
+        description: 实例所属可用性组
+        maxLength: 64
+        minLength: 1
+        title: Group Name
+        type: string
+      host_id:
+        description: 主机ID
+        maxLength: 64
+        minLength: 1
+        title: Host Id
+        type: string
+      instance_name:
+        description: SQL Server数据库实例名称
+        maxLength: 64
+        minLength: 1
+        title: Instance Name
+        type: string
+    required:
+      - host_id
+      - group_name
+      - instance_name
+      - database_name
+    title: RegisterClusterSqlServerDatabaseInfo
+    type: object
+  TimeSlot:
+    properties:
+      full_time:
+        description: 全量备份时间
+        title: Full Time
+        type: string
+      log_time:
+        description: 日志备份时间
+        title: Log Time
+        type: string
+    title: TimeSlot
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+  app__resource__schemas__database_models__RegisterDatabaseSchema:
+    properties:
+      host_id:
+        description: 主机ID
+        maxLength: 64
+        minLength: 1
+        title: Host Id
+        type: string
+      instance_name:
+        description: 实例名称
+        maxLength: 64
+        minLength: 1
+        title: Instance Name
+        type: string
+      os_username:
+        description: 实例所属操作系统用户
+        maxLength: 64
+        minLength: 0
+        title: Os Username
+        type: string
+    required:
+      - host_id
+      - instance_name
+    title: RegisterDatabaseSchema
+    type: object
+  app__resource__schemas__database_schema__RegisterDatabaseSchema:
+    properties:
+      asm:
+        description: ASM信息
+        title: Asm
+        type: string
+      asm_auth:
+        description: ASM认证信息
+        title: Asm Auth
+        type: string
+      auth_type:
+        description: 认证方式
+        title: Auth Type
+        type: integer
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      db_password:
+        description: 数据库密码
+        title: Db Password
+        type: string
+      db_role:
+        description: 数据库角色
+        title: Db Role
+        type: integer
+      db_username:
+        description: 数据库用户名
+        title: Db Username
+        type: string
+      desesitization_policy_id:
+        description: 脱敏策略ID
+        title: Desesitization Policy Id
+        type: string
+      desesitization_policy_name:
+        description: 脱敏策略名称
+        title: Desesitization Policy Name
+        type: string
+      desesitization_status:
+        description: 脱敏状态
+        title: Desesitization Status
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      identification_status:
+        description: 识别状态
+        title: Identification Status
+        type: string
+      instance_names:
+        description: 所有实例名称
+        title: Instance Names
+        type: string
+      instance_uuids:
+        description: 所有实例ID
+        title: Instance Uuids
+        type: string
+      is_asminst:
+        description: 是否使用ASM存储
+        title: Is Asminst
+        type: integer
+      is_cluster:
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        description: 连接状态
+        title: Link Status
+        type: integer
+      name:
+        description: 数据库名称
+        title: Name
+        type: string
+      os_username:
+        description: 所属操作系统用户名
+        title: Os Username
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      source_type:
+        description: 资源的来源
+        title: Source Type
+        type: string
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      valid:
+        description: 是否展示
+        title: Valid
+        type: boolean
+      verify_status:
+        description: 是否认证
+        title: Verify Status
+        type: boolean
+      version:
+        description: 数据库版本
+        title: Version
+        type: string
+    required:
+      - name
+      - root_uuid
+      - parent_uuid
+      - type
+      - sub_type
+      - uuid
+      - instance_uuids
+      - instance_names
+    title: RegisterDatabaseSchema
+    type: object
+x-components: {}

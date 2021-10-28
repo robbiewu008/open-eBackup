@@ -1,0 +1,151 @@
+swagger: '2.0'
+info:
+  title: 备份流程管理接口
+  version: v1
+tags:
+  - name: Backup
+paths:
+  /v1/internal/workflows/backup/result:
+    put:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+            allOf:
+              - $ref: '#/definitions/JobSchema'
+            description: Job Info
+            title: Job
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - Backup
+      operationId: update_backup_result_v1_internal_workflows_backup_result_put
+      summary: '更新备份流程结果,用于备份任务取消时的回调'
+definitions:
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  JobSchema:
+    properties:
+      associativeId:
+        title: Associativeid
+        type: string
+      copyId:
+        title: Copyid
+        type: string
+      copyTime:
+        title: Copytime
+        type: integer
+      data:
+        title: Data
+        type: string
+      detail:
+        title: Detail
+        type: string
+      detailPara:
+        title: Detailpara
+        type: string
+      enableStop:
+        title: Enablestop
+        type: boolean
+      endTime:
+        title: Endtime
+        type: integer
+      extendStr:
+        title: Extendstr
+        type: string
+      isSystem:
+        title: Issystem
+        type: boolean
+      isVisible:
+        title: Isvisible
+        type: boolean
+      jobId:
+        title: Jobid
+        type: string
+      lastUpdateTime:
+        title: Lastupdatetime
+        type: integer
+      message:
+        title: Message
+        type: string
+      parentId:
+        title: Parentid
+        type: string
+      progress:
+        title: Progress
+        type: integer
+      requestId:
+        title: Requestid
+        type: string
+      sourceId:
+        title: Sourceid
+        type: string
+      sourceLocation:
+        title: Sourcelocation
+        type: string
+      sourceName:
+        title: Sourcename
+        type: string
+      sourceSubType:
+        title: Sourcesubtype
+        type: string
+      speed:
+        title: Speed
+        type: string
+      startTime:
+        title: Starttime
+        type: integer
+      status:
+        title: Status
+        type: string
+      targetLocation:
+        title: Targetlocation
+        type: string
+      targetName:
+        title: Targetname
+        type: string
+      type:
+        title: Type
+        type: string
+      userId:
+        title: Userid
+        type: string
+    title: JobSchema
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}

@@ -1,0 +1,905 @@
+swagger: '2.0'
+info:
+  title: 资源管理（vmware）
+  version: v1
+tags:
+  - name: VMwareInternalAPI
+paths:
+  '/v1/internal/compute-resources/clusters/{cluster_uuid}/config':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 计算资源集群ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: cluster_uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/ClusterConfigSchema'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - VMwareInternalAPI
+      description: 根据集群计算资源ID查询集群计算资源的配置
+      operationId: >-
+        internal_get_cluster_config_v1_internal_compute_resources_clusters__cluster_uuid__config_get
+      summary: 查询集群计算资源的配置【内部接口】
+  '/v1/internal/compute-resources/{compute_res_uuid}/action/refresh':
+    put:
+      produces:
+        - application/json
+      parameters:
+        - description: 计算资源ID
+          in: path
+          name: compute_res_uuid
+          required: true
+          type: string
+        - description: 虚拟机名称
+          in: query
+          name: vm_name
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - VMwareInternalAPI
+      description: 刷新计算资源下的虚拟机信息
+      operationId: >-
+        refresh_compute_res_v1_internal_compute_resources__compute_res_uuid__action_refresh_put
+      summary: 刷新计算资源下的虚拟机信息【内部接口】
+  '/v1/internal/compute-resources/{compute_res_uuid}/datastores':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 计算资源ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: compute_res_uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              $ref: '#/definitions/VirtualResourceSchema'
+            title: >-
+              Response List Compute Res Datastore Details V1 Internal Compute
+              Resources  Compute Res Uuid  Datastores Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - VMwareInternalAPI
+      description: 根据计算资源ID查询计算资源的数据存储列表
+      operationId: >-
+        list_compute_res_datastore_details_v1_internal_compute_resources__compute_res_uuid__datastores_get
+      summary: 查询计算资源的数据存储列表【内部接口】
+  '/v1/internal/compute-resources/{compute_res_uuid}/folder':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 计算资源ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: compute_res_uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/FolderSchema'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - VMwareInternalAPI
+      description: 根据计算资源ID查询计算资源的虚拟文件夹信息
+      operationId: >-
+        get_folder_info_v1_internal_compute_resources__compute_res_uuid__folder_get
+      summary: 查询计算资源的虚拟文件夹信息【内部接口】
+  '/v1/internal/compute-resources/{compute_res_uuid}/networks':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 计算资源ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: compute_res_uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              $ref: '#/definitions/VirtualResourceSchema'
+            title: >-
+              Response List Compute Res Network Details V1 Internal Compute
+              Resources  Compute Res Uuid  Networks Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - VMwareInternalAPI
+      description: 根据计算资源ID查询计算资源的网络信息列表
+      operationId: >-
+        list_compute_res_network_details_v1_internal_compute_resources__compute_res_uuid__networks_get
+      summary: 查询计算资源的网络信息列表【内部接口】
+  '/v1/internal/virtual-machines/{vm_uuid}':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: VMware虚拟机ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: vm_uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/VMwareSchema'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - VMwareInternalAPI
+      operationId: internal_get_vm_info_v1_internal_virtual_machines__vm_uuid__get
+      summary: 查询VMware虚拟机的详细信息【内部接口】
+  '/v1/internal/virtual-machines/{vm_uuid}/disks':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: VMware虚拟机ID
+          in: path
+          name: vm_uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              $ref: '#/definitions/VirtualDiskDetailSchema'
+            title: >-
+              Response List Vm Disk Details V1 Internal Virtual Machines  Vm
+              Uuid  Disks Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - VMwareInternalAPI
+      description: 根据VMware虚拟机ID查询VMware虚拟机的硬盘列表
+      operationId: list_vm_disk_details_v1_internal_virtual_machines__vm_uuid__disks_get
+      summary: 查询VMware虚拟机的硬盘列表【内部接口】
+  /v1/internal/vmbackupagent/:
+    get:
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/EnvironmentSchema'
+        '404':
+          description: Not found
+      tags:
+        - VMwareInternalAPI
+      description: 查询第一个VMware备份代理主机信息
+      operationId: get_agent_v1_internal_vmbackupagent__get
+      summary: 查询第一个VMware备份代理主机信息【内部接口】
+  '/v1/virtual-machines/{vm_uuid}':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: VMware虚拟机ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: vm_uuid
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/VMwareSchema'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - VMwareInternalAPI
+      description: 根据VMware虚拟机ID查询VMware虚拟机的详细信息
+      operationId: get_vm_info_v1_virtual_machines__vm_uuid__get
+      summary: 查询VMware虚拟机的详细信息
+  '/v1/virtual-machines/{vm_uuid}/disks':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: VMware虚拟机ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: vm_uuid
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              $ref: '#/definitions/VirtualDiskDetailSchema'
+            title: Response List Vm Disk V1 Virtual Machines  Vm Uuid  Disks Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - VMwareInternalAPI
+      description: 根据VMware虚拟机ID查询VMware虚拟机的硬盘列表
+      operationId: list_vm_disk_v1_virtual_machines__vm_uuid__disks_get
+      summary: 查询VMware虚拟机的硬盘列表
+definitions:
+  ClusterConfigSchema:
+    properties:
+      drs_enabled:
+        description: 集群是否开启DRS服务
+        title: Drs Enabled
+        type: boolean
+    title: ClusterConfigSchema
+    type: object
+  DatastoreSchema:
+    properties:
+      mo_id:
+        description: 数据存储的moId
+        title: Mo Id
+        type: string
+      name:
+        description: 数据存储的名称
+        title: Name
+        type: string
+      partitions:
+        description: 数据存储的磁盘分区列表
+        items:
+          type: string
+        title: Partitions
+        type: array
+      type:
+        description: 数据存储的类型
+        title: Type
+        type: string
+      url:
+        description: 数据存储的URL
+        title: Url
+        type: string
+      uuid:
+        description: 数据存储的UUID
+        title: Uuid
+        type: string
+    title: DatastoreSchema
+    type: object
+  EnvironmentSchema:
+    properties:
+      agent_timestamp:
+        description: Agent时间戳
+        title: Agent Timestamp
+        type: string
+      agent_version:
+        description: Agent版本号
+        title: Agent Version
+        type: string
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      cert_name:
+        description: 证书路径
+        title: Cert Name
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      endpoint:
+        description: 受保护环境地址
+        title: Endpoint
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      is_cluster:
+        description: 是否为集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        description: 连接状态
+        title: Link Status
+        type: integer
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      os_name:
+        description: 操作系统名称
+        title: Os Name
+        type: string
+      os_type:
+        description: 操作系统类型
+        title: Os Type
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      port:
+        description: 受保护环境端口号
+        title: Port
+        type: integer
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 环境ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      user_name:
+        description: 受保护环境用户名
+        title: User Name
+        type: string
+      uuid:
+        description: 环境ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+    required:
+      - name
+      - endpoint
+      - os_type
+      - is_cluster
+    title: EnvironmentSchema
+    type: object
+  FolderSchema:
+    properties:
+      mo_id:
+        description: 虚拟文件夹的moId
+        title: Mo Id
+        type: string
+      name:
+        description: 虚拟文件夹的名称
+        title: Name
+        type: string
+    title: FolderSchema
+    type: object
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  HardwareSchema:
+    properties:
+      controller:
+        default: []
+        description: 虚拟机控制器种类
+        items: {}
+        title: Controller
+        type: array
+      memory:
+        description: 虚拟机内存大小，单位MB
+        title: Memory
+        type: integer
+      num_cores_per_socket:
+        description: 每个Socket的CPU数量
+        title: Num Cores Per Socket
+        type: integer
+      num_cpu:
+        description: 虚拟机CPU数量
+        title: Num Cpu
+        type: integer
+    required:
+      - num_cpu
+      - num_cores_per_socket
+      - memory
+    title: HardwareSchema
+    type: object
+  HostSystem:
+    properties:
+      mo_id:
+        description: ESX主机的moId
+        title: Mo Id
+        type: string
+      name:
+        description: ESX主机的名称
+        title: Name
+        type: string
+      uuid:
+        description: ESX主机的UUID
+        title: Uuid
+        type: string
+      version:
+        description: 版本
+        title: Version
+        type: string
+    title: HostSystem
+    type: object
+  VMwareSchema:
+    properties:
+      hardware:
+        allOf:
+          - $ref: '#/definitions/HardwareSchema'
+        description: 虚拟机的硬件信息
+        title: Hardware
+      runtime:
+        allOf:
+          - $ref: '#/definitions/VirtualMachineRuntime'
+        description: 虚拟机运行环境
+        title: Runtime
+      uuid:
+        description: 虚拟机ID
+        title: Uuid
+        type: string
+      vmx_datastore:
+        allOf:
+          - $ref: '#/definitions/DatastoreSchema'
+        description: 虚拟机的数据存储信息
+        title: Vmx Datastore
+    required:
+      - uuid
+      - hardware
+      - vmx_datastore
+    title: VMwareSchema
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+  VirtualDiskDetailSchema:
+    properties:
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      capacity:
+        default: 0
+        description: 硬盘容量，单位KB
+        title: Capacity
+        type: integer
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      datastore:
+        allOf:
+          - $ref: '#/definitions/DatastoreSchema'
+        description: 数据存储信息
+        title: Datastore
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 环境ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      slot:
+        description: 槽位号
+        title: Slot
+        type: string
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 硬盘ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+    required:
+      - name
+      - slot
+      - datastore
+    title: VirtualDiskDetailSchema
+    type: object
+  VirtualMachineRuntime:
+    properties:
+      host:
+        allOf:
+          - $ref: '#/definitions/HostSystem'
+        description: ESX主机
+        title: Host
+    title: VirtualMachineRuntime
+    type: object
+  VirtualResourceSchema:
+    properties:
+      alias_type:
+        description: 类型别名
+        title: Alias Type
+        type: string
+      alias_value:
+        description: 值别名
+        title: Alias Value
+        type: string
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      capacity:
+        default: 0
+        description: 容量，仅用于数据存储
+        title: Capacity
+        type: integer
+      children:
+        description: 子资源的数量
+        title: Children
+        type: integer
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      env_ip:
+        description: 对应的保护环境IP
+        title: Env Ip
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      free_space:
+        default: 0
+        description: 空闲容量，仅用于数据存储
+        title: Free Space
+        type: integer
+      is_template:
+        default: false
+        description: 是否未模板虚拟机
+        title: Is Template
+        type: boolean
+      link_status:
+        description: 资源状态，0-在线 1-离线
+        title: Link Status
+        type: integer
+      mo_id:
+        description: 虚拟机的moId
+        title: Mo Id
+        type: string
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      os_type:
+        description: 操作系统类型
+        title: Os Type
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      partitions:
+        description: 数据存储的磁盘分区列表
+        items:
+          type: string
+        title: Partitions
+        type: array
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 环境ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      uncommitted:
+        default: 0
+        description: 未提交容量，仅用于数据存储
+        title: Uncommitted
+        type: integer
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+      vm_ip:
+        description: 虚拟机的IP地址
+        title: Vm Ip
+        type: string
+    required:
+      - name
+      - uuid
+    title: VirtualResourceSchema
+    type: object
+x-components: {}

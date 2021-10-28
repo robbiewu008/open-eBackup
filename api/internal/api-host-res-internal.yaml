@@ -1,0 +1,252 @@
+swagger: '2.0'
+info:
+  title: 资源管理（主机）
+  version: v1
+tags:
+  - name: host
+paths:
+  '/v1/internal/resource/host/{host_id}':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: host_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The response is the info about a host - TBD
+          schema:
+            $ref: '#/definitions/Host'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - host
+      operationId: internal_get_host_v1_internal_resource_host__host_id__get
+      summary: 根据主机ID查询主机信息【内部接口】
+  '/v1/internal/resource/host/{host_id}/refresh_host':
+    put:
+      produces:
+        - application/json
+      parameters:
+        - description: 集群/主机ID
+          in: path
+          name: host_id
+          required: true
+          type: string
+        - description: 数据库名称
+          in: query
+          name: db_name
+          required: false
+          type: string
+        - description: 是否排除失效数据库
+          in: query
+          name: is_valid
+          required: false
+          type: boolean
+        - description: 是否清除保护对象
+          in: query
+          name: is_clear_protection_object
+          required: false
+          type: boolean
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              type: string
+            title: >-
+              Response Host Refresh Host Cluster V1 Internal Resource Host  Host
+              Id  Refresh Host Put
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - host
+      operationId: >-
+        host_refresh_host_cluster_v1_internal_resource_host__host_id__refresh_host_put
+      summary: 刷新主机信息【内部接口】
+definitions:
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  Host:
+    properties:
+      authorized_user:
+        description: 授权用户
+        title: Authorized User
+        type: string
+      cluster_info:
+        description: 集群信息
+        items: {}
+        title: Cluster Info
+        type: array
+      endpoint:
+        description: 主机IP地址
+        title: Endpoint
+        type: string
+      error_duplicate_ip:
+        default: Unknown
+        description: 注册主机时已存在的重复IP地址
+        title: Error Duplicate Ip
+        type: string
+      host_id:
+        description: 主机ID
+        title: Host Id
+        type: string
+      is_cluster:
+        default: false
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        default: Unknown
+        description: 主机状态
+        title: Link Status
+        type: string
+      name:
+        description: 主机名称
+        minLength: 1
+        title: Name
+        type: string
+      os_type:
+        description: 主机操作系统类型
+        title: Os Type
+        type: string
+      port:
+        description: 主机端口号
+        title: Port
+        type: string
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+    required:
+      - name
+    title: Host
+    type: object
+  HostDetail:
+    properties:
+      app_type:
+        description: 资源类型
+        title: App Type
+        type: string
+      asm_info:
+        default: {}
+        description: ASM信息
+        title: Asm Info
+        type: object
+      authorized_user:
+        description: 授权用户
+        title: Authorized User
+        type: string
+      cluster_info:
+        description: 集群信息
+        items: {}
+        title: Cluster Info
+        type: array
+      endpoint:
+        description: 主机IP地址
+        title: Endpoint
+        type: string
+      error_duplicate_ip:
+        default: Unknown
+        description: 注册主机时已存在的重复IP地址
+        title: Error Duplicate Ip
+        type: string
+      extend_db:
+        default: {}
+        description: 数据库信息
+        title: Extend Db
+        type: object
+      host_id:
+        description: 主机ID
+        title: Host Id
+        type: string
+      is_cluster:
+        default: false
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        default: Unknown
+        description: 主机状态
+        title: Link Status
+        type: string
+      name:
+        description: 主机名称
+        minLength: 1
+        title: Name
+        type: string
+      os_type:
+        description: 主机操作系统类型
+        title: Os Type
+        type: string
+      port:
+        description: 主机端口号
+        title: Port
+        type: string
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+    required:
+      - name
+    title: HostDetail
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}

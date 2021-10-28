@@ -1,0 +1,4458 @@
+swagger: '2.0'
+info:
+  title: 资源管理接口
+  version: v1
+tags:
+  - name: asminfo
+  - name: database-instance
+  - name: databases
+  - name: db-instance
+  - name: register-databases
+  - name: host
+paths:
+  /v1/asminfo:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - collectionFormat: multi
+          description: 排序字段：
+          in: query
+          items:
+            type: string
+          name: orders
+          required: false
+          type: array
+        - description: 条件参数：
+          in: query
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_AsmInfoSchema_'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - asminfo
+      operationId: query_resources_v1_asminfo_get
+      summary: 查询Oracle ASM列表
+  /v1/database-instance:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - collectionFormat: multi
+          description: 排序字段：
+          in: query
+          items:
+            type: string
+          name: orders
+          required: false
+          type: array
+        - description: 条件参数：
+          in: query
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_DatabaseInstanceSchema_'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - database-instance
+      operationId: query_resources_v1_database_instance_get
+      summary: 查询GaussDB实例列表
+  /v1/databases:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - collectionFormat: multi
+          description: 排序字段：
+          in: query
+          items:
+            type: string
+          name: orders
+          required: false
+          type: array
+        - description: >-
+            条件参数：%inst_name%，%name%，!discriminator，!properties，path%，%authorized_user%
+          in: query
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_DatabaseSchema_'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - databases
+      operationId: query_resources_v1_databases_get
+      summary: 查询Oracle数据库列表
+  '/v1/databases/{db_id}/action/auth':
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 数据库ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: db_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          schema:
+            allOf: null
+            $ref: '#/definitions/DatabaseAuthRequest'
+            description: 数据库认证参数
+            title: Database Auth Request
+      responses:
+        '200':
+          description: The response is auth result
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - databases
+      operationId: auth_v1_databases__db_id__action_auth_post
+      summary: 修改数据库认证信息
+  '/v1/databases/{db_id}/timestamps':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 数据库的ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: db_id
+          required: true
+          type: string
+        - description: 数据库的类型
+          in: query
+          name: database_type
+          required: false
+          type: string
+        - description: 开始时间
+          in: query
+          name: time_start
+          required: false
+          type: string
+        - description: 结束时间
+          in: query
+          name: time_end
+          required: false
+          type: string
+      responses:
+        '200':
+          description: The response is the list of copies timestamp
+          schema:
+            $ref: '#/definitions/DatabaseTimeStampResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - databases
+      operationId: query_database_timestamp_v1_databases__db_id__timestamps_get
+      summary: 查询数据库时间区间
+  /v1/db-instances/:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: query
+          maxLength: 128
+          minLength: 1
+          name: host_id
+          required: false
+          type: string
+        - description: 数据库类型
+          in: query
+          maxLength: 128
+          minLength: 1
+          name: db_type
+          required: false
+          type: string
+        - description: 操作系统类型
+          in: query
+          maxLength: 128
+          minLength: 1
+          name: os_type
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: The response is the list of all instance info
+          schema:
+            items:
+              $ref: '#/definitions/InstanceInfo'
+            title: Response Query Instance Infos V1 Db Instances  Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - db-instance
+      operationId: query_instance_infos_v1_db_instances__get
+      summary: 查询数据库实例信息列表
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          required: true
+          schema:
+            allOf: null
+            $ref: '#/definitions/InstanceVerifyRequest'
+            description: 数据库实例认证信息
+            title: Instance Verify Request
+      responses:
+        '200':
+          description: The response is verify result
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - db-instance
+      operationId: create_instance_verify_v1_db_instances__post
+      summary: 新增数据库实例认证信息
+    put:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          required: true
+          schema:
+            allOf: null
+            $ref: '#/definitions/InstanceVerifyRequest'
+            description: 数据库实例认证信息
+            title: Instance Verify Request
+      responses:
+        '200':
+          description: The response is verify result
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - db-instance
+      operationId: instance_verify_v1_db_instances__put
+      summary: 修改数据库实例认证信息
+  /v1/register-databases:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - collectionFormat: multi
+          description: 排序字段：
+          in: query
+          items:
+            type: string
+          name: orders
+          required: false
+          type: array
+        - description: 条件参数：
+          in: query
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_RegisterDatabaseSchema_'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - register-databases
+      operationId: query_resources_v1_register_databases_get
+      summary: 查询已注册的数据库列表
+  '/v1/resource/host/{host_id}/action/sync-snmp-conf':
+    post:
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: host_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: The response is the newly created fileset
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - host
+      operationId: >-
+        synchronize_snmp_to_host_v1_resource_host__host_id__action_sync_snmp_conf_post
+      summary: 同步Trap信息到Oracle主机
+  '/v1/resource/host/{host_id}/asm-auth':
+    post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 主机/集群ID
+          in: path
+          name: host_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          required: true
+          schema:
+            allOf: null
+            $ref: '#/definitions/AsmAuthRequest'
+            description: ASM授权信息
+            title: Asm Auth Req
+      responses:
+        '200':
+          description: The response is the newly created fileset
+          schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - host
+      operationId: asm_auth_v1_resource_host__host_id__asm_auth_post
+      summary: 修改ASM授权
+  '/v1/resource/host/{host_id}/asm-authinfo':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: host_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The response is the Asm Auth Info for a host
+          schema:
+            $ref: '#/definitions/AsmAuthResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - host
+      operationId: asm_auth_info_v1_resource_host__host_id__asm_authinfo_get
+      summary: 根据主机ID查询主机ASM授权信息
+  '/v1/resource/host/{host_id}/asm-info':
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: path
+          name: host_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The response is the newly created fileset
+          schema:
+            items:
+              $ref: '#/definitions/AsmInfo'
+            title: Response Asm Info V1 Resource Host  Host Id  Asm Info Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - host
+      operationId: asm_info_v1_resource_host__host_id__asm_info_get
+      summary: 根据主机ID查询主机ASM信息列表
+definitions:
+  AddClusterSqlServerDataBasesRequest:
+    properties:
+      cluster_id:
+        description: 集群ID
+        maxLength: 64
+        minLength: 1
+        title: Cluster Id
+        type: string
+      database_names:
+        description: 数据库名称列表
+        items:
+          type: string
+        title: Database Names
+        type: array
+      instance_infos:
+        description: SQL Server数据库实例信息列表
+        items:
+          $ref: '#/definitions/RegisterClusterSqlServerDatabaseInfo'
+        title: Instance Infos
+        type: array
+    required:
+      - cluster_id
+      - instance_infos
+      - database_names
+    title: AddClusterSqlServerDataBasesRequest
+    type: object
+  AddDataBasesRequest:
+    properties:
+      database_names:
+        description: 数据库名称列表
+        items:
+          type: string
+        title: Database Names
+        type: array
+      host_id:
+        description: 集群/主机ID
+        maxLength: 64
+        minLength: 1
+        title: Host Id
+        type: string
+      instance_infos:
+        description: 数据库实例信息列表
+        items:
+          $ref: >-
+            #/definitions/app__resource__schemas__database_models__RegisterDatabaseSchema
+        title: Instance Infos
+        type: array
+      is_cluster:
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+    required:
+      - host_id
+      - instance_infos
+      - database_names
+    title: AddDataBasesRequest
+    type: object
+  AddGaussDBInstanceRequest:
+    properties:
+      instance_infos:
+        default: []
+        description: 实例信息
+        items:
+          $ref: '#/definitions/InstanceInfoSchema'
+        maxItems: 32
+        minItems: 1
+        title: Instance Infos
+        type: array
+      is_cluster:
+        default: false
+        description: 是否为集群
+        title: Is Cluster
+        type: boolean
+      meta_storage_path:
+        description: 元数据存储路径
+        maxLength: 512
+        minLength: 1
+        title: Meta Storage Path
+        type: string
+      port:
+        description: 虚拟主机的端口号
+        maximum: 65535
+        minimum: 1024
+        title: Port
+        type: integer
+      resource_id:
+        description: 主机/集群ID
+        maxLength: 64
+        minLength: 1
+        title: Resource Id
+        type: string
+      version:
+        default: GaussDB T
+        description: 版本号
+        maxLength: 64
+        minLength: 1
+        title: Version
+        type: string
+    required:
+      - resource_id
+      - meta_storage_path
+      - port
+    title: AddGaussDBInstanceRequest
+    type: object
+  AddGaussDBVirtualHost:
+    properties:
+      meta_storage_path:
+        description: 元数据存储路径
+        maxLength: 512
+        minLength: 1
+        title: Meta Storage Path
+        type: string
+      port:
+        description: 虚拟主机的端口号
+        maximum: 65535
+        minimum: 1024
+        title: Port
+        type: integer
+      resource_id:
+        description: 集群/主机ID
+        maxLength: 64
+        minLength: 1
+        title: Resource Id
+        type: string
+    required:
+      - resource_id
+      - meta_storage_path
+      - port
+    title: AddGaussDBVirtualHost
+    type: object
+  AsmAuthRequest:
+    properties:
+      asm_insts:
+        description: ASM实例列表
+        items: {}
+        title: Asm Insts
+        type: array
+      auth_type:
+        description: 认证方式
+        title: Auth Type
+        type: integer
+      password:
+        default: ''
+        description: 密码
+        maxLength: 2048
+        title: Password
+        type: string
+      username:
+        default: ''
+        description: 用户名
+        maxLength: 255
+        title: Username
+        type: string
+    required:
+      - auth_type
+    title: AsmAuthRequest
+    type: object
+  AsmAuthResponse:
+    properties:
+      asm_insts:
+        description: ASM实例列表
+        items: {}
+        title: Asm Insts
+        type: array
+      auth_type:
+        description: 认证方式
+        title: Auth Type
+        type: integer
+      password:
+        description: 密码
+        title: Password
+        type: string
+      username:
+        description: 用户名
+        title: Username
+        type: string
+    title: AsmAuthResponse
+    type: object
+  AsmInfo:
+    properties:
+      auth_type:
+        description: 认证方式
+        title: Auth Type
+        type: string
+      inst_name:
+        description: 实例名称
+        title: Inst Name
+        type: string
+      is_cluster:
+        description: 是否集群
+        title: Is Cluster
+        type: string
+    required:
+      - auth_type
+      - inst_name
+      - is_cluster
+    title: AsmInfo
+    type: object
+  AsmInfoSchema:
+    properties:
+      asm:
+        description: ASM实例信息
+        title: Asm
+        type: string
+      asm_instances:
+        description: ASM实例名字
+        title: Asm Instances
+        type: string
+      auth_type:
+        description: 认证类型
+        title: Auth Type
+        type: integer
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      password:
+        description: 数据库密码
+        title: Password
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      username:
+        description: 数据库用户名
+        title: Username
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      verify_status:
+        default: false
+        description: 是否认证
+        title: Verify Status
+        type: boolean
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+    required:
+      - name
+      - root_uuid
+      - uuid
+      - asm_instances
+    title: AsmInfoSchema
+    type: object
+  AuthType:
+    description: An enumeration.
+    enum:
+      - using_winAuth
+      - using_sqlAuth
+    title: AuthType
+    type: string
+  AvailabilityGroup:
+    properties:
+      group_name:
+        description: 可用性组名称
+        title: Group Name
+        type: string
+      is_authorized:
+        description: 是否认证
+        title: Is Authorized
+        type: boolean
+      node_type:
+        description: 节点类型
+        title: Node Type
+        type: string
+      uuid:
+        description: 可用性组的UUID
+        title: Uuid
+        type: string
+    title: AvailabilityGroup
+    type: object
+  BaseExtParam:
+    properties: {}
+    title: BaseExtParam
+    type: object
+  BasePage_AsmInfoSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/AsmInfoSchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[AsmInfoSchema]'
+    type: object
+  BasePage_DatabaseInstanceSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/DatabaseInstanceSchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[DatabaseInstanceSchema]'
+    type: object
+  BasePage_DatabaseSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/DatabaseSchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[DatabaseSchema]'
+    type: object
+  BasePage_DbServerInfo_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/DbServerInfo'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[DbServerInfo]'
+    type: object
+  BasePage_EnvironmentResourceSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/EnvironmentResourceSchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[EnvironmentResourceSchema]'
+    type: object
+  BasePage_EnvironmentSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/EnvironmentSchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[EnvironmentSchema]'
+    type: object
+  BasePage_FilesetSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/FilesetSchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[FilesetSchema]'
+    type: object
+  BasePage_HostDetail_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/HostDetail'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[HostDetail]'
+    type: object
+  BasePage_HyperVResourceSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/HyperVResourceSchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[HyperVResourceSchema]'
+    type: object
+  BasePage_ProtectedObjectQueryResponse_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/ProtectedObjectQueryResponse'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[ProtectedObjectQueryResponse]'
+    type: object
+  BasePage_RegisterDatabaseSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: >-
+            #/definitions/app__resource__schemas__database_schema__RegisterDatabaseSchema
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[RegisterDatabaseSchema]'
+    type: object
+  BasePage_VirtualResourceSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/VirtualResourceSchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[VirtualResourceSchema]'
+    type: object
+  BatchOperationReq:
+    properties:
+      resource_ids:
+        description: 批量操作资源ID列表
+        items:
+          type: string
+        title: Resource Ids
+        type: array
+    required:
+      - resource_ids
+    title: BatchOperationReq
+    type: object
+  BatchProtectionSubmitReq:
+    properties:
+      ext_parameters:
+        allOf: null
+        $ref: '#/definitions/BaseExtParam'
+        description: 扩展属性
+        title: Ext Parameters
+      post_action:
+        allOf: null
+        $ref: '#/definitions/ProtectPostAction'
+        description: 绑定SLA成功后执行的操作
+      resources:
+        description: 保护的资源列表
+        items:
+          $ref: '#/definitions/ProtectResource'
+        title: Resources
+        type: array
+      sla_id:
+        description: 关联的SLA ID
+        maxLength: 36
+        title: Sla Id
+        type: string
+    required:
+      - sla_id
+      - resources
+    title: BatchProtectionSubmitReq
+    type: object
+  Body_sync_replica_sla_change_v1_internal_protected_copy_objects_action_sync_sla_put:
+    properties:
+      sla_id:
+        description: SLA的ID
+        title: Sla Id
+        type: string
+    required:
+      - sla_id
+    title: >-
+      Body_sync_replica_sla_change_v1_internal_protected_copy_objects_action_sync_sla_put
+    type: object
+  Body_synchronize_sla_change_v1_internal_protected_objects_action_sync_sla_put:
+    properties:
+      sla_id:
+        description: SLA的ID
+        title: Sla Id
+        type: string
+    required:
+      - sla_id
+    title: >-
+      Body_synchronize_sla_change_v1_internal_protected_objects_action_sync_sla_put
+    type: object
+  ClusterConfigSchema:
+    properties:
+      drs_enabled:
+        description: 集群是否开启DRS服务
+        title: Drs Enabled
+        type: boolean
+    title: ClusterConfigSchema
+    type: object
+  ClusterDBInfo:
+    properties:
+      cluster_endpoint:
+        description: 集群地址
+        title: Cluster Endpoint
+        type: string
+      cluster_id:
+        description: 集群ID
+        title: Cluster Id
+        type: string
+      cluster_name:
+        description: 集群名称
+        title: Cluster Name
+        type: string
+      cluster_type:
+        description: 集群类型
+        title: Cluster Type
+        type: string
+      db_host_infos:
+        description: 主机节点信息
+        items:
+          $ref: '#/definitions/DbHostInfo'
+        title: Db Host Infos
+        type: array
+    title: ClusterDBInfo
+    type: object
+  ClusterHost:
+    properties:
+      endpoint:
+        description: 主机IP地址
+        title: Endpoint
+        type: string
+      host_id:
+        description: 主机ID
+        title: Host Id
+        type: string
+      name:
+        description: 主机名称
+        title: Name
+        type: string
+      os_type:
+        default: Unknown
+        description: 主机操作系统类型
+        title: Os Type
+        type: string
+    title: ClusterHost
+    type: object
+  ComplianceUpdate:
+    properties:
+      compliance:
+        description: 'SLA遵从度, True：遵从，False：不遵从'
+        title: Compliance
+        type: boolean
+      resource_id:
+        description: 资源ID
+        title: Resource Id
+        type: string
+    required:
+      - resource_id
+      - compliance
+    title: ComplianceUpdate
+    type: object
+  CreateEnvSchema:
+    properties:
+      endpoint:
+        description: 受保护环境地址
+        title: Endpoint
+        type: string
+      extend_context:
+        default: {}
+        description: 资源拓展内容
+        title: Extend Context
+        type: object
+      name:
+        description: 受保护环境名称
+        maxLength: 64
+        minLength: 1
+        title: Name
+        type: string
+      password:
+        description: 受保护环境密码
+        title: Password
+        type: string
+      port:
+        description: 受保护环境端口号
+        maximum: 65535
+        minimum: 0
+        title: Port
+        type: integer
+      rescan_interval_in_sec:
+        default: 5
+        description: 资源扫描间隔，单位秒
+        title: Rescan Interval In Sec
+        type: integer
+      sub_type:
+        allOf: null
+        $ref: '#/definitions/ResourceSubTypeEnum'
+        description: 资源子类型
+      type:
+        allOf: null
+        $ref: '#/definitions/ResourceTypeEnum'
+        description: 资源类型
+      user_name:
+        description: 受保护环境用户名
+        title: User Name
+        type: string
+      uuid:
+        description: 环境ID
+        maxLength: 64
+        minLength: 1
+        title: Uuid
+        type: string
+      verify_cert:
+        description: 是否校验证书，0：不校验，1：校验
+        title: Verify Cert
+        type: integer
+    title: CreateEnvSchema
+    type: object
+  Database:
+    properties:
+      authType:
+        description: 认证方式
+        title: Authtype
+        type: integer
+      dbName:
+        description: 数据库名称
+        title: Dbname
+        type: string
+      dbRole:
+        description: 角色
+        title: Dbrole
+        type: integer
+      instName:
+        description: 实例名
+        title: Instname
+        type: string
+      isAsmInst:
+        description: 是否ASM实例
+        title: Isasminst
+        type: integer
+      oracleHome:
+        description: Oracle数据库目录
+        title: Oraclehome
+        type: string
+      state:
+        description: 状态
+        title: State
+        type: integer
+      version:
+        description: 数据库版本号
+        title: Version
+        type: string
+    required:
+      - instName
+      - dbName
+      - version
+      - state
+      - isAsmInst
+      - authType
+      - dbRole
+      - oracleHome
+    title: Database
+    type: object
+  DatabaseAuthRequest:
+    properties:
+      auth_type:
+        description: 认证方式，0：数据库认证，1：OS认证
+        maximum: 1
+        minimum: 0
+        title: Auth Type
+        type: integer
+      db_password:
+        description: 数据库密码
+        maxLength: 60
+        title: Db Password
+        type: string
+      db_username:
+        description: 数据库用户名
+        maxLength: 60
+        title: Db Username
+        type: string
+    required:
+      - auth_type
+    title: DatabaseAuthRequest
+    type: object
+  DatabaseCluster:
+    properties:
+      cluster_name:
+        description: 集群名称
+        maxLength: 64
+        minLength: 1
+        pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        title: Cluster Name
+        type: string
+      nodes:
+        description: 节点列表
+        items:
+          type: string
+        title: Nodes
+        type: array
+    required:
+      - nodes
+    title: DatabaseCluster
+    type: object
+  DatabaseError:
+    properties:
+      Code:
+        description: 错误码
+        title: Code
+        type: integer
+      Description:
+        description: 错误描述
+        title: Description
+        type: string
+    required:
+      - Code
+      - Description
+    title: DatabaseError
+    type: object
+  DatabaseInfo:
+    properties:
+      database_name:
+        description: 数据库名称
+        title: Database Name
+        type: string
+      db_id:
+        description: 数据库标识ID
+        title: Db Id
+        type: string
+      db_type:
+        description: 数据库类型
+        title: Db Type
+        type: string
+      host_endpoint:
+        description: 主机地址
+        title: Host Endpoint
+        type: string
+      host_id:
+        description: 主机ID
+        title: Host Id
+        type: string
+      host_name:
+        description: 主机名称
+        title: Host Name
+        type: string
+      instance_name:
+        description: 实例名
+        title: Instance Name
+        type: string
+      is_register:
+        description: 是否注册
+        title: Is Register
+        type: boolean
+    required:
+      - database_name
+    title: DatabaseInfo
+    type: object
+  DatabaseInstanceSchema:
+    properties:
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      is_cluster:
+        default: false
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      os_username:
+        description: 操作系统用户名
+        title: Os Username
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+    required:
+      - name
+      - root_uuid
+      - uuid
+    title: DatabaseInstanceSchema
+    type: object
+  DatabaseSchema:
+    properties:
+      asm:
+        description: ASM信息
+        title: Asm
+        type: string
+      asm_auth:
+        description: ASM认证信息
+        title: Asm Auth
+        type: string
+      auth_type:
+        description: 认证类型
+        title: Auth Type
+        type: integer
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      db_role:
+        description: 数据库角色
+        title: Db Role
+        type: integer
+      db_username:
+        description: 数据库用户名
+        title: Db Username
+        type: string
+      desesitization_policy_id:
+        description: 脱敏策略ID
+        title: Desesitization Policy Id
+        type: string
+      desesitization_policy_name:
+        description: 脱敏策略名称
+        title: Desesitization Policy Name
+        type: string
+      desesitization_status:
+        description: 脱敏状态
+        title: Desesitization Status
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      identification_status:
+        description: 识别状态
+        title: Identification Status
+        type: string
+      inst_name:
+        description: 实例名称
+        title: Inst Name
+        type: string
+      is_asminst:
+        description: 是否使用ASM存储
+        title: Is Asminst
+        type: integer
+      link_status:
+        description: 连接状态
+        title: Link Status
+        type: string
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      os_username:
+        description: 所属操作系统用户名
+        title: Os Username
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      source_type:
+        description: 识别状态
+        title: Source Type
+        type: string
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      valid:
+        description: 是否展示
+        title: Valid
+        type: boolean
+      verify_status:
+        description: 是否认证
+        title: Verify Status
+        type: boolean
+      version:
+        description: 数据库版本
+        title: Version
+        type: string
+    required:
+      - name
+      - root_uuid
+      - uuid
+      - link_status
+      - verify_status
+      - inst_name
+      - valid
+    title: DatabaseSchema
+    type: object
+  DatabaseTimeStamp:
+    properties:
+      TIMERANGE:
+        description: 时间区间信息列表
+        items:
+          $ref: '#/definitions/TimeRange'
+        title: Timerange
+        type: array
+    required:
+      - TIMERANGE
+    title: DatabaseTimeStamp
+    type: object
+  DatabaseTimeStampResponse:
+    properties:
+      Data:
+        allOf: null
+        $ref: '#/definitions/DatabaseTimeStamp'
+        description: 时间戳信息
+        title: Data
+      Error:
+        allOf: null
+        $ref: '#/definitions/DatabaseError'
+        description: 错误信息
+        title: Error
+    required:
+      - Data
+      - Error
+    title: DatabaseTimeStampResponse
+    type: object
+  DatastoreSchema:
+    properties:
+      mo_id:
+        description: 数据存储的moId
+        title: Mo Id
+        type: string
+      name:
+        description: 数据存储的名称
+        title: Name
+        type: string
+      partitions:
+        description: 数据存储的磁盘分区列表
+        items:
+          type: string
+        title: Partitions
+        type: array
+      type:
+        description: 数据存储的类型
+        title: Type
+        type: string
+      url:
+        description: 数据存储的URL
+        title: Url
+        type: string
+      uuid:
+        description: 数据存储的UUID
+        title: Uuid
+        type: string
+    title: DatastoreSchema
+    type: object
+  DbHostInfo:
+    properties:
+      host_endpoint:
+        description: 主机地址
+        title: Host Endpoint
+        type: string
+      host_id:
+        description: 主机ID
+        title: Host Id
+        type: string
+      host_name:
+        description: 主机名称
+        title: Host Name
+        type: string
+      instance_infos:
+        description: 实例信息列表
+        items:
+          $ref: '#/definitions/InstanceInfo'
+        title: Instance Infos
+        type: array
+    title: DbHostInfo
+    type: object
+  DbServerInfo:
+    properties:
+      authorized_user:
+        description: 授权用户
+        title: Authorized User
+        type: string
+      db_count:
+        description: 注册数据库数量
+        title: Db Count
+        type: integer
+      host_endpoint:
+        description: 主机/集群IP地址
+        title: Host Endpoint
+        type: string
+      host_id:
+        description: 主机/集群ID
+        title: Host Id
+        type: string
+      host_name:
+        description: 主机/集群名称
+        title: Host Name
+        type: string
+      is_authorized:
+        description: 是否认证
+        title: Is Authorized
+        type: boolean
+      is_cluster:
+        description: 是否是集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        description: 状态
+        title: Link Status
+        type: integer
+      os_type:
+        description: 操作系统类型
+        title: Os Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+    title: DbServerInfo
+    type: object
+  EnvironmentResourceSchema:
+    properties:
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+    required:
+      - name
+      - root_uuid
+      - uuid
+    title: EnvironmentResourceSchema
+    type: object
+  EnvironmentSchema:
+    properties:
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      cert_name:
+        description: 证书路径
+        title: Cert Name
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      endpoint:
+        description: 受保护环境地址
+        title: Endpoint
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      is_cluster:
+        description: 是否为集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        description: 连接状态
+        title: Link Status
+        type: integer
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      os_name:
+        description: 操作系统名称
+        title: Os Name
+        type: string
+      os_type:
+        description: 操作系统类型
+        title: Os Type
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      port:
+        description: 受保护环境端口号
+        title: Port
+        type: integer
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      user_name:
+        description: 受保护环境用户名
+        title: User Name
+        type: string
+      uuid:
+        description: 环境ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+    required:
+      - name
+      - root_uuid
+      - endpoint
+      - os_type
+      - is_cluster
+    title: EnvironmentSchema
+    type: object
+  FilesetConfig:
+    properties:
+      paths:
+        description: 文件集路径列表
+        items:
+          type: string
+        title: Paths
+        type: array
+      filters:
+        description: 文件集过滤器信息列表
+        items:
+          $ref: '#/definitions/FilesetFilterDetail'
+        title: Filters
+        type: array
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+    required:
+      - name
+      - paths
+    title: FilesetConfig
+    type: object
+  FilesetDetail:
+    properties:
+      paths:
+        description: 文件集路径列表
+        items:
+          type: string
+        title: Paths
+        type: array
+      filters:
+        description: 文件集过滤器信息列表
+        items:
+          $ref: '#/definitions/FilesetFilterDetail'
+        title: Filters
+        type: array
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+    required:
+      - name
+      - paths
+      - root_uuid
+    title: FilesetDetail
+    type: object
+  FilesetFilterDetail:
+    properties:
+      content:
+        description: 文件集过滤器内容
+        maxLength: 8192
+        title: Content
+        type: string
+      model:
+        allOf: null
+        $ref: '#/definitions/FilesetFilterModel'
+        description: 文件集过滤器模式。枚举值：EXCLUDE - 1，INCLUDE - 2
+      type:
+        allOf: null
+        $ref: '#/definitions/FilesetFilterType'
+        description: 文件集过滤器类型。枚举值：FILE - 1，FOLDER - 2，FORMAT - 3，DATE - 4
+    required:
+      - type
+      - model
+      - content
+    title: FilesetFilterDetail
+    type: object
+  FilesetFilterModel:
+    description: An enumeration.
+    enum:
+      - 1
+      - 2
+    title: FilesetFilterModel
+    type: integer
+  FilesetFilterSchema:
+    properties:
+      content:
+        description: 文件集过滤器内容
+        maxLength: 8192
+        title: Content
+        type: string
+      model:
+        allOf: null
+        $ref: '#/definitions/FilesetFilterModel'
+        description: 文件集过滤器模式。枚举值：EXCLUDE - 1，INCLUDE - 2
+      type:
+        allOf: null
+        $ref: '#/definitions/FilesetFilterType'
+        description: 文件集过滤器类型。枚举值：FILE - 1，FOLDER - 2，FORMAT - 3，DATE - 4
+      uuid:
+        description: 文件集过滤器ID
+        title: Uuid
+        type: string
+    required:
+      - type
+      - model
+      - content
+      - uuid
+    title: FilesetFilterSchema
+    type: object
+  FilesetFilterType:
+    description: An enumeration.
+    enum:
+      - 1
+      - 2
+      - 3
+      - 4
+    title: FilesetFilterType
+    type: integer
+  FilesetSchema:
+    properties:
+      paths:
+        description: 文件集路径列表
+        items:
+          type: string
+        title: Paths
+        type: array
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      filters:
+        description: 文件集过滤器
+        items:
+          $ref: '#/definitions/FilesetFilterSchema'
+        title: Filters
+        type: array
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+    required:
+      - name
+      - paths
+      - root_uuid
+      - uuid
+    title: FilesetSchema
+    type: object
+  FilterColumn:
+    description: An enumeration.
+    enum:
+      - NAME
+      - ID
+      - SLOT
+    title: FilterColumn
+    type: string
+  FilterMode:
+    description: An enumeration.
+    enum:
+      - EXCLUDE
+      - INCLUDE
+    title: FilterMode
+    type: string
+  FilterRule:
+    description: An enumeration.
+    enum:
+      - ALL
+      - START_WITH
+      - END_WITH
+      - FUZZY
+    title: FilterRule
+    type: string
+  FilterType:
+    description: An enumeration.
+    enum:
+      - DISK
+      - VM
+      - VOLUME
+    title: FilterType
+    type: string
+  FolderSchema:
+    properties:
+      mo_id:
+        description: 虚拟文件夹的moId
+        title: Mo Id
+        type: string
+      name:
+        description: 虚拟文件夹的名称
+        title: Name
+        type: string
+    title: FolderSchema
+    type: object
+  GaussDBVirtualHostSchema:
+    properties:
+      meta_storage_path:
+        description: 元数据存储路径
+        maxLength: 512
+        minLength: 1
+        title: Meta Storage Path
+        type: string
+      modify_enable:
+        default: true
+        description: 元数据路径和端口号是否可以修改
+        title: Modify Enable
+        type: boolean
+      name:
+        description: 虚拟主机的名称
+        maxLength: 64
+        minLength: 1
+        title: Name
+        type: string
+      port:
+        description: 虚拟主机的端口号
+        maximum: 65535
+        minimum: 1024
+        title: Port
+        type: integer
+      resource_id:
+        description: 关联的集群/主机ID
+        maxLength: 64
+        minLength: 1
+        title: Resource Id
+        type: string
+      uuid:
+        description: 虚拟主机的UUID
+        maxLength: 64
+        minLength: 1
+        title: Uuid
+        type: string
+    required:
+      - uuid
+      - name
+      - resource_id
+      - meta_storage_path
+      - port
+    title: GaussDBVirtualHostSchema
+    type: object
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  HardwareSchema:
+    properties:
+      controller:
+        default: []
+        description: 虚拟机控制器种类
+        items: {}
+        title: Controller
+        type: array
+      memory:
+        description: 虚拟机内存大小，单位MB
+        title: Memory
+        type: integer
+      num_cores_per_socket:
+        description: 每个Socket的CPU数量
+        title: Num Cores Per Socket
+        type: integer
+      num_cpu:
+        description: 虚拟机CPU数量
+        title: Num Cpu
+        type: integer
+    required:
+      - num_cpu
+      - num_cores_per_socket
+      - memory
+    title: HardwareSchema
+    type: object
+  Host:
+    properties:
+      authorized_user:
+        description: 授权用户
+        title: Authorized User
+        type: string
+      cluster_info:
+        description: 集群信息
+        items: {}
+        title: Cluster Info
+        type: array
+      endpoint:
+        description: 主机IP地址
+        title: Endpoint
+        type: string
+      error_duplicate_ip:
+        default: Unknown
+        description: 注册主机时已存在的重复IP地址
+        title: Error Duplicate Ip
+        type: string
+      host_id:
+        description: 主机ID
+        title: Host Id
+        type: string
+      is_cluster:
+        default: false
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        default: Unknown
+        description: 主机状态
+        title: Link Status
+        type: string
+      name:
+        description: 主机名称
+        minLength: 1
+        title: Name
+        type: string
+      os_type:
+        description: 主机操作系统类型
+        title: Os Type
+        type: string
+      port:
+        description: 主机端口号
+        title: Port
+        type: string
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+    required:
+      - name
+    title: Host
+    type: object
+  HostCreate:
+    properties:
+      cluster_info:
+        description: 集群信息
+        items: {}
+        title: Cluster Info
+        type: array
+      host_id:
+        description: 主机ID
+        maxLength: 64
+        title: Host Id
+        type: string
+      ip:
+        description: 主机IP地址
+        maxLength: 128
+        title: Ip
+        type: string
+      is_cluster:
+        default: false
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        default: Unknown
+        description: 主机状态
+        maxLength: 32
+        title: Link Status
+        type: string
+      name:
+        description: 主机名称
+        minLength: 1
+        title: Name
+        type: string
+      os_type:
+        default: Unknown
+        description: 主机操作系统类型
+        maxLength: 32
+        title: Os Type
+        type: string
+      path:
+        description: 资源位置
+        maxLength: 1024
+        title: Path
+        type: string
+      port:
+        description: 主机端口号
+        maxLength: 16
+        title: Port
+        type: string
+      proxy_type:
+        description: 代理类型
+        title: Proxy Type
+        type: integer
+      userid:
+        description: 用户ID
+        maxLength: 255
+        title: Userid
+        type: string
+    required:
+      - name
+      - proxy_type
+    title: HostCreate
+    type: object
+  HostDetail:
+    properties:
+      app_type:
+        description: 资源类型
+        title: App Type
+        type: string
+      asm_info:
+        default: {}
+        description: ASM信息
+        title: Asm Info
+        type: object
+      authorized_user:
+        description: 授权用户
+        title: Authorized User
+        type: string
+      cluster_info:
+        description: 集群信息
+        items: {}
+        title: Cluster Info
+        type: array
+      endpoint:
+        description: 主机IP地址
+        title: Endpoint
+        type: string
+      error_duplicate_ip:
+        default: Unknown
+        description: 注册主机时已存在的重复IP地址
+        title: Error Duplicate Ip
+        type: string
+      extend_db:
+        default: {}
+        description: 数据库信息
+        title: Extend Db
+        type: object
+      host_id:
+        description: 主机ID
+        title: Host Id
+        type: string
+      is_cluster:
+        default: false
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        default: Unknown
+        description: 主机状态
+        title: Link Status
+        type: string
+      name:
+        description: 主机名称
+        minLength: 1
+        title: Name
+        type: string
+      os_type:
+        description: 主机操作系统类型
+        title: Os Type
+        type: string
+      port:
+        description: 主机端口号
+        title: Port
+        type: string
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+    required:
+      - name
+    title: HostDetail
+    type: object
+  HostSystem:
+    properties:
+      mo_id:
+        description: ESX主机的moId
+        title: Mo Id
+        type: string
+      name:
+        description: ESX主机的名称
+        title: Name
+        type: string
+      uuid:
+        description: ESX主机的UUID
+        title: Uuid
+        type: string
+      version:
+        description: 版本
+        title: Version
+        type: string
+    title: HostSystem
+    type: object
+  HyperVResourceSchema:
+    properties:
+      alias_type:
+        description: 类型别名
+        title: Alias Type
+        type: string
+      alias_value:
+        description: 值别名
+        title: Alias Value
+        type: string
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      capacity:
+        default: 0
+        description: 容量，仅用于数据存储
+        title: Capacity
+        type: integer
+      children:
+        description: 子资源的数量
+        title: Children
+        type: integer
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      env_ip:
+        description: 对应的保护环境IP
+        title: Env Ip
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      free_space:
+        default: 0
+        description: 空闲容量，仅用于数据存储
+        title: Free Space
+        type: integer
+      is_template:
+        default: false
+        description: 是否未模板虚拟机
+        title: Is Template
+        type: boolean
+      link_status:
+        description: 资源状态，0-在线 1-离线
+        title: Link Status
+        type: integer
+      mo_id:
+        description: 虚拟机的moId
+        title: Mo Id
+        type: string
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      os_type:
+        description: 操作系统类型
+        title: Os Type
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      partitions:
+        description: 数据存储的磁盘分区列表
+        items:
+          type: string
+        title: Partitions
+        type: array
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      ref_client_uuid:
+        description: 关联的HyperV主机的UUID
+        title: Ref Client Uuid
+        type: string
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      uncommitted:
+        default: 0
+        description: 未提交容量，仅用于数据存储
+        title: Uncommitted
+        type: integer
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+      vm_ip:
+        description: 虚拟机的IP地址
+        title: Vm Ip
+        type: string
+    required:
+      - name
+      - root_uuid
+      - uuid
+    title: HyperVResourceSchema
+    type: object
+  InstanceInfo:
+    properties:
+      auth_type:
+        description: 认证方式
+        title: Auth Type
+        type: string
+      db_infos:
+        description: 数据库信息列表
+        items:
+          $ref: '#/definitions/DatabaseInfo'
+        title: Db Infos
+        type: array
+      file_size:
+        description: 数据文件大小
+        title: File Size
+        type: string
+      host_endpoint:
+        description: 主机地址
+        title: Host Endpoint
+        type: string
+      host_id:
+        description: 主机ID
+        title: Host Id
+        type: string
+      host_name:
+        description: 主机名称
+        title: Host Name
+        type: string
+      instance_name:
+        description: 实例名
+        title: Instance Name
+        type: string
+      is_authorized:
+        description: 是否认证
+        title: Is Authorized
+        type: boolean
+      log_mode:
+        description: 日志模式
+        title: Log Mode
+        type: string
+      os_username:
+        description: 实例所属操作系统用户
+        title: Os Username
+        type: string
+      real_size:
+        description: 实际数据量
+        title: Real Size
+        type: string
+      status:
+        description: 实例状态
+        title: Status
+        type: string
+      username:
+        description: 认证的用户名
+        title: Username
+        type: string
+    title: InstanceInfo
+    type: object
+  InstanceInfoSchema:
+    properties:
+      instance_name:
+        description: 实例名称
+        maxLength: 64
+        minLength: 1
+        title: Instance Name
+        type: string
+    required:
+      - instance_name
+    title: InstanceInfoSchema
+    type: object
+  InstanceVerifyRequest:
+    properties:
+      customer:
+        allOf: null
+        $ref: '#/definitions/AuthType'
+        description: 认证方式
+      db_type:
+        allOf: null
+        $ref: '#/definitions/ResourceSubTypeEnum'
+        description: 资源子类型
+      host_id:
+        description: 主机ID
+        maxLength: 64
+        minLength: 1
+        title: Host Id
+        type: string
+      host_name:
+        description: 主机名称
+        maxLength: 64
+        minLength: 1
+        title: Host Name
+        type: string
+      instance_name:
+        description: 实例名
+        maxLength: 64
+        minLength: 1
+        title: Instance Name
+        type: string
+      is_manual:
+        default: false
+        description: '添加实例: True, 认证实例: False'
+        title: Is Manual
+        type: boolean
+      istest:
+        description: 是否测试连接
+        title: Istest
+        type: boolean
+      mysql_sock:
+        description: 端口文件路径
+        maxLength: 512
+        minLength: 0
+        title: Mysql Sock
+        type: string
+      os_type:
+        description: 操作系统类型
+        maxLength: 64
+        minLength: 0
+        title: Os Type
+        type: string
+      os_username:
+        description: 实例所属操作系统用户
+        maxLength: 64
+        minLength: 0
+        title: Os Username
+        type: string
+      password:
+        description: 密码
+        maxLength: 64
+        minLength: 1
+        title: Password
+        type: string
+      port:
+        default: 3306
+        description: 端口号
+        maximum: 65535
+        minimum: 1000
+        title: Port
+        type: integer
+      username:
+        description: 用户名
+        maxLength: 64
+        minLength: 1
+        title: Username
+        type: string
+    required:
+      - host_id
+      - instance_name
+      - istest
+      - username
+      - password
+    title: InstanceVerifyRequest
+    type: object
+  LinkState:
+    properties:
+      destAddr:
+        description: 链路目的地址
+        title: Destaddr
+        type: string
+      destRole:
+        description: 链路目的角色
+        title: Destrole
+        type: string
+      sourceAddr:
+        description: 链路源地址
+        title: Sourceaddr
+        type: string
+      sourceRole:
+        description: 链路源角色
+        title: Sourcerole
+        type: string
+      state:
+        description: 链路状态
+        title: State
+        type: integer
+      updateTime:
+        description: 链路状态更新时间
+        title: Updatetime
+        type: integer
+    title: LinkState
+    type: object
+  LinkStateUpdate:
+    properties:
+      destAddr:
+        description: 链路目的地址
+        maxLength: 64
+        minLength: 1
+        title: Destaddr
+        type: string
+      destRole:
+        description: 链路目的角色
+        maxLength: 64
+        minLength: 1
+        title: Destrole
+        type: string
+      sourceAddr:
+        description: 链路源地址
+        maxLength: 64
+        minLength: 1
+        title: Sourceaddr
+        type: string
+      sourceRole:
+        description: 链路源角色
+        maxLength: 64
+        minLength: 1
+        title: Sourcerole
+        type: string
+      state:
+        description: 链路状态
+        maximum: 1
+        minimum: 0
+        title: State
+        type: integer
+      updateTime:
+        description: 链路状态更新时间
+        title: Updatetime
+        type: integer
+    required:
+      - sourceRole
+      - sourceAddr
+      - destRole
+      - destAddr
+      - state
+      - updateTime
+    title: LinkStateUpdate
+    type: object
+  ManualBackupReq:
+    properties:
+      action:
+        allOf: null
+        $ref: '#/definitions/PolicyActionEnum'
+        description: 备份动作
+      sla_id:
+        description: 绑定SLA的ID
+        maxLength: 36
+        title: Sla Id
+        type: string
+    required:
+      - sla_id
+      - action
+    title: ManualBackupReq
+    type: object
+  ModifyProtectionSubmitReq:
+    properties:
+      ext_parameters:
+        allOf: null
+        $ref: '#/definitions/BaseExtParam'
+        description: 扩展属性
+        title: Ext Parameters
+      resource_id:
+        description: 保护对象对应的资源ID
+        maxLength: 64
+        title: Resource Id
+        type: string
+      sla_id:
+        description: 新的SLA ID
+        maxLength: 36
+        title: Sla Id
+        type: string
+    required:
+      - sla_id
+      - resource_id
+    title: ModifyProtectionSubmitReq
+    type: object
+  PolicyActionEnum:
+    description: An enumeration.
+    enum:
+      - full
+      - log
+      - cumulative_increment
+      - difference_increment
+      - replication
+      - archiving
+    title: PolicyActionEnum
+    type: string
+  ProtectPostAction:
+    description: 保护后置操作
+    enum:
+      - BACKUP
+    title: ProtectPostAction
+    type: string
+  ProtectResource:
+    properties:
+      filters:
+        description: 过滤规则列表
+        items:
+          $ref: '#/definitions/ResourceFilter'
+        title: Filters
+        type: array
+      resource_id:
+        description: 资源ID
+        maxLength: 64
+        title: Resource Id
+        type: string
+    required:
+      - resource_id
+    title: ProtectResource
+    type: object
+  ProtectedCopyBatchOperationReq:
+    properties:
+      resource_ids:
+        description: 批量操作资源ID列表
+        items:
+          type: string
+        title: Resource Ids
+        type: array
+    required:
+      - resource_ids
+    title: ProtectedCopyBatchOperationReq
+    type: object
+  ProtectedCopyObjectId:
+    properties:
+      uuid:
+        description: 保护副本对象的ID
+        title: Uuid
+        type: string
+    title: ProtectedCopyObjectId
+    type: object
+  ProtectedCopyObjectUpdate:
+    properties:
+      resource_id:
+        description: 保护对象对应资源的ID
+        maxLength: 128
+        minLength: 1
+        title: Resource Id
+        type: string
+      sla_id:
+        description: 新SLA的ID
+        format: uuid
+        title: Sla Id
+        type: string
+    required:
+      - sla_id
+      - resource_id
+    title: ProtectedCopyObjectUpdate
+    type: object
+  ProtectedObjectId:
+    properties:
+      uuid:
+        description: 保护对象的ID
+        title: Uuid
+        type: string
+    title: ProtectedObjectId
+    type: object
+  ProtectedObjectQuery:
+    properties:
+      earliest_time:
+        description: 最早一次备份时间
+        format: date-time
+        title: Earliest Time
+        type: string
+      env_id:
+        description: 环境ID
+        title: Env Id
+        type: string
+      env_type:
+        description: 环境类型
+        title: Env Type
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      latest_time:
+        description: 最近一次备份时间
+        format: date-time
+        title: Latest Time
+        type: string
+      name:
+        description: 保护对象名称
+        title: Name
+        type: string
+      next_time:
+        description: 下一次备份时间
+        format: date-time
+        title: Next Time
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      resource_id:
+        description: 保护对象对应资源的ID
+        title: Resource Id
+        type: string
+      sla_id:
+        description: 关联SLA的ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      status:
+        description: 保护状态
+        title: Status
+        type: integer
+      sub_type:
+        description: 资源子类型：如DBBackupAgent、Fileset、Oracle、vim.VirtualMachine等
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型：如Host、Fileset、Database、VM等
+        title: Type
+        type: string
+    required:
+      - sla_id
+      - sla_name
+      - resource_id
+    title: ProtectedObjectQuery
+    type: object
+  ProtectedObjectQueryResponse:
+    properties:
+      earliest_time:
+        description: 最早一次备份时间
+        format: date-time
+        title: Earliest Time
+        type: string
+      env_id:
+        description: 环境ID
+        title: Env Id
+        type: string
+      env_type:
+        description: 环境类型
+        title: Env Type
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        title: Ext Parameters
+        type: object
+      latest_time:
+        description: 最近一次备份时间
+        format: date-time
+        title: Latest Time
+        type: string
+      name:
+        description: 保护对象名称
+        title: Name
+        type: string
+      next_time:
+        description: 下一次备份时间
+        format: date-time
+        title: Next Time
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      resource_id:
+        description: 保护对象对应资源的ID
+        title: Resource Id
+        type: string
+      sla_compliance:
+        description: SLA遵从度，True：遵从，False：不遵从
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: 关联SLA的ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      status:
+        description: 保护状态
+        title: Status
+        type: integer
+      sub_type:
+        description: 资源子类型：如DBBackupAgent、Fileset、Oracle、vim.VirtualMachine等
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型：如Host、Fileset、Database、VM等
+        title: Type
+        type: string
+    required:
+      - sla_id
+      - sla_name
+      - resource_id
+    title: ProtectedObjectQueryResponse
+    type: object
+  ProtectedObjectTime:
+    properties:
+      earliest_time:
+        description: 最早一次备份时间
+        format: date-time
+        title: Earliest Time
+        type: string
+      latest_time:
+        description: 最近一次备份时间
+        format: date-time
+        title: Latest Time
+        type: string
+      next_time:
+        description: 下一次备份时间
+        format: date-time
+        title: Next Time
+        type: string
+    title: ProtectedObjectTime
+    type: object
+  RegisterClusterSqlServerDatabaseInfo:
+    properties:
+      database_name:
+        description: SQL Server数据库名称
+        maxLength: 64
+        minLength: 1
+        title: Database Name
+        type: string
+      group_name:
+        description: 实例所属可用性组
+        maxLength: 64
+        minLength: 1
+        title: Group Name
+        type: string
+      host_id:
+        description: 主机ID
+        maxLength: 64
+        minLength: 1
+        title: Host Id
+        type: string
+      instance_name:
+        description: SQL Server数据库实例名称
+        maxLength: 64
+        minLength: 1
+        title: Instance Name
+        type: string
+    required:
+      - host_id
+      - group_name
+      - instance_name
+      - database_name
+    title: RegisterClusterSqlServerDatabaseInfo
+    type: object
+  ResourceCatalogSchema:
+    example:
+      catalog_id: 50dc3d15-21dc-4fcb-97c4-35581f489afc
+      catalog_name: BigData
+      children:
+        - catalog_id: 60dc3d15-31dc-5fcb-07c4-45581f489afc
+          catalog_name: Hadoop
+          display_order: 0
+          label: Hadoop
+          link: /resource/bigdata.html
+          parent_id: 50dc3d15-21dc-4fcb-97c4-35581f489afc
+          show: true
+      display_order: 0
+      label: resource.catalog.BigData.label
+      link: ''
+      show: true
+    properties:
+      catalog_id:
+        description: 目录ID
+        title: Catalog Id
+        type: string
+      catalog_name:
+        description: 目录名称
+        title: Catalog Name
+        type: string
+      children:
+        description: 子目录列表
+        items: {}
+        title: Children
+        type: array
+      display_order:
+        description: 显示顺序
+        title: Display Order
+        type: integer
+      label:
+        description: 标签
+        title: Label
+        type: string
+      link:
+        description: 资源目录对应的URL
+        title: Link
+        type: string
+      parent_id:
+        description: 父目录ID
+        title: Parent Id
+        type: string
+      show:
+        description: 是否隐藏
+        title: Show
+        type: boolean
+    title: ResourceCatalogSchema
+    type: object
+  ResourceFilter:
+    properties:
+      filter_by:
+        allOf: null
+        $ref: '#/definitions/FilterColumn'
+        description: 过滤条件，根据什么字段过滤。如ID、name等
+      mode:
+        allOf: null
+        $ref: '#/definitions/FilterMode'
+        description: 过滤类型：INCLUDE、EXCLUDE
+      rule:
+        allOf: null
+        $ref: '#/definitions/FilterRule'
+        description: 过滤规则：如模糊匹配、全匹配等
+      type:
+        allOf: null
+        $ref: '#/definitions/FilterType'
+        description: 过滤的类型：如磁盘、虚拟机等
+      values:
+        description: 具体过滤的值
+        items:
+          type: string
+        title: Values
+        type: array
+    required:
+      - filter_by
+      - type
+      - rule
+      - mode
+      - values
+    title: ResourceFilter
+    type: object
+  ResourceProtectionCount:
+    properties:
+      protected_count:
+        default: 0
+        description: 已保护资源数目
+        title: Protected Count
+        type: integer
+      resource_sub_type:
+        description: 资源子类型
+        title: Resource Sub Type
+        type: string
+      resource_type:
+        description: 资源类型
+        title: Resource Type
+        type: string
+      unprotected_count:
+        default: 0
+        description: 未保护资源数目
+        title: Unprotected Count
+        type: integer
+    title: ResourceProtectionCount
+    type: object
+  ResourceProtectionSummary:
+    properties:
+      summary:
+        default: []
+        description: 子类型资源保护统计信息列表
+        items:
+          $ref: '#/definitions/ResourceProtectionCount'
+        title: Summary
+        type: array
+    title: ResourceProtectionSummary
+    type: object
+  ResourceSubTypeEnum:
+    description: An enumeration.
+    enum:
+      - DBBackupAgent
+      - VMBackupAgent
+      - ABBackupClient
+      - DWSBackupAgent
+      - Fileset
+      - DFSFileset
+      - Oracle
+      - OracleApp
+      - SQLServer
+      - DB2
+      - MySQL
+      - GaussDB
+      - SAP HANA
+      - Kingbase
+      - Sybase IQ
+      - Informix
+      - TimesTen
+      - GBase
+      - Dameng
+      - Cassandra
+      - OscarDB
+      - Exchange
+      - VMware vCenter Server
+      - VMware
+      - VMware ESX
+      - VMware ESXi
+      - Hyper-V
+      - ms.HostSystem
+      - FusionSphere
+      - vim.ClusterComputeResource
+      - vim.HostSystem
+      - vim.Folder
+      - vim.ResourcePool
+      - OpenStack
+      - HuaweiCloudStack
+      - vim.VirtualMachine
+      - ms.VirtualMachine
+      - Hadoop
+      - FusionInsight
+      - vim.VirtualApp
+      - vim.Datacenter
+      - Common
+      - Replica
+    title: ResourceSubTypeEnum
+    type: string
+  ResourceTypeEnum:
+    description: An enumeration.
+    enum:
+      - Host
+      - Fileset
+      - DFSFileset
+      - Database
+      - Application
+      - VirtualPlatform
+      - vSphere
+      - Cluster
+      - Folder
+      - ResourcePool
+      - CloudPlatform
+      - VM
+      - BigData
+      - Hyper-V
+      - DatabaseInstance
+    title: ResourceTypeEnum
+    type: string
+  TimeRange:
+    properties:
+      ENDTIME:
+        description: 结束时间
+        title: Endtime
+        type: string
+      STARTTIME:
+        description: 开始时间
+        title: Starttime
+        type: string
+      TIMEZONE:
+        description: 时区
+        title: Timezone
+        type: string
+    required:
+      - STARTTIME
+      - ENDTIME
+      - TIMEZONE
+    title: TimeRange
+    type: object
+  TimeSlot:
+    properties:
+      full_time:
+        description: 全量备份时间
+        title: Full Time
+        type: string
+      log_time:
+        description: 日志备份时间
+        title: Log Time
+        type: string
+    title: TimeSlot
+    type: object
+  UpdateEnvSchema:
+    properties:
+      endpoint:
+        description: 受保护环境IP地址
+        title: Endpoint
+        type: string
+      extend_context:
+        default: {}
+        description: 资源拓展内容
+        title: Extend Context
+        type: object
+      name:
+        description: 受保护环境名称
+        maxLength: 64
+        minLength: 1
+        title: Name
+        type: string
+      password:
+        description: 受保护环境密码
+        title: Password
+        type: string
+      port:
+        description: 受保护环境端口号
+        maximum: 65535
+        minimum: 0
+        title: Port
+        type: integer
+      user_name:
+        description: 受保护环境用户名
+        title: User Name
+        type: string
+      uuid:
+        description: 环境ID
+        maxLength: 64
+        minLength: 1
+        title: Uuid
+        type: string
+      verify_cert:
+        description: 是否校验证书，0：不校验，1：校验
+        title: Verify Cert
+        type: integer
+    required:
+      - endpoint
+      - port
+    title: UpdateEnvSchema
+    type: object
+  UuidObject:
+    properties:
+      uuid:
+        description: UUID
+        title: Uuid
+        type: string
+    required:
+      - uuid
+    title: UuidObject
+    type: object
+  VMwareSchema:
+    properties:
+      hardware:
+        allOf: null
+        $ref: '#/definitions/HardwareSchema'
+        description: 虚拟机的硬件信息
+        title: Hardware
+      runtime:
+        allOf: null
+        $ref: '#/definitions/VirtualMachineRuntime'
+        description: 虚拟机运行环境
+        title: Runtime
+      uuid:
+        description: 虚拟机ID
+        title: Uuid
+        type: string
+      vmx_datastore:
+        allOf: null
+        $ref: '#/definitions/DatastoreSchema'
+        description: 虚拟机的数据存储信息
+        title: Vmx Datastore
+    required:
+      - uuid
+      - hardware
+      - vmx_datastore
+    title: VMwareSchema
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+  VirtualDiskDetailSchema:
+    properties:
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      capacity:
+        default: 0
+        description: 硬盘容量，单位KB
+        title: Capacity
+        type: integer
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      datastore:
+        allOf: null
+        $ref: '#/definitions/DatastoreSchema'
+        description: 数据存储信息
+        title: Datastore
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      slot:
+        description: 槽位号
+        title: Slot
+        type: string
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 硬盘ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+    required:
+      - name
+      - root_uuid
+      - slot
+      - datastore
+    title: VirtualDiskDetailSchema
+    type: object
+  VirtualMachineRuntime:
+    properties:
+      host:
+        allOf: null
+        $ref: '#/definitions/HostSystem'
+        description: ESX主机
+        title: Host
+    title: VirtualMachineRuntime
+    type: object
+  VirtualResourceSchema:
+    properties:
+      alias_type:
+        description: 类型别名
+        title: Alias Type
+        type: string
+      alias_value:
+        description: 值别名
+        title: Alias Value
+        type: string
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      capacity:
+        default: 0
+        description: 容量，仅用于数据存储
+        title: Capacity
+        type: integer
+      children:
+        description: 子资源的数量
+        title: Children
+        type: integer
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      env_ip:
+        description: 对应的保护环境IP
+        title: Env Ip
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      free_space:
+        default: 0
+        description: 空闲容量，仅用于数据存储
+        title: Free Space
+        type: integer
+      is_template:
+        default: false
+        description: 是否未模板虚拟机
+        title: Is Template
+        type: boolean
+      link_status:
+        description: 资源状态，0-在线 1-离线
+        title: Link Status
+        type: integer
+      mo_id:
+        description: 虚拟机的moId
+        title: Mo Id
+        type: string
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      os_type:
+        description: 操作系统类型
+        title: Os Type
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      partitions:
+        description: 数据存储的磁盘分区列表
+        items:
+          type: string
+        title: Partitions
+        type: array
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      uncommitted:
+        default: 0
+        description: 未提交容量，仅用于数据存储
+        title: Uncommitted
+        type: integer
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+      vm_ip:
+        description: 虚拟机的IP地址
+        title: Vm Ip
+        type: string
+    required:
+      - name
+      - root_uuid
+      - uuid
+    title: VirtualResourceSchema
+    type: object
+  app__resource__schemas__database_models__RegisterDatabaseSchema:
+    properties:
+      host_id:
+        description: 主机ID
+        maxLength: 64
+        minLength: 1
+        title: Host Id
+        type: string
+      instance_name:
+        description: 实例名称
+        maxLength: 64
+        minLength: 1
+        title: Instance Name
+        type: string
+      os_username:
+        description: 实例所属操作系统用户
+        maxLength: 64
+        minLength: 0
+        title: Os Username
+        type: string
+    required:
+      - host_id
+      - instance_name
+    title: RegisterDatabaseSchema
+    type: object
+  app__resource__schemas__database_schema__RegisterDatabaseSchema:
+    properties:
+      asm:
+        description: ASM信息
+        title: Asm
+        type: string
+      asm_auth:
+        description: ASM认证信息
+        title: Asm Auth
+        type: string
+      auth_type:
+        description: 认证方式
+        title: Auth Type
+        type: integer
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      db_password:
+        description: 数据库密码
+        title: Db Password
+        type: string
+      db_role:
+        description: 数据库角色
+        title: Db Role
+        type: integer
+      db_username:
+        description: 数据库用户名
+        title: Db Username
+        type: string
+      desesitization_policy_id:
+        description: 脱敏策略ID
+        title: Desesitization Policy Id
+        type: string
+      desesitization_policy_name:
+        description: 脱敏策略名称
+        title: Desesitization Policy Name
+        type: string
+      desesitization_status:
+        description: 脱敏状态
+        title: Desesitization Status
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      identification_status:
+        description: 识别状态
+        title: Identification Status
+        type: string
+      instance_names:
+        description: 所有实例名称
+        title: Instance Names
+        type: string
+      instance_uuids:
+        description: 所有实例ID
+        title: Instance Uuids
+        type: string
+      is_asminst:
+        description: 是否使用ASM存储
+        title: Is Asminst
+        type: integer
+      is_cluster:
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        description: 连接状态
+        title: Link Status
+        type: integer
+      name:
+        description: 数据库名称
+        title: Name
+        type: string
+      os_username:
+        description: 所属操作系统用户名
+        title: Os Username
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      source_type:
+        description: 资源的来源
+        title: Source Type
+        type: string
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      valid:
+        description: 是否展示
+        title: Valid
+        type: boolean
+      verify_status:
+        description: 是否认证
+        title: Verify Status
+        type: boolean
+      version:
+        description: 数据库版本
+        title: Version
+        type: string
+    required:
+      - name
+      - root_uuid
+      - parent_uuid
+      - type
+      - sub_type
+      - uuid
+      - instance_uuids
+      - instance_names
+    title: RegisterDatabaseSchema
+    type: object
+x-components: {}
