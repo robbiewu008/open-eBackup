@@ -1,0 +1,585 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 防勒索策略接口
+host: localhost
+basePath: /
+tags:
+  - name: anti-ransomware-policy-api
+    description: 防勒索策略
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /v1/anti-ransomware/policies:
+    get:
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - anti-ransomware-policy-api
+      summary: 查询防勒索策略列表
+      description: 查询防勒索策略列表
+      operationId: ShowAntiRansomwarePolicies
+      produces:
+        - '*/*'
+      parameters:
+        - name: policyName
+          in: query
+          description: 防勒索策略名称
+          minLength: 1
+          maxLength: 60
+          required: false
+          type: string
+        - name: dataSourceTypes
+          in: query
+          description: |-
+            数据源类型
+            local 本地
+            external 外部集群
+          required: false
+          type: array
+          x-access-port: 30081
+          x-auth-required: 'N'
+          x-public-api: 'N'
+          items:
+            type: string
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          maximum: 200
+          minimum: 0
+          format: int32
+          x-example: 10
+          x-access-port: 25081
+          x-auth-required: 'N'
+          x-public-api: 'N'
+        - name: schedulePolicies
+          in: query
+          description: 调度计划
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: startPage
+          in: query
+          description: 分页起始页面
+          required: false
+          type: integer
+          minimum: 0
+          format: int32
+          x-example: 0
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anti-ransomware-policy-api
+      summary: 创建防勒索策略
+      description: 创建防勒索策略
+      operationId: CreateAntiRansomwarePolic
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: CreateAntiRansomwarePolicRequestBody
+          description: 防勒索策略添加入参对象
+          required: true
+          schema:
+            $ref: '#/definitions/AntiRansomwarePolicyReq'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/v1/anti-ransomware/policies/{id}':
+    put:
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anti-ransomware-policy-api
+      summary: 修改防勒索策略
+      description: 修改防勒索策略
+      operationId: UpdateAntiRansomwarePolicy
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: UpdateAntiRansomwarePolicyRequestBody
+          description: 防勒索策略修改入参对象
+          required: true
+          schema:
+            $ref: '#/definitions/AntiRansomwarePolicyReq'
+        - name: id
+          in: path
+          description: 防勒索策略id
+          required: true
+          type: integer
+          format: int32
+          minimum: 1
+          exclusiveMaximum: true
+          x-access-port: 25081
+          x-auth-required: 'N'
+          x-public-api: 'N'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anti-ransomware-policy-api
+      summary: 删除防勒索策略
+      description: 删除防勒索策略
+      operationId: DeleteAntiRansomwarePolicy
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: id
+          in: path
+          minimum: 1
+          description: 防勒索策略id
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  /v1/anti-ransomware/resources:
+    get:
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - anti-ransomware-policy-api
+      summary: 获得策略要防护的资源列表
+      description: 查询策略要防护的资源列表
+      operationId: ShowAntiRansomwareResources
+      parameters:
+        - name: policyId
+          in: query
+          required: false
+          description: 策勒id
+          type: integer
+          format: int32
+          minimum: 1
+          exclusiveMaximum: true
+          x-access-port: 25081
+          x-auth-required: 'N'
+          x-public-api: 'N'
+        - name: clusterId
+          in: query
+          required: true
+          minimum: 1
+          description: 集群id
+          type: integer
+          format: int32
+        - name: resourceSubType
+          in: query
+          required: true
+          description: |-
+            资源子类型
+            NasShare：NasShare
+            vim.VirtualMachine：vimware
+            NasFileSystem: NasFileSystem
+          type: string
+          enum:
+            - NasShare
+            - vim.VirtualMachine
+            - NasFileSystem
+          x-access-port: 25081
+          x-auth-required: 'N'
+          x-public-api: 'N'
+        - name: startPage
+          in: query
+          required: true
+          description: 起始页
+          type: integer
+          format: int32
+          minimum: 0
+          exclusiveMaximum: true
+          x-access-port: 25081
+          x-auth-required: 'N'
+          x-public-api: 'N'
+        - name: pageSize
+          in: query
+          required: true
+          description: 页大小
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 200
+          x-access-port: 25081
+          x-auth-required: 'N'
+          x-public-api: 'N'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AntiRansomwareResourcePage'
+  /v1/anti-ransomware/action/detects:
+    post:
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anti-ransomware-policy-api
+      summary: 手动触发批量副本防勒索检测
+      description: 手动触发批量副本防勒索检测
+      operationId: CreateCopiesDetection
+      parameters:
+        - name: CreateCopiesDetectionRequestBody
+          in: body
+          required: true
+          description: 副本id集合
+          schema:
+            $ref: '#/definitions/CopyDetectionReq'
+      responses:
+        '200':
+          description: ''
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  AntiRansomwareDetectionStatus:
+    properties:
+      detectionEndTime:
+        type: string
+        format: date-time
+        description: 防勒索检测结束时间
+      detectionStartTime:
+        type: string
+        format: date-time
+        description: 防勒索检测开始时间
+      model:
+        type: string
+        description: 防勒索检测模型
+        minLength: 1
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      report:
+        type: string
+        description: 防勒索检测报告
+        minLength: 1
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      status:
+        type: integer
+        format: int32
+        description: '防勒索检测状态 1:进行中；2：未感染；3：已感染；4：异常'
+        minimum: 1
+        maximum: 4
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+        enum:
+          - 1
+          - 2
+          - 3
+          - 4
+    title: AntiRansomwareDetectionStatus
+    required:
+      - status
+  AntiRansomwarePolicyReq:
+    properties:
+      policyName:
+        type: string
+        description: 防勒索策略名称
+        minLength: 1
+        maxLength: 100
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      resourceIds:
+        type: array
+        description: 资源id
+        items:
+          type: string
+      clusterId:
+        type: integer
+        format: int32
+        description: 集群节点id
+        minimum: 1
+        exclusiveMaximum: true
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      description:
+        type: string
+        description: 防勒索策略描述
+        minLength: 0
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      schedule:
+        $ref: '#/definitions/AntiRansomwareSchedule'
+      dataSourceType:
+        type: string
+        description: |-
+          local:本地集群
+          external:外部集群
+        enum:
+          - local
+          - external
+        x-access-port: 30081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+    title: AntiRansomwarePolicyReq
+    required:
+      - policyName
+      - clusterId
+      - schedule
+      - dataSourceType
+  AntiRansomwarePolicyRes:
+    properties:
+      policyName:
+        type: string
+        description: 防勒索策略名称
+        minLength: 1
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      clusterId:
+        type: integer
+        format: int32
+        description: 集群id
+        minimum: 1
+        exclusiveMaximum: true
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      dataSourceType:
+        type: string
+        description: '资源类型。local：本地; external:外部'
+        enum:
+          - local
+          - external
+        x-access-port: 30081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      description:
+        type: string
+        description: 防勒索策略描述
+      schedule:
+        $ref: '#/definitions/AntiRansomwareSchedule'
+      id:
+        type: integer
+        format: int32
+        description: 策勒id
+        minimum: 1
+        exclusiveMaximum: true
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      resourceIds:
+        type: array
+        items:
+          type: string
+        description: 已关联的资源id集合
+    title: AntiRansomwarePolicyRes
+    required:
+      - policyName
+      - clusterId
+      - dataSourceType
+      - id
+  PageListResponse:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 分页查询结果列表
+        items:
+          $ref: '#/definitions/AntiRansomwarePolicyRes'
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数
+    title: PageListResponse«AntiRansomwarePolicyRes»
+  AntiRansomwareSchedule:
+    description: 防勒索调度计划
+    properties:
+      copyTime:
+        type: string
+        description: 仅检测该时间后的的副本
+      startDetectionTime:
+        type: string
+        description: 首次执行时间
+      interval:
+        type: integer
+        format: int32
+        description: 防勒索间隔执行时长
+        minimum: 1
+        maximum: 23
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      intervalUnit:
+        type: string
+        description: 防勒索间隔执行单位
+        enum:
+          - MINUTES
+          - HOURS
+          - DAYS
+          - WEEKS
+          - MONTHS
+          - YEARS
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      policy:
+        type: string
+        description: 调度计划
+        enum:
+          - IMMEDIATELY_EXECUTED
+          - INTERVAL_EXECUTED
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      detectionType:
+        type: integer
+        format: int32
+        description: |-
+          0：所有
+          1：最新
+          2：所选时间之后的副本
+        minimum: 0
+        maximum: 1
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+        enum:
+          - 0
+          - 1
+          - 2
+    required:
+      - policy
+  Resource:
+    description: 资源
+    properties:
+      uuid:
+        type: string
+        description: 资源id
+        minLength: 1
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      name:
+        type: string
+        description: 资源名称
+        minLength: 1
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      path:
+        type: string
+        description: 资源路径
+        minLength: 1
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+    required:
+      - uuid
+      - name
+      - path
+  AntiRansomwareResourcePage:
+    description: 防勒索资源
+    properties:
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/Resource'
+        description: 防勒索资源
+      totalCount:
+        type: integer
+        format: int32
+        description: 该类型资源总数量
+        minimum: 0
+        exclusiveMaximum: true
+        x-access-port: 25081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+    required:
+      - totalCount
+  CopyDetectionReq:
+    required:
+      - resouceId
+      - copyIdList
+    properties:
+      resouceId:
+        type: string
+        description: 资源id
+      copyIdList:
+        type: array
+        items:
+          type: string
+        description: 副本id集合
