@@ -494,6 +494,29 @@ paths:
         - Authorization:
             - global
       deprecated: false
+  /v1/certs/components/action/consistency-check:
+    get:
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-dp-admin-role: 'Y'
+      tags:
+        - component-rest-api
+      summary: 服务端证书与内部组件通信证书一致性检查
+      description: 针对服务端证书与内部组件通信证书进行一致性检查
+      operationId: checkCertificateConsistencyUsingGET
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ ConsistencyResponse'
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -752,3 +775,14 @@ definitions:
         type: string
         description: CRL颁发机构名称
     title: CrlEntity
+  ' ConsistencyResponse':
+    properties:
+      data:
+        type: string
+        description: '返回服务端证书和内部组件同行证书的一致性结果 [SUCCESS]:一致 [FAILED]:不一致'
+        enum:
+          - SUCCESS
+          - FAILED
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
