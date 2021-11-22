@@ -115,43 +115,30 @@ definitions:
     properties:
       filterBy:
         type: string
-        description: |-
-          根据什么进行过滤，取值
-          Name：名称
-          ID：标识
-          Formate：文件的格式
-          ModifyTime：修改时间
-          CreateTime：创建时间
+        description: >-
+          根据什么进行过滤，取值：Name-名称；ID-标识；Formate-文件的格式；ModifyTime-修改时间；CreateTime-创建时间
         enum:
           - Name
           - ID
-          - File
-          - Dir
+          - ModifyTime
+          - CreateTime
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
       type:
         type: string
-        description: |-
-          过滤的资源类型，取值如下：
-          VM：虚拟机
-          Disk：磁盘
-          File：文件
-          Dir：目录
+        description: 过滤的资源类型，取值：VM-虚拟机；Disk-磁盘；File-文件；Dir-目录
         enum:
           - VM
           - Disk
-          - ' File'
-          - ' Dir'
+          - File
+          - Dir
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
       rule:
         type: string
-        description: |-
-          过滤规则：如模糊匹配、全匹配、正则表达式等
-          Fuzzy：模糊匹配
-          Exact：精确匹配
+        description: 过滤规则：如模糊匹配、全匹配、正则表达式等。Fuzzy-模糊匹配；Exact-精确匹配；Regex-正则表达式
         enum:
           - Fuzzy
           - Exact
@@ -161,15 +148,18 @@ definitions:
         x-public-api: 'Y'
       mode:
         type: string
-        description: |-
-          过滤类型
-          INCLUDE：包含
-          EXCLUDE：排除
+        description: 过滤类型：INCLUDE-包含；EXCLUDE-排除
+        enum:
+          - INCLUDE
+          - EXCLUDE
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       values:
         type: array
         items:
           type: string
-        description: 过滤的具体内容，如
+        description: 过滤的具体内容
     required:
       - filterBy
       - type
