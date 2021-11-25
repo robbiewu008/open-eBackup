@@ -465,7 +465,10 @@ definitions:
         format: int32
         description: 总记录数
       records:
-        $ref: '#/definitions/ProtectedEnvironmentResponse'
+        items:
+          $ref: '#/definitions/BaseProtectedResource'
+        description: 创建资源请求体
+        type: array
   ProtectedObject:
     properties:
       slaId:
@@ -649,3 +652,49 @@ definitions:
         additionalProperties:
           type: string
         description: 环境扩展参数，存放不同环境的自定义扩展属性
+  BaseProtectedResource:
+    description: 创建资源请求体
+    properties:
+      uuid:
+        type: string
+        description: 资源uuid
+      name:
+        type: string
+        description: 资源名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      type:
+        type: string
+        description: 资源主类型
+      subType:
+        type: string
+        description: 资源子类型
+      path:
+        type: string
+        description: 资源路径
+      rootUuid:
+        type: string
+        description: 资源所属根资源uuid，即环境的uuid
+      parentUuid:
+        type: string
+        description: 父资源ID
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 资源扩展属性
+      createdTime:
+        type: string
+        format: date-time
+        description: 资源创建时间
+      parentName:
+        type: string
+        description: 父资源名称
+    required:
+      - name
+      - type
+      - subType
+      - rootUuid
