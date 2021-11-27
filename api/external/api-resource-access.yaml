@@ -93,18 +93,16 @@ paths:
       x-public-api: 'Y'
       tags:
         - protected-resource-api
-      summary: 支持批量更新资源，更新资源过程中回调beforeUpdate接口，beforeUpdate接口调用失败则事务回滚
+      summary: 更新资源
       description: 更新资源
-      operationId: UpdateResources
+      operationId: UpdateResource
       parameters:
-        - name: UpdateResourcesRequestBody
+        - name: UpdateResourceRequestBody
           in: body
           required: true
           description: 资源信息
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/ProtectedResourceResponse'
+            $ref: '#/definitions/ProtectedResourceUpdateRequest'
       responses:
         '200':
           description: 操作成功无返回结果，操作失败异常报错。
@@ -698,3 +696,13 @@ definitions:
       - type
       - subType
       - rootUuid
+  ProtectedResourceUpdateRequest:
+    properties:
+      name:
+        type: string
+        description: 资源名称
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 扩展属性
