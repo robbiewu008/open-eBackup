@@ -72,9 +72,9 @@ paths:
       x-public-api: 'Y'
       summary: 创建资源
       description: 创建资源
-      operationId: CreateResources
+      operationId: CreateResource
       parameters:
-        - name: CreateResourcesRequestBody
+        - name: CreateResourceRequestBody
           in: body
           required: true
           schema:
