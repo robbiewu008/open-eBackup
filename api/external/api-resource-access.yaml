@@ -87,25 +87,6 @@ paths:
             type: array
             items:
               type: string
-    put:
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      tags:
-        - protected-resource-api
-      summary: 更新资源
-      description: 更新资源
-      operationId: UpdateResource
-      parameters:
-        - name: UpdateResourceRequestBody
-          in: body
-          required: true
-          description: 资源信息
-          schema:
-            $ref: '#/definitions/ProtectedResourceUpdateRequest'
-      responses:
-        '200':
-          description: 操作成功无返回结果，操作失败异常报错。
     get:
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -263,6 +244,30 @@ paths:
           required: true
           type: string
           description: 资源ID
+      responses:
+        '200':
+          description: 操作成功无返回结果，操作失败异常报错。
+    put:
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 更新资源
+      description: 更新资源
+      operationId: UpdateResource
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+          description: 资源ID
+        - name: UpdateResourceRequestBody
+          in: body
+          required: true
+          description: 资源信息
+          schema:
+            $ref: '#/definitions/ProtectedResourceUpdateRequest'
       responses:
         '200':
           description: 操作成功无返回结果，操作失败异常报错。
