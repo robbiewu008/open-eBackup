@@ -11,7 +11,7 @@ tags:
   - name: restore-api-v2
     description: V2版本恢复API
 paths:
-  /v2/restores:
+  /v2/restore/tasks:
     post:
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -22,9 +22,9 @@ paths:
         - restore-api-v2
       summary: 创建恢复
       description: 创建恢复，该接口仅适用于创建HDFS，HBase，NAS的恢复。
-      operationId: CreateRestore
+      operationId: CreateRestoreTask
       parameters:
-        - name: CreateRestoreRequestBody
+        - name: CreateRestoreTaskRequestBody
           in: body
           required: true
           description: 创建恢复请求体
@@ -115,11 +115,11 @@ definitions:
     properties:
       filterBy:
         type: string
-        description: >-
-          根据什么进行过滤，取值：Name-名称；ID-标识；Formate-文件的格式；ModifyTime-修改时间；CreateTime-创建时间
+        description: 根据什么进行过滤，取值：Name-名称；ID-标识；Format-文件的格式；ModifyTime-修改时间；CreateTime-创建时间
         enum:
           - Name
           - ID
+          - Format
           - ModifyTime
           - CreateTime
         x-access-port: 25081
