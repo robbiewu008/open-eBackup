@@ -384,6 +384,31 @@ paths:
           description: ''
           schema:
             type: string
+  '/v2/{resourceId}/authentication':
+    get:
+      x-access-port: 25082
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 更新资源认证信息
+      description: 更新资源认证信息
+      operationId: UpdateAuthentication
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+          description: 资源ID
+        - name: updateAuthenticationRequestBody
+          in: body
+          required: true
+          description: 认证信息更新请求
+          schema:
+            $ref: '#/definitions/Authentication'
+      responses:
+        '200':
+          description: '--'
 definitions:
   ProtectedEnvironmentRequest:
     description: 受保护对象请求体
@@ -487,31 +512,13 @@ definitions:
         $ref: '#/definitions/ProtectedObject'
       environment:
         $ref: '#/definitions/ProtectedEnvironment'
+      auth:
+        $ref: '#/definitions/AuthType'
     required:
       - name
       - type
       - subType
       - rootUuid
-  ProtectedEnvironmentList:
-    properties:
-      total:
-        type: integer
-        format: int64
-        description: 总的记录数
-      pages:
-        type: integer
-        format: int64
-        description: 总页数
-      page_size:
-        type: integer
-        format: int64
-        description: 每页记录数
-      page_no:
-        type: integer
-        format: int64
-        description: 第几页
-      items:
-        $ref: '#/definitions/ProtectedEnvironmentResponse'
   EnvironmentResourceList:
     description: 环境资源列表
     properties:
@@ -664,49 +671,13 @@ definitions:
       version:
         type: string
         description: 资源的版本
+      auth:
+        $ref: '#/definitions/Authentication'
     required:
       - name
       - type
       - subType
       - rootUuid
-  ProtectedEnvironmentUpdateRequest:
-    description: 受保护对象请求体
-    properties:
-      uuid:
-        type: string
-        description: 受保护环境UUID
-      name:
-        type: string
-        description: 受保护环境名称
-        minLength: 1
-        maxLength: 64
-        x-access-port: 25081
-        x-auth-required: 'Y'
-        x-public-api: 'Y'
-      endpoint:
-        type: string
-        description: 环境的IP地址或域名
-      port:
-        type: integer
-        format: int32
-        description: 环境的接入端口
-      username:
-        type: string
-        description: 环境的用户名
-      password:
-        type: string
-        description: 环境的密码
-      osType:
-        type: string
-        description: 环境的操作系统
-      version:
-        type: string
-        description: 环境的版本
-      extendInfo:
-        type: object
-        additionalProperties:
-          type: string
-        description: 环境扩展参数，存放不同环境的自定义扩展属性
   BaseProtectedResource:
     description: 创建资源请求体
     properties:
@@ -763,3 +734,32 @@ definitions:
         additionalProperties:
           type: string
         description: 扩展属性
+  Authentication:
+    description: 认证信息
+    allOf:
+      - $ref: '#/definitions/AuthType'
+      - type: object
+        properties:
+          authKey:
+            type: string
+            description: 使用用户名密码认证时该字段填用户名，使用AK/SK认证时该字段填充AK
+          authPwd:
+            type: string
+            description: 使用用户名密码认证时该字段填密码，使用AK/SK认证时该字段填充SK
+          extendInfo:
+            type: object
+            additionalProperties:
+              type: string
+            description: 认证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里
+  AuthType:
+    description: 认证类型
+    required:
+      - authType
+    properties:
+      authType:
+        type: integer
+        format: int32
+        description: >-
+          0-NO_AUTH, 1-OS_PASSWORD, 2-APP_PASSWORD，3-LADP, 4-AKSK, 5-KERBEROS,
+          6-TOKEN, 7-OAUTH2, 8-OTHER。1到3,authKey填用户名,authPwd填密码， 4 authKey填AK，
+          authPwd填SK, 5,6,7,8认证认证信息在扩展字段中扩充。
