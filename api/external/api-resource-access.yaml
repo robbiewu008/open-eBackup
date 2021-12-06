@@ -144,7 +144,9 @@ paths:
             $ref: '#/definitions/ProtectedResourcePageListResponse'
   /v2/environments:
     post:
-      x-request-examples-text-1: |-
+      x-request-examples-url-2: 'POST https://host:25801/v2/environments'
+      x-request-examples-description-2: 注册HDFS集群
+      x-request-examples-text-2: |-
         {
           "name": "HDFS_Cluster",
           "type": "BigData",
@@ -158,7 +160,7 @@ paths:
             "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
           }
         }
-      x-request-examples-1: |-
+      x-request-examples-2: |-
         {
           "name": "HDFS_Cluster",
           "type": "BigData",
@@ -172,8 +174,58 @@ paths:
             "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
           }
         }
-      x-request-examples-url-1: 'POST https://host:25801/v2/environments'
-      x-request-examples-description-1: 注册HDFS集群
+      x-request-examples-text-1: >-
+        {
+
+        "name":"DoradoV6_001",
+
+        "type":"StorageEquipment",
+
+        "subType":"DoradoV6",  //
+        设备类型：DoradoV6、OceanStorV6、OceanStorV5、OceanStorPacific、NetApp、StorageOthers
+
+        "endpoint":"8.40.101.37", // 设备管理ip
+
+        "port":"8088", // 设备端口
+
+        "username":"string", // 用户名
+
+        "password":"string",// 密码
+
+        "extendInfo":{
+
+        "verifyStatus":"1", // 是否校验证书：0-不校验，1-校验
+
+        "snapConsistency":"0" // 是否开启快照一致性：0-不打开，1-打开
+
+        }}
+      x-request-examples-1: >-
+        {
+
+        "name":"DoradoV6_001",
+
+        "type":"StorageEquipment",
+
+        "subType":"DoradoV6",  //
+        设备类型：DoradoV6、OceanStorV6、OceanStorV5、OceanStorPacific、NetApp、StorageOthers
+
+        "endpoint":"8.40.101.37", // 设备管理ip
+
+        "port":"8088", // 设备端口
+
+        "username":"string", // 用户名
+
+        "password":"string",// 密码
+
+        "extendInfo":{
+
+        "verifyStatus":"1", // 是否校验证书：0-不校验，1-校验
+
+        "snapConsistency":"0" // 是否开启快照一致性：0-不打开，1-打开
+
+        }}
+      x-request-examples-url-1: 'POST https://host:25080/v2/environments'
+      x-request-examples-description-1: 注册Nas设备
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
       tags:
