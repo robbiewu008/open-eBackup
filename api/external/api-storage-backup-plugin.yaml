@@ -1,0 +1,136 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: StorageBackUpPlugin
+basePath: /
+tags:
+  - name: api-storage-backup-plugin
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  '/v1/plugins/storage/nas/filesystems/{fileSystemId}':
+    get:
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - api-storage-backup-plugin
+      operationId: ShowStorageFileSystemInfo
+      summary: 根据文件系统ID查询文件系统详情
+      description: '查询外部设备的文件系统详细信息,包括文件系统基本信息,以及NFS信息,CIFS信息.'
+      produces:
+        - application/json
+      parameters:
+        - name: fileSystemId
+          in: path
+          required: true
+          type: string
+          description: 文件系统UUID
+        - name: head
+          in: query
+          required: false
+          description: 分页头部，默认为"0"
+          type: string
+        - name: tail
+          in: query
+          required: false
+          description: 分页尾部，默认为"100"
+          type: string
+        - name: X-Auth-Token
+          in: header
+          required: true
+          type: string
+          description: 访问令牌
+      responses:
+        '200':
+          description: 文件系统详细信息展示
+          schema:
+            $ref: '#/definitions/FileSystemInfo'
+definitions:
+  FileSystemInfo:
+    description: 文件系统详细信息查询的返回体。
+    properties:
+      fileSystemId:
+        type: string
+        description: 文件系统UUID
+      equipmentId:
+        type: string
+        description: 设备UUID
+      onlineStatus:
+        type: string
+        description: 设备是否在线 0-不在线 1-在线
+      equipmentName:
+        type: string
+        description: 设备名称
+      tenant:
+        type: string
+        description: 租户
+      capacity:
+        type: string
+        description: 总容量
+      usedCapacity:
+        type: string
+        description: 已用容量
+      cifsShareInfos:
+        type: array
+        items:
+          $ref: '#/definitions/CifsShareInfo'
+        description: cifs信息列表
+      nfsShareInfos:
+        type: array
+        items:
+          $ref: '#/definitions/NfsShareInfo'
+        description: nfs信息列表
+    required:
+      - fileSystemId
+      - equipmentId
+      - onlineStatus
+      - equipmentName
+      - tenant
+      - capacity
+      - usedCapacity
+      - cifsShareInfos
+      - nfsShareInfos
+  CifsShareInfo:
+    description: CIFS 信息展示
+    properties:
+      sharePath:
+        type: string
+        description: 共享路径
+      user:
+        type: string
+        description: 用户/用户组
+      shareName:
+        type: string
+        description: 共享名称
+      domainType:
+        type: integer
+        format: int32
+        description: 类型：0-Everyone，1-Windows本地认证用户，2-Windows本地认证用户组，3-AD域用户，4-AD域用户组
+      authorityLevel:
+        type: integer
+        format: int32
+        description: 权限级别 0-只读，1-完全控制，2-禁止，3-读写
+  NfsShareInfo:
+    description: NFS 信息展示
+    properties:
+      sharePath:
+        type: string
+        description: 共享路径
+      client:
+        type: string
+        description: 客户端
+      clientType:
+        type: integer
+        format: int32
+        description: 类型：0-主机，1-网络组
+      authorityLevel:
+        type: integer
+        format: int32
+        description: 权限级别：0-只读，1-读写
