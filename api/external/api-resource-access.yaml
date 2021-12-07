@@ -144,37 +144,9 @@ paths:
             $ref: '#/definitions/ProtectedResourcePageListResponse'
   /v2/environments:
     post:
-      x-request-examples-url-2: 'POST https://host:25801/v2/environments'
-      x-request-examples-description-2: 注册HDFS集群
-      x-request-examples-text-2: |-
-        {
-          "name": "HDFS_Cluster",
-          "type": "BigData",
-          "endpoint": "192.168.0.1",
-          "subType": "HDFS",
-          "port": 8888,
-          "extendInfo": {
-            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
-            "kerberosId": "string",//环境鉴权使用的kerberosid
-            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
-            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
-          }
-        }
-      x-request-examples-2: |-
-        {
-          "name": "HDFS_Cluster",
-          "type": "BigData",
-          "endpoint": "192.168.0.1",
-          "subType": "HDFS",
-          "port": 8888,
-          "extendInfo": {
-            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
-            "kerberosId": "string",//环境鉴权使用的kerberosid
-            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
-            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
-          }
-        }
-      x-request-examples-text-1: >-
+      x-request-examples-url-2: 'POST https://host:25080/v2/environments'
+      x-request-examples-description-2: 注册Nas设备
+      x-request-examples-text-2: >-
         {
 
         "name":"DoradoV6_001",
@@ -199,7 +171,7 @@ paths:
         "snapConsistency":"0" // 是否开启快照一致性：0-不打开，1-打开
 
         }}
-      x-request-examples-1: >-
+      x-request-examples-2: >-
         {
 
         "name":"DoradoV6_001",
@@ -224,8 +196,36 @@ paths:
         "snapConsistency":"0" // 是否开启快照一致性：0-不打开，1-打开
 
         }}
-      x-request-examples-url-1: 'POST https://host:25080/v2/environments'
-      x-request-examples-description-1: 注册Nas设备
+      x-request-examples-text-1: |-
+        {
+          "name": "HDFS_Cluster",
+          "type": "BigData",
+          "endpoint": "192.168.0.1",
+          "subType": "HDFS",
+          "port": 8888,
+          "extendInfo": {
+            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
+            "kerberosId": "string",//环境鉴权使用的kerberosid
+            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
+            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
+          }
+        }
+      x-request-examples-1: |-
+        {
+          "name": "HDFS_Cluster",
+          "type": "BigData",
+          "endpoint": "192.168.0.1",
+          "subType": "HDFS",
+          "port": 8888,
+          "extendInfo": {
+            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
+            "kerberosId": "string",//环境鉴权使用的kerberosid
+            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
+            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
+          }
+        }
+      x-request-examples-url-1: 'POST https://host:25801/v2/environments'
+      x-request-examples-description-1: 注册HDFS集群
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -244,7 +244,7 @@ paths:
           required: true
           description: 环境名称
           schema:
-            $ref: '#/definitions/ProtectedEnvironmentRequest'
+            $ref: '#/definitions/RegisterProtectedEnvironmentRequest'
           x-access-port: 25081
           x-auth-required: 'Y'
           x-public-api: 'Y'
@@ -346,7 +346,7 @@ paths:
           required: true
           description: 更新受保护环境请求体
           schema:
-            $ref: '#/definitions/ProtectedEnvironmentRequest'
+            $ref: '#/definitions/UpdateEnvironmentRequest'
         - name: X-Auth-Token
           in: header
           required: true
@@ -409,6 +409,40 @@ paths:
       responses:
         '200':
           description: '--'
+  '/v2/environments/{envId}/authentication':
+    put:
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-environment-api
+      summary: 更新环境认证信息
+      description: 更新环境认证信息
+      operationId: UpdateEnvironmentAuthentication
+      parameters:
+        - name: envId
+          in: path
+          required: true
+          type: string
+          description: 受保护环境ID
+        - name: UpdateEnvironmentAuthenticationRequestBody
+          in: body
+          required: true
+          description: 认证信息
+          schema:
+            $ref: '#/definitions/Authentication'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
 definitions:
   ProtectedEnvironmentRequest:
     description: 受保护对象请求体
@@ -454,6 +488,8 @@ definitions:
         additionalProperties:
           type: string
         description: 环境扩展参数，存放不同环境的自定义扩展属性
+      auth:
+        $ref: '#/definitions/Authentication'
     required:
       - name
       - type
@@ -589,51 +625,6 @@ definitions:
         items:
           $ref: '#/definitions/ProtectedResourceResponse'
         description: 当前分页的查询记录
-  ProtectedEnvironmentResponse:
-    description: 受保护对象请求体
-    properties:
-      uuid:
-        type: string
-        description: 受保护环境UUID
-      name:
-        type: string
-        description: 受保护环境名称
-        minLength: 1
-        maxLength: 64
-        x-access-port: 25081
-        x-auth-required: 'Y'
-        x-public-api: 'Y'
-      type:
-        type: string
-        description: 环境的类型
-      endpoint:
-        type: string
-        description: 环境的IP地址或域名
-      subType:
-        type: string
-        description: 环境的子类型
-      port:
-        type: integer
-        format: int32
-        description: 环境的接入端口
-      username:
-        type: string
-        description: 环境的用户名
-      osType:
-        type: string
-        description: 环境的操作系统
-      version:
-        type: string
-        description: 环境的版本
-      extendInfo:
-        type: object
-        additionalProperties:
-          type: string
-        description: 环境扩展参数，存放不同环境的自定义扩展属性
-    required:
-      - name
-      - type
-      - subType
   ProtectedResourceRequest:
     description: 创建资源请求体
     properties:
@@ -763,3 +754,82 @@ definitions:
           0-NO_AUTH, 1-OS_PASSWORD, 2-APP_PASSWORD，3-LADP, 4-AKSK, 5-KERBEROS,
           6-TOKEN, 7-OAUTH2, 8-OTHER。1到3,authKey填用户名,authPwd填密码， 4 authKey填AK，
           authPwd填SK, 5,6,7,8认证认证信息在扩展字段中扩充。
+  RegisterProtectedEnvironmentRequest:
+    description: 受保护对象请求体
+    properties:
+      name:
+        type: string
+        description: 受保护环境名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      type:
+        type: string
+        description: 环境的类型
+      endpoint:
+        type: string
+        description: 环境的IP地址或域名
+      subType:
+        type: string
+        description: 环境的子类型
+      port:
+        type: integer
+        format: int32
+        description: 环境的接入端口
+      username:
+        type: string
+        description: 环境的用户名
+      password:
+        type: string
+        description: 环境的密码
+      osType:
+        type: string
+        description: 环境的操作系统
+      version:
+        type: string
+        description: 环境的版本
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 环境扩展参数，存放不同环境的自定义扩展属性
+      auth:
+        $ref: '#/definitions/Authentication'
+    required:
+      - name
+      - type
+      - subType
+  UpdateEnvironmentRequest:
+    description: 受保护对象请求体
+    properties:
+      name:
+        type: string
+        description: 受保护环境名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      endpoint:
+        type: string
+        description: 环境的IP地址或域名
+      port:
+        type: integer
+        format: int32
+        description: 环境的接入端口
+      username:
+        type: string
+        description: 环境的用户名
+      password:
+        type: string
+        description: 环境的密码
+      osType:
+        type: string
+        description: 环境的操作系统
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 环境扩展参数，存放不同环境的自定义扩展属性
