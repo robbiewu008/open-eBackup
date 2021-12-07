@@ -385,7 +385,7 @@ paths:
           schema:
             type: string
   '/v2/{resourceId}/authentication':
-    get:
+    put:
       x-access-port: 25082
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -549,7 +549,7 @@ definitions:
       environment:
         $ref: '#/definitions/ProtectedEnvironment'
       auth:
-        $ref: '#/definitions/AuthType'
+        $ref: '#/definitions/AuthTypeInfo'
     required:
       - name
       - type
@@ -728,7 +728,7 @@ definitions:
   Authentication:
     description: 认证信息
     allOf:
-      - $ref: '#/definitions/AuthType'
+      - $ref: '#/definitions/AuthTypeInfo'
       - type: object
         properties:
           authKey:
@@ -742,10 +742,8 @@ definitions:
             additionalProperties:
               type: string
             description: 认证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里
-  AuthType:
+  AuthTypeInfo:
     description: 认证类型
-    required:
-      - authType
     properties:
       authType:
         type: integer
@@ -754,6 +752,8 @@ definitions:
           0-NO_AUTH, 1-OS_PASSWORD, 2-APP_PASSWORD，3-LADP, 4-AKSK, 5-KERBEROS,
           6-TOKEN, 7-OAUTH2, 8-OTHER。1到3,authKey填用户名,authPwd填密码， 4 authKey填AK，
           authPwd填SK, 5,6,7,8认证认证信息在扩展字段中扩充。
+    required:
+      - authType
   RegisterProtectedEnvironmentRequest:
     description: 受保护对象请求体
     properties:
