@@ -443,6 +443,27 @@ paths:
           description: ''
           schema:
             type: string
+  '/v2/environments/{envId}/action/scan':
+    put:
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-environment-api
+      summary: 扫描受保护环境
+      description: 扫描受保护环境
+      operationId: ScanProtectedEnvironment
+      parameters:
+        - name: envId
+          in: path
+          required: true
+          type: string
+          description: 受保护环境ID
+      responses:
+        '200':
+          description: '--'
 definitions:
   ProtectedEnvironmentRequest:
     description: 受保护对象请求体
