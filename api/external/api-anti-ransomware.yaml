@@ -40,11 +40,11 @@ paths:
           in: query
           description: |-
             数据源类型
-            local 本地
-            external 外部集群
+            local：本地
+            external：外部集群
           required: false
           type: array
-          x-access-port: 30081
+          x-access-port: 25081
           x-auth-required: 'N'
           x-public-api: 'N'
           items:
@@ -63,12 +63,18 @@ paths:
           x-public-api: 'N'
         - name: schedulePolicies
           in: query
-          description: 调度计划
+          description: |-
+            调度计划
+            immediately：立即检测
+            interval：定时检测
           required: false
           type: array
           items:
             type: string
           collectionFormat: multi
+          x-access-port: 25081
+          x-auth-required: 'N'
+          x-public-api: 'N'
         - name: startPage
           in: query
           description: 分页起始页面
@@ -89,6 +95,26 @@ paths:
           type: array
           items:
             type: string
+        - name: resourceSubTypes
+          in: query
+          required: false
+          description: |-
+            资源子类型
+            vim.VirtualMachine
+            NasShare
+            NasFileSystem
+          type: array
+          items:
+            type: string
+          x-access-port: 25081
+          x-auth-required: 'N'
+          x-public-api: 'N'
+        - name: id
+          in: query
+          required: false
+          description: 防勒索策略id
+          type: integer
+          format: int32
       responses:
         '200':
           description: OK
@@ -297,10 +323,10 @@ definitions:
         type: string
         description: 防勒索策略名称
         minLength: 1
-        maxLength: 100
+        maxLength: 64
         x-access-port: 25081
-        x-auth-required: 'N'
-        x-public-api: 'N'
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       selectedResources:
         items:
           $ref: '#/definitions/AntiRansomwareResource'
@@ -320,19 +346,34 @@ definitions:
         description: 防勒索策略描述
         minLength: 0
         x-access-port: 25081
-        x-auth-required: 'N'
-        x-public-api: 'N'
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+        maxLength: 255
       schedule:
         $ref: '#/definitions/AntiRansomwareSchedule'
       dataSourceType:
         type: string
         description: |-
-          local:本地集群
-          external:外部集群
+          local：本地集群
+          external：外部集群
         enum:
           - local
           - external
         x-access-port: 30081
+        x-auth-required: 'N'
+        x-public-api: 'N'
+      resourceSubType:
+        type: string
+        description: |-
+          资源子类型
+          vim.VirtualMachine,
+          NasShare,
+          NasFileSystem;
+        enum:
+          - vim.VirtualMachine
+          - NasShare
+          - NasFileSystem
+        x-access-port: 25081
         x-auth-required: 'N'
         x-public-api: 'N'
     title: AntiRansomwarePolicyReq
@@ -341,6 +382,7 @@ definitions:
       - clusterId
       - schedule
       - dataSourceType
+      - resourceSubType
   AntiRansomwarePolicyRes:
     properties:
       policyName:
@@ -387,6 +429,9 @@ definitions:
         items:
           $ref: '#/definitions/AntiRansomwareResource'
         description: 已关联的资源id集合
+      resourceSubType:
+        type: string
+        description: 资源子类型
     title: AntiRansomwarePolicyRes
     required:
       - policyName
@@ -412,37 +457,43 @@ definitions:
       copyTime:
         type: string
         description: 仅检测该时间后的的副本
+        pattern: '^\d{4}\-\d{2}\-\d{2}\s{1}\d{2}:\d{2}:\d{2}$'
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       startDetectionTime:
         type: string
         description: 首次执行时间
+        pattern: '^\d{4}\-\d{2}\-\d{2}\s{1}\d{2}:\d{2}:\d{2}$'
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       interval:
         type: integer
         format: int32
         description: 防勒索间隔执行时长
         minimum: 1
-        maximum: 23
+        maximum: 59
         x-access-port: 25081
         x-auth-required: 'N'
         x-public-api: 'N'
       intervalUnit:
         type: string
-        description: 防勒索间隔执行单位
+        description: 防勒索间隔执行单位。   分钟：m；小时：h；天：d；周：w；
         enum:
-          - MINUTES
-          - HOURS
-          - DAYS
-          - WEEKS
-          - MONTHS
-          - YEARS
+          - m
+          - h
+          - d
+          - w
         x-access-port: 25081
         x-auth-required: 'N'
         x-public-api: 'N'
       schedulePolicy:
         type: string
-        description: 调度计划
+        description: 调度计划。interval：间隔执行；immediately：立即执行；
         enum:
-          - IMMEDIATELY_EXECUTED
-          - INTERVAL_EXECUTED
+          - immediately
+          - interval
         x-access-port: 25081
         x-auth-required: 'N'
         x-public-api: 'N'
@@ -472,15 +523,17 @@ definitions:
         description: 资源id
         minLength: 1
         x-access-port: 25081
-        x-auth-required: 'N'
-        x-public-api: 'N'
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+        maxLength: 64
       resourceName:
         type: string
         description: 资源名称
         minLength: 1
         x-access-port: 25081
-        x-auth-required: 'N'
-        x-public-api: 'N'
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+        maxLength: 512
       resourceLocation:
         type: string
         description: 资源路径
@@ -488,9 +541,21 @@ definitions:
         x-access-port: 25081
         x-auth-required: 'N'
         x-public-api: 'N'
+        maxLength: 1024
       resourceSubType:
         type: string
-        description: 资源子类型
+        description: |-
+          资源子类型
+          vim.VirtualMachine;
+          NasShare;
+          NasFileSystem;
+        enum:
+          - vim.VirtualMachine
+          - NasShare
+          - NasFileSystem
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
     required:
       - resourceId
       - resourceName
@@ -520,6 +585,11 @@ definitions:
       copyId:
         type: string
         description: 资源id
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
     required:
       - copyId
   AntiRansomwareResourceRes:
