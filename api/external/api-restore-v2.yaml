@@ -11,7 +11,7 @@ tags:
   - name: restore-api-v2
     description: V2版本恢复API
 paths:
-  /v2/restore/tasks:
+  /v2/restore/jobs:
     post:
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -21,7 +21,7 @@ paths:
       tags:
         - restore-api-v2
       summary: 创建恢复
-      description: 创建恢复，该接口仅适用于创建HDFS，HBase，NAS的恢复。
+      description: 创建恢复，该接口当前仅适用于创建HDFS，HBase，NAS的恢复。
       operationId: CreateRestoreTask
       parameters:
         - name: CreateRestoreTaskRequestBody
@@ -32,9 +32,9 @@ paths:
             $ref: '#/definitions/RestoreRequest'
       responses:
         '200':
-          description: ''
+          description: 创建恢复任务响应对象
           schema:
-            type: string
+            $ref: '#/definitions/RestoreResponse'
 definitions:
   RestoreRequest:
     description: 恢复请求体
@@ -53,6 +53,7 @@ definitions:
           恢复方式
           CR：普通恢复
           IR：即时恢复
+          FLR：细粒度恢复（文件级恢复）
         enum:
           - CR
           - IR
@@ -71,6 +72,16 @@ definitions:
           1、文件系统恢复时可以指定只恢复哪些目录
           2、虚拟机恢复时指定恢复哪些磁盘
           3、数据库实例恢复时指定恢复实例下的某个数据库
+      targetLocation:
+        type: string
+        description: '恢复的目标位置，original - 原位置，new - 新位置, native-恢复到A8000本机'
+        enum:
+          - original
+          - new
+          - native
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       targetEnv:
         type: string
         description: 恢复的目标环境的ID
@@ -109,19 +120,23 @@ definitions:
     required:
       - copyId
       - restoreType
+      - targetLocation
       - targetEnv
       - targetObject
   Filter:
     properties:
       filterBy:
         type: string
-        description: 根据什么进行过滤，取值：Name-名称；ID-标识；Format-文件的格式；ModifyTime-修改时间；CreateTime-创建时间
+        description: >-
+          根据什么进行过滤，取值：Name-名称；ID-标识；Format-文件的格式；ModifyTime-修改时间；CreateTime-创建时间，AccessTime
+          访问时间
         enum:
           - Name
           - ID
           - Format
           - ModifyTime
           - CreateTime
+          - AccessTime
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
@@ -166,3 +181,10 @@ definitions:
       - rule
       - mode
       - values
+  RestoreResponse:
+    properties:
+      jobId:
+        type: string
+        description: 恢复job的id
+    required:
+      - jobId
