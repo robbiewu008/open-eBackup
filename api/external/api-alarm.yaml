@@ -2532,6 +2532,14 @@ definitions:
         type: string
         example: '2016:8:40:96:c11::115'
         description: 控制器IPv6地址
+      nodeName:
+        type: string
+        example: '0A'
+        description: 控制器名称
+      hexEngineId:
+        type: string
+        example: '32 31 30 32 33 35 33 47 54 44 31 30 4C 39 30 30 30 30 30 37 30 41'
+        description: 控制器snmp代理16进制engine ID
     title: SnmpSecurityAgentResponse
     description: 查询各控制器安全代理信息响应
   SnmpTrapAddress:
