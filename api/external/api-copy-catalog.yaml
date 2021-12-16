@@ -419,6 +419,29 @@ paths:
         - copies
       operationId: update_copy_retention_v1_copies__copy_id__action_update_retention_post
       summary: 修改副本保留策略
+  /v1/copies/index:
+    delete:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - copies
+      summary: 删除资源ID对应的副本索引
+      description: 删除资源ID对应的副本索引
+      operationId: DeleteResourceIndex
+      parameters:
+        - name: resourceId
+          in: query
+          required: true
+          type: string
+          description: 资源ID
+      responses:
+        '200':
+          description: 操作成功无返回结果，操作失败异常报错。
   /v1/internal/batchCopies:
     delete:
       produces:
