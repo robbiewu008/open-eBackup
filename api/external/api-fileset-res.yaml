@@ -1,11 +1,60 @@
 swagger: '2.0'
 info:
-  title: 资源管理（文件集）
+  title: 资源管理接口
   version: v1
 tags:
   - name: filesets
 paths:
   /v1/filesets:
+    get:
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - collectionFormat: multi
+          description: 排序字段：
+          in: query
+          items:
+            type: string
+          name: orders
+          required: false
+          type: array
+        - description: 条件参数：
+          in: query
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_FilesetSchema_'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - filesets
+      operationId: query_resources_v1_filesets_get
+      summary: 查询文件集列表
     post:
       consumes:
         - application/json
@@ -20,8 +69,8 @@ paths:
           name: body
           required: true
           schema:
-            allOf:
-              - $ref: '#/definitions/FilesetDetail'
+            allOf: null
+            $ref: '#/definitions/FilesetDetail'
             description: 文件集信息
             title: File Set Detail
       responses:
@@ -86,8 +135,8 @@ paths:
           name: body
           required: true
           schema:
-            allOf:
-              - $ref: '#/definitions/FilesetConfig'
+            allOf: null
+            $ref: '#/definitions/FilesetConfig'
             description: 文件集配置
             title: Config
       responses:
@@ -105,6 +154,38 @@ paths:
       operationId: modify_fileset_v1_filesets__fileset_id__put
       summary: 修改文件集
 definitions:
+  BasePage_FilesetSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/FilesetSchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[FilesetSchema]'
+    type: object
   FilesetConfig:
     properties:
       paths:
@@ -151,12 +232,13 @@ definitions:
         title: Path
         type: string
       root_uuid:
-        description: 环境ID
+        description: 根资源ID
         title: Root Uuid
         type: string
     required:
       - name
       - paths
+      - root_uuid
     title: FilesetDetail
     type: object
   FilesetFilterDetail:
@@ -167,9 +249,13 @@ definitions:
         title: Content
         type: string
       model:
+        allOf: null
         $ref: '#/definitions/FilesetFilterModel'
+        description: 文件集过滤器模式。枚举值：EXCLUDE - 1，INCLUDE - 2
       type:
+        allOf: null
         $ref: '#/definitions/FilesetFilterType'
+        description: 文件集过滤器类型。枚举值：FILE - 1，FOLDER - 2，FORMAT - 3，DATE - 4
     required:
       - type
       - model
@@ -183,6 +269,32 @@ definitions:
       - 2
     title: FilesetFilterModel
     type: integer
+  FilesetFilterSchema:
+    properties:
+      content:
+        description: 文件集过滤器内容
+        maxLength: 8192
+        title: Content
+        type: string
+      model:
+        allOf: null
+        $ref: '#/definitions/FilesetFilterModel'
+        description: 文件集过滤器模式。枚举值：EXCLUDE - 1，INCLUDE - 2
+      type:
+        allOf: null
+        $ref: '#/definitions/FilesetFilterType'
+        description: 文件集过滤器类型。枚举值：FILE - 1，FOLDER - 2，FORMAT - 3，DATE - 4
+      uuid:
+        description: 文件集过滤器ID
+        title: Uuid
+        type: string
+    required:
+      - type
+      - model
+      - content
+      - uuid
+    title: FilesetFilterSchema
+    type: object
   FilesetFilterType:
     description: An enumeration.
     enum:
@@ -192,6 +304,170 @@ definitions:
       - 4
     title: FilesetFilterType
     type: integer
+  FilesetSchema:
+    properties:
+      paths:
+        description: 文件集路径列表
+        items:
+          type: string
+        title: Paths
+        type: array
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      filters:
+        description: 文件集过滤器
+        items:
+          $ref: '#/definitions/FilesetFilterSchema'
+        title: Filters
+        type: array
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+    required:
+      - name
+      - paths
+      - root_uuid
+      - uuid
+    title: FilesetSchema
+    type: object
+  FilterColumn:
+    description: An enumeration.
+    enum:
+      - NAME
+      - ID
+      - SLOT
+    title: FilterColumn
+    type: string
+  FilterMode:
+    description: An enumeration.
+    enum:
+      - EXCLUDE
+      - INCLUDE
+    title: FilterMode
+    type: string
+  FilterRule:
+    description: An enumeration.
+    enum:
+      - ALL
+      - START_WITH
+      - END_WITH
+      - FUZZY
+    title: FilterRule
+    type: string
+  FilterType:
+    description: An enumeration.
+    enum:
+      - DISK
+      - VM
+      - VOLUME
+    title: FilterType
+    type: string
   HTTPValidationError:
     properties:
       detail:
