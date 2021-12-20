@@ -65,6 +65,9 @@ paths:
             $ref: '#/definitions/EnvironmentResourceList'
   /v2/resources:
     post:
+      x-impact-subsystem: 影响
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - protected-resource-api
       x-access-port: 25081
@@ -84,9 +87,7 @@ paths:
         '200':
           description: 资源UUID
           schema:
-            type: array
-            items:
-              type: string
+            $ref: '#/definitions/UuidObject'
     get:
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -565,7 +566,7 @@ definitions:
       authorizedUser:
         type: string
         description: 资源所属用户名称
-      sla:
+      protectedObject:
         $ref: '#/definitions/ProtectedObject'
       environment:
         $ref: '#/definitions/ProtectedEnvironment'
@@ -603,11 +604,39 @@ definitions:
         type: integer
         format: int32
         description: 状态
+      envId:
+        type: string
+        description: 受保护环境ID
+      envType:
+        type: string
+        description: 受保护环境类型
+      resourceId:
+        type: string
+        description: 资源ID
+      extParameters:
+        type: object
+        additionalProperties:
+          type: object
+        description: 扩展参数
+      latestTime:
+        type: string
+        format: date-time
+        description: 最后执行保护时间
+      earliestTime:
+        type: string
+        format: date-time
+        description: 最早执行保护时间
+      chainId:
+        type: string
+        description: 备份链ID
     required:
       - slaId
       - slaName
       - slaCompliance
       - status
+      - envId
+      - envType
+      - resourceId
   ProtectedEnvironment:
     properties:
       endpoint:
@@ -854,3 +883,10 @@ definitions:
         additionalProperties:
           type: string
         description: 环境扩展参数，存放不同环境的自定义扩展属性
+  UuidObject:
+    required:
+      - uuid
+    properties:
+      uuid:
+        type: string
+        description: 全球唯一标识。
