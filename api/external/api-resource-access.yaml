@@ -698,9 +698,6 @@ definitions:
       path:
         type: string
         description: 资源路径
-      rootUuid:
-        type: string
-        description: 资源所属根资源uuid，即环境的uuid
       parentUuid:
         type: string
         description: 父资源ID
@@ -718,7 +715,7 @@ definitions:
       - name
       - type
       - subType
-      - rootUuid
+      - parentUuid
   BaseProtectedResource:
     description: 创建资源请求体
     properties:
