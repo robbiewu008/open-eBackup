@@ -8,12 +8,14 @@ schemes:
 host: localhost.com
 basePath: /
 tags:
-  - name: copies
+  - name: copies-detect-report
 paths:
   '/v1/copies/{copy_id}/detect-reports':
     get:
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-        - copies
+        - copies-detect-report
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -28,7 +30,7 @@ paths:
           required: true
           type: string
           description: 副本ID
-          minLength: 0
+          minLength: 1
           maxLength: 64
           x-access-port: 25081
           x-auth-required: 'Y'
@@ -61,13 +63,15 @@ paths:
                 request_uuid-timestamp-hostname.
   /v1/copies/detect-details:
     get:
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - copies
-      summary: 获得副本防勒索详细信息
-      description: 获取副本的防勒索病毒的详细信息
+        - copies-detect-report
+      summary: 获取副本维度的防勒索检测信息列表
+      description: 获取副本维度的防勒索检测信息列表
       operationId: ShowDetectionDetails
       consumes:
         - application/x-www-form-urlencoded
@@ -77,26 +81,57 @@ paths:
           required: true
           description: 资源的uuid
           type: string
+          minLength: 1
+          maxLength: 64
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
         - name: page_size
           in: query
           required: true
           description: 每页条数
-          type: string
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 200
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
         - name: page_no
           in: query
           required: true
           description: 当前页
-          type: string
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 10000
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
         - name: orders
           in: query
           required: false
-          description: 排序字段：timestamp、detectiontime
+          description: |-
+            排序字段：
+            -display_timestamp;
+            +display_timestamp;
+            -detection_time;
+            +detection_time;
           type: string
+          minLength: 0
+          maxLength: 1024
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
         - name: conditions
           in: query
           required: false
-          description: 筛选条件：status、detection_model_version
+          description: 筛选条件：anti_status、detection_model_version;
           type: string
+          maxLength: 1024
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
         - name: X-Auth-Token
           in: header
           required: true
@@ -106,24 +141,24 @@ paths:
         '200':
           description: ''
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/CopyAntiRansomwar'
+            $ref: '#/definitions/CopyDetailBasePage'
           headers:
             X-request-id:
               description: >-
                 This field is the request ID number for task tracking. Format is
                 request_uuid-timestamp-hostname.
               type: string
-  /v1/copies/detection-statistics:
+  /v1/copies/detect-statistics:
     get:
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-        - copies
-      summary: 获得资源副本防勒索统计列表
+        - copies-detect-report
+      summary: 获得资源维度副本防勒索统计列表
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
-      description: 获得资源副本防勒索统计列表
+      description: 获得资源维度副本防勒索统计列表
       operationId: ShowDetectionStatistics
       consumes:
         - application/x-www-form-urlencoded
@@ -133,74 +168,139 @@ paths:
           required: true
           description: 访问令牌
           type: string
-        - name: res_type
+        - name: resource_sub_type
           in: query
           required: true
-          description: 资源类型
+          description: 资源类型。vim.VirtualMachine；NasShare；NasFileSystem；
           type: string
+          maxLength: 64
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
         - name: page_no
           in: query
           required: true
           description: 分页页面编码
-          type: string
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 10000
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
         - name: page_size
           in: query
           required: true
           description: 分页数据条数
-          type: string
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 200
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
         - name: orders
           in: query
           required: false
-          description: >-
-            排序字段：repicas、infectedrepicas、uninfectedrepicas、detectinfreplicas、uninspectedrepicas
+          description: |-
+            排序字段：
+            +total_copy_num、-total_copy_num、
+            +uninspected_copy_num、-uninspected_copy_num、
+            +prepare_copy_num、-prepare_copy_num、
+            +detecting_copy_num、-detecting_copy_num、
+            +uninfected_copy_num、-uninfected_copy_num、
+            +infected_copy_num、-infected_copy_num、
+            +abnormal_copy_num、-abnormal_copy_num
           type: string
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          maxLength: 1024
         - name: conditions
           in: query
           required: false
-          description: '筛选条件：name,location'
+          description: 筛选条件：name、location、policy_name
           type: string
       responses:
         '200':
           description: ''
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/CopyAntiRansomwarStatistics'
+            $ref: '#/definitions/CopyStatisticsBasePage'
           headers:
             X-request-id:
               description: >-
                 This field is the request ID number for task tracking. Format is
                 request_uuid-timestamp-hostname.
               type: string
-  /v1/copies/action/detect-status:
-    put:
+  /v1/copies/detect-summary:
+    get:
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-        - copies
+        - copies-detect-report
+      summary: 副本防勒索检测统计
+      description: 副本防勒索检测统计
+      operationId: ShowDetectionSummary
+      parameters:
+        - name: resource_sub_type
+          in: query
+          required: true
+          description: |-
+            资源子类型列表
+            vim.VirtualMachine;
+            NasShare;
+            NasFileSystem；
+          type: array
+          items:
+            type: string
+          enum:
+            - vim.VirtualMachine
+            - NasShare
+            - NasFileSystem；
+          minItems: 1
+          maxItems: 3
+          x-access-port: 30092
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CopyAntiRansomwarDetectionsummary'
+  '/v1/copies/{copy_id}/detect-status':
+    put:
+      x-impact-subsystem: 不影响
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - copies-detect-report
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
       summary: 更改副本勒索状态
       description: 更改副本勒索状态
-      operationId: UpdateDetectionStatus
+      operationId: UpdateCopyDetectionStatus
       consumes:
         - application/x-www-form-urlencoded
       parameters:
-        - name: UpdateDetectionStatusRequestBody
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/UpdateDetectionStatusRequestBody'
-          description: 修改报告的副本信息
         - name: X-Auth-Token
           in: header
           required: true
           description: 访问令牌
           type: string
+        - name: copy_id
+          in: path
+          required: true
+          type: string
+          description: 副本id
       responses:
         '200':
           description: ''
-          schema:
-            type: string
           headers:
             X-request-id:
               description: >-
@@ -208,6 +308,224 @@ paths:
                 request_uuid-timestamp-hostname.
               type: string
 definitions:
+  CopyDetailBasePage:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/CopyDetail'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[CopyResourceSummarySchema]'
+    type: object
+  CopyDetail:
+    properties:
+      backup_type:
+        description: 备份类型
+        title: Backup Type
+        type: integer
+      chain_id:
+        description: 副本链ID
+        title: Chain Id
+        type: string
+      deletable:
+        description: 副本是否可删除
+        title: Deletable
+        type: boolean
+      display_timestamp:
+        description: 副本时间戳
+        format: date-time
+        title: Display Timestamp
+        type: string
+      duration_unit:
+        description: 副本保留时间单位（天、周、月、年）
+        title: Duration Unit
+        type: string
+      expiration_time:
+        description: 副本过期时间
+        format: date-time
+        title: Expiration Time
+        type: string
+      features:
+        description: 副本支持的特性
+        title: Features
+        type: integer
+      generated_by:
+        description: 副本生成类型
+        title: Generated By
+        type: string
+      generated_time:
+        description: 副本时间戳
+        format: date-time
+        title: Generated Time
+        type: string
+      generation:
+        description: 副本代数
+        title: Generation
+        type: integer
+      gn:
+        description: 副本序列号
+        title: Gn
+        type: integer
+      indexed:
+        description: 副本建立索引状态
+        title: Indexed
+        type: string
+      is_archived:
+        description: 副本是否归档
+        title: Is Archived
+        type: boolean
+      is_replicated:
+        description: 副本是否复制
+        title: Is Replicated
+        type: boolean
+      location:
+        description: 副本位置
+        title: Location
+        type: string
+      next_copy_gn:
+        description: 下一个副本的gn
+        title: Next Copy Gn
+        type: integer
+      next_copy_id:
+        description: 下一个副本的ID
+        title: Next Copy Id
+        type: string
+      parent_copy_uuid:
+        description: 父副本ID
+        title: Parent Copy Uuid
+        type: string
+      prev_copy_gn:
+        description: 上一个副本的gn
+        title: Prev Copy Gn
+        type: integer
+      prev_copy_id:
+        description: 上一个副本的ID
+        title: Prev Copy Id
+        type: string
+      properties:
+        description: 副本扩展属性
+        title: Properties
+        type: string
+      resource_environment_ip:
+        description: 资源环境IP
+        title: Resource Environment Ip
+        type: string
+      resource_environment_name:
+        description: 资源环境名称
+        title: Resource Environment Name
+        type: string
+      resource_id:
+        description: 资源ID
+        title: Resource Id
+        type: string
+      resource_location:
+        description: 资源位置
+        title: Resource Location
+        type: string
+      resource_name:
+        description: 资源名称
+        title: Resource Name
+        type: string
+      resource_properties:
+        description: 资源属性（JSON格式）
+        title: Resource Properties
+        type: string
+      resource_status:
+        description: 资源状态
+        title: Resource Status
+        type: string
+      resource_sub_type:
+        description: 资源子类型
+        title: Resource Sub Type
+        type: string
+      resource_type:
+        description: 资源类型
+        title: Resource Type
+        type: string
+      retention_duration:
+        description: 副本保留时间
+        title: Retention Duration
+        type: integer
+      retention_type:
+        description: 副本保留类型：1（永久保留）2（指定时间保留）
+        title: Retention Type
+        type: integer
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_properties:
+        description: SLA属性（JSON格式）
+        title: Sla Properties
+        type: string
+      status:
+        description: 副本有效性
+        title: Status
+        type: string
+      timestamp:
+        description: 副本时间戳
+        title: Timestamp
+        type: string
+      user_id:
+        description: 副本资源的用户id
+        title: User Id
+        type: string
+      uuid:
+        description: 副本ID
+        title: Uuid
+        type: string
+      anti_status:
+        type: integer
+        format: int32
+        description: 防勒索检测状态。-1：未检测；0：准备中；1：进行中；2：未感染；3：已感染；4：异常；
+      model:
+        type: string
+        description: 检测模型
+      detection_time:
+        type: string
+        description: 检测时间
+    title: CopySchema
+    required:
+      - deletable
+      - display_timestamp
+      - generated_by
+      - generation
+      - gn
+      - indexed
+      - resource_id
+      - resource_location
+      - resource_name
+      - resource_properties
+      - resource_status
+      - resource_type
+      - retention_type
+      - status
+      - timestamp
+      - uuid
+      - anti_status
   DemoInfo:
     description: This is a demo
     required:
@@ -250,38 +568,50 @@ definitions:
         maxLength: 512
   CopyAntiRansomwareReport:
     description: 副本检测报告
-    required:
-      - copy_id
-      - timestamp
-      - model
-      - status
-      - detection_time
-      - last_tested_time
     properties:
       copy_id:
         type: string
         description: 副本id
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       timestamp:
         type: string
-        description: 副本时间戳
+        description: 副本完成时间
+        pattern: '^\d{4}\-\d{2}\-\d{2}\s{1}\d{2}:\d{2}:\d{2}$'
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       model:
         type: string
         description: 防勒索检测模型
       status:
-        type: string
-        description: 检测状态
+        type: integer
+        format: int32
+        description: 检测状态 2：未感染；3：已感染；4：异常
       detection_duration:
-        type: string
-        description: 检测持续时间
+        type: integer
+        format: int32
+        description: 检测持续时间（s）
       detection_time:
         type: string
         description: 副本检测时间
+        pattern: '^\d{4}\-\d{2}\-\d{2}\s{1}\d{2}:\d{2}:\d{2}$'
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       report:
         type: string
         description: 防勒索检测报告
-      last_tested_time:
-        type: string
-        description: 防勒索最新检测时间
+    required:
+      - copy_id
+      - timestamp
+      - status
+      - detection_duration
+      - detection_time
+      - report
   CopyAntiRansomwar:
     description: 副本防勒索详细信息
     required:
@@ -311,34 +641,67 @@ definitions:
     properties:
       resource_id:
         type: string
-        description: 资源ID
+        description: 资源id
       name:
         type: string
         description: 资源名称
       location:
         type: string
         description: 资源位置
-      repicas:
+      policy_name:
         type: string
+        description: 关联的策略名称
+      policy_id:
+        type: integer
+        format: int32
+        description: 策略id
+      total_copy_num:
+        type: integer
+        format: int32
         description: 副本总数量
-      infectedRepicas:
-        type: string
+      infected_copy_num:
+        type: integer
+        format: int32
         description: 感染副本数量
-      uninfectedRepicas:
-        type: string
+      uninfected_copy_num:
+        type: integer
+        format: int32
         description: 未感染副本数量
-      detectingRepicas:
-        type: string
+      detecting_copy_num:
+        type: integer
+        format: int32
         description: 正在检测副本数量
-      uninspectedRepicas:
-        type: string
+      uninspected_copy_num:
+        type: integer
+        format: int32
         description: 未检测副本数量
+      prepare_copy_num:
+        type: integer
+        format: int32
+        description: 准备检测副本数量
+      abnormal_copy_num:
+        type: integer
+        format: int32
+        description: 异常副本数量
+    required:
+      - resource_id
+      - name
+      - location
+      - policy_name
+      - policy_id
+      - total_copy_num
+      - infected_copy_num
+      - uninfected_copy_num
+      - detecting_copy_num
+      - uninspected_copy_num
+      - prepare_copy_num
+      - abnormal_copy_num
   UpdateDetectionStatusRequestBody:
     description: 更改勒索状态副本信息
     properties:
-      resource_type:
+      resource_sub_type:
         type: string
-        description: 资源类型
+        description: 资源类型。vim.VirtualMachine；NasShare；NasFileSystem；
       name:
         type: string
         description: 资源名称
@@ -348,7 +711,7 @@ definitions:
           type: string
         description: 副本id列表
     required:
-      - resource_type
+      - resource_sub_type
       - name
       - copy_ids
   CopyAntiRansomwareTable:
@@ -379,3 +742,76 @@ definitions:
       report:
         type: string
         description: 报告
+  CopyStatisticsBasePage:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/CopyAntiRansomwarStatistics'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    title: 'BasePage[CopyResourceSummarySchema]'
+    required:
+      - items
+      - page_no
+      - page_size
+      - pages
+      - total
+  CopyAntiRansomwarDetectionsummary:
+    properties:
+      resource_sub_type:
+        type: string
+        description: 资源子类型
+      total_copy_num:
+        type: integer
+        format: int32
+        description: 副本总数量
+      infected_copy_num:
+        type: integer
+        format: int32
+        description: 感染副本数量
+      uninfected_copy_num:
+        type: integer
+        format: int32
+        description: 未感染副本数量
+      detecting_copy_num:
+        type: integer
+        format: int32
+        description: 正在检测副本数量
+      uninspected_copy_num:
+        type: integer
+        format: int32
+        description: 未检测副本数量
+      prepare_copy_num:
+        type: integer
+        format: int32
+        description: 准备检测副本数量
+      abnormal_copy_num:
+        type: integer
+        format: int32
+        description: 异常副本数量
+    required:
+      - resource_sub_type
+      - total_copy_num
+      - infected_copy_num
+      - uninfected_copy_num
+      - detecting_copy_num
+      - uninspected_copy_num
+      - prepare_copy_num
+      - abnormal_copy_num
