@@ -210,6 +210,7 @@ paths:
             $ref: '#/definitions/MountResponse'
   '/v1/plugins/storage/nas/filesystems/{mountPointId}/files':
     get:
+      x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -235,16 +236,18 @@ paths:
           required: true
           description: 根路径
           type: string
+        - name: pageNo
+          in: query
+          required: true
+          description: 起始页
+          type: integer
+          format: int32
         - name: pageSize
           in: query
           required: true
           description: 分页大小
-          type: string
-        - name: pageNum
-          in: query
-          required: true
-          description: 起始页
-          type: string
+          type: integer
+          format: int32
       responses:
         '200':
           description: 文件树返回体
@@ -412,25 +415,18 @@ definitions:
   DeeFileSystemResponse:
     description: 源端文件树返回信息
     properties:
-      total:
-        type: string
+      totalCount:
+        type: integer
+        format: int32
         description: 文件信息总数
-      parentPath:
-        type: string
-        description: 根路径
-      items:
+      records:
         type: array
         items:
           $ref: '#/definitions/FileSystemData'
         description: 文件系统信息
-      mountPointId:
-        type: string
-        description: 挂载点
     required:
-      - total
-      - parentPath
-      - items
-      - mountPointId
+      - totalCount
+      - records
   MountResponse:
     required:
       - mountPointId
