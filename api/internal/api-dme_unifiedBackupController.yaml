@@ -534,6 +534,7 @@ paths:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/tasks/livemount/cancel:
     post:
+      x-impact-subsystem: 不影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -584,6 +585,7 @@ paths:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/tasks/livemount:
     post:
+      x-impact-subsystem: 不影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -601,15 +603,14 @@ paths:
             $ref: '#/definitions/LiveMountTask'
       responses:
         '200':
-          description: ''
-          schema:
-            type: string
+          description: 成功无返回值
         '500':
           description: 内部错误，比如数据库访问不通
           schema:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/tasks/backup/clone:
     put:
+      x-impact-subsystem: 不影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -627,35 +628,17 @@ paths:
             $ref: '#/definitions/BackupClone'
       responses:
         '200':
-          description: ''
+          description: 返回copyId
           schema:
             type: string
+        '400':
+          description: ''
+          schema:
+            $ref: '#/definitions/RspMsg'
         '500':
           description: 内部错误
           schema:
             $ref: '#/definitions/RspMsg'
-  /v1/dme-unified/tasks/backup/mountqos:
-    put:
-      x-access-port: 30065
-      x-auth-required: 'Y'
-      x-public-api: 'N'
-      x-auth-type: 双向证书认证
-      tags:
-        - task-pm
-      description: 对mount的副本做Qos设置
-      operationId: MountQos
-      parameters:
-        - name: mount_qos_req
-          in: body
-          required: true
-          description: 请求体
-          schema:
-            $ref: '#/definitions/MountQosModel'
-      responses:
-        '200':
-          description: ''
-          schema:
-            type: string
   /v1/dme-unified/tasks/details:
     put:
       x-auth-type: 双向证书认证
@@ -1231,8 +1214,8 @@ definitions:
         type: boolean
         description: 当子任务失败，是否忽视这个失败
       taskParams:
-        type: object
-        description: json对象，子任务的额外参数
+        type: string
+        description: 子任务的额外参数，string格式
     required:
       - taskId
       - taskType
@@ -1546,8 +1529,8 @@ definitions:
         x-public-api: 'N'
         x-auth-type: 双向证书认证
       subTaskParams:
-        type: object
-        description: json对象，子任务额外参数
+        type: string
+        description: string格式，子任务额外参数
       extendInfo:
         type: object
         description: json对象，主任务的扩展参数
@@ -1797,7 +1780,7 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/AppResource'
-        description: 恢复的子对象
+        description: 子对象
       targetEnv:
         $ref: '#/definitions/AppEnvironment'
       targetObject:
@@ -1843,13 +1826,16 @@ definitions:
         format: int32
         description: 最小IOPS，单位8K
       IOPSMax:
-        type: string
+        type: integer
+        format: int32
         description: 最大IOPS，单位8K
       IOPSBurst:
-        type: string
+        type: integer
+        format: int32
         description: 峰值IOPS，单位8K
       Latency:
-        type: string
+        type: integer
+        format: int32
         description: 延时，500或者1500
     required:
       - bandwidthMin
@@ -1885,6 +1871,9 @@ definitions:
         items:
           $ref: '#/definitions/HostAddress'
         description: agent节点信息
+      advanceParams:
+        type: object
+        description: '{key: value} 高级参数，比如vmware是否删除上一次资源'
     required:
       - requestId
       - taskId
@@ -1893,20 +1882,20 @@ definitions:
       - repositories
       - agents
   BackupClone:
-    required:
-      - copyId
-      - type
     properties:
-      copyId:
+      srcCopyId:
         type: string
-        description: 副本Id
+        description: 原来的副本Id
+      targetCopyId:
+        type: string
+        description: 新生成的克隆副本Id
       type:
         type: integer
         format: int32
-        description: 新克隆副本类型， 1：可写副本 2：只读副本
-      appType:
-        type: string
-        description: 应用类型：“vim.VirtualMachine” 和 “Oracle”
+        description: 预留参数，新克隆副本类型， 0：可写副本 1：只读副本
+    required:
+      - srcCopyId
+      - targetCopyId
   MountQosModel:
     properties:
       copyId:
