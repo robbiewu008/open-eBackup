@@ -1,0 +1,102 @@
+swagger: '2.0'
+info:
+  version: v2
+  title: 副本相关接口
+schemes:
+  - https
+basePath: /
+tags:
+  - name: copy-controller
+paths:
+  '/v2/copies/{copyId}/catalogs':
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-dp-admin-role: 'Y'
+      tags:
+        - copy-controller
+      operationId: ListCopyCatalogs
+      consumes:
+        - application/json
+      summary: 浏览副本中文件和目录信息
+      description: 浏览副本中文件和目录信息
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: copyId
+          in: path
+          required: true
+          type: string
+          description: 副本id
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+        - name: pageNo
+          in: query
+          required: true
+          description: 起始页，默认为0
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          description: 分页大小，默认200
+          type: integer
+          format: int32
+        - name: parentPath
+          in: query
+          required: true
+          description: 根路径
+          type: string
+      responses:
+        '200':
+          description: 文件系统响应体
+          schema:
+            $ref: '#/definitions/FileSystemResponseList'
+definitions:
+  FileSystemResponseList:
+    description: 文件系统响应体
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总记录数
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/FileSystemData'
+        description: 文件系统响应体
+    required:
+      - totalCount
+      - records
+  FileSystemData:
+    properties:
+      path:
+        type: string
+        description: 文件路径
+      modifyTime:
+        type: string
+        description: 修改时间
+      size:
+        type: integer
+        format: int32
+        description: 大小
+      hasChildren:
+        type: boolean
+        description: 是否有子树
+      type:
+        type: string
+        description: 文件类型（文件夹/文件/链接文件）
+    required:
+      - path
+      - modifyTime
+      - size
+      - hasChildren
+      - type
