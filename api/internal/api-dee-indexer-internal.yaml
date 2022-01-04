@@ -1,0 +1,612 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: DEE Indexer API Document
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: 索引和浏览管理
+    description: 索引和浏览Controller
+  - name: 索引管理
+  - name: 浏览管理
+paths:
+  /v1/internal/indexes:
+    post:
+      x-impact-subsystem: 影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      tags:
+        - 索引管理
+      summary: 为副本创建索引
+      operationId: createIndexForCopy
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            originalRef: CreateIndexRequest
+            $ref: '#/definitions/CreateIndexRequest'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    delete:
+      tags:
+        - 索引管理
+      summary: 删除资源或副本的索引
+      x-impact-subsystem: 影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      operationId: deleteCopyIndex
+      parameters:
+        - name: requestId
+          in: query
+          required: true
+          description: 请求id
+          type: string
+        - name: resourceId
+          in: query
+          required: true
+          description: 资源id
+          type: string
+        - name: copyId
+          in: query
+          required: false
+          description: 副本id，删除单个副本索引时必填
+          type: string
+        - name: chainId
+          in: query
+          required: false
+          description: 备份链id，删除单个副本索引时必填
+          type: string
+        - name: userId
+          in: query
+          required: true
+          description: 用户id
+          type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/v1/internal/indexes/{requestId}/action/report-rfi':
+    post:
+      x-impact-subsystem: 影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      tags:
+        - 索引管理
+      summary: 应用上报生成RFI文件
+      operationId: reportRfiFiles
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            originalRef: ReportRfiRequest
+            $ref: '#/definitions/ReportRfiRequest'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/internal/indexes/folder/action/list:
+    post:
+      x-impact-subsystem: 影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      tags:
+        - 浏览管理
+      summary: 浏览副本文件系统
+      operationId: listFilesInCopyFolder
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            originalRef: ListCopyRequest
+            $ref: '#/definitions/ListCopyRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: listFilesResponse
+            $ref: '#/definitions/listFilesResponse'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/internal/restore-filesystem/action/mount:
+    post:
+      x-impact-subsystem: 影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      tags:
+        - 浏览管理
+      summary: 挂载恢复目标文件系统
+      operationId: mountBrowseRestoreDeviceUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            originalRef: MountFileSystemRequest
+            $ref: '#/definitions/MountFileSystemRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: MountFileSystemResponse
+            $ref: '#/definitions/MountFileSystemResponse'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/internal/restore-filesystem/folder:
+    post:
+      x-impact-subsystem: 影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      tags:
+        - 浏览管理
+      summary: 在恢复目标文件系统中创建目录
+      operationId: createFolderInRestoreFilesystem
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: folderName
+          in: query
+          description: folderName
+          required: true
+          type: string
+        - name: mountPointId
+          in: query
+          description: mountPointId
+          required: true
+          type: string
+        - name: parentPath
+          in: query
+          description: parentPath
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    get:
+      x-impact-subsystem: 影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      tags:
+        - 浏览管理
+      summary: 获取恢复目标文件系统目录中文件列表
+      operationId: listFilesInRestorFilesystemFolder
+      produces:
+        - '*/*'
+      parameters:
+        - name: mountPointId
+          in: query
+          description: mountPointId
+          required: true
+          type: string
+        - name: parentPath
+          in: query
+          description: parentPath
+          required: true
+          type: string
+        - name: pageNum
+          in: query
+          description: pageNum
+          required: true
+          type: integer
+          format: int64
+        - name: pageSize
+          in: query
+          description: pageSize
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: listFilesResponse
+            $ref: '#/definitions/listFilesResponse'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    delete:
+      x-impact-subsystem: 影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      tags:
+        - 浏览管理
+      summary: 从恢复目标文件系统目录中删除文件
+      operationId: deleteFileFormRestoreFilesystemFolder
+      produces:
+        - '*/*'
+      parameters:
+        - name: mountPointId
+          in: query
+          description: mountPointId
+          required: true
+          type: string
+        - name: filePath
+          in: query
+          required: true
+          description: fileName
+          type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  CreateIndexRequest:
+    properties:
+      requestId:
+        type: string
+        description: 请求id
+      triggerMode:
+        type: string
+        description: '建索引触发方式: AUTO-调度自动建,MANUAL-手动建'
+      copyInfo:
+        description: 副本信息
+        originalRef: copyInfo
+        $ref: '#/definitions/CopyInfo'
+      agents:
+        type: array
+        description: agent节点信息，只传内置agent
+        items:
+          originalRef: HostAddress
+          $ref: '#/definitions/HostAddress'
+    title: CreateIndexRequest
+    required:
+      - requestId
+      - triggerMode
+      - copyInfo
+      - agents
+  ReportRfiRequest:
+    properties:
+      jobRequestId:
+        type: string
+        description: 请求id
+      status:
+        type: integer
+        format: int32
+        description: >-
+          任务状态：0-INITIALIZING，1-RUNNING，2-ABORTING，3-COMPLETED，4-PARTIAL_COMPLETED，5-ABORTED，6-ABORTED_FAILED，7-FAILED，8-FAILED_NOTRY
+      extendField:
+        description: 上报文件列表，RUNNING状态时候必填
+        $ref: '#/definitions/ReportRfiInfo'
+    title: ReportRfiRequest
+    required:
+      - jobRequestId
+      - status
+  ListCopyRequest:
+    properties:
+      copyInfo:
+        description: 副本信息
+        originalRef: CopyInfo
+        $ref: '#/definitions/CopyInfo'
+      pageNum:
+        type: integer
+        format: int64
+        description: 起始页
+      pageSize:
+        type: integer
+        format: int64
+        description: 分页大小
+      parentPath:
+        type: string
+        description: 父路径
+    title: ListCopyRequest
+    required:
+      - copyInfo
+      - pageNum
+      - pageSize
+      - parentPath
+  listFilesResponse:
+    properties:
+      items:
+        type: array
+        items:
+          originalRef: FolderInfo
+          $ref: '#/definitions/FileInfo'
+      total:
+        type: integer
+        format: int32
+    title: listFilesResponse
+  MountFileSystemRequest:
+    properties:
+      location:
+        type: string
+        description: '文件系统所处位置：LOCAL,本机位置;NEW,新位置'
+      filesystem:
+        description: 文件系统信息
+        originalRef: FilesystemInfo
+        $ref: '#/definitions/FilesystemInfo'
+    title: MountFileSystemRequest
+    required:
+      - location
+      - filesystem
+  MountFileSystemResponse:
+    properties:
+      mountPointId:
+        type: string
+    title: MountFileSystemResponse
+    required:
+      - mountPointId
+  HostAddress:
+    type: object
+    required:
+      - ip
+      - port
+      - id
+    properties:
+      ip:
+        type: string
+        description: ip
+      port:
+        type: integer
+        format: int32
+        description: port
+      id:
+        type: string
+        description: host id，pm下发时要带上agent id
+    title: HostAddress
+  ReportRfiInfo:
+    properties:
+      copyId:
+        type: string
+        description: 当前副本ID
+      rfiFiles:
+        type: array
+        items:
+          type: string
+        description: RFI file路径列表
+    title: ReportRfiInfo
+    required:
+      - copyId
+      - rfiFiles
+  CopyInfo:
+    properties:
+      uuid:
+        type: string
+        description: 副本ID
+      generatedBy:
+        type: string
+        description: 副本生成方式
+      isAggregation:
+        type: boolean
+        description: 副本是否是聚合格式
+      isIndexed:
+        type: boolean
+        description: 副本是否索引标志位
+      resourceId:
+        type: string
+        description: '${dee.indexer.browse.copyInfo.request.resourceId}'
+      resourceSubType:
+        type: string
+        description: 副本资源子类型
+      gn:
+        type: integer
+        format: int32
+        description: '${dee.indexer.browse.copyInfo.request.gn}'
+      chainId:
+        type: string
+        description: 备份链ID
+      userId:
+        type: string
+        description: 副本用户ID
+      snapshots:
+        type: array
+        items:
+          $ref: '#/definitions/SnapshotInfo'
+        description: 副本对应的快照列表，浏览未建索引副本时必选
+    title: CopyInfo
+    required:
+      - uuid
+      - generatedBy
+      - isAggregation
+      - isIndexed
+      - resourceId
+      - resourceSubType
+      - gn
+      - chainId
+      - userId
+  SnapshotInfo:
+    properties:
+      id:
+        type: string
+        description: 快照ID
+      parentName:
+        type: string
+        description: 父节点（文件系统）名
+    title: SnapshotInfo
+    required:
+      - id
+      - parentName
+  FileInfo:
+    properties:
+      path:
+        type: string
+      type:
+        type: string
+      hasChildren:
+        type: boolean
+      size:
+        type: integer
+        format: int64
+      modifyTime:
+        type: string
+    title: FolderInfo
+  FilesystemInfo:
+    properties:
+      filesystemName:
+        type: string
+        description: 文件系统名
+      sharedIp:
+        type: string
+        description: 共享IP，新位置需要
+      sharedName:
+        type: string
+        description: 共享名，新位置需要
+      sharedProtocol:
+        type: string
+        description: 共享协议，新位置需要
+      nfsAuth:
+        description: NFS验证信息，新位置是NFS共享需要
+        originalRef: NfsAuth
+        $ref: '#/definitions/NfsAuth'
+      cifsAuth:
+        description: CIFS验证信息，新位置是CIFS共享需要
+        originalRef: CifsAuth
+        $ref: '#/definitions/CifsAuth'
+    title: FilesystemInfo
+    required:
+      - filesystemName
+  NfsAuth:
+    type: object
+    properties:
+      kerberos:
+        type: string
+        description: kerberos
+      mode:
+        type: string
+        description: 验证模式
+    title: NfsAuth
+  CifsAuth:
+    type: object
+    properties:
+      domainName:
+        type: string
+        description: 域名
+      mode:
+        type: string
+        description: 验证模式
+      password:
+        type: string
+        description: 密码
+      username:
+        type: string
+        description: 用户名
+    title: CifsAuth
+  fileSystemInfo:
+    properties:
+      fileSystemName:
+        type: string
+        description: 副本所在文件系统名称
+      fileSystemID:
+        type: string
+        description: 副本所在文件系统ID
+      shareProtocol:
+        type: string
+        description: '共享协议类型：NFS,CIFS'
