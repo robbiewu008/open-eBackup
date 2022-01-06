@@ -1610,23 +1610,25 @@ definitions:
         description: 副本ID
         title: Uuid
         type: string
-    required:
-      - timestamp
-      - display_timestamp
-      - deletable
-      - status
-      - generated_by
-      - indexed
-      - generation
-      - retention_type
-      - resource_id
-      - resource_name
-      - resource_type
-      - resource_location
-      - resource_status
-      - resource_properties
+      detail:
+        type: string
+        description: 副本详情
     title: CopyInfoSchema
-    type: object
+    required:
+      - deletable
+      - display_timestamp
+      - generated_by
+      - generation
+      - indexed
+      - resource_id
+      - resource_location
+      - resource_name
+      - resource_properties
+      - resource_status
+      - resource_type
+      - retention_type
+      - status
+      - timestamp
   CopyInfoWithArchiveFieldsSchema:
     properties:
       backup_type:
