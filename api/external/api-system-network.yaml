@@ -36,6 +36,96 @@ paths:
           description: 需要返回的Ip个数
           schema:
             $ref: '#/definitions/IpCountResponse'
+  /v1/system/standard-backup-service:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - '${system-api}'
+      summary: 获取当前标准备份服务状态
+      description: 获取标准备份服务状态
+      operationId: ListStandardBackupServiceGET
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          type: string
+          description: Access token
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/StandardServiceStatusResponse'
+  /v1/system/init-standard-backup-service:
+    post:
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-rd-admin-role: 'Y'
+      tags:
+        - '${system-api}'
+      summary: 初始化标准备份服务
+      description: 初始化标准备份服务
+      operationId: RegisterInitStandardBackupServicePOST
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: RegisterInitStandardBackupServicePOSTRequestBody
+          in: body
+          required: true
+          description: 标准备份服务请求体
+          schema:
+            $ref: '#/definitions/StandardBackupServiceConfig'
+      responses:
+        '200':
+          description: 需要返回的Ip个数
+          schema:
+            $ref: '#/definitions/ConfigStatus'
+  /v1/system/network/service-status-info:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-rd-admin-role: 'Y'
+      tags:
+        - '${system-api}'
+      summary: 查询服务进度
+      description: |-
+        查询服务进度:
+        查询标准备份服务或者SFTP服务的安装进度
+      operationId: ListServiceStatusInfoGET
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: serviceType
+          in: query
+          required: true
+          description: 查询服务请求枚举
+          type: string
+          enum:
+            - SFTP_SERVICE
+            - STANDARD_SERVICE
+          x-impact-subsystem: 不影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+      responses:
+        '200':
+          description: 需要返回的Ip个数
+          schema:
+            $ref: '#/definitions/ConfigStatus'
 definitions:
   IpCountResponse:
     description: 当前需要配置的IP段的个数
@@ -51,3 +141,62 @@ definitions:
         x-public-api: 'Y'
     required:
       - ipCount
+  StandardServiceStatusResponse:
+    description: 标准备份服务状态响应
+    properties:
+      status:
+        type: string
+        description: 判断标准备份服务状态结果
+        enum:
+          - uninstall
+          - installed
+          - installing
+          - installed_half
+          - installed_loading
+          - failed
+        x-impact-subsystem: 影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+    required:
+      - status
+  ConfigStatus:
+    description: 开启标准备份服务状态
+    required:
+      - status
+    properties:
+      status:
+        type: integer
+        format: int32
+        description: 执行状态
+      code:
+        type: string
+        description: 错误码
+      desc:
+        type: string
+        description: 错误描述
+      rate:
+        type: integer
+        format: int32
+        description: 进入比率
+      params:
+        type: array
+        items:
+          type: string
+        description: 错误参数
+  StandardBackupServiceConfig:
+    description: 初始化标准备份服务
+    properties:
+      serviceIp:
+        type: string
+        description: 浮动IP
+      serviceType:
+        type: string
+        description: 服务类型
+        enum:
+          - SFTP_SERVICE
+          - STANDARD_SERVICE
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
