@@ -1,0 +1,120 @@
+basePath: /
+definitions:
+  FileLevelSearchRequest:
+    properties:
+      chainId:
+        description: 副本链ID
+        type: string
+      copyId:
+        description: 副本ID
+        type: string
+      gn:
+        description: 副本代数
+        format: int64
+        type: integer
+      nodeType:
+        description: '文件类型列表。 1：文件，2：文件夹，3：链接,'
+        example:
+          - 1
+        items:
+          format: int32
+          type: integer
+        type: array
+      orderBy:
+        description: >-
+          排序字段。 e.g.
+          resourceName,resourceType,nodeType,nodeName,nodeSize,nodeLastModifiedTime。
+        type: string
+      orderType:
+        description: 排序类型。“asc”或“desc”，默认为“asc”。
+        type: string
+      pageNo:
+        description: 分页页面编码
+        example: 0
+        format: int32
+        type: integer
+      pageSize:
+        description: 分页数据条数
+        example: 10
+        format: int32
+        type: integer
+      path:
+        description: 文件路径
+        type: string
+      resourceId:
+        description: 资源ID
+        type: string
+      resourceName:
+        description: 资源名称
+        example: vm_1234
+        type: string
+      resourceType:
+        description: >-
+          资源类型列表。0:host, 1:fileset, 2:oracle, 3:sqlserver, 4:mysql, 5:gaussdb,
+          6:saphana, 7 gbase, 8 dameng, 9:vmware, 10:hyper-v, 11:fusionsphere,
+          12:exchange
+        example:
+          - 0
+          - 1
+          - 2
+        items:
+          format: int32
+          type: integer
+        type: array
+      searchKey:
+        description: 搜索关键字，将会搜索出包含这个关键字的所有文件。
+        example: my document
+        type: string
+    title: FileLevelSearchRequest
+    type: object
+host: 'localhost:8086'
+info:
+  title: 全局检索管理接口
+  version: 1.0.0
+paths:
+  /v1/search/file:
+    post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      consumes:
+        - application/json
+      operationId: fileSearchUsingPOST
+      parameters:
+        - description: X-Auth-Token
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+        - description: 请求消息体
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: '#/definitions/FileLevelSearchRequest'
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      summary: 细粒度文件搜索
+      tags:
+        - file-level-search-rest-api
+swagger: '2.0'
+tags:
+  - description: File Level Search Rest API
+    name: file-level-search-rest-api
