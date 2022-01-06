@@ -870,6 +870,42 @@ paths:
           description: ''
           schema:
             type: string
+  /v1/internal/copies/index-status:
+    put:
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      tags:
+        - copies
+      summary: 更新资源对应的副本索引状态
+      description: 更新资源对应的副本索引状态
+      operationId: update_resources_copies_index_status
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: resource_id
+          in: query
+          required: true
+          description: 资源id
+          type: string
+        - name: index_status
+          in: query
+          required: true
+          description: 索引状态
+          type: string
+        - name: error_code
+          in: query
+          required: false
+          description: 错误码
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
 definitions:
   BasePage_CopyResourceSummarySchema_:
     properties:
