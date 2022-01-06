@@ -832,6 +832,44 @@ paths:
         - copies
       operationId: internal_update_copy_status_v1_internal_copies__copy_id__status_put
       summary: Internal Update Copy Status
+  '/v1/internal/copies/{copy_id}/detail':
+    put:
+      tags:
+        - copies
+      summary: 更新副本详情detail字段
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      description: 更新副本详情detail字段
+      operationId: v1_internal_update_copy_detail
+      produces:
+        - application/json
+      parameters:
+        - name: copy_id
+          in: path
+          required: true
+          type: string
+          description: 副本ID
+        - name: detail
+          in: body
+          required: true
+          description: 副本详情
+          schema:
+            $ref: '#/definitions/CopyDetail'
+      responses:
+        '200':
+          description: 更新成功
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+        '422':
+          description: ''
+          schema:
+            type: string
 definitions:
   BasePage_CopyResourceSummarySchema_:
     properties:
@@ -1054,23 +1092,25 @@ definitions:
         description: 副本ID
         title: Uuid
         type: string
-    required:
-      - timestamp
-      - display_timestamp
-      - deletable
-      - status
-      - generated_by
-      - indexed
-      - generation
-      - retention_type
-      - resource_id
-      - resource_name
-      - resource_type
-      - resource_location
-      - resource_status
-      - resource_properties
+      detail:
+        type: string
+        description: 副本详情
     title: CopyInfoSchema
-    type: object
+    required:
+      - deletable
+      - display_timestamp
+      - generated_by
+      - generation
+      - indexed
+      - resource_id
+      - resource_location
+      - resource_name
+      - resource_properties
+      - resource_status
+      - resource_type
+      - retention_type
+      - status
+      - timestamp
   CopyInfoWithArchiveFieldsSchema:
     properties:
       backup_type:
@@ -1728,4 +1768,12 @@ definitions:
       - type
     title: ValidationError
     type: object
+  CopyDetail:
+    description: 副本详情
+    required:
+      - detail
+    properties:
+      detail:
+        type: string
+        description: 副本详情
 x-components: {}
