@@ -493,6 +493,9 @@ definitions:
       resourceId:
         type: string
         description: '${dee.indexer.browse.copyInfo.request.resourceId}'
+      resourceName:
+        type: string
+        description: 副本资源名称，创建索引时必选
       resourceSubType:
         type: string
         description: 副本资源子类型
