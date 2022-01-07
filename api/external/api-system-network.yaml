@@ -12,6 +12,7 @@ tags:
 paths:
   /v1/system/network/service-ip-count:
     get:
+      x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -24,7 +25,7 @@ paths:
         通过查询当前的节点个数来确定需要配置几个服务IP段;
         双控需要配置 1个服务IP段
         四控需要配置 2个服务IP段
-      operationId: ListServiceIpCountGET
+      operationId: ListServiceIpCount
       parameters:
         - name: X-Auth-Token
           in: header
@@ -46,7 +47,7 @@ paths:
         - '${system-api}'
       summary: 获取当前标准备份服务状态
       description: 获取标准备份服务状态
-      operationId: ListStandardBackupServiceGET
+      operationId: ListStandardBackupService
       parameters:
         - name: X-Auth-Token
           in: header
@@ -70,14 +71,14 @@ paths:
         - '${system-api}'
       summary: 初始化标准备份服务
       description: 初始化标准备份服务
-      operationId: RegisterInitStandardBackupServicePOST
+      operationId: RegisterInitStandardBackupService
       parameters:
         - name: X-Auth-Token
           in: header
           required: true
           description: Access token
           type: string
-        - name: RegisterInitStandardBackupServicePOSTRequestBody
+        - name: RegisterInitStandardBackupServiceRequestBody
           in: body
           required: true
           description: 标准备份服务请求体
@@ -88,7 +89,7 @@ paths:
           description: 需要返回的Ip个数
           schema:
             $ref: '#/definitions/ConfigStatus'
-  /v1/system/network/service-status-info:
+  /v1/system/service-status-info:
     get:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -102,7 +103,7 @@ paths:
       description: |-
         查询服务进度:
         查询标准备份服务或者SFTP服务的安装进度
-      operationId: ListServiceStatusInfoGET
+      operationId: ListServiceStatusInfo
       parameters:
         - name: X-Auth-Token
           in: header
@@ -115,8 +116,8 @@ paths:
           description: 查询服务请求枚举
           type: string
           enum:
-            - SFTP_SERVICE
-            - STANDARD_SERVICE
+            - SFTP
+            - STANDARD
           x-impact-subsystem: 不影响
           x-access-port: 25081
           x-auth-required: 'Y'
@@ -147,13 +148,6 @@ definitions:
       status:
         type: string
         description: 判断标准备份服务状态结果
-        enum:
-          - uninstall
-          - installed
-          - installing
-          - installed_half
-          - installed_loading
-          - failed
         x-impact-subsystem: 影响
         x-access-port: 25081
         x-auth-required: 'Y'
@@ -194,8 +188,8 @@ definitions:
         type: string
         description: 服务类型
         enum:
-          - SFTP_SERVICE
-          - STANDARD_SERVICE
+          - SFTP
+          - STANDARD
         x-impact-subsystem: 不影响
         x-access-port: 25081
         x-auth-required: 'Y'
