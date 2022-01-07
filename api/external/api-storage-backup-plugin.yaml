@@ -94,8 +94,8 @@ paths:
           description: ''
           schema:
             type: string
-  '/v1/plugins/storage/nas/filesystems/{mountPointId}/folders/{folderName}':
     delete:
+      x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -116,20 +116,15 @@ paths:
           required: true
           type: string
           description: 挂载点
-        - name: folderName
-          in: path
-          required: true
-          type: string
-          description: 文件夹名
         - name: X-Auth-Token
           in: header
           required: true
           description: 访问令牌
           type: string
-        - name: currentPath
+        - name: filePath
           in: query
           required: true
-          description: 当前文件夹路径夹路径
+          description: 文件夹路径
           type: string
       responses:
         '200':
@@ -293,6 +288,129 @@ paths:
           description: 文件系统响应体
           schema:
             $ref: '#/definitions/FileSystemResponseList'
+    post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-dp-admin-role: 'Y'
+      tags:
+        - api-storage-backup-plugin
+      summary: 创建文件系统
+      description: 创建文件系统
+      operationId: CreateFileSystem
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: CreateFileSystemRequestBody
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateFileSystemRequestBody'
+          description: 创建文件系统请求体
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v1/plugins/storage/nas/auth-users:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-dp-admin-role: 'Y'
+      tags:
+        - api-storage-backup-plugin
+      summary: 查询dorado本地window认证用户信息
+      description: 查询dorado设备，文件系统中windows本地用户认证的所有用户信息
+      operationId: ListNasUsersInfo
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: esn
+          in: query
+          required: false
+          description: 存储设备序列号，本机默认为“0”
+          type: string
+        - name: pageNo
+          in: query
+          required: false
+          description: 起始页，默认为"0"
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          description: 分页大小，默认为"100"
+          type: integer
+          format: int32
+        - name: X-Auth-Token
+          in: query
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NasUserInfos'
+  /v1/plugins/storage/nas/auth-user-groups:
+    get:
+      tags:
+        - api-storage-backup-plugin
+      summary: 查询dorado本地window认证用户组信息
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 查询dorado设备，文件系统中windows本地用户组认证的所有用户组信息
+      operationId: ListNasUserGroupsInfo
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: esn
+          in: query
+          required: false
+          description: 存储设备序列号，本机默认为“0”
+          type: string
+        - name: pageNo
+          in: query
+          required: false
+          description: 起始页，默认为"0"
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          description: 分页大小，默认为"100"
+          type: integer
+          format: int32
+        - name: X-Auth-Token
+          in: query
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NasUserGroupInfos'
 definitions:
   FileSystemInfo:
     description: 文件系统详细信息查询的返回体。
@@ -516,3 +634,114 @@ definitions:
     required:
       - name
       - id
+  CreateFileSystemRequestBody:
+    properties:
+      name:
+        type: string
+        description: 文件系统名
+      nfsShare:
+        description: nfs信息
+        $ref: '#/definitions/NfsShare'
+      cifsShare:
+        description: cifs信息
+        $ref: '#/definitions/CifsShare'
+    required:
+      - name
+      - nfsShare
+      - cifsShare
+  NfsShare:
+    description: nfs信息
+    properties:
+      shareName:
+        type: string
+        description: 共享名
+      clientType:
+        type: string
+        description: 客户端类型 0为主机  1为网络组
+      client:
+        type: string
+        description: 客户端IP或主机名或网络组名
+      accessVal:
+        type: string
+        description: 权限级别 0：只读 1：读写
+      squash:
+        type: string
+        description: 权限限制  all_squash 1：no_all_squash
+      rootSquash:
+        type: string
+        description: root权限限制 0：root_squash 1：no_root_squash
+      secure:
+        type: string
+        description: 源端口校验限制 0：secure 1：insecure
+    required:
+      - shareName
+      - clientType
+      - client
+      - accessVal
+      - squash
+      - rootSquash
+      - secure
+  CifsShare:
+    description: cifs信息
+    properties:
+      shareName:
+        type: string
+        description: 共享名
+      cifsDomaintype:
+        type: string
+        description: 域类型 0：AD域用户/组；1：LDAP域用户/组；2：本地用户/组；3：NIS域用户/组
+      name:
+        type: string
+        description: 用户名或用户组名
+      permission:
+        type: string
+        description: 权限级别 0：读，1：完全控制，2：禁止，5：读、写(不能删除、重命名)
+    required:
+      - shareName
+      - cifsDomaintype
+      - name
+      - permission
+  NasUserGroupInfos:
+    description: 用户组列表信息
+    type: array
+    items:
+      properties:
+        totalCount:
+          type: integer
+          format: int32
+          description: 用户组总数
+        records:
+          type: array
+          items:
+            properties:
+              name:
+                type: string
+                description: 用户组名称
+              id:
+                type: string
+                description: 用户组id
+          description: 用户组信息
+  NasUserInfos:
+    description: nas中window本地用户认证用户列表信息
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 用户信息总数
+      records:
+        description: 用户信息
+        items:
+          properties:
+            name:
+              type: string
+              description: 用户名称
+            id:
+              type: string
+              description: 用户id
+            enableStatus:
+              type: boolean
+        type: array
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
