@@ -1,0 +1,100 @@
+---
+swagger: "2.0"
+info:
+  version: "v1"
+  title: "DEE Base Parser Internal API Document"
+  contact: {}
+  license: {}
+host: "localhost"
+basePath: "/"
+tags:
+- name: "导出管理"
+  description: "Export Controller"
+paths:
+  /v1/internal/flr/action/export:
+    post:
+      tags:
+      - "导出管理"
+      summary: "文件导出"
+      operationId: "exportFileUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - in: "body"
+        name: "exportRequest"
+        description: "exportRequest"
+        required: true
+        schema:
+          originalRef: "ExportRequest"
+          $ref: "#/definitions/ExportRequest"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+securityDefinitions:
+  Authorization:
+    type: "apiKey"
+    name: "TOKEN"
+    in: "header"
+definitions:
+  ExportCopyInfo:
+    type: "object"
+    required:
+    - "resourceSubType"
+    - "snapshots"
+    - "userId"
+    - "uuid"
+    properties:
+      resourceSubType:
+        type: "string"
+      snapshots:
+        type: "array"
+        items:
+          originalRef: "SnapshotInfo"
+          $ref: "#/definitions/SnapshotInfo"
+      userId:
+        type: "string"
+      uuid:
+        type: "string"
+    title: "ExportCopyInfo"
+  ExportRequest:
+    type: "object"
+    required:
+    - "copyInfo"
+    - "path"
+    - "requestId"
+    properties:
+      copyInfo:
+        originalRef: "ExportCopyInfo"
+        $ref: "#/definitions/ExportCopyInfo"
+      path:
+        type: "string"
+      requestId:
+        type: "string"
+    title: "ExportRequest"
+  SnapshotInfo:
+    type: "object"
+    required:
+    - "id"
+    - "parentName"
+    properties:
+      id:
+        type: "string"
+        description: "快照ID"
+      parentName:
+        type: "string"
+        description: "快照文件系统名称"
+    title: "SnapshotInfo"
