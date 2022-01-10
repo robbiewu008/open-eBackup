@@ -14,10 +14,11 @@ tags:
   - name: task-dee
   - name: copy-agent
   - name: copy-pm
-  - name: copy_archive
+  - name: copy_archive_replication
 paths:
   /v1/dme-unified/tasks/sub-tasks:
     post:
+      x-impact-subsystem: 不影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -197,6 +198,7 @@ paths:
           schema:
             $ref: '#/definitions/RspMsg'
     get:
+      x-impact-subsystem: 不影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -372,6 +374,7 @@ paths:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/shared-resources/lock:
     put:
+      x-impact-subsystem: 影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -387,17 +390,6 @@ paths:
           description: resource
           schema:
             $ref: '#/definitions/Resource'
-        - name: timeoutByMs
-          in: query
-          required: true
-          description: 超时时间
-          type: integer
-          format: int32
-        - name: subTaskId
-          in: query
-          required: true
-          description: 子任务Id
-          type: string
       responses:
         '200':
           description: 锁定成功无返回值
@@ -411,6 +403,7 @@ paths:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/shared-resources/release:
     put:
+      x-impact-subsystem: 影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -426,11 +419,6 @@ paths:
           description: resource
           schema:
             $ref: '#/definitions/Resource'
-        - name: subTaskId
-          in: query
-          required: true
-          description: 子任务id
-          type: string
       responses:
         '200':
           description: 释放资源成功，无返回值
@@ -533,7 +521,7 @@ paths:
           schema:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/tasks/livemount/cancel:
-    post:
+    put:
       x-impact-subsystem: 不影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
@@ -715,19 +703,21 @@ paths:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/copies/add:
     post:
+      x-impact-subsystem: 不影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
       tags:
-        - copy_archive
+        - copy_archive_replication
       description: 归档微服务导入归档副本
       operationId: AddCopy
       parameters:
-        - name: copy_data
+        - name: copy_record
           in: body
           required: true
           schema:
-            type: string
+            $ref: '#/definitions/CopyRecord'
+          description: 添加副本
       responses:
         '200':
           description: ''
@@ -736,7 +726,153 @@ paths:
         '500':
           description: ''
           schema:
+            $ref: '#/definitions/RspMsg'
+  /v1/dme-unified/copies/last:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 30065
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      x-auth-type: 双向证书认证
+      tags:
+        - copy-agent
+      description: agent执行恢复时，要获取上一次副本的信息
+      operationId: GetLastCopyInfo
+      parameters:
+        - name: protect_uuid
+          in: query
+          required: true
+          description: 保护对象的uuid
+          type: string
+        - name: type
+          in: query
+          required: false
+          description: >-
+            组合类型，比如“full,increment”或者“full”，都可以 ，副本类型：nativeSnapshot：本地快照 |
+            full：全量 | increment：增量 | diff：差异增量 | foreverIncrement：永久增量 | log：日志
+            | replication：复制 | s3Archive：S3归档 | tapeArchive：磁带归档 | clone：克隆副本
+            存入md；
+          type: string
+        - name: copy_id
+          in: query
+          required: false
+          description: >-
+            通过指定副本id，可以找到该副本前一个对应类型的副本信息，前提是该副本id为已入库的副本id，否则将根据保护对象和副本类型返回最近一次的副本信息
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/GetCopyInfoResponse'
+        '400':
+          description: 上次副本不存在
+          schema:
+            $ref: '#/definitions/RspMsg'
+        '500':
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/RspMsg'
+  /v1/dme-unified/copies/all:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 30065
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      tags:
+        - copy_archive_replication
+      operationId: GetCopyInfos
+      parameters:
+        - name: filterType
+          in: query
+          required: true
+          description: 'enum: "timestamp",  "index"'
+          type: string
+        - name: filterValue
+          in: query
+          required: true
+          type: string
+        - name: backupType
+          in: query
+          required: true
+          type: string
+        - name: protectUuid
+          in: query
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 副本记录数组
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CopyRecord'
+        '500':
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/RspMsg'
+  '/v1/dme_unified/copies/{copy_id}/qos':
+    put:
+      x-impact-subsystem: 不影响
+      x-access-port: 30065
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      x-auth-type: 双向证书认证
+      tags:
+        - copy-pm
+      description: 更新Qos
+      operationId: UpdateQos
+      parameters:
+        - name: copy_id
+          in: path
+          required: true
+          type: string
+        - name: qos
+          in: body
+          required: true
+          description: qos模型
+          schema:
+            $ref: '#/definitions/MountQos'
+      responses:
+        '200':
+          description: ''
+          schema:
             type: string
+        '400':
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/RspMsg'
+        '500':
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/RspMsg'
+    delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 30065
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      x-auth-type: 双向证书认证
+      tags:
+        - copy-pm
+      description: 删除qos
+      operationId: DeleteQos
+      parameters:
+        - name: copy_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+        '400':
+          description: 副本id对应的副本不存在
+          schema:
+            $ref: '#/definitions/RspMsg'
+        '500':
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/RspMsg'
 definitions:
   DemoInfo:
     description: This is a demo
@@ -810,10 +946,10 @@ definitions:
     properties:
       type:
         type: string
-        description: 应用类型，用于识别由哪个插件执行任务，比如数据库
+        description: 应用类型，比如数据库
       subType:
         type: string
-        description: 应用子类型，比如mysql的实例or数据库
+        description: '应用子类型，用于识别由哪个插件执行任务, 比如mysql的实例or数据库'
       uuid:
         type: string
         description: 应用保护对象的uuid
@@ -913,6 +1049,9 @@ definitions:
 
       删除副本的时候，只需要auth和endpoint信息
     properties:
+      id:
+        type: string
+        description: 存储仓的唯一标志
       type:
         type: integer
         format: int32
@@ -933,12 +1072,6 @@ definitions:
         $ref: '#/definitions/Authentication'
       endpoint:
         $ref: '#/definitions/HostAddress'
-      deduption:
-        type: boolean
-        description: 是否重删
-      compression:
-        type: boolean
-        description: 是否压缩
       extendInfo:
         type: object
         description: json对象扩展信息
@@ -1082,7 +1215,7 @@ definitions:
         type: integer
         format: int32
         description: >-
-          0-TASK_LOG_INFO，1-TASK_LOG_WARNING，2-TASK_LOG_ERROR，3-TASK_LOG_SERIOUS_WARN
+          1-TASK_LOG_INFO，2-TASK_LOG_WARNING，3-TASK_LOG_ERROR，4-TASK_LOG_SERIOUS_WARN
   TaskDetails:
     description: 任务详情
     properties:
@@ -1096,11 +1229,12 @@ definitions:
         type: integer
         format: int32
         description: >-
-          0-INITIALIZING，1-RUNNING，2-ABORTING，3-COMPLETED，4-PARTIAL_COMPLETED，5-ABORTED，6-ABORTED_FAILED，7-FAILED，8-FAILED_NOTRY
+          和pm保持一致，0-INITIALIZING，1-RUNNING，2-ABORTING，3-COMPLETED，4-ABORTED，5-ABORTED_FAILED，6-FAILED，7-FAILED_NOTRY，13-PARTIAL_COMPLETED
         x-access-port: 30065
         x-auth-required: 'Y'
         x-public-api: 'N'
         x-auth-type: 双向证书认证
+        x-impact-subsystem: 不影响
       logDetail:
         items:
           $ref: '#/definitions/LogDetail'
@@ -1111,11 +1245,12 @@ definitions:
         format: int32
         description: >-
           0-1为DME专属状态，保留，从2开始，
-          2-AGENT_PREPARING，3-PRE_TASK_COMPLETE，4-GENERATE_TASK_COMPLETE，5-SWITCH_INCR_TO_FULL，该字段只有主任务填，子任务不填
+          2-AGENT_PREPARING，3-PRE_TASK_COMPLETE，4-GENERATE_TASK_COMPLETE，5-7为DME专属状态，8-SWITCH_INCR_TO_FULL，该字段只有主任务填，子任务不填
         x-access-port: 30065
         x-auth-required: 'Y'
         x-public-api: 'N'
         x-auth-type: 双向证书认证
+        x-impact-subsystem: 不影响
       progress:
         type: integer
         format: int32
@@ -1198,7 +1333,7 @@ definitions:
       taskPriority:
         type: integer
         format: int32
-        description: 子任务的优先级，1开头，数字越大优先级越高
+        description: 子任务的优先级，0-65535，数字越大优先级越低
       executeStrategy:
         type: integer
         format: int32
@@ -1278,11 +1413,18 @@ definitions:
         type: string
         description: >-
           snapshot（本地保护）, fullBackup, incrementBackup,
-          logBackup，foreverIncrementBackup(针对dorado同构场景复制能力的保护)
+          diffBackup，logBackup，foreverIncrementBackup
+
+          foreverIncrementBackup 永久增量备份
+
+          incrementBackup 增量备份（基于最近一次备份，全量或增量）
+
+          diffBackup 增量差异备份（基于最近一次全量）
         x-access-port: 30065
         x-auth-required: 'Y'
         x-public-api: 'N'
         x-auth-type: 双向证书认证
+        x-impact-subsystem: 不影响
       copyFormat:
         type: integer
         format: int32
@@ -1494,8 +1636,11 @@ definitions:
         items:
           $ref: '#/definitions/HostAddress'
         description: 任务所使用的agent列表，只有主任务下发
-      copyInfo:
-        $ref: '#/definitions/CopyInfo'
+      copies:
+        items:
+          $ref: '#/definitions/CopyInfo'
+        description: 如果是目录格式的副本，恢复时要将所需的副本按照时间先后顺序排成列表下发
+        type: array
       appInfo:
         $ref: '#/definitions/Application'
       resourceInfo:
@@ -1533,7 +1678,7 @@ definitions:
         description: string格式，子任务额外参数
       extendInfo:
         type: object
-        description: json对象，主任务的扩展参数
+        description: json对象，对应主任务的高级参数advanceParams
     required:
       - requestId
       - taskId
@@ -1553,9 +1698,6 @@ definitions:
       resourceValue:
         type: string
         description: 资源的值
-      isShared:
-        type: boolean
-        description: 资源是否共享
       sharedNum:
         type: integer
         format: int32
@@ -1565,22 +1707,19 @@ definitions:
       - scopeKey
       - resourceKey
       - resourceValue
-      - isShared
+      - sharedNum
   ResourceStatus:
     description: 资源状态模型
     properties:
       resource:
         $ref: '#/definitions/Resource'
-      isLocked:
-        type: boolean
-        description: 该资源是否被锁定
       lockNum:
         type: integer
         format: int32
         description: 如果资源被锁定，该资源已被多少个节点共享
     required:
       - resource
-      - isLocked
+      - lockNum
   ErrorDetails:
     description: 错误描述
     required:
@@ -1617,9 +1756,7 @@ definitions:
       构建两个结构体，抽取出remotePath
     allOf:
       - $ref: '#/definitions/StorageRepository'
-      - required:
-          - remotePath
-        type: object
+      - type: object
         properties:
           remotePath:
             type: array
@@ -1643,6 +1780,14 @@ definitions:
       name:
         type: string
         description: 副本名称
+      timestamp:
+        type: integer
+        format: int32
+        description: 时间戳
+      transactionNo:
+        type: integer
+        format: int32
+        description: 事务号
       repositories:
         type: array
         items:
@@ -1795,8 +1940,6 @@ definitions:
         items:
           $ref: '#/definitions/HostAddress'
         description: agent节点信息
-      mountQos:
-        $ref: '#/definitions/MountQos'
       advanceParams:
         type: object
         description: json对象，高级参数
@@ -1821,19 +1964,23 @@ definitions:
         type: integer
         format: int32
         description: 峰值带宽，单位MB/s
-      IOPSMin:
+      iopsMin:
         type: integer
         format: int32
         description: 最小IOPS，单位8K
-      IOPSMax:
+      iopsMax:
         type: integer
         format: int32
         description: 最大IOPS，单位8K
-      IOPSBurst:
+      iopsBurst:
         type: integer
         format: int32
         description: 峰值IOPS，单位8K
-      Latency:
+      burstTime:
+        type: integer
+        format: int32
+        description: 峰值时间
+      latency:
         type: integer
         format: int32
         description: 延时，500或者1500
@@ -1841,10 +1988,11 @@ definitions:
       - bandwidthMin
       - bandwidthMax
       - bandwidthBurst
-      - IOPSMin
-      - IOPSMax
-      - IOPSBurst
-      - Latency
+      - iopsMin
+      - iopsMax
+      - iopsBurst
+      - burstTime
+      - latency
   CancelLiveMountTask:
     description: 卸载模型
     properties:
@@ -1864,7 +2012,7 @@ definitions:
       repositories:
         type: array
         items:
-          $ref: '#/definitions/StorageRepositoryExtend'
+          $ref: '#/definitions/StorageRepository'
         description: 鉴权信息可能改变，需要pm下发
       agents:
         type: array
@@ -1892,20 +2040,21 @@ definitions:
       type:
         type: integer
         format: int32
-        description: 预留参数，新克隆副本类型， 0：可写副本 1：只读副本
+        description: '预留参数，新克隆副本类型，0：可写副本, 1：只读副本'
+      fileSystemShareInfo:
+        type: array
+        items:
+          $ref: '#/definitions/FileSystemShareInfo'
+        description: 共享客户端参数
     required:
       - srcCopyId
       - targetCopyId
   MountQosModel:
     properties:
-      copyId:
-        type: string
-        description: 副本id
       mountQos:
         $ref: '#/definitions/MountQos'
     description: MountQos请求体
     required:
-      - copyId
       - mountQos
   GetCopyInfoResponse:
     description: 获取副本详情的返回体
@@ -1913,6 +2062,9 @@ definitions:
       id:
         type: string
         description: 副本id
+      name:
+        type: string
+        description: 快照名称
       snapshots:
         type: array
         items:
@@ -1948,10 +2100,8 @@ definitions:
           $ref: '#/definitions/AppResource'
         description: 被保护子对象
       protectEnv:
-        type: array
-        items:
-          $ref: '#/definitions/AppEnvironment'
         description: 被保护的环境信息，无鉴权信息
+        $ref: '#/definitions/AppEnvironment'
       repositories:
         type: array
         items:
@@ -2003,3 +2153,90 @@ definitions:
     properties:
       advanceParams:
         type: object
+  FileSystemShareInfo:
+    properties:
+      type:
+        type: integer
+        format: int32
+        description: '0: nfs; 1: cifs'
+      fileSystemName:
+        type: string
+        description: 文件系统名称
+      accessPermission:
+        type: integer
+        format: int32
+        description: '0, 只读;1:读写'
+      advanceParams:
+        type: object
+        description: >-
+          1、当type为0即nfs，高级参数为：
+
+          {clientName: str(客户端名称), squash: int(0, all_squash;1, no_all_squash),
+          rootSquash: int(0, root_quash; 1, no_root_squash), portSecure: int(0,
+          secure; 1, insecure), certificationMode: int(0, 无认证;1,
+          Kerberos认证,保留参数，1.1版本不支持), kerberos: int(:
+          Kerberos名称，选择Kerberos方式时必填，保留参数，1.1版本不支持)}
+
+          2、当type为1即cifs，高级参数为:
+
+          {shareName: str(界面中默认读取文件系统名设置，用户可修改), domainType: int(账户类型:
+          0,everyone;1,Windows本地认证用户;2,Windows本地认证用户)}
+  CopyRecord:
+    properties:
+      id:
+        type: string
+        description: 副本id
+      name:
+        type: string
+        description: 快照名称
+      snapshots:
+        type: array
+        items:
+          $ref: '#/definitions/Snapshot'
+        description: 快照信息，有可能多个
+      timestamp:
+        type: integer
+        format: int64
+        description: 副本创建时间
+      status:
+        type: integer
+        format: int32
+        description: 副本状态， 0：正常 1：删除中 2：归档中 3：复制中 4：无效 存入md
+      type:
+        type: string
+        description: >-
+          副本类型：nativeSnapshot：本地快照 | full：全量 | increment：增量 | diff：差异增量 |
+          foreverIncrement：永久增量 | log：日志 | replication：复制 | s3Archive：S3归档 |
+          tapeArchive：磁带归档 | clone：克隆副本 存入md；
+
+          副本类型：nativeSnapshot：本地快照 | full：全量 | increment：增量 | diff：差异增量 |
+          foreverIncrement：永久增量 | log：日志 | replication：复制 | s3Archive：S3归档 |
+          tapeArchive：磁带归档 | clone：克隆副本 存入md；
+      format:
+        type: integer
+        format: int32
+        description: 副本格式： 0：快照格式 1：目录格式 存入md
+      size:
+        type: integer
+        format: int64
+        description: 副本大小
+      protectObject:
+        $ref: '#/definitions/Application'
+      protectEnv:
+        description: 被保护的环境信息，无鉴权信息
+        $ref: '#/definitions/AppEnvironment'
+      protectSubObject:
+        type: array
+        items:
+          $ref: '#/definitions/AppResource'
+        description: 被保护子对象
+      repositories:
+        type: array
+        items:
+          $ref: '#/definitions/StorageRepositoryExtend'
+        description: 存储仓信息，无鉴权信息
+      dataLayout:
+        $ref: '#/definitions/DataLayout'
+      extendInfo:
+        type: object
+        description: json对象，扩展信息
