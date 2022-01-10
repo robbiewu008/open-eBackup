@@ -1,7 +1,11 @@
-openapi: 3.0.2
+swagger: '2.0'
 info:
+  version: v1
   title: DEE DB Anonymization API Document
-  version: 0.1.0
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
 paths:
   /v1/anonymization/report/download:
     post:
