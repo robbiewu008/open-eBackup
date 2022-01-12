@@ -1,0 +1,305 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: DEE Anti Ransomware API Document
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: Detect Result Management
+    description: Detect Result Controller
+  - name: Task Management
+    description: Detect Task Controller
+paths:
+  /v1/internal/anti/ransomware/detect/copy/false/alarm:
+    put:
+      x-impact-subsystem: 影响
+      x-access-port: 8083
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      tags:
+        - Detect Result Management
+      summary: 误报处理
+      operationId: handleFalseAlarmInternalUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: falseAlarmRequest
+          description: '误报处理请求'
+          required: true
+          schema:
+            originalRef: DetectFalseAlarmRequest
+            $ref: '#/definitions/DetectFalseAlarmRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: DetectFalseAlarmResponse
+            $ref: '#/definitions/DetectFalseAlarmResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/internal/anti/ransomware/detect/copy/feature:
+    delete:
+      x-impact-subsystem: 影响
+      x-access-port: 8083
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      tags:
+        - Detect Result Management
+      summary: 根据副本id删除特征文件
+      operationId: deleteByCopyIdInternalUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: request
+          description: 根据副本id删除特征文件
+          required: true
+          schema:
+            originalRef: DeleteByCopyIdRequest
+            $ref: '#/definitions/DeleteByCopyIdRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: DeleteByCopyIdResponse
+            $ref: '#/definitions/DeleteByCopyIdResponse'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+  /v1/internal/anti/ransomware/detect/task:
+    post:
+      x-impact-subsystem: 影响
+      x-access-port: 8083
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      tags:
+        - Task Management
+      summary: 增加探测任务
+      operationId: addTaskInternalUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: addTaskRequest
+          description: 探测任务
+          required: true
+          schema:
+            originalRef: AddTaskRequest
+            $ref: '#/definitions/AddTaskRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: AddTaskResponse
+            $ref: '#/definitions/AddTaskResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    delete:
+      x-impact-subsystem: 影响
+      x-access-port: 8083
+      x-auth-required: 'N'
+      x-public-api: 'N'
+      tags:
+        - Task Management
+      summary: 删除资源的探测任务
+      operationId: deleteTasksInternalUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: deleteTaskRequest
+          description: 删除任务请求
+          required: true
+          schema:
+            originalRef: DeleteTaskRequest
+            $ref: '#/definitions/DeleteTaskRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: DeleteTaskResponse
+            $ref: '#/definitions/DeleteTaskResponse'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  AddTaskRequest:
+    type: object
+    required:
+      - copyGn
+      - copyId
+      - resourceId
+      - resourceType
+      - snapId
+      - snapMetadata
+      - storageAddress
+      - storagePassword
+      - storagePort
+      - storageUsername
+    properties:
+      copyGn:
+        type: integer
+        description: 副本序号
+      copyId:
+        type: string
+        description: 副本编号（UUID格式）
+      copyType:
+        type: string
+        description: 副本类型
+      requestId:
+        type: string
+        description: 请求编号（UUID格式）
+      resourceId:
+        type: string
+        description: 资源编号（UUID格式）
+      resourceType:
+        type: string
+        description: 资源子类型
+      snapId:
+        type: string
+        description: 快照索引
+      snapMetadata:
+        type: string
+        description: 快照元数据
+      storageAddress:
+        type: string
+        description: 存储地址
+      storagePassword:
+        type: string
+        description: 存储密码
+      storagePort:
+        type: string
+        description: 存储端口
+      storageProtocol:
+        type: string
+        description: 存储协议
+      storageType:
+        type: string
+        description: 存储类型
+      storageUsername:
+        type: string
+        description: 存储用户
+    title: AddTaskRequest
+  AddTaskResponse:
+    type: object
+    properties:
+      taskCode:
+        type: string
+        description: 任务编号
+    title: AddTaskResponse
+  DeleteByCopyIdRequest:
+    type: object
+    required:
+      - copyIdList
+    properties:
+      copyIdList:
+        type: array
+        example:
+          - '1'
+        description: 待进行误报处理的副本ID列表
+        items:
+          type: string
+    title: DeleteByCopyIdRequest
+  DeleteByCopyIdResponse:
+    type: object
+    properties:
+      deleted:
+        type: boolean
+        description: 根据副本id删除特征文件是否成功
+    title: DeleteByCopyIdResponse
+  DeleteTaskRequest:
+    type: object
+    required:
+      - resourceIds
+    properties:
+      resourceIds:
+        type: array
+        description: 待删除的副本ID列表
+        items:
+          type: string
+    title: DeleteTaskRequest
+  DeleteTaskResponse:
+    type: object
+    properties:
+      stopTaskCodes:
+        type: array
+        description: '停止的任务编号列表 '
+        items:
+          type: string
+    title: DeleteTaskResponse
+  DetectFalseAlarmRequest:
+    type: object
+    required:
+      - copyIds
+    properties:
+      copyIds:
+        type: array
+        description: 待进行误报处理的副本ID列表
+        items:
+          type: string
+    title: DetectFalseAlarmRequest
+  DetectFalseAlarmResponse:
+    type: object
+    properties:
+      falseAlarmResponseDetails:
+        type: array
+        description: 误报处理结果详情
+        items:
+          originalRef: FalseAlarmResponseDetail
+          $ref: '#/definitions/FalseAlarmResponseDetail'
+    title: DetectFalseAlarmResponse
+  FalseAlarmResponseDetail:
+    type: object
+    properties:
+      copyId:
+        type: string
+        description: 进行了误报处理的副本ID
+      newStatus:
+        type: string
+        description: 误报处理后的防勒索检测状态
+      oldStatus:
+        type: string
+        description: 误报处理前的防勒索检测状态
+    title: FalseAlarmResponseDetail

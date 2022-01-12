@@ -1,650 +1,366 @@
----
-swagger: "2.0"
+swagger: '2.0'
 info:
-  version: "v1"
-  title: "DEE Anti Ransomware API Document"
+  version: v1
+  title: DEE Anti Ransomware API Document
   contact: {}
   license: {}
-host: "localhost"
-basePath: "/"
+host: localhost
+basePath: /
 tags:
-- name: "Config Management"
-  description: "Config Controller"
-- name: "Detect Result Management"
-  description: "Detect Result Controller"
-- name: "Task Management"
-  description: "Detect Task Controller"
-- name: "Model Management"
-  description: "Model Controller"
+  - name: Config Management
+    description: Config Controller
+  - name: Model Management
+    description: Model Controller
 paths:
   /v1/anti/ransomware/config:
     get:
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-auditor-role: 'Y'
       tags:
-      - "Config Management"
-      summary: "获取配置"
-      operationId: "getConfigUsingGET"
+        - Config Management
+      summary: 获取配置
+      operationId: getConfigUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/Config"
-            originalRef: "Config"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/Config'
+            originalRef: Config
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
     put:
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "Config Management"
-      summary: "设置配置"
-      operationId: "setConfigUsingPUT"
+        - Config Management
+      summary: 设置配置
+      operationId: setConfigUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "config"
-        description: "配置参数"
-        required: true
-        schema:
-          $ref: "#/definitions/Config"
-          originalRef: "Config"
-      responses:
-        "200":
-          description: "OK"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: config
+          description: 配置参数
+          required: true
           schema:
-            $ref: "#/definitions/Config"
-            originalRef: "Config"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
-      deprecated: false
-  /v1/anti/ransomware/detect/copy/false/alarm:
-    put:
-      tags:
-      - "Detect Result Management"
-      summary: "误报处理"
-      operationId: "handleFalseAlarmUsingPUT"
-      consumes:
-      - "application/json"
-      produces:
-      - "*/*"
-      parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "falseAlarmRequest"
-        description: "误报处理请求"
-        required: true
-        schema:
-          $ref: "#/definitions/DetectFalseAlarmRequest"
-          originalRef: "DetectFalseAlarmRequest"
+            $ref: '#/definitions/Config'
+            originalRef: Config
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/DetectFalseAlarmResponse"
-            originalRef: "DetectFalseAlarmResponse"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/Config'
+            originalRef: Config
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
-  /v1/anti/ransomware/detect/copy/feature:
-    delete:
-      tags:
-      - "Detect Result Management"
-      summary: "根据副本id删除特征文件"
-      operationId: "deleteByCopyIdUsingDELETE"
-      produces:
-      - "*/*"
-      parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "request"
-        description: "根据副本id删除特征文件"
-        required: true
-        schema:
-          $ref: "#/definitions/DeleteByCopyIdRequest"
-          originalRef: "DeleteByCopyIdRequest"
-      responses:
-        "200":
-          description: "OK"
-          schema:
-            $ref: "#/definitions/DeleteByCopyIdResponse"
-            originalRef: "DeleteByCopyIdResponse"
-        "204":
-          description: "No Content"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-      security:
-      - Authorization:
-        - "global"
-      deprecated: false
-  /v1/anti/ransomware/detect/task/:
-    post:
-      tags:
-      - "Task Management"
-      summary: "增加探测任务"
-      operationId: "addTaskUsingPOST"
-      consumes:
-      - "application/json"
-      produces:
-      - "*/*"
-      parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "addTaskRequest"
-        description: "探测任务"
-        required: true
-        schema:
-          $ref: "#/definitions/AddTaskRequest"
-          originalRef: "AddTaskRequest"
-      responses:
-        "200":
-          description: "OK"
-          schema:
-            $ref: "#/definitions/AddTaskResponse"
-            originalRef: "AddTaskResponse"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
-      deprecated: false
-    delete:
-      tags:
-      - "Task Management"
-      summary: "删除资源的探测任务"
-      operationId: "deleteTasksUsingDELETE"
-      produces:
-      - "*/*"
-      parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "deleteTaskRequest"
-        description: "删除任务请求"
-        required: true
-        schema:
-          $ref: "#/definitions/DeleteTaskRequest"
-          originalRef: "DeleteTaskRequest"
-      responses:
-        "200":
-          description: "OK"
-          schema:
-            $ref: "#/definitions/DeleteTaskResponse"
-            originalRef: "DeleteTaskResponse"
-        "204":
-          description: "No Content"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-      security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anti/ransomware/model:
     post:
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "Model Management"
-      summary: "增加模型"
-      operationId: "addModelInfoUsingPOST"
+        - Model Management
+      summary: 增加模型
+      operationId: addModelInfoUsingPOST
       consumes:
-      - "multipart/form-data"
+        - multipart/form-data
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "modelFile"
-        in: "formData"
-        description: "模型文件"
-        required: true
-        type: "file"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: modelFile
+          in: formData
+          description: 模型文件
+          required: true
+          type: file
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/ModelInfo"
-            originalRef: "ModelInfo"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/ModelInfo'
+            originalRef: ModelInfo
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
     delete:
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "Model Management"
-      summary: "删除模型"
-      operationId: "deleteModelUsingDELETE"
+        - Model Management
+      summary: 删除模型
+      operationId: deleteModelUsingDELETE
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "deleteModelRequest"
-        description: "删除模型请求"
-        required: true
-        schema:
-          $ref: "#/definitions/DeleteModelRequest"
-          originalRef: "DeleteModelRequest"
-      responses:
-        "200":
-          description: "OK"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: deleteModelRequest
+          description: 删除模型请求
+          required: true
           schema:
-            $ref: "#/definitions/DeleteModelResponse"
-            originalRef: "DeleteModelResponse"
-        "204":
-          description: "No Content"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
+            $ref: '#/definitions/DeleteModelRequest'
+            originalRef: DeleteModelRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DeleteModelResponse'
+            originalRef: DeleteModelResponse
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anti/ransomware/model/activate:
     put:
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "Model Management"
-      summary: "激活模型"
-      operationId: "activateModelUsingPUT"
+        - Model Management
+      summary: 激活模型
+      operationId: activateModelUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "activateModelRequest"
-        description: "激活模型请求"
-        required: true
-        schema:
-          $ref: "#/definitions/ActivateModelRequest"
-          originalRef: "ActivateModelRequest"
-      responses:
-        "200":
-          description: "OK"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: activateModelRequest
+          description: 激活模型请求
+          required: true
           schema:
-            $ref: "#/definitions/ActivateModelResponse"
-            originalRef: "ActivateModelResponse"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/ActivateModelRequest'
+            originalRef: ActivateModelRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ActivateModelResponse'
+            originalRef: ActivateModelResponse
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anti/ransomware/models:
     get:
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-dp-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "Model Management"
-      summary: "获取模型列表"
-      operationId: "getModelListUsingGET"
+        - Model Management
+      summary: 获取模型列表
+      operationId: getModelListUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "pageNum"
-        description: "页的编号"
-        required: true
-        schema:
-          type: "integer"
-          format: "int64"
-          example: 1
-      - in: "body"
-        name: "pageSize"
-        description: "每页数量"
-        required: true
-        schema:
-          type: "integer"
-          format: "int64"
-          example: 10
-      - name: "status"
-        in: "query"
-        description: "模型状态"
-        required: false
-        type: "boolean"
-        allowEmptyValue: false
-        x-example: "false"
-      responses:
-        "200":
-          description: "OK"
+        - in: query
+          name: pageNum
+          description: 页的编号
+          required: true
           schema:
-            $ref: "#/definitions/Response«List«ModelInfo»»"
-            originalRef: "Response«List«ModelInfo»»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            type: integer
+            format: int64
+        - in: query
+          name: pageSize
+          description: 每页数量
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: status
+          in: query
+          description: 模型状态
+          required: false
+          type: boolean
+          x-example: 'false'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Response«List«ModelInfo»»'
+            originalRef: Response«List«ModelInfo»»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
 securityDefinitions:
   Authorization:
-    type: "apiKey"
-    name: "TOKEN"
-    in: "header"
+    type: apiKey
+    name: TOKEN
+    in: header
 definitions:
   ActivateModelRequest:
-    type: "object"
+    type: object
     required:
-    - "id"
+      - id
     properties:
       id:
-        type: "string"
+        type: string
         example: 1
-        description: "模型编号"
-    title: "ActivateModelRequest"
+        description: 模型编号
+    title: ActivateModelRequest
   ActivateModelResponse:
-    type: "object"
+    type: object
     properties:
       activated:
-        type: "boolean"
-        description: "模型激活是否成功"
-    title: "ActivateModelResponse"
-  AddTaskRequest:
-    type: "object"
-    required:
-    - "copyGn"
-    - "copyId"
-    - "resourceId"
-    - "resourceType"
-    - "snapId"
-    - "snapMetadata"
-    - "storageAddress"
-    - "storagePassword"
-    - "storagePort"
-    - "storageUsername"
-    properties:
-      copyGn:
-        type: "integer"
-        description: "副本序号"
-      copyId:
-        type: "string"
-        description: "副本编号（UUID格式）"
-      copyType:
-        type: "string"
-        description: "副本类型"
-      requestId:
-        type: "string"
-        description: "请求编号（UUID格式）"
-      resourceId:
-        type: "string"
-        description: "资源编号（UUID格式）"
-      resourceType:
-        type: "string"
-        description: "资源子类型"
-      snapId:
-        type: "string"
-        description: "快照索引"
-      snapMetadata:
-        type: "string"
-        description: "快照元数据"
-      storageAddress:
-        type: "string"
-        description: "存储地址"
-      storagePassword:
-        type: "string"
-        description: "存储密码"
-      storagePort:
-        type: "string"
-        description: "存储端口"
-      storageProtocol:
-        type: "string"
-        description: "存储协议"
-      storageType:
-        type: "string"
-        description: "存储类型"
-      storageUsername:
-        type: "string"
-        description: "存储用户"
-    title: "AddTaskRequest"
-  AddTaskResponse:
-    type: "object"
-    properties:
-      taskCode:
-        type: "string"
-        description: "任务编号"
-    title: "AddTaskResponse"
+        type: boolean
+        description: 模型激活是否成功
+    title: ActivateModelResponse
   Config:
-    type: "object"
-    required:
-    - "dynamicDetection"
-    - "taskConcurrencyLimit"
     properties:
       dynamicDetection:
-        type: "boolean"
-        description: "是否开启动态探测"
-      taskConcurrencyLimit:
-        type: "integer"
-        format: "int32"
-        example: 10
-        description: "配置任务并发上限"
-        minimum: 1.0
-        maximum: 1000.0
-        exclusiveMinimum: false
-        exclusiveMaximum: false
-    title: "Config"
-  DeleteByCopyIdRequest:
-    type: "object"
+        type: boolean
+        description: 是否开启动态探测
+    title: Config
     required:
-    - "copyIdList"
-    properties:
-      copyIdList:
-        type: "array"
-        example:
-        - "1"
-        description: "待删除的副本ID列表"
-        items:
-          type: "string"
-    title: "DeleteByCopyIdRequest"
-  DeleteByCopyIdResponse:
-    type: "object"
-    properties:
-      deleted:
-        type: "boolean"
-        description: "根据副本id删除特征文件是否成功"
-    title: "DeleteByCopyIdResponse"
+      - dynamicDetection
   DeleteModelRequest:
-    type: "object"
+    type: object
     required:
-    - "id"
+      - id
     properties:
       id:
-        type: "string"
+        type: string
         example: 1
-        description: "模型编号"
-    title: "DeleteModelRequest"
+        description: 模型编号
+    title: DeleteModelRequest
   DeleteModelResponse:
-    type: "object"
+    type: object
     properties:
       deleted:
-        type: "boolean"
-        description: "模型删除是否成功"
-    title: "DeleteModelResponse"
-  DeleteTaskRequest:
-    type: "object"
-    required:
-    - "resourceIds"
-    properties:
-      resourceIds:
-        type: "array"
-        description: "资源ID列表"
-        items:
-          type: "string"
-    title: "DeleteTaskRequest"
-  DeleteTaskResponse:
-    type: "object"
-    properties:
-      stopTaskCodes:
-        type: "array"
-        description: "停止的任务编号列表 "
-        items:
-          type: "string"
-    title: "DeleteTaskResponse"
-  DetectFalseAlarmRequest:
-    type: "object"
-    required:
-    - "copyIds"
-    properties:
-      copyIds:
-        type: "array"
-        description: "待进行误报处理的副本ID列表"
-        items:
-          type: "string"
-    title: "DetectFalseAlarmRequest"
-  DetectFalseAlarmResponse:
-    type: "object"
-    properties:
-      falseAlarmResponseDetails:
-        type: "array"
-        description: "误报处理结果详情"
-        items:
-          $ref: "#/definitions/FalseAlarmResponseDetail"
-          originalRef: "FalseAlarmResponseDetail"
-    title: "DetectFalseAlarmResponse"
-  FalseAlarmResponseDetail:
-    type: "object"
-    properties:
-      copyId:
-        type: "string"
-        description: "进行了误报处理的副本ID"
-      newStatus:
-        type: "string"
-        description: "误报处理后的防勒索检测状态"
-      oldStatus:
-        type: "string"
-        description: "误报处理前的防勒索检测状态"
-    title: "FalseAlarmResponseDetail"
+        type: boolean
+        description: 模型删除是否成功
+    title: DeleteModelResponse
   ModelInfo:
-    type: "object"
+    type: object
     properties:
       desc:
-        type: "string"
-        description: "模型描述"
+        type: string
+        description: 模型描述
       id:
-        type: "string"
-        description: "模型编号"
+        type: string
+        description: 模型编号
       name:
-        type: "string"
-        description: "模型名称"
+        type: string
+        description: 模型名称
       signatureInfo:
-        type: "string"
-        description: "签名信息"
+        type: string
+        description: 签名信息
       status:
-        type: "boolean"
-        description: "模型状态"
+        type: boolean
+        description: 模型状态
       updateTime:
-        type: "string"
-        description: "更新时间"
+        type: string
+        description: 更新时间
       version:
-        type: "string"
-        description: "模型版本"
-    title: "ModelInfo"
+        type: string
+        description: 模型版本
+    title: ModelInfo
   Response«List«ModelInfo»»:
-    type: "object"
+    type: object
     properties:
       detailParams:
-        type: "array"
-        description: "错误参数"
+        type: array
+        description: 错误参数
         items:
-          type: "string"
+          type: string
       errorCode:
-        type: "integer"
-        format: "int64"
-        description: "错误编码"
+        type: integer
+        format: int64
+        description: 错误编码
       errorMessage:
-        type: "string"
-        description: "错误描述"
+        type: string
+        description: 错误描述
       records:
-        type: "array"
-        description: "数据"
+        type: array
+        description: 数据
         items:
-          $ref: "#/definitions/ModelInfo"
-          originalRef: "ModelInfo"
+          $ref: '#/definitions/ModelInfo'
+          originalRef: ModelInfo
       totalCount:
-        type: "integer"
-        format: "int64"
-        description: "翻页"
-    title: "Response«List«ModelInfo»»"
+        type: integer
+        format: int64
+        description: 翻页
+    title: Response«List«ModelInfo»»
