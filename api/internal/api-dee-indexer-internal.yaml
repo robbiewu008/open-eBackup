@@ -137,7 +137,7 @@ paths:
   /v1/internal/indexes/folder/action/list:
     post:
       x-impact-subsystem: 影响
-      x-access-port: 8081
+      x-access-port: 8084
       x-auth-required: 'N'
       x-public-api: 'N'
       tags:
@@ -176,7 +176,7 @@ paths:
   /v1/internal/restore-filesystem/action/mount:
     post:
       x-impact-subsystem: 影响
-      x-access-port: 8081
+      x-access-port: 8084
       x-auth-required: 'N'
       x-public-api: 'N'
       tags:
@@ -215,7 +215,7 @@ paths:
   /v1/internal/restore-filesystem/folder:
     post:
       x-impact-subsystem: 影响
-      x-access-port: 8081
+      x-access-port: 8084
       x-auth-required: 'N'
       x-public-api: 'N'
       tags:
@@ -258,7 +258,7 @@ paths:
             - global
     get:
       x-impact-subsystem: 影响
-      x-access-port: 8081
+      x-access-port: 8084
       x-auth-required: 'N'
       x-public-api: 'N'
       tags:
@@ -309,7 +309,7 @@ paths:
             - global
     delete:
       x-impact-subsystem: 影响
-      x-access-port: 8081
+      x-access-port: 8084
       x-auth-required: 'N'
       x-public-api: 'N'
       tags:
@@ -429,14 +429,16 @@ definitions:
       location:
         type: string
         description: '文件系统所处位置：LOCAL,本机位置;NEW,新位置'
-      filesystem:
-        description: 文件系统信息
+      shareInfo:
+        description: 共享文件系统信息
         originalRef: FilesystemInfo
-        $ref: '#/definitions/FilesystemInfo'
+        $ref: '#/definitions/ShareInfo'
+      targetEnv:
+        $ref: '#/definitions/AppEnvironment'
     title: MountFileSystemRequest
     required:
       - location
-      - filesystem
+      - shareInfo
   MountFileSystemResponse:
     properties:
       mountPointId:
@@ -445,11 +447,6 @@ definitions:
     required:
       - mountPointId
   HostAddress:
-    type: object
-    required:
-      - ip
-      - port
-      - id
     properties:
       ip:
         type: string
@@ -462,6 +459,10 @@ definitions:
         type: string
         description: host id，pm下发时要带上agent id
     title: HostAddress
+    required:
+      - ip
+      - port
+      - id
   ReportRfiInfo:
     properties:
       copyId:
@@ -551,20 +552,23 @@ definitions:
       modifyTime:
         type: string
     title: FolderInfo
-  FilesystemInfo:
+  ShareInfo:
     properties:
       filesystemName:
         type: string
         description: 文件系统名
-      sharedIp:
+      shareIp:
         type: string
         description: 共享IP，新位置需要
-      sharedName:
+      name:
         type: string
         description: 共享名，新位置需要
-      sharedProtocol:
+      protocol:
         type: string
         description: 共享协议，新位置需要
+      targetType:
+        type: string
+        description: 目标共享文件系统类型，HOMOGENEOUS：同构、HETEROGENEOUS：异构
       nfsAuth:
         description: NFS验证信息，新位置是NFS共享需要
         originalRef: NfsAuth
@@ -613,3 +617,48 @@ definitions:
       shareProtocol:
         type: string
         description: '共享协议类型：NFS,CIFS'
+  Authentication:
+    description: >-
+      0-NO_AUTH, 1-OS_PASSWORD,  2-APP_PASSWORD, 3-LADP, 4-AKSK, 5-KERBEROS,
+      6-TOKEN, 7-OAUTH2, 8-OTHER
+
+      1到3,authKey填用户名,authPwd填密码， 4 authKey填AK， authPwd填SK,
+      5,6,7,8认证认证信息在扩展字段中扩充。
+
+      认证信息
+
+      0-NO_AUTH, 1-OS_PASSWORD, 2-APP_PASSWORD, 3-LADP, 4-AKSK, 5-KERBEROS,
+      6-TOKEN, 7-OAUTH2, 8-OTHER
+
+      1到3,authKey填用户名,authPwd填密码， 4 authKey填AK， authPwd填SK,
+      5,6,7,8认证认证信息在扩展字段中扩充。
+    required:
+      - authType
+    properties:
+      authType:
+        type: integer
+        format: int32
+        description: >-
+          0-NO_AUTH, 1-OS_PASSWORD, 2-APP_PASSWORD, 3-LADP, 4-AKSK, 5-KERBEROS,
+          6-TOKEN, 7-OAUTH2, 8-OTHER
+      authKey:
+        type: string
+        description: 用户名
+      authPwd:
+        type: string
+        description: 密码
+      extendInfo:
+        type: object
+        description: json对象，key_value键值对，扩展信息
+  AppEnvironment:
+    properties:
+      endpoint:
+        type: string
+      port:
+        type: integer
+        format: int32
+      auth:
+        $ref: '#/definitions/Authentication'
+      extendInfo:
+        type: object
+        description: json对象，扩展信息
