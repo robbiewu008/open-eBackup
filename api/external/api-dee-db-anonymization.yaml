@@ -1,2224 +1,1614 @@
-swagger: '2.0'
+---
+swagger: "2.0"
 info:
-  version: v1
-  title: DEE DB Anonymization API Document
+  version: "v1"
+  title: "DEE DB Anonymization API Document"
   contact: {}
   license: {}
-host: localhost
-basePath: /
+host: "localhost"
+basePath: "/"
+tags:
+- name: "anony-controller"
+  description: "Anony Controller"
+- name: "database-controller"
+  description: "Database Controller"
+- name: "ident-rule-controller"
+  description: "Ident Rule Controller"
+- name: "mask-rule-controller"
+  description: "Mask Rule Controller"
+- name: "policy-controller"
+  description: "Policy Controller"
 paths:
-  /v1/anonymization/report/download:
-    post:
-      tags:
-        - statistics
-      summary: 下载脱敏报告
-      operationId: download_statistics_v1_anonymization_report_download_post
-      parameters:
-        - description: 请求token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: 请求token
-          name: X-Auth-Token
-          in: header
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DownloadParamsSchema'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema: {}
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/identification/result:
-    get:
-      tags:
-        - statistics
-      summary: 查询识别结果
-      operationId: get_identification_result_v1_anonymization_identification_result_get
-      parameters:
-        - description: 数据库id
-          required: true
-          schema:
-            title: Db Id
-            type: string
-            description: 数据库id
-          name: db_id
-          in: query
-        - description: 数据库名称
-          required: true
-          schema:
-            title: Db Name
-            type: string
-            description: 数据库名称
-          name: db_name
-          in: query
-        - description: 数据库类型(Oracle,MySQL,SQLServer)
-          required: true
-          schema:
-            title: Db Type
-            type: string
-            description: 数据库类型(Oracle,MySQL,SQLServer)
-          name: db_type
-          in: query
-        - description: 表空间
-          required: false
-          schema:
-            title: Table Space
-            type: string
-            description: 表空间
-          name: table_space
-          in: query
-        - description: 表名
-          required: false
-          schema:
-            title: Table Name
-            type: string
-            description: 表名
-          name: table_name
-          in: query
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetIdentificationResult'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    put:
-      tags:
-        - statistics
-      summary: 修改识别结果
-      operationId: modify_identification_result_v1_anonymization_identification_result_put
-      parameters:
-        - description: 请求token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: 请求token
-          name: X-Auth-Token
-          in: header
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PutIdentificationResultSchema'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema: {}
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/identification/statistics:
-    get:
-      tags:
-        - statistics
-      summary: 查询识别结果统计数据
-      operationId: get_identification_statistics_v1_anonymization_identification_statistics_get
-      parameters:
-        - description: 数据库id
-          required: true
-          schema:
-            title: Db Id
-            type: string
-            description: 数据库id
-          name: db_id
-          in: query
-        - required: false
-          schema:
-            title: Page Size
-            maximum: 100
-            exclusiveMinimum: 0
-            type: integer
-            default: 10
-          name: page_size
-          in: query
-        - required: false
-          schema:
-            title: Page No
-            minimum: 0
-            type: integer
-            default: 0
-          name: page_no
-          in: query
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BasePage_GetIdentificationStatisticSchema_'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/mask-rule:
-    get:
-      tags:
-        - policy manager
-      summary: 查询脱敏规则
-      operationId: get_mask_rule_v1_anonymization_mask_rule_get
-      parameters:
-        - description: 脱敏规则名称
-          required: false
-          schema:
-            title: Name
-            type: string
-            description: 脱敏规则名称
-          name: name
-          in: query
-        - description: 创建方式,自定义：customized,预置：preset
-          required: false
-          schema:
-            title: Create Method
-            type: array
-            items:
-              type: string
-            description: 创建方式,自定义：customized,预置：preset
-          name: create_method
-          in: query
-        - description: 脱敏规则名称
-          required: false
-          schema:
-            title: Mask Type
-            type: array
-            items:
-              type: string
-            description: 脱敏规则名称
-          name: mask_type
-          in: query
-        - required: false
-          schema:
-            title: Page Size
-            maximum: 100
-            exclusiveMinimum: 0
-            type: integer
-            default: 10
-          name: page_size
-          in: query
-        - required: false
-          schema:
-            title: Page No
-            minimum: 0
-            type: integer
-            default: 0
-          name: page_no
-          in: query
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BasePage_MaskGetItem_'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    put:
-      tags:
-        - policy manager
-      summary: 修改脱敏规则
-      operationId: update_mask_rule_v1_anonymization_mask_rule_put
-      parameters:
-        - description: 请求token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: 请求token
-          name: X-Auth-Token
-          in: header
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MaskRuleUpdateSchema'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseModel'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    post:
-      tags:
-        - policy manager
-      summary: 创建脱敏规则
-      operationId: add_mask_rule_v1_anonymization_mask_rule_post
-      parameters:
-        - description: 请求token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: 请求token
-          name: X-Auth-Token
-          in: header
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MaskRuleAddSchema'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseModel'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/mask-rule/reference:
-    get:
-      tags:
-        - policy manager
-      summary: 查询脱敏规则引用对象
-      operationId: get_mask_rule_reference_v1_anonymization_mask_rule_reference_get
-      parameters:
-        - required: true
-          schema:
-            title: Mask Id
-            type: string
-          name: mask_id
-          in: query
-        - required: false
-          schema:
-            title: Page Size
-            maximum: 100
-            exclusiveMinimum: 0
-            type: integer
-            default: 10
-          name: page_size
-          in: query
-        - required: false
-          schema:
-            title: Page No
-            minimum: 0
-            type: integer
-            default: 0
-          name: page_no
-          in: query
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BasePage_MaskReferenceSchema_'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/mask-rule/{id}:
-    delete:
-      tags:
-        - policy manager
-      summary: 删除脱敏规则
-      operationId: delete_mask_rule_v1_anonymization_mask_rule__id__delete
-      parameters:
-        - required: true
-          schema:
-            title: Id
-            type: string
-            format: uuid
-          name: id
-          in: path
-        - description: 请求token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: 请求token
-          name: X-Auth-Token
-          in: header
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseModel'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/mask-rule/generate-example:
-    post:
-      tags:
-        - policy manager
-      summary: 生成样例
-      operationId: generate_example_v1_anonymization_mask_rule_generate_example_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MaskRuleExampleSchema'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                title: Response Generate Example V1 Anonymization Mask Rule Generate Example Post
-                type: string
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/ident-rule:
-    get:
-      tags:
-        - policy manager
-      summary: 查询识别规则
-      operationId: get_ident_rule_v1_anonymization_ident_rule_get
-      parameters:
-        - description: 识别规则名称
-          required: false
-          schema:
-            title: Name
-            type: string
-            description: 识别规则名称
-          name: name
-          in: query
-        - description: 模板名称
-          required: false
-          schema:
-            title: Template Name
-            type: string
-            description: 模板名称
-          name: template_name
-          in: query
-        - description: 创建方式，自定义：customized，预置：preset
-          required: false
-          schema:
-            title: Create Method
-            type: array
-            items:
-              type: string
-            description: 创建方式，自定义：customized，预置：preset
-          name: create_method
-          in: query
-        - description: 脱敏规则名称
-          required: false
-          schema:
-            title: Mask Name
-            type: string
-            description: 脱敏规则名称
-          name: mask_name
-          in: query
-        - required: false
-          schema:
-            title: Page Size
-            maximum: 100
-            exclusiveMinimum: 0
-            type: integer
-            default: 10
-          name: page_size
-          in: query
-        - required: false
-          schema:
-            title: Page No
-            minimum: 0
-            type: integer
-            default: 0
-          name: page_no
-          in: query
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BasePage_GetIdentificationSchema_'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    put:
-      tags:
-        - policy manager
-      summary: 修改识别规则
-      operationId: put_identification_rule_v1_anonymization_ident_rule_put
-      parameters:
-        - description: 请求token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: 请求token
-          name: X-Auth-Token
-          in: header
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IdentificationRuleUpdateSchema'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseModel'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    post:
-      tags:
-        - policy manager
-      summary: 创建识别规则
-      operationId: add_identification_rule_v1_anonymization_ident_rule_post
-      parameters:
-        - description: 请求token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: 请求token
-          name: X-Auth-Token
-          in: header
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IdentificationRuleAddSchema'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseModel'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/ident-rule/reference/addition:
-    get:
-      tags:
-        - policy manager
-      summary: 查询识别规则引用对象
-      operationId: get_identification_rule_reference_addition_v1_anonymization_ident_rule_reference_addition_get
-      parameters:
-        - required: true
-          schema:
-            title: Identification Id
-            type: string
-          name: identification_id
-          in: query
-        - required: false
-          schema:
-            title: Page Size
-            maximum: 100
-            exclusiveMinimum: 0
-            type: integer
-            default: 10
-          name: page_size
-          in: query
-        - required: false
-          schema:
-            title: Page No
-            minimum: 0
-            type: integer
-            default: 0
-          name: page_no
-          in: query
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BasePage_IdentificationReferenceAdditionSchema_'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/ident-rule/{id}:
-    delete:
-      tags:
-        - policy manager
-      summary: 删除识别规则
-      operationId: delete_identification_rule_v1_anonymization_ident_rule__id__delete
-      parameters:
-        - required: true
-          schema:
-            title: Id
-            type: string
-            format: uuid
-          name: id
-          in: path
-        - description: 请求token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: 请求token
-          name: X-Auth-Token
-          in: header
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseModel'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/policy:
-    get:
-      tags:
-        - policy manager
-      summary: 查询脱敏策略
-      operationId: get_policy_v1_anonymization_policy_get
-      parameters:
-        - description: 脱敏策略名称
-          required: false
-          schema:
-            title: Name
-            type: string
-            description: 脱敏策略名称
-          name: name
-          in: query
-        - description: 创建方式，自定义：customized，预置：preset
-          required: false
-          schema:
-            title: Create Method
-            type: array
-            items:
-              type: string
-            description: 创建方式，自定义：customized，预置：preset
-          name: create_method
-          in: query
-        - required: false
-          schema:
-            title: Page Size
-            maximum: 100
-            exclusiveMinimum: 0
-            type: integer
-            default: 10
-          name: page_size
-          in: query
-        - required: false
-          schema:
-            title: Page No
-            minimum: 0
-            type: integer
-            default: 0
-          name: page_no
-          in: query
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BasePage_GetPolicySchema_'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    put:
-      tags:
-        - policy manager
-      summary: 配置脱敏策略
-      operationId: update_policy_v1_anonymization_policy_put
-      parameters:
-        - description: 请求token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: 请求token
-          name: X-Auth-Token
-          in: header
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PolicyUpdateSchema'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseModel'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/policy/{id}:
-    delete:
-      tags:
-        - policy manager
-      summary: 删除脱敏策略
-      operationId: delete_policy_v1_anonymization_policy__id__delete
-      parameters:
-        - required: true
-          schema:
-            title: Id
-            type: string
-            format: uuid
-          name: id
-          in: path
-        - description: 请求token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: 请求token
-          name: X-Auth-Token
-          in: header
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseModel'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/policy-details:
-    get:
-      tags:
-        - policy manager
-      summary: 查询脱敏策略详情
-      operationId: get_policy_details_v1_anonymization_policy_details_get
-      parameters:
-        - required: true
-          schema:
-            title: Policy Id
-            type: string
-          name: policy_id
-          in: query
-        - required: false
-          schema:
-            title: Page Size
-            maximum: 100
-            exclusiveMinimum: 0
-            type: integer
-            default: 10
-          name: page_size
-          in: query
-        - required: false
-          schema:
-            title: Page No
-            minimum: 0
-            type: integer
-            default: 0
-          name: page_no
-          in: query
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PolicyDetailBasePage'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/policy/reference:
-    get:
-      tags:
-        - policy manager
-      summary: 查询脱敏策略引用对象
-      operationId: get_policy_reference_v1_anonymization_policy_reference_get
-      parameters:
-        - required: true
-          schema:
-            title: Policy Id
-            type: string
-          name: policy_id
-          in: query
-        - required: false
-          schema:
-            title: Page Size
-            maximum: 100
-            exclusiveMinimum: 0
-            type: integer
-            default: 10
-          name: page_size
-          in: query
-        - required: false
-          schema:
-            title: Page No
-            minimum: 0
-            type: integer
-            default: 0
-          name: page_no
-          in: query
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BasePage_PolicyRefSchema_'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization/anonymization-job:
-    post:
-      tags:
-        - job service
-      summary: 创建脱敏任务
-      operationId: post_desensitize_job_v1_anonymization_anonymization_job_post
-      parameters:
-        - required: false
-          schema:
-            title: X-Auth-Token
-            type: string
-          name: x-auth-token
-          in: header
-        - description: 请求token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: 请求token
-          name: X-Auth-Token
-          in: header
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DesensitizeJobSchema'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseModel'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization-job/verification:
-    post:
-      tags:
-        - job service
-      summary: 校验数据库内容
-      operationId: verification_sql_v1_anonymization_job_verification_post
-      parameters:
-        - description: token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: token
-          name: X-Auth-Token
-          in: header
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VerifySchema'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VerifyResultSchema'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
   /v1/anonymization-job/database/authentication:
     post:
       tags:
-        - job service
-      summary: 数据库登录认证
-      operationId: validate_database_authentication_v1_anonymization_job_database_authentication_post
+      - "database-controller"
+      summary: "authDatabase"
+      operationId: "authDatabaseUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
       parameters:
-        - description: token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: token
-          name: X-Auth-Token
-          in: header
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/app__WebService__schemas__schema__DbObjSchema'
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
         required: true
+        type: "string"
+      - in: "body"
+        name: "dbInfo"
+        description: "dbInfo"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateAnonyJobDb"
+          originalRef: "CreateAnonyJobDb"
       responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseModel'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/AuthDatabaseVo"
+            originalRef: "AuthDatabaseVo"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
   /v1/anonymization-job/task/stop/controller:
     post:
       tags:
-        - job service
-      summary: 停止任务控制器
-      operationId: stop_task_entry_v1_anonymization_job_task_stop_controller_post
+      - "anony-controller"
+      summary: "stopTask"
+      operationId: "stopTaskUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
       parameters:
-        - required: false
-          schema:
-            title: X-Auth-Token
-            type: string
-          name: x-auth-token
-          in: header
-        - required: false
-          schema:
-            title: X-Forwarded-For
-            type: string
-          name: x-forwarded-for
-          in: header
-        - description: token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: token
-          name: X-Auth-Token
-          in: header
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StopTaskSchema'
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
         required: true
+        type: "string"
+      - in: "body"
+        name: "request"
+        description: "request"
+        required: true
+        schema:
+          $ref: "#/definitions/StopTaskRequest"
+          originalRef: "StopTaskRequest"
       responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseModel'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /v1/anonymization-job/task/stop/handler:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization-job/verification:
     post:
       tags:
-        - job service
-      summary: 停止任务处理
-      operationId: stop_task_handler_v1_anonymization_job_task_stop_handler_post
+      - "database-controller"
+      summary: "verifyDatabase"
+      operationId: "verifyDatabaseUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
       parameters:
-        - required: false
-          schema:
-            title: X-Auth-Token
-            type: string
-          name: x-auth-token
-          in: header
-        - required: false
-          schema:
-            title: X-Forwarded-For
-            type: string
-          name: x-forwarded-for
-          in: header
-        - description: token
-          required: true
-          schema:
-            title: X-Auth-Token
-            description: token
-          name: X-Auth-Token
-          in: header
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StopTaskSchema'
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
         required: true
+        type: "string"
+      - in: "body"
+        name: "request"
+        description: "request"
+        required: true
+        schema:
+          $ref: "#/definitions/DatabaseVerifyRequest"
+          originalRef: "DatabaseVerifyRequest"
       responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseModel'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-components:
-  schemas:
-    AdditionRuleSchema:
-      title: AdditionRuleSchema
-      required:
-        - IdentRule
-        - MaskRule
-      type: object
-      properties:
-        IdentRule:
-          $ref: '#/components/schemas/IdentificationRuleModelSchema'
-        MaskRule:
-          $ref: '#/components/schemas/MaskModelSchema'
-    BasePage_GetIdentificationSchema_:
-      title: BasePage[GetIdentificationSchema]
-      required:
-        - pages
-        - page_size
-        - page_no
-        - items
-      type: object
-      properties:
-        errorCode:
-          title: Errorcode
-          type: string
-        errorMessage:
-          title: Errormessage
-          type: string
-        parameters:
-          title: Parameters
-          type: array
-          items: {}
-        total:
-          title: Total
-          type: integer
-          description: 总的数据条数
-        pages:
-          title: Pages
-          type: integer
-          description: 总页数
-        page_size:
-          title: Page Size
-          type: integer
-          description: 每页数据量
-        page_no:
-          title: Page No
-          type: integer
-          description: 页面编号
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/VerificationVo"
+            originalRef: "VerificationVo"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/anonymization-job:
+    post:
+      tags:
+      - "anony-controller"
+      summary: "createAnonyJob"
+      operationId: "createAnonyJobUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "createRequest"
+        description: "createRequest"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateAnonyJobRequest"
+          originalRef: "CreateAnonyJobRequest"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/ident-rule:
+    get:
+      tags:
+      - "ident-rule-controller"
+      summary: "getPageIdentRules"
+      operationId: "getPageIdentRulesUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "create_method"
+        in: "query"
+        description: "create_method"
+        required: false
+        type: "array"
         items:
-          title: Items
-          type: array
-          items:
-            $ref: '#/components/schemas/GetIdentificationSchema'
-          description: 数据列表
-    BasePage_GetIdentificationStatisticSchema_:
-      title: BasePage[GetIdentificationStatisticSchema]
-      required:
-        - pages
-        - page_size
-        - page_no
-        - items
-      type: object
-      properties:
-        errorCode:
-          title: Errorcode
-          type: string
-        errorMessage:
-          title: Errormessage
-          type: string
-        parameters:
-          title: Parameters
-          type: array
-          items: {}
-        total:
-          title: Total
-          type: integer
-          description: 总的数据条数
-        pages:
-          title: Pages
-          type: integer
-          description: 总页数
-        page_size:
-          title: Page Size
-          type: integer
-          description: 每页数据量
-        page_no:
-          title: Page No
-          type: integer
-          description: 页面编号
+          type: "string"
+        collectionFormat: "multi"
+      - name: "name"
+        in: "query"
+        description: "name"
+        required: false
+        type: "string"
+      - name: "page_no"
+        in: "query"
+        description: "page_no"
+        required: false
+        type: "integer"
+        default: 0
+        format: "int32"
+      - name: "page_size"
+        in: "query"
+        description: "page_size"
+        required: false
+        type: "integer"
+        default: 10
+        format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/BasePage«IdentRuleEntity»"
+            originalRef: "BasePage«IdentRuleEntity»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    post:
+      tags:
+      - "ident-rule-controller"
+      summary: "createIdentRule"
+      operationId: "createIdentRuleUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "createRequest"
+        description: "createRequest"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateIdentRuleRequest"
+          originalRef: "CreateIdentRuleRequest"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    put:
+      tags:
+      - "ident-rule-controller"
+      summary: "modifyIdentRule"
+      operationId: "modifyIdentRuleUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "updateRequest"
+        description: "updateRequest"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateIdentRuleRequest"
+          originalRef: "UpdateIdentRuleRequest"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/ident-rule/reference/addition:
+    get:
+      tags:
+      - "ident-rule-controller"
+      summary: "getIdentRuleReferences"
+      operationId: "getIdentRuleReferencesUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "identification_id"
+        in: "query"
+        description: "identification_id"
+        required: true
+        type: "string"
+      - name: "page_no"
+        in: "query"
+        description: "page_no"
+        required: false
+        type: "integer"
+        default: 0
+        format: "int32"
+      - name: "page_size"
+        in: "query"
+        description: "page_size"
+        required: false
+        type: "integer"
+        default: 10
+        format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/BasePage«PolicyEntity»"
+            originalRef: "BasePage«PolicyEntity»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/ident-rule/{id}:
+    delete:
+      tags:
+      - "ident-rule-controller"
+      summary: "deleteIdentRule"
+      operationId: "deleteIdentRuleUsingDELETE"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/identification/result:
+    get:
+      tags:
+      - "anony-controller"
+      summary: "getIdentResult"
+      operationId: "getIdentResultUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "db_id"
+        in: "query"
+        description: "db_id"
+        required: true
+        type: "string"
+      - name: "db_name"
+        in: "query"
+        description: "db_name"
+        required: true
+        type: "string"
+      - name: "db_type"
+        in: "query"
+        description: "db_type"
+        required: true
+        type: "string"
+      - name: "table_name"
+        in: "query"
+        description: "table_name"
+        required: false
+        type: "string"
+      - name: "table_space"
+        in: "query"
+        description: "table_space"
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/IdentificationResultVo"
+            originalRef: "IdentificationResultVo"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    put:
+      tags:
+      - "anony-controller"
+      summary: "modifyIdentResult"
+      operationId: "modifyIdentResultUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "resultRequest"
+        description: "resultRequest"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateIdentResultRequest"
+          originalRef: "UpdateIdentResultRequest"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/identification/statistics:
+    get:
+      tags:
+      - "anony-controller"
+      summary: "getIdentStatistics"
+      operationId: "getIdentStatisticsUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "db_id"
+        in: "query"
+        description: "db_id"
+        required: true
+        type: "string"
+      - name: "page_no"
+        in: "query"
+        description: "page_no"
+        required: false
+        type: "integer"
+        default: 0
+        format: "int32"
+      - name: "page_size"
+        in: "query"
+        description: "page_size"
+        required: false
+        type: "integer"
+        default: 10
+        format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/IPage«IdentificationStatisticVo»"
+            originalRef: "IPage«IdentificationStatisticVo»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/mask-rule:
+    get:
+      tags:
+      - "mask-rule-controller"
+      summary: "getPageMaskRules"
+      operationId: "getPageMaskRulesUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "create_method"
+        in: "query"
+        description: "create_method"
+        required: false
+        type: "array"
         items:
-          title: Items
-          type: array
-          items:
-            $ref: '#/components/schemas/GetIdentificationStatisticSchema'
-          description: 数据列表
-    BasePage_GetPolicySchema_:
-      title: BasePage[GetPolicySchema]
-      required:
-        - pages
-        - page_size
-        - page_no
-        - items
-      type: object
-      properties:
-        errorCode:
-          title: Errorcode
-          type: string
-        errorMessage:
-          title: Errormessage
-          type: string
-        parameters:
-          title: Parameters
-          type: array
-          items: {}
-        total:
-          title: Total
-          type: integer
-          description: 总的数据条数
-        pages:
-          title: Pages
-          type: integer
-          description: 总页数
-        page_size:
-          title: Page Size
-          type: integer
-          description: 每页数据量
-        page_no:
-          title: Page No
-          type: integer
-          description: 页面编号
+          type: "string"
+        collectionFormat: "multi"
+      - name: "mask_type"
+        in: "query"
+        description: "mask_type"
+        required: false
+        type: "array"
         items:
-          title: Items
-          type: array
-          items:
-            $ref: '#/components/schemas/GetPolicySchema'
-          description: 数据列表
-    BasePage_IdentificationReferenceAdditionSchema_:
-      title: BasePage[IdentificationReferenceAdditionSchema]
-      required:
-        - pages
-        - page_size
-        - page_no
-        - items
-      type: object
-      properties:
-        errorCode:
-          title: Errorcode
-          type: string
-        errorMessage:
-          title: Errormessage
-          type: string
-        parameters:
-          title: Parameters
-          type: array
-          items: {}
-        total:
-          title: Total
-          type: integer
-          description: 总的数据条数
-        pages:
-          title: Pages
-          type: integer
-          description: 总页数
-        page_size:
-          title: Page Size
-          type: integer
-          description: 每页数据量
-        page_no:
-          title: Page No
-          type: integer
-          description: 页面编号
+          type: "string"
+        collectionFormat: "multi"
+      - name: "name"
+        in: "query"
+        description: "name"
+        required: false
+        type: "string"
+      - name: "page_no"
+        in: "query"
+        description: "page_no"
+        required: false
+        type: "integer"
+        default: 0
+        format: "int32"
+      - name: "page_size"
+        in: "query"
+        description: "page_size"
+        required: false
+        type: "integer"
+        default: 10
+        format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/BasePage«MaskRuleEntity»"
+            originalRef: "BasePage«MaskRuleEntity»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    post:
+      tags:
+      - "mask-rule-controller"
+      summary: "createMaskRule"
+      operationId: "createMaskRuleUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "createRequest"
+        description: "createRequest"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateMaskRuleRequest"
+          originalRef: "CreateMaskRuleRequest"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    put:
+      tags:
+      - "mask-rule-controller"
+      summary: "modifyMaskRule"
+      operationId: "modifyMaskRuleUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "updateRequest"
+        description: "updateRequest"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateMaskRuleRequest"
+          originalRef: "UpdateMaskRuleRequest"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/mask-rule/generate-example:
+    post:
+      tags:
+      - "mask-rule-controller"
+      summary: "generateMaskRuleExample"
+      operationId: "generateMaskRuleExampleUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - in: "body"
+        name: "exampleRequest"
+        description: "exampleRequest"
+        required: true
+        schema:
+          $ref: "#/definitions/MaskRuleExampleRequest"
+          originalRef: "MaskRuleExampleRequest"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "string"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/mask-rule/reference:
+    get:
+      tags:
+      - "mask-rule-controller"
+      summary: "getMaskRuleReferences"
+      operationId: "getMaskRuleReferencesUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "mask_id"
+        in: "query"
+        description: "mask_id"
+        required: true
+        type: "string"
+      - name: "page_no"
+        in: "query"
+        description: "page_no"
+        required: true
+        type: "integer"
+        format: "int32"
+      - name: "page_size"
+        in: "query"
+        description: "page_size"
+        required: true
+        type: "integer"
+        format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/BasePage«IdentRuleEntity»"
+            originalRef: "BasePage«IdentRuleEntity»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/mask-rule/{id}:
+    delete:
+      tags:
+      - "mask-rule-controller"
+      summary: "deleteMaskRule"
+      operationId: "deleteMaskRuleUsingDELETE"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/policy:
+    get:
+      tags:
+      - "policy-controller"
+      summary: "getPagePolicies"
+      operationId: "getPagePoliciesUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "create_method"
+        in: "query"
+        description: "create_method"
+        required: false
+        type: "array"
         items:
-          title: Items
-          type: array
-          items:
-            $ref: '#/components/schemas/IdentificationReferenceAdditionSchema'
-          description: 数据列表
-    BasePage_MaskGetItem_:
-      title: BasePage[MaskGetItem]
-      required:
-        - pages
-        - page_size
-        - page_no
-        - items
-      type: object
-      properties:
-        errorCode:
-          title: Errorcode
-          type: string
-        errorMessage:
-          title: Errormessage
-          type: string
-        parameters:
-          title: Parameters
-          type: array
-          items: {}
-        total:
-          title: Total
-          type: integer
-          description: 总的数据条数
-        pages:
-          title: Pages
-          type: integer
-          description: 总页数
-        page_size:
-          title: Page Size
-          type: integer
-          description: 每页数据量
-        page_no:
-          title: Page No
-          type: integer
-          description: 页面编号
+          type: "string"
+        collectionFormat: "multi"
+      - name: "name"
+        in: "query"
+        description: "name"
+        required: false
+        type: "string"
+      - name: "page_no"
+        in: "query"
+        description: "page_no"
+        required: false
+        type: "integer"
+        default: 0
+        format: "int32"
+      - name: "page_size"
+        in: "query"
+        description: "page_size"
+        required: false
+        type: "integer"
+        default: 10
+        format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/BasePage«PolicyEntity»"
+            originalRef: "BasePage«PolicyEntity»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    put:
+      tags:
+      - "policy-controller"
+      summary: "createUpdatePolicy"
+      operationId: "createUpdatePolicyUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "createUpdateRequest"
+        description: "createUpdateRequest"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateUpdatePolicyRequest"
+          originalRef: "CreateUpdatePolicyRequest"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/policy-details:
+    get:
+      tags:
+      - "policy-controller"
+      summary: "getPolicyDetails"
+      operationId: "getPolicyDetailsUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "page_no"
+        in: "query"
+        description: "page_no"
+        required: false
+        type: "integer"
+        default: 0
+        format: "int32"
+      - name: "page_size"
+        in: "query"
+        description: "page_size"
+        required: false
+        type: "integer"
+        default: 100
+        format: "int32"
+      - name: "policy_id"
+        in: "query"
+        description: "policy_id"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/PolicyDetailVo"
+            originalRef: "PolicyDetailVo"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/policy/reference:
+    get:
+      tags:
+      - "policy-controller"
+      summary: "getPolicyReferences"
+      operationId: "getPolicyReferencesUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "page_no"
+        in: "query"
+        description: "page_no"
+        required: false
+        type: "integer"
+        default: 0
+        format: "int32"
+      - name: "page_size"
+        in: "query"
+        description: "page_size"
+        required: false
+        type: "integer"
+        default: 10
+        format: "int32"
+      - name: "policy_id"
+        in: "query"
+        description: "policy_id"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/BasePage«PolicyReferenceEntity»"
+            originalRef: "BasePage«PolicyReferenceEntity»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/policy/{id}:
+    delete:
+      tags:
+      - "policy-controller"
+      summary: "deletePolicy"
+      operationId: "deletePolicyUsingDELETE"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "id"
+        in: "path"
+        description: "id"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "OK"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/anonymization/report/download:
+    post:
+      tags:
+      - "anony-controller"
+      summary: "downloadAnonyReport"
+      operationId: "downloadAnonyReportUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "reportRequest"
+        description: "reportRequest"
+        required: true
+        schema:
+          $ref: "#/definitions/DownloadReportRequest"
+          originalRef: "DownloadReportRequest"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+securityDefinitions:
+  Authorization:
+    type: "apiKey"
+    name: "TOKEN"
+    in: "header"
+definitions:
+  AuthDatabaseVo:
+    type: "object"
+    properties:
+      errorCode:
+        type: "integer"
+        format: "int64"
+      errorMessage:
+        type: "string"
+      parameters:
+        type: "array"
         items:
-          title: Items
-          type: array
-          items:
-            $ref: '#/components/schemas/MaskGetItem'
-          description: 数据列表
-    BasePage_MaskReferenceSchema_:
-      title: BasePage[MaskReferenceSchema]
-      required:
-        - pages
-        - page_size
-        - page_no
-        - items
-      type: object
-      properties:
-        errorCode:
-          title: Errorcode
-          type: string
-        errorMessage:
-          title: Errormessage
-          type: string
-        parameters:
-          title: Parameters
-          type: array
-          items: {}
-        total:
-          title: Total
-          type: integer
-          description: 总的数据条数
-        pages:
-          title: Pages
-          type: integer
-          description: 总页数
-        page_size:
-          title: Page Size
-          type: integer
-          description: 每页数据量
-        page_no:
-          title: Page No
-          type: integer
-          description: 页面编号
+          type: "string"
+      result:
+        type: "boolean"
+    title: "AuthDatabaseVo"
+  BasePage«IdentRuleEntity»:
+    type: "object"
+    properties:
+      errorCode:
+        type: "string"
+      errorMessage:
+        type: "string"
+      items:
+        type: "array"
         items:
-          title: Items
-          type: array
-          items:
-            $ref: '#/components/schemas/MaskReferenceSchema'
-          description: 数据列表
-    BasePage_PolicyRefSchema_:
-      title: BasePage[PolicyRefSchema]
-      required:
-        - pages
-        - page_size
-        - page_no
-        - items
-      type: object
-      properties:
-        errorCode:
-          title: Errorcode
-          type: string
-        errorMessage:
-          title: Errormessage
-          type: string
-        parameters:
-          title: Parameters
-          type: array
-          items: {}
-        total:
-          title: Total
-          type: integer
-          description: 总的数据条数
-        pages:
-          title: Pages
-          type: integer
-          description: 总页数
-        page_size:
-          title: Page Size
-          type: integer
-          description: 每页数据量
-        page_no:
-          title: Page No
-          type: integer
-          description: 页面编号
+          $ref: "#/definitions/IdentRuleEntity"
+          originalRef: "IdentRuleEntity"
+      page_no:
+        type: "integer"
+        format: "int64"
+      page_size:
+        type: "integer"
+        format: "int64"
+      pages:
+        type: "integer"
+        format: "int64"
+      parameters:
+        type: "array"
         items:
-          title: Items
-          type: array
-          items:
-            $ref: '#/components/schemas/PolicyRefSchema'
-          description: 数据列表
-    DbObjSchema:
-      title: DbObjSchema
-      required:
-        - DBID
-        - DBName
-        - DBType
-        - IPAdress
-        - Port
-        - Username
-        - Password
-      type: object
-      properties:
-        DBID:
-          title: Dbid
-          type: string
-          description: 数据库id
-        DBName:
-          title: Dbname
-          type: string
-          description: 数据库名称
-        DBType:
-          title: Dbtype
-          type: string
-          description: 数据库类型，取值：mysql,oracle,mssql
-          example: ''
-        IPAdress:
-          title: Ipadress
-          type: string
-          description: IP地址
-        Port:
-          title: Port
-          type: string
-          description: 端口
-        Username:
-          title: Username
-          type: string
-          description: 数据库登录用户名
-        Password:
-          title: Password
-          type: string
-          description: 数据库登录用户密码
-    DesensitizeJobSchema:
-      title: DesensitizeJobSchema
-      required:
-        - job_type
-        - anonymization_type
-        - db_obj
-        - policy_id
-      type: object
-      properties:
-        job_type:
-          title: Job Type
-          type: string
-          description: 任务类型，识别：Identification，脱敏：Anonymization
-          example: Identification
-        anonymization_type:
-          title: Anonymization Type
-          type: string
-          description: 脱敏类型，在线：Online， 离线：Offline
-          example: Offline
-        db_obj:
-          $ref: '#/components/schemas/DbObjSchema'
-        policy_id:
-          title: Policy Id
-          type: string
-          description: 脱敏策略id
-        policy_name:
-          title: Policy Name
-          type: string
-          description: 脱敏策略名称
-          default: ''
-    DownloadParamsSchema:
-      title: DownloadParamsSchema
-      required:
-        - db_id
-        - db_type
-      type: object
-      properties:
-        db_id:
-          title: Db Id
-          type: string
-          description: 数据库id(对应PM的资源id)
-        db_type:
-          title: Db Type
-          type: string
-          description: 数据库类型（枚举：Oracle,MySQL,SQLServer）
-    GetIdentificationResult:
-      title: GetIdentificationResult
-      type: object
-      properties:
-        errorCode:
-          title: Errorcode
-          type: string
-        errorMessage:
-          title: Errormessage
-          type: string
-        parameters:
-          title: Parameters
-          type: array
-          items: {}
-        db_id:
-          title: Db Id
-          type: string
-        db_name:
-          title: Db Name
-          type: string
+          type: "string"
+      total:
+        type: "integer"
+        format: "int64"
+    title: "BasePage«IdentRuleEntity»"
+  BasePage«MaskRuleEntity»:
+    type: "object"
+    properties:
+      errorCode:
+        type: "string"
+      errorMessage:
+        type: "string"
+      items:
+        type: "array"
         items:
-          title: Items
-          type: array
-          items: {}
-    GetIdentificationSchema:
-      title: GetIdentificationSchema
-      required:
-        - id
-      type: object
-      properties:
-        id:
-          title: Id
-          type: string
-          format: uuid
-        name:
-          title: Name
-          type: string
-        format:
-          title: Format
-          type: string
-        expression:
-          title: Expression
-          type: string
-        keywords:
-          title: Keywords
-          type: string
-          default: ''
-        mask_name:
-          title: Mask Name
-          type: string
-        ref_num:
-          title: Ref Num
-          type: integer
-        create_method:
-          title: Create Method
-          type: string
-    GetIdentificationStatisticSchema:
-      title: GetIdentificationStatisticSchema
-      required:
-        - db_id
-        - db_name
-        - table_namespace
-        - table_name
-        - sensitive_count
-      type: object
-      properties:
-        db_id:
-          title: Db Id
-          type: string
-        db_name:
-          title: Db Name
-          type: string
-        table_namespace:
-          title: Table Namespace
-          type: string
-        table_name:
-          title: Table Name
-          type: string
-        sensitive_count:
-          title: Sensitive Count
-          type: integer
-    GetPolicySchema:
-      title: GetPolicySchema
-      required:
-        - id
-      type: object
-      properties:
-        id:
-          title: Id
-          type: string
-          format: uuid
-        name:
-          title: Name
-          type: string
-        description:
-          title: Description
-          type: string
-        ref_num:
-          title: Ref Num
-          type: integer
-        create_method:
-          title: Create Method
-          type: string
-    HTTPValidationError:
-      title: HTTPValidationError
-      type: object
-      properties:
-        detail:
-          title: Detail
-          type: array
+          $ref: "#/definitions/MaskRuleEntity"
+          originalRef: "MaskRuleEntity"
+      page_no:
+        type: "integer"
+        format: "int64"
+      page_size:
+        type: "integer"
+        format: "int64"
+      pages:
+        type: "integer"
+        format: "int64"
+      parameters:
+        type: "array"
+        items:
+          type: "string"
+      total:
+        type: "integer"
+        format: "int64"
+    title: "BasePage«MaskRuleEntity»"
+  BasePage«PolicyEntity»:
+    type: "object"
+    properties:
+      errorCode:
+        type: "string"
+      errorMessage:
+        type: "string"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/PolicyEntity"
+          originalRef: "PolicyEntity"
+      page_no:
+        type: "integer"
+        format: "int64"
+      page_size:
+        type: "integer"
+        format: "int64"
+      pages:
+        type: "integer"
+        format: "int64"
+      parameters:
+        type: "array"
+        items:
+          type: "string"
+      total:
+        type: "integer"
+        format: "int64"
+    title: "BasePage«PolicyEntity»"
+  BasePage«PolicyReferenceEntity»:
+    type: "object"
+    properties:
+      errorCode:
+        type: "string"
+      errorMessage:
+        type: "string"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/PolicyReferenceEntity"
+          originalRef: "PolicyReferenceEntity"
+      page_no:
+        type: "integer"
+        format: "int64"
+      page_size:
+        type: "integer"
+        format: "int64"
+      pages:
+        type: "integer"
+        format: "int64"
+      parameters:
+        type: "array"
+        items:
+          type: "string"
+      total:
+        type: "integer"
+        format: "int64"
+    title: "BasePage«PolicyReferenceEntity»"
+  CreateAnonyJobDb:
+    type: "object"
+    properties:
+      DBID:
+        type: "string"
+      DBName:
+        type: "string"
+      DBType:
+        type: "string"
+      IPAdress:
+        type: "string"
+      Password:
+        type: "string"
+      Port:
+        type: "string"
+      Username:
+        type: "string"
+    title: "CreateAnonyJobDb"
+  CreateAnonyJobRequest:
+    type: "object"
+    properties:
+      anonymization_type:
+        type: "string"
+      db_obj:
+        $ref: "#/definitions/CreateAnonyJobDb"
+        originalRef: "CreateAnonyJobDb"
+      job_type:
+        type: "string"
+      policy_id:
+        type: "string"
+      policy_name:
+        type: "string"
+    title: "CreateAnonyJobRequest"
+  CreateIdentRuleRequest:
+    type: "object"
+    required:
+    - "expression"
+    - "format"
+    properties:
+      create_method:
+        type: "string"
+      expression:
+        type: "string"
+      format:
+        type: "string"
+      mask_rule_name:
+        type: "string"
+      name:
+        type: "string"
+    title: "CreateIdentRuleRequest"
+  CreateMaskRuleRequest:
+    type: "object"
+    required:
+    - "create_method"
+    - "example"
+    - "expression"
+    - "input"
+    - "type"
+    - "type_description"
+    properties:
+      create_method:
+        type: "string"
+      example:
+        type: "string"
+      expression:
+        type: "string"
+      id:
+        type: "string"
+      input:
+        type: "string"
+      name:
+        type: "string"
+      type:
+        type: "string"
+      type_description:
+        type: "string"
+    title: "CreateMaskRuleRequest"
+  CreateUpdatePolicyRequest:
+    type: "object"
+    properties:
+      create_method:
+        type: "string"
+      description:
+        type: "string"
+      id:
+        type: "string"
+      name:
+        type: "string"
+      rules:
+        type: "array"
+        items:
+          $ref: "#/definitions/CreateUpdatePolicyRule"
+          originalRef: "CreateUpdatePolicyRule"
+    title: "CreateUpdatePolicyRequest"
+  CreateUpdatePolicyRule:
+    type: "object"
+    properties:
+      Action:
+        type: "string"
+      IdentRule:
+        type: "string"
+    title: "CreateUpdatePolicyRule"
+  DatabaseVerifyRequest:
+    type: "object"
+    required:
+    - "limit"
+    - "start_row"
+    properties:
+      column_list:
+        type: "array"
+        items:
+          type: "string"
+      db_obj:
+        $ref: "#/definitions/CreateAnonyJobDb"
+        originalRef: "CreateAnonyJobDb"
+      limit:
+        type: "integer"
+        format: "int32"
+        minimum: 0.0
+        maximum: 9.223372036854776E18
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      start_row:
+        type: "integer"
+        format: "int32"
+        minimum: 0.0
+        maximum: 9.223372036854776E18
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      table_name:
+        type: "string"
+      table_space:
+        type: "string"
+    title: "DatabaseVerifyRequest"
+  DownloadReportRequest:
+    type: "object"
+    properties:
+      db_id:
+        type: "string"
+      db_type:
+        type: "string"
+    title: "DownloadReportRequest"
+  IPage«IdentificationStatisticVo»:
+    type: "object"
+    properties:
+      current:
+        type: "integer"
+        format: "int64"
+      hitCount:
+        type: "boolean"
+      pages:
+        type: "integer"
+        format: "int64"
+      records:
+        type: "array"
+        items:
+          $ref: "#/definitions/IdentificationStatisticVo"
+          originalRef: "IdentificationStatisticVo"
+      searchCount:
+        type: "boolean"
+      size:
+        type: "integer"
+        format: "int64"
+      total:
+        type: "integer"
+        format: "int64"
+    title: "IPage«IdentificationStatisticVo»"
+  IdentRuleEntity:
+    type: "object"
+    properties:
+      create_method:
+        type: "string"
+      expression:
+        type: "string"
+      format:
+        type: "string"
+      id:
+        type: "string"
+      keywords:
+        type: "string"
+      mask_name:
+        type: "string"
+      mask_rule_id:
+        type: "string"
+      name:
+        type: "string"
+      ref_num:
+        type: "integer"
+        format: "int32"
+    title: "IdentRuleEntity"
+  IdentificationResultVo:
+    type: "object"
+    properties:
+      db_id:
+        type: "string"
+      db_name:
+        type: "string"
+      errorCode:
+        type: "string"
+      errorMessage:
+        type: "string"
+      items:
+        type: "array"
+        items:
+          type: "object"
+    title: "IdentificationResultVo"
+  IdentificationStatisticVo:
+    type: "object"
+    properties:
+      db_id:
+        type: "string"
+      db_name:
+        type: "string"
+      sensitive_count:
+        type: "integer"
+        format: "int32"
+      table_name:
+        type: "string"
+      table_namespace:
+        type: "string"
+    title: "IdentificationStatisticVo"
+  MaskRuleEntity:
+    type: "object"
+    properties:
+      create_method:
+        type: "string"
+      example:
+        type: "string"
+      expression:
+        type: "string"
+      id:
+        type: "string"
+      name:
+        type: "string"
+      ref_num:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      type_description:
+        type: "string"
+    title: "MaskRuleEntity"
+  MaskRuleExampleRequest:
+    type: "object"
+    properties:
+      expression:
+        type: "string"
+      input:
+        type: "string"
+      type:
+        type: "string"
+    title: "MaskRuleExampleRequest"
+  PolicyDetailVo:
+    type: "object"
+    properties:
+      addition_rules:
+        type: "array"
+        items:
+          $ref: "#/definitions/PolicyRuleVo"
+          originalRef: "PolicyRuleVo"
+      create_method:
+        type: "string"
+      description:
+        type: "string"
+      errorCode:
+        type: "string"
+      errorMessage:
+        type: "string"
+      id:
+        type: "string"
+      name:
+        type: "string"
+      page_no:
+        type: "integer"
+        format: "int32"
+      page_size:
+        type: "integer"
+        format: "int32"
+      pages:
+        type: "integer"
+        format: "int64"
+      template_id:
+        type: "string"
+      template_name:
+        type: "string"
+      total:
+        type: "integer"
+        format: "int64"
+    title: "PolicyDetailVo"
+  PolicyEntity:
+    type: "object"
+    properties:
+      create_method:
+        type: "string"
+      description:
+        type: "string"
+      id:
+        type: "string"
+      name:
+        type: "string"
+      ref_num:
+        type: "integer"
+        format: "int32"
+      templateId:
+        type: "string"
+    title: "PolicyEntity"
+  PolicyReferenceEntity:
+    type: "object"
+    properties:
+      db_id:
+        type: "string"
+      db_name:
+        type: "string"
+      db_type:
+        type: "string"
+      id:
+        type: "string"
+      ip_address:
+        type: "string"
+      policy_id:
+        type: "string"
+      port:
+        type: "string"
+    title: "PolicyReferenceEntity"
+  PolicyRuleVo:
+    type: "object"
+    properties:
+      IdentRule:
+        $ref: "#/definitions/IdentRuleEntity"
+        originalRef: "IdentRuleEntity"
+      MaskRule:
+        $ref: "#/definitions/MaskRuleEntity"
+        originalRef: "MaskRuleEntity"
+    title: "PolicyRuleVo"
+  StopTaskRequest:
+    type: "object"
+    properties:
+      request_id:
+        type: "string"
+    title: "StopTaskRequest"
+  UpdateIdentResultRequest:
+    type: "object"
+    properties:
+      column_name:
+        type: "string"
+      db_id:
+        type: "string"
+      db_name:
+        type: "string"
+      db_type:
+        type: "string"
+      mask_rule_id:
+        type: "string"
+      mask_rule_name:
+        type: "string"
+      pii:
+        type: "string"
+      table_name:
+        type: "string"
+      table_namespace:
+        type: "string"
+    title: "UpdateIdentResultRequest"
+  UpdateIdentRuleRequest:
+    type: "object"
+    required:
+    - "expression"
+    - "format"
+    properties:
+      create_method:
+        type: "string"
+      expression:
+        type: "string"
+      format:
+        type: "string"
+      id:
+        type: "string"
+      mask_rule_name:
+        type: "string"
+      name:
+        type: "string"
+    title: "UpdateIdentRuleRequest"
+  UpdateMaskRuleRequest:
+    type: "object"
+    required:
+    - "create_method"
+    - "example"
+    - "expression"
+    - "input"
+    - "type"
+    - "type_description"
+    properties:
+      create_method:
+        type: "string"
+      example:
+        type: "string"
+      expression:
+        type: "string"
+      id:
+        type: "string"
+      input:
+        type: "string"
+      name:
+        type: "string"
+      type:
+        type: "string"
+      type_description:
+        type: "string"
+    title: "UpdateMaskRuleRequest"
+  VerificationVo:
+    type: "object"
+    properties:
+      errorCode:
+        type: "integer"
+        format: "int64"
+      errorMessage:
+        type: "string"
+      is_truncated:
+        type: "integer"
+        format: "int32"
+      parameters:
+        type: "array"
+        items:
+          type: "string"
+      result:
+        type: "array"
+        items:
+          type: "array"
           items:
-            $ref: '#/components/schemas/ValidationError'
-    IdentificationReferenceAdditionSchema:
-      title: IdentificationReferenceAdditionSchema
-      required:
-        - id
-      type: object
-      properties:
-        id:
-          title: Id
-          type: string
-          format: uuid
-        name:
-          title: Name
-          type: string
-        description:
-          title: Description
-          type: string
-    IdentificationRuleAddSchema:
-      title: IdentificationRuleAddSchema
-      required:
-        - name
-        - format
-        - expression
-        - mask_rule_name
-        - create_method
-      type: object
-      properties:
-        name:
-          title: Name
-          type: string
-          description: 识别规则名称
-          example: ident rule 01
-        format:
-          title: Format
-          type: string
-          description: 类型,当前仅为:regular
-          example: regular
-        expression:
-          title: Expression
-          type: string
-          description: 识别正则表达式
-          example: reg expression
-        keywords:
-          title: Keywords
-          type: string
-          description: 关键字
-          default: ''
-          example: Passport Number
-        mask_rule_name:
-          title: Mask Rule Name
-          type: string
-          description: 脱敏规则名称
-          example: mask rule 01
-        create_method:
-          title: Create Method
-          type: string
-          description: 创建方式，自定义：customized，预置：preset
-          example: customized/preset
-    IdentificationRuleModelSchema:
-      title: IdentificationRuleModelSchema
-      type: object
-      properties:
-        id:
-          title: Id
-          type: string
-          format: uuid
-        name:
-          title: Name
-          type: string
-        format:
-          title: Format
-          type: string
-        expression:
-          title: Expression
-          type: string
-        keywords:
-          title: Keywords
-          type: string
-          default: ''
-        mask_rule_id:
-          title: Mask Rule Id
-          type: string
-          format: uuid
-        create_method:
-          title: Create Method
-          type: string
-    IdentificationRuleUpdateSchema:
-      title: IdentificationRuleUpdateSchema
-      required:
-        - name
-        - format
-        - expression
-        - mask_rule_name
-        - create_method
-        - id
-      type: object
-      properties:
-        name:
-          title: Name
-          type: string
-          description: 识别规则名称
-          example: ident rule 01
-        format:
-          title: Format
-          type: string
-          description: 类型,当前仅为:regular
-          example: regular
-        expression:
-          title: Expression
-          type: string
-          description: 识别正则表达式
-          example: reg expression
-        keywords:
-          title: Keywords
-          type: string
-          description: 关键字
-          default: ''
-          example: Passport Number
-        mask_rule_name:
-          title: Mask Rule Name
-          type: string
-          description: 脱敏规则名称
-          example: mask rule 01
-        create_method:
-          title: Create Method
-          type: string
-          description: 创建方式，自定义：customized，预置：preset
-          example: customized/preset
-        id:
-          title: Id
-          type: string
-          format: uuid
-    MaskGetItem:
-      title: MaskGetItem
-      type: object
-      properties:
-        id:
-          title: Id
-          type: string
-          format: uuid
-        name:
-          title: Name
-          type: string
-        type:
-          title: Type
-          type: string
-        expression:
-          title: Expression
-          type: string
-        create_method:
-          title: Create Method
-          type: string
-        type_description:
-          title: Type Description
-          type: string
-        example:
-          title: Example
-          type: string
-        ref_num:
-          title: Ref Num
-          type: integer
-    MaskModelSchema:
-      title: MaskModelSchema
-      type: object
-      properties:
-        id:
-          title: Id
-          type: string
-          format: uuid
-        name:
-          title: Name
-          type: string
-        type:
-          title: Type
-          type: string
-        expression:
-          title: Expression
-          type: string
-        create_method:
-          title: Create Method
-          type: string
-        type_description:
-          title: Type Description
-          type: string
-        example:
-          title: Example
-          type: string
-    MaskReferenceSchema:
-      title: MaskReferenceSchema
-      type: object
-      properties:
-        id:
-          title: Id
-          type: string
-          format: uuid
-        name:
-          title: Name
-          type: string
-        format:
-          title: Format
-          type: string
-        expression:
-          title: Expression
-          type: string
-        keywords:
-          title: Keywords
-          type: string
-        mask_rule_id:
-          title: Mask Rule Id
-          type: string
-          format: uuid
-    MaskRuleAddSchema:
-      title: MaskRuleAddSchema
-      required:
-        - name
-        - type
-        - expression
-        - create_method
-        - type_description
-        - example
-        - input
-      type: object
-      properties:
-        name:
-          title: Name
-          type: string
-          description: 脱敏规则名称
-          example: mask rule 01
-        type:
-          title: Type
-          type: string
-          description: 脱敏规则类型
-          example: Shuffling
-        expression:
-          title: Expression
-          type: string
-          description: 脱敏规则内容
-        create_method:
-          title: Create Method
-          type: string
-          description: 创建方式,自定义：customized,预置：preset
-        type_description:
-          title: Type Description
-          type: string
-          description: 描述
-        example:
-          title: Example
-          type: string
-          description: 示例
-        input:
-          title: Input
-          maxLength: 64
-          minLength: 0
-          type: string
-          description: 原数据
-    MaskRuleExampleSchema:
-      title: MaskRuleExampleSchema
-      required:
-        - type
-        - expression
-        - input
-      type: object
-      properties:
-        type:
-          title: Type
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: 脱敏规则类型
-          example: Full-Mask
-        expression:
-          title: Expression
-          maxLength: 2000
-          minLength: 1
-          type: string
-          description: 脱敏规则内容
-        input:
-          title: Input
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: 原数据
-    MaskRuleUpdateSchema:
-      title: MaskRuleUpdateSchema
-      required:
-        - name
-        - type
-        - expression
-        - create_method
-        - type_description
-        - example
-        - input
-        - id
-      type: object
-      properties:
-        name:
-          title: Name
-          type: string
-          description: 脱敏规则名称
-          example: mask rule 01
-        type:
-          title: Type
-          type: string
-          description: 脱敏规则类型
-          example: Shuffling
-        expression:
-          title: Expression
-          type: string
-          description: 脱敏规则内容
-        create_method:
-          title: Create Method
-          type: string
-          description: 创建方式,自定义：customized,预置：preset
-        type_description:
-          title: Type Description
-          type: string
-          description: 描述
-        example:
-          title: Example
-          type: string
-          description: 示例
-        input:
-          title: Input
-          maxLength: 64
-          minLength: 0
-          type: string
-          description: 原数据
-        id:
-          title: Id
-          type: string
-          format: uuid
-    PolicyDetailBasePage:
-      title: PolicyDetailBasePage
-      type: object
-      properties:
-        errorCode:
-          title: Errorcode
-          type: string
-        errorMessage:
-          title: Errormessage
-          type: string
-        parameters:
-          title: Parameters
-          type: array
-          items: {}
-        total:
-          title: Total
-          type: integer
-          description: 总的数据条数
-        pages:
-          title: Pages
-          type: integer
-          description: 总页数
-        page_size:
-          title: Page Size
-          type: integer
-          description: 每页数据量
-        page_no:
-          title: Page No
-          type: integer
-          description: 页面编号
-        id:
-          title: Id
-          type: string
-          format: uuid
-        name:
-          title: Name
-          type: string
-        description:
-          title: Description
-          type: string
-        template_id:
-          title: Template Id
-          type: string
-          format: uuid
-        template_name:
-          title: Template Name
-          type: string
-        addition_rules:
-          title: Addition Rules
-          type: array
-          items:
-            $ref: '#/components/schemas/AdditionRuleSchema'
-        create_method:
-          title: Create Method
-          type: string
-    PolicyRefSchema:
-      title: PolicyRefSchema
-      required:
-        - id
-      type: object
-      properties:
-        id:
-          title: Id
-          type: string
-          format: uuid
-        db_id:
-          title: Db Id
-          type: string
-        db_type:
-          title: Db Type
-          type: string
-        db_name:
-          title: Db Name
-          type: string
-        ip_address:
-          title: Ip Address
-          type: string
-        port:
-          title: Port
-          type: string
-        policy_id:
-          title: Policy Id
-          type: string
-          format: uuid
-    PolicyRuleSchema:
-      title: PolicyRuleSchema
-      required:
-        - Action
-        - IdentRule
-      type: object
-      properties:
-        Action:
-          title: Action
-          type: string
-          description: 动作固定为添加：add
-          example: add
-        IdentRule:
-          title: Identrule
-          type: string
-          description: 识别规则名称
-          example: Australia Tax File Number
-    PolicyUpdateSchema:
-      title: PolicyUpdateSchema
-      required:
-        - name
-        - template_name
-        - create_method
-        - rules
-      type: object
-      properties:
-        name:
-          title: Name
-          type: string
-          description: 脱敏策略名称
-          example: policy01
-        description:
-          title: Description
-          type: string
-          description: 描述
-          default: ''
-        template_name:
-          title: Template Name
-          type: string
-          example: template01/ empty string when not using template
-        create_method:
-          title: Create Method
-          maxLength: 256
-          type: string
-          description: 创建方式,自定义：customized,预置：preset
-          example: customized/preset
-        id:
-          title: Id
-          maxLength: 64
-          type: string
-        rules:
-          title: Rules
-          type: array
-          items:
-            $ref: '#/components/schemas/PolicyRuleSchema'
-    PutIdentificationResultSchema:
-      title: PutIdentificationResultSchema
-      required:
-        - db_id
-        - db_name
-        - db_type
-        - table_namespace
-        - table_name
-        - column_name
-        - pii
-      type: object
-      properties:
-        db_id:
-          title: Db Id
-          type: string
-          description: 数据库id
-        db_name:
-          title: Db Name
-          type: string
-          description: 数据库名称
-        db_type:
-          title: Db Type
-          type: string
-          description: 数据库类型
-        table_namespace:
-          title: Table Namespace
-          type: string
-          description: 表空间
-        table_name:
-          title: Table Name
-          type: string
-          description: 表名
-        column_name:
-          title: Column Name
-          type: string
-          description: 列名
-        pii:
-          title: Pii
-          type: string
-          description: pii
-        mask_rule_id:
-          title: Mask Rule Id
-          type: string
-          description: 脱敏规则id
-        mask_rule_name:
-          title: Mask Rule Name
-          type: string
-          description: 脱敏规则名称
-    ResponseModel:
-      title: ResponseModel
-      type: object
-      properties:
-        errorCode:
-          title: Errorcode
-          type: string
-        errorMessage:
-          title: Errormessage
-          type: string
-        parameters:
-          title: Parameters
-          type: array
-          items: {}
-    ValidationError:
-      title: ValidationError
-      required:
-        - loc
-        - msg
-        - type
-      type: object
-      properties:
-        loc:
-          title: Location
-          type: array
-          items:
-            type: string
-        msg:
-          title: Message
-          type: string
-        type:
-          title: Error Type
-          type: string
-    StopTaskSchema:
-      title: StopTaskSchema
-      required:
-        - request_id
-      type: object
-      properties:
-        request_id:
-          title: Request Id
-          type: string
-          description: request id
-          format: uuid
-    VerifyResultSchema:
-      title: VerifyResultSchema
-      type: object
-      properties:
-        errorCode:
-          title: Errorcode
-          type: string
-        errorMessage:
-          title: Errormessage
-          type: string
-        parameters:
-          title: Parameters
-          type: array
-          items: {}
-        is_truncated:
-          title: Is Truncated
-          type: integer
-          example: 0:not truncated, 1:truncated
-        result:
-          title: Result
-          type: array
-          items: {}
-    VerifySchema:
-      title: VerifySchema
-      required:
-        - db_obj
-        - table_space
-        - table_name
-        - column_list
-        - start_row
-        - limit
-      type: object
-      properties:
-        db_obj:
-          $ref: '#/components/schemas/app__DBDetector__db_operator__DbObjSchema'
-        table_space:
-          title: Table Space
-          type: string
-          description: 数据库表空间
-        table_name:
-          title: Table Name
-          type: string
-          description: 数据库表名
-        column_list:
-          title: Column List
-          type: array
-          items:
-            type: string
-          description: 数据库列名称列表
-        start_row:
-          title: Start Row
-          minimum: 0
-          type: integer
-          description: 起始位置
-        limit:
-          title: Limit
-          maximum: 10
-          exclusiveMinimum: 0
-          type: integer
-          description: 限制行数
-    app__DBDetector__db_operator__DbObjSchema:
-      title: DbObjSchema
-      required:
-        - DBID
-        - DBName
-        - DBType
-        - IPAdress
-        - Port
-        - Username
-        - Password
-      type: object
-      properties:
-        DBID:
-          title: Dbid
-          type: string
-          description: 数据库id
-        DBName:
-          title: Dbname
-          type: string
-          description: 数据库名称
-        DBType:
-          title: Dbtype
-          type: string
-          description: 数据库类型，取值：mysql,oracle,mssql
-          example: ''
-        IPAdress:
-          title: Ipadress
-          type: string
-          description: IP地址
-        Port:
-          title: Port
-          type: string
-          description: 端口
-        Username:
-          title: Username
-          type: string
-          description: 数据库登录用户名
-        Password:
-          title: Password
-          type: string
-          description: 数据库登录用户密码
-    app__WebService__schemas__schema__DbObjSchema:
-      title: DbObjSchema
-      required:
-        - DBID
-        - DBName
-        - DBType
-        - IPAdress
-        - Port
-        - Username
-        - Password
-      type: object
-      properties:
-        DBID:
-          title: Dbid
-          type: string
-          description: 数据库id
-        DBName:
-          title: Dbname
-          type: string
-          description: 数据库名称
-        DBType:
-          title: Dbtype
-          type: string
-          description: 数据库类型，取值：mysql,oracle,mssql
-          example: ''
-        IPAdress:
-          title: Ipadress
-          type: string
-          description: IP地址
-        Port:
-          title: Port
-          type: string
-          description: 端口
-        Username:
-          title: Username
-          type: string
-          description: 数据库登录用户名
-        Password:
-          title: Password
-          type: string
-          description: 数据库登录用户密码
+            type: "object"
+    title: "VerificationVo"
