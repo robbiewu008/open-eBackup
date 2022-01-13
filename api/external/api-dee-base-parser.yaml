@@ -1,112 +1,104 @@
-swagger: '2.0'
+---
+swagger: "2.0"
 info:
-  version: v1
-  title: DEE Base Parser API Document
+  version: "v1"
+  title: "DEE Base Parser API Document"
   contact: {}
   license: {}
-host: localhost
-basePath: /
+host: "localhost"
+basePath: "/"
 tags:
-  - name: 下载管理
-    description: Download Controller
+- name: "Download Management"
+  description: "Download Controller"
 paths:
   /v1/flr/download:
     get:
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      x-dp-admin-role: 'Y'
-      x-auditor-role: 'N'
       tags:
-        - 下载管理
-      summary: 下载
-      operationId: downloadUsingGET
+      - "Download Management"
+      summary: "下载"
+      operationId: "downloadUsingGET"
       produces:
-        - '*/*'
+      - "*/*"
       parameters:
-        - name: file_name
-          in: query
-          description: 下载文件名
-          required: true
-          type: string
-          pattern: '^[A-Za-z0-9_][A-Za-z0-9_.-]{1,254}$'
-        - name: request_id
-          in: query
-          description: 请求id
-          required: true
-          type: string
-        - name: user_id
-          in: query
-          description: 用户id
-          required: true
-          type: string
+      - name: "file_name"
+        in: "query"
+        description: "下载文件名"
+        required: true
+        type: "string"
+        pattern: "^[A-Za-z0-9_][A-Za-z0-9_.-]{1,254}$"
+        allowEmptyValue: false
+      - name: "request_id"
+        in: "query"
+        description: "请求id"
+        required: true
+        type: "string"
+        allowEmptyValue: false
+      - name: "user_id"
+        in: "query"
+        description: "用户id"
+        required: true
+        type: "string"
+        allowEmptyValue: false
       responses:
-        '200':
-          description: OK
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+        "200":
+          description: "OK"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
       security:
-        - Authorization:
-            - global
-  '/v1/flr/prepare-status/{request_id}':
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/flr/prepare-status/{request_id}:
     get:
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      x-dp-admin-role: 'Y'
-      x-auditor-role: 'N'
       tags:
-        - 下载管理
-      summary: 查询文件下载状态
-      operationId: queryFileStatusUsingGET
+      - "Download Management"
+      summary: "查询文件下载状态"
+      operationId: "queryFileStatusUsingGET"
       produces:
-        - '*/*'
+      - "*/*"
       parameters:
-        - name: request_id
-          in: path
-          description: request_id
-          required: true
-          type: string
+      - name: "request_id"
+        in: "path"
+        description: "request_id"
+        required: true
+        type: "string"
       responses:
-        '200':
-          description: OK
+        "200":
+          description: "OK"
           schema:
-            originalRef: StatusResponse
-            $ref: '#/definitions/StatusResponse'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            $ref: "#/definitions/StatusResponse"
+            originalRef: "StatusResponse"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
       security:
-        - Authorization:
-            - global
+      - Authorization:
+        - "global"
+      deprecated: false
 securityDefinitions:
   Authorization:
-    type: apiKey
-    name: TOKEN
-    in: header
+    type: "apiKey"
+    name: "TOKEN"
+    in: "header"
 definitions:
   StatusResponse:
-    type: object
+    type: "object"
     properties:
       errorCode:
-        type: string
+        type: "string"
       errorMessage:
-        type: string
+        type: "string"
       file_name:
-        type: string
+        type: "string"
       file_status:
-        type: string
+        type: "string"
       request_id:
-        type: string
-    title: StatusResponse
+        type: "string"
+    title: "StatusResponse"

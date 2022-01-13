@@ -8,14 +8,14 @@ info:
 host: "localhost"
 basePath: "/"
 tags:
-- name: "导出管理"
-  description: "Export Controller"
+- name: "Download Management"
+  description: "Download Controller"
 paths:
   /v1/internal/flr/action/export:
     post:
       tags:
-      - "导出管理"
-      summary: "文件导出"
+      - "Download Management"
+      summary: "导出"
       operationId: "exportFileUsingPOST"
       consumes:
       - "application/json"
@@ -27,8 +27,8 @@ paths:
         description: "exportRequest"
         required: true
         schema:
-          originalRef: "ExportRequest"
           $ref: "#/definitions/ExportRequest"
+          originalRef: "ExportRequest"
       responses:
         "200":
           description: "OK"
@@ -63,8 +63,8 @@ definitions:
       snapshots:
         type: "array"
         items:
-          originalRef: "SnapshotInfo"
           $ref: "#/definitions/SnapshotInfo"
+          originalRef: "SnapshotInfo"
       userId:
         type: "string"
       uuid:
@@ -78,8 +78,8 @@ definitions:
     - "requestId"
     properties:
       copyInfo:
-        originalRef: "ExportCopyInfo"
         $ref: "#/definitions/ExportCopyInfo"
+        originalRef: "ExportCopyInfo"
       path:
         type: "string"
       requestId:
@@ -93,7 +93,7 @@ definitions:
     properties:
       id:
         type: "string"
-        description: "快照ID"
+        description: "快照id"
       parentName:
         type: "string"
         description: "快照文件系统名称"
