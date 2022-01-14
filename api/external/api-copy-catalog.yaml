@@ -421,6 +421,7 @@ paths:
       summary: 修改副本保留策略
   /v1/copies/index:
     delete:
+      x-impact-subsystem: 不影响
       consumes:
         - application/json
       produces:
@@ -434,7 +435,7 @@ paths:
       description: 删除资源ID对应的副本索引
       operationId: DeleteResourceIndex
       parameters:
-        - name: resourceId
+        - name: resource_id
           in: query
           required: true
           type: string
