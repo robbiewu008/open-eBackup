@@ -167,6 +167,7 @@ paths:
             type: array
   /v1/plugins/storage/nas/filesystems/mount:
     post:
+      x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -198,6 +199,11 @@ paths:
           description: 挂载请求体
           schema:
             $ref: '#/definitions/CreateMountRequestBody'
+        - name: envId
+          in: query
+          required: false
+          description: 环境id
+          type: string
       responses:
         '200':
           description: 挂载文件返回体
@@ -436,12 +442,12 @@ definitions:
       usedCapacity:
         type: string
         description: 已用容量
-      cifsShareInfos:
+      cifsShares:
         type: array
         items:
           $ref: '#/definitions/CifsShareInfo'
         description: cifs信息列表
-      nfsShareInfos:
+      nfsShares:
         type: array
         items:
           $ref: '#/definitions/NfsShareInfo'
@@ -454,45 +460,36 @@ definitions:
       - tenant
       - capacity
       - usedCapacity
-      - cifsShareInfos
-      - nfsShareInfos
+      - cifsShares
+      - nfsShares
   CifsShareInfo:
     description: CIFS 信息展示
     properties:
       sharePath:
         type: string
         description: 共享路径
-      user:
-        type: string
-        description: 用户/用户组
       shareName:
         type: string
         description: 共享名称
-      domainType:
-        type: integer
-        format: int32
-        description: 类型：0-Everyone，1-Windows本地认证用户，2-Windows本地认证用户组，3-AD域用户，4-AD域用户组
-      authorityLevel:
-        type: integer
-        format: int32
-        description: 权限级别 0-只读，1-完全控制，2-禁止，3-读写
+      cifsClients:
+        type: array
+        items:
+          $ref: '#/definitions/CifsClient'
+        description: Cifs客户端列表
   NfsShareInfo:
     description: NFS 信息展示
     properties:
       sharePath:
         type: string
         description: 共享路径
-      client:
+      shareName:
         type: string
-        description: 客户端
-      clientType:
-        type: integer
-        format: int32
-        description: 类型：0-主机，1-网络组
-      authorityLevel:
-        type: integer
-        format: int32
-        description: 权限级别：0-只读，1-读写
+        description: 共享名称
+      nfsClients:
+        type: array
+        items:
+          $ref: '#/definitions/NfsClient'
+        description: Nfs客户端信息
   ShareResponse:
     description: 查询nas共享信息
     required:
@@ -745,3 +742,30 @@ definitions:
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
+  CifsClient:
+    description: CifsClient信息
+    properties:
+      user:
+        type: string
+        description: 用户/用户组
+      domainType:
+        type: integer
+        format: int32
+        description: 类型0-Everyone，1-Windows本地认证用户，2-Windows本地认证用户组，3-AD域用户，4-AD域用户组
+      authorityLevel:
+        type: integer
+        format: int32
+        description: 权限级别，0-只读，1-完全控制，2-禁止，3-读写
+  NfsClient:
+    properties:
+      client:
+        type: string
+        description: 客户端
+      clientType:
+        type: integer
+        format: int32
+        description: 类型：0-主机，1-网络组
+      authorityLevel:
+        type: integer
+        format: int32
+        description: 权限级别：0-只读，1-读写
