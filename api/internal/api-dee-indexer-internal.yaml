@@ -465,18 +465,14 @@ definitions:
       - id
   ReportRfiInfo:
     properties:
-      copyId:
-        type: string
-        description: 当前副本ID
-      rfiFiles:
+      extendInfo:
         type: array
         items:
-          type: string
-        description: RFI file路径列表
+          $ref: '#/definitions/ExtendInfo'
+        description: 当前副本ID
     title: ReportRfiInfo
     required:
-      - copyId
-      - rfiFiles
+      - extendInfo
   CopyInfo:
     properties:
       uuid:
@@ -662,3 +658,11 @@ definitions:
       extendInfo:
         type: object
         description: json对象，扩展信息
+  ExtendInfo:
+    properties:
+      copyId:
+        type: string
+      rfiFiles:
+        type: array
+        items:
+          type: string
