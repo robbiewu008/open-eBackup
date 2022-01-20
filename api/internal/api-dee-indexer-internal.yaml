@@ -384,8 +384,21 @@ definitions:
         description: >-
           任务状态：0-INITIALIZING，1-RUNNING，2-ABORTING，3-COMPLETED，4-PARTIAL_COMPLETED，5-ABORTED，6-ABORTED_FAILED，7-FAILED，8-FAILED_NOTRY
       extendField:
-        description: 上报文件列表，RUNNING状态时候必填
-        $ref: '#/definitions/ReportRfiInfo'
+        items:
+          properties:
+            copyId:
+              type: string
+              example: dfed7b8e-f7ae-47c7-878a-1542438e4997
+              description: 副本id
+            rfiFiles:
+              type: array
+              items:
+                type: string
+              example:
+                - /RFI_new_and_old_2.zip
+              description: rfi文件路径
+        description: 扩展信息
+        type: array
     title: ReportRfiRequest
     required:
       - jobRequestId
