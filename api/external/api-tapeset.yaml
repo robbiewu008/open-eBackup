@@ -1,1453 +1,1506 @@
----
-swagger: "2.0"
+swagger: '2.0'
 info:
-  version: "v1"
-  title: "磁带库管理API"
-  contact: {}
-  license: {}
-host: "localhost"
-basePath: "/"
+  version: v1
+  title: 磁带库管理接口
+basePath: /
 tags:
-- name: "media-set-api"
-  description: "Media Set Controller"
-- name: "tape-library-api"
-  description: "Tape Controller"
+  - name: media-set-api
+    description: Media Set Controller
+  - name: tape-library-api
+    description: Tape Controller
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
 paths:
   /v1/tape-library/libraries:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       tags:
-      - "tape-library-api"
-      summary: "批量查询磁带库"
-      operationId: "getTapeLibrariesUsingGET"
+        - tape-library-api
+      summary: 批量查询磁带库
+      operationId: getTapeLibrariesUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "controllerName"
-        in: "query"
-        description: "控制器名称"
-        required: false
-        type: "string"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: controllerName
+          in: query
+          description: 控制器名称
+          required: false
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            type: "array"
+            type: array
             items:
-              originalRef: "TapeLibraryQueryResponse"
-              $ref: "#/definitions/TapeLibraryQueryResponse"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
-      deprecated: false
+              $ref: '#/definitions/TapeLibraryQueryResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
   /v1/tape-library/libraries/action/scan:
     put:
       tags:
-      - "tape-library-api"
-      summary: "扫描磁带库"
-      operationId: "scanTapeLibrariesUsingPUT"
+        - tape-library-api
+      summary: 扫描磁带库
+      operationId: scanTapeLibrariesUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       deprecated: false
-  /v1/tape-library/libraries/{tapeLibrarySn}/drives:
+  '/v1/tape-library/libraries/{tapeLibrarySn}/drives':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       tags:
-      - "tape-library-api"
-      summary: "批量查询驱动器"
-      operationId: "getTapeDrivesUsingGET"
+        - tape-library-api
+      summary: 批量查询驱动器
+      operationId: getTapeDrivesUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "compressionStatus"
-        in: "query"
-        description: "驱动压缩状态"
-        required: false
-        type: "string"
-        enum:
-        - "DISABLE"
-        - "ENABLE"
-      - name: "name"
-        in: "query"
-        description: "驱动名称"
-        required: false
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "driver 01"
-      - name: "pageNum"
-        in: "query"
-        description: "页码"
-        required: false
-        type: "integer"
-        format: "int32"
-        x-example: 20
-      - name: "pageSize"
-        in: "query"
-        description: "页面大小"
-        required: false
-        type: "integer"
-        format: "int32"
-        x-example: 20
-      - name: "status"
-        in: "query"
-        description: "驱动状态"
-        required: false
-        type: "string"
-        enum:
-        - "DISABLE"
-        - "ENABLE"
-      - name: "tapeLabel"
-        in: "query"
-        description: "磁带标签"
-        required: false
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "B00000L6"
-      - name: "tapeLibrarySn"
-        in: "path"
-        description: "磁带库序列号"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "No1"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: compressionStatuses
+          in: query
+          description: 驱动压缩状态列表
+          required: false
+          type: array
+          items:
+            type: string
+          enum:
+            - DISABLE
+            - ENABLE
+        - name: name
+          in: query
+          description: 驱动名称
+          required: false
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: driver 01
+        - name: pageNum
+          in: query
+          description: 页码
+          required: false
+          type: integer
+          format: int32
+          x-example: 20
+        - name: pageSize
+          in: query
+          description: 页面大小
+          required: false
+          type: integer
+          format: int32
+          x-example: 20
+        - name: statuses
+          in: query
+          description: 驱动状态列表
+          required: false
+          type: array
+          items:
+            type: string
+          enum:
+            - DISABLE
+            - ENABLE
+        - name: tapeLabel
+          in: query
+          description: 磁带标签
+          required: false
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: B00000L6
+        - name: tapeLibrarySn
+          in: path
+          description: 磁带库序列号
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: No1
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            originalRef: "PageVo«TapeDriveQueryResponse»"
-            $ref: "#/definitions/PageVo«TapeDriveQueryResponse»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
-      deprecated: false
-  /v1/tape-library/libraries/{tapeLibrarySn}/drives/{driverSn}:
+            $ref: '#/definitions/MediaSetResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/v1/tape-library/libraries/{tapeLibrarySn}/drives/{driverSn}':
     put:
       tags:
-      - "tape-library-api"
-      summary: "修改驱动器属性"
-      operationId: "modifyTapeDriveUsingPUT"
+        - tape-library-api
+      summary: 修改驱动器属性
+      operationId: modifyTapeDriveUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "driverSn"
-        in: "path"
-        description: "驱动SN"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "4JC241327487"
-      - in: "body"
-        name: "tapeDriveModifyRequest"
-        description: "驱动器修改请求"
-        required: true
-        schema:
-          originalRef: "TapeDriveModifyRequest"
-          $ref: "#/definitions/TapeDriveModifyRequest"
-      - name: "tapeLibrarySn"
-        in: "path"
-        description: "磁带库序列号"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "No1"
-      responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
-      deprecated: false
-  /v1/tape-library/libraries/{tapeLibrarySn}/slots:
-    get:
-      tags:
-      - "tape-library-api"
-      summary: "批量查询卡槽"
-      operationId: "getTapeSlotsUsingGET"
-      produces:
-      - "*/*"
-      parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "pageNum"
-        in: "query"
-        description: "页码"
-        required: false
-        type: "integer"
-        format: "int32"
-        x-example: 20
-      - name: "pageSize"
-        in: "query"
-        description: "页面大小"
-        required: false
-        type: "integer"
-        format: "int32"
-        x-example: 20
-      - name: "slotName"
-        in: "query"
-        description: "卡槽名称"
-        required: false
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "SlotName01"
-      - name: "tapeLibrarySn"
-        in: "path"
-        description: "磁带库序列号"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "No1"
-      responses:
-        "200":
-          description: "OK"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: driverSn
+          in: path
+          description: 驱动SN
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: 4JC241327487
+        - in: body
+          name: tapeDriveModifyRequest
+          description: 驱动器修改请求
+          required: true
           schema:
-            originalRef: "PageVo«SlotVo»"
-            $ref: "#/definitions/PageVo«SlotVo»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
-      deprecated: false
-  /v1/tape-library/libraries/{tapeLibrarySn}/tapes:
-    get:
-      tags:
-      - "tape-library-api"
-      summary: "批量查询磁带"
-      operationId: "getLibraryTapesUsingGET"
-      produces:
-      - "*/*"
-      parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "location"
-        in: "query"
-        description: "磁带所属位置"
-        required: false
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "driver 01"
-      - name: "mediaSetName"
-        in: "query"
-        description: "介质集名称"
-        required: false
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "MediaSetName01"
-      - name: "orderBy"
-        in: "query"
-        description: "排序字段"
-        required: false
-        type: "string"
-        enum:
-        - "LAST_WRITE_TIME"
-      - name: "orderType"
-        in: "query"
-        description: "排序方式"
-        required: false
-        type: "string"
-        enum:
-        - "DESC"
-        - "ASC"
-      - name: "pageNum"
-        in: "query"
-        description: "页码"
-        required: false
-        type: "integer"
-        format: "int32"
-        x-example: 20
-      - name: "pageSize"
-        in: "query"
-        description: "页面大小"
-        required: false
-        type: "integer"
-        format: "int32"
-        x-example: 20
-      - name: "status"
-        in: "query"
-        description: "磁带状态"
-        required: false
-        type: "string"
-        enum:
-        - "NOT_IN_LIBRARY"
-        - "IN_LIBRARY"
-        - "IDENTIFYING"
-        - "ERASING"
-        - "MARKING_EMPTY"
-        - "DELETING"
-        - "IMPORTING"
-        - "EXPORTING"
-      - name: "tapeLabel"
-        in: "query"
-        description: "磁带标签"
-        required: false
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "B00000L6"
-      - name: "tapeLibrarySn"
-        in: "path"
-        description: "磁带库序列号"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "No1"
-      - name: "worm"
-        in: "query"
-        description: "磁带类型"
-        required: false
-        type: "string"
-        enum:
-        - "UNKNOWN"
-        - "RW"
-        - "WORM"
-      - name: "writeStatus"
-        in: "query"
-        description: "磁带写状态"
-        required: false
-        type: "string"
-        enum:
-        - "UNKNOWN"
-        - "EMPTY"
-        - "WRITTEN"
-        - "FULL"
-        - "ERROR"
+            $ref: '#/definitions/TapeDriveModifyRequest'
+        - name: tapeLibrarySn
+          in: path
+          description: 磁带库序列号
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: No1
       responses:
-        "200":
-          description: "OK"
-          schema:
-            originalRef: "PageVo«TapeVo»"
-            $ref: "#/definitions/PageVo«TapeVo»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       deprecated: false
-  /v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}:
+  '/v1/tape-library/libraries/{tapeLibrarySn}/slots':
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      tags:
+        - tape-library-api
+      summary: 批量查询卡槽
+      operationId: getTapeSlotsUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: pageNum
+          in: query
+          description: 页码
+          required: false
+          type: integer
+          format: int32
+          x-example: 20
+        - name: pageSize
+          in: query
+          description: 页面大小
+          required: false
+          type: integer
+          format: int32
+          x-example: 20
+        - name: slotName
+          in: query
+          description: 卡槽名称
+          required: false
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: SlotName01
+        - name: tapeLibrarySn
+          in: path
+          description: 磁带库序列号
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: No1
+        - name: slotTypes
+          in: query
+          required: false
+          description: 卡槽类型列表
+          type: array
+          enum:
+            - INVALID
+            - IMPORT_EXPORT
+            - OTHER
+          items:
+            type: string
+          x-impact-subsystem: 不影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'N'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageVo_SlotVo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes':
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      tags:
+        - tape-library-api
+      summary: 批量查询磁带
+      operationId: getLibraryTapesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: location
+          in: query
+          description: 磁带所属位置
+          required: false
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: driver 01
+        - name: mediaSetName
+          in: query
+          description: 介质集名称
+          required: false
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: MediaSetName01
+        - name: orderBy
+          in: query
+          description: 排序字段
+          required: false
+          type: string
+          enum:
+            - LAST_WRITE_TIME
+        - name: orderType
+          in: query
+          description: 排序方式
+          required: false
+          type: string
+          enum:
+            - DESC
+            - ASC
+        - name: pageNum
+          in: query
+          description: 页码
+          required: false
+          type: integer
+          format: int32
+          x-example: 20
+        - name: pageSize
+          in: query
+          description: 页面大小
+          required: false
+          type: integer
+          format: int32
+          x-example: 20
+        - name: statuses
+          in: query
+          description: 磁带状态列表
+          required: false
+          type: array
+          items:
+            type: string
+          enum:
+            - NOT_IN_LIBRARY
+            - IN_LIBRARY
+            - IDENTIFYING
+            - ERASING
+            - MARKING_EMPTY
+            - DELETING
+            - IMPORTING
+            - EXPORTING
+        - name: tapeLabel
+          in: query
+          description: 磁带标签
+          required: false
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: B00000L6
+        - name: tapeLibrarySn
+          in: path
+          description: 磁带库序列号
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: No1
+        - name: worms
+          in: query
+          description: 磁带类型列表
+          required: false
+          type: array
+          items:
+            type: string
+          enum:
+            - UNKNOWN
+            - RW
+            - WORM
+        - name: writeStatuses
+          in: query
+          description: 磁带写状态列表
+          required: false
+          type: array
+          items:
+            type: string
+          enum:
+            - UNKNOWN
+            - EMPTY
+            - WRITTEN
+            - FULL
+            - ERROR
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageVo_TapeVo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}':
     delete:
       tags:
-      - "tape-library-api"
-      summary: "删除磁带"
-      operationId: "deleteTapeUsingDELETE"
+        - tape-library-api
+      summary: 删除磁带
+      operationId: deleteTapeUsingDELETE
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "tapeLabel"
-        in: "path"
-        description: "磁带标签"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "B000000L5"
-      - name: "tapeLibrarySn"
-        in: "path"
-        description: "磁带库序列号"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "No1"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: tapeLabel
+          in: path
+          description: 磁带标签
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: B000000L5
+        - name: tapeLibrarySn
+          in: path
+          description: 磁带库序列号
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: No1
       responses:
-        "200":
-          description: "OK"
-        "204":
-          description: "No Content"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-      security:
-      - Authorization:
-        - "global"
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       deprecated: false
-  /v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/empty:
+  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/empty':
     put:
       tags:
-      - "tape-library-api"
-      summary: "标记磁带为空"
-      operationId: "setTapeEmptyUsingPUT"
+        - tape-library-api
+      summary: 标记磁带为空
+      operationId: setTapeEmptyUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "tapeLabel"
-        in: "path"
-        description: "磁带标签"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "B000000L5"
-      - name: "tapeLibrarySn"
-        in: "path"
-        description: "磁带库序列号"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "No1"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: tapeLabel
+          in: path
+          description: 磁带标签
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: B000000L5
+        - name: tapeLibrarySn
+          in: path
+          description: 磁带库序列号
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: No1
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       deprecated: false
-  /v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/erase:
+  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/erase':
     put:
       tags:
-      - "tape-library-api"
-      summary: "擦除磁带"
-      operationId: "eraseTapeUsingPUT"
+        - tape-library-api
+      summary: 擦除磁带
+      operationId: eraseTapeUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "tapeLabel"
-        in: "path"
-        description: "磁带标签"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "B000000L5"
-      - name: "tapeLibrarySn"
-        in: "path"
-        description: "磁带库序列号"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "No1"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: tapeLabel
+          in: path
+          description: 磁带标签
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: B000000L5
+        - name: tapeLibrarySn
+          in: path
+          description: 磁带库序列号
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: No1
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       deprecated: false
-  /v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/export:
+  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/export':
     put:
       tags:
-      - "tape-library-api"
-      summary: "导出磁带到卡槽"
-      operationId: "exportTapeUsingPUT"
+        - tape-library-api
+      summary: 导出磁带到卡槽
+      operationId: exportTapeUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "tapeExportRequest"
-        description: "磁带导出请求"
-        required: true
-        schema:
-          originalRef: "TapeExportRequest"
-          $ref: "#/definitions/TapeExportRequest"
-      - name: "tapeLabel"
-        in: "path"
-        description: "磁带标签"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "B000000L5"
-      - name: "tapeLibrarySn"
-        in: "path"
-        description: "磁带库序列号"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "No1"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: tapeExportRequest
+          description: 磁带导出请求
+          required: true
+          schema:
+            $ref: '#/definitions/TapeExportRequest'
+        - name: tapeLabel
+          in: path
+          description: 磁带标签
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: B000000L5
+        - name: tapeLibrarySn
+          in: path
+          description: 磁带库序列号
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: No1
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       deprecated: false
-  /v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/identify:
+  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/identify':
     put:
       tags:
-      - "tape-library-api"
-      summary: "识别磁带"
-      operationId: "identifyTapeUsingPUT"
+        - tape-library-api
+      summary: 识别磁带
+      operationId: identifyTapeUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "tapeLabel"
-        in: "path"
-        description: "磁带标签"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "B000000L5"
-      - name: "tapeLibrarySn"
-        in: "path"
-        description: "磁带库序列号"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "No1"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: tapeLabel
+          in: path
+          description: 磁带标签
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: B000000L5
+        - name: tapeLibrarySn
+          in: path
+          description: 磁带库序列号
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: No1
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       deprecated: false
-  /v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/import:
+  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/import':
     put:
       tags:
-      - "tape-library-api"
-      summary: "导入磁带到驱动"
-      operationId: "importTapeUsingPUT"
+        - tape-library-api
+      summary: 导入磁带到驱动
+      operationId: importTapeUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "tapeImportRequest"
-        description: "磁带导入请求"
-        required: true
-        schema:
-          originalRef: "TapeImportRequest"
-          $ref: "#/definitions/TapeImportRequest"
-      - name: "tapeLabel"
-        in: "path"
-        description: "磁带标签"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "B000000L5"
-      - name: "tapeLibrarySn"
-        in: "path"
-        description: "磁带库序列号"
-        required: true
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "No1"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: tapeImportRequest
+          description: 磁带导入请求
+          required: true
+          schema:
+            $ref: '#/definitions/TapeImportRequest'
+        - name: tapeLabel
+          in: path
+          description: 磁带标签
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: B000000L5
+        - name: tapeLibrarySn
+          in: path
+          description: 磁带库序列号
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: No1
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       deprecated: false
   /v1/tape-library/media-sets:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'N'
       tags:
-      - "media-set-api"
-      summary: "批量查询介质集"
-      operationId: "getMediaSetAllUsingGET"
+        - media-set-api
+      summary: 批量查询介质集
+      operationId: getMediaSetAllUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "mediaSetName"
-        in: "query"
-        description: "介质集名"
-        required: false
-        type: "string"
-        maxLength: 64
-        minLength: 1
-        x-example: "MediaSet01"
-      - name: "orderBy"
-        in: "query"
-        description: "排序字段"
-        required: false
-        type: "string"
-        enum:
-        - "CREATE_TIME"
-        - "TOTAL_SIZE"
-      - name: "orderColumn"
-        in: "query"
-        required: false
-        type: "string"
-      - name: "orderType"
-        in: "query"
-        description: "排序方式"
-        required: false
-        type: "string"
-        enum:
-        - "DESC"
-        - "ASC"
-      - name: "pageNum"
-        in: "query"
-        description: "页码"
-        required: false
-        type: "integer"
-        format: "int32"
-        x-example: 20
-      - name: "pageSize"
-        in: "query"
-        description: "页面大小"
-        required: false
-        type: "integer"
-        format: "int32"
-        x-example: 20
-      - name: "status"
-        in: "query"
-        description: "介质集状态"
-        required: false
-        type: "string"
-        enum:
-        - "ONLINE"
-        - "OFFLINE"
-        - "PART_ONLINE"
-      - name: "type"
-        in: "query"
-        description: "介质集类型"
-        required: false
-        type: "string"
-        enum:
-        - "UNKNOWN"
-        - "RW"
-        - "WORM"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: mediaSetName
+          in: query
+          description: 介质集名
+          required: false
+          type: string
+          maxLength: 64
+          minLength: 1
+          x-example: MediaSet01
+        - name: orderBy
+          in: query
+          description: 排序字段
+          required: false
+          type: string
+          enum:
+            - CREATE_TIME
+            - TOTAL_SIZE
+        - name: orderType
+          in: query
+          description: 排序方式
+          required: false
+          type: string
+          enum:
+            - DESC
+            - ASC
+        - name: pageNum
+          in: query
+          description: 页码
+          required: false
+          type: integer
+          format: int32
+          x-example: 20
+        - name: pageSize
+          in: query
+          description: 页面大小
+          required: false
+          type: integer
+          format: int32
+          x-example: 20
+        - name: statuses
+          in: query
+          description: 介质集状态列表
+          required: false
+          type: array
+          items:
+            type: string
+          enum:
+            - ONLINE
+            - OFFLINE
+            - PART_ONLINE
+        - name: types
+          in: query
+          description: 介质集类型列表
+          required: false
+          type: array
+          items:
+            type: string
+          enum:
+            - UNKNOWN
+            - RW
+            - WORM
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: ''
           schema:
-            originalRef: "PageVo«MediaSetResponse»"
-            $ref: "#/definitions/PageVo«MediaSetResponse»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
-      deprecated: false
+            $ref: '#/definitions/PageVo_MediaSetResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
     post:
       tags:
-      - "media-set-api"
-      summary: "创建介质集"
-      operationId: "createMediaSetUsingPOST"
+        - media-set-api
+      summary: 创建介质集
+      operationId: createMediaSetUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "mediaPoolCreateRequest"
-        description: "创建介质集请求"
-        required: true
-        schema:
-          originalRef: "MediaSetCreateRequest"
-          $ref: "#/definitions/MediaSetCreateRequest"
-      responses:
-        "200":
-          description: "OK"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: mediaPoolCreateRequest
+          description: 创建介质集请求
+          required: true
           schema:
-            type: "string"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
+            $ref: '#/definitions/MediaSetCreateRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       deprecated: false
-  /v1/tape-library/media-sets/{mediaSetId}:
+  '/v1/tape-library/media-sets/{mediaSetId}':
     get:
       tags:
-      - "media-set-api"
-      summary: "查询介质集详情"
-      operationId: "getMediaSetUsingGET"
+        - media-set-api
+      summary: 查询介质集详情
+      operationId: getMediaSetUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "mediaSetId"
-        in: "path"
-        description: "介质集UUID"
-        required: true
-        type: "string"
-        maxLength: 256
-        minLength: 1
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: mediaSetId
+          in: path
+          description: 介质集UUID
+          required: true
+          type: string
+          maxLength: 256
+          minLength: 1
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            originalRef: "TapeSetDetailResponse"
-            $ref: "#/definitions/TapeSetDetailResponse"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
+            $ref: '#/definitions/TapeSetDetailResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       deprecated: false
     put:
       tags:
-      - "media-set-api"
-      summary: "修改介质集"
-      operationId: "updateMediaSetUsingPUT"
+        - media-set-api
+      summary: 修改介质集
+      operationId: updateMediaSetUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "mediaSetId"
-        in: "path"
-        description: "介质集UUID"
-        required: true
-        type: "string"
-        maxLength: 256
-        minLength: 1
-      - in: "body"
-        name: "mediaSetUpdateRequest"
-        description: "修改介质集请求"
-        required: true
-        schema:
-          originalRef: "MediaSetUpdateRequest"
-          $ref: "#/definitions/MediaSetUpdateRequest"
-      responses:
-        "200":
-          description: "OK"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: mediaSetId
+          in: path
+          description: 介质集UUID
+          required: true
+          type: string
+          maxLength: 256
+          minLength: 1
+        - in: body
+          name: mediaSetUpdateRequest
+          description: 修改介质集请求
+          required: true
           schema:
-            type: "string"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
+            $ref: '#/definitions/MediaSetUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       deprecated: false
     delete:
       tags:
-      - "media-set-api"
-      summary: "删除介质集"
-      operationId: "deleteMediaSetUsingDELETE"
+        - media-set-api
+      summary: 删除介质集
+      operationId: deleteMediaSetUsingDELETE
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "mediaSetId"
-        in: "path"
-        description: "介质集UUID"
-        required: true
-        type: "string"
-        maxLength: 256
-        minLength: 1
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: mediaSetId
+          in: path
+          description: 介质集UUID
+          required: true
+          type: string
+          maxLength: 256
+          minLength: 1
       responses:
-        "200":
-          description: "OK"
-        "204":
-          description: "No Content"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-      security:
-      - Authorization:
-        - "global"
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       deprecated: false
+  '/v1/tape-library/media-sets/{mediaSetId}/action/pre-check':
+    get:
+      tags:
+        - media-set-api
+      summary: 删除介质集前预检查
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      operationId: deleteMediaSetPreCheckUsingGET
+      parameters:
+        - name: mediaSetId
+          in: path
+          required: true
+          type: string
+          description: 介质集UUID
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access Token
+          type: string
+      responses:
+        '200':
+          description: 删除介质集预检查回复
+          schema:
+            $ref: '#/definitions/DelMediaSetPreCheckRes'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
 securityDefinitions:
   Authorization:
-    type: "apiKey"
-    name: "TOKEN"
-    in: "header"
+    type: apiKey
+    name: TOKEN
+    in: header
 definitions:
   MediaSetCreateRequest:
-    type: "object"
+    type: object
     properties:
       alarmEnable:
-        type: "boolean"
-        description: "是否开启告警"
+        type: boolean
+        description: 是否开启告警
       alarmThreshold:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
         example: 2
-        description: "告警阈值"
+        description: 告警阈值
       appTypes:
-        type: "array"
-        description: "介质集应用类型"
+        type: array
+        description: 介质集应用类型
         items:
-          type: "string"
+          type: string
           enum:
-          - "1"
-          - "2"
-          - "3"
-          - "4"
-          - "5"
-          - "6"
-          - "7"
-          - "8"
-          - "9"
-          - "10"
+            - '1'
+            - '2'
+            - '3'
+            - '4'
+            - '5'
+            - '6'
+            - '7'
+            - '8'
+            - '9'
+            - '10'
       mediaSetName:
-        type: "string"
-        example: "MediaSet01"
-        description: "介质集名"
+        type: string
+        example: MediaSet01
+        description: 介质集名
         minLength: 1
         maxLength: 64
       node:
-        type: "string"
-        example: "0A"
-        description: "控制器"
+        type: string
+        example: '0A'
+        description: 控制器
         minLength: 2
         maxLength: 16
       retentionDuration:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
         example: 3
-        description: "保留时长"
+        description: 保留时长
         minimum: 1.0
         exclusiveMinimum: false
       retentionType:
-        type: "string"
-        description: "过期策略"
+        type: string
+        description: 过期策略
         enum:
-        - "immediate"
-        - "permanent"
-        - "temporary"
+          - immediate
+          - permanent
+          - temporary
       retentionUnit:
-        type: "string"
-        description: "单位"
+        type: string
+        description: 单位
         enum:
-        - "invalid"
-        - "day"
-        - "month"
-        - "year"
+          - invalid
+          - day
+          - month
+          - year
       tapes:
-        type: "array"
-        description: "磁带"
+        type: array
+        description: 磁带
         items:
-          originalRef: "MediaSetRelateTapeRequest"
-          $ref: "#/definitions/MediaSetRelateTapeRequest"
+          $ref: '#/definitions/MediaSetRelateTapeRequest'
       type:
-        type: "string"
-        description: "介质集类型"
+        type: string
+        description: 介质集类型
         enum:
-        - "unknown"
-        - "rw"
-        - "worm"
-    title: "MediaSetCreateRequest"
+          - unknown
+          - rw
+          - worm
+    title: MediaSetCreateRequest
   MediaSetRelateTapeRequest:
-    type: "object"
+    type: object
     properties:
       tapeLabel:
-        type: "string"
-        example: "No1"
-        description: "磁带标签"
+        type: string
+        example: No1
+        description: 磁带标签
         minLength: 1
         maxLength: 64
       tapeLibrarySn:
-        type: "string"
-        example: "B00000L5"
-        description: "磁带库序列号"
+        type: string
+        example: B00000L5
+        description: 磁带库序列号
         minLength: 1
         maxLength: 64
-    title: "MediaSetRelateTapeRequest"
+    title: MediaSetRelateTapeRequest
   MediaSetRelateTapeResponse:
-    type: "object"
+    type: object
     properties:
       tapeLabel:
-        type: "string"
-        description: "磁带标签"
+        type: string
+        description: 磁带标签
       tapeLibrarySn:
-        type: "string"
-        description: "磁带库序列号"
-    title: "MediaSetRelateTapeResponse"
+        type: string
+        description: 磁带库序列号
+    title: MediaSetRelateTapeResponse
   MediaSetResponse:
-    type: "object"
+    type: object
     properties:
       mediaSetId:
-        type: "string"
-        description: "介质集UUID"
+        type: string
+        description: 介质集UUID
       mediaSetName:
-        type: "string"
-        description: "介质集名"
+        type: string
+        description: 介质集名
       status:
-        type: "string"
-        description: "介质集状态"
+        type: string
+        description: 介质集状态
         enum:
-        - "online"
-        - "offline"
-        - "partOnline"
+          - online
+          - offline
+          - partOnline
       totalSize:
-        type: "integer"
-        format: "int64"
-        description: "介质集总容量"
+        type: integer
+        format: int64
+        description: 介质集总容量
       type:
-        type: "string"
-        description: "介质集类型"
+        type: string
+        description: 介质集类型
         enum:
-        - "unknown"
-        - "rw"
-        - "worm"
+          - unknown
+          - rw
+          - worm
       usedSize:
-        type: "integer"
-        format: "int64"
-        description: "介质集已使用容量"
-    title: "MediaSetResponse"
+        type: integer
+        format: int64
+        description: 介质集已使用容量
+    title: MediaSetResponse
   MediaSetUpdateRequest:
-    type: "object"
+    type: object
     properties:
       alarmEnable:
-        type: "boolean"
-        description: "是否开启告警"
+        type: boolean
+        description: 是否开启告警
       alarmThreshold:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
         example: 2
-        description: "告警阈值"
+        description: 告警阈值
       mediaSetName:
-        type: "string"
-        example: "MediaSet01"
-        description: "介质集名"
+        type: string
+        example: MediaSet01
+        description: 介质集名
         minLength: 1
         maxLength: 64
       retentionDuration:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
         example: 3
-        description: "保留时长"
+        description: 保留时长
       retentionType:
-        type: "string"
-        description: "过期策略"
+        type: string
+        description: 过期策略
         enum:
-        - "immediate"
-        - "permanent"
-        - "temporary"
+          - immediate
+          - permanent
+          - temporary
       retentionUnit:
-        type: "string"
-        description: "单位"
+        type: string
+        description: 单位
         enum:
-        - "invalid"
-        - "day"
-        - "month"
-        - "year"
+          - invalid
+          - day
+          - month
+          - year
       tapes:
-        type: "array"
-        description: "磁带"
+        type: array
+        description: 磁带
         items:
-          originalRef: "MediaSetRelateTapeRequest"
-          $ref: "#/definitions/MediaSetRelateTapeRequest"
-    title: "MediaSetUpdateRequest"
-  PageVo«MediaSetResponse»:
-    type: "object"
+          $ref: '#/definitions/MediaSetRelateTapeRequest'
+    title: MediaSetUpdateRequest
+  PageVo_MediaSetResponse:
     properties:
       data:
-        type: "array"
-        description: "页面数据"
+        type: array
+        description: 页面数据
         items:
-          originalRef: "MediaSetResponse"
-          $ref: "#/definitions/MediaSetResponse"
+          $ref: '#/definitions/MediaSetResponse'
       total:
-        type: "integer"
-        format: "int64"
-        description: "页面总数"
-    title: "PageVo«MediaSetResponse»"
-  PageVo«SlotVo»:
-    type: "object"
+        type: integer
+        format: int64
+        description: 页面总数
+    title: PageVo«MediaSetResponse»
+    description: PageVo«MediaSetResponse»
+  PageVo_SlotVo:
     properties:
       data:
-        type: "array"
-        description: "页面数据"
+        type: array
+        description: 页面数据
         items:
-          originalRef: "SlotVo"
-          $ref: "#/definitions/SlotVo"
+          $ref: '#/definitions/SlotVo'
       total:
-        type: "integer"
-        format: "int64"
-        description: "页面总数"
-    title: "PageVo«SlotVo»"
-  PageVo«TapeDriveQueryResponse»:
-    type: "object"
+        type: integer
+        format: int64
+        description: 页面总数
+    title: PageVo«SlotVo»
+    description: PageVo«SlotVo»
+  PageVo_TapeDriveQueryResponse:
     properties:
       data:
-        type: "array"
-        description: "页面数据"
+        type: array
+        description: 页面数据
         items:
-          originalRef: "TapeDriveQueryResponse"
-          $ref: "#/definitions/TapeDriveQueryResponse"
+          $ref: '#/definitions/TapeDriveQueryResponse'
       total:
-        type: "integer"
-        format: "int64"
-        description: "页面总数"
-    title: "PageVo«TapeDriveQueryResponse»"
-  PageVo«TapeVo»:
-    type: "object"
+        type: integer
+        format: int64
+        description: 页面总数
+    title: PageVo«TapeDriveQueryResponse»
+  PageVo_TapeVo:
     properties:
       data:
-        type: "array"
-        description: "页面数据"
+        type: array
+        description: 页面数据
         items:
-          originalRef: "TapeVo"
-          $ref: "#/definitions/TapeVo"
+          $ref: '#/definitions/TapeVo'
       total:
-        type: "integer"
-        format: "int64"
-        description: "页面总数"
-    title: "PageVo«TapeVo»"
+        type: integer
+        format: int64
+        description: 页面总数
+    title: PageVo«TapeVo»
+    description: getLibraryTapesUsingGET
   SlotVo:
-    type: "object"
+    type: object
     properties:
       extend:
-        type: "string"
-        description: "补充信息"
+        type: string
+        description: 补充信息
       loadingTape:
-        type: "string"
-        description: "加载的磁带"
+        type: string
+        description: 加载的磁带
       slotName:
-        type: "string"
-        description: "卡槽名称"
+        type: string
+        description: 卡槽名称
       slotSn:
-        type: "string"
-        description: "卡槽SN"
+        type: string
+        description: 卡槽SN
       status:
-        type: "string"
-        description: "卡槽状态"
+        type: string
+        description: 卡槽状态
         enum:
-        - "0"
-        - "1"
-        - "2"
+          - '0'
+          - '1'
+          - '2'
       tapeLibrarySn:
-        type: "string"
-        description: "磁带库序列号"
+        type: string
+        description: 磁带库序列号
       type:
-        type: "string"
-        description: "卡槽类型"
+        type: string
+        description: 卡槽类型
         enum:
-        - "0"
-        - "1"
-        - "2"
-    title: "SlotVo"
+          - '0'
+          - '1'
+          - '2'
+    title: SlotVo
   TapeDriveModifyRequest:
-    type: "object"
-    required:
-    - "blockSize"
-    - "compressionStatus"
-    - "status"
     properties:
       blockSize:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
         example: 256
-        description: "块大小"
+        description: 块大小
         minimum: 0.0
         maximum: 256.0
-        exclusiveMinimum: false
-        exclusiveMaximum: false
       compressionStatus:
-        type: "string"
-        description: "驱动压缩状态"
+        type: string
+        description: 驱动压缩状态
         enum:
-        - "disable"
-        - "enable"
+          - DISABLE
+          - ENABLE
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'N'
       status:
-        type: "string"
-        description: "驱动状态"
+        type: string
+        description: 驱动状态
         enum:
-        - "disable"
-        - "enable"
-    title: "TapeDriveModifyRequest"
+          - DISABLE
+          - ENABLE
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'N'
+    title: TapeDriveModifyRequest
+    required:
+      - blockSize
+      - compressionStatus
+      - status
   TapeDriveQueryResponse:
-    type: "object"
+    type: object
     properties:
       blockSize:
-        type: "integer"
-        format: "int32"
-        description: "块大小"
+        type: integer
+        format: int32
+        description: 块大小
       compressionStatus:
-        type: "string"
-        description: "驱动压缩状态"
+        type: string
+        description: 驱动压缩状态
         enum:
-        - "disable"
-        - "enable"
+          - DISABLE
+          - ENABLE
       driverSn:
-        type: "string"
-        description: "${tape.library.driveSn}"
+        type: string
+        description: '${tape.library.driveSn}'
       name:
-        type: "string"
-        description: "驱动名称"
+        type: string
+        description: 驱动名称
       status:
-        type: "string"
-        description: "驱动状态"
+        type: string
+        description: 驱动状态
         enum:
-        - "disable"
-        - "enable"
+          - DISABLE
+          - ENABLE
       tapeLabel:
-        type: "string"
-        description: "磁带标签"
-    title: "TapeDriveQueryResponse"
+        type: string
+        description: 磁带标签
+    title: TapeDriveQueryResponse
   TapeExportRequest:
-    type: "object"
+    type: object
     required:
-    - "slotName"
+      - slotName
     properties:
       slotName:
-        type: "string"
-        example: "SlotName01"
-        description: "卡槽名称"
+        type: string
+        example: SlotName01
+        description: 卡槽名称
         minLength: 1
         maxLength: 64
-    title: "TapeExportRequest"
+    title: TapeExportRequest
   TapeImportRequest:
-    type: "object"
+    type: object
     required:
-    - "driveName"
+      - driveName
     properties:
       driveName:
-        type: "string"
-        example: "driver 01"
-        description: "驱动名称"
+        type: string
+        example: driver 01
+        description: 驱动名称
         minLength: 1
         maxLength: 64
-    title: "TapeImportRequest"
+    title: TapeImportRequest
   TapeLibraryQueryResponse:
-    type: "object"
+    type: object
     properties:
       controllerName:
-        type: "string"
-        description: "控制器名称"
+        type: string
+        description: 控制器名称
       driveNumber:
-        type: "integer"
-        format: "int32"
-        description: "驱动数量"
+        type: integer
+        format: int32
+        description: 驱动数量
       name:
-        type: "string"
-        description: "磁带库名称"
+        type: string
+        description: 磁带库名称
       productId:
-        type: "string"
-        description: "产品ID"
+        type: string
+        description: 产品ID
       serialNo:
-        type: "string"
-        description: "磁带库序列号"
+        type: string
+        description: 磁带库序列号
       slotNumber:
-        type: "integer"
-        format: "int32"
-        description: "卡槽数量"
+        type: integer
+        format: int32
+        description: 卡槽数量
       status:
-        type: "string"
-        description: "磁带库ID"
+        type: string
+        description: 磁带库ID
         enum:
-        - "offline"
-        - "online"
+          - offline
+          - online
       vendor:
-        type: "string"
-        description: "生产厂商"
-    title: "TapeLibraryQueryResponse"
+        type: string
+        description: 生产厂商
+    title: TapeLibraryQueryResponse
   TapeSetDetailResponse:
-    type: "object"
+    type: object
     properties:
       alarmEnable:
-        type: "boolean"
-        description: "是否开启告警"
+        type: boolean
+        description: 是否开启告警
       alarmThreshold:
-        type: "integer"
-        format: "int32"
-        description: "告警阈值"
+        type: integer
+        format: int32
+        description: 告警阈值
       appTypes:
-        type: "array"
-        description: "介质集应用类型"
+        type: array
+        description: 介质集应用类型
         items:
-          type: "string"
+          type: string
           enum:
-          - "1"
-          - "2"
-          - "3"
-          - "4"
-          - "5"
-          - "6"
-          - "7"
-          - "8"
-          - "9"
-          - "10"
+            - '1'
+            - '2'
+            - '3'
+            - '4'
+            - '5'
+            - '6'
+            - '7'
+            - '8'
+            - '9'
+            - '10'
       mediaSetId:
-        type: "string"
-        description: "介质集UUID"
+        type: string
+        description: 介质集UUID
       mediaSetName:
-        type: "string"
-        description: "介质集名"
+        type: string
+        description: 介质集名
       node:
-        type: "string"
-        description: "控制器"
+        type: string
+        description: 控制器
       retentionDuration:
-        type: "integer"
-        format: "int32"
-        description: "保留时长"
+        type: integer
+        format: int32
+        description: 保留时长
       retentionType:
-        type: "string"
-        description: "过期策略"
+        type: string
+        description: 过期策略
         enum:
-        - "immediate"
-        - "permanent"
-        - "temporary"
+          - immediate
+          - permanent
+          - temporary
       retentionUnit:
-        type: "string"
-        description: "单位"
+        type: string
+        description: 单位
         enum:
-        - "invalid"
-        - "day"
-        - "month"
-        - "year"
+          - invalid
+          - day
+          - month
+          - year
       tapes:
-        type: "array"
-        description: "磁带"
+        type: array
+        description: 磁带
         items:
-          originalRef: "MediaSetRelateTapeResponse"
-          $ref: "#/definitions/MediaSetRelateTapeResponse"
+          $ref: '#/definitions/MediaSetRelateTapeResponse'
       type:
-        type: "string"
-        description: "介质集类型"
+        type: string
+        description: 介质集类型
         enum:
-        - "unknown"
-        - "rw"
-        - "worm"
-    title: "TapeSetDetailResponse"
+          - unknown
+          - rw
+          - worm
+    title: TapeSetDetailResponse
   TapeVo:
-    type: "object"
     properties:
       lastWriteTime:
-        type: "string"
-        description: "磁带最后写入时间"
+        type: string
+        description: 磁带最后写入时间
+      tapeUUID:
+        type: string
+        description: 磁带UUID
       location:
-        type: "string"
-        description: "磁带所属位置"
+        type: string
+        description: 磁带所属位置
       mediaSetId:
-        type: "string"
-        description: "介质集ID"
+        type: string
+        description: 介质集ID
       status:
-        type: "string"
-        description: "磁带状态"
+        type: string
+        description: 磁带状态
         enum:
-        - "not_in_library"
-        - "in_library"
-        - "identifying"
-        - "erasing"
-        - "marking_empty"
-        - "deleting"
-        - "importing"
-        - "exporting"
+          - NOT_IN_LIBRARY
+          - IN_LIBRARY
+          - IDENTIFYING
+          - ERASING
+          - MARKING_EMPTY
+          - DELETING
+          - IMPORTING
+          - EXPORTING
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'N'
       tapeLabel:
-        type: "string"
-        description: "磁带标签"
+        type: string
+        description: 磁带标签
       tapeLibrarySn:
-        type: "string"
-        description: "磁带库序列号"
+        type: string
+        description: 磁带库序列号
+      mediaSetName:
+        type: string
+        description: 介质集名称
       totalCapacity:
-        type: "integer"
-        format: "int32"
-        description: "磁带全部空间"
+        type: integer
+        format: int32
+        description: 磁带全部空间
       usedCapacity:
-        type: "integer"
-        format: "int32"
-        description: "磁带已用空间"
+        type: integer
+        format: int32
+        description: 磁带已用空间
       worm:
-        type: "string"
-        description: "磁带类型"
+        type: string
+        description: 磁带类型
         enum:
-        - "unknown"
-        - "rw"
-        - "worm"
+          - UNKNOWN
+          - RW
+          - WORM
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'N'
       writeStatus:
-        type: "string"
-        description: "磁带写状态"
+        type: string
+        description: 磁带写状态
         enum:
-        - "unknown"
-        - "empty"
-        - "written"
-        - "full"
-        - "error"
-    title: "TapeVo"
+          - UNKNOWN
+          - EMPTY
+          - WRITTEN
+          - FULL
+          - ERROR
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'N'
+      lockKey:
+        type: string
+        description: 加锁对象的taskID
+      commitedWritePos:
+        type: integer
+        format: int32
+        description: 磁带上一次写入位置
+      isDepended:
+        type: boolean
+        description: 磁带过期回收标识
+      extend:
+        type: string
+        description: 磁带补充信息
+    title: TapeVo
+  DelMediaSetPreCheckRes:
+    description: 删除介质集预检查回复
+    properties:
+      hasTask:
+        type: boolean
+        description: 是否存在归档、恢复任务
+      slas:
+        type: array
+        items:
+          type: string
+        description: 绑定的全部SLA名称
+      hasNotEmptyTape:
+        type: boolean
+        description: 是否存在非空磁带
