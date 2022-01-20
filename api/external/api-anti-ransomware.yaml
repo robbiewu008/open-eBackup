@@ -16,6 +16,7 @@ produces:
 paths:
   /v1/anti-ransomware/policies:
     get:
+      x-auditor-role: 'Y'
       x-impact-subsystem: 不影响
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
@@ -407,7 +408,6 @@ definitions:
     title: AntiRansomwarePolicyReq
     required:
       - policyName
-      - clusterId
       - schedule
       - dataSourceType
       - resourceSubType
