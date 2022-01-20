@@ -1,432 +1,440 @@
----
-swagger: "2.0"
+swagger: '2.0'
 info:
-  version: "v1"
-  title: "SFTP服务管理接口"
+  version: v1
+  title: SFTP服务管理接口
   contact: {}
   license: {}
-host: "localhost"
-basePath: "/"
+host: localhost
+basePath: /
 tags:
-- name: "sftp-manager-api"
-  description: "SFTP服务管理接口"
+  - name: sftp-manager-api
+    description: SFTP服务管理接口
 paths:
   /v1/sftp/service:
     get:
       tags:
-      - "sftp-manager-api"
-      summary: "查询sftp服务信息"
-      operationId: "queryServiceUsingGET"
+        - sftp-manager-api
+      summary: 查询sftp服务信息
+      operationId: queryServiceUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/SftpServiceResponse"
-            originalRef: "SftpServiceResponse"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/SftpServiceResponse'
+            originalRef: SftpServiceResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
-  /v1/sftp/status/{status}:
+  '/v1/sftp/status/{status}':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       tags:
-      - "sftp-manager-api"
-      summary: "开关sftp服务"
-      operationId: "switchSftpStatusUsingPUT"
+        - sftp-manager-api
+      summary: 开关sftp服务
+      operationId: switchSftpStatusUsingPUT
       consumes:
-      - "application/json"
+        - application/json
+        - application/x-www-form-urlencoded
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "status"
-        in: "path"
-        description: "服务状态"
-        required: true
-        type: "integer"
-        format: "int32"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: status
+          in: path
+          description: 服务状态
+          required: true
+          type: integer
+          format: int32
+        - name: ip
+          in: formData
+          required: false
+          description: 标准备份服务ip
+          type: string
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/sftp/users:
     get:
       tags:
-      - "sftp-manager-api"
-      summary: "分页查询sftp用户"
-      operationId: "queryNodeSftpByPageUsingGET"
+        - sftp-manager-api
+      summary: 分页查询sftp用户
+      operationId: queryNodeSftpByPageUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "pageNum"
-        in: "query"
-        description: "pageNum"
-        required: true
-        type: "integer"
-        minimum: 1.0
-        exclusiveMinimum: false
-        format: "int32"
-      - name: "pageSize"
-        in: "query"
-        description: "pageSize"
-        required: true
-        type: "integer"
-        maximum: 200.0
-        exclusiveMaximum: false
-        minimum: 1.0
-        exclusiveMinimum: false
-        format: "int32"
-      - name: "username"
-        in: "query"
-        description: "用户名"
-        required: false
-        type: "string"
-        allowEmptyValue: false
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: pageNum
+          in: query
+          description: pageNum
+          required: true
+          type: integer
+          minimum: 1.0
+          exclusiveMinimum: false
+          format: int32
+        - name: pageSize
+          in: query
+          description: pageSize
+          required: true
+          type: integer
+          maximum: 200.0
+          exclusiveMaximum: false
+          minimum: 1.0
+          exclusiveMinimum: false
+          format: int32
+        - name: username
+          in: query
+          description: 用户名
+          required: false
+          type: string
+          allowEmptyValue: false
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/SftpQueryUserResponse"
-            originalRef: "SftpQueryUserResponse"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/SftpQueryUserResponse'
+            originalRef: SftpQueryUserResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
     post:
       tags:
-      - "sftp-manager-api"
-      summary: "创建sftp普通用户"
-      operationId: "createSftpNormalUserUsingPOST"
+        - sftp-manager-api
+      summary: 创建sftp普通用户
+      operationId: createSftpNormalUserUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "sftpUserRequest"
-        description: "用户信息"
-        required: true
-        schema:
-          $ref: "#/definitions/SftpUserRequest"
-          originalRef: "SftpUserRequest"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: sftpUserRequest
+          description: 用户信息
+          required: true
+          schema:
+            $ref: '#/definitions/SftpUserRequest'
+            originalRef: SftpUserRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
     delete:
       tags:
-      - "sftp-manager-api"
-      summary: "批量删除sftp用户"
-      operationId: "deleteUserUsingDELETE"
+        - sftp-manager-api
+      summary: 批量删除sftp用户
+      operationId: deleteUserUsingDELETE
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "userList"
-        description: "用户数组"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/SftpDeleteUerRequest"
-            originalRef: "SftpDeleteUerRequest"
-      responses:
-        "200":
-          description: "OK"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: userList
+          description: 用户数组
+          required: true
           schema:
-            $ref: "#/definitions/SftpDeleteUserResponse"
-            originalRef: "SftpDeleteUserResponse"
-        "204":
-          description: "No Content"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
+            type: array
+            items:
+              $ref: '#/definitions/SftpDeleteUerRequest'
+              originalRef: SftpDeleteUerRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SftpDeleteUserResponse'
+            originalRef: SftpDeleteUserResponse
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
-  /v1/sftp/users/{id}:
+  '/v1/sftp/users/{id}':
     post:
       tags:
-      - "sftp-manager-api"
-      summary: "修改sftp用户密码"
-      operationId: "changePasswordUsingPOST"
+        - sftp-manager-api
+      summary: 修改sftp用户密码
+      operationId: changePasswordUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "id"
-        in: "path"
-        description: "用户ID"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "sftpModifyPasswordRequest"
-        description: "修改密码信息"
-        required: true
-        schema:
-          $ref: "#/definitions/SftpModifyPasswordRequest"
-          originalRef: "SftpModifyPasswordRequest"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: 用户ID
+          required: true
+          type: string
+        - in: body
+          name: sftpModifyPasswordRequest
+          description: 修改密码信息
+          required: true
+          schema:
+            $ref: '#/definitions/SftpModifyPasswordRequest'
+            originalRef: SftpModifyPasswordRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
-  /v1/sftp/users/{userId}:
+  '/v1/sftp/users/{userId}':
     get:
       tags:
-      - "sftp-manager-api"
-      summary: "查询sftp用户详情"
-      operationId: "querySftpUserDetailUsingGET"
+        - sftp-manager-api
+      summary: 查询sftp用户详情
+      operationId: querySftpUserDetailUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "userId"
-        in: "path"
-        description: "用户ID"
-        required: true
-        type: "string"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: userId
+          in: path
+          description: 用户ID
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/SftpUserDetailMesResponse"
-            originalRef: "SftpUserDetailMesResponse"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/SftpUserDetailMesResponse'
+            originalRef: SftpUserDetailMesResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
 securityDefinitions:
   Authorization:
-    type: "apiKey"
-    name: "TOKEN"
-    in: "header"
+    type: apiKey
+    name: TOKEN
+    in: header
 definitions:
   SftpDeleteUerRequest:
-    type: "object"
+    type: object
     properties:
       userId:
-        type: "integer"
-        format: "int64"
-        description: "用户ID"
+        type: integer
+        format: int64
+        description: 用户ID
       username:
-        type: "string"
-        description: "用户名"
-    title: "SftpDeleteUerRequest"
+        type: string
+        description: 用户名
+    title: SftpDeleteUerRequest
   SftpDeleteUserResponse:
-    type: "object"
+    type: object
     properties:
       failCount:
-        type: "integer"
-        format: "int32"
-        description: "删除失败的数量"
+        type: integer
+        format: int32
+        description: 删除失败的数量
       results:
-        type: "array"
-        description: "用户集合"
+        type: array
+        description: 用户集合
         items:
-          $ref: "#/definitions/SftpDeletedUserBo"
-          originalRef: "SftpDeletedUserBo"
+          $ref: '#/definitions/SftpDeletedUserBo'
+          originalRef: SftpDeletedUserBo
       succeedCount:
-        type: "integer"
-        format: "int32"
-        description: "删除成功的数量"
+        type: integer
+        format: int32
+        description: 删除成功的数量
       total:
-        type: "integer"
-        format: "int32"
-        description: "用户总数"
-    title: "SftpDeleteUserResponse"
+        type: integer
+        format: int32
+        description: 用户总数
+    title: SftpDeleteUserResponse
   SftpDeletedUserBo:
-    type: "object"
+    type: object
     properties:
       errorCode:
-        type: "integer"
-        format: "int64"
-        description: "删除失败的用户对应的错误码"
+        type: integer
+        format: int64
+        description: 删除失败的用户对应的错误码
       targetName:
-        type: "string"
-        description: "目标删除用户名"
+        type: string
+        description: 目标删除用户名
       userId:
-        type: "integer"
-        format: "int64"
-        description: "目标删除用户ID"
-    title: "SftpDeletedUserBo"
+        type: integer
+        format: int64
+        description: 目标删除用户ID
+    title: SftpDeletedUserBo
   SftpModifyPasswordRequest:
-    type: "object"
+    type: object
     properties:
       id:
-        type: "string"
-        description: "用户ID"
+        type: string
+        description: 用户ID
       newPassword:
-        type: "string"
-        description: "新密码"
+        type: string
+        description: 新密码
       password:
-        type: "string"
-        description: "密码"
-    title: "SftpModifyPasswordRequest"
+        type: string
+        description: 密码
+    title: SftpModifyPasswordRequest
   SftpQueryUserResponse:
-    type: "object"
+    type: object
     properties:
       count:
-        type: "integer"
-        format: "int32"
-        description: "用户总数"
+        type: integer
+        format: int32
+        description: 用户总数
       users:
-        type: "array"
-        description: "用户数组"
+        type: array
+        description: 用户数组
         items:
-          $ref: "#/definitions/SftpUserBo"
-          originalRef: "SftpUserBo"
-    title: "SftpQueryUserResponse"
+          $ref: '#/definitions/SftpUserBo'
+          originalRef: SftpUserBo
+    title: SftpQueryUserResponse
   SftpServiceResponse:
-    type: "object"
+    type: object
     properties:
       ip:
-        type: "string"
-        description: "服务IP"
+        type: string
+        description: 服务IP
       status:
-        type: "integer"
-        format: "int32"
-        description: "服务状态"
-    title: "SftpServiceResponse"
+        type: integer
+        format: int32
+        description: 服务状态
+    title: SftpServiceResponse
   SftpUserBo:
-    type: "object"
+    type: object
     properties:
       id:
-        type: "integer"
-        format: "int64"
-        description: "用户ID"
+        type: integer
+        format: int64
+        description: 用户ID
       limitSpaceQuota:
-        type: "string"
-        description: "用户空间配额"
+        type: string
+        description: 用户空间配额
       unit:
-        type: "string"
-        description: "空间配额单位"
+        type: string
+        description: 空间配额单位
       username:
-        type: "string"
-        description: "用户名"
-    title: "SftpUserBo"
+        type: string
+        description: 用户名
+    title: SftpUserBo
   SftpUserDetailMesResponse:
-    type: "object"
+    type: object
     properties:
       limitSpaceQuota:
-        type: "string"
-        description: "用户空间配额"
+        type: string
+        description: 用户空间配额
       spaceUsedRate:
-        type: "string"
-        description: "空间使用率"
+        type: string
+        description: 空间使用率
       unit:
-        type: "string"
-        description: "空间配额单位"
+        type: string
+        description: 空间配额单位
       usedSpaceQuota:
-        type: "string"
-        description: "用户已用空间"
+        type: string
+        description: 用户已用空间
       username:
-        type: "string"
-        description: "用户名"
-    title: "SftpUserDetailMesResponse"
+        type: string
+        description: 用户名
+    title: SftpUserDetailMesResponse
   SftpUserRequest:
-    type: "object"
+    type: object
     properties:
       limitSpaceQuota:
-        type: "string"
-        description: "用户空间配额"
-        pattern: "[0-9]+"
+        type: string
+        description: 用户空间配额
+        pattern: '[0-9]+'
       password:
-        type: "string"
-        description: "密码"
+        type: string
+        description: 密码
       unit:
-        type: "string"
-        description: "空间配额单位"
+        type: string
+        description: 空间配额单位
       username:
-        type: "string"
-        description: "用户名"
-    title: "SftpUserRequest"
+        type: string
+        description: 用户名
+    title: SftpUserRequest
