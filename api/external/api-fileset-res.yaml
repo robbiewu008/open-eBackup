@@ -7,6 +7,10 @@ tags:
 paths:
   /v1/filesets:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       produces:
         - application/json
       parameters:
@@ -40,6 +44,7 @@ paths:
           in: header
           name: X-Auth-Token
           required: true
+          type: string
       responses:
         '200':
           description: Successful Response
@@ -53,9 +58,14 @@ paths:
             $ref: '#/definitions/HTTPValidationError'
       tags:
         - filesets
-      operationId: query_resources_v1_filesets_get
+      operationId: ListFilesets
       summary: 查询文件集列表
+      description: 查询文件集列表
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       consumes:
         - application/json
       produces:
@@ -65,11 +75,11 @@ paths:
           in: header
           name: X-Auth-Token
           required: true
+          type: string
         - in: body
           name: body
           required: true
           schema:
-            allOf: null
             $ref: '#/definitions/FilesetDetail'
             description: 文件集信息
             title: File Set Detail
@@ -86,10 +96,14 @@ paths:
             $ref: '#/definitions/HTTPValidationError'
       tags:
         - filesets
-      operationId: create_fileset_v1_filesets_post
+      operationId: CreateFileset
       summary: 创建文件集
   '/v1/filesets/{fileset_id}':
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       produces:
         - application/json
       parameters:
@@ -102,10 +116,10 @@ paths:
           in: header
           name: X-Auth-Token
           required: true
+          type: string
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '404':
           description: Not Found
         '422':
@@ -114,9 +128,13 @@ paths:
             $ref: '#/definitions/HTTPValidationError'
       tags:
         - filesets
-      operationId: delete_fileset_v1_filesets__fileset_id__delete
+      operationId: DeleteFileset
       summary: 删除文件集
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       consumes:
         - application/json
       produces:
@@ -131,18 +149,17 @@ paths:
           in: header
           name: X-Auth-Token
           required: true
+          type: string
         - in: body
           name: body
           required: true
           schema:
-            allOf: null
             $ref: '#/definitions/FilesetConfig'
             description: 文件集配置
             title: Config
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '404':
           description: Not Found
         '422':
@@ -151,8 +168,277 @@ paths:
             $ref: '#/definitions/HTTPValidationError'
       tags:
         - filesets
-      operationId: modify_fileset_v1_filesets__fileset_id__put
+      operationId: ModifyFileset
       summary: 修改文件集
+  '/v1/filesets/templates/{template_id}/associations':
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - filesets
+      summary: 分页查询文件集模板关联的文件集列表
+      description: 分页查询文件集模板关联的文件集列表
+      operationId: ListFilesetsByTemplateId
+      produces:
+        - application/json
+      parameters:
+        - name: template_id
+          in: path
+          required: true
+          type: string
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+        - name: page_no
+          in: query
+          required: true
+          description: 分页页面编码
+          type: integer
+          format: int32
+        - name: page_size
+          in: query
+          required: true
+          description: 分页数据条数
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: 分页查询结果
+          schema:
+            $ref: '#/definitions/BasePage_TemplateAssociatedFilesetInfo'
+  /v1/filesets/templates:
+    post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - filesets
+      summary: 创建文件集模板
+      description: 创建文件集模板
+      operationId: CreateFilesetTemplate
+      parameters:
+        - name: create_template_req
+          in: body
+          required: true
+          description: 创建文件集模板请求信息
+          schema:
+            $ref: '#/definitions/FilesetTemplateReq'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UuidObject'
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - filesets
+      summary: 分页查询文件集模板列表
+      description: 分页查询文件集模板列表
+      operationId: ListFilesetTemplates
+      parameters:
+        - name: X-auth-token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+        - name: page_no
+          in: query
+          required: true
+          description: 分页页面编码
+          type: integer
+          format: int32
+        - name: page_size
+          in: query
+          required: true
+          description: 分页数据条数
+          type: integer
+          format: int32
+        - name: name
+          in: query
+          required: false
+          description: 文件集模板名称条件参数
+          type: string
+        - name: os_type
+          in: query
+          required: false
+          description: 操作系统类型列表
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Base_Page_FilesetTemplateInfo'
+  '/v1/filesets/templates/{template_id}':
+    put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - filesets
+      summary: 修改文件集模板
+      description: 修改文件集模板
+      operationId: ModifyFilesetTemplate
+      parameters:
+        - name: template_id
+          in: path
+          required: true
+          type: string
+        - name: modify_template_req
+          in: body
+          required: true
+          description: 修改文件集模板请求信息
+          schema:
+            $ref: '#/definitions/FilesetTemplateReq'
+        - name: X-auth-token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+    delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - filesets
+      summary: 删除文件集模板
+      description: 删除文件集模板
+      operationId: DeleteFilesetTemplate
+      parameters:
+        - name: template_id
+          in: path
+          required: true
+          type: string
+        - name: X-auth-token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - filesets
+      summary: 根据UUID查询文件集模板
+      description: 根据UUID查询文件集模板
+      operationId: ListFilesetTemplateByTemplateId
+      parameters:
+        - name: template_id
+          in: path
+          required: true
+          type: string
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: 文件集模板详情
+          schema:
+            $ref: '#/definitions/FilesetTemplateSchema'
+  /v1/filesets/action/batch-create:
+    post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - filesets
+      summary: 根据模板批量创建文件集
+      description: 根据模板批量创建文件集
+      operationId: BatchCreateFilesetsByFilesetTemplate
+      parameters:
+        - name: X-auth-token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+        - name: create_fileset_by_template_req
+          in: body
+          required: true
+          description: 创建文件集模板信息
+          schema:
+            $ref: '#/definitions/CreateFilesetByTemplate'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  '/v1/filesets/templates/{template_id}/hosts':
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - filesets
+      summary: 根据文件集模板UUID查询可用的host
+      description: 根据文件集模板UUID查询可用的host
+      operationId: ListEnableHostsByFilesetTemplateId
+      parameters:
+        - name: template_id
+          in: path
+          required: true
+          type: string
+        - name: page_no
+          in: query
+          required: true
+          description: 分页页面编码
+          type: integer
+          format: int32
+        - name: page_size
+          in: query
+          required: true
+          description: 分页数据条数
+          type: integer
+          format: int32
+        - name: host_name
+          in: query
+          required: false
+          description: 主机名
+          type: string
+        - name: host_ip
+          in: query
+          required: false
+          description: 主机IP
+          type: string
+        - name: X-auth-token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/BasePageEnvironmentSchema'
 definitions:
   BasePage_FilesetSchema_:
     properties:
@@ -506,4 +792,376 @@ definitions:
       - type
     title: ValidationError
     type: object
+  FilesetTemplateReq:
+    description: 文件集模板请求体
+    properties:
+      name:
+        type: string
+        description: 文件集模板名称
+      os_type:
+        description: 操作系统
+        $ref: '#/definitions/FilesetTemplateOsTypeEnum'
+      paths:
+        type: array
+        items:
+          type: string
+        description: 文件路径列表
+      user_id:
+        type: string
+        description: 用户ID
+      filters:
+        type: array
+        items:
+          $ref: '#/definitions/FilesetTemplateFilterDetail'
+        description: 文件集过滤器信息列表
+    required:
+      - name
+      - os_type
+  FilesetTemplateOsTypeEnum:
+    type: string
+    description: an enumerateion.
+  FilesetTemplateFilterDetail:
+    properties:
+      type:
+        description: 文件集模板过滤器类型。枚举值：FILE - 1，FOLDER - 2，FORMAT - 3，DATE - 4
+        $ref: '#/definitions/FilesetFilterType'
+      model:
+        description: 文件集模板过滤器模式。枚举值：EXCLUDE - 1，INCLUDE - 2
+        $ref: '#/definitions/FilesetFilterModel'
+      content:
+        type: string
+        description: 文件集模板过滤器内容
+  FilesetTemplateSchema:
+    properties:
+      uuid:
+        type: string
+        description: 文件集模板UUID
+      name:
+        type: string
+        description: 文件集模板名称
+      os_type:
+        description: 操作系统
+        $ref: '#/definitions/FilesetTemplateOsTypeEnum'
+      paths:
+        type: array
+        items:
+          type: string
+        description: 文件集路径列表
+      user_id:
+        type: string
+        description: 用户ID
+      created_time:
+        type: string
+        format: date-time
+        description: 资源创建时间
+      filters:
+        type: array
+        items:
+          $ref: '#/definitions/FilesetTemplateFilterSchema'
+        description: 文件集过滤器信息列表
+  FilesetTemplateFilterSchema:
+    properties:
+      uuid:
+        type: string
+        description: 文件集过滤器UUID
+      type:
+        description: 文件集过滤器类型
+        $ref: '#/definitions/FilesetFilterType'
+      model:
+        description: 文件集过滤器模式
+        $ref: '#/definitions/FilesetFilterModel'
+      content:
+        type: string
+        description: 文件集过滤器内容
+      template_id:
+        type: string
+        description: 关联的文件集模板UUID
+    description: 文件集模板过滤器模型
+  FilesetTemplateInfo:
+    description: 文件集模板详情
+    properties:
+      uuid:
+        type: string
+        description: 文件集模板UUID
+      name:
+        type: string
+        description: 文件集模板名称
+      os_type:
+        description: 操作系统
+        $ref: '#/definitions/FilesetTemplateOsTypeEnum'
+      associated_filesets_num:
+        type: integer
+        format: int32
+        description: 关联文件集数目
+  TemplateAssociatedFilesetInfo:
+    description: 模板关联文件集详情
+    properties:
+      uuid:
+        type: string
+        description: 文件集UUID
+      name:
+        type: string
+        description: 文件集名称
+      environment_uuid:
+        type: string
+        description: 环境ID
+      environment_name:
+        type: string
+        description: 环境名称
+      environment_endpoint:
+        type: string
+        description: 环境IP
+      sla_id:
+        type: string
+        description: SLA ID
+      sla_name:
+        type: string
+        description: SLA名称
+      protection_status:
+        type: integer
+        format: int32
+        description: 保护状态
+  FilesetTemplateProtection:
+    description: 文件集模板保护请求结构体
+    required:
+      - sla_id
+    properties:
+      sla_id:
+        type: string
+        description: 关联的SLA ID
+      ext_parameters:
+        type: string
+        description: 扩展属性
+      post_action:
+        type: string
+        description: 绑定SLA成功后执行的操作
+  CreateFilesetByTemplate:
+    description: 根据模板批量创建文件集
+    properties:
+      template_id:
+        type: string
+        description: 文件集模板id
+      host_ids:
+        type: array
+        items:
+          type: string
+        description: 需要创建文件集的Host信息
+      associate_sla:
+        type: boolean
+        description: 是否需要关联SLA
+      protection_model:
+        description: 关联sla后的保护信息
+        $ref: '#/definitions/FilesetTemplateProtection'
+  BasePage_TemplateAssociatedFilesetInfo:
+    description: 分页TemplateAssociatedFilesetInfo结构体
+    properties:
+      total:
+        type: integer
+        format: int32
+        description: 总的数据条数
+      pages:
+        type: integer
+        format: int32
+        description: 总页数
+      page_size:
+        type: integer
+        format: int32
+        description: 每页数据量
+      page_no:
+        type: integer
+        format: int32
+        description: 页面编号
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/TemplateAssociatedFilesetInfo'
+        description: 数据列表
+  Base_Page_FilesetTemplateInfo:
+    description: 分页文件集模板详情
+    properties:
+      total:
+        type: integer
+        format: int32
+      pages:
+        type: integer
+        format: int32
+      page_size:
+        type: integer
+        format: int32
+      page_no:
+        type: integer
+        format: int32
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/FilesetTemplateInfo'
+  EnvironmentSchema:
+    properties:
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items:
+          type: string
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 根资源ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      uuid:
+        description: 资源ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+      user_name:
+        type: string
+        description: 受保护环境用户名
+      end_point:
+        type: string
+        description: 受保护环境地址
+      port:
+        type: integer
+        format: int32
+        description: 受保护环境端口号
+      os_type:
+        type: string
+        description: 操作系统类型
+      os_name:
+        type: string
+        description: 操作系统名称
+      is_cluster:
+        type: boolean
+        description: 是否为集群
+      link_status:
+        type: integer
+        format: int32
+        description: 连接状态
+      cert_name:
+        type: string
+        description: 证书路径
+      agent_version:
+        type: string
+        description: Agent版本号
+      agent_timestamp:
+        type: string
+        description: Agent时间戳
+    title: FilesetSchema
+    required:
+      - name
+      - root_uuid
+      - uuid
+  BasePageEnvironmentSchema:
+    properties:
+      total:
+        type: integer
+        format: int32
+      pages:
+        type: integer
+        format: int32
+      page_size:
+        type: integer
+        format: int32
+      page_no:
+        type: integer
+        format: int32
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/EnvironmentSchema'
 x-components: {}
