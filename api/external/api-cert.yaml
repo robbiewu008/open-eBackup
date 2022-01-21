@@ -14,6 +14,10 @@ tags:
 paths:
   /v1/certs/components:
     get:
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       tags:
         - component-rest-api
       summary: 查询组件列表
@@ -43,7 +47,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     post:
       tags:
         - component-rest-api
@@ -516,7 +519,7 @@ paths:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/ ConsistencyResponse'
+            $ref: '#/definitions/ConsistencyResponse'
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -712,7 +715,6 @@ definitions:
         exclusiveMaximum: false
     title: ComponentDetail«CertificateDetail»
   ComponentEntity:
-    type: object
     properties:
       certificateDetails:
         type: array
@@ -729,8 +731,6 @@ definitions:
         description: 组件证书过期预警天数
         minimum: 7.0
         maximum: 180.0
-        exclusiveMinimum: false
-        exclusiveMaximum: false
       name:
         type: string
         description: 组件名称。【格式要求】允许包含下划线、字母、数字、空格、中划线，必须以字母或下划线开头，长度要求在4到32个字符以内。
@@ -742,18 +742,14 @@ definitions:
         format: int32
         description: 组件到期剩余天数
       type:
-        type: integer
-        format: int32
+        type: string
         description: '组件类型。【取值范围】0：内部组件 1：vmware 2：email 3：对象存储 4：A8000 5:其他 6:外部存储'
-        minimum: 0.0
-        maximum: 6.0
-        exclusiveMinimum: false
-        exclusiveMaximum: false
       validity:
         type: integer
         format: int32
         description: 组件证书有效性
     title: ComponentEntity
+    description: type类型错误，由integer改为string
   CrlEntity:
     type: object
     properties:
