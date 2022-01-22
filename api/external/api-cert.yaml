@@ -499,6 +499,7 @@ paths:
       deprecated: false
   /v1/certs/components/action/consistency-check:
     get:
+      x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -517,7 +518,7 @@ paths:
           type: string
       responses:
         '200':
-          description: ''
+          description: '判断证书内部服务之间的 一致性   data :TURE为证书一致, FALSE为证书不一致'
           schema:
             $ref: '#/definitions/ConsistencyResponse'
 securityDefinitions:
@@ -771,7 +772,7 @@ definitions:
         type: string
         description: CRL颁发机构名称
     title: CrlEntity
-  ' ConsistencyResponse':
+  ConsistencyResponse:
     properties:
       data:
         type: string
