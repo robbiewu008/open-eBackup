@@ -147,10 +147,10 @@ definitions:
         type: string
         description: 过滤的资源类型，取值：VM-虚拟机；Disk-磁盘；File-文件；Dir-目录
         enum:
-          - '''Disk'''
-          - '''File'''
-          - '''Dir'''
-          - '''VM'''
+          - Disk
+          - File
+          - Dir
+          - VM
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
