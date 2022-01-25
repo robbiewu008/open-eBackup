@@ -780,22 +780,23 @@ paths:
       x-public-api: 'N'
       tags:
         - copy_archive_replication
+      description: 根据指定条件获取所有副本
       operationId: GetCopyInfos
       parameters:
-        - name: filterType
+        - name: filter_type
           in: query
           required: true
           description: 'enum: "timestamp",  "index"'
           type: string
-        - name: filterValue
+        - name: filter_value
           in: query
           required: true
           type: string
-        - name: backupType
+        - name: copy_type
           in: query
           required: true
           type: string
-        - name: protectUuid
+        - name: protect_uuid
           in: query
           required: true
           type: string
@@ -806,6 +807,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/CopyRecord'
+        '400':
+          description: 标志批量导出副本数据结束，错误码1677929217
+          schema:
+            type: string
         '500':
           description: 内部错误
           schema:
@@ -873,6 +878,76 @@ paths:
           description: 内部错误
           schema:
             $ref: '#/definitions/RspMsg'
+  /v1/dme-unified/copies/timerange:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 30065
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      x-auth-type: 双向证书认证
+      tags:
+        - copy-pm
+      description: 查询指定时间区间内的可用日志时间范围
+      operationId: QueryTimeRange
+      parameters:
+        - name: protect_uuid
+          in: query
+          required: true
+          description: 保护对象uuid
+          type: string
+        - name: start_time
+          in: query
+          required: true
+          description: 待查询的起始时间点
+          type: integer
+          format: int64
+        - name: end_time
+          in: query
+          required: true
+          description: 待查询的结束时间点
+          type: integer
+          format: int64
+        - name: page_no
+          in: query
+          required: true
+          type: integer
+          format: int32
+          description: 起始页
+        - name: page_size
+          in: query
+          required: true
+          type: integer
+          format: int32
+          description: 分页大小，默认值100
+      responses:
+        '200':
+          description: 返回可用日志时间范围，数据模型参考AvailableTimeRange
+          schema:
+            $ref: '#/definitions/AvailableTimeRange'
+  '/v1/dme-unified/copies/delete/record/{copy_id}':
+    delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 30065
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      tags:
+        - copy_archive_replication
+      operationId: DeleteCopyRecord
+      parameters:
+        - name: copy_id
+          in: path
+          required: true
+          type: string
+          description: 副本id
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+        '500':
+          description: 内部错误
+          schema:
+            type: string
 definitions:
   DemoInfo:
     description: This is a demo
@@ -1367,6 +1442,29 @@ definitions:
       id:
         type: string
         description: 副本id
+      type:
+        type: string
+        description: >-
+          副本类型：nativeSnapshot：本地快照 | full：全量 | increment：增量 | diff：差异增量 |
+          foreverIncrement：永久增量 | log：日志 | replication：复制 | s3Archive：S3归档 |
+          tapeArchive：磁带归档 | clone：克隆副本 存入md；
+
+          副本类型：nativeSnapshot：本地快照 | full：全量 | increment：增量 | diff：差异增量 |
+          foreverIncrement：永久增量 | log：日志 | replication：复制 | s3Archive：S3归档 |
+          tapeArchive：磁带归档 | clone：克隆副本 存入md；
+
+          副本类型：nativeSnapshot：本地快照 | full：全量 | increment：增量 | diff：差异增量 |
+          foreverIncrement：永久增量 | log：日志 | replication：复制 | s3Archive：S3归档 |
+          tapeArchive：磁带归档 | clone：克隆副本 存入md；
+
+          副本类型：nativeSnapshot：本地快照 | full：全量 | increment：增量 | diff：差异增量 |
+          foreverIncrement：永久增量 | log：日志 | replication：复制 | s3Archive：S3归档 |
+          tapeArchive：磁带归档 | clone：克隆副本 存入md；
+      snapshots:
+        type: array
+        items:
+          $ref: '#/definitions/Snapshot'
+        description: 快照id和文件系统名
       format:
         type: integer
         format: int32
@@ -1531,8 +1629,16 @@ definitions:
           $ref: '#/definitions/ResourceFilter'
         description: 过滤参数，与pm保持一致
       advanceParams:
-        type: object
         description: json对象，高级参数，比如数据库时间点、scn等
+        properties:
+          restoreTimestamp:
+            type: integer
+            format: int32
+            description: 日志恢复时间点
+          restoreScn:
+            type: integer
+            format: int32
+            description: 日志恢复scn
     required:
       - requestId
       - taskId
@@ -1768,6 +1874,12 @@ definitions:
             items:
               $ref: '#/definitions/HostAddress'
             description: 比如逻辑端口地址
+          transProtocol:
+            type: string
+            description: 传输协议http/https
+          proxy:
+            description: 代理信息
+            $ref: '#/definitions/ProxyInfo'
   UpdateCopy:
     description: |-
       副本信息
@@ -2240,3 +2352,44 @@ definitions:
       extendInfo:
         type: object
         description: json对象，扩展信息
+  AvailableTimeRange:
+    description: 可用日志区间
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 区间内的日志副本总数
+      records:
+        type: array
+        items:
+          properties:
+            copyId:
+              type: string
+            startTime:
+              type: integer
+              format: int64
+            endTime:
+              type: integer
+              format: int64
+  ProxyInfo:
+    description: 代理信息
+    properties:
+      enabled:
+        type: boolean
+        description: 是否启用
+      hostname:
+        type: string
+        description: 代理服务器域名/IP
+      port:
+        type: integer
+        format: int32
+        description: 代理服务器端口
+      userName:
+        type: string
+        description: 用户名
+      password:
+        type: string
+        description: 密码
+      extendInfo:
+        type: object
+        description: 拓展字段
