@@ -65,6 +65,46 @@ paths:
             $ref: '#/definitions/EnvironmentResourceList'
   /v2/resources:
     post:
+      x-request-examples-url-1: 'POST  https://host:25081/v2/resources'
+      x-request-examples-description-1: 注册NAS SHARE
+      x-request-examples-text-1: >-
+        {
+          "name": "/8.40.199.102/testName",  // nas share名称
+          "path": "/8.40.199.102/testName",  // nas share路径
+          "parentUuid": "2102352TDQ80C3803201",
+          "type": "Storage",  // nas share 资源类型
+          "subType": "NasShare",  // nas share资源子类型
+          "extendInfo": {
+            "ip": "8.40.199.102",  // nas share IP
+            "shareMode": "1",    // nas share共享模式: 0-CIFS, 1-NFS
+            "authMode": "1",    // nas share 认证模式: 0-密码认证或者Kerberos认证, 1-无认证.
+            "filters": "   
+        [{\"filterBy\":\"Name\",\"type\":\"File\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"/opt/test.txt\"]},{\"filterBy\":\"Name\",\"type\":\"Dir\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"/etc\"]},{\"filterBy\":\"Format\",\"type\":\"File\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"4\",\"5\"]},{\"filterBy\":\"CreateTime\",\"type\":\"File\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"1641761359709\",\"1641768562109\"]}]",   
+        // nas share 过滤参数: filterBy字段是根据什么进行过滤,取值Name-名称;Format-文件格式,
+        type字段是过滤的资源类型:File-文件;Dir-目录, rule字段是过滤的规则,取值Fuzzy-模糊匹配; EXact-精确匹配,
+        mode字段是过滤类型: 取值INCLUDE-包含;EXCLUDE-排除, values字段是具体过滤的内容
+            "kerberosId": ""  //选择Kerberos认证时的id
+          }
+        }
+      x-request-examples-1: >-
+        {
+          "name": "/8.40.199.102/testName",  // nas share名称
+          "path": "/8.40.199.102/testName",  // nas share路径
+          "parentUuid": "2102352TDQ80C3803201",
+          "type": "Storage",  // nas share 资源类型
+          "subType": "NasShare",  // nas share资源子类型
+          "extendInfo": {
+            "ip": "8.40.199.102",  // nas share IP
+            "shareMode": "1",    // nas share共享模式: 0-CIFS, 1-NFS
+            "authMode": "1",    // nas share 认证模式: 0-密码认证或者Kerberos认证, 1-无认证.
+            "filters": "   
+        [{\"filterBy\":\"Name\",\"type\":\"File\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"/opt/test.txt\"]},{\"filterBy\":\"Name\",\"type\":\"Dir\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"/etc\"]},{\"filterBy\":\"Format\",\"type\":\"File\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"4\",\"5\"]},{\"filterBy\":\"CreateTime\",\"type\":\"File\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"1641761359709\",\"1641768562109\"]}]",   
+        // nas share 过滤参数: filterBy字段是根据什么进行过滤,取值Name-名称;Format-文件格式,
+        type字段是过滤的资源类型:File-文件;Dir-目录, rule字段是过滤的规则,取值Fuzzy-模糊匹配; EXact-精确匹配,
+        mode字段是过滤类型: 取值INCLUDE-包含;EXCLUDE-排除, values字段是具体过滤的内容
+            "kerberosId": ""  //选择Kerberos认证时的id
+          }
+        }
       x-impact-subsystem: 影响
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
@@ -145,9 +185,38 @@ paths:
             $ref: '#/definitions/ProtectedResourcePageListResponse'
   /v2/environments:
     post:
-      x-request-examples-url-2: 'POST https://host:25080/v2/environments'
-      x-request-examples-description-2: 注册Nas设备
-      x-request-examples-text-2: >-
+      x-impact-subsystem: 不影响
+      x-request-examples-url-2: 'POST https://host:25801/v2/environments'
+      x-request-examples-description-2: 注册HDFS集群
+      x-request-examples-text-2: |-
+        {
+          "name": "HDFS_Cluster",
+          "type": "BigData",
+          "endpoint": "192.168.0.1",
+          "subType": "HDFS",
+          "port": 8888,
+          "extendInfo": {
+            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
+            "kerberosId": "string",//环境鉴权使用的kerberosid
+            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
+            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
+          }
+        }
+      x-request-examples-2: |-
+        {
+          "name": "HDFS_Cluster",
+          "type": "BigData",
+          "endpoint": "192.168.0.1",
+          "subType": "HDFS",
+          "port": 8888,
+          "extendInfo": {
+            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
+            "kerberosId": "string",//环境鉴权使用的kerberosid
+            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
+            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
+          }
+        }
+      x-request-examples-text-1: >-
         {
 
         "name":"DoradoV6_001",
@@ -172,7 +241,7 @@ paths:
         "snapConsistency":"0" // 是否开启快照一致性：0-不打开，1-打开
 
         }}
-      x-request-examples-2: >-
+      x-request-examples-1: >-
         {
 
         "name":"DoradoV6_001",
@@ -197,36 +266,8 @@ paths:
         "snapConsistency":"0" // 是否开启快照一致性：0-不打开，1-打开
 
         }}
-      x-request-examples-text-1: |-
-        {
-          "name": "HDFS_Cluster",
-          "type": "BigData",
-          "endpoint": "192.168.0.1",
-          "subType": "HDFS",
-          "port": 8888,
-          "extendInfo": {
-            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
-            "kerberosId": "string",//环境鉴权使用的kerberosid
-            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
-            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
-          }
-        }
-      x-request-examples-1: |-
-        {
-          "name": "HDFS_Cluster",
-          "type": "BigData",
-          "endpoint": "192.168.0.1",
-          "subType": "HDFS",
-          "port": 8888,
-          "extendInfo": {
-            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
-            "kerberosId": "string",//环境鉴权使用的kerberosid
-            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
-            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
-          }
-        }
-      x-request-examples-url-1: 'POST https://host:25801/v2/environments'
-      x-request-examples-description-1: 注册HDFS集群
+      x-request-examples-url-1: 'POST https://host:25080/v2/environments'
+      x-request-examples-description-1: 注册Nas设备
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -256,9 +297,9 @@ paths:
           type: string
       responses:
         '200':
-          description: ''
+          description: 注册受保护环境UUID
           schema:
-            type: string
+            $ref: '#/definitions/UuidObject'
           examples:
             application/json: ''
   '/v2/resources/{resourceId}':
