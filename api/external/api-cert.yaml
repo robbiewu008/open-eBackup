@@ -221,6 +221,12 @@ paths:
           schema:
             type: file
         - in: formData
+          name: dhParam
+          description: 密钥交换文件
+          required: false
+          schema:
+            type: file
+        - in: formData
           name: serverKey
           description: 服务私钥
           required: false
