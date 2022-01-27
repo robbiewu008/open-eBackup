@@ -60,6 +60,65 @@ paths:
           description: 文件系统响应体
           schema:
             $ref: '#/definitions/FileSystemResponseList'
+  /v2/copies/available-time-ranges:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-dp-admin-role: 'Y'
+      tags:
+        - copy-controller
+      operationId: ListAvailableTimeRanges
+      consumes:
+        - application/json
+      summary: 查询指定时间范围可用于恢复的时间段
+      description: 查询指定时间范围可用于恢复的时间段
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+        - name: pageNo
+          in: query
+          required: true
+          description: 起始页，默认为0
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          description: 分页大小，默认100
+          type: integer
+          format: int32
+        - name: startTime
+          in: query
+          required: true
+          description: 待查询的起始时间点
+          type: integer
+          format: int64
+        - name: endTime
+          in: query
+          required: true
+          description: 待查询的结束时间点
+          type: integer
+          format: int64
+        - name: resourceId
+          in: query
+          required: true
+          description: 受保护资源id
+          type: string
+      responses:
+        '200':
+          description: 查询指定时间范围可用于恢复的时间段响应体
+          schema:
+            $ref: '#/definitions/AvailableTimeRangesResponseList'
 definitions:
   FileSystemResponseList:
     description: 文件系统响应体
@@ -100,3 +159,35 @@ definitions:
       - size
       - hasChildren
       - type
+  AvailableTimeRangesResponseList:
+    description: 查询指定时间范围可用于恢复的时间段
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总记录数
+      records:
+        items:
+          $ref: '#/definitions/AvailableTimeRanges'
+        description: 查询指定时间范围可用于恢复的时间段
+        type: array
+    required:
+      - totalCount
+      - records
+  AvailableTimeRanges:
+    properties:
+      copyId:
+        type: string
+        description: 副本id
+      startTime:
+        type: integer
+        format: int64
+        description: 起始时间点
+      endTime:
+        type: integer
+        format: int64
+        description: 结束时间点
+    required:
+      - copyId
+      - startTime
+      - endTime
