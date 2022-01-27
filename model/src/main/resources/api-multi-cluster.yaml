@@ -1,0 +1,425 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: multi-cluster-api
+  contact: {}
+  license: {}
+  description: 多集群信息统计接口
+host: localhost
+basePath: /
+tags:
+  - name: '${api.multi-clusters}'
+paths:
+  /v1/multi-clusters/resource/summary:
+    get:
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - '${api.multi-clusters}'
+      summary: 获取多集群资源统计信息
+      description: 获取多集群资源统计信息
+      operationId: getMultiClusterResources
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: resourceType
+          in: query
+          required: true
+          type: string
+          description: >-
+            资源类型(All:所有资源,Host:主机,Fileset:文件集,Database:数据库,VirtualMachines:虚拟环境,BigData:大数据,Storage:存储)
+      responses:
+        '200':
+          description: 资源统计结果模型
+          schema:
+            $ref: '#/definitions/MultiClusterResourcesVo'
+  /v1/multi-clusters/job/summary:
+    get:
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - '${api.multi-clusters}'
+      summary: 获取多集群任务执行统计信息
+      description: 获取多集群任务执行统计信息
+      operationId: getMultiClusterJobs
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: jobPeriod
+          in: query
+          required: true
+          description: '任务执行时间段(all:所有任务,lastDay:过去24h,lastWeek:过去7天,lastMonth:过去1个月)'
+          type: string
+      responses:
+        '200':
+          description: 任务执行统计结果模型
+          schema:
+            $ref: '#/definitions/MultiClusterJobsVo'
+  /v1/multi-clusters/alarm/summary:
+    get:
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - '${api.multi-clusters}'
+      summary: 获取多集群告警统计信息
+      description: 获取多集群告警统计信息
+      operationId: getMultiClusterAlarms
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: 告警统计结果模型
+          schema:
+            $ref: '#/definitions/MultiClusterAlarmsVo'
+  /v1/multi-clusters/capacity/summary:
+    get:
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - '${api.multi-clusters}'
+      summary: 获取多集群容量统计信息
+      description: 获取多集群容量统计信息
+      operationId: getMultiClusterCapacity
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: 容量统计结果模型
+          schema:
+            $ref: '#/definitions/MultiClusterCapacityVo'
+  /v1/multi-clusters/sla-compliance/summary:
+    get:
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - '${api.multi-clusters}'
+      summary: 获取多集群SLA遵从度统计信息
+      description: 获取多集群SLA遵从度统计信息
+      operationId: getMultiClusterSla
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: SLA遵从度统计结果模型
+          schema:
+            $ref: '#/definitions/MultiClusterSlaComplianceVo'
+  '/v1/multi-clusters/{clusterId}/action/grant-to-manager':
+    put:
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - '${api.multi-clusters}'
+      summary: 指定某个被管理集群为管理集群
+      description: 指定某个被管理集群为管理集群
+      operationId: grantToManager
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: clusterId
+          in: path
+          required: true
+          type: string
+          description: 集群id
+        - name: request
+          in: body
+          required: true
+          description: 本地集群请求参数
+          schema:
+            $ref: '#/definitions/LocalClusterRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+  /v1/multi-clusters/action/sync:
+    get:
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - '${api.multi-clusters}'
+      summary: 同步本地的所有被管理集群到本地的所有管理集群
+      description: 同步本地的所有被管理集群到本地的所有管理集群
+      operationId: syncManagedClustersToManageClusters
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+  '/v1/multi-clusters/{clusterId}/action/revoke-manager':
+    put:
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - '${api.multi-clusters}'
+      summary: 取消某个管理集群为被管理集群
+      description: 取消某个管理集群为被管理集群
+      operationId: revokeManager
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: clusterId
+          in: path
+          required: true
+          type: string
+          description: 集群id
+        - name: syncToRemote
+          in: query
+          required: false
+          description: 取消管理集群操作，是否同步到远端【true：则会在目标集群也取消管理集群；false：则不在目标集群操作】
+          type: boolean
+      responses:
+        '200':
+          description: 操作结果
+          schema:
+            type: string
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  MultiClusterResourcesVo:
+    description: 资源统计结果模型
+    properties:
+      protectedCount:
+        type: integer
+        format: int32
+        description: 受保护资源数量
+      unprotectedCount:
+        type: integer
+        format: int32
+        description: 未保护资源数量
+    required:
+      - protectedCount
+      - unprotectedCount
+  MultiClusterJobsVo:
+    description: 任务执行统计结果模型
+    properties:
+      total:
+        type: integer
+        format: int32
+        description: 任务总数
+      success:
+        type: integer
+        format: int32
+        description: 成功任务数量
+      fail:
+        type: integer
+        format: int32
+        description: 失败任务数量
+      running:
+        type: integer
+        format: int32
+        description: 运行任务数量
+      aborted:
+        type: integer
+        format: int32
+        description: 中止任务数量
+      pending:
+        type: integer
+        format: int32
+        description: 等待任务数量
+      ready:
+        type: integer
+        format: int32
+        description: 就绪任务数量
+      others:
+        type: integer
+        format: int32
+        description: 其他任务数量
+    required:
+      - total
+      - success
+      - fail
+      - running
+      - aborted
+      - pending
+      - ready
+      - others
+  MultiClusterAlarmsVo:
+    description: 告警统计结果模型
+    properties:
+      critical:
+        type: integer
+        format: int32
+        description: 关键告警数量
+      warning:
+        type: integer
+        format: int32
+        description: 警示告警数量
+      major:
+        type: integer
+        format: int32
+        description: 主要告警数量
+      minor:
+        type: integer
+        format: int32
+        description: 主要告警数量
+    required:
+      - critical
+      - warning
+      - major
+      - minor
+  MultiClusterCapacityVo:
+    description: 容量统计结果模型
+    properties:
+      totalCapacity:
+        type: integer
+        format: int64
+        description: 总容量
+      usedCapacity:
+        type: integer
+        format: int64
+        description: 已使用容量
+      freeCapacity:
+        type: integer
+        format: int64
+        description: 未使用容量
+      writeCapacity:
+        type: integer
+        format: int64
+        description: 逻辑用量
+      consumedCapacity:
+        type: integer
+        format: int64
+        description: 物理用量
+      spaceReductionRate:
+        type: string
+        description: 数据缩减比
+      logic:
+        type: string
+        description: 逻辑符号
+    required:
+      - totalCapacity
+      - usedCapacity
+      - freeCapacity
+      - writeCapacity
+      - consumedCapacity
+      - spaceReductionRate
+      - logic
+  MultiClusterSlaComplianceVo:
+    description: SLA遵从度统计结果模型
+    properties:
+      inCompliance:
+        type: integer
+        format: int32
+        description: SLA遵循数量
+      outOfCompliance:
+        type: integer
+        format: int32
+        description: SLA不遵循数量
+    required:
+      - inCompliance
+      - outOfCompliance
+  LocalClusterRequest:
+    description: 本地集群请求参数模型
+    properties:
+      localClusterName:
+        type: string
+        description: 本地集群名称
+      username:
+        type: string
+        description: 本地集群-系统管理员的用户名
+      password:
+        type: string
+        description: 本地集群-系统管理员的密码
+      syncToRemote:
+        type: boolean
+        description: 指定管理集群操作，是否同步到远端【true：则会在目标集群也指定此本地集群为管理集群；false：则不在目标集群操作】
+    required:
+      - localClusterName
+      - username
+      - password
+      - syncToRemote
