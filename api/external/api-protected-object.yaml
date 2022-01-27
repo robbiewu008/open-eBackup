@@ -341,6 +341,35 @@ paths:
           schema: {}
       operationId: readiness_v1_readiness_get
       summary: Readiness
+  /v1/protected-objects/sla-compliance:
+    get:
+      x-sysadmin-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - projected_object_api
+      summary: 查询SLA遵从度汇总数量
+      description: 查询SLA遵从度汇总数量
+      operationId: query_protection_compliance
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: 保护对象SLA遵从度数量模型
+          schema:
+            $ref: '#/definitions/ProtectedObjectSlaCompliance'
 definitions:
   BaseExtParam:
     properties: {}
@@ -816,4 +845,18 @@ definitions:
       - type
     title: ValidationError
     type: object
+  ProtectedObjectSlaCompliance:
+    description: 保护对象SLA遵从度数量模型
+    properties:
+      in_compliance:
+        type: integer
+        format: int32
+        description: SLA遵从
+      out_of_compliance:
+        type: integer
+        format: int32
+        description: SLA不遵从
+    required:
+      - in_compliance
+      - out_of_compliance
 x-components: {}
