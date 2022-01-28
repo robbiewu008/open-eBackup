@@ -52,7 +52,6 @@ paths:
       operationId: switchSftpStatusUsingPUT
       consumes:
         - application/json
-        - application/x-www-form-urlencoded
       produces:
         - '*/*'
       parameters:
