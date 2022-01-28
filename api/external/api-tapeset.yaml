@@ -782,6 +782,10 @@ paths:
         '404':
           description: Not Found
     post:
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       tags:
         - media-set-api
       summary: 创建介质集
@@ -815,7 +819,6 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-      deprecated: false
   '/v1/tape-library/media-sets/{mediaSetId}':
     get:
       tags:
@@ -960,7 +963,6 @@ securityDefinitions:
     in: header
 definitions:
   MediaSetCreateRequest:
-    type: object
     properties:
       alarmEnable:
         type: boolean
@@ -1004,7 +1006,6 @@ definitions:
         example: 3
         description: 保留时长
         minimum: 1.0
-        exclusiveMinimum: false
       retentionType:
         type: string
         description: 过期策略
@@ -1032,6 +1033,13 @@ definitions:
           - unknown
           - rw
           - worm
+      blockSize:
+        type: integer
+        format: int32
+        description: 块大小，单位Kb
+      compressionStatus:
+        $ref: '#/definitions/TapeDriveCompressionStatus'
+        description: 压缩状态
     title: MediaSetCreateRequest
   MediaSetRelateTapeRequest:
     type: object
@@ -1339,7 +1347,6 @@ definitions:
         description: 生产厂商
     title: TapeLibraryQueryResponse
   TapeSetDetailResponse:
-    type: object
     properties:
       alarmEnable:
         type: boolean
@@ -1404,6 +1411,13 @@ definitions:
           - unknown
           - rw
           - worm
+      blockSize:
+        type: integer
+        format: int32
+        description: 块大小，单位Kb
+      compressionStatus:
+        $ref: '#/definitions/TapeDriveCompressionStatus'
+        description: 压缩状态
     title: TapeSetDetailResponse
   TapeVo:
     properties:
@@ -1504,3 +1518,14 @@ definitions:
       hasNotEmptyTape:
         type: boolean
         description: 是否存在非空磁带
+  TapeDriveCompressionStatus:
+    description: 压缩状态
+    properties:
+      DISABLE:
+        type: integer
+        format: int32
+        description: 1， 禁用
+      ENABLE:
+        type: integer
+        format: int32
+        description: 2， 启用
