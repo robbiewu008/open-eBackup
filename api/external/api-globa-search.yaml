@@ -1,124 +1,205 @@
----
-swagger: "2.0"
+swagger: '2.0'
 info:
-  version: "v1"
-  title: "DEE GlobalSearch API Document"
+  version: v1
+  title: DEE GlobalSearch API Document
   contact: {}
   license: {}
-host: "localhost"
-basePath: "/"
+host: localhost
+basePath: /
 tags:
-- name: "File Level Search Management"
-  description: "File Level Search Controller"
+  - name: File Level Search Management
+    description: File Level Search Controller
 paths:
   /v1/search/file:
     post:
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-auditor-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       tags:
-      - "File Level Search Management"
-      summary: "细粒度文件搜索"
-      operationId: "fileSearchUsingPOST"
+        - File Level Search Management
+      summary: 细粒度文件搜索
+      operationId: fileSearchUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "X-Auth-Token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "request"
-        description: "请求消息体"
-        required: true
-        schema:
-          originalRef: "FileLevelSearchRequest"
-          $ref: "#/definitions/FileLevelSearchRequest"
-      responses:
-        "200":
-          description: "OK"
+        - name: X-Auth-Token
+          in: header
+          description: X-Auth-Token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: 请求消息体
+          required: true
           schema:
-            type: "object"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            originalRef: FileLevelSearchRequest
+            $ref: '#/definitions/FileLevelSearchRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FileLevelSearchResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
 securityDefinitions:
   Authorization:
-    type: "apiKey"
-    name: "TOKEN"
-    in: "header"
+    type: apiKey
+    name: TOKEN
+    in: header
 definitions:
   FileLevelSearchRequest:
-    type: "object"
+    type: object
     properties:
       chainId:
-        type: "string"
-        description: "副本链ID"
+        type: string
+        description: 副本链ID
       copyId:
-        type: "string"
-        description: "副本ID"
+        type: string
+        description: 副本ID
       generatedBy:
-        type: "string"
-        description: "副本生成方式"
+        type: string
+        description: 副本生成方式
       gn:
-        type: "integer"
-        format: "int64"
-        description: "副本gn"
+        type: integer
+        format: int64
+        description: 副本gn
       nodeType:
-        type: "array"
+        type: array
         example:
-        - 1
-        description: "文件类型列表。 1：文件，2：文件夹，3：链接"
+          - 1
+        description: 文件类型列表。 1：文件，2：文件夹，3：链接
         items:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
       orderBy:
-        type: "string"
-        description: "排序字段"
+        type: string
+        description: 排序字段
       orderType:
-        type: "string"
-        description: "排序类型。“asc”或“desc”，默认为“asc”。"
+        type: string
+        description: 排序类型。“asc”或“desc”，默认为“asc”。
       pageNo:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
         example: 0
-        description: "分页页面编码"
+        description: 分页页面编码
       pageSize:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
         example: 10
-        description: "分页数据条数"
+        description: 分页数据条数
       path:
-        type: "string"
-        description: "文件路径"
+        type: string
+        description: 文件路径
       resourceId:
-        type: "string"
-        description: "资源ID"
+        type: string
+        description: 资源ID
       resourceName:
-        type: "string"
-        example: "vm_1234"
-        description: "资源名称"
+        type: string
+        example: vm_1234
+        description: 资源名称
       resourceType:
-        type: "array"
+        type: array
         example:
-        - 0
-        - 1
-        - 2
-        description: "资源类型列表"
+          - 0
+          - 1
+          - 2
+        description: 资源类型列表
         items:
-          type: "integer"
-          format: "int32"
+          type: integer
+          format: int32
       searchKey:
-        type: "string"
-        example: "my document"
-        description: "搜索关键字，将会搜索出包含这个关键字的所有文件。"
-    title: "FileLevelSearchRequest"
+        type: string
+        example: my document
+        description: 搜索关键字，将会搜索出包含这个关键字的所有文件。
+    title: FileLevelSearchRequest
+  FileInfo:
+    description: 文件信息
+    properties:
+      resourceId:
+        type: string
+        description: 资源ID
+      resourceName:
+        type: string
+        description: 资源名称
+      resourceType:
+        type: integer
+        format: int32
+        description: 资源类型
+      copyId:
+        type: string
+        description: 副本ID
+      chainId:
+        type: string
+        description: CHAIN ID
+      nodeType:
+        type: integer
+        format: int32
+        description: 文件类型
+      nodeName:
+        type: string
+        description: 文件名
+      nodeSize:
+        type: integer
+        format: int64
+        description: 文件大小
+      nodeCreateTime:
+        type: integer
+        format: int64
+        description: 创建时间
+      nodeLastModifiedTime:
+        type: integer
+        format: int64
+        description: 最近修改时间
+      path:
+        type: string
+        description: 父路径
+      gnLte:
+        type: integer
+        format: int64
+        description: gn范围：小于等于
+      gnGte:
+        type: integer
+        format: int64
+        description: gn范围：大于等于
+  FileLevelSearchResponse:
+    properties:
+      total:
+        type: integer
+        format: int64
+        description: 总个数
+      startIndex:
+        type: integer
+        format: int32
+        description: 起始页
+      nextIndex:
+        type: integer
+        format: int32
+        description: 下一页
+      currentSize:
+        type: integer
+        format: int32
+        description: 当前页大小
+      took:
+        type: integer
+        format: int64
+        description: 检索时间
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/FileInfo'
+        description: 检索条目
