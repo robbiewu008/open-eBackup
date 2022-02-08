@@ -1,625 +1,619 @@
----
-swagger: "2.0"
+swagger: '2.0'
 info:
-  version: "v1"
-  title: "客户端管理接口"
+  version: v1
+  title: 客户端管理接口
   contact: {}
   license: {}
-host: "localhost"
-basePath: "/"
+host: localhost
+basePath: /
 tags:
-- name: "client-manager-api"
-  description: "Host Agent Manager Controller"
-- name: "host-agent-update-controller"
-  description: "Host Agent Update Controller"
+  - name: client-manager-api
+    description: Host Agent Manager Controller
+  - name: host-agent-update-controller
+    description: Host Agent Update Controller
 paths:
   /v1/host-agent:
     post:
       tags:
-      - "client-manager-api"
-      summary: "上传保护代理"
-      operationId: "uploadAgentClientUsingPOST"
+        - client-manager-api
+      summary: 上传保护代理
+      operationId: uploadAgentClientUsingPOST
       consumes:
-      - "multipart/form-data"
+        - multipart/form-data
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "agentClient"
-        in: "formData"
-        description: "保护代理"
-        required: false
-        type: "file"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: agentClient
+          in: formData
+          description: 保护代理
+          required: false
+          type: file
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/host-agent/action/update:
     post:
       tags:
-      - "host-agent-update-controller"
-      summary: "批量更新代理客户端"
-      operationId: "batchUpdateAgentClientUsingPOST"
+        - host-agent-update-controller
+      summary: 批量更新代理客户端
+      operationId: batchUpdateAgentClientUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "request"
-        description: "批量更新代理客户端请求参数"
-        required: true
-        schema:
-          $ref: "#/definitions/AgentsUpdateRequest"
-          originalRef: "AgentsUpdateRequest"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: 批量更新代理客户端请求参数
+          required: true
+          schema:
+            $ref: '#/definitions/AgentsUpdateRequest'
+            originalRef: AgentsUpdateRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/host-agent/agents:
     get:
       tags:
-      - "client-manager-api"
-      summary: "查询保护代理信息"
-      operationId: "queryAgentEntitiesUsingGET"
+        - client-manager-api
+      summary: 查询保护代理信息
+      operationId: queryAgentEntitiesUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "index"
-        in: "query"
-        description: "页数"
-        required: false
-        type: "integer"
-        default: 1
-        minimum: 0.0
-        exclusiveMinimum: false
-        format: "int32"
-        allowEmptyValue: false
-      - name: "size"
-        in: "query"
-        description: "每页数量"
-        required: false
-        type: "integer"
-        default: 5
-        maximum: 200.0
-        exclusiveMaximum: false
-        minimum: 0.0
-        exclusiveMinimum: false
-        format: "int32"
-        allowEmptyValue: false
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: index
+          in: query
+          description: 页数
+          required: false
+          type: integer
+          default: 1
+          minimum: 0.0
+          exclusiveMinimum: false
+          format: int32
+          allowEmptyValue: false
+        - name: size
+          in: query
+          description: 每页数量
+          required: false
+          type: integer
+          default: 5
+          maximum: 200.0
+          exclusiveMaximum: false
+          minimum: 0.0
+          exclusiveMinimum: false
+          format: int32
+          allowEmptyValue: false
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/BasePage«AgentEntityDTO»"
-            originalRef: "BasePage«AgentEntityDTO»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/BasePage«AgentEntityDTO»'
+            originalRef: BasePage«AgentEntityDTO»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
-  /v1/host-agent/agents/{id}:
-    delete:
-      tags:
-      - "client-manager-api"
-      summary: "删除保护代理"
-      operationId: "deleteAgentEntityUsingDELETE"
-      produces:
-      - "*/*"
-      parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "id"
-        in: "path"
-        description: "保护代理id"
-        required: true
-        type: "string"
-        pattern: "^\\d{1,32}$"
-      responses:
-        "200":
-          description: "OK"
-        "204":
-          description: "No Content"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-      security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/host-agent/download:
     get:
       tags:
-      - "client-manager-api"
-      summary: "下载链接接口，前端不涉及"
-      operationId: "temporaryDownloadUsingGET"
+        - client-manager-api
+      summary: 下载链接接口，前端不涉及
+      operationId: temporaryDownloadUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "uuid"
-        in: "query"
-        description: "下载链接唯一标识"
-        required: false
-        type: "string"
-        allowEmptyValue: false
+        - name: uuid
+          in: query
+          description: 下载链接唯一标识
+          required: false
+          type: string
+          allowEmptyValue: false
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/FileSystemResource"
-            originalRef: "FileSystemResource"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/FileSystemResource'
+            originalRef: FileSystemResource
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
     post:
       tags:
-      - "client-manager-api"
-      summary: "下载保护代理"
-      operationId: "downloadAgentClientUsingPOST"
+        - client-manager-api
+      summary: 下载保护代理
+      operationId: downloadAgentClientUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "params"
-        description: "保护代理下载参数"
-        required: true
-        schema:
-          $ref: "#/definitions/AgentDownloadParams"
-          originalRef: "AgentDownloadParams"
-      responses:
-        "200":
-          description: "OK"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: params
+          description: 保护代理下载参数
+          required: true
           schema:
-            $ref: "#/definitions/FileSystemResource"
-            originalRef: "FileSystemResource"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/AgentDownloadParams'
+            originalRef: AgentDownloadParams
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FileSystemResource'
+            originalRef: FileSystemResource
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/host-agent/register:
     post:
       tags:
-      - "client-manager-api"
-      summary: "客户端代理自动注册"
-      operationId: "registerHostAgentUsingPOST"
+        - client-manager-api
+      summary: 客户端代理自动注册
+      operationId: registerHostAgentUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "params"
-        description: "客户端代理自动注册参数"
-        required: true
-        schema:
-          $ref: "#/definitions/AgentRegisterParam"
-          originalRef: "AgentRegisterParam"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: params
+          description: 客户端代理自动注册参数
+          required: true
+          schema:
+            $ref: '#/definitions/AgentRegisterParam'
+            originalRef: AgentRegisterParam
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/host-agent/register/connection:
     post:
       tags:
-      - "client-manager-api"
-      summary: "客户端代理自动注册连通性检查"
-      operationId: "checkRegisterConnectionUsingPOST"
+        - client-manager-api
+      summary: 客户端代理自动注册连通性检查
+      operationId: checkRegisterConnectionUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "params"
-        description: "客户端代理自动注册参数"
-        required: true
-        schema:
-          $ref: "#/definitions/AgentRegisterConnectionParam"
-          originalRef: "AgentRegisterConnectionParam"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: params
+          description: 客户端代理自动注册参数
+          required: true
+          schema:
+            $ref: '#/definitions/AgentRegisterConnectionParam'
+            originalRef: AgentRegisterConnectionParam
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
 securityDefinitions:
   Authorization:
-    type: "apiKey"
-    name: "TOKEN"
-    in: "header"
+    type: apiKey
+    name: TOKEN
+    in: header
 definitions:
   AgentClientInfo:
-    type: "object"
+    type: object
     properties:
       agentId:
-        type: "string"
-        description: "agent的ID"
+        type: string
+        description: agent的ID
       uuid:
-        type: "string"
-        description: "资源id"
-    title: "AgentClientInfo"
+        type: string
+        description: 资源id
+    title: AgentClientInfo
   AgentDownloadParams:
-    type: "object"
-    required:
-    - "agentID"
-    - "privateKey"
-    - "type"
     properties:
       agentID:
-        type: "string"
-        description: "保护代理id"
-        pattern: "^\\d{1,32}$"
+        type: string
+        description: 保护代理id
+        pattern: '^\d{1,32}$'
       osType:
-        type: "string"
-        description: "操作系统类型"
+        type: string
+        description: 操作系统类型Windows/Linux/Unix/Others
         enum:
-        - "WINDOWS"
-        - "OTHERS"
+          - WINDOWS
+          - LINUX
+          - UNIX
+          - OTHERS
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       privateKey:
-        type: "string"
-        description: "私钥"
+        type: string
+        description: 私钥
       type:
-        type: "string"
-        description: "代理类型"
+        type: string
+        description: 代理类型 主机Oracle/主机通用/外置VM/外置通用
         enum:
-        - "HOST"
-        - "VM"
-    title: "AgentDownloadParams"
+          - HOST_AGENT_ORACLE
+          - HOST_AGENT
+          - REMOTE_AGENT_VMWARE
+          - REMOTE_AGENT
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+    title: AgentDownloadParams
+    required:
+      - agentID
+      - osType
+      - privateKey
+      - type
   AgentEntityDTO:
-    type: "object"
+    type: object
     properties:
       agentName:
-        type: "string"
+        type: string
       id:
-        type: "string"
+        type: string
       status:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       uploadTime:
-        type: "string"
+        type: string
       version:
-        type: "string"
-    title: "AgentEntityDTO"
+        type: string
+    title: AgentEntityDTO
   AgentInfo:
-    type: "object"
+    type: object
     properties:
       agentId:
-        type: "string"
+        type: string
       agentName:
-        type: "string"
+        type: string
       releaseVersion:
-        type: "string"
+        type: string
       versionDependencyRegexp:
-        type: "string"
+        type: string
       versionTimeStamp:
-        type: "string"
-    title: "AgentInfo"
+        type: string
+    title: AgentInfo
   AgentRegisterConnectionParam:
-    type: "object"
     properties:
       ip:
-        type: "string"
-        description: "客户端IP"
+        type: string
+        description: 客户端IP
       osType:
-        type: "string"
-        description: "操作系统类型 Window/Others"
+        type: string
+        description: 操作系统类型 WINDOWS/LINUX/UNIX/OTHERS
         enum:
-        - "WINDOWS"
-        - "OTHERS"
+          - WINDOWS
+          - LINUX
+          - UNIX
+          - OTHERS
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       password:
-        type: "string"
-        description: "远程连接用户密码"
+        type: string
+        description: 远程连接用户密码
         minLength: 1
         maxLength: 255
       username:
-        type: "string"
-        description: "远程连接用户名"
+        type: string
+        description: 远程连接用户名
         minLength: 1
         maxLength: 255
-    title: "AgentRegisterConnectionParam"
+    title: AgentRegisterConnectionParam
   AgentRegisterParam:
-    type: "object"
     properties:
       ip:
-        type: "string"
-        description: "客户端IP"
+        type: string
+        description: 客户端IP
       osType:
-        type: "string"
-        description: "操作系统类型 Window/Others"
+        type: string
+        description: 操作系统类型 Windows/Linux/Unix/Others
         enum:
-        - "WINDOWS"
-        - "OTHERS"
+          - WINDOWS
+          - LINUX
+          - UNIX
+          - OTHERS
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       password:
-        type: "string"
-        description: "远程连接用户密码"
+        type: string
+        description: 远程连接用户密码
         minLength: 1
         maxLength: 255
       type:
-        type: "string"
-        description: "业务类型 主机/VM"
+        type: string
+        description: 业务类型 主机Oracle/主机通用/外置VM/外置通用
         enum:
-        - "HOST"
-        - "VM"
+          - HOST_AGENT_ORACLE
+          - HOST_AGENT
+          - REMOTE_AGENT_VMWARE
+          - REMOTE_AGENT
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       username:
-        type: "string"
-        description: "远程连接用户名"
+        type: string
+        description: 远程连接用户名
         minLength: 1
         maxLength: 255
-    title: "AgentRegisterParam"
+    title: AgentRegisterParam
   AgentsUpdateRequest:
-    type: "object"
+    type: object
     properties:
       agentClientInfoList:
-        type: "array"
-        description: "客户端更新信息列表"
+        type: array
+        description: 客户端更新信息列表
         items:
-          $ref: "#/definitions/AgentClientInfo"
-          originalRef: "AgentClientInfo"
-    title: "AgentsUpdateRequest"
+          $ref: '#/definitions/AgentClientInfo'
+          originalRef: AgentClientInfo
+    title: AgentsUpdateRequest
   BasePage«AgentEntityDTO»:
-    type: "object"
+    type: object
     properties:
       items:
-        type: "array"
-        description: "详情"
+        type: array
+        description: 详情
         items:
-          $ref: "#/definitions/AgentEntityDTO"
-          originalRef: "AgentEntityDTO"
+          $ref: '#/definitions/AgentEntityDTO'
+          originalRef: AgentEntityDTO
       page_no:
-        type: "integer"
-        format: "int64"
-        description: "页码"
+        type: integer
+        format: int64
+        description: 页码
       page_size:
-        type: "integer"
-        format: "int64"
-        description: "每页总数"
+        type: integer
+        format: int64
+        description: 每页总数
       pages:
-        type: "integer"
-        format: "int64"
-        description: "总页数"
+        type: integer
+        format: int64
+        description: 总页数
       total:
-        type: "integer"
-        format: "int64"
-        description: "总数"
-    title: "BasePage«AgentEntityDTO»"
+        type: integer
+        format: int64
+        description: 总数
+    title: BasePage«AgentEntityDTO»
   File:
-    type: "object"
+    type: object
     properties:
       absolute:
-        type: "boolean"
+        type: boolean
       absoluteFile:
-        $ref: "#/definitions/File"
-        originalRef: "File"
+        $ref: '#/definitions/File'
+        originalRef: File
       absolutePath:
-        type: "string"
+        type: string
       canonicalFile:
-        $ref: "#/definitions/File"
-        originalRef: "File"
+        $ref: '#/definitions/File'
+        originalRef: File
       canonicalPath:
-        type: "string"
+        type: string
       directory:
-        type: "boolean"
+        type: boolean
       file:
-        type: "boolean"
+        type: boolean
       freeSpace:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       hidden:
-        type: "boolean"
+        type: boolean
       name:
-        type: "string"
+        type: string
       parent:
-        type: "string"
+        type: string
       parentFile:
-        $ref: "#/definitions/File"
-        originalRef: "File"
+        $ref: '#/definitions/File'
+        originalRef: File
       path:
-        type: "string"
+        type: string
       totalSpace:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       usableSpace:
-        type: "integer"
-        format: "int64"
-    title: "File"
+        type: integer
+        format: int64
+    title: File
   FileSystemResource:
-    type: "object"
+    type: object
     properties:
       description:
-        type: "string"
+        type: string
       file:
-        $ref: "#/definitions/File"
-        originalRef: "File"
+        $ref: '#/definitions/File'
+        originalRef: File
       filename:
-        type: "string"
+        type: string
       inputStream:
-        $ref: "#/definitions/InputStream"
-        originalRef: "InputStream"
+        $ref: '#/definitions/InputStream'
+        originalRef: InputStream
       open:
-        type: "boolean"
+        type: boolean
       outputStream:
-        $ref: "#/definitions/OutputStream"
-        originalRef: "OutputStream"
+        $ref: '#/definitions/OutputStream'
+        originalRef: OutputStream
       path:
-        type: "string"
+        type: string
       readable:
-        type: "boolean"
+        type: boolean
       uri:
-        $ref: "#/definitions/URI"
-        originalRef: "URI"
+        $ref: '#/definitions/URI'
+        originalRef: URI
       url:
-        $ref: "#/definitions/URL"
-        originalRef: "URL"
+        $ref: '#/definitions/URL'
+        originalRef: URL
       writable:
-        type: "boolean"
-    title: "FileSystemResource"
+        type: boolean
+    title: FileSystemResource
   InputStream:
-    type: "object"
-    title: "InputStream"
+    type: object
+    title: InputStream
   OutputStream:
-    type: "object"
-    title: "OutputStream"
+    type: object
+    title: OutputStream
   URI:
-    type: "object"
+    type: object
     properties:
       absolute:
-        type: "boolean"
+        type: boolean
       authority:
-        type: "string"
+        type: string
       fragment:
-        type: "string"
+        type: string
       host:
-        type: "string"
+        type: string
       opaque:
-        type: "boolean"
+        type: boolean
       path:
-        type: "string"
+        type: string
       port:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       query:
-        type: "string"
+        type: string
       rawAuthority:
-        type: "string"
+        type: string
       rawFragment:
-        type: "string"
+        type: string
       rawPath:
-        type: "string"
+        type: string
       rawQuery:
-        type: "string"
+        type: string
       rawSchemeSpecificPart:
-        type: "string"
+        type: string
       rawUserInfo:
-        type: "string"
+        type: string
       scheme:
-        type: "string"
+        type: string
       schemeSpecificPart:
-        type: "string"
+        type: string
       userInfo:
-        type: "string"
-    title: "URI"
+        type: string
+    title: URI
   URL:
-    type: "object"
+    type: object
     properties:
       authority:
-        type: "string"
+        type: string
       content:
-        type: "object"
+        type: object
       defaultPort:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       file:
-        type: "string"
+        type: string
       host:
-        type: "string"
+        type: string
       path:
-        type: "string"
+        type: string
       port:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       protocol:
-        type: "string"
+        type: string
       query:
-        type: "string"
+        type: string
       ref:
-        type: "string"
+        type: string
       userInfo:
-        type: "string"
-    title: "URL"
+        type: string
+    title: URL
