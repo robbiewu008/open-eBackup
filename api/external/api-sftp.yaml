@@ -66,12 +66,13 @@ paths:
           required: true
           type: integer
           format: int32
-        - name: ip
-          in: body
-          required: false
-          description: 标准备份服务ip
+        - in: body
+          name: SftpSwitchRequest
+          description: SFTP开关参数
+          required: true
           schema:
-            type: string
+            $ref: '#/definitions/SftpSwitchRequest'
+            originalRef: SftpSwitchRequest
       responses:
         '200':
           description: OK
@@ -374,6 +375,13 @@ definitions:
           $ref: '#/definitions/SftpUserBo'
           originalRef: SftpUserBo
     title: SftpQueryUserResponse
+  SftpSwitchRequest:
+    type: object
+    properties:
+      ip:
+        type: string
+        description: 服务IP
+    title: SftpSwitchRequest
   SftpServiceResponse:
     type: object
     properties:
