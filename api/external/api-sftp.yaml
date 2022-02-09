@@ -67,10 +67,11 @@ paths:
           type: integer
           format: int32
         - name: ip
-          in: formData
+          in: body
           required: false
           description: 标准备份服务ip
-          type: string
+          schema:
+            type: string
       responses:
         '200':
           description: OK
