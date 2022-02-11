@@ -1165,7 +1165,6 @@ definitions:
         description: 用户id
     title: LiveMountModel
   LiveMountObject:
-    type: object
     properties:
       copy_id:
         type: string
@@ -1184,7 +1183,7 @@ definitions:
         description: 源资源id
       target_location:
         type: string
-        description: "挂载原位置[取值范围] original 原位置，others 新位置\r\n"
+        description: '挂载原位置[取值范围] original 原位置，others 新位置'
         enum:
           - original
           - others
@@ -1193,6 +1192,11 @@ definitions:
         description: 目标资源id
         items:
           type: string
+      file_system_share_info_list:
+        items:
+          $ref: '#/definitions/LiveMountFileSystemShareInfo'
+        description: 共享文件系统信息
+        type: array
     title: LiveMountObject
   LiveMountParam:
     type: object
@@ -1433,3 +1437,21 @@ definitions:
         $ref: '#/definitions/Datastore'
         originalRef: Datastore
     title: VMWareMigrateParam
+  LiveMountFileSystemShareInfo:
+    properties:
+      type:
+        type: integer
+        format: int32
+        description: '0: nfs; 1: cifs'
+      fileSystemName:
+        type: string
+        description: 文件系统名称
+      accessPermission:
+        type: integer
+        format: int32
+        description: '0:只读; 1:读写'
+      advanceParams:
+        type: object
+        additionalProperties:
+          type: object
+        description: 高级参数
