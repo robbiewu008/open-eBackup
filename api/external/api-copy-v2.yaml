@@ -119,6 +119,46 @@ paths:
           description: 查询指定时间范围可用于恢复的时间段响应体
           schema:
             $ref: '#/definitions/AvailableTimeRangesResponseList'
+  '/v2/copies/{copyId}/action/download':
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-dp-admin-role: 'Y'
+      tags:
+        - copy-controller
+      operationId: DownloadFiles
+      consumes:
+        - application/json
+      summary: 下载副本中的文件
+      description: 下载副本中的文件
+      produces:
+        - application/json
+      parameters:
+        - name: copyId
+          in: path
+          required: true
+          type: string
+          description: 副本id
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+        - name: paths
+          in: query
+          required: true
+          description: 文件路径
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: 下载副本中的文件的响应对象
+          schema:
+            $ref: '#/definitions/DownLoadResp'
 definitions:
   FileSystemResponseList:
     description: 文件系统响应体
@@ -191,3 +231,11 @@ definitions:
       - copyId
       - startTime
       - endTime
+  DownLoadResp:
+    description: 下载副本中的文件的响应对象
+    properties:
+      requestId:
+        type: string
+        description: 请求id
+    required:
+      - requestId
