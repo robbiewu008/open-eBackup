@@ -675,6 +675,10 @@ paths:
             - global
       deprecated: false
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       tags:
         - '${clusters-api}'
       summary: 删除目标集群
@@ -693,16 +697,26 @@ paths:
           required: true
           type: integer
           maximum: 2147483647
-          exclusiveMaximum: false
           minimum: 1.0
-          exclusiveMinimum: false
           format: int32
         - name: forceDelete
           in: query
           description: 是否强制删除目标集群
           required: false
           type: boolean
-          allowEmptyValue: false
+        - name: deleteInLocal
+          in: query
+          required: false
+          description: |-
+            是否只从本地删除被管理集群
+            true：只从本地删除被管理集群；
+            false：从所有的管理集群中删除被管理集群。
+          type: boolean
+          default: 'false'
+          x-impact-subsystem: 不影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
       responses:
         '200':
           description: OK
@@ -715,7 +729,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/clusters/{clusterId}/nodes':
     get:
       tags:
