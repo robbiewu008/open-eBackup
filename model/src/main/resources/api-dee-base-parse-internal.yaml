@@ -1,100 +1,100 @@
----
-swagger: "2.0"
+swagger: '2.0'
 info:
-  version: "v1"
-  title: "DEE Base Parser Internal API Document"
+  version: v1
+  title: DEE Base Parser Internal API Document
   contact: {}
   license: {}
-host: "localhost"
-basePath: "/"
+host: localhost
+basePath: /
 tags:
-- name: "Download Management"
-  description: "Download Controller"
+  - name: Download Management
+    description: Download Controller
 paths:
   /v1/internal/flr/action/export:
     post:
       tags:
-      - "Download Management"
-      summary: "导出"
-      operationId: "exportFileUsingPOST"
+        - Download Management
+      summary: 导出
+      operationId: exportFileUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "exportRequest"
-        description: "exportRequest"
-        required: true
-        schema:
-          $ref: "#/definitions/ExportRequest"
-          originalRef: "ExportRequest"
+        - in: body
+          name: exportRequest
+          description: exportRequest
+          required: true
+          schema:
+            $ref: '#/definitions/ExportRequest'
+            originalRef: ExportRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
 securityDefinitions:
   Authorization:
-    type: "apiKey"
-    name: "TOKEN"
-    in: "header"
+    type: apiKey
+    name: TOKEN
+    in: header
 definitions:
   ExportCopyInfo:
-    type: "object"
+    type: object
     required:
-    - "resourceSubType"
-    - "snapshots"
-    - "userId"
-    - "uuid"
+      - resourceSubType
+      - snapshots
+      - userId
+      - uuid
     properties:
       resourceSubType:
-        type: "string"
+        type: string
       snapshots:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/SnapshotInfo"
-          originalRef: "SnapshotInfo"
+          $ref: '#/definitions/SnapshotInfo'
+          originalRef: SnapshotInfo
       userId:
-        type: "string"
+        type: string
       uuid:
-        type: "string"
-    title: "ExportCopyInfo"
+        type: string
+    title: ExportCopyInfo
   ExportRequest:
-    type: "object"
-    required:
-    - "copyInfo"
-    - "path"
-    - "requestId"
     properties:
       copyInfo:
-        $ref: "#/definitions/ExportCopyInfo"
-        originalRef: "ExportCopyInfo"
-      path:
-        type: "string"
+        $ref: '#/definitions/ExportCopyInfo'
+        originalRef: ExportCopyInfo
+      paths:
+        type: array
+        items:
+          type: string
       requestId:
-        type: "string"
-    title: "ExportRequest"
-  SnapshotInfo:
-    type: "object"
+        type: string
+    title: ExportRequest
     required:
-    - "id"
-    - "parentName"
+      - copyInfo
+      - paths
+      - requestId
+  SnapshotInfo:
+    type: object
+    required:
+      - id
+      - parentName
     properties:
       id:
-        type: "string"
-        description: "快照id"
+        type: string
+        description: 快照id
       parentName:
-        type: "string"
-        description: "快照文件系统名称"
-    title: "SnapshotInfo"
+        type: string
+        description: 快照文件系统名称
+    title: SnapshotInfo
