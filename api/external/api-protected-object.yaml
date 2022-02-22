@@ -520,11 +520,13 @@ definitions:
         maxLength: 36
         title: Sla Id
         type: string
-    required:
-      - sla_id
-      - action
+      copy_name:
+        type: string
+        description: 副本名
     title: ManualBackupReq
-    type: object
+    required:
+      - action
+      - sla_id
   ModifyProtectionSubmitReq:
     properties:
       ext_parameters:
