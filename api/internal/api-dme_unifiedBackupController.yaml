@@ -815,69 +815,6 @@ paths:
           description: 内部错误
           schema:
             $ref: '#/definitions/RspMsg'
-  '/v1/dme_unified/copies/{copy_id}/qos':
-    put:
-      x-impact-subsystem: 不影响
-      x-access-port: 30065
-      x-auth-required: 'Y'
-      x-public-api: 'N'
-      x-auth-type: 双向证书认证
-      tags:
-        - copy-pm
-      description: 更新Qos
-      operationId: UpdateQos
-      parameters:
-        - name: copy_id
-          in: path
-          required: true
-          type: string
-        - name: qos
-          in: body
-          required: true
-          description: qos模型
-          schema:
-            $ref: '#/definitions/MountQos'
-      responses:
-        '200':
-          description: ''
-          schema:
-            type: string
-        '400':
-          description: 参数错误
-          schema:
-            $ref: '#/definitions/RspMsg'
-        '500':
-          description: 内部错误
-          schema:
-            $ref: '#/definitions/RspMsg'
-    delete:
-      x-impact-subsystem: 不影响
-      x-access-port: 30065
-      x-auth-required: 'Y'
-      x-public-api: 'N'
-      x-auth-type: 双向证书认证
-      tags:
-        - copy-pm
-      description: 删除qos
-      operationId: DeleteQos
-      parameters:
-        - name: copy_id
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: ''
-          schema:
-            type: string
-        '400':
-          description: 副本id对应的副本不存在
-          schema:
-            $ref: '#/definitions/RspMsg'
-        '500':
-          description: 内部错误
-          schema:
-            $ref: '#/definitions/RspMsg'
   /v1/dme-unified/copies/timerange:
     get:
       x-impact-subsystem: 不影响
@@ -948,6 +885,132 @@ paths:
           description: 内部错误
           schema:
             type: string
+  /v1/dme-unified/tasks/qos:
+    put:
+      x-impact-subsystem: 不影响
+      x-access-port: 30065
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      x-auth-type: 双向证书认证
+      tags:
+        - task-agent
+      description: agent备份时更新qos
+      operationId: UpdateQosInfo
+      parameters:
+        - name: task_id
+          in: query
+          required: true
+          description: 任务id
+          type: string
+        - name: qos
+          in: body
+          required: true
+          description: qos模型
+          schema:
+            $ref: '#/definitions/MountQos'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+        '400':
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/RspMsg'
+        '500':
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/RspMsg'
+    delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 30065
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      x-auth-type: 双向证书认证
+      tags:
+        - task-agent
+      description: agent备份完删除qos
+      operationId: DeleteQosInfo
+      parameters:
+        - name: task_id
+          in: query
+          required: true
+          description: 任务id
+          type: string
+      responses:
+        '200':
+          description: 无返回值
+        '400':
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/RspMsg'
+        '500':
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/RspMsg'
+  '/v1/dme-unified/copies/{copy_id}/qos':
+    put:
+      x-impact-subsystem: 不影响
+      x-access-port: 30065
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      x-auth-type: 双向证书认证
+      tags:
+        - copy-pm
+      description: 更新Qos
+      operationId: UpdateQos
+      parameters:
+        - name: copy_id
+          in: path
+          required: true
+          type: string
+        - name: qos
+          in: body
+          required: true
+          description: qos模型
+          schema:
+            $ref: '#/definitions/MountQos'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+        '400':
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/RspMsg'
+        '500':
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/RspMsg'
+    delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 30065
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      x-auth-type: 双向证书认证
+      tags:
+        - copy-pm
+      description: 删除qos
+      operationId: DeleteQos
+      parameters:
+        - name: copy_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+        '400':
+          description: 副本id对应的副本不存在
+          schema:
+            $ref: '#/definitions/RspMsg'
+        '500':
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/RspMsg'
 definitions:
   DemoInfo:
     description: This is a demo
@@ -1333,7 +1396,7 @@ definitions:
       dataSize:
         type: integer
         format: int32
-        description: 任务速率，单位Mb
+        description: 任务速率，单位KB
       extendInfo:
         type: object
         description: json对象，扩展信息
@@ -1656,13 +1719,6 @@ definitions:
 
       和DEE对接口
       手动建索引待讨论
-    required:
-      - requestId
-      - taskId
-      - copyId
-      - preCopyId
-      - indexPath
-      - agents
     properties:
       requestId:
         type: string
@@ -1676,9 +1732,11 @@ definitions:
       preCopyId:
         type: string
         description: 前一个副本的id
-      indexPath:
-        type: string
-        description: 索引路径
+      repositories:
+        type: array
+        items:
+          $ref: '#/definitions/StorageRepositoryExtend'
+        description: 存储仓信息
       agents:
         type: array
         items:
@@ -1687,6 +1745,13 @@ definitions:
       extendInfo:
         type: object
         description: json对象，扩展信息
+    required:
+      - requestId
+      - taskId
+      - copyId
+      - preCopyId
+      - repositories
+      - agents
   ProtectTask:
     description: >-
       分配任务的任务模型 -- 主任务
@@ -1844,7 +1909,7 @@ definitions:
       type:
         type: integer
         format: int32
-        description: '0-data, 1-meta'
+        description: '0-meta, 1-data'
       path:
         type: string
         description: 具体的存储路径
@@ -1995,12 +2060,14 @@ definitions:
       preCopyId:
         type: string
         description: 前一个副本的id
-      indexPath:
-        type: string
-        description: 索引路径
+      repositories:
+        type: array
+        items:
+          $ref: '#/definitions/StorageRepositoryExtend'
+        description: 存储仓信息
     required:
       - preCopyId
-      - indexPath
+      - repositories
   DeleteCopyTask:
     properties:
       taskId:
@@ -2062,7 +2129,13 @@ definitions:
       - targetEnv
       - agents
   MountQos:
-    description: 限速策略
+    description: |-
+      限速策略，填写规则：
+      1、若burstTime存在，需保证iopsBurst和bandwidthBurst至少填写一个
+      2、bandwidthMin、bandwidthMax、iopsMin、iopsMax、latency这5个选项至少填写一个
+      3、如果iopsBurst存在，iopsMax必填；若bandwidthBurst存在，bandwidthMax必填
+      4、需满足bandwidthMin < bandwidthMax < bandwidthBurst
+      5、需满足iopsMin < iopsMax < iopsBurst
     properties:
       bandwidthMin:
         type: integer
@@ -2096,15 +2169,6 @@ definitions:
         type: integer
         format: int32
         description: 延时，500或者1500
-    required:
-      - bandwidthMin
-      - bandwidthMax
-      - bandwidthBurst
-      - iopsMin
-      - iopsMax
-      - iopsBurst
-      - burstTime
-      - latency
   CancelLiveMountTask:
     description: 卸载模型
     properties:
