@@ -176,6 +176,9 @@ definitions:
         type: integer
         format: int64
         description: gn范围：大于等于
+      generatedBy:
+        type: string
+        description: 副本生成方式
   FileLevelSearchResponse:
     properties:
       total:
