@@ -479,6 +479,10 @@ paths:
       deprecated: false
   '/v1/jobs/{jobId}/logs':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       tags:
         - Job API
       summary: 查询任务日志
@@ -515,9 +519,7 @@ paths:
           required: false
           type: integer
           maximum: 200.0
-          exclusiveMaximum: false
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
           x-example: 10
         - name: startPage
@@ -526,9 +528,24 @@ paths:
           required: false
           type: integer
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
           x-example: 0
+        - name: levels
+          in: query
+          required: false
+          description: 筛选日志等级
+          type: array
+          items:
+            enum:
+              - info
+              - warning
+              - error
+              - fatal
+            type: string
+          x-impact-subsystem: 不影响
+          x-access-port: 30081
+          x-auth-required: 'N'
+          x-public-api: 'N'
       responses:
         '200':
           description: OK
@@ -544,7 +561,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -657,7 +673,6 @@ definitions:
         description: 用户id
     title: CreateJobRequest
   JobBo:
-    type: object
     properties:
       associativeId:
         type: string
@@ -689,7 +704,12 @@ definitions:
         description: 结束时间
       extendStr:
         type: string
-        description: 扩展属性
+        description: >-
+          扩展属性，格式为json字符串，不同的任务会有不同的数据；备份任务中，缩减前数据量字段名为dataBeforeRedutciton，缩减后数据量字段名为dataAfterReduction，sla名称字段名为slaName，备份任务的备份类型字段名为backupType，比如
+          {"dataBeforeReduction": "20 GB", "dataAfterRecution": "17 GB",
+          "slaName": "oracle_sla", "backupType":
+          "difference_increment"}。恢复任务中，恢复类型字段名为restoreType，比如{"restoreType":
+          "FLR"}（FLR表示文件级恢复）
       isSystem:
         type: boolean
         description: 是否为系统任务。是：true，不是：false
