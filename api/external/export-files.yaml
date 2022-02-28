@@ -1,0 +1,226 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: api-export-files-api
+    description: 外部接口
+paths:
+  /v1/export-files:
+    get:
+      x-sysadmin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - api-export-files-api
+      description: 批量查询导出记录
+      operationId: GetExportFiles
+      parameters:
+        - name: fileName
+          in: query
+          required: false
+          description: 文件名
+          type: string
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+        - name: types
+          in: query
+          required: false
+          description: 文件类型
+          type: string
+        - name: statuses
+          in: query
+          required: false
+          description: 文件状态
+          type: string
+        - name: pageNo
+          in: query
+          required: false
+          description: 页面编号
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          description: 页面大小
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: 批量返回值
+          schema:
+            $ref: '#/definitions/BasePage_ExportRecordQueryResponse'
+    post:
+      x-sysadmin-role: 'Y'
+      x-dp-admin-role: ''
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - api-export-files-api
+      description: 创建导出文件记录
+      operationId: CreateExportFile
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+        - name: type
+          in: body
+          required: true
+          description: 文件类型
+          schema:
+            $ref: '#/definitions/ExportFileCreateRequest'
+      responses:
+        '200':
+          description: 无返回值
+  '/v1/export-files/{id}':
+    delete:
+      x-sysadmin-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - api-export-files-api
+      description: 删除导出记录
+      operationId: DeleteExportFiles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 导出记录ID
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: 无返回值
+  '/v1/export-files/{id}/action/download':
+    get:
+      x-sysadmin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - api-export-files-api
+      description: 下载导出文件
+      operationId: DownloadExportFile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 导出记录ID
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: 文件流
+          schema:
+            type: string
+            format: byte
+definitions:
+  ExportFileType:
+    description: 导出文件类型
+    properties:
+      type:
+        type: string
+        description: 文件类型
+    additionalProperties: {}
+    required:
+      - type
+  ExportFileStatus:
+    description: 导出文件状态
+    properties:
+      status:
+        type: string
+        description: 文件状态
+    required:
+      - status
+  ExportFilesQueryRequest:
+    description: 批量查询导出文件请求参数
+    properties:
+      id:
+        type: string
+        description: 导出记录ID
+      fileName:
+        type: string
+        description: 文件名
+      types:
+        description: 文件类型
+        $ref: '#/definitions/ExportFileType'
+      statuses:
+        description: 文件状态
+        $ref: '#/definitions/ExportFileStatus'
+      pageNo:
+        type: integer
+        format: int32
+        description: 页面编号
+      pageSize:
+        type: integer
+        format: int32
+        description: 页面显示数量
+  BasePage_ExportRecordQueryResponse:
+    description: 页面类
+    properties:
+      total:
+        type: integer
+        format: int64
+        description: 查询总数量
+      pages:
+        type: integer
+        format: int64
+        description: 总页面
+      pageSize:
+        type: integer
+        format: int64
+        description: 单个页面显示数量
+      pageNo:
+        type: integer
+        format: int64
+        description: 序号
+      items:
+        description: 数据
+        $ref: '#/definitions/ExportFilesQueryRequest'
+  ExportFileCreateRequest:
+    description: 创建文件记录
+    properties:
+      type:
+        description: 文件类型
+        $ref: '#/definitions/ExportFileType'
+      name:
+        type: string
+        description: 文件名
+      params:
+        type: object
+        additionalProperties:
+          type: string
+        description: 创建类型参数
+    required:
+      - type
+      - params
