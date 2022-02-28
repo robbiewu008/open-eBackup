@@ -154,6 +154,9 @@ paths:
       deprecated: false
   /v1/clusters:
     get:
+      x-dp-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -1343,6 +1346,9 @@ definitions:
       enableManage:
         type: boolean
         description: 当role为2时，true：管理集群；false：被管理集群
+      authUserList:
+        $ref: '#/definitions/ClustersRelationUserInfo'
+        description: 当role为2时，被授权的数据保护管理员信息集合
     title: ClustersInfoVo
   CopyReplicationImportParam:
     type: object
@@ -1716,3 +1722,14 @@ definitions:
         type: string
       type:
         type: string
+  ClustersRelationUserInfo:
+    properties:
+      userId:
+        type: string
+        description: 管理集群数据保护管理员用户id
+      userName:
+        type: string
+        description: 管理集群数据保护管理员用户名
+      managedUserName:
+        type: string
+        description: 被管理集群数据保护管理员用户名

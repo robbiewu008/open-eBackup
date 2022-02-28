@@ -264,6 +264,106 @@ paths:
           description: 操作结果
           schema:
             type: string
+  '/v1/multi-clusters/{clusterId}/auth-users':
+    post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - '${api.multi-clusters}'
+      summary: 把被管理集群授权给指定的数据保护管理员
+      description: 将被管理集群数据保护管理员权限授权给一个管理集群数据保护管理员
+      operationId: createManagedClustersAuth
+      parameters:
+        - name: clusterId
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: 被管理集群id
+          minimum: 2
+          x-impact-subsystem: 不影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+        - name: anagedClustersRelationReq
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/ManagedClustersRelationReq'
+      responses:
+        '200':
+          description: ''
+  '/v1/multi-clusters/{clusterId}/auth-users/{userId}':
+    delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - '${api.multi-clusters}'
+      summary: 被管理集群取消授权
+      description: 被管理集群取消授权
+      operationId: deleteManagedClustersAuth
+      parameters:
+        - name: clusterId
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: 被管理集群id
+          minimum: 2
+          x-impact-subsystem: 不影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: 管理集群数据保护管理员用户id
+      responses:
+        '200':
+          description: ''
+    put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - '${api.multi-clusters}'
+      summary: 被管理集群修改授权
+      description: 被管理集群修改授权
+      operationId: modifyManagedClustersAuth
+      parameters:
+        - name: clusterId
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: 被管理集群id
+          minimum: 2
+          x-impact-subsystem: 不影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+        - name: updateManagedClustersRelationReq
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/UpdateManagedClustersRelationReq'
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: 管理集群数据保护管理员用户id
+      responses:
+        '200':
+          description: ''
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -423,3 +523,73 @@ definitions:
       - username
       - password
       - syncToRemote
+  ManagedClustersRelationReq:
+    properties:
+      userId:
+        type: string
+        description: 管理集群数据保护管理员用户id
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+        minLength: 1
+        maxLength: 64
+      managedUserName:
+        type: string
+        description: 被管理集群数据保护管理员用户名
+        minLength: 5
+        maxLength: 64
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      managedPassword:
+        type: string
+        description: 被管理集群数据保护管理员密码
+        minLength: 8
+        maxLength: 64
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+    required:
+      - userId
+      - managedUserName
+      - managedPassword
+  UpdateManagedClustersRelationReq:
+    properties:
+      managedUserName:
+        type: string
+        description: 被管理集群数据保护管理员用户名
+        minLength: 5
+        maxLength: 64
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      managedPassword:
+        type: string
+        description: 被管理集群数据保护管理员用户密码
+        minLength: 8
+        maxLength: 64
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+    required:
+      - managedUserName
+      - managedPassword
+  DeleteClustersRelationReq:
+    properties:
+      userId:
+        type: string
+        description: 本地用户id
+      managedUserName:
+        type: string
+        description: 被管理集群用户名
+      clusterName:
+        type: string
+        description: 被管理集群名称
+      userName:
+        type: string
+        description: 本地用户名称
