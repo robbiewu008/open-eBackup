@@ -87,6 +87,13 @@ paths:
             - global
   /v1/auth/token/verify/action:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-auditor-role: 'Y'
       tags:
         - '${auth-api}'
       summary: 校验token
@@ -111,7 +118,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/roles:
     get:
       x-impact-subsystem: 不影响
@@ -714,6 +720,13 @@ paths:
             - global
   '/v1/users/{logoutType}/action/logout':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-auditor-role: 'Y'
       tags:
         - '${users-api}'
       summary: 登出记录日志
@@ -743,7 +756,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/users/{userId}':
     get:
       x-impact-subsystem: 不影响
