@@ -15,11 +15,15 @@ tags:
     description: 安全策略
   - name: '${users-api}'
     description: 用户管理
-  - name: '${users-internal-api}'
-    description: '${users-internal-api}'
 paths:
   /v1/auth/certificate:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${auth-api}'
       summary: 获取证书
@@ -40,9 +44,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/auth/token:
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${auth-api}'
       summary: 获取token
@@ -76,7 +85,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/auth/token/verify/action:
     get:
       tags:
@@ -106,6 +114,12 @@ paths:
       deprecated: false
   /v1/roles:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${role-api}'
       summary: 批量查询角色
@@ -133,9 +147,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/roles/{id}':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-auditor-role: 'Y'
       tags:
         - '${role-api}'
       summary: 查询指定角色
@@ -169,9 +189,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/roles/{id}/users':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-auditor-role: 'Y'
       tags:
         - '${role-api}'
       summary: 查询角色关联的用户列表
@@ -219,9 +245,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/security:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${security-api}'
       summary: 查询安全策略
@@ -249,8 +280,13 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${security-api}'
       summary: 修改安全策略
@@ -286,9 +322,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/security/featureSwitch:
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${security-api}'
       summary: 修改特性开关
@@ -324,9 +365,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/security/featureSwitch/{featureName}':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${security-api}'
       summary: 查询特性开关
@@ -359,9 +405,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/security/securityIp:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${security-api}'
       summary: 查询可访问IP列表
@@ -389,8 +440,13 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${security-api}'
       summary: 修改可访问IP列表
@@ -428,9 +484,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/security/weakpassword:
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${security-api}'
       summary: 新增弱口令
@@ -452,7 +513,6 @@ paths:
           type: string
           maxLength: 64
           minLength: 8
-          allowEmptyValue: false
       responses:
         '200':
           description: OK
@@ -467,9 +527,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/security/weakpassword/{id}':
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${security-api}'
       summary: 删除弱口令
@@ -501,9 +566,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/security/weakpasswords:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${security-api}'
       summary: 查询弱口令字典
@@ -531,9 +601,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/users:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${users-api}'
       summary: 批量查询用户
@@ -592,8 +667,13 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${users-api}'
       summary: 创建用户
@@ -632,7 +712,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/users/{logoutType}/action/logout':
     get:
       tags:
@@ -667,6 +746,12 @@ paths:
       deprecated: false
   '/v1/users/{userId}':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${users-api}'
       summary: 查询单个用户
@@ -699,7 +784,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     put:
       tags:
         - '${users-api}'
@@ -743,6 +827,12 @@ paths:
             - global
       deprecated: false
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${users-api}'
       summary: 删除用户
@@ -772,9 +862,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/users/{userId}/action/lock':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${users-api}'
       summary: 锁定用户
@@ -808,9 +903,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/users/{userId}/action/reset_password':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${users-api}'
       summary: 重置用户密码
@@ -851,9 +951,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/users/{userId}/action/unlock':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${users-api}'
       summary: 解锁用户
@@ -893,9 +998,14 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/users/{userId}/action/update_password':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${users-api}'
       summary: 修改用户密码
@@ -936,7 +1046,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
 securityDefinitions:
   Authorization:
     type: apiKey
