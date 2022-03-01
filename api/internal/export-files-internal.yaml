@@ -13,6 +13,10 @@ tags:
 paths:
   '/v1/internal/export-files/{id}':
     put:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 30081
       x-auth-required: 'N'
@@ -27,6 +31,15 @@ paths:
           required: true
           type: string
           description: 导出记录ID
+          maxLength: 64
+          x-impact-subsystem: 影响
+          x-access-port: 25081
+          x-auth-required: 'N'
+          x-rd-admin-role: 'N'
+          x-auditor-role: 'N'
+          x-dp-admin-role: 'N'
+          x-public-api: 'N'
+          x-sysadmin-role: 'N'
         - name: request
           in: body
           required: true

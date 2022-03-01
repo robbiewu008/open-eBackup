@@ -13,6 +13,7 @@ tags:
 paths:
   /v1/export-files:
     get:
+      x-rd-admin-role: 'N'
       x-sysadmin-role: 'Y'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
@@ -30,6 +31,15 @@ paths:
           required: false
           description: 文件名
           type: string
+          maxLength: 256
+          x-impact-subsystem: 影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          x-rd-admin-role: 'N'
+          x-auditor-role: 'Y'
+          x-dp-admin-role: 'Y'
+          x-sysadmin-role: 'Y'
         - name: X-Auth-Token
           in: header
           required: true
@@ -39,24 +49,50 @@ paths:
           in: query
           required: false
           description: 文件类型
-          type: string
+          type: array
+          items:
+            type: string
         - name: statuses
           in: query
           required: false
           description: 文件状态
-          type: string
+          type: array
+          items:
+            type: string
         - name: pageNo
           in: query
           required: false
           description: 页面编号
           type: integer
           format: int32
+          default: 1
+          minimum: 1
+          maximum: 1000
+          x-impact-subsystem: 影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          x-rd-admin-role: 'N'
+          x-auditor-role: 'Y'
+          x-dp-admin-role: 'Y'
+          x-sysadmin-role: 'Y'
         - name: pageSize
           in: query
           required: false
           description: 页面大小
           type: integer
           format: int32
+          default: 20
+          minimum: 1
+          maximum: 200
+          x-impact-subsystem: 影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          x-rd-admin-role: 'N'
+          x-auditor-role: 'Y'
+          x-dp-admin-role: 'Y'
+          x-sysadmin-role: 'Y'
       responses:
         '200':
           description: 批量返回值
@@ -79,10 +115,10 @@ paths:
           required: true
           description: 访问令牌
           type: string
-        - name: type
+        - name: request
           in: body
           required: true
-          description: 文件类型
+          description: 创建导出文件请求参数
           schema:
             $ref: '#/definitions/ExportFileCreateRequest'
       responses:
@@ -90,6 +126,8 @@ paths:
           description: 无返回值
   '/v1/export-files/{id}':
     delete:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-sysadmin-role: 'Y'
       x-dp-admin-role: 'Y'
       x-impact-subsystem: 影响
@@ -106,6 +144,15 @@ paths:
           required: true
           type: string
           description: 导出记录ID
+          maxLength: 64
+          x-impact-subsystem: 影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          x-rd-admin-role: 'N'
+          x-auditor-role: 'N'
+          x-dp-admin-role: 'Y'
+          x-sysadmin-role: 'Y'
         - name: X-Auth-Token
           in: header
           required: true
@@ -116,6 +163,7 @@ paths:
           description: 无返回值
   '/v1/export-files/{id}/action/download':
     get:
+      x-rd-admin-role: 'N'
       x-sysadmin-role: 'Y'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
@@ -133,6 +181,15 @@ paths:
           required: true
           type: string
           description: 导出记录ID
+          maxLength: 64
+          x-impact-subsystem: 影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          x-rd-admin-role: 'N'
+          x-auditor-role: 'Y'
+          x-dp-admin-role: 'Y'
+          x-sysadmin-role: 'Y'
         - name: X-Auth-Token
           in: header
           required: true
@@ -206,16 +263,22 @@ definitions:
         description: 序号
       items:
         description: 数据
-        $ref: '#/definitions/ExportFilesQueryRequest'
+        $ref: '#/definitions/ExportRecordQueryResponse'
   ExportFileCreateRequest:
     description: 创建文件记录
     properties:
       type:
         description: 文件类型
-        $ref: '#/definitions/ExportFileType'
+        type: string
       name:
         type: string
         description: 文件名
+        minLength: 1
+        maxLength: 256
+        x-impact-subsystem: 影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
       params:
         type: object
         additionalProperties:
@@ -223,4 +286,37 @@ definitions:
         description: 创建类型参数
     required:
       - type
-      - params
+      - name
+  ExportRecordQueryResponse:
+    description: 批量查询返回
+    properties:
+      id:
+        type: string
+        description: 导出记录ID
+      fileName:
+        type: string
+        description: 文件名
+      type:
+        type: string
+        description: 文件类型
+      size:
+        type: integer
+        format: int64
+        description: 文件大小
+      status:
+        type: string
+        description: 文件状态
+      createTime:
+        type: string
+        description: 创建时间
+      expireTime:
+        type: string
+        description: 过期时间
+      errorCode:
+        type: string
+        description: 错误码
+      errorParams:
+        type: array
+        items:
+          type: string
+        description: 错误参数
