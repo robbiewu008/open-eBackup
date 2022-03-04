@@ -371,9 +371,10 @@ definitions:
     title: AgentInfo
   AgentRegisterConnectionParam:
     properties:
-      ip:
+      ips:
         type: string
-        description: 客户端IP
+        description: >-
+          IPV4(支持网段或以逗号分隔):192.168.100.10-192.168.100.20,192.167.0.1，IPV6（只支持逗号分隔）:fe80::20c:29ff:fecb:d50a,fe80::20c:29ff:fecb:d514
       osType:
         type: string
         description: 操作系统类型 WINDOWS/LINUX/UNIX/OTHERS
@@ -396,12 +397,23 @@ definitions:
         description: 远程连接用户名
         minLength: 1
         maxLength: 255
+      ipType:
+        type: string
+        description: 'ip类型 IPV4,IPV6'
+        enum:
+          - IPV4
+          - IPV6
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
     title: AgentRegisterConnectionParam
   AgentRegisterParam:
     properties:
-      ip:
+      ips:
         type: string
-        description: 客户端IP
+        description: >-
+          IPV4(支持网段或以逗号分隔):192.168.100.10-192.168.100.20,192.167.0.1，IPV6（只支持逗号分隔）:fe80::20c:29ff:fecb:d50a,fe80::20c:29ff:fecb:d514
       osType:
         type: string
         description: 操作系统类型 Windows/Linux/Unix/Others
@@ -436,6 +448,16 @@ definitions:
         description: 远程连接用户名
         minLength: 1
         maxLength: 255
+      ipType:
+        type: string
+        description: '类型 IPV4,IPV6'
+        enum:
+          - IPV4
+          - IPV6
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
     title: AgentRegisterParam
   AgentsUpdateRequest:
     type: object
