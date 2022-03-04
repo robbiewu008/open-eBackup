@@ -365,47 +365,49 @@ paths:
         - host
       operationId: asm_info_v1_resource_host__host_id__asm_info_get
       summary: 根据主机ID查询主机ASM信息列表
-  /v1/resource/hosts/update_client:
+  /v1/resource/hosts/upgradeable-versions:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
-        - description: Agent可升级版本号，支持筛选过滤
+        - description: 主机的uuid列表
           in: query
-          name: version
-          required: false
-          type: string
-        - description: 资源子类型，支持筛选过滤
-          enum:
-            - VMBackupAgent
-            - ABBackupClient
-          in: query
-          name: sub_type
-          required: false
-          type: string
-        - description: 分页页面编码
-          in: query
-          maximum: 10000
-          minimum: 0
-          name: page_no
+          name: host_uuids
           required: true
-          type: integer
-        - description: 分页数据条数
-          in: query
-          maximum: 200
-          minimum: 0
-          name: page_size
-          required: true
-          type: integer
+          type: array
+          items:
+            type: string
+            maxLength: 64
+            minLength: 1
+          x-impact-subsystem: 不影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-rd-admin-role: 'N'
+          x-auditor-role: 'Y'
+          x-dp-admin-role: 'Y'
+          x-public-api: 'Y'
+          x-sysadmin-role: 'Y'
+          minItems: 1
+          maxItems: 20
         - description: 访问令牌
           in: header
           name: X-Auth-Token
           required: true
       responses:
         '200':
-          description: The response is the info about a can update proxy_host
+          description: 主机可升级信息列表
           schema:
-            $ref: '#/definitions/UpdateClientQueryResponse'
+            items:
+              $ref: '#/definitions/host_info'
+            type: array
         '404':
           description: Not Found
         '422':
@@ -414,8 +416,8 @@ paths:
             $ref: '#/definitions/HTTPValidationError'
       tags:
         - host
-      operationId: get_update_agent_host_v1_resource_hosts_update_client_get
-      summary: 分页查询可升级的客户端信息
+      operationId: get_update_agent_host_v1_resource_hosts_upgradeable-versions
+      summary: 查询主机可升级的版本
 definitions:
   AgentSubeTypeEnum:
     description: An enumeration.
@@ -759,40 +761,15 @@ definitions:
     type: object
   UpdateClientQueryResponse:
     properties:
-      client_update_count:
-        description: 客户端可更新的数量
-        title: Client Update Count
-        type: integer
-      items:
-        description: 数据列表
-        items: {}
+      host_infos:
+        description: 主机可升级信息列表
+        items:
+          $ref: '#/definitions/host_info'
         title: Items
         type: array
-      page_no:
-        description: 页面编号
-        title: Page No
-        type: integer
-      page_size:
-        description: 每页数据量
-        title: Page Size
-        type: integer
-      pages:
-        description: 总页数
-        title: Pages
-        type: integer
-      total:
-        description: 总的数据条数
-        title: Total
-        type: integer
-    required:
-      - total
-      - pages
-      - page_size
-      - page_no
-      - items
-      - client_update_count
     title: UpdateClientQueryResponse
-    type: object
+    required:
+      - host_infos
   ValidationError:
     properties:
       loc:
@@ -812,4 +789,23 @@ definitions:
       - type
     title: ValidationError
     type: object
+  client_update_count:
+    type: integer
+    format: int32
+    description: 可升级主机的数量
+  host_info:
+    properties:
+      uuid:
+        type: string
+        description: 主机uuid
+      currentVersion:
+        type: string
+        description: 当前版本
+      upgradeable:
+        type: boolean
+        description: 是否可升级
+      upgradeableVersion:
+        type: string
+        description: 可升级的版本
+    description: 主机升级信息
 x-components: {}
