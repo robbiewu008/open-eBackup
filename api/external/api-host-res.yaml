@@ -418,6 +418,32 @@ paths:
         - host
       operationId: get_update_agent_host_v1_resource_hosts_upgradeable-versions
       summary: 查询主机可升级的版本
+  /v1/resource/host/action/migrate:
+    post:
+      tags:
+        - host
+      summary: 迁移主机
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 迁移主机到目标集群
+      operationId: migrate_host_to_target_cluster_v1_resource_host_migrate__post
+      parameters:
+        - name: hostMigrateReq
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/MigrationReq'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
 definitions:
   AgentSubeTypeEnum:
     description: An enumeration.
@@ -808,4 +834,35 @@ definitions:
         type: string
         description: 可升级的版本
     description: 主机升级信息
+  HostMigrationReq:
+    description: 迁移主机信息
+    properties:
+      hostId:
+        type: string
+        description: 主机ID
+      hostUserName:
+        type: string
+        description: 主机用户名
+      hostPassword:
+        type: string
+        description: 主机密码
+    required:
+      - hostId
+      - hostUserName
+      - hostPassword
+  MigrationReq:
+    description: 迁移主机请求体
+    properties:
+      targetClusterId:
+        type: integer
+        format: int32
+        description: 目标集群ID
+      hostMigrateReq:
+        type: array
+        items:
+          $ref: '#/definitions/HostMigrationReq'
+        description: 迁移主机请求体
+    required:
+      - targetClusterId
+      - hostMigrateReq
 x-components: {}
