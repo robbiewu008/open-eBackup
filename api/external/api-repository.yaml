@@ -810,44 +810,6 @@ paths:
       - Authorization:
         - "global"
       deprecated: false
-  /v1/storages/local-storage:
-    put:
-      tags:
-      - "storages-api"
-      summary: "修改归档存储认证信息"
-      operationId: "updateLocalStorageUsingPUT_2"
-      consumes:
-      - "application/json"
-      produces:
-      - "*/*"
-      parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "request"
-        description: "修改存储认证信息请求参数"
-        required: false
-        schema:
-          $ref: "#/definitions/UpdateStorageRequest"
-          originalRef: "UpdateStorageRequest"
-      responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-      security:
-      - Authorization:
-        - "global"
-      deprecated: false
   /v1/storages/{id}/alarm-threshold:
     get:
       tags:
