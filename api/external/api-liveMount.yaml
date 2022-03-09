@@ -14,6 +14,14 @@ tags:
 paths:
   /v1/live-mount:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-api
       summary: 查询即时挂载
@@ -28,10 +36,11 @@ paths:
           type: string
         - name: conditions
           in: query
-          description: "查询条件[取值范围] 1.VMWare查询resource_sub_type:vim.VirtualMachine 2.Oracle查询resource_sub_type:Oracle\r\n\r\n"
+          description: >-
+            查询条件[取值范围] 1.VMWare查询resource_sub_type:vim.VirtualMachine
+            2.Oracle查询resource_sub_type:Oracle
           required: false
           type: string
-          allowEmptyValue: false
         - name: orders
           in: query
           description: 排序字段
@@ -40,21 +49,18 @@ paths:
           items:
             type: string
           collectionFormat: multi
-          allowEmptyValue: false
         - name: page
           in: query
-          description: "分页起始页面\r\n\r\n"
+          description: 分页起始页面
           required: false
           type: integer
           format: int32
-          allowEmptyValue: false
         - name: size
           in: query
-          description: "分页大小\r\n\r\n"
+          description: 分页大小
           required: false
           type: integer
           format: int32
-          allowEmptyValue: false
       responses:
         '200':
           description: OK
@@ -70,8 +76,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-api
       summary: 创建即时挂载
@@ -111,9 +124,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/live-mount/environment/{copy_id}':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-api
       summary: 查询可挂载的目标资源
@@ -148,9 +168,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/live-mount/{live_mount_id}':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-api
       summary: 修改即时挂载
@@ -191,8 +218,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-api
       summary: 卸载即时挂载
@@ -211,7 +245,6 @@ paths:
           required: false
           type: boolean
           default: false
-          allowEmptyValue: false
         - name: live_mount_id
           in: path
           description: 即时挂载主键
@@ -225,7 +258,6 @@ paths:
           required: false
           type: boolean
           default: false
-          allowEmptyValue: false
       responses:
         '200':
           description: OK
@@ -238,9 +270,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/live-mount/{live_mount_id}/action/activate':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-api
       summary: 激活即时挂载
@@ -276,9 +315,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/live-mount/{live_mount_id}/action/deactivate':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-api
       summary: 禁用即时挂载
@@ -314,9 +360,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/live-mount/{live_mount_id}/action/migrate':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-api
       summary: 迁移即时挂载
@@ -359,9 +412,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/live-mount/{live_mount_id}/action/update':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-api
       summary: 更新即时挂载
@@ -404,9 +464,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/livemount-policies:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-policy-api
       summary: 查询更新策略
@@ -424,7 +491,6 @@ paths:
           description: 挂载更新策略查询条件
           required: false
           type: string
-          allowEmptyValue: false
         - name: orders
           in: query
           description: 排序字段
@@ -433,21 +499,18 @@ paths:
           items:
             type: string
           collectionFormat: multi
-          allowEmptyValue: false
         - name: page
           in: query
-          description: "分页起始页面\r\n\r\n"
+          description: 分页起始页面
           required: false
           type: integer
           format: int32
-          allowEmptyValue: false
         - name: size
           in: query
-          description: "分页大小\r\n\r\n"
+          description: 分页大小
           required: false
           type: integer
           format: int32
-          allowEmptyValue: false
       responses:
         '200':
           description: OK
@@ -463,8 +526,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-policy-api
       summary: 创建更新策略
@@ -500,9 +570,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/livemount-policies/{policyId}':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-policy-api
       summary: 查询单个更新策略
@@ -537,8 +614,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-policy-api
       summary: 删除更新策略
@@ -570,9 +654,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/livemount-policies/{policyId}/action/update':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-policy-api
       summary: 修改更新策略
@@ -615,7 +706,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
 securityDefinitions:
   Authorization:
     type: apiKey
