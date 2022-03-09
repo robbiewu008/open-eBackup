@@ -12,6 +12,14 @@ tags:
 paths:
   /v1/sftp/service:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sftp-manager-api
       summary: 查询sftp服务信息
@@ -39,9 +47,12 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/sftp/status/{status}':
     put:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -89,6 +100,14 @@ paths:
             - global
   /v1/sftp/users:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sftp-manager-api
       summary: 分页查询sftp用户
@@ -107,7 +126,6 @@ paths:
           required: true
           type: integer
           minimum: 1.0
-          exclusiveMinimum: false
           format: int32
         - name: pageSize
           in: query
@@ -115,16 +133,13 @@ paths:
           required: true
           type: integer
           maximum: 200.0
-          exclusiveMaximum: false
           minimum: 1.0
-          exclusiveMinimum: false
           format: int32
         - name: username
           in: query
           description: 用户名
           required: false
           type: string
-          allowEmptyValue: false
       responses:
         '200':
           description: OK
@@ -140,8 +155,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sftp-manager-api
       summary: 创建sftp普通用户
@@ -177,8 +199,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sftp-manager-api
       summary: 批量删除sftp用户
@@ -215,9 +244,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/sftp/users/{id}':
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sftp-manager-api
       summary: 修改sftp用户密码
@@ -258,9 +294,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/sftp/users/{userId}':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25082
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sftp-manager-api
       summary: 查询sftp用户详情
@@ -293,7 +336,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
 securityDefinitions:
   Authorization:
     type: apiKey
