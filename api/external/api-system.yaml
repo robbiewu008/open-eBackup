@@ -37,6 +37,14 @@ paths:
       deprecated: false
   /v1/system/archiveNetPlaneStatusInfo:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 获得配置状态
@@ -64,9 +72,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/system/archiveNetwork:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 查询归档网络
@@ -94,8 +109,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 修改归档网络
@@ -134,9 +156,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/system/backupNetPlaneStatusInfo:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 获得备份网络状态
@@ -164,9 +193,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/system/backupNetwork:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 查询备份网络
@@ -194,8 +230,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 修改备份网络
@@ -234,9 +277,12 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/system/esn:
     get:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -270,6 +316,14 @@ paths:
             - global
   /v1/system/expandBackupService:
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 扩容网络
@@ -308,9 +362,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/system/expandBackupServiceIp:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 查询扩容前备份/归档Ip段范围
@@ -338,9 +399,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/system/expandControllerStatus:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 查询扩容网络状态
@@ -368,9 +436,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/system/initConfig:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 是否需要初始化
@@ -398,8 +473,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 创建初始化网络
@@ -438,9 +520,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/system/initStatusInfo:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 获得初始化状态
@@ -468,7 +557,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/system/language:
     get:
       tags:
@@ -495,6 +583,14 @@ paths:
       deprecated: false
   /v1/system/time:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${system-api}'
       summary: 查询系统时间
@@ -522,7 +618,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/system/machine-code:
     get:
       tags:
