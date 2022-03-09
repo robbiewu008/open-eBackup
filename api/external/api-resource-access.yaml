@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: v1
-  title: ResourceAccessFramework
+  title: 资源接入接口
 basePath: /
 tags:
   - name: protected-environment-api
