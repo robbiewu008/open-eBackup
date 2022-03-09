@@ -17,6 +17,10 @@ produces:
 paths:
   /v1/tape-library/libraries:
     get:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -53,6 +57,14 @@ paths:
           description: Not Found
   /v1/tape-library/libraries/action/scan:
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - tape-library-api
       summary: 扫描磁带库
@@ -78,9 +90,12 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-      deprecated: false
   '/v1/tape-library/libraries/{tapeLibrarySn}/drives':
     get:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -168,6 +183,14 @@ paths:
           description: Not Found
   '/v1/tape-library/libraries/{tapeLibrarySn}/drives/{driverSn}':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - tape-library-api
       summary: 修改驱动器属性
@@ -215,9 +238,12 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-      deprecated: false
   '/v1/tape-library/libraries/{tapeLibrarySn}/slots':
     get:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -292,6 +318,10 @@ paths:
           description: Not Found
   '/v1/tape-library/libraries/{tapeLibrarySn}/tapes':
     get:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -422,6 +452,14 @@ paths:
           description: Not Found
   '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}':
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - tape-library-api
       summary: 删除磁带
@@ -459,9 +497,16 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
-      deprecated: false
   '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/empty':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - tape-library-api
       summary: 标记磁带为空
@@ -503,9 +548,16 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-      deprecated: false
   '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/erase':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - tape-library-api
       summary: 擦除磁带
@@ -547,9 +599,16 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-      deprecated: false
   '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/export':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - tape-library-api
       summary: 导出磁带到卡槽
@@ -597,9 +656,16 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-      deprecated: false
   '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/identify':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - tape-library-api
       summary: 识别磁带
@@ -641,9 +707,16 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-      deprecated: false
   '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/import':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - tape-library-api
       summary: 导入磁带到驱动
@@ -691,9 +764,12 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-      deprecated: false
   /v1/tape-library/media-sets:
     get:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -782,6 +858,10 @@ paths:
         '404':
           description: Not Found
     post:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'Y'
       x-impact-subsystem: 影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -821,6 +901,14 @@ paths:
           description: Not Found
   '/v1/tape-library/media-sets/{mediaSetId}':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - media-set-api
       summary: 查询介质集详情
@@ -851,8 +939,15 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-      deprecated: false
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - media-set-api
       summary: 修改介质集
@@ -893,8 +988,15 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-      deprecated: false
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - media-set-api
       summary: 删除介质集
@@ -923,9 +1025,12 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
-      deprecated: false
   '/v1/tape-library/media-sets/{mediaSetId}/action/pre-check':
     get:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - media-set-api
       summary: 删除介质集前预检查
