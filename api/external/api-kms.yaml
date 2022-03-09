@@ -1,205 +1,224 @@
----
-swagger: "2.0"
+swagger: '2.0'
 info:
-  version: "v1"
-  title: "KMS服务接口"
+  version: v1
+  title: KMS服务接口
   contact: {}
   license: {}
-host: "localhost"
-basePath: "/"
+host: localhost
+basePath: /
 tags:
-- name: "kmc-api"
-  description: "KMC服务接口"
-- name: "kms-api"
-  description: "KMS服务接口"
+  - name: kmc-api
+    description: KMC服务接口
+  - name: kms-api
+    description: KMS服务接口
 paths:
   /v1/kmc/key:
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "kmc-api"
-      summary: "手动更新密钥文件"
-      operationId: "updateKeyUsingPUT"
+        - kmc-api
+      summary: 手动更新密钥文件
+      operationId: updateKeyUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/kmc/keylifetime:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "kmc-api"
-      summary: "查询密钥生命周期"
-      operationId: "getKeyLifetimeUsingGET"
+        - kmc-api
+      summary: 查询密钥生命周期
+      operationId: getKeyLifetimeUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            type: "integer"
-            format: "int32"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            type: integer
+            format: int32
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "kmc-api"
-      summary: "修改密钥生命周期"
-      operationId: "modifyKeyLifetimeUsingPUT"
+        - kmc-api
+      summary: 修改密钥生命周期
+      operationId: modifyKeyLifetimeUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "keyLifetime"
-        in: "query"
-        description: "密钥生命周期，范围：[30, 180]，单位 天"
-        required: true
-        type: "integer"
-        format: "int32"
-        allowEmptyValue: false
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: keyLifetime
+          in: query
+          description: '密钥生命周期，范围：[30, 180]，单位 天'
+          required: true
+          type: integer
+          format: int32
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/kms/decrypt:
     post:
       tags:
-      - "kms-api"
-      summary: "解密"
-      operationId: "decryptUsingPOST"
+        - kms-api
+      summary: 解密
+      operationId: decryptUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "ciphertextVo"
-        description: "密文"
-        required: true
-        schema:
-          $ref: "#/definitions/CiphertextVo"
-          originalRef: "CiphertextVo"
-      responses:
-        "200":
-          description: "OK"
+        - in: body
+          name: ciphertextVo
+          description: 密文
+          required: true
           schema:
-            $ref: "#/definitions/PlaintextVo"
-            originalRef: "PlaintextVo"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/CiphertextVo'
+            originalRef: CiphertextVo
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PlaintextVo'
+            originalRef: PlaintextVo
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/kms/encrypt:
     post:
       tags:
-      - "kms-api"
-      summary: "加密"
-      operationId: "encryptUsingPOST"
+        - kms-api
+      summary: 加密
+      operationId: encryptUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "plaintextVo"
-        description: "明文"
-        required: true
-        schema:
-          $ref: "#/definitions/PlaintextVo"
-          originalRef: "PlaintextVo"
-      responses:
-        "200":
-          description: "OK"
+        - in: body
+          name: plaintextVo
+          description: 明文
+          required: true
           schema:
-            $ref: "#/definitions/CiphertextVo"
-            originalRef: "CiphertextVo"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/PlaintextVo'
+            originalRef: PlaintextVo
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CiphertextVo'
+            originalRef: CiphertextVo
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
 securityDefinitions:
   Authorization:
-    type: "apiKey"
-    name: "TOKEN"
-    in: "header"
+    type: apiKey
+    name: TOKEN
+    in: header
 definitions:
   CiphertextVo:
-    type: "object"
+    type: object
     properties:
       ciphertext:
-        type: "string"
-        description: "密文"
-    title: "CiphertextVo"
+        type: string
+        description: 密文
+    title: CiphertextVo
   PlaintextVo:
-    type: "object"
+    type: object
     properties:
       plaintext:
-        type: "string"
-        description: "明文"
-    title: "PlaintextVo"
+        type: string
+        description: 明文
+    title: PlaintextVo
