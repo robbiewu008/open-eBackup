@@ -85,7 +85,7 @@ paths:
           x-public-api: 'N'
           maxItems: 2
           x-impact-subsystem: 不影响
-        - name: startPage
+        - name: pageNo
           in: query
           description: 分页起始页面
           required: false
