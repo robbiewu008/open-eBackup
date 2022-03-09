@@ -14,6 +14,14 @@ tags:
 paths:
   /v1/host-agent:
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - client-manager-api
       summary: 上传保护代理
@@ -47,9 +55,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/host-agent/action/update:
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - host-agent-update-controller
       summary: 批量更新代理客户端
@@ -85,9 +100,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/host-agent/agents:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - client-manager-api
       summary: 查询保护代理信息
@@ -107,9 +129,7 @@ paths:
           type: integer
           default: 1
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
-          allowEmptyValue: false
         - name: size
           in: query
           description: 每页数量
@@ -117,11 +137,8 @@ paths:
           type: integer
           default: 5
           maximum: 200.0
-          exclusiveMaximum: false
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
-          allowEmptyValue: false
       responses:
         '200':
           description: OK
@@ -137,7 +154,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/host-agent/download:
     get:
       tags:
@@ -170,6 +186,14 @@ paths:
             - global
       deprecated: false
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - client-manager-api
       summary: 下载保护代理
@@ -208,9 +232,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/host-agent/register:
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - client-manager-api
       summary: 客户端代理自动注册
@@ -246,9 +277,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/host-agent/register/connection:
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - client-manager-api
       summary: 客户端代理自动注册连通性检查
@@ -284,7 +322,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
 securityDefinitions:
   Authorization:
     type: apiKey
