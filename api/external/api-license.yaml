@@ -12,6 +12,14 @@ tags:
 paths:
   /v1/license:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${license-api}'
       summary: 查询License信息
@@ -41,7 +49,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/license/action/active:
     post:
       tags:
@@ -107,6 +114,14 @@ paths:
       deprecated: false
   /v1/license/action/import:
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - '${license-api}'
       summary: 导入License文件
@@ -145,7 +160,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
 securityDefinitions:
   Authorization:
     type: apiKey
