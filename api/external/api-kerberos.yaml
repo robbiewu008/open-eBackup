@@ -12,6 +12,14 @@ tags:
 paths:
   /v1/kerberos:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - Kerberos API
       summary: 查询所有Kerberos
@@ -30,9 +38,7 @@ paths:
           required: false
           type: integer
           maximum: 200.0
-          exclusiveMaximum: false
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
           x-example: 10
         - name: startPage
@@ -41,7 +47,6 @@ paths:
           required: false
           type: integer
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
           x-example: 0
       responses:
@@ -59,8 +64,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - Kerberos API
       summary: 添加Kerberos
@@ -127,9 +139,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/kerberos/{kerberos_id}':
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - Kerberos API
       summary: 更新Kerberos
@@ -198,8 +217,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - Kerberos API
       summary: 删除Kerberos
@@ -232,7 +258,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
 securityDefinitions:
   Authorization:
     type: apiKey
