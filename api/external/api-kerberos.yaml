@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: v1
-  title: kerberos管理接口
+  title: Kerberos管理接口
   contact: {}
   license: {}
 host: localhost
