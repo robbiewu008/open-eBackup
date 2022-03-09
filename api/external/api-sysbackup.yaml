@@ -12,6 +12,14 @@ tags:
 paths:
   /v1/sysbackup/images:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sysbackup-api
       summary: 备份记录列表
@@ -50,9 +58,7 @@ paths:
           required: false
           type: integer
           maximum: 200.0
-          exclusiveMaximum: false
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
           x-example: 10
         - name: startPage
@@ -61,7 +67,6 @@ paths:
           required: false
           type: integer
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
           x-example: 0
         - name: status
@@ -89,8 +94,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sysbackup-api
       summary: 导入备份
@@ -127,9 +139,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/sysbackup/images/{imagesId}':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sysbackup-api
       summary: 获取备份详情
@@ -163,8 +182,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sysbackup-api
       summary: 删除备份
@@ -198,9 +224,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/sysbackup/images/{imagesId}/action/download':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sysbackup-api
       summary: 下载备份
@@ -231,9 +264,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   '/v1/sysbackup/images/{imagesId}/action/recovery':
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sysbackup-api
       summary: 执行系统备份恢复
@@ -277,9 +317,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/sysbackup/policy:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sysbackup-api
       summary: 获取备份策略
@@ -307,8 +354,15 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sysbackup-api
       summary: 增加或修改备份策略
@@ -347,9 +401,16 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
   /v1/sysbackup/policy/action/run:
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - sysbackup-api
       summary: 执行系统备份
@@ -388,7 +449,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
 securityDefinitions:
   Authorization:
     type: apiKey
