@@ -7,6 +7,14 @@ tags:
 paths:
   /v1/protected-copy-objects:
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -27,7 +35,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '422':
           description: Validation Error
           schema:
@@ -38,6 +45,14 @@ paths:
       operationId: delete_v1_protected_copy_objects_delete
       summary: 批量移除副本保护对象
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -70,6 +85,14 @@ paths:
       operationId: create_v1_protected_copy_objects_post
       summary: 创建副本保护对象
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -90,7 +113,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '422':
           description: Validation Error
           schema:
@@ -102,6 +124,14 @@ paths:
       summary: 修改副本保护对象
   /v1/protected-copy-objects/status/action/activate:
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -122,7 +152,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '422':
           description: Validation Error
           schema:
@@ -133,6 +162,14 @@ paths:
       summary: 批量激活保护副本
   /v1/protected-copy-objects/status/action/deactivate:
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -153,7 +190,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '422':
           description: Validation Error
           schema:

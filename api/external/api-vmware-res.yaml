@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  title: 资源管理（vmware）
+  title: 资源管理（VMware）
   version: v1
 tags:
   - name: vmware
@@ -8,7 +8,11 @@ tags:
 paths:
   '/v1/compute-resources/clusters/{cluster_uuid}/config':
     get:
-      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -46,7 +50,11 @@ paths:
       summary: 查询集群计算资源的配置
   '/v1/compute-resources/{compute_res_uuid}/datastores':
     get:
-      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -89,7 +97,11 @@ paths:
       summary: 查询计算资源的数据存储列表
   '/v1/compute-resources/{compute_res_uuid}/networks':
     get:
-      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -132,7 +144,11 @@ paths:
       summary: 查询计算资源的网络列表
   '/v1/virtual-machines/{vm_uuid}':
     get:
-      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -169,6 +185,10 @@ paths:
       summary: 查询VMware虚拟机的详细信息
   '/v1/virtual-machines/{vm_uuid}/disks':
     get:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       x-impact-subsystem: 影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -209,7 +229,11 @@ paths:
       summary: 查询VMware虚拟机的硬盘列表
   /v1/virtual-resource:
     get:
-      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'

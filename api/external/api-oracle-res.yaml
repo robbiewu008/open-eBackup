@@ -112,6 +112,14 @@ paths:
       summary: 查询GaussDB实例列表
   /v1/databases:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -163,6 +171,14 @@ paths:
       summary: 查询Oracle数据库列表
   '/v1/databases/{db_id}/action/auth':
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -182,14 +198,13 @@ paths:
         - in: body
           name: body
           schema:
-            allOf: null
             $ref: '#/definitions/DatabaseAuthRequest'
             description: 数据库认证参数
             title: Database Auth Request
+          required: false
       responses:
         '200':
           description: The response is auth result
-          schema: {}
         '404':
           description: Not found
         '422':
@@ -204,6 +219,14 @@ paths:
       summary: 修改数据库认证信息
   '/v1/databases/{db_id}/timestamps':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:

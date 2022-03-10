@@ -8,6 +8,14 @@ tags:
 paths:
   /v1/environments:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -58,6 +66,14 @@ paths:
       operationId: query_resources_v1_environments_get
       summary: 查询主机资源信息列表
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -76,7 +92,6 @@ paths:
       responses:
         '200':
           description: The response is status code of the operation
-          schema: {}
         '404':
           description: Not found
         '422':
@@ -89,6 +104,14 @@ paths:
       summary: 注册资源
   '/v1/environments/rescan/{env_id}':
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -107,7 +130,6 @@ paths:
       responses:
         '200':
           description: The response is status code of the operation
-          schema: {}
         '404':
           description: Not found
         '422':
@@ -120,6 +142,14 @@ paths:
       summary: 重新扫描资源环境信息
   '/v1/environments/{env_id}':
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -138,7 +168,6 @@ paths:
       responses:
         '200':
           description: The response is status code of the operation
-          schema: {}
         '404':
           description: Not found
         '422':
@@ -150,6 +179,14 @@ paths:
       operationId: delete_env_v1_environments__env_id__delete
       summary: 删除资源
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -175,7 +212,6 @@ paths:
       responses:
         '200':
           description: The response is status code of the operation
-          schema: {}
         '404':
           description: Not found
         '422':

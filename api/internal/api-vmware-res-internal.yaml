@@ -239,6 +239,10 @@ paths:
       summary: 查询第一个VMware备份代理主机信息【内部接口】
   '/v1/virtual-machines/{vm_uuid}':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       produces:
         - application/json
       parameters:
@@ -253,6 +257,18 @@ paths:
           in: header
           name: X-Auth-Token
           required: true
+        - name: cluster-type
+          in: header
+          required: false
+          description: 1内部集群，2外部集群
+          type: integer
+          format: int32
+        - name: clusterId
+          in: header
+          required: false
+          description: 集群id
+          type: integer
+          format: int32
       responses:
         '200':
           description: Successful Response
@@ -271,6 +287,10 @@ paths:
       summary: 查询VMware虚拟机的详细信息
   '/v1/virtual-machines/{vm_uuid}/disks':
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
       produces:
         - application/json
       parameters:
@@ -285,6 +305,18 @@ paths:
           in: header
           name: X-Auth-Token
           required: true
+        - name: cluster-type
+          in: header
+          required: false
+          description: 1内部集群，2外部集群
+          type: integer
+          format: int32
+        - name: clusterId
+          in: header
+          required: false
+          description: 集群id
+          type: integer
+          format: int32
       responses:
         '200':
           description: Successful Response

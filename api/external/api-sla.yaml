@@ -7,6 +7,14 @@ tags:
 paths:
   /v1/slas:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -70,6 +78,14 @@ paths:
       operationId: page_query_slas_v1_slas_get
       summary: 分页查询SLA信息
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -109,6 +125,14 @@ paths:
       operationId: create_v1_slas_post
       summary: 创建新的SLA
     put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -126,6 +150,7 @@ paths:
               - $ref: '#/definitions/SlaUpdate'
             description: SLA详细信息
             title: Sla Req
+          required: false
       responses:
         '200':
           description: Successful Response
@@ -147,6 +172,14 @@ paths:
       summary: 修改SLA信息
   '/v1/slas/{sla_id}':
     delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -174,6 +207,14 @@ paths:
       operationId: delete_v1_slas__sla_id__delete
       summary: 删除SLA信息
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:

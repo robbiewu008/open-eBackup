@@ -7,6 +7,14 @@ tags:
 paths:
   /v1/resource:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -57,6 +65,14 @@ paths:
       summary: 查询所有资源信息列表
   /v1/resource/action/authorize:
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -73,7 +89,6 @@ paths:
           items:
             minLength: 1
             type: string
-          minLength: 1
           name: resource_uuid_list
           required: true
           type: array
@@ -84,7 +99,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '404':
           description: Not Found
         '422':
@@ -97,6 +111,14 @@ paths:
       summary: 根据用户ID和资源ID列表授权资源
   /v1/resource/action/revoke:
     post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -113,7 +135,6 @@ paths:
           items:
             minLength: 1
             type: string
-          minLength: 1
           name: resource_uuid_list
           required: true
           type: array
@@ -124,7 +145,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '404':
           description: Not Found
         '422':
@@ -137,6 +157,14 @@ paths:
       summary: 根据用户ID和资源ID列表回收资源
   /v1/resource/action/search:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -187,6 +215,14 @@ paths:
       summary: 全局搜索查询资源信息列表
   /v1/resource/protection/summary:
     get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
