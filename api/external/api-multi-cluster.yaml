@@ -1,9 +1,7 @@
 swagger: '2.0'
 info:
   version: v1
-  title: multi-cluster-api
-  contact: {}
-  license: {}
+  title: 多集群管理API
   description: 多集群信息统计接口
 host: localhost
 basePath: /
