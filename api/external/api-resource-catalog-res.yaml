@@ -1,12 +1,21 @@
 swagger: '2.0'
 info:
-  title: 资源管理（副本资源）
+  title: 资源目录API
   version: v1
 tags:
   - name: resource-catalog
 paths:
   /v1/resource-catalogs:
     get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
