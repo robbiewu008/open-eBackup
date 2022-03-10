@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: v1
-  title: ApplicationTitle
+  title: 副本管理接口
   description: GroupDesc
 schemes:
   - https
@@ -12,6 +12,8 @@ tags:
 paths:
   '/v1/copies/{copy_id}/detect-reports':
     get:
+      x-impact-subsystem: 不影响
+      x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -63,6 +65,8 @@ paths:
                 request_uuid-timestamp-hostname.
   /v1/copies/detect-details:
     get:
+      x-impact-subsystem: 不影响
+      x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
       x-access-port: 25081
@@ -150,6 +154,8 @@ paths:
               type: string
   /v1/copies/detect-statistics:
     get:
+      x-impact-subsystem: 不影响
+      x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -234,6 +240,8 @@ paths:
               type: string
   /v1/copies/detect-summary:
     get:
+      x-impact-subsystem: 不影响
+      x-auditor-role: 'Y'
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
