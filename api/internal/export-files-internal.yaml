@@ -13,6 +13,7 @@ tags:
 paths:
   '/v1/internal/export-files/{id}':
     put:
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
@@ -23,6 +24,7 @@ paths:
       x-public-api: 'N'
       tags:
         - api-export-files-internal-api
+      summary: 修改导出文件记录
       description: 修改导出文件记录
       operationId: UpdateExportFile
       parameters:
