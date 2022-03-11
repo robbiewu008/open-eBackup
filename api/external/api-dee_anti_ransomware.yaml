@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: v1
-  title: DEE Anti Ransomware API Document
+  title: 勒索软件防护接口
   contact: {}
   license: {}
 host: localhost

@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: v1
-  title: DEE Anti Ransomware API Document
+  title: 勒索软件防护内部接口
   contact: {}
   license: {}
 host: localhost
@@ -29,7 +29,7 @@ paths:
       parameters:
         - in: body
           name: falseAlarmRequest
-          description: '误报处理请求'
+          description: 误报处理请求
           required: true
           schema:
             originalRef: DetectFalseAlarmRequest
@@ -166,18 +166,6 @@ securityDefinitions:
     in: header
 definitions:
   AddTaskRequest:
-    type: object
-    required:
-      - copyGn
-      - copyId
-      - resourceId
-      - resourceType
-      - snapId
-      - snapMetadata
-      - storageAddress
-      - storagePassword
-      - storagePort
-      - storageUsername
     properties:
       copyGn:
         type: integer
@@ -221,7 +209,26 @@ definitions:
       storageUsername:
         type: string
         description: 存储用户
+      resourceName:
+        type: string
+        description: 资源名称
+      copyDisplayTimestamp:
+        type: string
+        description: 副本创建时间点
     title: AddTaskRequest
+    required:
+      - copyGn
+      - copyId
+      - resourceId
+      - resourceType
+      - snapId
+      - snapMetadata
+      - storageAddress
+      - storagePassword
+      - storagePort
+      - storageUsername
+      - resourceName
+      - copyDisplayTimestamp
   AddTaskResponse:
     type: object
     properties:
