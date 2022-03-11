@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: v1
-  title: DEE GlobalSearch API Document
+  title: 全局检索接口
   contact: {}
   license: {}
 host: localhost
@@ -12,6 +12,8 @@ tags:
 paths:
   /v1/search/file:
     post:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
       x-auditor-role: 'N'
@@ -22,7 +24,7 @@ paths:
       tags:
         - File Level Search Management
       summary: 细粒度文件搜索
-      operationId: fileSearchUsingPOST
+      operationId: fileSearch
       consumes:
         - application/json
       produces:
