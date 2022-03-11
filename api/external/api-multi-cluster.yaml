@@ -199,7 +199,11 @@ paths:
           schema:
             type: string
   /v1/multi-clusters/action/sync:
-    get:
+    post:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -207,8 +211,8 @@ paths:
       x-public-api: 'Y'
       tags:
         - '${api.multi-clusters}'
-      summary: 同步本地的所有被管理集群到本地的所有管理集群
-      description: 同步本地的所有被管理集群到本地的所有管理集群
+      summary: 同步被管理集群
+      description: 同步所有被管理集群到另一个管理集群
       operationId: syncManagedClustersToManageClusters
       consumes:
         - application/json
