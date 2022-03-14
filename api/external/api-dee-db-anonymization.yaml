@@ -31,7 +31,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - database-controller
-      summary: authDatabase
+      summary: 数据库认证
       operationId: authDatabaseUsingPOST
       consumes:
         - application/json
@@ -80,7 +80,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - anony-controller
-      summary: stopTask
+      summary: 停止任务
       operationId: stopTaskUsingPOST
       consumes:
         - application/json
@@ -126,7 +126,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - database-controller
-      summary: verifyDatabase
+      summary: 验证数据库连接
       operationId: verifyDatabaseUsingPOST
       consumes:
         - application/json
@@ -175,7 +175,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - anony-controller
-      summary: createAnonyJob
+      summary: 创建任务
       operationId: createAnonyJobUsingPOST
       consumes:
         - application/json
@@ -221,7 +221,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - ident-rule-controller
-      summary: getPageIdentRules
+      summary: 获取识别规则
       operationId: getPageIdentRulesUsingGET
       produces:
         - '*/*'
@@ -285,7 +285,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - ident-rule-controller
-      summary: createIdentRule
+      summary: 创建识别规则
       operationId: createIdentRuleUsingPOST
       consumes:
         - application/json
@@ -330,7 +330,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - ident-rule-controller
-      summary: modifyIdentRule
+      summary: 修改识别规则
       operationId: modifyIdentRuleUsingPUT
       consumes:
         - application/json
@@ -376,7 +376,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - ident-rule-controller
-      summary: getIdentRuleReferences
+      summary: 获取识别规则引用详情
       operationId: getIdentRuleReferencesUsingGET
       produces:
         - '*/*'
@@ -433,7 +433,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - ident-rule-controller
-      summary: deleteIdentRule
+      summary: 删除识别规则
       operationId: deleteIdentRuleUsingDELETE
       produces:
         - '*/*'
@@ -473,7 +473,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - anony-controller
-      summary: getIdentResult
+      summary: 获取识别结果
       operationId: getIdentResultUsingGET
       produces:
         - '*/*'
@@ -535,7 +535,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - anony-controller
-      summary: modifyIdentResult
+      summary: 修改识别结果
       operationId: modifyIdentResultUsingPUT
       consumes:
         - application/json
@@ -581,7 +581,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - anony-controller
-      summary: getIdentStatistics
+      summary: 获取识别统计数据
       operationId: getIdentStatisticsUsingGET
       produces:
         - '*/*'
@@ -638,7 +638,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - mask-rule-controller
-      summary: getPageMaskRules
+      summary: 获取脱敏规则
       operationId: getPageMaskRulesUsingGET
       produces:
         - '*/*'
@@ -710,7 +710,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - mask-rule-controller
-      summary: createMaskRule
+      summary: 创建脱敏规则
       operationId: createMaskRuleUsingPOST
       consumes:
         - application/json
@@ -755,7 +755,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - mask-rule-controller
-      summary: modifyMaskRule
+      summary: 修改识别规则
       operationId: modifyMaskRuleUsingPUT
       consumes:
         - application/json
@@ -801,7 +801,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - mask-rule-controller
-      summary: generateMaskRuleExample
+      summary: 生成脱敏样例
       operationId: generateMaskRuleExampleUsingPOST
       consumes:
         - application/json
@@ -844,7 +844,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - mask-rule-controller
-      summary: getMaskRuleReferences
+      summary: 获取脱敏规则引用
       operationId: getMaskRuleReferencesUsingGET
       produces:
         - '*/*'
@@ -899,7 +899,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - mask-rule-controller
-      summary: deleteMaskRule
+      summary: 删除脱敏规则
       operationId: deleteMaskRuleUsingDELETE
       produces:
         - '*/*'
@@ -939,7 +939,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - policy-controller
-      summary: getPagePolicies
+      summary: 获取脱敏策略
       operationId: getPagePoliciesUsingGET
       produces:
         - '*/*'
@@ -1003,7 +1003,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - policy-controller
-      summary: createUpdatePolicy
+      summary: 配置脱敏策略
       operationId: createUpdatePolicyUsingPUT
       consumes:
         - application/json
@@ -1049,7 +1049,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - policy-controller
-      summary: getPolicyDetails
+      summary: 获取脱敏策略详情
       operationId: getPolicyDetailsUsingGET
       produces:
         - '*/*'
@@ -1106,7 +1106,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - policy-controller
-      summary: getPolicyReferences
+      summary: 获取脱敏策略引用
       operationId: getPolicyReferencesUsingGET
       produces:
         - '*/*'
@@ -1163,7 +1163,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - policy-controller
-      summary: deletePolicy
+      summary: 删除脱敏策略
       operationId: deletePolicyUsingDELETE
       produces:
         - '*/*'
@@ -1203,7 +1203,7 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - anony-controller
-      summary: downloadAnonyReport
+      summary: 下载脱敏报告
       operationId: downloadAnonyReportUsingPOST
       consumes:
         - application/json
