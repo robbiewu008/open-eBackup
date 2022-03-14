@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: v1
-  title: ApplicationTitle
+  title: 副本管理接口
   description: GroupDesc
 schemes:
   - https
