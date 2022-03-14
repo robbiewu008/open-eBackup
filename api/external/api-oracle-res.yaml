@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  title: 资源管理接口(Oracle)
+  title: 资源管理接口（Oracle）
   version: v1
 tags:
   - name: asminfo
