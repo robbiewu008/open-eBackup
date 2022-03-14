@@ -1,657 +1,1493 @@
----
-swagger: "2.0"
+swagger: '2.0'
 info:
-  version: "1.0"
-  title: "基础设施管理接口"
+  description: 基础设施微服务API
+  version: '1.0'
+  title: 操作维护接口
 schemes:
-  - "http"
+  - http
 consumes:
-  - "application/json"
+  - application/json
 produces:
-  - "application/json"
-basePath: "/"
+  - application/json
+basePath: /
 tags:
-- name: "log-manager-api"
-  description: "Log Manager Controller"
-- name: "inspect-info-api"
-  description: "Inspect Info Controller"
-- name: "collect-info-api"
-  description: "Collect Info Controller"
-- name: "data-manager-api"
-  description: "Data Manager Controller"
+  - name: log-manager-api
+    description: Log Manager Controller
+  - name: inspect-info-api
+    description: Inspect Info Controller
+  - name: collect-info-api
+    description: Collect Info Controller
+  - name: data-manager-api
+    description: Data Manager Controller
+  - name: pod-manager-api
+  - name: configMap-manager-api
+  - name: secret-manager-api
+  - name: service-manager-api
+  - name: sftp-manager-api
 paths:
   /v1/infra/logs/level/info:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "log-manager-api"
-      summary: "查询当前日志级别"
-      x-swagger-router-controller: "service.apis.controllers.set_controller"
-      operationId: "query_current_level"
+        - log-manager-api
+      summary: 查询当前日志级别
+      x-swagger-router-controller: service.apis.controllers.set_controller
+      operationId: query_current_level
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
             $ref: '#/definitions/LogInfoResponse'
-        "400":
-          description: "Bad Request"
+        '400':
+          description: Bad Request
   /v1/infra/logs/level/setup:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "log-manager-api"
-      summary: "设置日志级别"
-      x-swagger-router-controller: "service.apis.controllers.set_controller"
-      operationId: "set_log_level"
+        - log-manager-api
+      summary: 设置日志级别
+      x-swagger-router-controller: service.apis.controllers.set_controller
+      operationId: set_log_level
       parameters:
-        - name: "body"
-          in: "body"
+        - name: body
+          in: body
           required: true
-          description: "日志级别请求参数格式"
+          description: 日志级别请求参数格式
           schema:
-            $ref: "#/definitions/LogLevelParam"
+            $ref: '#/definitions/LogLevelParam'
       responses:
-        "200":
-          description: "OK"
-        "400":
-          description: "Bad Request"
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
   /v1/infra/logs/export_package:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
-      - "log-manager-api"
-      summary: "日志导出功能api"
-      x-swagger-router-controller: "service.apis.controllers.logs_controller"
-      operationId: "export_log_file"
+        - log-manager-api
+      summary: 日志导出功能api
+      x-swagger-router-controller: service.apis.controllers.logs_controller
+      operationId: export_log_file
       parameters:
-        - name: "nodeName"
-          in: "query"
-          description: "节点名称列表"
-          type: "array"
+        - name: nodeName
+          in: query
+          description: 节点名称列表
+          required: true
+          type: array
           items:
-            type: "string"
-        - name: "componentName"
-          in: "query"
-          description: "子系统模块名称[取值范围]，INFRA代表基础设施，DME代表数据保护引擎，
-          DEE代表数据使能，PM代表管理服务"
-          required: false
-          type: "array"
+            type: string
+        - name: componentName
+          in: query
+          description: '子系统模块名称[取值范围]，INFRA代表基础设施，DME代表高级备份引擎， DEE代表数据使能，PM代表管理服务'
+          required: true
+          type: array
           items:
-            type: "string"
+            type: string
             enum:
-              - "INFRA"
-              - "DME"
-              - "DEE"
-              - "PM"
-          collectionFormat: "multi"
-        - name: "step"
-          in: "query"
+              - INFRA
+              - DME
+              - DEE
+              - PM
+          collectionFormat: multi
+        - name: recordId
+          in: query
+          description: 日志导出任务ID
           required: true
           type: string
-          description: "收集步骤"
-          enum:
-            - package
-            - package_progress
-          collectionFormat: "multi"
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
             $ref: '#/definitions/LogPackageResponse'
-        "201":
-          description: "Created"
-        "400":
-          description: "Bad Request"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
-
-  /v1/infra/logs/export:
-    get:
-      tags:
-        - "log-manager-api"
-      summary: "日志导出功能下载api"
-      x-swagger-router-controller: "service.apis.controllers.logs_controller"
-      operationId: "export_download"
-      responses:
-        "200":
-          description: "OK"
-        "400":
-          description: "Bad Request"
-        "500":
-          description: "Server Wrong"
-
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
   /v1/infra/inspect/service/status:
     get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "inspect-info-api"
-      summary: "POD状态检查"
-      x-swagger-router-controller: "service.apis.controllers.inspect_controller"
-      operationId: "check_service_status"
+        - inspect-info-api
+      summary: 巡检项，检查pod和容器状态
+      x-swagger-router-controller: service.apis.controllers.inspect_controller
+      operationId: check_service_status
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
             $ref: '#/definitions/NodeListServiceResponse'
-        "400":
-          description: "Bad Request"
+        '400':
+          description: Bad Request
   /v1/infra/inspect/config/status:
     get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "inspect-info-api"
-      summary: "配置信息检查"
-      x-swagger-router-controller: "service.apis.controllers.inspect_controller"
-      operationId: "check_config_status"
+        - inspect-info-api
+      summary: 巡检项，检查重要配置信息状态
+      x-swagger-router-controller: service.apis.controllers.inspect_controller
+      operationId: check_config_status
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
             $ref: '#/definitions/NodeListConfigResponse'
-        "400":
-          description: "Bad Request"
+        '400':
+          description: Bad Request
   /v1/infra/inspect/resource/status:
     get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "inspect-info-api"
-      summary: "资源状态检查"
-      x-swagger-router-controller: "service.apis.controllers.inspect_controller"
-      operationId: "check_resource_status"
+        - inspect-info-api
+      summary: 巡检项，检查pod中cpu、内存和磁盘的使用状态
+      x-swagger-router-controller: service.apis.controllers.inspect_controller
+      operationId: check_resource_status
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
             $ref: '#/definitions/NodeListResourceResponse'
-        "400":
-          description: "Bad Request"
+        '400':
+          description: Bad Request
   /v1/infra/collect/all/info:
     get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "collect-info-api"
-      summary: "获取所有信息"
-      x-swagger-router-controller: "service.apis.controllers.collect_controller"
-      operationId: "collect_all_info"
+        - collect-info-api
+      summary: 获取所有信息
+      x-swagger-router-controller: service.apis.controllers.collect_controller
+      operationId: collect_all_info
       parameters:
-        - name: "type"
-          in: "query"
+        - name: type
+          in: query
           required: true
           type: string
-          description: "收集步骤"
+          description: 收集步骤
           enum:
             - package
             - package_progress
             - download
             - remove
-        - name: "nodeName"
-          in: "query"
-          description: "节点名称列表"
-          type: "string"
+        - name: nodeName
+          in: query
+          description: 节点名称列表
+          type: string
+          required: false
       responses:
-        "200":
-          description: "OK"
-        "400":
-          description: "Bad Request"
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
   /v1/infra/collect/node/info:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "log-manager-api"
-      - "collect-info-api"
-      summary: "获取节点信息"
-      x-swagger-router-controller: "service.apis.controllers.collect_controller"
-      operationId: "collect_node_info"
+        - log-manager-api
+        - collect-info-api
+      summary: 获取节点信息
+      x-swagger-router-controller: service.apis.controllers.collect_controller
+      operationId: collect_node_info
       parameters:
-        - name: "nodeName"
-          in: "query"
-          description: "节点名称"
+        - name: nodeName
+          in: query
+          description: 节点名称
           type: string
+          required: false
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
             $ref: '#/definitions/NodeInfoListResponse'
-        "400":
-          description: "Bad Request"
+        '400':
+          description: Bad Request
+  /v1/infra/collect/ip/info:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - collect-info-api
+      summary: 收集管理ip地址，挂载网卡的地址
+      x-swagger-router-controller: service.apis.controllers.collect_controller
+      operationId: collect_ip_info
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IPInfoResponse'
+        '400':
+          description: Bad Request
+  /v1/infra/collect/netplane/info:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - collect-info-api
+      summary: 提供pod网络多平面信息
+      x-swagger-router-controller: service.apis.controllers.collect_controller
+      operationId: collect_network_plane_info
+      parameters:
+        - name: nodeName
+          in: query
+          description: 节点名称
+          type: string
+          required: false
+        - name: podName
+          in: query
+          description: pod名称
+          type: string
+          required: false
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/NodeListNetPlaneResponse'
+        '400':
+          description: Bad Request
+  /v1/infra/data/backup:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - data-manager-api
+      summary: 备份管理数据
+      x-swagger-router-controller: service.apis.controllers.manage_data_controller
+      operationId: backup_data
+      parameters:
+        - $ref: '#/parameters/subsystem'
+        - $ref: '#/parameters/data_type'
+        - $ref: '#/parameters/path'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataSuccessResponse'
+        '400':
+          description: Bad Request
   /v1/infra/data/db/backup:
     get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "data-manager-api"
-      summary: "备份db数据"
-      x-swagger-router-controller: "service.apis.controllers.manage_data_controller"
-      operationId: "backup_db_data"
+        - data-manager-api
+      summary: 备份db数据
+      x-swagger-router-controller: service.apis.controllers.manage_data_controller
+      operationId: backup_db_data
       parameters:
-        - $ref: "#/parameters/path"
+        - $ref: '#/parameters/path'
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
             $ref: '#/definitions/DataSuccessResponse'
-        "400":
-          description: "Bad Request"
-  /v1/infra/data/db/recover:
+        '400':
+          description: Bad Request
+  /v1/infra/data/recover:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
-      - "data-manager-api"
-      summary: "恢复db数据"
-      x-swagger-router-controller: "service.apis.controllers.manage_data_controller"
-      operationId: "recover_db_data"
+        - data-manager-api
+      summary: 恢复管理数据
+      x-swagger-router-controller: service.apis.controllers.manage_data_controller
+      operationId: recover_data
       parameters:
-        - $ref: "#/parameters/path"
+        - $ref: '#/parameters/subsystem'
+        - $ref: '#/parameters/data_type'
+        - $ref: '#/parameters/path'
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
             $ref: '#/definitions/DataSuccessResponse'
-        "400":
-          description: "Bad Request"
+        '400':
+          description: Bad Request
   /v1/infra/pod/info:
     get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-        - "pod-manager-api"
-      summary: "查询所有pod"
-      x-swagger-router-controller: "service.apis.controllers.pod_controller"
-      operationId: "query_pod_status"
+        - pod-manager-api
+      summary: 查询所有pod
+      x-swagger-router-controller: service.apis.controllers.pod_controller
+      operationId: query_pod_status
       parameters:
-        - name: "nodeName"
-          in: "query"
-          description: "节点名称"
+        - name: nodeName
+          in: query
+          description: 节点名称
           type: string
+          required: false
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
             $ref: '#/definitions/NodeListPodResponse'
-        "400":
-          description: "Bad Request"
+        '400':
+          description: Bad Request
+  /v1/infra/pod/status:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - pod-manager-api
+      summary: 查询pod和容器状态
+      x-swagger-router-controller: service.apis.controllers.pod_controller
+      operationId: query_pod_all_status
+      parameters:
+        - name: nodeName
+          in: query
+          description: 节点名称
+          type: string
+          required: false
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/NodeListServiceResponse'
+        '400':
+          description: Bad Request
+  /v1/infra/pod/delete:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - pod-manager-api
+      summary: 删除pod
+      x-swagger-router-controller: service.apis.controllers.pod_controller
+      operationId: delete_pod_info
+      parameters:
+        - name: moduleName
+          in: query
+          description: pod名称
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataSuccessResponse'
+        '400':
+          description: Bad Request
   /v1/infra/pod/stop:
     get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "pod-manager-api"
-      summary: "停止pod"
-      x-swagger-router-controller: "service.apis.controllers.pod_controller"
-      operationId: "stop_pod"
+        - pod-manager-api
+      summary: 停止pod
+      x-swagger-router-controller: service.apis.controllers.pod_controller
+      operationId: stop_pod
       parameters:
-        - name: "step"
-          in: "query"
-          description: "停止阶段"
+        - name: step
+          in: query
+          description: 停止阶段
           required: true
           type: string
           enum:
             - phase_1
             - phase_2
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
             $ref: '#/definitions/DataSuccessResponse'
-        "400":
-          description: "Bad Request"
+        '400':
+          description: Bad Request
+  /v1/infra/internal/map/pod/node:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - pod-manager-api
+      summary: 查询POD与NODE映射关系
+      x-swagger-router-controller: service.apis.controllers.pod_controller
+      operationId: pod_node_map_info
+      parameters:
+        - name: podIp
+          in: query
+          description: POD管理IP
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/NodeMapInfoResponse'
+        '400':
+          description: Bad Request
+  /v1/infra/external/pod/recover:
+    get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
+      tags:
+        - pod-manager-api
+      summary: 拉起pod
+      x-swagger-router-controller: service.apis.controllers.pod_controller
+      operationId: recover_pod
+      parameters:
+        - name: step
+          in: query
+          description: 恢复阶段
+          required: true
+          type: string
+          enum:
+            - phase_1
+            - phase_2
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataSuccessResponse'
+        '400':
+          description: Bad Request
   /v1/infra/configmap/info:
     get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "configMap-manager-api"
-      summary: "查询configMap对象"
-      x-swagger-router-controller: "service.apis.controllers.configmap_controller"
-      operationId: "query_config_map_data"
+        - configMap-manager-api
+      summary: 查询configMap对象
+      x-swagger-router-controller: service.apis.controllers.configmap_controller
+      operationId: query_config_map_data
       parameters:
-        - name: "nameSpace"
-          in: "query"
-          description: "命名空间"
+        - name: nameSpace
+          in: query
+          description: 命名空间
           required: true
           type: string
-        - name: "configMap"
-          in: "query"
-          description: "configMap"
+        - name: configMap
+          in: query
+          description: configMap
           required: true
           type: string
-        - name: "configKey"
-          in: "query"
-          description: "configMap对象"
+        - name: configKey
+          in: query
+          description: configMap对象
           type: string
+          required: false
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
             $ref: '#/definitions/ConfigMapInfoResponse'
-        "400":
-          description: "Bad Request"
+        '400':
+          description: Bad Request
+  /v1/infra/configmap/setup:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - configMap-manager-api
+      summary: 修改configMap对象
+      x-swagger-router-controller: service.apis.controllers.configmap_controller
+      operationId: set_config_map_data
+      parameters:
+        - name: nameSpace
+          in: query
+          description: 命名空间
+          required: true
+          type: string
+        - name: configMap
+          in: query
+          description: configMap
+          required: true
+          type: string
+        - name: configKey
+          in: query
+          description: configMap对象
+          required: true
+          type: string
+        - name: configValue
+          in: query
+          description: configMap对象值
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
   /v1/infra/configmap/create:
     post:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "configMap-manager-api"
-      summary: "增加configMap对象"
-      x-swagger-router-controller: "service.apis.controllers.configmap_controller"
-      operationId: "add_config_map_data"
+        - configMap-manager-api
+      summary: 增加configMap对象
+      x-swagger-router-controller: service.apis.controllers.configmap_controller
+      operationId: add_config_map_data
       parameters:
-        - name: "nameSpace"
-          in: "query"
-          description: "命名空间"
+        - name: nameSpace
+          in: query
+          description: 命名空间
           required: true
           type: string
-        - name: "configMap"
-          in: "query"
-          description: "configMap"
+        - name: configMap
+          in: query
+          description: configMap
           required: true
           type: string
-        - name: "configKey"
-          in: "query"
-          description: "configMap对象"
+        - name: configKey
+          in: query
+          description: configMap对象
           required: true
           type: string
-        - name: "configValue"
-          in: "query"
-          description: "configMap对象值"
+        - name: configValue
+          in: query
+          description: configMap对象值
           required: true
           type: string
       responses:
-        "200":
-          description: "OK"
-        "400":
-          description: "Bad Request"
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
   /v1/infra/configmap/delete:
     post:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "configMap-manager-api"
-      summary: "删除configMap对象"
-      x-swagger-router-controller: "service.apis.controllers.configmap_controller"
-      operationId: "delete_config_map_data"
+        - configMap-manager-api
+      summary: 删除configMap对象
+      x-swagger-router-controller: service.apis.controllers.configmap_controller
+      operationId: delete_config_map_data
       parameters:
-        - name: "nameSpace"
-          in: "query"
-          description: "命名空间"
+        - name: nameSpace
+          in: query
+          description: 命名空间
           required: true
           type: string
-        - name: "configMap"
-          in: "query"
-          description: "configMap"
+        - name: configMap
+          in: query
+          description: configMap
           required: true
           type: string
-        - name: "configKey"
-          in: "query"
-          description: "configMap对象"
+        - name: configKey
+          in: query
+          description: configMap对象
           required: true
           type: string
       responses:
-        "200":
-          description: "OK"
-        "400":
-          description: "Bad Request"
-  /v1/infra/pvc/info:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+  /v1/infra/secret/info:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
-        - "pvc-manager-api"
-      summary: "查询PVC对象"
-      x-swagger-router-controller: "service.apis.controllers.pvc_controller"
-      operationId: "query_pvc_data"
+        - secret-manager-api
+      summary: 查询secret对象
+      x-swagger-router-controller: service.apis.controllers.secret_controller
+      operationId: query_secret_data
       parameters:
-        - name: "nameSpace"
-          in: "query"
-          description: "命名空间"
+        - name: nameSpace
+          in: query
+          description: 命名空间
           required: true
           type: string
-        - name: "pvcName"
-          in: "query"
-          description: "pvc name"
+        - name: secretName
+          in: query
+          description: secret
           required: true
           type: string
+        - name: secretKey
+          in: query
+          description: secret对象
+          type: string
+          required: false
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: '#/definitions/PvcInfoResponse'
-        "400":
-          description: "Bad Request"
-  /v1/infra/service/update/databasepwd:
+            $ref: '#/definitions/ConfigMapInfoResponse'
+        '400':
+          description: Bad Request
+  /v1/infra/secret/setup:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
-        - "service-manager-api"
-      summary: "更新gaussdb密码"
-      x-swagger-router-controller: "service.apis.controllers.status_controller"
-      operationId: "update_password"
+        - secret-manager-api
+      summary: 修改secret对象
+      x-swagger-router-controller: service.apis.controllers.secret_controller
+      operationId: set_secret_data
+      parameters:
+        - name: nameSpace
+          in: query
+          description: 命名空间
+          required: true
+          type: string
+        - name: secretMap
+          in: query
+          description: secret
+          required: true
+          type: string
+        - name: secretKey
+          in: query
+          description: secret对象
+          required: true
+          type: string
+        - name: secretValue
+          in: query
+          description: secret对象值
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+  /v1/infra/secret/create:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - secret-manager-api
+      summary: 增加secret对象
+      x-swagger-router-controller: service.apis.controllers.secret_controller
+      operationId: add_secret_data
+      parameters:
+        - name: nameSpace
+          in: query
+          description: 命名空间
+          required: true
+          type: string
+        - name: secretMap
+          in: query
+          description: secret
+          required: true
+          type: string
+        - name: secretKey
+          in: query
+          description: secret对象
+          required: true
+          type: string
+        - name: secretValue
+          in: query
+          description: secret对象值
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+  /v1/infra/secret/delete:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - secret-manager-api
+      summary: 删除secret对象
+      x-swagger-router-controller: service.apis.controllers.secret_controller
+      operationId: delete_secret_data
+      parameters:
+        - name: nameSpace
+          in: query
+          description: 命名空间
+          required: true
+          type: string
+        - name: secretMap
+          in: query
+          description: secret
+          required: true
+          type: string
+        - name: secretKey
+          in: query
+          description: secret对象
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+  /v1/infra/external/service/update/password:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - service-manager-api
+      summary: 更新密码-database/kafka/redis
+      x-swagger-router-controller: service.apis.controllers.status_controller
+      operationId: update_password
+      parameters:
+        - name: body
+          in: body
+          description: '更新类型 [all|database|kafka|redis]'
+          required: true
+          schema:
+            $ref: '#/definitions/UpdatePasswordInfo'
+      responses:
+        '200':
+          description: OK
           schema:
             $ref: '#/definitions/DataSuccessResponse'
-        "400":
-          description: "Bad Request"
+        '400':
+          description: Bad Request
+  /v1/infra/internal/cert/action/replace:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - service-manager-api
+      summary: 替换证书并重启所有POD
+      x-swagger-router-controller: service.apis.controllers.status_controller
+      operationId: cert_replace
+      parameters:
+        - name: body
+          in: body
+          description: 替换证书请求数据
+          required: true
+          schema:
+            $ref: '#/definitions/CertType'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataSuccessResponse'
+        '400':
+          description: Bad Request
+  /v1/infra/sftp/secret/add_user:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - sftp-manager-api
+      summary: 创建SFTP用户
+      x-swagger-router-controller: service.apis.controllers.sftp_model
+      operationId: add_user
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: 增加SFTP用户请求格式
+          schema:
+            $ref: '#/definitions/SftpUserInfo'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataSuccessResponse'
+        '400':
+          description: Bad Request
+  /v1/infra/sftp/secret/delete_user:
+    delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - sftp-manager-api
+      summary: 删除SFTP用户
+      x-swagger-router-controller: service.apis.controllers.sftp_model
+      operationId: delete_user
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: 删除SFTP用户请求格式
+          schema:
+            $ref: '#/definitions/SftpDeleteUser'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataSuccessResponse'
+        '400':
+          description: Bad Request
+  /v1/infra/sftp/secret/password:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - sftp-manager-api
+      summary: 修改SFTP用户密码
+      x-swagger-router-controller: service.apis.controllers.sftp_model
+      operationId: change_pwd
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: 修改SFTP用户密码请求格式
+          schema:
+            $ref: '#/definitions/SftpUserInfo'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataSuccessResponse'
+        '400':
+          description: Bad Request
+  /v1/infra/sftp/dme_a/info:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8088
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - sftp-manager-api
+      summary: 查询dma映射关系
+      x-swagger-router-controller: service.apis.controllers.sftp_model
+      operationId: get_dma_pod_info
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ConfigMapInfoResponse'
+        '400':
+          description: Bad Request
 definitions:
   ErrorResponse:
-    type: "object"
+    type: object
     properties:
       errId:
-        type: "integer"
-        format: "int64"
-        description: "错误码"
+        type: integer
+        format: int64
+        description: 错误码
       errMsg:
-        type: "string"
-        description: "错误信息"
+        type: string
+        description: 错误信息
+  IPInfo:
+    type: object
+    properties:
+      managerAddress:
+        description: 管理ip地址
+        type: string
+      businessAddress:
+        description: 业务ip地址
+        type: string
+  IPInfoResponse:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/IPInfo'
+      error:
+        $ref: '#/definitions/ErrorResponse'
   NodeListServiceResponse:
-    type: "object"
+    type: object
     properties:
       data:
-        type: "array"
-        description: "节点上pod和container的服务状态列表"
+        type: array
+        description: 节点上pod和container的服务状态列表
         items:
-          $ref: "#/definitions/PodListServiceStatus"
+          $ref: '#/definitions/PodListServiceStatus'
       error:
-        $ref: "#/definitions/ErrorResponse"
+        $ref: '#/definitions/ErrorResponse'
   NodeListPodResponse:
-    type: "object"
+    type: object
     properties:
       data:
-        type: "array"
-        description: "节点上pod的状态列表"
+        type: array
+        description: 节点上pod的状态列表
         items:
-          $ref: "#/definitions/PodListAllStatus"
+          $ref: '#/definitions/PodListAllStatus'
       error:
-        $ref: "#/definitions/ErrorResponse"
+        $ref: '#/definitions/ErrorResponse'
   PodListAllStatus:
-    type: "object"
+    type: object
     properties:
       nodeName:
-        type: "string"
-        description: "节点名称"
+        type: string
+        description: 节点名称
       nameSpace:
-        type: "string"
-        description: "空间名"
+        type: string
+        description: 空间名
       podName:
-        type: "string"
-        description: "pod名称"
+        type: string
+        description: pod名称
       podStatus:
-        type: "string"
-        description: "pod状态"
+        type: string
+        description: pod状态
   ConfigMapInfoResponse:
-    type: "object"
+    type: object
     properties:
       data:
-        type: "array"
-        description: "configmap的信息列表"
+        type: array
+        description: configmap的信息列表
         items:
-          $ref: "#/definitions/MapDataInfo"
+          $ref: '#/definitions/MapDataInfo'
       error:
-        $ref: "#/definitions/ErrorResponse"
+        $ref: '#/definitions/ErrorResponse'
   MapDataInfo:
-    type: "object"
+    type: object
     properties:
       key:
-        type: "string"
-        description: "键"
+        type: string
+        description: 键
       value:
-        type: "string"
-        description: "值"
-  PvcInfoResponse:
-    type: "object"
-    properties:
-      data:
-        $ref: "#/definitions/PvcDataInfo"
-      error:
-        $ref: "#/definitions/ErrorResponse"
-  PvcDataInfo:
-    type: "object"
-    properties:
-      name:
-        type: "string"
-        description: "内置持久卷名称"
-      volume_name:
-        type: "string"
-        description: "卷名称"
-      volume_mode:
-        type: "string"
-        description: "卷模式"
-      storage_class_name:
-        type: "string"
-        description: "存储类型"
+        type: string
+        description: 值
   PodListServiceStatus:
-    type: "object"
+    type: object
     properties:
       nodeName:
-        type: "string"
-        description: "节点名称"
+        type: string
+        description: 节点名称
       namespace:
-        type: "string"
-        description: "空间名"
+        type: string
+        description: 空间名
       podName:
-        type: "string"
-        description: "pod名称"
+        type: string
+        description: pod名称
       podStatus:
-        type: "string"
-        description: "pod状态"
+        type: string
+        description: pod状态
       containerInfo:
-        type: "array"
-        description: "节点上pod中包含的容器服务状态列表"
+        type: array
+        description: 节点上pod中包含的容器服务状态列表
         items:
-          $ref: "#/definitions/ContainerServiceStatus"
+          $ref: '#/definitions/ContainerServiceStatus'
   ContainerServiceStatus:
-    type: "object"
+    type: object
     properties:
       containerStatus:
-        type: "string"
-        description: "容器状态"
+        type: string
+        description: 容器状态
       containerName:
-        type: "string"
-        description: "容器名称"
-  NodeListConfigResponse:
-    type: "object"
+        type: string
+        description: 容器名称
+  NodeListNetPlaneResponse:
+    type: object
     properties:
       data:
-        type: "array"
-        description: "节点上pod关键配置状态列表"
+        type: array
+        description: 节点上pod和对应的网络平面的列表
         items:
-          $ref: "#/definitions/KeyConfigStatus"
+          $ref: '#/definitions/PodListNetPlaneStatus'
       error:
-        $ref: "#/definitions/ErrorResponse"
-  KeyConfigStatus:
-    type: "object"
-    properties:
-      logLevel:
-        type: "string"
-        description: "日志级别"
-      dbState:
-        type: "array"
-        description: "数据库更新状态列表"
-        items:
-          $ref: "#/definitions/DbStateInfo"
-  DbStateInfo:
-    type: "object"
-    properties:
-      dbName:
-       type: "string"
-       description: "数据库名称"
-      dbState:
-        type: "string"
-        description: "数据库更新状态"
-  NodeListResourceResponse:
-    type: "object"
-    properties:
-      data:
-        type: "array"
-        description: "节点上pod CPU、内存、磁盘资源状态列表"
-        items:
-          $ref: "#/definitions/ResourceStatus"
-      error:
-        $ref: "#/definitions/ErrorResponse"
-  ResourceStatus:
-    type: "object"
-    properties:
-      resourceType:
-        type: "string"
-        description: "资源类型"
-      resourceName:
-        type: "string"
-        description: "资源名称"
-      used:
-        type: "number"
-        format: "string"
-        description: "使用的资源"
-      total:
-        type: "number"
-        format: "string"
-        description: "分配的资源"
-      usedPercentage:
-        type: "number"
-        format: "float"
-        description: "资源使用占比"
-      usedMark:
-        type: "number"
-        format: "float"
-        description: "资源使用占比水位线"
-  NodeInfoListResponse:
-    type: "object"
-    properties:
-      data:
-        type: "array"
-        description: "节点信息列表"
-        items:
-          $ref: "#/definitions/NodeInfo"
-      error:
-        $ref: "#/definitions/ErrorResponse"
-  NodeInfo:
-    type: "object"
+        $ref: '#/definitions/ErrorResponse'
+  PodListNetPlaneStatus:
+    type: object
     properties:
       nodeName:
-        type: "string"
-        description: "控制器名称"
+        type: string
+        description: 节点名称
+      namespace:
+        type: string
+        description: 空间名
+      podName:
+        type: string
+        description: pod名称
+      netPlaneInfo:
+        type: array
+        description: 节点上pod中包含的容器服务状态列表
+        items:
+          $ref: '#/definitions/PodNetPlaneInfo'
+  PodNetPlaneInfo:
+    type: object
+    properties:
+      ipAddress:
+        type: string
+        description: 网络平面IP地址
+      netPlaneName:
+        type: string
+        description: 网络平面名称
+  NodeListConfigResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        description: 节点上pod关键配置状态列表
+        items:
+          $ref: '#/definitions/KeyConfigStatus'
+      error:
+        $ref: '#/definitions/ErrorResponse'
+  KeyConfigStatus:
+    type: object
+    properties:
+      logLevel:
+        type: string
+        description: 日志级别
+      dbState:
+        type: array
+        description: 数据库更新状态列表
+        items:
+          $ref: '#/definitions/DbStateInfo'
+  DbStateInfo:
+    type: object
+    properties:
+      dbName:
+        type: string
+        description: 数据库名称
+      dbState:
+        type: string
+        description: 数据库更新状态
+  ConfigStatus:
+    type: object
+    properties:
+      nodeName:
+        type: string
+        description: 节点名称
+      logLevel:
+        type: string
+        description: 日志级别
+      dbState:
+        type: string
+        description: 数据库更新状态
+      taskNumLimit:
+        type: integer
+        format: int32
+        description: 任务数限制
+      licenseDeadTime:
+        type: string
+        description: license过期时间
+      logrotateParam:
+        type: string
+        description: 日志转储配置参数
+  NodeListResourceResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        description: 节点上pod CPU、内存、磁盘资源状态列表
+        items:
+          $ref: '#/definitions/ResourceStatus'
+      error:
+        $ref: '#/definitions/ErrorResponse'
+  ResourceStatus:
+    type: object
+    properties:
+      resourceType:
+        type: string
+        description: 资源类型
+      resourceName:
+        type: string
+        description: 资源名称
+      used:
+        type: number
+        format: string
+        description: 使用的资源
+      total:
+        type: number
+        format: string
+        description: 分配的资源
+      usedPercentage:
+        type: number
+        format: float
+        description: 资源使用占比
+      usedMark:
+        type: number
+        format: float
+        description: 资源使用占比水位线
+  NodeListDomainResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        description: 节点上网络资源状态列表
+        items:
+          $ref: '#/definitions/DomainStatus'
+      error:
+        $ref: '#/definitions/ErrorResponse'
+  DomainStatus:
+    type: object
+    properties:
+      nodeName:
+        type: string
+        description: 节点名称
+      domain:
+        type: string
+        description: 服务域名
+      networkInfo:
+        type: array
+        description: 节点上包含的网络服务状态列表
+        items:
+          $ref: '#/definitions/NetworkStatus'
+  NetworkStatus:
+    type: object
+    properties:
+      portName:
+        type: string
+        description: 端口名
+      nodePort:
+        type: string
+        description: 节点端口号
+      port:
+        type: string
+        description: 服务端口号
+      targetPort:
+        type: string
+        description: 目标端口号
+      protocol:
+        type: string
+        description: 服务协议
+  NodeListAllConfigResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        description: 节点上pod关键配置状态列表
+        items:
+          $ref: '#/definitions/AllConfigStatus'
+      error:
+        $ref: '#/definitions/ErrorResponse'
+  AllConfigStatus:
+    type: object
+    properties:
+      nodeName:
+        type: string
+        description: 节点名称
+      logLevel:
+        type: string
+        description: 日志级别
+      dbState:
+        type: string
+        description: 数据库更新状态
+      taskNumLimit:
+        type: integer
+        format: int32
+        description: 任务数限制
+      licenseDeadTime:
+        type: string
+        description: license过期时间
+      logrotateParam:
+        type: string
+        description: 日志转储配置参数
+      dme_archive_conf:
+        type: string
+        description: dme_archive
+      dme_databases_conf:
+        type: string
+        description: dme_database
+      dme_dmc_conf:
+        type: string
+        description: dme_dmc
+      dme_jobmanager_conf:
+        type: string
+        description: dme_jobmanager
+      dme_vmware_conf:
+        type: string
+        description: dme_vmware
+  NodeInfoListResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        description: 节点信息列表
+        items:
+          $ref: '#/definitions/NodeInfo'
+      error:
+        $ref: '#/definitions/ErrorResponse'
+  NodeInfo:
+    type: object
+    properties:
+      nodeName:
+        type: string
+        description: 控制器名称
       nodeStatus:
-        type: "string"
-        description: "节点状态"
+        type: string
+        description: 节点状态
       hostname:
-        type: "string"
-        description: "节点名称"
+        type: string
+        description: 节点名称
       address:
-        type: "string"
-        description: "业务IP地址"
+        type: string
+        description: 业务IP地址
       componentList:
-        type: "object"
-        description: "组件名称列表，[取值范围]INFRA,DME,DEE,PM"
+        type: object
+        description: '组件名称列表，[取值范围]INFRA,DME,DEE,PM'
   LogLevelParam:
     properties:
       log_level:
-        type: "string"
-        description: "日志级别"
+        type: string
+        description: 日志级别
         enum:
-          - "INFO"
-          - "WARN"
-          - "ERROR"
-          - "DEBUG"
+          - INFO
+          - WARN
+          - ERROR
+          - DEBUG
+  UpdatePasswordInfo:
+    properties:
+      update_module:
+        type: string
+        description: 密码更新模块
+        enum:
+          - all
+          - database
+          - redis
+          - kafka
+  CertType:
+    properties:
+      cert_type:
+        type: string
+        description: 证书类型，redis或internal
+        enum:
+          - internal
+          - redis
+  SftpUserInfo:
+    properties:
+      username:
+        type: string
+        description: SFTP用户名
+      password:
+        type: string
+        description: SFTP用户名密码
+  SftpDeleteUser:
+    properties:
+      username:
+        type: string
+        description: SFTP用户名
   LogInfoResponse:
-    type: "object"
+    type: object
     properties:
       data:
-        type: "object"
+        type: object
         properties:
           logLevel:
-            description: "日志级别"
-            type: "string"
+            description: 日志级别
+            type: string
       error:
-        $ref: "#/definitions/ErrorResponse"
+        $ref: '#/definitions/ErrorResponse'
   LogPackageResponse:
-    type: "object"
+    type: object
     properties:
       progress:
-        description: "日志级别"
-        type: "string"
+        description: 日志级别
+        type: string
       error:
-        $ref: "#/definitions/ErrorResponse"
-
+        $ref: '#/definitions/ErrorResponse'
   DataSuccessResponse:
     type: object
     required:
@@ -659,19 +1495,49 @@ definitions:
     properties:
       success:
         type: boolean
-        description: "结果为True或者是False"
+        description: 结果为True或者是False
       code:
         type: string
-        description: "错误码"
+        description: 错误码
       message:
         type: string
         maxLength: 512
-        description: "错误信息"
+        description: 错误信息
+  NodeMapInfoResponse:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/NodeMapInfo'
+      error:
+        $ref: '#/definitions/ErrorResponse'
+  NodeMapInfo:
+    type: object
+    properties:
+      control:
+        type: string
+        description: POD所在控制器
 parameters:
-  path:
-    name: "path"
-    in: "query"
+  data_type:
+    name: data_type
+    in: query
+    required: true
+    description: 管理数据类型，数据库、配置信息、元数据
+    type: string
+    enum:
+      - DB
+      - CONFIG
+      - META_DATA
+  subsystem:
+    name: subsystem
+    in: query
     required: true
     type: string
-    description: "数据目录路径"
+    description: 数据来源子系统，基础设施
+    enum:
+      - INFRA
+  path:
+    name: path
+    in: query
+    type: string
+    description: 数据目录路径
     maxLength: 256
