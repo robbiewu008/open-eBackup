@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: v1
-  title: 防勒索策略接口
+  title: 勒索软件防护策略接口
 host: localhost
 basePath: /
 tags:
