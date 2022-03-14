@@ -1,1614 +1,1805 @@
----
-swagger: "2.0"
+swagger: '2.0'
 info:
-  version: "v1"
-  title: "DEE DB Anonymization API Document"
+  version: v1
+  title: 数据库脱敏接口
   contact: {}
   license: {}
-host: "localhost"
-basePath: "/"
+host: localhost
+basePath: /
 tags:
-- name: "anony-controller"
-  description: "Anony Controller"
-- name: "database-controller"
-  description: "Database Controller"
-- name: "ident-rule-controller"
-  description: "Ident Rule Controller"
-- name: "mask-rule-controller"
-  description: "Mask Rule Controller"
-- name: "policy-controller"
-  description: "Policy Controller"
+  - name: anony-controller
+    description: Anony Controller
+  - name: database-controller
+    description: Database Controller
+  - name: ident-rule-controller
+    description: Ident Rule Controller
+  - name: mask-rule-controller
+    description: Mask Rule Controller
+  - name: policy-controller
+    description: Policy Controller
 paths:
   /v1/anonymization-job/database/authentication:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "database-controller"
-      summary: "authDatabase"
-      operationId: "authDatabaseUsingPOST"
+        - database-controller
+      summary: authDatabase
+      operationId: authDatabaseUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "dbInfo"
-        description: "dbInfo"
-        required: true
-        schema:
-          $ref: "#/definitions/CreateAnonyJobDb"
-          originalRef: "CreateAnonyJobDb"
-      responses:
-        "200":
-          description: "OK"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: dbInfo
+          description: dbInfo
+          required: true
           schema:
-            $ref: "#/definitions/AuthDatabaseVo"
-            originalRef: "AuthDatabaseVo"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/CreateAnonyJobDb'
+            originalRef: CreateAnonyJobDb
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AuthDatabaseVo'
+            originalRef: AuthDatabaseVo
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization-job/task/stop/controller:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "anony-controller"
-      summary: "stopTask"
-      operationId: "stopTaskUsingPOST"
+        - anony-controller
+      summary: stopTask
+      operationId: stopTaskUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "request"
-        description: "request"
-        required: true
-        schema:
-          $ref: "#/definitions/StopTaskRequest"
-          originalRef: "StopTaskRequest"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/StopTaskRequest'
+            originalRef: StopTaskRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization-job/verification:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "database-controller"
-      summary: "verifyDatabase"
-      operationId: "verifyDatabaseUsingPOST"
+        - database-controller
+      summary: verifyDatabase
+      operationId: verifyDatabaseUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "request"
-        description: "request"
-        required: true
-        schema:
-          $ref: "#/definitions/DatabaseVerifyRequest"
-          originalRef: "DatabaseVerifyRequest"
-      responses:
-        "200":
-          description: "OK"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: request
+          required: true
           schema:
-            $ref: "#/definitions/VerificationVo"
-            originalRef: "VerificationVo"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/DatabaseVerifyRequest'
+            originalRef: DatabaseVerifyRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/VerificationVo'
+            originalRef: VerificationVo
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization/anonymization-job:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "anony-controller"
-      summary: "createAnonyJob"
-      operationId: "createAnonyJobUsingPOST"
+        - anony-controller
+      summary: createAnonyJob
+      operationId: createAnonyJobUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "createRequest"
-        description: "createRequest"
-        required: true
-        schema:
-          $ref: "#/definitions/CreateAnonyJobRequest"
-          originalRef: "CreateAnonyJobRequest"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: createRequest
+          description: createRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CreateAnonyJobRequest'
+            originalRef: CreateAnonyJobRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization/ident-rule:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "ident-rule-controller"
-      summary: "getPageIdentRules"
-      operationId: "getPageIdentRulesUsingGET"
+        - ident-rule-controller
+      summary: getPageIdentRules
+      operationId: getPageIdentRulesUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "create_method"
-        in: "query"
-        description: "create_method"
-        required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
-      - name: "name"
-        in: "query"
-        description: "name"
-        required: false
-        type: "string"
-      - name: "page_no"
-        in: "query"
-        description: "page_no"
-        required: false
-        type: "integer"
-        default: 0
-        format: "int32"
-      - name: "page_size"
-        in: "query"
-        description: "page_size"
-        required: false
-        type: "integer"
-        default: 10
-        format: "int32"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: create_method
+          in: query
+          description: create_method
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: name
+          in: query
+          description: name
+          required: false
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/BasePage«IdentRuleEntity»"
-            originalRef: "BasePage«IdentRuleEntity»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/BasePage«IdentRuleEntity»'
+            originalRef: BasePage«IdentRuleEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "ident-rule-controller"
-      summary: "createIdentRule"
-      operationId: "createIdentRuleUsingPOST"
+        - ident-rule-controller
+      summary: createIdentRule
+      operationId: createIdentRuleUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "createRequest"
-        description: "createRequest"
-        required: true
-        schema:
-          $ref: "#/definitions/CreateIdentRuleRequest"
-          originalRef: "CreateIdentRuleRequest"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: createRequest
+          description: createRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CreateIdentRuleRequest'
+            originalRef: CreateIdentRuleRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
     put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "ident-rule-controller"
-      summary: "modifyIdentRule"
-      operationId: "modifyIdentRuleUsingPUT"
+        - ident-rule-controller
+      summary: modifyIdentRule
+      operationId: modifyIdentRuleUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "updateRequest"
-        description: "updateRequest"
-        required: true
-        schema:
-          $ref: "#/definitions/UpdateIdentRuleRequest"
-          originalRef: "UpdateIdentRuleRequest"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: updateRequest
+          description: updateRequest
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateIdentRuleRequest'
+            originalRef: UpdateIdentRuleRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization/ident-rule/reference/addition:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "ident-rule-controller"
-      summary: "getIdentRuleReferences"
-      operationId: "getIdentRuleReferencesUsingGET"
+        - ident-rule-controller
+      summary: getIdentRuleReferences
+      operationId: getIdentRuleReferencesUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "identification_id"
-        in: "query"
-        description: "identification_id"
-        required: true
-        type: "string"
-      - name: "page_no"
-        in: "query"
-        description: "page_no"
-        required: false
-        type: "integer"
-        default: 0
-        format: "int32"
-      - name: "page_size"
-        in: "query"
-        description: "page_size"
-        required: false
-        type: "integer"
-        default: 10
-        format: "int32"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: identification_id
+          in: query
+          description: identification_id
+          required: true
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/BasePage«PolicyEntity»"
-            originalRef: "BasePage«PolicyEntity»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/BasePage«PolicyEntity»'
+            originalRef: BasePage«PolicyEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
-  /v1/anonymization/ident-rule/{id}:
+        - Authorization:
+            - global
+  '/v1/anonymization/ident-rule/{id}':
     delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "ident-rule-controller"
-      summary: "deleteIdentRule"
-      operationId: "deleteIdentRuleUsingDELETE"
+        - ident-rule-controller
+      summary: deleteIdentRule
+      operationId: deleteIdentRuleUsingDELETE
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "id"
-        in: "path"
-        description: "id"
-        required: true
-        type: "string"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
-        "204":
-          description: "No Content"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization/identification/result:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "anony-controller"
-      summary: "getIdentResult"
-      operationId: "getIdentResultUsingGET"
+        - anony-controller
+      summary: getIdentResult
+      operationId: getIdentResultUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "db_id"
-        in: "query"
-        description: "db_id"
-        required: true
-        type: "string"
-      - name: "db_name"
-        in: "query"
-        description: "db_name"
-        required: true
-        type: "string"
-      - name: "db_type"
-        in: "query"
-        description: "db_type"
-        required: true
-        type: "string"
-      - name: "table_name"
-        in: "query"
-        description: "table_name"
-        required: false
-        type: "string"
-      - name: "table_space"
-        in: "query"
-        description: "table_space"
-        required: false
-        type: "string"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: db_id
+          in: query
+          description: db_id
+          required: true
+          type: string
+        - name: db_name
+          in: query
+          description: db_name
+          required: true
+          type: string
+        - name: db_type
+          in: query
+          description: db_type
+          required: true
+          type: string
+        - name: table_name
+          in: query
+          description: table_name
+          required: false
+          type: string
+        - name: table_space
+          in: query
+          description: table_space
+          required: false
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/IdentificationResultVo"
-            originalRef: "IdentificationResultVo"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/IdentificationResultVo'
+            originalRef: IdentificationResultVo
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
     put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "anony-controller"
-      summary: "modifyIdentResult"
-      operationId: "modifyIdentResultUsingPUT"
+        - anony-controller
+      summary: modifyIdentResult
+      operationId: modifyIdentResultUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "resultRequest"
-        description: "resultRequest"
-        required: true
-        schema:
-          $ref: "#/definitions/UpdateIdentResultRequest"
-          originalRef: "UpdateIdentResultRequest"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: resultRequest
+          description: resultRequest
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateIdentResultRequest'
+            originalRef: UpdateIdentResultRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization/identification/statistics:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "anony-controller"
-      summary: "getIdentStatistics"
-      operationId: "getIdentStatisticsUsingGET"
+        - anony-controller
+      summary: getIdentStatistics
+      operationId: getIdentStatisticsUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "db_id"
-        in: "query"
-        description: "db_id"
-        required: true
-        type: "string"
-      - name: "page_no"
-        in: "query"
-        description: "page_no"
-        required: false
-        type: "integer"
-        default: 0
-        format: "int32"
-      - name: "page_size"
-        in: "query"
-        description: "page_size"
-        required: false
-        type: "integer"
-        default: 10
-        format: "int32"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: db_id
+          in: query
+          description: db_id
+          required: true
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/IPage«IdentificationStatisticVo»"
-            originalRef: "IPage«IdentificationStatisticVo»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/IPage«IdentificationStatisticVo»'
+            originalRef: IPage«IdentificationStatisticVo»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization/mask-rule:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "mask-rule-controller"
-      summary: "getPageMaskRules"
-      operationId: "getPageMaskRulesUsingGET"
+        - mask-rule-controller
+      summary: getPageMaskRules
+      operationId: getPageMaskRulesUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "create_method"
-        in: "query"
-        description: "create_method"
-        required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
-      - name: "mask_type"
-        in: "query"
-        description: "mask_type"
-        required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
-      - name: "name"
-        in: "query"
-        description: "name"
-        required: false
-        type: "string"
-      - name: "page_no"
-        in: "query"
-        description: "page_no"
-        required: false
-        type: "integer"
-        default: 0
-        format: "int32"
-      - name: "page_size"
-        in: "query"
-        description: "page_size"
-        required: false
-        type: "integer"
-        default: 10
-        format: "int32"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: create_method
+          in: query
+          description: create_method
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: mask_type
+          in: query
+          description: mask_type
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: name
+          in: query
+          description: name
+          required: false
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/BasePage«MaskRuleEntity»"
-            originalRef: "BasePage«MaskRuleEntity»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/BasePage«MaskRuleEntity»'
+            originalRef: BasePage«MaskRuleEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "mask-rule-controller"
-      summary: "createMaskRule"
-      operationId: "createMaskRuleUsingPOST"
+        - mask-rule-controller
+      summary: createMaskRule
+      operationId: createMaskRuleUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "createRequest"
-        description: "createRequest"
-        required: true
-        schema:
-          $ref: "#/definitions/CreateMaskRuleRequest"
-          originalRef: "CreateMaskRuleRequest"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: createRequest
+          description: createRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CreateMaskRuleRequest'
+            originalRef: CreateMaskRuleRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
     put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "mask-rule-controller"
-      summary: "modifyMaskRule"
-      operationId: "modifyMaskRuleUsingPUT"
+        - mask-rule-controller
+      summary: modifyMaskRule
+      operationId: modifyMaskRuleUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "updateRequest"
-        description: "updateRequest"
-        required: true
-        schema:
-          $ref: "#/definitions/UpdateMaskRuleRequest"
-          originalRef: "UpdateMaskRuleRequest"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: updateRequest
+          description: updateRequest
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateMaskRuleRequest'
+            originalRef: UpdateMaskRuleRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization/mask-rule/generate-example:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "mask-rule-controller"
-      summary: "generateMaskRuleExample"
-      operationId: "generateMaskRuleExampleUsingPOST"
+        - mask-rule-controller
+      summary: generateMaskRuleExample
+      operationId: generateMaskRuleExampleUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "exampleRequest"
-        description: "exampleRequest"
-        required: true
-        schema:
-          $ref: "#/definitions/MaskRuleExampleRequest"
-          originalRef: "MaskRuleExampleRequest"
-      responses:
-        "200":
-          description: "OK"
+        - in: body
+          name: exampleRequest
+          description: exampleRequest
+          required: true
           schema:
-            type: "string"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/MaskRuleExampleRequest'
+            originalRef: MaskRuleExampleRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization/mask-rule/reference:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "mask-rule-controller"
-      summary: "getMaskRuleReferences"
-      operationId: "getMaskRuleReferencesUsingGET"
+        - mask-rule-controller
+      summary: getMaskRuleReferences
+      operationId: getMaskRuleReferencesUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "mask_id"
-        in: "query"
-        description: "mask_id"
-        required: true
-        type: "string"
-      - name: "page_no"
-        in: "query"
-        description: "page_no"
-        required: true
-        type: "integer"
-        format: "int32"
-      - name: "page_size"
-        in: "query"
-        description: "page_size"
-        required: true
-        type: "integer"
-        format: "int32"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: mask_id
+          in: query
+          description: mask_id
+          required: true
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: true
+          type: integer
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: true
+          type: integer
+          format: int32
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/BasePage«IdentRuleEntity»"
-            originalRef: "BasePage«IdentRuleEntity»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/BasePage«IdentRuleEntity»'
+            originalRef: BasePage«IdentRuleEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
-  /v1/anonymization/mask-rule/{id}:
+        - Authorization:
+            - global
+  '/v1/anonymization/mask-rule/{id}':
     delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "mask-rule-controller"
-      summary: "deleteMaskRule"
-      operationId: "deleteMaskRuleUsingDELETE"
+        - mask-rule-controller
+      summary: deleteMaskRule
+      operationId: deleteMaskRuleUsingDELETE
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "id"
-        in: "path"
-        description: "id"
-        required: true
-        type: "string"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
-        "204":
-          description: "No Content"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization/policy:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "policy-controller"
-      summary: "getPagePolicies"
-      operationId: "getPagePoliciesUsingGET"
+        - policy-controller
+      summary: getPagePolicies
+      operationId: getPagePoliciesUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "create_method"
-        in: "query"
-        description: "create_method"
-        required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
-      - name: "name"
-        in: "query"
-        description: "name"
-        required: false
-        type: "string"
-      - name: "page_no"
-        in: "query"
-        description: "page_no"
-        required: false
-        type: "integer"
-        default: 0
-        format: "int32"
-      - name: "page_size"
-        in: "query"
-        description: "page_size"
-        required: false
-        type: "integer"
-        default: 10
-        format: "int32"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: create_method
+          in: query
+          description: create_method
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: name
+          in: query
+          description: name
+          required: false
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/BasePage«PolicyEntity»"
-            originalRef: "BasePage«PolicyEntity»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/BasePage«PolicyEntity»'
+            originalRef: BasePage«PolicyEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
     put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "policy-controller"
-      summary: "createUpdatePolicy"
-      operationId: "createUpdatePolicyUsingPUT"
+        - policy-controller
+      summary: createUpdatePolicy
+      operationId: createUpdatePolicyUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "createUpdateRequest"
-        description: "createUpdateRequest"
-        required: true
-        schema:
-          $ref: "#/definitions/CreateUpdatePolicyRequest"
-          originalRef: "CreateUpdatePolicyRequest"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: createUpdateRequest
+          description: createUpdateRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CreateUpdatePolicyRequest'
+            originalRef: CreateUpdatePolicyRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization/policy-details:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "policy-controller"
-      summary: "getPolicyDetails"
-      operationId: "getPolicyDetailsUsingGET"
+        - policy-controller
+      summary: getPolicyDetails
+      operationId: getPolicyDetailsUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "page_no"
-        in: "query"
-        description: "page_no"
-        required: false
-        type: "integer"
-        default: 0
-        format: "int32"
-      - name: "page_size"
-        in: "query"
-        description: "page_size"
-        required: false
-        type: "integer"
-        default: 100
-        format: "int32"
-      - name: "policy_id"
-        in: "query"
-        description: "policy_id"
-        required: true
-        type: "string"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 100
+          format: int32
+        - name: policy_id
+          in: query
+          description: policy_id
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/PolicyDetailVo"
-            originalRef: "PolicyDetailVo"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/PolicyDetailVo'
+            originalRef: PolicyDetailVo
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization/policy/reference:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "policy-controller"
-      summary: "getPolicyReferences"
-      operationId: "getPolicyReferencesUsingGET"
+        - policy-controller
+      summary: getPolicyReferences
+      operationId: getPolicyReferencesUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "page_no"
-        in: "query"
-        description: "page_no"
-        required: false
-        type: "integer"
-        default: 0
-        format: "int32"
-      - name: "page_size"
-        in: "query"
-        description: "page_size"
-        required: false
-        type: "integer"
-        default: 10
-        format: "int32"
-      - name: "policy_id"
-        in: "query"
-        description: "policy_id"
-        required: true
-        type: "string"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
+        - name: policy_id
+          in: query
+          description: policy_id
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/BasePage«PolicyReferenceEntity»"
-            originalRef: "BasePage«PolicyReferenceEntity»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/BasePage«PolicyReferenceEntity»'
+            originalRef: BasePage«PolicyReferenceEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
-  /v1/anonymization/policy/{id}:
+        - Authorization:
+            - global
+  '/v1/anonymization/policy/{id}':
     delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "policy-controller"
-      summary: "deletePolicy"
-      operationId: "deletePolicyUsingDELETE"
+        - policy-controller
+      summary: deletePolicy
+      operationId: deletePolicyUsingDELETE
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "id"
-        in: "path"
-        description: "id"
-        required: true
-        type: "string"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
-        "204":
-          description: "No Content"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
   /v1/anonymization/report/download:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "anony-controller"
-      summary: "downloadAnonyReport"
-      operationId: "downloadAnonyReportUsingPOST"
+        - anony-controller
+      summary: downloadAnonyReport
+      operationId: downloadAnonyReportUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "reportRequest"
-        description: "reportRequest"
-        required: true
-        schema:
-          $ref: "#/definitions/DownloadReportRequest"
-          originalRef: "DownloadReportRequest"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: reportRequest
+          description: reportRequest
+          required: true
+          schema:
+            $ref: '#/definitions/DownloadReportRequest'
+            originalRef: DownloadReportRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
-      deprecated: false
+        - Authorization:
+            - global
 securityDefinitions:
   Authorization:
-    type: "apiKey"
-    name: "TOKEN"
-    in: "header"
+    type: apiKey
+    name: TOKEN
+    in: header
 definitions:
   AuthDatabaseVo:
-    type: "object"
+    type: object
     properties:
       errorCode:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       errorMessage:
-        type: "string"
+        type: string
       parameters:
-        type: "array"
+        type: array
         items:
-          type: "string"
+          type: string
       result:
-        type: "boolean"
-    title: "AuthDatabaseVo"
+        type: boolean
+    title: AuthDatabaseVo
   BasePage«IdentRuleEntity»:
-    type: "object"
+    type: object
     properties:
       errorCode:
-        type: "string"
+        type: string
       errorMessage:
-        type: "string"
+        type: string
       items:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/IdentRuleEntity"
-          originalRef: "IdentRuleEntity"
+          $ref: '#/definitions/IdentRuleEntity'
+          originalRef: IdentRuleEntity
       page_no:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       page_size:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       pages:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       parameters:
-        type: "array"
+        type: array
         items:
-          type: "string"
+          type: string
       total:
-        type: "integer"
-        format: "int64"
-    title: "BasePage«IdentRuleEntity»"
+        type: integer
+        format: int64
+    title: BasePage«IdentRuleEntity»
   BasePage«MaskRuleEntity»:
-    type: "object"
+    type: object
     properties:
       errorCode:
-        type: "string"
+        type: string
       errorMessage:
-        type: "string"
+        type: string
       items:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/MaskRuleEntity"
-          originalRef: "MaskRuleEntity"
+          $ref: '#/definitions/MaskRuleEntity'
+          originalRef: MaskRuleEntity
       page_no:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       page_size:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       pages:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       parameters:
-        type: "array"
+        type: array
         items:
-          type: "string"
+          type: string
       total:
-        type: "integer"
-        format: "int64"
-    title: "BasePage«MaskRuleEntity»"
+        type: integer
+        format: int64
+    title: BasePage«MaskRuleEntity»
   BasePage«PolicyEntity»:
-    type: "object"
+    type: object
     properties:
       errorCode:
-        type: "string"
+        type: string
       errorMessage:
-        type: "string"
+        type: string
       items:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/PolicyEntity"
-          originalRef: "PolicyEntity"
+          $ref: '#/definitions/PolicyEntity'
+          originalRef: PolicyEntity
       page_no:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       page_size:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       pages:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       parameters:
-        type: "array"
+        type: array
         items:
-          type: "string"
+          type: string
       total:
-        type: "integer"
-        format: "int64"
-    title: "BasePage«PolicyEntity»"
+        type: integer
+        format: int64
+    title: BasePage«PolicyEntity»
   BasePage«PolicyReferenceEntity»:
-    type: "object"
+    type: object
     properties:
       errorCode:
-        type: "string"
+        type: string
       errorMessage:
-        type: "string"
+        type: string
       items:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/PolicyReferenceEntity"
-          originalRef: "PolicyReferenceEntity"
+          $ref: '#/definitions/PolicyReferenceEntity'
+          originalRef: PolicyReferenceEntity
       page_no:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       page_size:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       pages:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       parameters:
-        type: "array"
+        type: array
         items:
-          type: "string"
+          type: string
       total:
-        type: "integer"
-        format: "int64"
-    title: "BasePage«PolicyReferenceEntity»"
+        type: integer
+        format: int64
+    title: BasePage«PolicyReferenceEntity»
   CreateAnonyJobDb:
-    type: "object"
+    type: object
     properties:
       DBID:
-        type: "string"
+        type: string
       DBName:
-        type: "string"
+        type: string
       DBType:
-        type: "string"
+        type: string
       IPAdress:
-        type: "string"
+        type: string
       Password:
-        type: "string"
+        type: string
       Port:
-        type: "string"
+        type: string
       Username:
-        type: "string"
-    title: "CreateAnonyJobDb"
+        type: string
+    title: CreateAnonyJobDb
   CreateAnonyJobRequest:
-    type: "object"
+    type: object
     properties:
       anonymization_type:
-        type: "string"
+        type: string
       db_obj:
-        $ref: "#/definitions/CreateAnonyJobDb"
-        originalRef: "CreateAnonyJobDb"
+        $ref: '#/definitions/CreateAnonyJobDb'
+        originalRef: CreateAnonyJobDb
       job_type:
-        type: "string"
+        type: string
       policy_id:
-        type: "string"
+        type: string
       policy_name:
-        type: "string"
-    title: "CreateAnonyJobRequest"
+        type: string
+    title: CreateAnonyJobRequest
   CreateIdentRuleRequest:
-    type: "object"
+    type: object
     required:
-    - "expression"
-    - "format"
+      - expression
+      - format
     properties:
       create_method:
-        type: "string"
+        type: string
       expression:
-        type: "string"
+        type: string
       format:
-        type: "string"
+        type: string
       mask_rule_name:
-        type: "string"
+        type: string
       name:
-        type: "string"
-    title: "CreateIdentRuleRequest"
+        type: string
+    title: CreateIdentRuleRequest
   CreateMaskRuleRequest:
-    type: "object"
+    type: object
     required:
-    - "create_method"
-    - "example"
-    - "expression"
-    - "input"
-    - "type"
-    - "type_description"
+      - create_method
+      - example
+      - expression
+      - input
+      - type
+      - type_description
     properties:
       create_method:
-        type: "string"
+        type: string
       example:
-        type: "string"
+        type: string
       expression:
-        type: "string"
+        type: string
       id:
-        type: "string"
+        type: string
       input:
-        type: "string"
+        type: string
       name:
-        type: "string"
+        type: string
       type:
-        type: "string"
+        type: string
       type_description:
-        type: "string"
-    title: "CreateMaskRuleRequest"
+        type: string
+    title: CreateMaskRuleRequest
   CreateUpdatePolicyRequest:
-    type: "object"
+    type: object
     properties:
       create_method:
-        type: "string"
+        type: string
       description:
-        type: "string"
+        type: string
       id:
-        type: "string"
+        type: string
       name:
-        type: "string"
+        type: string
       rules:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/CreateUpdatePolicyRule"
-          originalRef: "CreateUpdatePolicyRule"
-    title: "CreateUpdatePolicyRequest"
+          $ref: '#/definitions/CreateUpdatePolicyRule'
+          originalRef: CreateUpdatePolicyRule
+    title: CreateUpdatePolicyRequest
   CreateUpdatePolicyRule:
-    type: "object"
+    type: object
     properties:
       Action:
-        type: "string"
+        type: string
       IdentRule:
-        type: "string"
-    title: "CreateUpdatePolicyRule"
+        type: string
+    title: CreateUpdatePolicyRule
   DatabaseVerifyRequest:
-    type: "object"
+    type: object
     required:
-    - "limit"
-    - "start_row"
+      - limit
+      - start_row
     properties:
       column_list:
-        type: "array"
+        type: array
         items:
-          type: "string"
+          type: string
       db_obj:
-        $ref: "#/definitions/CreateAnonyJobDb"
-        originalRef: "CreateAnonyJobDb"
+        $ref: '#/definitions/CreateAnonyJobDb'
+        originalRef: CreateAnonyJobDb
       limit:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
         minimum: 0.0
-        maximum: 9.223372036854776E18
+        maximum: 9.223372036854776e18
         exclusiveMinimum: false
         exclusiveMaximum: false
       start_row:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
         minimum: 0.0
-        maximum: 9.223372036854776E18
+        maximum: 9.223372036854776e18
         exclusiveMinimum: false
         exclusiveMaximum: false
       table_name:
-        type: "string"
+        type: string
       table_space:
-        type: "string"
-    title: "DatabaseVerifyRequest"
+        type: string
+    title: DatabaseVerifyRequest
   DownloadReportRequest:
-    type: "object"
+    type: object
     properties:
       db_id:
-        type: "string"
+        type: string
       db_type:
-        type: "string"
-    title: "DownloadReportRequest"
+        type: string
+    title: DownloadReportRequest
   IPage«IdentificationStatisticVo»:
-    type: "object"
+    type: object
     properties:
       current:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       hitCount:
-        type: "boolean"
+        type: boolean
       pages:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       records:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/IdentificationStatisticVo"
-          originalRef: "IdentificationStatisticVo"
+          $ref: '#/definitions/IdentificationStatisticVo'
+          originalRef: IdentificationStatisticVo
       searchCount:
-        type: "boolean"
+        type: boolean
       size:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       total:
-        type: "integer"
-        format: "int64"
-    title: "IPage«IdentificationStatisticVo»"
+        type: integer
+        format: int64
+    title: IPage«IdentificationStatisticVo»
   IdentRuleEntity:
-    type: "object"
+    type: object
     properties:
       create_method:
-        type: "string"
+        type: string
       expression:
-        type: "string"
+        type: string
       format:
-        type: "string"
+        type: string
       id:
-        type: "string"
+        type: string
       keywords:
-        type: "string"
+        type: string
       mask_name:
-        type: "string"
+        type: string
       mask_rule_id:
-        type: "string"
+        type: string
       name:
-        type: "string"
+        type: string
       ref_num:
-        type: "integer"
-        format: "int32"
-    title: "IdentRuleEntity"
+        type: integer
+        format: int32
+    title: IdentRuleEntity
   IdentificationResultVo:
-    type: "object"
+    type: object
     properties:
       db_id:
-        type: "string"
+        type: string
       db_name:
-        type: "string"
+        type: string
       errorCode:
-        type: "string"
+        type: string
       errorMessage:
-        type: "string"
+        type: string
       items:
-        type: "array"
+        type: array
         items:
-          type: "object"
-    title: "IdentificationResultVo"
+          type: object
+    title: IdentificationResultVo
   IdentificationStatisticVo:
-    type: "object"
+    type: object
     properties:
       db_id:
-        type: "string"
+        type: string
       db_name:
-        type: "string"
+        type: string
       sensitive_count:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       table_name:
-        type: "string"
+        type: string
       table_namespace:
-        type: "string"
-    title: "IdentificationStatisticVo"
+        type: string
+    title: IdentificationStatisticVo
   MaskRuleEntity:
-    type: "object"
+    type: object
     properties:
       create_method:
-        type: "string"
+        type: string
       example:
-        type: "string"
+        type: string
       expression:
-        type: "string"
+        type: string
       id:
-        type: "string"
+        type: string
       name:
-        type: "string"
+        type: string
       ref_num:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       type:
-        type: "string"
+        type: string
       type_description:
-        type: "string"
-    title: "MaskRuleEntity"
+        type: string
+    title: MaskRuleEntity
   MaskRuleExampleRequest:
-    type: "object"
+    type: object
     properties:
       expression:
-        type: "string"
+        type: string
       input:
-        type: "string"
+        type: string
       type:
-        type: "string"
-    title: "MaskRuleExampleRequest"
+        type: string
+    title: MaskRuleExampleRequest
   PolicyDetailVo:
-    type: "object"
+    type: object
     properties:
       addition_rules:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/PolicyRuleVo"
-          originalRef: "PolicyRuleVo"
+          $ref: '#/definitions/PolicyRuleVo'
+          originalRef: PolicyRuleVo
       create_method:
-        type: "string"
+        type: string
       description:
-        type: "string"
+        type: string
       errorCode:
-        type: "string"
+        type: string
       errorMessage:
-        type: "string"
+        type: string
       id:
-        type: "string"
+        type: string
       name:
-        type: "string"
+        type: string
       page_no:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       page_size:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       pages:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       template_id:
-        type: "string"
+        type: string
       template_name:
-        type: "string"
+        type: string
       total:
-        type: "integer"
-        format: "int64"
-    title: "PolicyDetailVo"
+        type: integer
+        format: int64
+    title: PolicyDetailVo
   PolicyEntity:
-    type: "object"
+    type: object
     properties:
       create_method:
-        type: "string"
+        type: string
       description:
-        type: "string"
+        type: string
       id:
-        type: "string"
+        type: string
       name:
-        type: "string"
+        type: string
       ref_num:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       templateId:
-        type: "string"
-    title: "PolicyEntity"
+        type: string
+    title: PolicyEntity
   PolicyReferenceEntity:
-    type: "object"
+    type: object
     properties:
       db_id:
-        type: "string"
+        type: string
       db_name:
-        type: "string"
+        type: string
       db_type:
-        type: "string"
+        type: string
       id:
-        type: "string"
+        type: string
       ip_address:
-        type: "string"
+        type: string
       policy_id:
-        type: "string"
+        type: string
       port:
-        type: "string"
-    title: "PolicyReferenceEntity"
+        type: string
+    title: PolicyReferenceEntity
   PolicyRuleVo:
-    type: "object"
+    type: object
     properties:
       IdentRule:
-        $ref: "#/definitions/IdentRuleEntity"
-        originalRef: "IdentRuleEntity"
+        $ref: '#/definitions/IdentRuleEntity'
+        originalRef: IdentRuleEntity
       MaskRule:
-        $ref: "#/definitions/MaskRuleEntity"
-        originalRef: "MaskRuleEntity"
-    title: "PolicyRuleVo"
+        $ref: '#/definitions/MaskRuleEntity'
+        originalRef: MaskRuleEntity
+    title: PolicyRuleVo
   StopTaskRequest:
-    type: "object"
+    type: object
     properties:
       request_id:
-        type: "string"
-    title: "StopTaskRequest"
+        type: string
+    title: StopTaskRequest
   UpdateIdentResultRequest:
-    type: "object"
+    type: object
     properties:
       column_name:
-        type: "string"
+        type: string
       db_id:
-        type: "string"
+        type: string
       db_name:
-        type: "string"
+        type: string
       db_type:
-        type: "string"
+        type: string
       mask_rule_id:
-        type: "string"
+        type: string
       mask_rule_name:
-        type: "string"
+        type: string
       pii:
-        type: "string"
+        type: string
       table_name:
-        type: "string"
+        type: string
       table_namespace:
-        type: "string"
-    title: "UpdateIdentResultRequest"
+        type: string
+    title: UpdateIdentResultRequest
   UpdateIdentRuleRequest:
-    type: "object"
+    type: object
     required:
-    - "expression"
-    - "format"
+      - expression
+      - format
     properties:
       create_method:
-        type: "string"
+        type: string
       expression:
-        type: "string"
+        type: string
       format:
-        type: "string"
+        type: string
       id:
-        type: "string"
+        type: string
       mask_rule_name:
-        type: "string"
+        type: string
       name:
-        type: "string"
-    title: "UpdateIdentRuleRequest"
+        type: string
+    title: UpdateIdentRuleRequest
   UpdateMaskRuleRequest:
-    type: "object"
+    type: object
     required:
-    - "create_method"
-    - "example"
-    - "expression"
-    - "input"
-    - "type"
-    - "type_description"
+      - create_method
+      - example
+      - expression
+      - input
+      - type
+      - type_description
     properties:
       create_method:
-        type: "string"
+        type: string
       example:
-        type: "string"
+        type: string
       expression:
-        type: "string"
+        type: string
       id:
-        type: "string"
+        type: string
       input:
-        type: "string"
+        type: string
       name:
-        type: "string"
+        type: string
       type:
-        type: "string"
+        type: string
       type_description:
-        type: "string"
-    title: "UpdateMaskRuleRequest"
+        type: string
+    title: UpdateMaskRuleRequest
   VerificationVo:
-    type: "object"
+    type: object
     properties:
       errorCode:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       errorMessage:
-        type: "string"
+        type: string
       is_truncated:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       parameters:
-        type: "array"
+        type: array
         items:
-          type: "string"
+          type: string
       result:
-        type: "array"
+        type: array
         items:
-          type: "array"
+          type: array
           items:
-            type: "object"
-    title: "VerificationVo"
+            type: object
+    title: VerificationVo
