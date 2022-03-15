@@ -14,7 +14,7 @@ paths:
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
+      x-public-api: 'N'
       x-sysadmin-role: 'Y'
       produces:
         - application/json
