@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: v1
-  title: 多集群管理API
+  title: 多集群管理接口
   description: 多集群信息统计接口
 host: localhost
 basePath: /
