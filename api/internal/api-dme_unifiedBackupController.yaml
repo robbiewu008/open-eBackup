@@ -18,7 +18,12 @@ tags:
 paths:
   /v1/dme-unified/tasks/sub-tasks:
     post:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -45,6 +50,12 @@ paths:
             $ref: '#/definitions/RspMsg'
   '/v1/dme-unified/tasks/{task_id}':
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -70,6 +81,12 @@ paths:
           description: 0-INITIALIZING，1-RUNNING
           type: integer
           format: int32
+        - name: task_num
+          in: query
+          required: false
+          description: 一次获取的任务数量，默认是1，0表示全部，大于0的按照输入参数决定，若能获取的任务数量小于输入参数，返回能获取的所有任务
+          type: integer
+          format: int32
       responses:
         '200':
           description: 返回任务列表
@@ -87,6 +104,12 @@ paths:
             $ref: '#/definitions/RspMsg'
   '/v1/dme-unified/tasks/{task_id}/lock':
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -126,6 +149,12 @@ paths:
             $ref: '#/definitions/RspMsg'
   '/v1/dme-unified/tasks/{task_id}/statistic':
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -167,62 +196,14 @@ paths:
           description: 内部错误，比如数据库访问不通等
           schema:
             $ref: '#/definitions/RspMsg'
-  '/v1/dme-unified/copies/{copy_id}':
-    delete:
-      x-auth-type: 双向证书认证
-      x-access-port: 30065
-      x-auth-required: 'Y'
-      x-public-api: 'N'
-      tags:
-        - copy-pm
-      description: |-
-        用于DME提供给PM，下发删除副本的任务
-        如果是本地快照，就让默认agent去执行
-      operationId: DeleteCopy
-      parameters:
-        - name: copy_id
-          in: path
-          required: true
-          type: string
-        - name: task_info
-          in: body
-          required: true
-          description: 对于本地保护的快照，需要下发保护环境、存储仓信息
-          schema:
-            $ref: '#/definitions/DeleteCopyTask'
-      responses:
-        '200':
-          description: 异步接口，成功无返回值
-        '500':
-          description: 内部错误，比如数据库访问不通等
-          schema:
-            $ref: '#/definitions/RspMsg'
-    get:
-      x-impact-subsystem: 不影响
-      x-access-port: 30065
-      x-auth-required: 'Y'
-      x-public-api: 'N'
-      x-auth-type: 双向证书认证
-      tags:
-        - copy-pm
-      description: 获取副本详情
-      operationId: GetCopyInfo
-      parameters:
-        - name: copy_id
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/GetCopyInfoResponse'
-        '500':
-          description: 内部错误
-          schema:
-            $ref: '#/definitions/RspMsg'
   /v1/dme-unified/shared-resources:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -247,6 +228,12 @@ paths:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/shared-resources/update:
     put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -271,6 +258,12 @@ paths:
             $ref: '#/definitions/RspMsg'
   '/v1/dme-unified/tasks/{task_id}/details':
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -298,8 +291,14 @@ paths:
           description: 内部错误，比如数据库访问不通等
           schema:
             $ref: '#/definitions/RspMsg'
-  /v1/dme-unified/tasks/backup:
+  /v1/internal/dme-unified/tasks/backup:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -324,8 +323,14 @@ paths:
           description: 内部错误，比如数据库访问不通等
           schema:
             $ref: '#/definitions/RspMsg'
-  /v1/dme-unified/tasks/restore:
+  /v1/internal/dme-unified/tasks/restore:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -348,8 +353,14 @@ paths:
           description: 内部错误，比如数据库访问不通等
           schema:
             $ref: '#/definitions/RspMsg'
-  /v1/dme-unified/tasks/build-index:
+  /v1/internal/dme-unified/tasks/build-index:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -374,6 +385,11 @@ paths:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/shared-resources/lock:
     put:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-impact-subsystem: 影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
@@ -403,6 +419,11 @@ paths:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/shared-resources/release:
     put:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-impact-subsystem: 影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
@@ -426,8 +447,14 @@ paths:
           description: 内部错误，比如数据库访问不通等
           schema:
             $ref: '#/definitions/RspMsg'
-  '/v1/dme-unified/tasks/{task_id}/abort':
+  '/v1/internal/dme-unified/tasks/{task_id}/abort':
     put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -455,6 +482,12 @@ paths:
             $ref: '#/definitions/RspMsg'
   '/v1/dme-unified/shared-resources/{resourceKey}':
     delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -487,6 +520,12 @@ paths:
           schema:
             $ref: '#/definitions/RspMsg'
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -520,9 +559,14 @@ paths:
           description: 内部错误，比如数据库访问不通等
           schema:
             $ref: '#/definitions/RspMsg'
-  /v1/dme-unified/tasks/livemount/cancel:
+  /v1/internal/dme-unified/tasks/livemount/cancel:
     put:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -571,9 +615,14 @@ paths:
           description: 内部错误，比如数据库无法访问
           schema:
             $ref: '#/definitions/RspMsg'
-  /v1/dme-unified/tasks/livemount:
+  /v1/internal/dme-unified/tasks/livemount:
     post:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -596,9 +645,14 @@ paths:
           description: 内部错误，比如数据库访问不通
           schema:
             $ref: '#/definitions/RspMsg'
-  /v1/dme-unified/tasks/backup/clone:
+  /v1/internal/dme-unified/tasks/backup/clone:
     put:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -629,6 +683,12 @@ paths:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/tasks/details:
     put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -651,8 +711,14 @@ paths:
           description: 内部错误，比如数据库访问不通等
           schema:
             $ref: '#/definitions/RspMsg'
-  /v1/dme-unified/protect-object:
+  /v1/internal/dme-unified/protect-object:
     delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -674,6 +740,12 @@ paths:
             type: string
   '/v1/dme-unified/copies/{task_id}':
     put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -701,9 +773,14 @@ paths:
           description: 内部错误，比如数据库访问不通等
           schema:
             $ref: '#/definitions/RspMsg'
-  /v1/dme-unified/copies/add:
+  /v1/internal/dme-unified/copies/add:
     post:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -729,7 +806,12 @@ paths:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/copies/last:
     get:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -772,9 +854,14 @@ paths:
           description: 内部错误
           schema:
             $ref: '#/definitions/RspMsg'
-  /v1/dme-unified/copies/all:
+  /v1/internal/dme-unified/copies/all:
     get:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -815,9 +902,14 @@ paths:
           description: 内部错误
           schema:
             $ref: '#/definitions/RspMsg'
-  /v1/dme-unified/copies/timerange:
+  /v1/internal/dme-unified/copies/timerange:
     get:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -861,9 +953,14 @@ paths:
           description: 返回可用日志时间范围，数据模型参考AvailableTimeRange
           schema:
             $ref: '#/definitions/AvailableTimeRange'
-  '/v1/dme-unified/copies/delete/record/{copy_id}':
+  '/v1/internal/dme-unified/copies/delete/record/{copy_id}':
     delete:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -887,7 +984,12 @@ paths:
             type: string
   /v1/dme-unified/tasks/qos:
     put:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -922,7 +1024,12 @@ paths:
           schema:
             $ref: '#/definitions/RspMsg'
     delete:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -948,9 +1055,79 @@ paths:
           description: 内部错误
           schema:
             $ref: '#/definitions/RspMsg'
-  '/v1/dme-unified/copies/{copy_id}/qos':
+  '/v1/internal/dme-unified/copies/{copy_id}':
+    delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-auth-type: 双向证书认证
+      x-access-port: 30065
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      tags:
+        - copy-pm
+      description: |-
+        用于DME提供给PM，下发删除副本的任务
+        如果是本地快照，就让默认agent去执行
+      operationId: DeleteCopy
+      parameters:
+        - name: copy_id
+          in: path
+          required: true
+          type: string
+        - name: task_info
+          in: body
+          required: true
+          description: 对于本地保护的快照，需要下发保护环境、存储仓信息
+          schema:
+            $ref: '#/definitions/DeleteCopyTask'
+      responses:
+        '200':
+          description: 异步接口，成功无返回值
+        '500':
+          description: 内部错误，比如数据库访问不通等
+          schema:
+            $ref: '#/definitions/RspMsg'
+    get:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 30065
+      x-auth-required: 'Y'
+      x-public-api: 'N'
+      x-auth-type: 双向证书认证
+      tags:
+        - copy-pm
+      description: 获取副本详情
+      operationId: GetCopyInfo
+      parameters:
+        - name: copy_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/GetCopyInfoResponse'
+        '500':
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/RspMsg'
+  '/v1/internal/dme-unified/copies/{copy_id}/qos':
     put:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -984,7 +1161,12 @@ paths:
           schema:
             $ref: '#/definitions/RspMsg'
     delete:
-      x-impact-subsystem: 不影响
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-impact-subsystem: 影响
       x-access-port: 30065
       x-auth-required: 'Y'
       x-public-api: 'N'
@@ -1472,7 +1654,7 @@ definitions:
         type: integer
         format: int32
         description: 子任务的优先级，0-65535，数字越大优先级越低
-      executeStrategy:
+      policy:
         type: integer
         format: int32
         description: |-
@@ -1494,7 +1676,7 @@ definitions:
       - taskType
       - taskName
       - taskPriority
-      - executeStrategy
+      - policy
       - ignoreFailed
   CopyInfo:
     description: |-
@@ -1749,7 +1931,6 @@ definitions:
       - requestId
       - taskId
       - copyId
-      - preCopyId
       - repositories
       - agents
   ProtectTask:
@@ -1913,6 +2094,9 @@ definitions:
       path:
         type: string
         description: 具体的存储路径
+      shareName:
+        type: string
+        description: 存放cifs共享名
     required:
       - type
       - path
@@ -2121,7 +2305,7 @@ definitions:
         description: agent节点信息
       advanceParams:
         type: object
-        description: json对象，高级参数
+        description: '{''fileSystemShareInfo'': [fileSystemShareInfo]}'
     required:
       - requestId
       - taskId
@@ -2217,11 +2401,8 @@ definitions:
         type: integer
         format: int32
         description: '预留参数，新克隆副本类型，0：可写副本, 1：只读副本'
-      fileSystemShareInfo:
-        type: array
-        items:
-          $ref: '#/definitions/FileSystemShareInfo'
-        description: 共享客户端参数
+      fileSystemName:
+        type: string
     required:
       - srcCopyId
       - targetCopyId
