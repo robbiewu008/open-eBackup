@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: v2
-  title: 副本相关接口
+  title: 副本管理接口
 schemes:
   - https
 basePath: /
