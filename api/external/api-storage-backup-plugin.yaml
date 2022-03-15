@@ -329,6 +329,9 @@ paths:
             type: string
   /v1/plugins/storage/nas/auth-users:
     get:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -337,8 +340,8 @@ paths:
       x-dp-admin-role: 'Y'
       tags:
         - api-storage-backup-plugin
-      summary: 查询dorado本地window认证用户信息
-      description: 查询dorado设备，文件系统中windows本地用户认证的所有用户信息
+      summary: 查询本地Window认证用户信息
+      description: 查询数据保护一体机文件系统中Windows本地用户认证的所有用户信息
       operationId: ListNasUsersInfo
       consumes:
         - application/json
@@ -374,16 +377,19 @@ paths:
             $ref: '#/definitions/NasUserInfos'
   /v1/plugins/storage/nas/auth-user-groups:
     get:
+      x-dm-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       tags:
         - api-storage-backup-plugin
-      summary: 查询dorado本地window认证用户组信息
+      summary: 查询本地Window认证用户组信息
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
-      description: 查询dorado设备，文件系统中windows本地用户组认证的所有用户组信息
+      description: 查询数据保护一体机文件系统中Windows本地用户组认证的所有用户组信息
       operationId: ListNasUserGroupsInfo
       consumes:
         - application/json
