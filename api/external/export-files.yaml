@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: v1
-  title: 导出/下载文件管理接口
+  title: 导出/下载文件接口
   description: GroupDesc
 schemes:
   - https
