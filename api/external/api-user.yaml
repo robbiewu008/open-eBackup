@@ -512,13 +512,13 @@ paths:
           description: Access token
           required: true
           type: string
-        - name: password
-          in: query
-          description: 弱口令
+        - in: body
+          name: weakPasswordAddRequest
+          description: 新增弱密码请求体
           required: true
-          type: string
-          maxLength: 64
-          minLength: 8
+          schema:
+            $ref: '#/definitions/WeakPasswordAddRequest'
+            originalRef: WeakPasswordAddRequest
       responses:
         '200':
           description: OK
@@ -1095,6 +1095,17 @@ definitions:
         type: string
         description: 特性名称
     title: FeatureSwitchRequest
+  WeakPasswordAddRequest:
+    type: object
+    required:
+      - password
+    properties:
+      password:
+        type: string
+        description: 弱密码
+        minLength: 8
+        maxLength: 64
+    title: WeakPasswordAddRequest
   FeatureSwitchResponseBody:
     type: object
     properties:
