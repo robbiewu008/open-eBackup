@@ -17,6 +17,7 @@ produces:
 paths:
   /v1/tape-library/libraries:
     get:
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'N'
@@ -42,13 +43,21 @@ paths:
           description: 控制器名称
           required: false
           type: string
+        - name: pageNo
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
       responses:
         '200':
           description: OK
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/TapeLibraryQueryResponse'
+            $ref: '#/definitions/TapeLibraryPageListResponse'
         '401':
           description: Unauthorized
         '403':
@@ -92,6 +101,7 @@ paths:
           description: Not Found
   '/v1/tape-library/libraries/{tapeLibrarySn}/drives':
     get:
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'N'
@@ -130,7 +140,7 @@ paths:
           maxLength: 64
           minLength: 1
           x-example: driver 01
-        - name: pageNum
+        - name: pageNo
           in: query
           description: 页码
           required: false
@@ -174,7 +184,7 @@ paths:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/PageVo_TapeDriveQueryResponse'
+            $ref: '#/definitions/TapeDrivePageListResponse'
         '401':
           description: Unauthorized
         '403':
@@ -240,6 +250,7 @@ paths:
           description: Not Found
   '/v1/tape-library/libraries/{tapeLibrarySn}/slots':
     get:
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'N'
@@ -260,7 +271,7 @@ paths:
           description: Access token
           required: true
           type: string
-        - name: pageNum
+        - name: pageNo
           in: query
           description: 页码
           required: false
@@ -309,7 +320,7 @@ paths:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/PageVo_SlotVo'
+            $ref: '#/definitions/TapeSlotPageListResponse'
         '401':
           description: Unauthorized
         '403':
@@ -318,6 +329,7 @@ paths:
           description: Not Found
   '/v1/tape-library/libraries/{tapeLibrarySn}/tapes':
     get:
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'N'
@@ -369,7 +381,7 @@ paths:
           enum:
             - DESC
             - ASC
-        - name: pageNum
+        - name: pageNo
           in: query
           description: 页码
           required: false
@@ -443,7 +455,7 @@ paths:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/PageVo_TapeVo'
+            $ref: '#/definitions/TapePageListResponse'
         '401':
           description: Unauthorized
         '403':
@@ -766,6 +778,7 @@ paths:
           description: Not Found
   /v1/tape-library/media-sets:
     get:
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
@@ -810,7 +823,7 @@ paths:
           enum:
             - DESC
             - ASC
-        - name: pageNum
+        - name: pageNo
           in: query
           description: 页码
           required: false
@@ -850,7 +863,7 @@ paths:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/PageVo_MediaSetResponse'
+            $ref: '#/definitions/MediaSetPageListResponse'
         '401':
           description: Unauthorized
         '403':
@@ -1247,52 +1260,52 @@ definitions:
         items:
           $ref: '#/definitions/MediaSetRelateTapeRequest'
     title: MediaSetUpdateRequest
-  PageVo_MediaSetResponse:
+  MediaSetPageListResponse:
     properties:
-      data:
+      records:
         type: array
         description: 页面数据
         items:
           $ref: '#/definitions/MediaSetResponse'
-      total:
+      totalCount:
         type: integer
         format: int64
         description: 页面总数
     title: PageVo«MediaSetResponse»
     description: PageVo«MediaSetResponse»
-  PageVo_SlotVo:
+  TapeSlotPageListResponse:
     properties:
-      data:
+      records:
         type: array
         description: 页面数据
         items:
           $ref: '#/definitions/SlotVo'
-      total:
+      totalCount:
         type: integer
         format: int64
         description: 页面总数
     title: PageVo«SlotVo»
     description: PageVo«SlotVo»
-  PageVo_TapeDriveQueryResponse:
+  TapeDrivePageListResponse:
     properties:
-      data:
+      records:
         type: array
         description: 页面数据
         items:
           $ref: '#/definitions/TapeDriveQueryResponse'
-      total:
+      totalCount:
         type: integer
         format: int64
         description: 页面总数
     title: PageVo«TapeDriveQueryResponse»
-  PageVo_TapeVo:
+  TapePageListResponse:
     properties:
-      data:
+      records:
         type: array
         description: 页面数据
         items:
           $ref: '#/definitions/TapeVo'
-      total:
+      totalCount:
         type: integer
         format: int64
         description: 页面总数
@@ -1634,3 +1647,13 @@ definitions:
         type: integer
         format: int32
         description: 2， 启用
+  TapeLibraryPageListResponse:
+    description: 分页查询磁带库结果
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/TapeLibraryQueryResponse'
