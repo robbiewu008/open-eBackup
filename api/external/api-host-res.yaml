@@ -397,44 +397,6 @@ paths:
         - host
       operationId: asm_auth_info_v1_resource_host__host_id__asm_authinfo_get
       summary: 根据主机ID查询主机ASM授权信息
-  '/v1/resource/host/{host_id}/asm-info':
-    get:
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      produces:
-        - application/json
-      parameters:
-        - description: 主机ID
-          in: path
-          name: host_id
-          required: true
-          type: string
-      responses:
-        '200':
-          description: The response is the newly created fileset
-          schema:
-            items:
-              $ref: '#/definitions/AsmInfo'
-            title: Response Asm Info V1 Resource Host  Host Id  Asm Info Get
-            type: array
-        '404':
-          description: Not found
-        '422':
-          description: Validation Error
-          schema:
-            $ref: '#/definitions/HTTPValidationError'
-        '500':
-          description: Internal Server Error
-      tags:
-        - host
-      operationId: asm_info_v1_resource_host__host_id__asm_info_get
-      summary: 根据主机ID查询主机ASM信息列表
   /v1/resource/hosts/upgradeable-versions:
     get:
       x-impact-subsystem: 不影响

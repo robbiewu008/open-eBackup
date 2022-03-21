@@ -80,6 +80,35 @@ paths:
       operationId: >-
         host_refresh_host_cluster_v1_internal_resource_host__host_id__refresh_host_put
       summary: 刷新主机信息【内部接口】
+  '/v1/internal/resource/host/{host_id}/asm-info':
+    get:
+      tags:
+        - host
+      summary: 根据主机ID查询主机ASM信息列表
+      operationId: asm_info_v1_internal_resource_host__host_id__asm_info_get
+      produces:
+        - application/json
+      parameters:
+        - name: host_id
+          in: path
+          required: true
+          type: string
+          description: 主机ID
+      responses:
+        '200':
+          description: The response is the newly created fileset
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AsmInfo'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
 definitions:
   HTTPValidationError:
     properties:
@@ -249,4 +278,15 @@ definitions:
       - type
     title: ValidationError
     type: object
+  AsmInfo:
+    properties:
+      auth_type:
+        type: string
+        description: 认证方式
+      inst_name:
+        type: string
+        description: 实例名称
+      is_cluster:
+        type: string
+        description: 是否集群
 x-components: {}
