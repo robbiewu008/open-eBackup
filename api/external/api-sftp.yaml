@@ -47,8 +47,9 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/sftp/status/{status}':
+  /v1/sftp/status:
     put:
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
@@ -71,12 +72,6 @@ paths:
           description: Access token
           required: true
           type: string
-        - name: status
-          in: path
-          description: 服务状态
-          required: true
-          type: integer
-          format: int32
         - in: body
           name: SftpSwitchRequest
           description: SFTP开关参数
@@ -418,22 +413,35 @@ definitions:
           originalRef: SftpUserBo
     title: SftpQueryUserResponse
   SftpSwitchRequest:
-    type: object
     properties:
       ip:
         type: string
-        description: 服务IP
-    title: SftpSwitchRequest
-  SftpServiceResponse:
-    type: object
-    properties:
-      ip:
-        type: string
-        description: 服务IP
+        description: SFTP服务IP
       status:
         type: integer
         format: int32
-        description: 服务状态
+        description: SFTP服务状态
+      mask:
+        type: string
+        description: IPv4掩码或者IPv6前缀
+    title: SftpSwitchRequest
+    required:
+      - status
+  SftpServiceResponse:
+    properties:
+      ip:
+        type: string
+        description: SFTP服务IP
+      status:
+        type: integer
+        format: int32
+        description: SFTP服务状态
+      ipType:
+        type: string
+        description: SFTP服务IP类型，系统初始化的IP类型
+        enum:
+          - IPV4
+          - IPV6
     title: SftpServiceResponse
   SftpUserBo:
     type: object
