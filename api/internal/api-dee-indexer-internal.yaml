@@ -375,9 +375,12 @@ definitions:
       - agents
   ReportRfiRequest:
     properties:
-      jobRequestId:
+      requestId:
         type: string
         description: 请求id
+      taskId:
+        type: string
+        description: 任务id
       status:
         type: integer
         format: int32
@@ -401,7 +404,8 @@ definitions:
         type: array
     title: ReportRfiRequest
     required:
-      - jobRequestId
+      - requestId
+      - taskId
       - status
   ListCopyRequest:
     properties:
