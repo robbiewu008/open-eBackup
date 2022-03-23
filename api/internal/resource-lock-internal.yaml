@@ -42,6 +42,36 @@ paths:
           description: 正确响应
         '500':
           $ref: '#/responses/CommonErrorResponse'
+    delete:
+      tags:
+        - lock
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      summary: 清空资源锁
+      description: 清空资源锁信息(当前用于管理数据恢复后使用)
+      operationId: DeleteAllResourceLock
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '500':
+          description: 公共的错响应码
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+          examples:
+            application/json:
+              errorCode: '1677929221'
+              errorMessage: System error.
+              parameters: []
+              retryable: true
   '/v1/internal/locks/{lockId}':
     delete:
       tags:
