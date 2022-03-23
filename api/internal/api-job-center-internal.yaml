@@ -9,6 +9,7 @@ basePath: /
 tags:
   - name: Job internal API
     description: Job Internal Controller
+  - name: job
 paths:
   /v1/internal/jobs:
     get:
@@ -519,6 +520,37 @@ paths:
         - Authorization:
             - global
       deprecated: false
+  /v1/internal/jobs/running/action/reset:
+    put:
+      tags:
+        - Job internal API
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      summary: 更新未完成的任务状态
+      description: 在管理数据恢复完成后将原本未结束的任务状态更新为未知状态
+      operationId: UpdateUnfinishedJobsUsingPut
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '500':
+          description: 请求失败
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+          examples:
+            application/json:
+              errorCode: '1677929219'
+              errorMessage: Operation failed
+              retryable: false
+              parameters: null
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -977,3 +1009,10 @@ definitions:
           - ABORTED
           - ABORT_FAILED
     title: UpdateJobRequest
+  ErrorResponse:
+    description: 执行失败
+    example:
+      errorCode: '1677929219'
+      errorMessage: Operation failed
+      retryable: false
+      parameters: null
