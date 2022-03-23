@@ -10,6 +10,45 @@ tags:
   - name: component-rest-api
     description: component-rest-api
 paths:
+  /v1/certs/detail:
+    post:
+      tags:
+      - "component-rest-api"
+      summary: "获取证书详情"
+      operationId: "getCertDetailUsingPOST"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "cert"
+        in: "formData"
+        description: "证书文件"
+        required: true
+        type: "file"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            originalRef: "CertDetailResponse"
+            $ref: "#/definitions/CertDetailResponse"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
   /v1/certs/components:
     get:
       x-rd-admin-role: 'N'
@@ -532,6 +571,13 @@ securityDefinitions:
     name: TOKEN
     in: header
 definitions:
+  CertDetailResponse:
+    type: "object"
+    properties:
+      safety:
+        type: "boolean"
+        description: "证书安全性"
+    title: "CertDetailResponse"
   CertSignBo:
     type: object
     properties:
