@@ -1243,563 +1243,859 @@ securityDefinitions:
     in: header
 definitions:
   AuthDatabaseVo:
-    type: object
     properties:
       errorCode:
         type: integer
         format: int64
+        description: 错误码
       errorMessage:
         type: string
+        description: 错误描述
       parameters:
         type: array
         items:
           type: string
+        description: 错误参数
       result:
         type: boolean
+        description: 鉴权结果
     title: AuthDatabaseVo
   BasePage«IdentRuleEntity»:
-    type: object
     properties:
       errorCode:
         type: string
+        description: 错误码
       errorMessage:
         type: string
+        description: 错误描述
       items:
         type: array
         items:
           $ref: '#/definitions/IdentRuleEntity'
           originalRef: IdentRuleEntity
+        description: 识别规则
       page_no:
         type: integer
         format: int64
+        description: 页码
       page_size:
         type: integer
         format: int64
+        description: 页大小
       pages:
         type: integer
         format: int64
+        description: 总页数
       parameters:
         type: array
         items:
           type: string
+        description: 错误参数
       total:
         type: integer
         format: int64
+        description: 总条数
     title: BasePage«IdentRuleEntity»
   BasePage«MaskRuleEntity»:
-    type: object
     properties:
       errorCode:
         type: string
+        description: 错误码
       errorMessage:
         type: string
+        description: 错误描述
       items:
         type: array
         items:
           $ref: '#/definitions/MaskRuleEntity'
           originalRef: MaskRuleEntity
+        description: 脱敏规则
       page_no:
         type: integer
         format: int64
+        description: 页码
       page_size:
         type: integer
         format: int64
+        description: 页大小
       pages:
         type: integer
         format: int64
+        description: 总页数
       parameters:
         type: array
         items:
           type: string
+        description: 错误参数
       total:
         type: integer
         format: int64
+        description: 总条数
     title: BasePage«MaskRuleEntity»
   BasePage«PolicyEntity»:
-    type: object
     properties:
       errorCode:
         type: string
+        description: 错误码
       errorMessage:
         type: string
+        description: 错误描述
       items:
         type: array
         items:
           $ref: '#/definitions/PolicyEntity'
           originalRef: PolicyEntity
+        description: 脱敏规则
       page_no:
         type: integer
         format: int64
+        description: 页码
       page_size:
         type: integer
         format: int64
+        description: 页大小
       pages:
         type: integer
         format: int64
+        description: 总页数
       parameters:
         type: array
         items:
           type: string
+        description: 错误参数
       total:
         type: integer
         format: int64
+        description: 总条数
     title: BasePage«PolicyEntity»
   BasePage«PolicyReferenceEntity»:
-    type: object
     properties:
       errorCode:
         type: string
+        description: 错误码
       errorMessage:
         type: string
+        description: 错误描述
       items:
         type: array
         items:
           $ref: '#/definitions/PolicyReferenceEntity'
           originalRef: PolicyReferenceEntity
+        description: 策略关联数据库
       page_no:
         type: integer
         format: int64
+        description: 页码
       page_size:
         type: integer
         format: int64
+        description: 页大小
       pages:
         type: integer
         format: int64
+        description: 总页数
       parameters:
         type: array
         items:
           type: string
+        description: 错误参数
       total:
         type: integer
         format: int64
+        description: 总条数
     title: BasePage«PolicyReferenceEntity»
   CreateAnonyJobDb:
-    type: object
     properties:
       DBID:
         type: string
+        description: ID
+        minLength: 1
+        maxLength: 128
       DBName:
         type: string
+        description: 名称
+        minLength: 1
+        maxLength: 128
       DBType:
         type: string
+        description: 类型
       IPAdress:
         type: string
+        description: IP地址
+        minLength: 1
+        maxLength: 128
       Password:
         type: string
+        description: 密码
+        minLength: 1
+        maxLength: 128
       Port:
         type: string
+        description: 端口
+        minLength: 1
+        maxLength: 8
       Username:
         type: string
+        description: 用户名
+        minLength: 1
+        maxLength: 64
     title: CreateAnonyJobDb
+    required:
+      - DBID
+      - DBName
+      - IPAdress
+      - Password
+      - Port
+      - Username
   CreateAnonyJobRequest:
-    type: object
     properties:
       anonymization_type:
         type: string
+        description: 脱敏类型
+        minLength: 0
+        maxLength: 64
       db_obj:
         $ref: '#/definitions/CreateAnonyJobDb'
         originalRef: CreateAnonyJobDb
+        description: 数据库信息
       job_type:
         type: string
+        description: 任务类型
+        minLength: 0
+        maxLength: 64
       policy_id:
         type: string
+        description: 策略ID
+        minLength: 0
+        maxLength: 128
       policy_name:
         type: string
+        description: 策略名称
+        minLength: 0
+        maxLength: 64
     title: CreateAnonyJobRequest
   CreateIdentRuleRequest:
-    type: object
-    required:
-      - expression
-      - format
     properties:
       create_method:
         type: string
+        description: 创建方式
+        minLength: 1
       expression:
         type: string
+        description: 表达式
+        minLength: 1
+        maxLength: 2000
       format:
         type: string
+        description: 格式
+        minLength: 0
+        maxLength: 64
       mask_rule_name:
         type: string
+        description: 脱敏规则名称
+        minLength: 1
       name:
         type: string
+        description: 名称
+        minLength: 1
+        maxLength: 64
     title: CreateIdentRuleRequest
+    required:
+      - create_method
+      - expression
+      - format
+      - mask_rule_name
+      - name
   CreateMaskRuleRequest:
-    type: object
+    properties:
+      create_method:
+        type: string
+        description: 创建方式
+        minLength: 0
+        maxLength: 64
+      example:
+        type: string
+        description: 规则样例
+        minLength: 0
+        maxLength: 1000
+      expression:
+        type: string
+        description: 原数据
+        minLength: 0
+        maxLength: 2000
+      id:
+        type: string
+        description: ID
+        minLength: 1
+        maxLength: 128
+      input:
+        type: string
+        description: 掩码字符
+        minLength: 0
+        maxLength: 64
+      name:
+        type: string
+        description: 名称
+        minLength: 1
+        maxLength: 64
+      type:
+        type: string
+        description: 类型
+        minLength: 1
+        maxLength: 64
+      type_description:
+        type: string
+        description: 类型描述
+        minLength: 0
+        maxLength: 1000
+    title: CreateMaskRuleRequest
     required:
       - create_method
       - example
       - expression
       - input
+      - name
       - type
       - type_description
-    properties:
-      create_method:
-        type: string
-      example:
-        type: string
-      expression:
-        type: string
-      id:
-        type: string
-      input:
-        type: string
-      name:
-        type: string
-      type:
-        type: string
-      type_description:
-        type: string
-    title: CreateMaskRuleRequest
   CreateUpdatePolicyRequest:
-    type: object
     properties:
       create_method:
         type: string
+        description: 创建方式
+        minLength: 1
+        maxLength: 64
       description:
         type: string
+        description: 描述
+        minLength: 0
+        maxLength: 1000
       id:
         type: string
+        description: ID
+        minLength: 1
+        maxLength: 128
       name:
         type: string
+        description: 名称
+        minLength: 1
+        maxLength: 64
       rules:
         type: array
         items:
           $ref: '#/definitions/CreateUpdatePolicyRule'
           originalRef: CreateUpdatePolicyRule
+        description: 关联识别规则
+        minItems: 1
+        maxItems: 500
     title: CreateUpdatePolicyRequest
+    required:
+      - create_method
+      - description
+      - name
+      - rules
   CreateUpdatePolicyRule:
-    type: object
     properties:
       Action:
         type: string
+        description: 动作
       IdentRule:
         type: string
+        description: 识别规则名称
     title: CreateUpdatePolicyRule
   DatabaseVerifyRequest:
-    type: object
-    required:
-      - limit
-      - start_row
     properties:
       column_list:
         type: array
         items:
           type: string
+        description: 列
+        minItems: 1
+        maxItems: 128
       db_obj:
         $ref: '#/definitions/CreateAnonyJobDb'
         originalRef: CreateAnonyJobDb
+        description: 数据库信息
       limit:
         type: integer
         format: int32
-        minimum: 0.0
-        maximum: 9.223372036854776e18
-        exclusiveMinimum: false
-        exclusiveMaximum: false
+        minimum: 1
+        maximum: 10
+        description: 数量
       start_row:
         type: integer
         format: int32
-        minimum: 0.0
-        maximum: 9.223372036854776e18
-        exclusiveMinimum: false
-        exclusiveMaximum: false
+        minimum: 0
+        description: 开始行
+        maximum: 2147483647
       table_name:
         type: string
+        description: 表名
+        minLength: 1
+        maxLength: 128
       table_space:
         type: string
+        description: 表空间
+        minLength: 1
+        maxLength: 128
     title: DatabaseVerifyRequest
+    required:
+      - column_list
+      - limit
+      - start_row
+      - table_name
+      - table_space
   DownloadReportRequest:
-    type: object
     properties:
       db_id:
         type: string
+        description: 数据库ID
+        minLength: 1
+        maxLength: 128
       db_type:
         type: string
+        description: 数据库类型
+        minLength: 1
+        maxLength: 16
     title: DownloadReportRequest
+    required:
+      - db_id
+      - db_type
   IPage«IdentificationStatisticVo»:
-    type: object
     properties:
       current:
         type: integer
         format: int64
+        description: 当前页
       hitCount:
         type: boolean
+        description: 暂无使用
       pages:
         type: integer
         format: int64
+        description: 总页数
       records:
         type: array
         items:
           $ref: '#/definitions/IdentificationStatisticVo'
           originalRef: IdentificationStatisticVo
+        description: 记录数
       searchCount:
         type: boolean
+        description: 暂无使用
       size:
         type: integer
         format: int64
+        description: 页大小
       total:
         type: integer
         format: int64
+        description: 总条数
     title: IPage«IdentificationStatisticVo»
   IdentRuleEntity:
-    type: object
     properties:
       create_method:
         type: string
+        description: 创建方式
       expression:
         type: string
+        description: 表达式
       format:
         type: string
+        description: 格式
       id:
         type: string
+        description: ID
       keywords:
         type: string
+        description: 关键词
       mask_name:
         type: string
+        description: 脱敏规则名称
       mask_rule_id:
         type: string
+        description: 脱敏规则ID
       name:
         type: string
+        description: 名称
       ref_num:
         type: integer
         format: int32
+        description: 关联脱敏策略数量
     title: IdentRuleEntity
   IdentificationResultVo:
-    type: object
     properties:
       db_id:
         type: string
+        description: 数据库ID
       db_name:
         type: string
+        description: 数据库名称
       errorCode:
         type: string
+        description: 错误码
       errorMessage:
         type: string
+        description: 错误信息
       items:
         type: array
         items:
           type: object
+        description: 结果
     title: IdentificationResultVo
   IdentificationStatisticVo:
-    type: object
     properties:
       db_id:
         type: string
+        description: 数据库ID
       db_name:
         type: string
+        description: 数据库名称
       sensitive_count:
         type: integer
         format: int32
+        description: 暂未使用
       table_name:
         type: string
+        description: 表名称
       table_namespace:
         type: string
+        description: 表空间
     title: IdentificationStatisticVo
   MaskRuleEntity:
-    type: object
     properties:
       create_method:
         type: string
+        description: 创建方式
       example:
         type: string
+        description: 规则样例
       expression:
         type: string
+        description: 掩码字符
       id:
         type: string
+        description: ID
       name:
         type: string
+        description: 名称
       ref_num:
         type: integer
         format: int32
+        description: 关联识别规则数量
       type:
         type: string
+        description: 类型
       type_description:
         type: string
+        description: 类型描述
     title: MaskRuleEntity
   MaskRuleExampleRequest:
-    type: object
     properties:
       expression:
         type: string
+        description: 表达式
+        minLength: 1
+        maxLength: 2000
       input:
         type: string
+        description: 原数据
+        minLength: 1
+        maxLength: 64
       type:
         type: string
+        description: 类型
+        minLength: 1
+        maxLength: 64
     title: MaskRuleExampleRequest
+    required:
+      - expression
+      - input
+      - type
   PolicyDetailVo:
-    type: object
     properties:
       addition_rules:
         type: array
         items:
           $ref: '#/definitions/PolicyRuleVo'
           originalRef: PolicyRuleVo
+        description: 策略规则
       create_method:
         type: string
+        description: 创建方式
       description:
         type: string
+        description: 描述
       errorCode:
         type: string
+        description: 错误码
       errorMessage:
         type: string
+        description: 错误信息
       id:
         type: string
+        description: ID
       name:
         type: string
+        description: 名称
       page_no:
         type: integer
         format: int32
+        description: 页码
       page_size:
         type: integer
         format: int32
+        description: 页大小
       pages:
         type: integer
         format: int64
+        description: 总页数
       template_id:
         type: string
+        description: 模板ID
       template_name:
         type: string
+        description: 模板名称
       total:
         type: integer
         format: int64
+        description: 总条数
     title: PolicyDetailVo
   PolicyEntity:
-    type: object
     properties:
       create_method:
         type: string
+        description: 创建方式
       description:
         type: string
+        description: 描述
       id:
         type: string
+        description: ID
       name:
         type: string
+        description: 名称
       ref_num:
         type: integer
         format: int32
+        description: 关联识别规则数量
       templateId:
         type: string
+        description: 模板ID，暂未使用
     title: PolicyEntity
   PolicyReferenceEntity:
-    type: object
     properties:
       db_id:
         type: string
+        description: 数据库ID
       db_name:
         type: string
+        description: 数据库名称
       db_type:
         type: string
+        description: 数据库类型
       id:
         type: string
+        description: ID
       ip_address:
         type: string
+        description: IP
       policy_id:
         type: string
+        description: 策略ID
       port:
         type: string
+        description: 端口
     title: PolicyReferenceEntity
   PolicyRuleVo:
-    type: object
     properties:
       IdentRule:
         $ref: '#/definitions/IdentRuleEntity'
         originalRef: IdentRuleEntity
+        description: 识别规则
       MaskRule:
         $ref: '#/definitions/MaskRuleEntity'
         originalRef: MaskRuleEntity
+        description: 脱敏规则
     title: PolicyRuleVo
   StopTaskRequest:
-    type: object
     properties:
       request_id:
         type: string
+        description: 请求ID
+        minLength: 1
+        maxLength: 128
     title: StopTaskRequest
+    required:
+      - request_id
   UpdateIdentResultRequest:
-    type: object
     properties:
       column_name:
         type: string
+        description: 列名
+        minLength: 1
+        maxLength: 128
       db_id:
         type: string
+        description: ID
+        minLength: 1
+        maxLength: 128
       db_name:
         type: string
+        description: 名称
+        minLength: 1
+        maxLength: 128
       db_type:
         type: string
+        description: 类型
       mask_rule_id:
         type: string
+        description: 规则ID
+        minLength: 1
+        maxLength: 128
       mask_rule_name:
         type: string
+        description: 规则名称
+        minLength: 1
+        maxLength: 64
       pii:
         type: string
+        description: PII
+        minLength: 1
+        maxLength: 4096
       table_name:
         type: string
+        description: 表名
+        minLength: 1
+        maxLength: 128
       table_namespace:
         type: string
+        description: 表空间
+        minLength: 1
+        maxLength: 128
     title: UpdateIdentResultRequest
-  UpdateIdentRuleRequest:
-    type: object
     required:
-      - expression
-      - format
+      - column_name
+      - db_id
+      - db_name
+      - db_type
+      - pii
+      - table_name
+      - table_namespace
+  UpdateIdentRuleRequest:
     properties:
       create_method:
         type: string
+        description: 创建方式
       expression:
         type: string
+        description: 表达式
+        minLength: 1
+        maxLength: 2000
       format:
         type: string
+        description: 格式
       id:
         type: string
+        description: ID
+        minLength: 1
+        maxLength: 128
       mask_rule_name:
         type: string
+        description: 脱敏规则名称
+        minLength: 1
+        maxLength: 64
       name:
         type: string
+        description: 名称
+        minLength: 1
+        maxLength: 64
     title: UpdateIdentRuleRequest
+    required:
+      - create_method
+      - expression
+      - format
+      - id
+      - mask_rule_name
+      - name
   UpdateMaskRuleRequest:
-    type: object
+    properties:
+      create_method:
+        type: string
+        description: 创建方式
+      example:
+        type: string
+        description: 规则样例
+        minLength: 0
+        maxLength: 1000
+      expression:
+        type: string
+        description: 掩码字符
+        minLength: 0
+        maxLength: 2000
+      id:
+        type: string
+        description: ID
+        minLength: 1
+        maxLength: 128
+      input:
+        type: string
+        description: 原数据
+        minLength: 0
+        maxLength: 64
+      name:
+        type: string
+        description: 名称
+        minLength: 1
+        maxLength: 64
+      type:
+        type: string
+        description: 类型
+        minLength: 1
+        maxLength: 64
+      type_description:
+        type: string
+        description: 类型描述
+        minLength: 0
+        maxLength: 1000
+    title: UpdateMaskRuleRequest
     required:
       - create_method
       - example
       - expression
+      - id
       - input
+      - name
       - type
       - type_description
-    properties:
-      create_method:
-        type: string
-      example:
-        type: string
-      expression:
-        type: string
-      id:
-        type: string
-      input:
-        type: string
-      name:
-        type: string
-      type:
-        type: string
-      type_description:
-        type: string
-    title: UpdateMaskRuleRequest
   VerificationVo:
-    type: object
     properties:
       errorCode:
         type: integer
         format: int64
+        description: 错误码
       errorMessage:
         type: string
+        description: 错误描述
       is_truncated:
         type: integer
         format: int32
+        description: 暂无使用
       parameters:
         type: array
         items:
           type: string
+        description: 错误参数
       result:
         type: array
         items:
           type: array
           items:
             type: object
+        description: 验证结果
     title: VerificationVo
+    required:
+      - errorCode
+      - errorMessage
+      - is_truncated
+      - parameters
+      - result
