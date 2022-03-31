@@ -372,6 +372,7 @@ paths:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/shared-resources/lock:
     put:
+      x-impact-subsystem: 影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -387,17 +388,6 @@ paths:
           description: resource
           schema:
             $ref: '#/definitions/Resource'
-        - name: timeoutByMs
-          in: query
-          required: true
-          description: 超时时间
-          type: integer
-          format: int32
-        - name: subTaskId
-          in: query
-          required: true
-          description: 子任务Id
-          type: string
       responses:
         '200':
           description: 锁定成功无返回值
@@ -411,6 +401,7 @@ paths:
             $ref: '#/definitions/RspMsg'
   /v1/dme-unified/shared-resources/release:
     put:
+      x-impact-subsystem: 影响
       x-auth-type: 双向证书认证
       x-access-port: 30065
       x-auth-required: 'Y'
@@ -426,11 +417,6 @@ paths:
           description: resource
           schema:
             $ref: '#/definitions/Resource'
-        - name: subTaskId
-          in: query
-          required: true
-          description: 子任务id
-          type: string
       responses:
         '200':
           description: 释放资源成功，无返回值
@@ -1424,13 +1410,6 @@ definitions:
 
       和DEE对接口
       手动建索引待讨论
-    required:
-      - requestId
-      - taskId
-      - copyId
-      - preCopyId
-      - indexPath
-      - agents
     properties:
       requestId:
         type: string
@@ -1444,9 +1423,11 @@ definitions:
       preCopyId:
         type: string
         description: 前一个副本的id
-      indexPath:
-        type: string
-        description: 索引路径
+      repositories:
+        type: array
+        items:
+          $ref: '#/definitions/StorageRepositoryExtend'
+        description: 存储仓信息
       agents:
         type: array
         items:
@@ -1455,6 +1436,13 @@ definitions:
       extendInfo:
         type: object
         description: json对象，扩展信息
+    required:
+      - requestId
+      - taskId
+      - copyId
+      - preCopyId
+      - repositories
+      - agents
   ProtectTask:
     description: >-
       分配任务的任务模型 -- 主任务
@@ -1569,9 +1557,6 @@ definitions:
       resourceValue:
         type: string
         description: 资源的值
-      isShared:
-        type: boolean
-        description: 资源是否共享
       sharedNum:
         type: integer
         format: int32
@@ -1581,22 +1566,17 @@ definitions:
       - scopeKey
       - resourceKey
       - resourceValue
-      - isShared
   ResourceStatus:
     description: 资源状态模型
     properties:
       resource:
         $ref: '#/definitions/Resource'
-      isLocked:
-        type: boolean
-        description: 该资源是否被锁定
       lockNum:
         type: integer
         format: int32
         description: 如果资源被锁定，该资源已被多少个节点共享
     required:
       - resource
-      - isLocked
   ErrorDetails:
     description: 错误描述
     required:
@@ -1647,6 +1627,12 @@ definitions:
             items:
               $ref: '#/definitions/HostAddress'
             description: 比如逻辑端口地址
+          transProtocol:
+            type: string
+            description: 传输协议http/https
+          proxy:
+            description: 代理信息
+            $ref: '#/definitions/ProxyInfo'
   UpdateCopy:
     description: |-
       副本信息
@@ -1754,12 +1740,14 @@ definitions:
       preCopyId:
         type: string
         description: 前一个副本的id
-      indexPath:
-        type: string
-        description: 索引路径
+      repositories:
+        type: array
+        items:
+          $ref: '#/definitions/StorageRepositoryExtend'
+        description: 存储仓信息
     required:
       - preCopyId
-      - indexPath
+      - repositories
   DeleteCopyTask:
     properties:
       taskId:
@@ -2018,3 +2006,28 @@ definitions:
     properties:
       advanceParams:
         type: object
+  ProxyInfo:
+    required:
+      - enabled
+      - hostname
+      - port
+    properties:
+      enabled:
+        type: boolean
+        description: 是否启用
+      hostname:
+        type: string
+        description: 代理服务器域名/IP
+      port:
+        type: integer
+        format: int32
+        description: 代理端口
+      userName:
+        type: string
+        description: 用户名
+      password:
+        type: string
+        description: 密码
+      extendInfo:
+        type: object
+        description: 拓展字段
