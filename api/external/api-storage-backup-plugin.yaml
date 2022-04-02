@@ -633,6 +633,10 @@ definitions:
       id:
         type: string
         description: 文件系统id
+      protocolType:
+        type: integer
+        format: int32
+        description: '协议类型  -1:不包含nfs和cifs  0:只包含cifs  1：包含nfs 2：包含cfs和cifs'
     description: 文件系统响应体
     required:
       - name
