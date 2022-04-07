@@ -14,8 +14,13 @@ tags:
 paths:
   /v1/internal/indexes:
     post:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-impact-subsystem: 影响
-      x-access-port: 8081
+      x-access-port: 8084
       x-auth-required: 'N'
       x-public-api: 'N'
       tags:
@@ -49,11 +54,16 @@ paths:
         - Authorization:
             - global
     delete:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       tags:
         - 索引管理
       summary: 删除资源或副本的索引
       x-impact-subsystem: 影响
-      x-access-port: 8081
+      x-access-port: 8084
       x-auth-required: 'N'
       x-public-api: 'N'
       operationId: deleteCopyIndex
@@ -63,26 +73,36 @@ paths:
           required: true
           description: 请求id
           type: string
+          minLength: 1
+          maxLength: 128
         - name: resourceId
           in: query
           required: true
           description: 资源id
           type: string
+          minLength: 1
+          maxLength: 128
         - name: copyId
           in: query
           required: false
           description: 副本id，删除单个副本索引时必填
           type: string
+          minLength: 1
+          maxLength: 128
         - name: chainId
           in: query
           required: false
           description: 备份链id，删除单个副本索引时必填
           type: string
+          minLength: 1
+          maxLength: 128
         - name: userId
           in: query
           required: true
           description: 用户id
           type: string
+          minLength: 1
+          maxLength: 128
       responses:
         '200':
           description: OK
@@ -96,8 +116,13 @@ paths:
           description: Not Found
   '/v1/internal/indexes/{requestId}/action/report-rfi':
     post:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-impact-subsystem: 影响
-      x-access-port: 8081
+      x-access-port: 8084
       x-auth-required: 'N'
       x-public-api: 'N'
       tags:
@@ -113,6 +138,8 @@ paths:
           in: path
           required: true
           type: string
+          minLength: 1
+          maxLength: 128
         - in: body
           name: request
           description: request
@@ -136,6 +163,11 @@ paths:
             - global
   /v1/internal/indexes/folder/action/list:
     post:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8084
       x-auth-required: 'N'
@@ -175,6 +207,11 @@ paths:
             - global
   /v1/internal/restore-filesystem/action/mount:
     post:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8084
       x-auth-required: 'N'
@@ -214,6 +251,11 @@ paths:
             - global
   /v1/internal/restore-filesystem/folder:
     post:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8084
       x-auth-required: 'N'
@@ -232,16 +274,22 @@ paths:
           description: folderName
           required: true
           type: string
+          minLength: 1
+          maxLength: 4096
         - name: mountPointId
           in: query
           description: mountPointId
           required: true
           type: string
+          minLength: 1
+          maxLength: 128
         - name: parentPath
           in: query
           description: parentPath
           required: true
           type: string
+          minLength: 1
+          maxLength: 4096
       responses:
         '200':
           description: OK
@@ -257,6 +305,11 @@ paths:
         - Authorization:
             - global
     get:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8084
       x-auth-required: 'N'
@@ -273,23 +326,29 @@ paths:
           description: mountPointId
           required: true
           type: string
+          minLength: 1
+          maxLength: 128
         - name: parentPath
           in: query
           description: parentPath
           required: true
           type: string
+          minLength: 1
+          maxLength: 4096
         - name: pageNum
           in: query
           description: pageNum
           required: true
           type: integer
           format: int64
+          minimum: 0
         - name: pageSize
           in: query
           description: pageSize
           required: true
           type: integer
           format: int64
+          maximum: 1024
       responses:
         '200':
           description: OK
@@ -308,6 +367,11 @@ paths:
         - Authorization:
             - global
     delete:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8084
       x-auth-required: 'N'
@@ -324,11 +388,15 @@ paths:
           description: mountPointId
           required: true
           type: string
+          minLength: 1
+          maxLength: 128
         - name: filePath
           in: query
           required: true
           description: fileName
           type: string
+          minLength: 1
+          maxLength: 4096
       responses:
         '200':
           description: OK
@@ -354,9 +422,16 @@ definitions:
       requestId:
         type: string
         description: 请求id
+        minLength: 1
+        maxLength: 128
       triggerMode:
         type: string
         description: '建索引触发方式: AUTO-调度自动建,MANUAL-手动建'
+        enum:
+          - AUTO
+          - MANUAL
+        minLength: 1
+        maxLength: 64
       copyInfo:
         description: 副本信息
         originalRef: copyInfo
@@ -378,14 +453,20 @@ definitions:
       requestId:
         type: string
         description: 请求id
+        minLength: 1
+        maxLength: 128
       taskId:
         type: string
         description: 任务id
+        minLength: 1
+        maxLength: 128
       status:
         type: integer
         format: int32
         description: >-
           任务状态：0-INITIALIZING，1-RUNNING，2-ABORTING，3-COMPLETED，4-PARTIAL_COMPLETED，5-ABORTED，6-ABORTED_FAILED，7-FAILED，8-FAILED_NOTRY
+        minimum: 0
+        maximum: 20
       extendField:
         items:
           properties:
@@ -393,15 +474,23 @@ definitions:
               type: string
               example: dfed7b8e-f7ae-47c7-878a-1542438e4997
               description: 副本id
+              minLength: 1
+              maxLength: 128
             rfiFiles:
               type: array
               items:
                 type: string
+                minLength: 1
+                maxLength: 1024
               example:
                 - /RFI_new_and_old_2.zip
               description: rfi文件路径
+              minItems: 1
+              maxItems: 4096
         description: 扩展信息
         type: array
+        minItems: 1
+        maxItems: 10000
     title: ReportRfiRequest
     required:
       - requestId
@@ -417,13 +506,17 @@ definitions:
         type: integer
         format: int64
         description: 起始页
+        minimum: 0
       pageSize:
         type: integer
         format: int64
         description: 分页大小
+        maximum: 1024
       parentPath:
         type: string
         description: 父路径
+        minLength: 1
+        maxLength: 4096
     title: ListCopyRequest
     required:
       - copyInfo
@@ -446,6 +539,11 @@ definitions:
       location:
         type: string
         description: '文件系统所处位置：LOCAL,本机位置;NEW,新位置'
+        enum:
+          - LOCAL
+          - NEW
+        minLength: 1
+        maxLength: 64
       shareInfo:
         description: 共享文件系统信息
         originalRef: FilesystemInfo
@@ -460,6 +558,8 @@ definitions:
     properties:
       mountPointId:
         type: string
+        minLength: 1
+        maxLength: 128
     title: MountFileSystemResponse
     required:
       - mountPointId
@@ -468,13 +568,19 @@ definitions:
       ip:
         type: string
         description: ip
+        minLength: 1
+        maxLength: 128
       port:
         type: integer
         format: int32
         description: port
+        minimum: 1
+        maximum: 65535
       id:
         type: string
         description: host id，pm下发时要带上agent id
+        minLength: 1
+        maxLength: 128
     title: HostAddress
     required:
       - ip
@@ -495,9 +601,13 @@ definitions:
       uuid:
         type: string
         description: 副本ID
+        minLength: 1
+        maxLength: 128
       generatedBy:
         type: string
         description: 副本生成方式
+        minLength: 1
+        maxLength: 64
       isAggregation:
         type: boolean
         description: 副本是否是聚合格式
@@ -507,12 +617,18 @@ definitions:
       resourceId:
         type: string
         description: '${dee.indexer.browse.copyInfo.request.resourceId}'
+        minLength: 1
+        maxLength: 128
       resourceName:
         type: string
         description: 副本资源名称，创建索引时必选
+        minLength: 1
+        maxLength: 64
       resourceSubType:
         type: string
         description: 副本资源子类型
+        minLength: 1
+        maxLength: 64
       gn:
         type: integer
         format: int32
@@ -520,14 +636,20 @@ definitions:
       chainId:
         type: string
         description: 备份链ID
+        minLength: 1
+        maxLength: 128
       userId:
         type: string
         description: 副本用户ID
+        minLength: 1
+        maxLength: 128
       snapshots:
         type: array
         items:
           $ref: '#/definitions/SnapshotInfo'
         description: 副本对应的快照列表，浏览未建索引副本时必选
+        minItems: 1
+        maxItems: 64
     title: CopyInfo
     required:
       - uuid
@@ -544,9 +666,13 @@ definitions:
       id:
         type: string
         description: 快照ID
+        minLength: 1
+        maxLength: 128
       parentName:
         type: string
         description: 父节点（文件系统）名
+        minLength: 1
+        maxLength: 512
     title: SnapshotInfo
     required:
       - id
@@ -555,8 +681,12 @@ definitions:
     properties:
       path:
         type: string
+        minLength: 1
+        maxLength: 1024
       type:
         type: string
+        minLength: 1
+        maxLength: 64
       hasChildren:
         type: boolean
       size:
@@ -564,24 +694,39 @@ definitions:
         format: int64
       modifyTime:
         type: string
+        minLength: 1
+        maxLength: 128
     title: FolderInfo
   ShareInfo:
     properties:
       filesystemName:
         type: string
         description: 文件系统名
+        minLength: 1
+        maxLength: 512
       shareIp:
         type: string
         description: 共享IP，新位置需要
+        minLength: 1
+        maxLength: 128
       name:
         type: string
         description: 共享名，新位置需要
+        minLength: 1
+        maxLength: 512
       protocol:
         type: string
         description: 共享协议，新位置需要
+        minLength: 1
+        maxLength: 64
       targetType:
         type: string
         description: 目标共享文件系统类型，HOMOGENEOUS：同构、HETEROGENEOUS：异构
+        enum:
+          - HOMOGENEOUS
+          - HETEROGENEOUS
+        minLength: 1
+        maxLength: 64
       nfsAuth:
         description: NFS验证信息，新位置是NFS共享需要
         originalRef: NfsAuth
@@ -594,30 +739,40 @@ definitions:
     required:
       - filesystemName
   NfsAuth:
-    type: object
     properties:
       kerberos:
         type: string
         description: kerberos
+        minLength: 1
+        maxLength: 512
       mode:
         type: string
         description: 验证模式
+        minLength: 1
+        maxLength: 64
     title: NfsAuth
   CifsAuth:
-    type: object
     properties:
       domainName:
         type: string
         description: 域名
+        minLength: 1
+        maxLength: 512
       mode:
         type: string
         description: 验证模式
+        minLength: 1
+        maxLength: 64
       password:
         type: string
         description: 密码
+        minLength: 1
+        maxLength: 512
       username:
         type: string
         description: 用户名
+        minLength: 1
+        maxLength: 512
     title: CifsAuth
   fileSystemInfo:
     properties:
@@ -645,8 +800,6 @@ definitions:
 
       1到3,authKey填用户名,authPwd填密码， 4 authKey填AK， authPwd填SK,
       5,6,7,8认证认证信息在扩展字段中扩充。
-    required:
-      - authType
     properties:
       authType:
         type: integer
@@ -654,22 +807,34 @@ definitions:
         description: >-
           0-NO_AUTH, 1-OS_PASSWORD, 2-APP_PASSWORD, 3-LADP, 4-AKSK, 5-KERBEROS,
           6-TOKEN, 7-OAUTH2, 8-OTHER
+        minimum: 0
+        maximum: 20
       authKey:
         type: string
         description: 用户名
+        minLength: 1
+        maxLength: 512
       authPwd:
         type: string
         description: 密码
+        minLength: 1
+        maxLength: 512
       extendInfo:
         type: object
         description: json对象，key_value键值对，扩展信息
+    required:
+      - authType
   AppEnvironment:
     properties:
       endpoint:
         type: string
+        minLength: 1
+        maxLength: 128
       port:
         type: integer
         format: int32
+        minimum: 1
+        maximum: 65535
       auth:
         $ref: '#/definitions/Authentication'
       extendInfo:
@@ -679,7 +844,13 @@ definitions:
     properties:
       copyId:
         type: string
+        minLength: 1
+        maxLength: 128
       rfiFiles:
         type: array
         items:
           type: string
+          minLength: 1
+          maxLength: 1024
+        minItems: 1
+        maxItems: 1024
