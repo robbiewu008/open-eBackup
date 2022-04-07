@@ -637,15 +637,25 @@ definitions:
         type: integer
         format: int32
         description: '协议类型  -1:不包含nfs和cifs  0:只包含cifs  1：包含nfs 2：包含cfs和cifs'
+      securityStyle:
+        type: integer
+        format: int32
+        description: 安全模式 2：NTFS安全模式；3：UNIX安全模式
     description: 文件系统响应体
     required:
       - name
       - id
+      - protocolType
+      - securityStyle
   CreateFileSystemRequestBody:
     properties:
       name:
         type: string
         description: 文件系统名
+      securityStyle:
+        type: integer
+        format: int32
+        description: 文件系统支持安全模式；2：NTFS安全模式；3：UNIX安全模式
       nfsShare:
         description: nfs信息
         $ref: '#/definitions/NfsShare'
@@ -654,6 +664,7 @@ definitions:
         $ref: '#/definitions/CifsShare'
     required:
       - name
+      - securityStyle
       - nfsShare
       - cifsShare
   NfsShare:
