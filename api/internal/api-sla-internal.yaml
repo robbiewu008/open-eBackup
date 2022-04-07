@@ -109,6 +109,36 @@ paths:
         - sla-api
       operationId: query_internal_sla_by_id_v1_internal_slas__sla_id__get
       summary: 根据id查询单个SLA
+  '/v1/internal/slas/policies/{policy_id}/detail':
+    get:
+      tags:
+        - sla-api
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 查询单个策略的详情
+      operationId: query_policy_by_id
+      parameters:
+        - name: policy_id
+          in: path
+          required: true
+          type: string
+          description: 策略id
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PolicyQuery'
+        '422':
+          description: ''
+          schema:
+            $ref: '#/definitions/ValidationError'
 definitions:
   BackupTimeUnit:
     description: An enumeration.
