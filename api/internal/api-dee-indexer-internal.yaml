@@ -603,6 +603,9 @@ definitions:
         description: 副本ID
         minLength: 1
         maxLength: 128
+      displayTimestamp:
+        type: string
+        description: 副本时间
       generatedBy:
         type: string
         description: 副本生成方式
@@ -653,6 +656,7 @@ definitions:
     title: CopyInfo
     required:
       - uuid
+      - displayTimestamp
       - generatedBy
       - isAggregation
       - isIndexed
