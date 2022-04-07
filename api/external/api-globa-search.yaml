@@ -65,17 +65,22 @@ securityDefinitions:
     in: header
 definitions:
   FileLevelSearchRequest:
-    type: object
     properties:
       chainId:
         type: string
         description: 副本链ID
+        minLength: 1
+        maxLength: 128
       copyId:
         type: string
         description: 副本ID
+        minLength: 1
+        maxLength: 128
       generatedBy:
         type: string
         description: 副本生成方式
+        minLength: 1
+        maxLength: 64
       gn:
         type: integer
         format: int64
@@ -84,36 +89,54 @@ definitions:
         type: array
         example:
           - 1
-        description: 文件类型列表。 1：文件，2：文件夹，3：链接
+        description: 文件类型列表。 0：文件夹，1：文件，2：链接
         items:
           type: integer
           format: int32
+        enum:
+          - 0
+          - 1
+          - 2
       orderBy:
         type: string
         description: 排序字段
+        minLength: 1
+        maxLength: 1024
       orderType:
         type: string
         description: 排序类型。“asc”或“desc”，默认为“asc”。
+        enum:
+          - asc
+          - desc
       pageNo:
         type: integer
         format: int32
         example: 0
         description: 分页页面编码
+        minimum: 0
       pageSize:
         type: integer
         format: int32
         example: 10
         description: 分页数据条数
+        maximum: 1024
+        exclusiveMaximum: true
       path:
         type: string
         description: 文件路径
+        minLength: 1
+        maxLength: 4096
       resourceId:
         type: string
         description: 资源ID
+        minLength: 1
+        maxLength: 128
       resourceName:
         type: string
         example: vm_1234
         description: 资源名称
+        minLength: 1
+        maxLength: 1024
       resourceType:
         type: array
         example:
@@ -124,10 +147,13 @@ definitions:
         items:
           type: integer
           format: int32
+        maxItems: 1000
       searchKey:
         type: string
         example: my document
         description: 搜索关键字，将会搜索出包含这个关键字的所有文件。
+        minLength: 1
+        maxLength: 64
     title: FileLevelSearchRequest
   FileInfo:
     description: 文件信息
