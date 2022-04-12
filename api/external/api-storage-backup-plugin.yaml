@@ -423,6 +423,62 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/NasUserGroupInfos'
+  '/v1/plugins/storage/nas/filesystems/{envId}/files':
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - api-storage-backup-plugin
+      summary: 浏览恢复文件和目录返回体
+      description: 浏览恢复文件和目录返回体
+      operationId: ListRestoreTargetFiles
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: envId
+          in: path
+          required: true
+          type: string
+          description: 环境id
+        - name: pageNo
+          in: query
+          required: true
+          type: integer
+          format: int32
+          description: 起始页
+        - name: pageSize
+          in: query
+          required: true
+          type: integer
+          format: int32
+          description: 分页大小
+        - name: path
+          in: query
+          required: true
+          type: string
+          description: 路径
+        - name: listRestoreTargetFilesRequestBody
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ListRestoreTargetFilesRequestBody'
+          description: 共享信息
+      responses:
+        '200':
+          description: 文件树返回体
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DeeFileSystemResponse'
 definitions:
   FileSystemInfo:
     description: 文件系统详细信息查询的返回体。
@@ -608,9 +664,11 @@ definitions:
       password:
         type: string
         description: 密码
+      kerberos:
+        type: string
+        description: kerberos 认证信息
     required:
       - mode
-      - domainName
   FileSystemResponseList:
     properties:
       totalCount:
@@ -794,3 +852,37 @@ definitions:
         type: integer
         format: int32
         description: '0: 表示不允许客户端以root用户访问; 1:表示允许客户端以root用户访问'
+  ListRestoreTargetFilesRequestBody:
+    description: 挂载文件请求参数
+    properties:
+      filesystemName:
+        type: string
+        description: 文件系统名
+      location:
+        type: string
+        description: 恢复的位置 LOCAL or NEW
+      targetType:
+        type: string
+        description: 目标共享文件系统类型，HOMOGENEOUS：同构、HETEROGENEOUS：异构
+      shareIp:
+        type: string
+        description: 共享ip地址
+      name:
+        type: string
+        description: 共享名
+      protocol:
+        type: string
+        description: 共享协议，NFS、CIFS（本机位置不填）
+      nfsAuth:
+        $ref: '#/definitions/NfsAuth'
+        description: nfs认证信息
+      cifsAuth:
+        $ref: '#/definitions/CifsAuth'
+        description: cifs认证信息
+    required:
+      - filesystemName
+      - location
+      - targetType
+      - shareIp
+      - name
+      - protocol
