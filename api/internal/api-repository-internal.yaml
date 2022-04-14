@@ -88,8 +88,17 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/local-storage/internal/ethernet-ports/action/check:
+  /v1/internal/local-storage/ethernet-ports/action/check:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
         - local-storage-internal-api
       summary: '${api.storages.clearAlarm}'
@@ -121,9 +130,17 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
-  /v1/local-storage/internal/info:
+  /v1/internal/local-storage/info:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
         - local-storage-internal-api
       summary: 获取本地存储信息
@@ -145,9 +162,17 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
-  '/v1/local-storage/internal/storage/alarm/action/clear/{sequence}':
+  '/v1/internal/local-storage/storage/alarm/action/clear/{sequence}':
     delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
         - local-storage-internal-api
       summary: '${api.storages.clearAlarm}'
@@ -173,9 +198,17 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
-  '/v1/local-storage/internal/storage/alarm/{start}/{end}':
+  '/v1/internal/local-storage/storage/alarm/{start}/{end}':
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
         - local-storage-internal-api
       summary: '${api.storages.getLocalStorageAlarm}'
@@ -212,9 +245,17 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
-  '/v1/local-storage/internal/storage/history/alarm/cleared/{start}/{end}':
+  '/v1/internal/local-storage/storage/history/alarm/cleared/{start}/{end}':
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
         - local-storage-internal-api
       summary: '${api.storages.getLocalStorageEvent}'
@@ -251,9 +292,17 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
-  '/v1/local-storage/internal/storage/history/alarm/recovered/{start}/{end}':
+  '/v1/internal/local-storage/storage/history/alarm/recovered/{start}/{end}':
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
         - local-storage-internal-api
       summary: '${api.storages.getLocalStorageEvent}'
@@ -290,9 +339,17 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
-  /v1/storages/internal/storage-info:
+  /v1/internal/storages/storage-info:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
         - storages-internal-api
       summary: storageInfo
@@ -316,9 +373,17 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
-  '/v1/storages/internal/storage/{storageId}':
+  '/v1/internal/storages/{storageId}':
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
         - storages-internal-api
       summary: queryFullStorageById
@@ -348,7 +413,6 @@ paths:
       security:
         - Authorization:
             - global
-      deprecated: false
 securityDefinitions:
   Authorization:
     type: apiKey
