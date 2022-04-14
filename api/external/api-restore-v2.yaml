@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: v1
-  title: 恢复接口V2
+  title: 恢复接口（V2）
   description: GroupDesc
 schemes:
   - https
