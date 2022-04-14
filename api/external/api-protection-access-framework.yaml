@@ -10,46 +10,6 @@ tags:
   - name: access-point-controller
     description: Access Point Controller
 paths:
-  /v1/backup/action/import:
-    post:
-      tags:
-        - access-point-controller
-      summary: importCopy
-      operationId: importCopyUsingPOST_1
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-        - in: body
-          name: importParam
-          description: importParam
-          required: true
-          schema:
-            $ref: '#/definitions/CopyReplicationImport'
-            originalRef: CopyReplicationImport
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: boolean
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-      deprecated: false
   /v1/backup/cluster:
     post:
       tags:
