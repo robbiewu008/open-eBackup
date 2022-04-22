@@ -1195,6 +1195,40 @@ paths:
       security:
         - Authorization:
             - global
+  /v1/local-storage/logic-port:
+    get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - local-storage-api
+      summary: 查询底座逻辑端口
+      description: 根据协议类型查询底座逻辑端口
+      operationId: getLogicPortUsingGET
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: query
+          required: true
+          description: 访问令牌
+          type: string
+        - name: protocol
+          in: query
+          required: true
+          description: 逻辑端口支持的协议类型
+          type: string
+      responses:
+        '200':
+          description: ok
+          schema:
+            $ref: '#/definitions/LogicPortResponse'
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -1723,6 +1757,10 @@ definitions:
         type: integer
         format: int64
         description: 存储库已使用容量（单位：Byte）
+      cloudType:
+        type: integer
+        format: int32
+        description: 对象存储类型
     title: RepositoryBase
   RepositoryThresholdRequest:
     type: object
@@ -2070,3 +2108,13 @@ definitions:
         minLength: 1
         maxLength: 64
     title: UpdateStorageRequest
+  LogicPortResponse:
+    description: 逻辑端口列表响应
+    required:
+      - logicPortList
+    properties:
+      logicPortList:
+        type: array
+        items:
+          type: string
+        description: 逻辑端口列表
