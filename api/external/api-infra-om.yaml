@@ -905,7 +905,7 @@ paths:
           description: OK
         '400':
           description: Bad Request
-  /v1/infra/external/service/update/password:
+  /v1/infra/external/pwd_update_period/setup:
     post:
       x-dm-role: 'N'
       x-impact-subsystem: 影响
@@ -917,15 +917,20 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - service-manager-api
-      summary: 更新内部组件database/kafka/redis密码，成功后重启所有POD
-      x-swagger-router-controller: service.apis.controllers.status_controller
-      operationId: update_password
+        - configMap-manager-api
+      summary: 设置内部组件密码更新周期
+      x-swagger-router-controller: service.apis.controllers.configmap_controller
+      operationId: set_update_internal_password_period
+      parameters:
+        - name: body
+          in: body
+          description: '接口参数，内部组件面更新周期1-1825天'
+          required: true
+          schema:
+            $ref: '#/definitions/UpdatePasswordPeriod'
       responses:
         '200':
           description: OK
-          schema:
-            $ref: '#/definitions/DataSuccessResponse'
         '400':
           description: Bad Request
   /v1/infra/internal/cert/action/replace:
@@ -1431,6 +1436,14 @@ definitions:
           - WARN
           - ERROR
           - DEBUG
+  UpdatePasswordPeriod:
+    properties:
+      update_period:
+        type: "integer"
+        format: "int32"
+        description: "内部组件密码更新周期"
+        minimum: 1
+        maximum: 1825
   CertType:
     properties:
       cert_type:
