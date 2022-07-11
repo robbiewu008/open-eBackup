@@ -1,0 +1,181 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: host
+  - name: app
+  - name: task
+paths:
+  '/v2/agents/{agentId}/resources':
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - app
+      operationId: ListResourcesDetails
+      summary: 通过指定代理实时查询资源
+      description: 通过指定代理实时查询资源
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          type: string
+          minLength: 1
+          maxLength: 50
+          description: Agent代理UUID
+        - name: ListResourcesDetailsRequestBody
+          in: body
+          required: true
+          description: 需要列表资源父资源信息
+          schema:
+            $ref: '#/definitions/ListResourceReqV2'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ListResourceRsp'
+        '500':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ErrorRsp'
+definitions:
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    properties:
+      errorCode:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      errorMessage:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512
+      detailParams:
+        type: array
+        items:
+          type: string
+        description: 参数
+    required:
+      - errorCode
+      - errorMessage
+  AppResource:
+    description: 应用资源对象
+    properties:
+      type:
+        type: string
+        description: 资源类型
+        minLength: 1
+        maxLength: 32
+      subType:
+        type: string
+        description: 资源子类型
+        minLength: 1
+        maxLength: 32
+      uuid:
+        type: string
+        description: 如果资源有uuid，则返回UUID，否则返回为空
+        minLength: 1
+        maxLength: 64
+      name:
+        type: string
+        description: 资源名称，对应的实例、数据库名称等
+        minLength: 1
+        maxLength: 256
+      parentUuid:
+        type: string
+        description: 资源父Id
+        minLength: 1
+        maxLength: 64
+      parentName:
+        type: string
+        description: 资源父名称
+        minLength: 1
+        maxLength: 256
+      extendInfo:
+        type: string
+        description: 扩展参数，采用json字符串格式，由Agent插件组装，PM插件解析
+    required:
+      - type
+      - subType
+      - name
+  ApplicationBase:
+    description: app ojbect
+    allOf:
+      - $ref: '#/definitions/AppResource'
+  Application:
+    allOf:
+      - $ref: '#/definitions/ApplicationBase'
+  ListResourceRsp:
+    required:
+      - items
+      - pageNo
+      - pageSize
+      - pages
+      - total
+    properties:
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/AppResource'
+        description: 数据列表
+      pageNo:
+        type: integer
+        format: int32
+        description: 页面编号
+      pageSize:
+        type: integer
+        format: int32
+        description: 每页数据量
+      pages:
+        type: integer
+        format: int32
+        description: 总页数
+      total:
+        type: integer
+        format: int32
+        description: 总的数据条数
+  ListResourceReqV2:
+    properties:
+      envId:
+        type: string
+        description: 受保护环境uuid
+      pageNo:
+        type: integer
+        format: int32
+        description: 分页页面编码
+      pageSize:
+        type: integer
+        format: int32
+        description: 分页数据条数
+      orders:
+        type: string
+        description: 排序字段：display_timestamp
+      conditions:
+        type: string
+        description: 查询条件
+      applications:
+        items:
+          $ref: '#/definitions/Application'
+        description: 资源信息列表，如果涉及多层资源查询，需要把从上到下的资源一并下发
+        type: array
+    required:
+      - envId
+      - pageNo
+      - pageSize
