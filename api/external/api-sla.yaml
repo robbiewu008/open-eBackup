@@ -7,6 +7,7 @@ tags:
 paths:
   /v1/slas:
     get:
+      x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -64,6 +65,22 @@ paths:
           name: X-Auth-Token
           required: true
           type: string
+        - name: orderBy
+          in: query
+          required: false
+          description: 排序字段，默认值为created_time
+          type: string
+          enum:
+            - name
+            - created_time
+        - name: orderType
+          in: query
+          required: false
+          description: 排序类型，默认值为asc升序
+          type: string
+          enum:
+            - asc
+            - desc
       responses:
         '200':
           description: Successful Response
