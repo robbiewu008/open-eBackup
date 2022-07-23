@@ -68,6 +68,7 @@ paths:
             $ref: '#/definitions/EnvironmentResourceList'
   /v2/resources:
     post:
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-request-examples-url-1: 'POST  https://host:25081/v2/resources'
@@ -121,6 +122,9 @@ paths:
       summary: 创建资源
       description: 创建资源
       operationId: CreateResource
+      consumes:
+        - application/octet-stream
+        - application/json
       parameters:
         - name: CreateResourceRequestBody
           in: body
@@ -195,6 +199,7 @@ paths:
             $ref: '#/definitions/ProtectedResourcePageListResponse'
   /v2/environments:
     post:
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-impact-subsystem: 不影响
@@ -291,7 +296,7 @@ paths:
       description: 注册受保护环境，支持HDFS、HBase，NAS受保护环境的注册
       operationId: RegisterProtectedEnviroment
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       parameters:
         - name: RegisterProtectedEnviromentRequestBody
           in: body
@@ -550,6 +555,89 @@ paths:
       responses:
         '200':
           description: '--'
+  /v2/environments/action/check:
+    post:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-environment-api
+      summary: 检查待注册环境
+      description: 对未注册的环境进行检查。
+      operationId: CheckEnvironment
+      parameters:
+        - name: checkEnvironmentRequestBody
+          in: body
+          required: true
+          description: 待检查的环境信息
+          schema:
+            $ref: '#/definitions/CheckEnvironmentRequestBody'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v2/resources/action/check:
+    post:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 检查待注册资源
+      description: 对未注册的资源进行检查。
+      operationId: CheckResource
+      parameters:
+        - name: checkResourceRequestBody
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CheckResourceRequestBody'
+          description: 待检查的资源信息
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  '/v2/resources/{resourceId}/action/check':
+    get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 检查已注册资源
+      description: 对已注册的资源进行检查。
+      operationId: CheckProtectedResource
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+          description: 待检查的资源ID
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
 definitions:
   ProtectedEnvironmentRequest:
     description: 受保护对象请求体
@@ -796,6 +884,11 @@ definitions:
         description: 资源的版本
       auth:
         $ref: '#/definitions/Authentication'
+      certContent:
+        type: string
+        description: 证书文件的文本内容内容
+        minLength: 32
+        maxLength: 100000
     required:
       - name
       - type
@@ -873,7 +966,14 @@ definitions:
             type: object
             additionalProperties:
               type: string
-            description: 认证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里
+            description: |-
+              认证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里
+
+              认证信息扩展参数key定义：
+              |  key|类型  |说明  |
+              |--|--|--|
+              |  centification| string | 证书文件文本内容 |
+              |  revocationlist| string | 证书吊销列表文件文本内容 |
   AuthTypeInfo:
     description: 认证类型
     properties:
@@ -922,6 +1022,13 @@ definitions:
       version:
         type: string
         description: 环境的版本
+      dependencies:
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            type: object
+        description: 依赖参数，依赖其他资源
       extendInfo:
         type: object
         additionalProperties:
@@ -960,6 +1067,13 @@ definitions:
       osType:
         type: string
         description: 环境的操作系统
+      dependencies:
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            type: object
+        description: 依赖参数，依赖其他资源
       extendInfo:
         type: object
         additionalProperties:
@@ -972,3 +1086,9 @@ definitions:
       uuid:
         type: string
         description: 全球唯一标识。
+  CheckEnvironmentRequestBody:
+    allOf:
+      - $ref: '#/definitions/ProtectedEnvironmentRequest'
+  CheckResourceRequestBody:
+    allOf:
+      - $ref: '#/definitions/ProtectedResourceRequest'
