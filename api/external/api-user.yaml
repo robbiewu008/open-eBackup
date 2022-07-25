@@ -1058,6 +1058,196 @@ paths:
       security:
         - Authorization:
             - global
+  '/v1/users/{userId}/email':
+    put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - '${users-api}'
+      summary: 修改密码找回邮箱
+      description: 修改系统管理员密码找回邮箱
+      operationId: updateEmailUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: 用户id
+        - name: pwdRetrievalEmailRequest
+          in: body
+          required: false
+          description: 密码找回邮箱请求体
+          schema:
+            $ref: '#/definitions/PwdRetrievalEmailRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+          examples:
+            application/json:
+              errorCode: '1677931527'
+              errorMessage: xxx
+              parameters: []
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+    get:
+      tags:
+        - '${users-api}'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 获取密码找回邮箱
+      description: 获取指定用户的密码找回邮箱
+      operationId: getEmailUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: 用户id
+      responses:
+        '200':
+          description: 用户密码找回邮箱
+          schema:
+            $ref: '#/definitions/PwdRetrievalEmailAddress'
+          examples:
+            application/json:
+              emailAddress: xxx@test
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+          examples:
+            application/json:
+              errorCode: '1677931527'
+              errorMessage: xxx
+              parameters: []
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+  /v1/users/verify_code:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - '${users-api}'
+      summary: 用户发送临时验证码
+      description: 用户发送临时验证码
+      operationId: sendVerifyCodeUsingPOST
+      consumes:
+        - application/json
+      parameters:
+        - name: verifyCodeSendRequest
+          in: body
+          required: true
+          description: 发送验证码请求体
+          schema:
+            $ref: '#/definitions/VerifyCodeSendRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              uuid: 88a94c476f12a21e016f12a246e50009
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+          examples:
+            application/json:
+              errorCode: '1677929515'
+              errorMessage: xxx
+              parameters: []
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -1538,3 +1728,41 @@ definitions:
         type: string
         description: 弱口令
     title: WeakPasswordBo
+  PwdRetrievalEmailRequest:
+    description: 密码找回邮箱请求
+    properties:
+      emailAddress:
+        type: string
+        description: 密码找回邮箱地址
+  PwdRetrievalEmailAddress:
+    description: 密码找回邮箱响应
+    properties:
+      emailAddress:
+        type: string
+        description: 邮箱地址
+  VerifyCodeSendRequest:
+    properties:
+      userName:
+        type: string
+        description: 用户名
+      emailAddress:
+        type: string
+        description: 用户收件邮箱
+      language:
+        type: integer
+        format: int32
+        description: 语言
+        default: 1
+    required:
+      - userName
+      - emailAddress
+responses:
+  ErrorResponse:
+    description: 统一错误响应
+    examples:
+      application/json:
+        errorCode: '1677931527'
+        errorMessage: xxx
+        parameters: []
+    schema:
+      type: object
