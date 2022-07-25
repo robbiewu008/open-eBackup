@@ -966,14 +966,7 @@ definitions:
             type: object
             additionalProperties:
               type: string
-            description: |-
-              认证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里
-
-              认证信息扩展参数key定义：
-              |  key|类型  |说明  |
-              |--|--|--|
-              |  centification| string | 证书文件文本内容 |
-              |  revocationlist| string | 证书吊销列表文件文本内容 |
+            description: 认证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里
   AuthTypeInfo:
     description: 认证类型
     properties:
@@ -1036,6 +1029,11 @@ definitions:
         description: 环境扩展参数，存放不同环境的自定义扩展属性
       auth:
         $ref: '#/definitions/Authentication'
+      certContent:
+        type: string
+        description: 证书文件中的文本内容
+        minLength: 32
+        maxLength: 100000
     required:
       - name
       - type
