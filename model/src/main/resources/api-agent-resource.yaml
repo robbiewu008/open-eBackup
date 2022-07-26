@@ -47,34 +47,7 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/ListResourceRsp'
-        '500':
-          description: ''
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/ErrorRsp'
 definitions:
-  ErrorRsp:
-    description: 失败时返回的错误对象
-    properties:
-      errorCode:
-        description: 错误码
-        type: string
-        minLength: 8
-        maxLength: 36
-      errorMessage:
-        description: 错误描述
-        type: string
-        minLength: 2
-        maxLength: 512
-      detailParams:
-        type: array
-        items:
-          type: string
-        description: 参数
-    required:
-      - errorCode
-      - errorMessage
   AppResource:
     description: 应用资源对象
     properties:
@@ -124,33 +97,18 @@ definitions:
       - $ref: '#/definitions/ApplicationBase'
   ListResourceRsp:
     required:
-      - items
-      - pageNo
-      - pageSize
-      - pages
-      - total
+      - totalCount
+      - records
     properties:
-      items:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总的数据条数
+      records:
         type: array
         items:
           $ref: '#/definitions/AppResource'
         description: 数据列表
-      pageNo:
-        type: integer
-        format: int32
-        description: 页面编号
-      pageSize:
-        type: integer
-        format: int32
-        description: 每页数据量
-      pages:
-        type: integer
-        format: int32
-        description: 总页数
-      total:
-        type: integer
-        format: int32
-        description: 总的数据条数
   ListResourceReqV2:
     properties:
       envId:
