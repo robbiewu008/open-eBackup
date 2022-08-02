@@ -358,6 +358,50 @@ paths:
       security:
         - Authorization:
             - global
+  '/v1/certs/components/{componentId}/crl/action/download':
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - component-rest-api
+      summary: 下载吊销列表
+      operationId: downloadCrlUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: componentId
+          in: path
+          description: 组件ID
+          required: true
+          type: string
+        - name: crlId
+          in: query
+          description: 吊销列表ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
   '/v1/certs/components/{componentId}/crls':
     get:
       x-impact-subsystem: 不影响
@@ -391,8 +435,8 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/CrlEntity'
-              originalRef: CrlEntity
+              $ref: '#/definitions/CrlVo'
+              originalRef: CrlVo
         '401':
           description: Unauthorized
         '403':
@@ -802,7 +846,7 @@ definitions:
         description: 组件证书有效性
     title: ComponentEntity
     description: type类型错误，由integer改为string
-  CrlEntity:
+  CrlVo:
     type: object
     properties:
       componentId:
@@ -815,14 +859,25 @@ definitions:
       crlId:
         type: string
         description: 证书吊销列表ID
-      hashCode:
+      serialNumber:
+        type: string
+        description: 吊销列表序列号
+      effectiveTime:
         type: integer
-        format: int32
-        description: 吊销列表哈希码
+        description: 生效时间
+      signatureAlg:
+        type: string
+        description: 签名加密算法
       issuer:
         type: string
-        description: CRL颁发机构名称
-    title: CrlEntity
+        description: 吊销列表颁发机构
+      validity:
+        type: integer
+        description: 有效性【取值范围】0:无效, 1:有效
+      revokeNumber:
+        type: integer
+        description: 被吊销的证书数量
+    title: CrlVo
   ConsistencyResponse:
     properties:
       data:
