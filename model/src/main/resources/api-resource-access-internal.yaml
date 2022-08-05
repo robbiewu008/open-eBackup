@@ -1,0 +1,84 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 系统管理接口
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: '${system-api}'
+paths:
+  '/v2/internal/resources/{resourceId}':
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      description: 查询单个资源信息v2版本对内查询
+      operationId: ShowResourcev2
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+        - name: resourceId
+          in: query
+          required: true
+          description: 资源id
+          type: string
+      responses:
+        '200':
+          description: 资源信息
+          schema:
+            type: object
+          examples:
+            application/json:
+              uuid: string
+              name: string
+              type: string
+              subType: string
+              path: string
+              rootUuid: string
+              parentUuid: string
+              extendInfo:
+                additionalProp1: string
+                additionalProp2: string
+                additionalProp3: string
+              createdTime: '2022-06-25T03:24:32.824Z'
+              version: string
+              parentName: string
+              userId: string
+              authorizedUser: string
+              protectedObject:
+                slaId: string
+                slaName: string
+                slaCompliance: true
+                status: 0
+                envId: string
+                envType: string
+                resourceId: string
+                extParameters:
+                  additionalProp1: {}
+                  additionalProp2: {}
+                  additionalProp3: {}
+                latestTime: '2022-06-25T03:24:32.824Z'
+                earliestTime: '2022-06-25T03:24:32.824Z'
+                chainId: string
+              environment:
+                endpoint: string
+                port: 0
+                linkStatus: string
+                userName: string
+                location: string
+                osType: string
+                osName: string
+                scanInterval: string
+              auth:
+                authType: 0
