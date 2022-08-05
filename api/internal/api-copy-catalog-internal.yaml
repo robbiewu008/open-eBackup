@@ -906,6 +906,45 @@ paths:
           description: ''
           schema:
             type: string
+  '/v1/internal/copies/{copy_id}/properties':
+    put:
+      tags:
+        - copies
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      summary: 更新副本扩展参数接口
+      description: 更新副本扩展参数接口
+      operationId: update_copy_properties
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: copy_id
+          in: path
+          required: true
+          type: string
+          description: 需要更新的副本id
+          minLength: 1
+          maxLength: 64
+        - name: request
+          in: body
+          required: true
+          description: 更新扩展参数请求对象
+          schema:
+            $ref: '#/definitions/UpdateCopyPropertiesRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
 definitions:
   BasePage_CopyResourceSummarySchema_:
     properties:
@@ -1667,4 +1706,32 @@ definitions:
       detail:
         type: string
         description: 副本详情
+  UpdateCopyPropertiesRequest:
+    description: 更新副本扩展参数请求对象，副本的properties为json格式的字符串
+    properties:
+      key:
+        type: string
+        description: >-
+          json中的需要更新的节点名称
+
+          key值枚举说明
+
+          | key定义 | value类型 | value说明 |
+
+          |--|--|--|
+
+          | verifyStatus | 副本校验状态 | 0：未校验：有校验文件未执行过校验任务  1：无效：执行校验文件失败，校验文件有问题 
+          2：可用：校验成功  3：未生成检验文件：未生成校验文件 |
+        enum:
+          - verifyStatus
+        minLength: 1
+        maxLength: 64
+      value:
+        type: string
+        description: json中的需要更新的节点值
+        minLength: 1
+        maxLength: 256
+    required:
+      - key
+      - value
 x-components: {}
