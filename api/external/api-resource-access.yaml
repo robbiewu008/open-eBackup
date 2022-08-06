@@ -192,6 +192,15 @@ paths:
           x-auth-required: 'Y'
           x-public-api: 'Y'
           description: 排序字段（格式：升序为+field，降序为-field）
+        - name: queryDependency
+          in: query
+          required: false
+          type: boolean
+          default: 'false'
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 是否查询dependency
       responses:
         '200':
           description: 分页查询结果
@@ -531,8 +540,9 @@ paths:
           description: ''
           schema:
             type: string
-  '/v2/environments/{envId}/action/scan':
+  '/v2/resources/{resId}/action/scan':
     put:
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -542,16 +552,16 @@ paths:
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - protected-environment-api
-      summary: 扫描受保护环境
-      description: 扫描受保护环境
-      operationId: ScanProtectedEnvironment
+        - protected-resource-api
+      summary: 扫描受保护资源
+      description: 扫描受保护资源
+      operationId: ScanProtectedResources
       parameters:
-        - name: envId
+        - name: resId
           in: path
           required: true
           type: string
-          description: 受保护环境ID
+          description: 被扫描资源的uuid
       responses:
         '200':
           description: '--'
@@ -966,7 +976,14 @@ definitions:
             type: object
             additionalProperties:
               type: string
-            description: 认证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里
+            description: |-
+              认证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里
+
+              认证信息扩展参数key定义：
+              |  key|类型  |说明  |
+              |--|--|--|
+              |  centification| string | 证书文件文本内容 |
+              |  revocationlist| string | 证书吊销列表文件文本内容 |
   AuthTypeInfo:
     description: 认证类型
     properties:
@@ -1029,11 +1046,6 @@ definitions:
         description: 环境扩展参数，存放不同环境的自定义扩展属性
       auth:
         $ref: '#/definitions/Authentication'
-      certContent:
-        type: string
-        description: 证书文件中的文本内容
-        minLength: 32
-        maxLength: 100000
     required:
       - name
       - type
