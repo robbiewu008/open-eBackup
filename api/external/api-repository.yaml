@@ -17,6 +17,8 @@ tags:
     description: storages-alarm-Threshold-api
   - name: storages-api
     description: storages-api
+  - name: nas-distribution-storages-api
+    description: nas-distribution-storages-api
 paths:
   /v1/backup-storage/nodes:
     get:
@@ -1195,9 +1197,44 @@ paths:
       security:
         - Authorization:
             - global
-  /v1/local-storage/logic-port:
+  /v1/storages/nas/distribution:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - nas-distribution-storages-api
+      operationId: CreateNasDistributionStorage
+      summary: 创建分布式NAS存储库
+      description: 创建分布式NAS存储库
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: CreateNasDistributionStorageRequestBody
+          description: 创建备份存储库请求参数
+          required: true
+          schema:
+            $ref: '#/definitions/CreateNasDistributionStorageReq'
+      responses:
+        '200':
+          description: 备份存储库ID
+          schema:
+            $ref: '#/definitions/UuidObject'
+        '500':
+          description: 异常信息
+          schema:
+            $ref: '#/definitions/ErrorResponse'
     get:
-      x-dm-role: 'Y'
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -1207,28 +1244,189 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - local-storage-api
-      summary: 查询底座逻辑端口
-      description: 根据协议类型查询底座逻辑端口
-      operationId: getLogicPortUsingGET
+        - nas-distribution-storages-api
+      operationId: ListNasDistributionStorages
+      summary: 查询分布式NAS存储库列表
+      description: 查询分布式NAS存储库列表
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
       produces:
         - application/json
       parameters:
-        - name: X-Auth-Token
+        - name: name
+          in: query
+          required: false
+          description: 存储库名称
+          type: string
+        - name: pageNo
           in: query
           required: true
-          description: 访问令牌
-          type: string
-        - name: protocol
+          description: 页码
+          type: integer
+          format: int32
+        - name: pageSize
           in: query
           required: true
-          description: 逻辑端口支持的协议类型
-          type: string
+          description: 每页条数
+          type: integer
+          format: int32
       responses:
         '200':
-          description: ok
+          description: 分布式NAS存储库列表
           schema:
-            $ref: '#/definitions/LogicPortResponse'
+            $ref: '#/definitions/PageListResponse'
+        '500':
+          description: 异常信息
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  '/v1/storages/nas/distribution/{id}':
+    put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - nas-distribution-storages-api
+      operationId: UpdateNasDistributionStorage
+      summary: 修改备份存储库
+      description: 修改分布式NAS存储库
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 备份库ID
+        - in: body
+          name: UpdateClusterRepositoryRequestBody
+          description: 修改分布式NAS存储库请求参数
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateNasDistributionStorageReq'
+      responses:
+        '200':
+          description: 备份存储库ID
+          schema:
+            $ref: '#/definitions/UuidObject'
+        '500':
+          description: 异常信息
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - nas-distribution-storages-api
+      operationId: DeleteNasDistributionStorage
+      summary: 删除备份存储库
+      description: 删除分布式NAS存储库
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 备份库ID
+      responses:
+        '200':
+          description: ''
+        '500':
+          description: 异常信息
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - nas-distribution-storages-api
+      operationId: NasDistributionStorageInfo
+      summary: 查询分布式NAS存储库详情
+      description: 查询分布式NAS存储库详情
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 存储库ID
+      responses:
+        '200':
+          description: 分布式NAS存储库列表
+          schema:
+            $ref: '#/definitions/NasDistributionStorageDetail'
+        '500':
+          description: 异常信息
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  '/v1/storages/nas/distribution/{id}/endpoints':
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - nas-distribution-storages-api
+      summary: 获得存储库下存储集群端点信息
+      description: 获得存储库下存储集群端点信息
+      operationId: BatchStorageIpUsingGET
+      consumes:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 存储库ID
+        - name: role
+          in: query
+          required: true
+          description: |-
+            逻辑端口角色；
+            4：复制端口
+          type: integer
+          format: int32
+          enum:
+            - 4
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/StorageEndpointInfo'
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -1757,10 +1955,6 @@ definitions:
         type: integer
         format: int64
         description: 存储库已使用容量（单位：Byte）
-      cloudType:
-        type: integer
-        format: int32
-        description: 对象存储类型
     title: RepositoryBase
   RepositoryThresholdRequest:
     type: object
@@ -2108,13 +2302,235 @@ definitions:
         minLength: 1
         maxLength: 64
     title: UpdateStorageRequest
-  LogicPortResponse:
-    description: 逻辑端口列表响应
-    required:
-      - logicPortList
+  CreateNasDistributionStorageReq:
     properties:
-      logicPortList:
+      name:
+        type: string
+        description: 备份存储库名称
+        minLength: 1
+        maxLength: 32
+        pattern: '^[0-9a-zA-Z_]*$'
+      description:
+        type: string
+        description: 描述
+        maxLength: 255
+      storageClusterReqs:
+        description: 备份存储集群集合
+        $ref: '#/definitions/DistributionStorageClusterReq'
+    required:
+      - name
+      - storageClusterReqs
+  ErrorResponse:
+    properties:
+      errorCode:
+        type: string
+        example: '1677929218'
+        description: 错误码
+      errorMessage:
+        type: string
+        example: 参数错误
+        description: 错误描述
+      parameters:
         type: array
         items:
           type: string
-        description: 逻辑端口列表
+        description: 参数
+  UpdateNasDistributionStorageReq:
+    properties:
+      description:
+        type: string
+        description: 描述
+        maxLength: 255
+      storageClusterReqs:
+        type: array
+        items:
+          $ref: '#/definitions/DistributionStorageClusterReq'
+        description: 备份存储集群集合
+        minItems: 2
+        maxItems: 32
+    required:
+      - storageClusterReqs
+  NasDistributionStorage:
+    properties:
+      uuid:
+        type: string
+        description: 存储库ID
+      name:
+        type: string
+        description: 存储库名称
+      description:
+        type: string
+        description: 描述
+      clusterCount:
+        type: integer
+        format: int32
+        description: 备份存储集群数量
+    required:
+      - uuid
+      - name
+      - clusterCount
+  PageListResponse:
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数量
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/NasDistributionStorage'
+        description: 存储库列表
+    required:
+      - totalCount
+  ClusterDetail:
+    properties:
+      clusterId:
+        type: integer
+        format: int32
+        description: 集群ID
+      clusterName:
+        type: string
+        description: 集群名称
+      ip:
+        type: string
+        description: 集群ip
+      port:
+        type: integer
+        format: int32
+        description: 端口
+      status:
+        type: integer
+        format: int32
+        description: 在线状态。27：在线、28：离线
+      usedCapacity:
+        type: number
+        format: double
+        description: 已使用容量（KB）
+      capacity:
+        type: number
+        format: double
+        description: 总容量（KB）
+    required:
+      - clusterId
+      - clusterName
+      - ip
+      - port
+      - status
+      - usedCapacity
+      - capacity
+  UuidObject:
+    properties:
+      uuid:
+        type: string
+        description: 主键id
+  ClustersInfoVo:
+    properties:
+      clusterId:
+        type: integer
+        format: int32
+        description: 集群Id
+      clusterName:
+        type: string
+        description: 集群名称
+      clusterType:
+        type: integer
+        format: int32
+        description: 集群类型
+      ip:
+        type: string
+        description: 集群管理IP
+      port:
+        type: integer
+        format: int32
+        description: 集群port
+      status:
+        type: integer
+        format: int32
+        description: 获取集群状态信息
+      username:
+        type: string
+        description: 集群用户名
+      role:
+        type: integer
+        format: int32
+        description: 0：复制集群；2：管理集群；3：备份存储集群
+      enableManage:
+        type: boolean
+        description: 当role为2时，true：管理集群；false：被管理集群
+      usedCapacity:
+        type: number
+        format: double
+        description: 已使用容量（kb），备份存储集群返回
+      capacity:
+        type: number
+        format: double
+        description: 总容量（kb），备份存储集群返回
+      storageEsn:
+        type: string
+        description: 存储码
+      availableCapacityRatio:
+        type: integer
+        format: int32
+        description: 可使用率
+    title: ClustersInfoVo
+  NasDistributionStorageDetail:
+    properties:
+      uuid:
+        type: string
+        description: 存储库ID
+      name:
+        type: string
+        description: 存储库名称
+      description:
+        type: string
+        description: 描述
+      clusterList:
+        type: array
+        items:
+          $ref: '#/definitions/ClustersInfoVo'
+        description: 备份存储集群列表
+    required:
+      - uuid
+      - name
+      - clusterList
+  StorageFrontServiceInfo:
+    properties:
+      controllerId:
+        type: string
+        description: 控制器Id
+      ipV4Address:
+        type: string
+        description: IPV4
+      ipV6Address:
+        type: string
+        description: IPV6
+      name:
+        type: string
+        description: 名称
+    title: StorageFrontServiceInfo
+  StorageEndpointInfo:
+    properties:
+      esn:
+        type: string
+        description: 存储esn
+      serviceIps:
+        type: array
+        description: 服务信息
+        items:
+          originalRef: StorageFrontServiceInfo
+          $ref: '#/definitions/StorageFrontServiceInfo'
+    title: StorageServiceIpInfo
+  DistributionStorageClusterReq:
+    properties:
+      clusterId:
+        type: integer
+        format: int32
+        description: 集群id
+        minimum: 1
+        exclusiveMaximum: true
+      availableCapacityRatio:
+        type: integer
+        format: int32
+        description: 可使用率0~100%
+        minimum: 0
+        maximum: 100
