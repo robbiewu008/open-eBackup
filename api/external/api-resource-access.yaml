@@ -185,7 +185,7 @@ paths:
           in: query
           required: false
           type: array
-          default: '[]'
+          default: []
           items:
             type: string
           x-access-port: 25081
@@ -592,7 +592,9 @@ paths:
         '200':
           description: ''
           schema:
-            type: string
+            items:
+              $ref: '#/definitions/ActionResult'
+            type: array
   /v2/resources/action/check:
     post:
       x-dm-role: 'Y'
@@ -620,7 +622,9 @@ paths:
         '200':
           description: ''
           schema:
-            type: string
+            items:
+              $ref: '#/definitions/ActionResult'
+            type: array
   '/v2/resources/{resourceId}/action/check':
     get:
       x-dm-role: 'Y'
@@ -647,7 +651,9 @@ paths:
         '200':
           description: ''
           schema:
-            type: string
+            items:
+              $ref: '#/definitions/ActionResult'
+            type: array
 definitions:
   ProtectedEnvironmentRequest:
     description: 受保护对象请求体
@@ -1038,6 +1044,7 @@ definitions:
           type: array
           items:
             type: object
+            description: 依赖资源
         description: 依赖参数，依赖其他资源
       extendInfo:
         type: object
@@ -1083,6 +1090,7 @@ definitions:
           type: array
           items:
             type: object
+            description: 依赖资源
         description: 依赖参数，依赖其他资源
       extendInfo:
         type: object
@@ -1102,3 +1110,26 @@ definitions:
   CheckResourceRequestBody:
     allOf:
       - $ref: '#/definitions/ProtectedResourceRequest'
+  ActionResult:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        example: 0
+        description: 错误码
+      bodyErr:
+        type: string
+        example: ''
+        description: 错误码，较code更为具体
+      message:
+        type: string
+        example: ''
+        description: 错误消息
+      detailParams:
+        type: array
+        items:
+          type: string
+        example:
+          - ''
+        description: 错误参数
