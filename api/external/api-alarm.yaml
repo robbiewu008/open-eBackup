@@ -20,6 +20,15 @@ tags:
 paths:
   /v1/alarms:
     get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - alarm-and-event-api
       summary: 批量查询告警
@@ -56,16 +65,13 @@ paths:
           required: false
           type: string
           default: zh
-          allowEmptyValue: false
         - name: pageNum
           in: query
           description: 分页起始页码
           required: false
           type: integer
           maximum: 60000.0
-          exclusiveMaximum: false
           minimum: 1.0
-          exclusiveMinimum: false
           format: int32
           x-example: 1
         - name: pageSize
@@ -74,9 +80,7 @@ paths:
           required: false
           type: integer
           maximum: 200.0
-          exclusiveMaximum: false
           minimum: 5.0
-          exclusiveMinimum: false
           format: int32
           x-example: 20
         - name: severities
@@ -90,8 +94,6 @@ paths:
             type: integer
             format: int32
           collectionFormat: multi
-          maximum: 4
-          minimum: 1
         - name: sortColumn
           in: query
           description: 分页排序字段
@@ -127,14 +129,187 @@ paths:
           items:
             type: string
           collectionFormat: multi
-          maximum: 50
-          minimum: 1
+        - name: entityIdList
+          in: query
+          required: false
+          type: array
+          description: 告警唯一标识列表
+          items:
+            minLength: 1
+            maxLength: 10240
+            type: string
       responses:
         '200':
           description: OK
           schema:
             $ref: '#/definitions/PageListResponse«AlarmVO»'
             originalRef: PageListResponse«AlarmVO»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v2/alarms:
+    get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-and-event-api
+      summary: 批量查询告警
+      operationId: findPageUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: alarmId
+          in: query
+          description: 告警ID
+          required: false
+          type: string
+          x-example: '0x123456'
+        - name: endTime
+          in: query
+          description: '创建时间（止）[取值范围]1576058814000：时间戳'
+          required: false
+          type: int64
+          maximum: 18446744073709551615
+          mininum: 0
+          x-example: '1576058814000'
+        - name: startTime
+          in: query
+          description: '创建时间（起）[取值范围]1576058814000：时间戳'
+          required: false
+          type: int64
+          maximum: 18446744073709551615
+          mininum: 0
+          x-example: '1576058814001'
+        - name: language
+          in: query
+          description: '语言类型[取值范围]ZH：中文 EN：英文'
+          enum:
+            - ZH
+            - EN
+          required: false
+          type: string
+          default: "ZH"
+        - name: pageNo
+          in: query
+          description: 分页页码
+          required: false
+          type: integer
+          maximum: 60000.0
+          minimum: 1.0
+          format: int32
+          x-example: 1
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          maximum: 200.0
+          minimum: 5.0
+          format: int32
+          x-example: 20
+        - name: severity
+          in: query
+          description: >-
+            告警等级[取值范围] WARNING:警告告警[WARNING] MAJOR:重要告警[MAJOR] CRITICAL:致命告警[CRITICAL]
+            (告警查询屏蔽INFO等级)
+          enum:
+            - WARNING
+            - MAJOR
+            - CRITICAL
+          required: false
+          type: string
+          format: int32
+          x-example: 'WARNING'
+        - name: objType
+          in: query
+          description: >-
+            告警对象类型
+          required: false
+          type: string
+          x-example: '244'
+        - name: sequence
+          in: query
+          description: 流水号
+          required: false
+          type: integer
+          maximum: 4294967295.0
+          minimum: 1.0
+          format: int32
+          x-example: 20
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse«AlarmDto»'
+            originalRef: PageListResponse«AlarmDto»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v2/alarms/objects:
+    get:
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-and-event-api
+      summary: 批量查询告警对象
+      operationId: findPageUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: language
+          in: query
+          description: 语言类型[取值范围]ZH：中文 EN：英文
+          enum:
+           - ZH
+           - EN
+          required: false
+          type: string
+          x-example: 'ZH'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            $ref: '#/definitions/AlarmObjDto'
+            originalRef: AlarmObjDto
         '401':
           description: Unauthorized
         '403':
@@ -174,6 +349,42 @@ paths:
           schema:
             $ref: '#/definitions/AlarmVO'
             originalRef: AlarmVO
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v2/alarms/{sequence}/action/clear:
+    put:
+      tags:
+        - alarm-and-event-api
+      summary: 告警清除
+      operationId: clearAlarmsBySequenceUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: path
+          name: sequence
+          description: 告警流水号
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
         '201':
           description: Created
         '401':
@@ -1980,6 +2191,80 @@ definitions:
           2:MANUCLEAR_ALARM(手动恢复告警) 3:CONFIRM_ALARM(确认告警)
           4:UNCONFIRM_ALARM(未确认告警) 5:EVENT(运行事件) 6:OPLOG(操作日志)
     title: AlarmVO
+  AlarmDto:
+    type: object
+    properties:
+      suggestion:
+        type: string
+        description: 告警建议
+      alarmId:
+        type: string
+        example: '0x0013221'
+        description: 告警ID
+      name:
+        type: string
+        example: Backup failed alarm
+        description: 告警名
+      alarmTime:
+        type: int64
+        example: '1659988737'
+        description: '告警时间 [取值范围] 0~18446744073709551615'
+      recoverTime:
+        type: int64
+        example: '1659988737'
+        description: '告警恢复时间[取值范围]0~18446744073709551615'
+      description:
+        type: string
+        description: 告警描述
+      detail:
+        type: string
+        description: 告警详细描述
+      location:
+        type: string
+        description: '告警产生根本[举例]eb.err.1073948959  lego.err.1033'
+      params:
+        type: array
+        description: 告警参数
+        items:
+          type: string
+      sequence:
+        type: integer
+        format: int64
+        example: 123456789
+        description: 告警流水号
+      severity:
+        type: string
+        description: >-
+          告警等级[取值范围] 1:警告告警[WARNING] 3:重要告警[MAJOR] 4:致命告警[CRITICAL]
+          (告警查询屏蔽INFO等级)
+        enum:
+          - '-1'
+          - '0'
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+      objType:
+        type: string
+        description: >-
+          告警对象
+      type:
+        type: integer
+        format: int32
+        description: >-
+          告警类型[取值范围]-1:INVALID(无效) 0:ALARM(告警) 1:RESTORE_ALARM(恢复告警)
+          2:MANUCLEAR_ALARM(手动恢复告警) 3:CONFIRM_ALARM(确认告警)
+          4:UNCONFIRM_ALARM(未确认告警) 5:EVENT(运行事件) 6:OPLOG(操作日志)
+      status:
+        type: integer
+        format: int32
+        description: >-
+          告警状态[取值范围]-1:ILLEGAL(无效) 0:UNCONFIRMED(失败) 1:CONFIRMED(成功)
+          2:UNRECOVERY(未恢复) 3:RECOVERY(已恢复) 4:CLEAR(已清除)
+      entity:
+        type: string
+        description: '告警唯一标识'
+    title: AlarmDto
   BatchOperation:
     type: object
     properties:
@@ -2452,6 +2737,21 @@ definitions:
         format: int32
         description: 总数
     title: PageListResponse«AlarmVO»
+  PageListResponse«AlarmDto»:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 批量查询结果列表
+        items:
+          $ref: '#/definitions/AlarmDto'
+          originalRef: AlarmDto
+      total:
+        type: integer
+        format: int32
+        example: 1
+        description: 总数
+    title: PageListResponse«AlarmDto»
   PerAlarmQueryParam:
     type: object
     required:
@@ -2540,6 +2840,23 @@ definitions:
         example: 32 31 30 32 33 35 33 47 54 44 31 30 4C 39 30 30 30 30 30 37 30 41
         description: 控制器snmp代理16进制engine ID
     title: SnmpSecurityAgentResponse
+    description: 查询各控制器安全代理信息响应
+  AlarmObjDto:
+    type: object
+    properties:
+      id:
+        type: string
+        example: '1'
+        description: 告警对象ID
+      type:
+        type: string
+        example: '244'
+        description: 告警对象类型
+      name:
+        type: string
+        example: 'license'
+        description: 告警对象名称
+    title: AlarmObjDto
     description: 查询各控制器安全代理信息响应
   SnmpTrapAddress:
     type: object
