@@ -470,6 +470,11 @@ paths:
       deprecated: false
   '/v1/internal/jobs/{jobId}/action/update-status':
     put:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 30081
       x-auth-required: 'N'
@@ -1336,7 +1341,10 @@ definitions:
     properties:
       jobRequestId:
         type: string
-        description: 任务请求Id
+        description: 对应下发任务的requestId
+      taskId:
+        type: string
+        description: 对应下发任务的taskId
       progress:
         type: integer
         format: int32
@@ -1370,6 +1378,7 @@ definitions:
         x-public-api: 'N'
     required:
       - jobRequestId
+      - taskId
       - status
   JobLog:
     description: 任务日志
