@@ -109,9 +109,21 @@ definitions:
         items:
           type: string
         description: 恢复时保护代理的ID列表
+      scripts:
+        description: 恢复任务脚本配置，需要agent框架来执行的脚本，应该设置到此参数中
+        $ref: '#/definitions/TaskScript'
       extendInfo:
         type: object
-        description: 恢复参数，以key/value键值对存放
+        description: >-
+          恢复参数，以key/value键值对存放
+
+
+          | key定义 | value类型 | 说明 |
+
+          |--|--|--|
+
+          | copyVerify | boolean |
+          是否开启副本校验。true:恢复任务需要开启副本校验；false:恢复任务不需要开启副本校验 |
       filters:
         type: array
         items:
@@ -125,6 +137,7 @@ definitions:
       - targetLocation
       - targetEnv
       - targetObject
+    type: object
   Filter:
     properties:
       filterBy:
@@ -199,3 +212,22 @@ definitions:
         x-public-api: 'Y'
     required:
       - uuid
+  TaskScript:
+    type: object
+    description: 任务脚本对象
+    properties:
+      preScript:
+        type: string
+        description: 任务前置脚本，任务开始前执行
+        minLength: 1
+        maxLength: 521
+      postScript:
+        type: string
+        description: 任务后置脚本，任务结束后执行
+        minLength: 1
+        maxLength: 512
+      failPostScript:
+        type: string
+        description: 任务失败脚本，任务失败时执行
+        minLength: 1
+        maxLength: 512
