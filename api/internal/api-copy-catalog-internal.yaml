@@ -312,37 +312,6 @@ paths:
       operationId: >-
         delete_copy_protection_v1_internal_copies_action_delete_protection_delete
       summary: Delete Copy Protection
-  /v1/internal/copies/action/import:
-    post:
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: body
-          schema:
-            allOf:
-              - $ref: '#/definitions/SaveImportCopyRequest'
-            description: 导入副本信息
-            title: Request
-      responses:
-        '200':
-          description: Successful Response
-          schema: {}
-        '404':
-          description: Not Found
-        '422':
-          description: Validation Error
-          schema:
-            $ref: '#/definitions/HTTPValidationError'
-      tags:
-        - copies
-      description: |-
-        :param request: 导入副本uuid、资源名、生成时间
-        :return:
-      operationId: save_import_copy_v1_internal_copies_action_import_post
-      summary: 新增导入副本
   '/v1/internal/copies/action/revoke/{user_id}':
     put:
       produces:
