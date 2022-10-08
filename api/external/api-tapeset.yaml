@@ -8,6 +8,7 @@ tags:
     description: Media Set Controller
   - name: tape-library-api
     description: Tape Controller
+  - name: tape-copy-api
 schemes:
   - https
 consumes:
@@ -1074,6 +1075,31 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+  '/v1/tape-library/copies/{copyId}/action/download':
+    get:
+      tags:
+        - tape-copy-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 下载dws副本
+      operationId: downloadDwsCopy
+      parameters:
+        - name: copyId
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 成功
+          schema:
+            type: string
 securityDefinitions:
   Authorization:
     type: apiKey
