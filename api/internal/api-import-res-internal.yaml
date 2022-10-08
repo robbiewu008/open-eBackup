@@ -4,36 +4,7 @@ info:
   version: v1
 tags:
   - name: import-resources
-paths:
-  /v1/internal/resources/action/import:
-    post:
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            allOf:
-              - $ref: '#/definitions/ImportResourceRequest'
-            description: 导入资源属性
-            title: Import Resource
-      responses:
-        '200':
-          description: Successful Response
-          schema: {}
-        '404':
-          description: Not found
-        '422':
-          description: Validation Error
-          schema:
-            $ref: '#/definitions/HTTPValidationError'
-      tags:
-        - import-resources
-      operationId: create_import_resource_v1_internal_resources_action_import_post
-      summary: 增加导入资源
+paths: {}
 definitions:
   HTTPValidationError:
     properties:
