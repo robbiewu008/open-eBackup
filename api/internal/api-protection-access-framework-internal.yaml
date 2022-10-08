@@ -53,9 +53,19 @@ paths:
       deprecated: false
   /v1/internal/copies/action/import:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
         - access-point-controller
       summary: importReplicationCopy
+      description: 导入复制副本信息接口，复制任务完成后，在复制从端由复制微服务调用此接口，在PM中生成一条复制副本信息
       operationId: importReplicationCopyUsingPOST
       consumes:
         - application/json
@@ -64,7 +74,7 @@ paths:
       parameters:
         - in: body
           name: importParam
-          description: importParam
+          description: 导入复制副本请求对象
           required: true
           schema:
             $ref: '#/definitions/CopyReplicationImport'
@@ -710,19 +720,26 @@ definitions:
         format: int64
         description: 副本生成时间
         maximum: 9.223372036854776e18
-        exclusiveMaximum: false
       metadata:
         type: string
         description: 元数据
       properties:
-        type: object
         description: 副本属性
+        properties:
+          verifyStatus:
+            type: string
+            description: |-
+              识别从端复制副本中元数据信息，参数说明如下：
+              "0"：未校验，表示复制副本元数据中存在校验文件
+              “3”：校验文件不存在，表示复制副本元数据中不存在校验文件
+            enum:
+              - '0'
+              - '3'
       timestamp:
         type: integer
         format: int64
         description: 时间戳
         maximum: 9.223372036854776e18
-        exclusiveMaximum: false
     title: CopyReplicationImport
   CopyResourceSummary:
     type: object
