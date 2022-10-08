@@ -178,46 +178,6 @@ paths:
         - copies
       operationId: get_copy_extended_parameter_v1_copies_extended_parameters_get
       summary: 查询Oracle恢复目标主机参数配置
-  /v1/copies/retention:
-    put:
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - description: 访问令牌
-          in: header
-          name: X-Auth-Token
-          required: true
-        - in: body
-          name: body
-          schema:
-            allOf:
-              - $ref: '#/definitions/CopyRetentionPolicySchema'
-            description: 副本保留策略
-            title: Retention Policy
-          required: false
-      responses:
-        '200':
-          description: Successful Response
-        '404':
-          description: Not Found
-        '422':
-          description: Validation Error
-          schema:
-            $ref: '#/definitions/HTTPValidationError'
-      tags:
-        - copies
-      operationId: update_import_copy_retention_by_resource_id_v1_copies_retention_put
-      summary: 修改资源对应所有副本保留策略
   /v1/copies/statistics:
     get:
       x-impact-subsystem: 不影响
@@ -392,6 +352,12 @@ paths:
           description: 是否创建任务
           in: query
           name: create_job
+          required: false
+          type: boolean
+        - default: false
+          description: 是否强制删除
+          in: query
+          name: is_forced
           required: false
           type: boolean
         - description: 授权token
