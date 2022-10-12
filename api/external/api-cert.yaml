@@ -13,41 +13,41 @@ paths:
   /v1/certs/detail:
     post:
       tags:
-      - "component-rest-api"
-      summary: "获取证书详情"
-      operationId: "getCertDetailUsingPOST"
+        - component-rest-api
+      summary: 获取证书详情
+      operationId: getCertDetailUsingPOST
       consumes:
-      - "multipart/form-data"
+        - multipart/form-data
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "X-Auth-Token"
-        in: "header"
-        description: "Access token"
-        required: true
-        type: "string"
-      - name: "cert"
-        in: "formData"
-        description: "证书文件"
-        required: true
-        type: "file"
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: cert
+          in: formData
+          description: 证书文件
+          required: true
+          type: file
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            originalRef: "CertDetailResponse"
-            $ref: "#/definitions/CertDetailResponse"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            originalRef: CertDetailResponse
+            $ref: '#/definitions/CertDetailResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/certs/components:
     get:
@@ -583,32 +583,6 @@ paths:
       security:
         - Authorization:
             - global
-  /v1/certs/components/action/consistency-check:
-    get:
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      x-dp-admin-role: 'Y'
-      tags:
-        - component-rest-api
-      summary: 服务端证书与内部组件通信证书一致性检查
-      description: 针对服务端证书与内部组件通信证书进行一致性检查
-      operationId: checkCertificateConsistencyUsingGET
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          required: true
-          description: Access token
-          type: string
-      responses:
-        '200':
-          description: '判断证书内部服务之间的 一致性   data :TURE为证书一致, FALSE为证书不一致'
-          schema:
-            $ref: '#/definitions/ConsistencyResponse'
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -616,12 +590,12 @@ securityDefinitions:
     in: header
 definitions:
   CertDetailResponse:
-    type: "object"
+    type: object
     properties:
       safety:
-        type: "boolean"
-        description: "证书安全性"
-    title: "CertDetailResponse"
+        type: boolean
+        description: 证书安全性
+    title: CertDetailResponse
   CertSignBo:
     type: object
     properties:
@@ -873,19 +847,8 @@ definitions:
         description: 吊销列表颁发机构
       validity:
         type: integer
-        description: 有效性【取值范围】0:无效, 1:有效
+        description: '有效性【取值范围】0:无效, 1:有效'
       revokeNumber:
         type: integer
         description: 被吊销的证书数量
     title: CrlVo
-  ConsistencyResponse:
-    properties:
-      data:
-        type: string
-        description: '返回服务端证书和内部组件同行证书的一致性结果 [SUCCESS]:一致 [FAILED]:不一致'
-        enum:
-          - SUCCESS
-          - FAILED
-        x-access-port: 25081
-        x-auth-required: 'Y'
-        x-public-api: 'Y'
