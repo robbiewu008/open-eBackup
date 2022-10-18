@@ -343,7 +343,7 @@ definitions:
       agentID:
         type: string
         description: 保护代理id
-        pattern: '^\d{1,32}$'
+        pattern: ^\d{1,32}$
       osType:
         type: string
         description: 操作系统类型Windows/Linux/Unix/Others
@@ -436,7 +436,7 @@ definitions:
         maxLength: 255
       ipType:
         type: string
-        description: 'ip类型 IPV4,IPV6'
+        description: ip类型 IPV4,IPV6
         enum:
           - IPV4
           - IPV6
@@ -487,7 +487,7 @@ definitions:
         maxLength: 255
       ipType:
         type: string
-        description: '类型 IPV4,IPV6'
+        description: 类型 IPV4,IPV6
         enum:
           - IPV4
           - IPV6
@@ -495,7 +495,14 @@ definitions:
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
+      isSuperUser:
+        type: boolean
+        description: 是否为超级管理员用户，true：是  false:否
+      superPassword:
+        type: string
+        description: 超级管理员密码
     title: AgentRegisterParam
+    type: object
   AgentsUpdateRequest:
     type: object
     properties:
