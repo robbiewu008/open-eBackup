@@ -34,7 +34,7 @@ paths:
           type: string
         - name: backupType
           in: query
-          description: '备份类型(MANUAL(0),AUTO(1))'
+          description: 备份类型(MANUAL(0),AUTO(1))
           required: false
           type: array
           items:
@@ -139,7 +139,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/sysbackup/images/{imagesId}':
+  /v1/sysbackup/images/{imagesId}:
     get:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -224,7 +224,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/sysbackup/images/{imagesId}/action/download':
+  /v1/sysbackup/images/{imagesId}/action/download:
     get:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -264,7 +264,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/sysbackup/images/{imagesId}/action/recovery':
+  /v1/sysbackup/images/{imagesId}/action/recovery:
     post:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -449,6 +449,34 @@ paths:
       security:
         - Authorization:
             - global
+  /v1/sysbackup/sftp/connection:
+    post:
+      tags:
+        - sysbackup-api
+      summary: 测试SFTP服务器连通性
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 检测sftp服务器连通性
+      operationId: testSftpConnection
+      parameters:
+        - name: request
+          in: body
+          required: false
+          description: 校验sftp服务器连通性
+          schema:
+            $ref: '#/definitions/SftpConnectionTestRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SystemBackupCommonResponseBody'
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -596,7 +624,7 @@ definitions:
       backupTime:
         type: string
         description: 策略备份时间点
-        pattern: '^([0]?\d{1}|[2][0-3]{1}|[1]\d{1})\:[0-5]?[0-9]{1}$'
+        pattern: ^([0]?\d{1}|[2][0-3]{1}|[1]\d{1})\:[0-5]?[0-9]{1}$
       destIp:
         type: string
         description: 策略备份目标机IP
@@ -614,7 +642,7 @@ definitions:
       destType:
         type: integer
         format: int32
-        description: '策略备份类型(1：SFTP,2：FTPs,3：S3）'
+        description: 策略备份类型(1：SFTP,2：FTPs,3：S3）
       destUsername:
         type: string
         description: 策略备份目标机名称
@@ -653,7 +681,7 @@ definitions:
       destType:
         type: integer
         format: int32
-        description: '策略备份类型(1：SFTP,2：FTPs,3：S3）'
+        description: 策略备份类型(1：SFTP,2：FTPs,3：S3）
       destUsername:
         type: string
         description: 策略备份目标机名称
@@ -703,7 +731,7 @@ definitions:
       backupType:
         type: integer
         format: int32
-        description: '备份类型(MANUAL(0),AUTO(1))'
+        description: 备份类型(MANUAL(0),AUTO(1))
       id:
         type: integer
         format: int64
@@ -748,3 +776,19 @@ definitions:
         type: integer
         format: int32
     title: Timestamp
+  SftpConnectionTestRequest:
+    type: object
+    description: ftp连通性
+    properties:
+      ip:
+        type: string
+        description: sftp 服务器IP
+      username:
+        type: string
+        description: sftp 服务器用户名
+      password:
+        type: string
+        description: sftp 服务器密码
+      port:
+        type: string
+        description: sftp 服务器端口
