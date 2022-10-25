@@ -7,13 +7,13 @@ info:
 host: localhost
 basePath: /
 tags:
-  - name: '${auth-api}'
+  - name: ${auth-api}
     description: 认证模块
-  - name: '${role-api}'
+  - name: ${role-api}
     description: 角色管理
-  - name: '${security-api}'
+  - name: ${security-api}
     description: 安全策略
-  - name: '${users-api}'
+  - name: ${users-api}
     description: 用户管理
 paths:
   /v1/auth/certificate:
@@ -25,7 +25,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${auth-api}'
+        - ${auth-api}
       summary: 获取证书
       operationId: certificateUsingGET
       produces:
@@ -53,7 +53,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${auth-api}'
+        - ${auth-api}
       summary: 获取token
       operationId: genTokenUsingPOST
       consumes:
@@ -95,7 +95,7 @@ paths:
       x-sysadmin-role: 'Y'
       x-auditor-role: 'Y'
       tags:
-        - '${auth-api}'
+        - ${auth-api}
       summary: 校验token
       operationId: verifyTokenUsingGET
       produces:
@@ -127,7 +127,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${role-api}'
+        - ${role-api}
       summary: 批量查询角色
       operationId: getUsingGET
       produces:
@@ -153,7 +153,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/roles/{id}':
+  /v1/roles/{id}:
     get:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -163,7 +163,7 @@ paths:
       x-sysadmin-role: 'Y'
       x-auditor-role: 'Y'
       tags:
-        - '${role-api}'
+        - ${role-api}
       summary: 查询指定角色
       operationId: getRoleByIdUsingGET
       produces:
@@ -195,7 +195,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/roles/{id}/users':
+  /v1/roles/{id}/users:
     get:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -205,7 +205,7 @@ paths:
       x-sysadmin-role: 'Y'
       x-auditor-role: 'Y'
       tags:
-        - '${role-api}'
+        - ${role-api}
       summary: 查询角色关联的用户列表
       operationId: getUserListByRoleIdUsingGET
       produces:
@@ -260,7 +260,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${security-api}'
+        - ${security-api}
       summary: 查询安全策略
       operationId: getUsingGET_1
       produces:
@@ -294,7 +294,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${security-api}'
+        - ${security-api}
       summary: 修改安全策略
       operationId: modifyUsingPUT
       consumes:
@@ -337,7 +337,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${security-api}'
+        - ${security-api}
       summary: 修改特性开关
       operationId: updateFeatureSwitchUsingPOST
       consumes:
@@ -371,7 +371,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/security/featureSwitch/{featureName}':
+  /v1/security/featureSwitch/{featureName}:
     get:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -380,7 +380,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${security-api}'
+        - ${security-api}
       summary: 查询特性开关
       operationId: getFeatureSwitchUsingGET
       produces:
@@ -420,7 +420,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${security-api}'
+        - ${security-api}
       summary: 查询可访问IP列表
       operationId: getSecurityIpsUsingGET
       produces:
@@ -454,7 +454,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${security-api}'
+        - ${security-api}
       summary: 修改可访问IP列表
       operationId: updateSecurityIpsUsingPOST
       consumes:
@@ -499,7 +499,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${security-api}'
+        - ${security-api}
       summary: 新增弱口令
       operationId: addWeakPasswordUsingPOST
       consumes:
@@ -533,7 +533,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/security/weakpassword/{id}':
+  /v1/security/weakpassword/{id}:
     delete:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -542,7 +542,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${security-api}'
+        - ${security-api}
       summary: 删除弱口令
       operationId: deleteWeakPasswordUsingDELETE
       produces:
@@ -581,7 +581,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${security-api}'
+        - ${security-api}
       summary: 查询弱口令字典
       operationId: getWeekPasswordsUsingGET
       produces:
@@ -616,7 +616,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${users-api}'
+        - ${users-api}
       summary: 批量查询用户
       operationId: getAllUserUsingGET
       produces:
@@ -681,7 +681,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${users-api}'
+        - ${users-api}
       summary: 创建用户
       operationId: createUsingPOST
       consumes:
@@ -718,7 +718,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/users/{logoutType}/action/logout':
+  /v1/users/{logoutType}/action/logout:
     get:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -728,7 +728,7 @@ paths:
       x-sysadmin-role: 'Y'
       x-auditor-role: 'Y'
       tags:
-        - '${users-api}'
+        - ${users-api}
       summary: 登出记录日志
       operationId: logoutUsingGET
       produces:
@@ -756,7 +756,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/users/{userId}':
+  /v1/users/{userId}:
     get:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -765,7 +765,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${users-api}'
+        - ${users-api}
       summary: 查询单个用户
       operationId: getUsingGET_2
       produces:
@@ -798,7 +798,7 @@ paths:
             - global
     put:
       tags:
-        - '${users-api}'
+        - ${users-api}
       summary: 修改用户信息
       operationId: updateUsingPUT
       consumes:
@@ -846,7 +846,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${users-api}'
+        - ${users-api}
       summary: 删除用户
       operationId: deleteUserUsingDELETE_1
       produces:
@@ -874,7 +874,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/users/{userId}/action/lock':
+  /v1/users/{userId}/action/lock:
     put:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -883,7 +883,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${users-api}'
+        - ${users-api}
       summary: 锁定用户
       operationId: lockUsingPUT
       consumes:
@@ -915,7 +915,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/users/{userId}/action/reset_password':
+  /v1/users/{userId}/action/reset_password:
     put:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -924,7 +924,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${users-api}'
+        - ${users-api}
       summary: 重置用户密码
       operationId: resetPasswordUsingPUT
       consumes:
@@ -963,7 +963,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/users/{userId}/action/unlock':
+  /v1/users/{userId}/action/unlock:
     put:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -972,7 +972,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${users-api}'
+        - ${users-api}
       summary: 解锁用户
       operationId: unlockUsingPUT
       consumes:
@@ -1010,7 +1010,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/users/{userId}/action/update_password':
+  /v1/users/{userId}/action/update_password:
     put:
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1019,7 +1019,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${users-api}'
+        - ${users-api}
       summary: 修改用户密码
       operationId: updatePasswordUsingPUT
       consumes:
@@ -1058,7 +1058,7 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/users/{userId}/email':
+  /v1/users/{userId}/email:
     put:
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -1070,7 +1070,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${users-api}'
+        - ${users-api}
       summary: 修改密码找回邮箱
       description: 修改系统管理员密码找回邮箱
       operationId: updateEmailUsingPUT
@@ -1126,7 +1126,7 @@ paths:
             type: string
     get:
       tags:
-        - '${users-api}'
+        - ${users-api}
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1186,7 +1186,7 @@ paths:
           description: Bad Gateway
           schema:
             type: string
-  /v1/users/verify_code:
+  /v1/users/verify-code:
     post:
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -1198,7 +1198,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${users-api}'
+        - ${users-api}
       summary: 用户发送临时验证码
       description: 用户发送临时验证码
       operationId: sendVerifyCodeUsingPOST
@@ -1248,6 +1248,193 @@ paths:
           description: Bad Gateway
           schema:
             type: string
+  /v1/users/verify-code/action/check:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-request-examples-url-1: /v1/users/verify_code/action/check
+      x-request-examples-text-1:
+        userId: '123456789'
+        userName: testName
+        randomCode: '123456789'
+      x-request-examples-1:
+        userId: '123456789'
+        userName: testName
+        randomCode: '123456789'
+      tags:
+        - ${users-api}
+      summary: 校验用户临时验证码
+      description: 校验用户临时验证码
+      operationId: checkVerifyCodeUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: verifyCodeDto
+          in: body
+          required: true
+          description: 校验验证码请求体
+          schema:
+            $ref: '#/definitions/VerifyCodeDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              userId: '123456789'
+              randomCode: '123456789'
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+          examples:
+            application/json:
+              errorCode: '1677929515'
+              errorMessage: xxx
+              parameters: []
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+  /v1/users/password/action/reset:
+    put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-request-examples-url-1: /v1/users/password/action/reset
+      x-request-examples-text-1:
+        userId: '123456789'
+        userName: test_user
+        randomCode: '123456789'
+        newPassword: xxxxxxxxx
+        comfirmPassword: xxxxxxxxx
+      x-request-examples-1:
+        userId: '123456789'
+        userName: test_user
+        randomCode: '123456789'
+        newPassword: xxxxxxxxx
+        comfirmPassword: xxxxxxxxx
+      tags:
+        - ${users-api}
+      summary: 用户重置密码
+      description: 用户重置忘记的密码
+      operationId: resetForgottenPasswordUsingPut
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: retrievePasswordDto
+          in: body
+          required: true
+          description: 重置用户忘记的密码请求体
+          schema:
+            $ref: '#/definitions/ResetPasswordDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+          examples:
+            application/json:
+              errorCode: '1677929515'
+              errorMessage: xxx
+              parameters: []
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+  /v1/users/login-user:
+    get:
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${users-api}
+      summary: 查询当前登录用户信息
+      description: 查询当前登录用户信息
+      operationId: getLoginUser
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserInnerResponseBody'
+            originalRef: UserInnerResponseBody
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -1480,7 +1667,7 @@ definitions:
       passLenVal:
         type: integer
         format: int32
-        description: '密码长度:8-64'
+        description: 密码长度:8-64
       passLockTime:
         type: integer
         format: int32
@@ -1567,7 +1754,7 @@ definitions:
     properties:
       accessControl:
         type: string
-        description: '访问控制  ALLOW_ACCESS_GUI, ALLOW_ACCESS_REST_API'
+        description: 访问控制  ALLOW_ACCESS_GUI, ALLOW_ACCESS_REST_API
       defaultUser:
         type: boolean
         description: 是否为内置默认用户，true-为内置默认用户，false-非内置默认用户
@@ -1637,7 +1824,7 @@ definitions:
       accessControlEnum:
         type: string
         example: ALLOW_ACCESS_GUI
-        description: '访问控制  ALLOW_ACCESS_GUI, ALLOW_ACCESS_REST_API'
+        description: 访问控制  ALLOW_ACCESS_GUI, ALLOW_ACCESS_REST_API
         enum:
           - ALLOW_ACCESS_GUI
           - ALLOW_ACCESS_REST_API
@@ -1671,7 +1858,7 @@ definitions:
       userName:
         type: string
         description: 用户名称。1、只能以字母、下划线、中文开头，由中文、数字、字母或者下划线组成的字符串。2、用户名长度：5-64
-        pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
       userPassword:
         type: string
         description: >-
@@ -1682,7 +1869,7 @@ definitions:
     properties:
       accessControl:
         type: string
-        description: '访问控制  ALLOW_ACCESS_GUI, ALLOW_ACCESS_REST_API'
+        description: 访问控制  ALLOW_ACCESS_GUI, ALLOW_ACCESS_REST_API
       defaultUser:
         type: boolean
         description: 是否为内置默认用户，true-为内置默认用户，false-非内置默认用户
@@ -1756,6 +1943,44 @@ definitions:
     required:
       - userName
       - emailAddress
+  VerifyCodeDto:
+    properties:
+      userId:
+        type: string
+        description: 用户id
+      userName:
+        type: string
+        description: 用户名
+      randomCode:
+        type: string
+        description: 随机校验码
+    required:
+      - userId
+      - userName
+      - randomCode
+  ResetPasswordDto:
+    properties:
+      userId:
+        type: string
+        description: 用户id
+      userName:
+        type: string
+        description: 用户名
+      randomCode:
+        type: string
+        description: 随机校验码
+      newPassword:
+        type: string
+        description: 新密码
+      confirmPassword:
+        type: string
+        description: 确认密码
+    required:
+      - userId
+      - userName
+      - randomCode
+      - newPassword
+      - confirmPassword
 responses:
   ErrorResponse:
     description: 统一错误响应
