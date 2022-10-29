@@ -209,6 +209,60 @@ paths:
           schema: {}
       operationId: readiness_v1_readiness_get
       summary: Readiness
+  /v1/protected-copy-objects/action/replicate:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: manual_replicate_req
+          required: true
+          schema:
+            description: 手动复制请求体
+            title: Create Req
+            $ref: '#/definitions/ManualReplicationReq'
+          description: 手动复制请求体
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      tags:
+        - protected_copy_object_api
+      description: 对资源进行手动复制
+      operationId: manualReplicateUsiungPOST
+      summary: 执行手动复制
 definitions:
   Body_sync_replica_sla_change_v1_internal_protected_copy_objects_action_sync_sla_put:
     properties:
@@ -287,4 +341,20 @@ definitions:
       - type
     title: ValidationError
     type: object
+  ManualReplicationReq:
+    type: object
+    required:
+      - sla_id
+      - resource_id
+      - policy_id
+    properties:
+      sla_id:
+        type: string
+        description: sla的id
+      resource_id:
+        type: string
+        description: 资源id
+      policy_id:
+        type: string
+        description: 选择的sla策略id
 x-components: {}
