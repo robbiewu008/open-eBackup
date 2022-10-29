@@ -500,6 +500,7 @@ definitions:
       name:
         type: string
         description: 策略名称
+        pattern: ^[a-zA-Z_\\u4e00-\\u9fa5]{1}[\\u4e00-\\u9fa5\\w-]*$
       action:
         type: string
         description: 策略动作：全量备份、日志备份、累积增量备份、差异增量备份、归档、复制
@@ -520,7 +521,7 @@ definitions:
         $ref: '#/definitions/RetentionDto'
       schedule:
         description: 策略调度信息
-        $ref: '#/definitions/RetentionDto'
+        $ref: '#/definitions/ScheduleDto'
       type:
         type: string
         description: 策略类型：备份策略、归档策略、复制策略
@@ -534,10 +535,12 @@ definitions:
       - name
       - type
       - application
+      - policy_list
     properties:
       name:
         type: string
         description: SLA名称
+        pattern: ^[a-zA-Z_\\u4e00-\\u9fa5]{1}[\\u4e00-\\u9fa5\\w-]*$
       type:
         type: integer
         format: int32
