@@ -312,7 +312,7 @@ paths:
       operationId: >-
         delete_copy_protection_v1_internal_copies_action_delete_protection_delete
       summary: Delete Copy Protection
-  '/v1/internal/copies/action/revoke/{user_id}':
+  /v1/internal/copies/action/revoke/{user_id}:
     put:
       produces:
         - application/json
@@ -368,7 +368,7 @@ paths:
         - copies
       operationId: internal_verify_copy_ownership_v1_internal_copies_action_verify_get
       summary: Internal Verify Copy Ownership
-  '/v1/internal/copies/archive/{storage_id}':
+  /v1/internal/copies/archive/{storage_id}:
     get:
       produces:
         - application/json
@@ -569,7 +569,7 @@ paths:
         - copies
       operationId: query_resources_v1_internal_copies_summary_resources_get
       summary: 查询copies信息列表
-  '/v1/internal/copies/{chain_id}/signed-deleted-copies':
+  /v1/internal/copies/{chain_id}/signed-deleted-copies:
     get:
       produces:
         - application/json
@@ -604,7 +604,7 @@ paths:
       operationId: >-
         query_delete_copy_list_v1_internal_copies__chain_id__signed_deleted_copies_get
       summary: get copies info by chain id
-  '/v1/internal/copies/{copy_id}':
+  /v1/internal/copies/{copy_id}:
     delete:
       produces:
         - application/json
@@ -662,7 +662,7 @@ paths:
         - copies
       operationId: query_copy_by_copy_id_v1_internal_copies__copy_id__get
       summary: 根据副本ID查询副本信息
-  '/v1/internal/copies/{copy_id}/action/update-retention':
+  /v1/internal/copies/{copy_id}/action/update-retention:
     post:
       consumes:
         - application/json
@@ -695,7 +695,7 @@ paths:
       operationId: >-
         internal_update_copy_retention_v1_internal_copies__copy_id__action_update_retention_post
       summary: Internal Update Copy Retention
-  '/v1/internal/copies/{copy_id}/index-status':
+  /v1/internal/copies/{copy_id}/index-status:
     put:
       produces:
         - application/json
@@ -728,7 +728,7 @@ paths:
       operationId: >-
         internal_update_copy_index_status_v1_internal_copies__copy_id__index_status_put
       summary: Internal Update Copy Index Status
-  '/v1/internal/copies/{copy_id}/latest-related-copy':
+  /v1/internal/copies/{copy_id}/latest-related-copy:
     get:
       produces:
         - application/json
@@ -767,7 +767,7 @@ paths:
       operationId: >-
         query_copy_by_condition_v1_internal_copies__copy_id__latest_related_copy_get
       summary: get copy info by condition
-  '/v1/internal/copies/{copy_id}/status':
+  /v1/internal/copies/{copy_id}/status:
     put:
       consumes:
         - application/json
@@ -801,7 +801,7 @@ paths:
         - copies
       operationId: internal_update_copy_status_v1_internal_copies__copy_id__status_put
       summary: Internal Update Copy Status
-  '/v1/internal/copies/{copy_id}/detail':
+  /v1/internal/copies/{copy_id}/detail:
     put:
       tags:
         - copies
@@ -875,7 +875,7 @@ paths:
           description: ''
           schema:
             type: string
-  '/v1/internal/copies/{copy_id}/properties':
+  /v1/internal/copies/{copy_id}/properties:
     put:
       tags:
         - copies
@@ -914,6 +914,55 @@ paths:
           description: ''
           schema:
             type: string
+  /v1/internal/copies/{copy_id}/worm-status:
+    put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 副本ID
+          in: path
+          name: copy_id
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            description: 副本WORM状态更新请求体
+            title: Copy WORM Status
+            $ref: '#/definitions/CopyWormStatusUpdate'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      tags:
+        - copies
+      operationId: internal_update_copy_worm_status
+      summary: Internal Update Copy Worm Status
 definitions:
   BasePage_CopyResourceSummarySchema_:
     properties:
@@ -945,7 +994,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[CopyResourceSummarySchema]'
+    title: BasePage[CopyResourceSummarySchema]
     type: object
   BasePage_CopySchema_:
     properties:
@@ -977,7 +1026,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[CopySchema]'
+    title: BasePage[CopySchema]
     type: object
   CopyArchiveMapSchema:
     properties:
@@ -1703,4 +1752,18 @@ definitions:
     required:
       - key
       - value
+  CopyWormStatusUpdate:
+    type: object
+    required:
+      - worm_status
+    properties:
+      worm_status:
+        type: integer
+        format: int32
+        description: 1：未设置，2：设置中，3：已设置，4：设置失败
+        enum:
+          - 1
+          - 2
+          - 3
+          - 4
 x-components: {}
