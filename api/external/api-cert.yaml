@@ -255,23 +255,6 @@ paths:
           required: true
           type: string
         - in: formData
-          name: agentCertificate
-          description: agent证书
-          required: false
-          schema:
-            type: file
-        - in: formData
-          name: agentKey
-          description: agent私钥
-          required: false
-          schema:
-            type: file
-        - name: agentPass
-          in: header
-          description: agent私钥密码
-          required: false
-          type: string
-        - in: formData
           name: caCertificate
           description: CA证书
           required: false
@@ -285,12 +268,6 @@ paths:
         - in: formData
           name: serverCertificate
           description: 服务证书
-          required: false
-          schema:
-            type: file
-        - in: formData
-          name: dhParam
-          description: 密钥交换文件
           required: false
           schema:
             type: file
