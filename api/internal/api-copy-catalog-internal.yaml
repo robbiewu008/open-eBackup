@@ -606,6 +606,15 @@ paths:
       summary: get copies info by chain id
   /v1/internal/copies/{copy_id}:
     delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -617,7 +626,7 @@ paths:
         - description: 用户ID
           in: query
           name: user_id
-          required: true
+          required: false
           type: string
         - default: true
           description: 是否创建任务
@@ -625,10 +634,29 @@ paths:
           name: create_job
           required: false
           type: boolean
+        - name: is_forced
+          in: query
+          required: false
+          description: 是否强制删除
+          type: boolean
+        - name: is_associated
+          in: query
+          required: false
+          description: 是否删除关联的
+          type: boolean
+        - name: job_type
+          in: query
+          required: false
+          description: 任务类型
+          type: string
+        - name: is_delete_data
+          in: query
+          required: false
+          description: 是否删除数据
+          type: string
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '404':
           description: Not Found
         '422':
@@ -963,6 +991,54 @@ paths:
         - copies
       operationId: internal_update_copy_worm_status
       summary: Internal Update Copy Worm Status
+  /v1/internal/replicated-copies:
+    post:
+      tags:
+        - copies
+      description: 创建复制副本和esn关联关系
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      operationId: internal_copies_replication
+      parameters:
+        - name: copy_replication_map
+          in: body
+          required: true
+          description: 关联信息
+          schema:
+            $ref: '#/definitions/CopyReplicationMapSchema'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+    get:
+      tags:
+        - copies
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      description: 根据副本id查询复制副本记录
+      operationId: internal_replicated_copies
+      responses:
+        '200':
+          description: esn列表
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ReplicatedCopies'
 definitions:
   BasePage_CopyResourceSummarySchema_:
     properties:
@@ -1766,4 +1842,29 @@ definitions:
           - 2
           - 3
           - 4
+  CopyReplicationMapSchema:
+    type: object
+    properties:
+      copy_id:
+        type: string
+        description: 副本id
+      resource_id:
+        type: string
+        description: 资源ID
+      esn:
+        type: string
+        description: esn
+  ReplicatedCopies:
+    type: object
+    description: 复制副本记录
+    properties:
+      copyId:
+        type: string
+        description: 副本id
+      resourceId:
+        type: string
+        description: 资源id
+      esn:
+        type: string
+        description: esn
 x-components: {}
