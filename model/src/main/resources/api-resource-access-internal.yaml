@@ -8,10 +8,13 @@ schemes:
 host: localhost.com
 basePath: /
 tags:
-  - name: '${system-api}'
+  - name: protected-resource-api
+  - name: protected-environment-api
 paths:
-  '/v2/internal/resources/{resourceId}':
+  /v2/internal/resources/{resourceId}:
     get:
+      tags:
+        - protected-resource-api
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30081
@@ -82,3 +85,229 @@ paths:
                 scanInterval: string
               auth:
                 authType: 0
+  /v2/internal/environments:
+    post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - protected-environment-api
+      description: 内部注册受保护环境
+      operationId: RegisterProtectedEnviroment
+      parameters:
+        - name: RegisterProtectedEnvironmentRequest
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/RegisterProtectedEnvironmentRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v2/internal/environments/{envId}:
+    delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - protected-environment-api
+      description: 删除受保护环境,只是更新状态为离线
+      operationId: DeleteProtectedEnvironment
+      parameters:
+        - name: envId
+          in: path
+          required: true
+          type: string
+          description: 受保护环境ID
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v2/internal/environments/delete/{envId}:
+    delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - protected-environment-api
+      description: 删除受保护环境
+      operationId: DeleteProtectedEnvironmentForInternal
+      parameters:
+        - name: envId
+          in: path
+          required: true
+          type: string
+          description: 受保护环境ID
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v2/internal/environments/host/trust:
+    get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - protected-environment-api
+      description: 检查该主机是否受信
+      operationId: checkHostBeTrust
+      parameters:
+        - name: endpoint
+          in: query
+          required: false
+          description: 主机ip
+          type: string
+      responses:
+        '200':
+          description: |-
+            {
+                "IsTrusted":true
+            }
+          schema:
+            type: string
+  /v2/internal/environments/host/dmc/trust:
+    get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - protected-environment-api
+      description: 检查dmc该主机是否受信
+      operationId: checkDmcHostBeTrust
+      parameters:
+        - name: endpoint
+          in: query
+          required: false
+          description: 主机的ip
+          type: string
+      responses:
+        '200':
+          description: |-
+            {
+                "Data":{
+                    "IsTrusted":true
+                },
+                "Error":{
+                    "Code":0,
+                    "Description":""
+                }
+            }
+          schema:
+            type: string
+definitions:
+  Authentication:
+    type: object
+    required:
+      - authType
+    properties:
+      authType:
+        type: integer
+        format: int32
+        description: >-
+          0-NO_AUTH, 1-OS_PASSWORD, 2-APP_PASSWORD，3-LADP, 4-AKSK, 5-KERBEROS,
+          6-TOKEN, 7-OAUTH2, 8-OTHER。1到3,authKey填用户名,authPwd填密码， 4 authKey填AK，
+          authPwd填SK, 5,6,7,8认证认证信息在扩展字段中扩充。
+
+          0-NO_AUTH, 1-OS_PASSWORD, 2-APP_PASSWORD，3-LADP, 4-AKSK, 5-KERBEROS,
+          6-TOKEN, 7-OAUTH2, 8-OTHER。1到3,authKey填用户名,authPwd填密码， 4 authKey填AK，
+          authPwd填SK, 5,6,7,8认证认证信息在扩展字段中扩充
+      authKey:
+        type: string
+        description: 使用用户名密码认证时该字段填用户名，使用AK/SK认证时该字段填充AK
+      authPwd:
+        type: string
+        description: |-
+          使用用户名密码认证时该字段填密码，使用AK/SK认证时该字段填充SK
+          使用用户名密码认证时该字段填密码，使用AK/SK认证时该字段填充SK
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里
+  RegisterProtectedEnvironmentRequest:
+    type: object
+    required:
+      - name
+      - type
+      - subType
+    properties:
+      name:
+        type: string
+        description: 受保护环境名称
+      type:
+        type: string
+        description: 环境的类型
+      endpoint:
+        type: string
+        description: 环境的IP地址或域名
+      subType:
+        type: string
+        description: 环境的子类型
+      port:
+        type: integer
+        format: int32
+        description: 环境的接入端口
+      username:
+        type: string
+        description: 环境的用户名
+      password:
+        type: string
+        description: 环境的密码
+      osType:
+        type: string
+        description: 环境的操作系统
+      version:
+        type: string
+        description: 环境的版本
+      dependencies:
+        type: object
+        additionalProperties:
+          additionalProperties:
+            type: string
+          type: object
+        description: 依赖参数，依赖其他资源
+      extendInfo:
+        type: string
+        description: |-
+          环境扩展参数，存放不同环境的自定义扩展属性
+          环境扩展参数，存放不同环境的自定义扩展属性
+      auth:
+        $ref: '#/definitions/Authentication'
