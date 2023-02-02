@@ -1,0 +1,299 @@
+---
+swagger: "2.0"
+info:
+  version: "v1"
+  title: "文件集模板接口"
+  contact: {}
+  license: {}
+host: "localhost"
+basePath: "/"
+tags:
+- name: "fileset-templates-api"
+  description: "File Set Template Controller"
+paths:
+  /v1/plugins/host/filesystem/filesets/templates:
+    get:
+      tags:
+      - "fileset-templates-api"
+      summary: "分页查询文件集模板列表"
+      operationId: "listUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "conditions"
+        in: "query"
+        description: "分页查询参数"
+        required: false
+        type: "string"
+        maxLength: 2147483647
+        minLength: 0
+        allowEmptyValue: false
+      - name: "orders"
+        in: "query"
+        description: "分页查询排序字段"
+        required: false
+        type: "string"
+        maxLength: 2147483647
+        minLength: 0
+        allowEmptyValue: false
+      - name: "pageNo"
+        in: "query"
+        description: "分页起始页"
+        required: false
+        type: "integer"
+        default: 0
+        format: "int32"
+        allowEmptyValue: false
+      - name: "pageSize"
+        in: "query"
+        description: "分页大小"
+        required: false
+        type: "integer"
+        default: 20
+        format: "int32"
+        allowEmptyValue: false
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/PageListResponse«FilesetTemplate»"
+            originalRef: "PageListResponse«FilesetTemplate»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    post:
+      tags:
+      - "fileset-templates-api"
+      summary: "创建文件集模板"
+      operationId: "createUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "filesetTemplate"
+        description: "创建文件集模板参数"
+        required: false
+        schema:
+          $ref: "#/definitions/FilesetTemplate"
+          originalRef: "FilesetTemplate"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/UuidObject"
+            originalRef: "UuidObject"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    put:
+      tags:
+      - "fileset-templates-api"
+      summary: "修改文件集模板"
+      operationId: "updateUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "filesetTemplate"
+        description: "修改文件集模板参数"
+        required: false
+        schema:
+          $ref: "#/definitions/FilesetTemplate"
+          originalRef: "FilesetTemplate"
+      responses:
+        "200":
+          description: "OK"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+  /v1/plugins/host/filesystem/filesets/templates/{templateId}:
+    get:
+      tags:
+      - "fileset-templates-api"
+      summary: "查询指定文件集模板"
+      operationId: "queryFilesetTemplateByIdUsingGET"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "templateId"
+        in: "path"
+        description: "查询文件集模板Id"
+        required: false
+        type: "string"
+        maxLength: 36
+        minLength: 0
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/FilesetTemplate"
+            originalRef: "FilesetTemplate"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+    delete:
+      tags:
+      - "fileset-templates-api"
+      summary: "删除文件集模板"
+      operationId: "deleteUsingDELETE"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "X-Auth-Token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "templateId"
+        in: "path"
+        description: "删除文件集模板Id"
+        required: false
+        type: "string"
+        maxLength: 36
+        minLength: 0
+      responses:
+        "200":
+          description: "OK"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      security:
+      - Authorization:
+        - "global"
+      deprecated: false
+securityDefinitions:
+  Authorization:
+    type: "apiKey"
+    name: "TOKEN"
+    in: "header"
+definitions:
+  FilesetTemplate:
+    type: "object"
+    required:
+    - "files"
+    properties:
+      associatedFilesetsNum:
+        type: "integer"
+        format: "int32"
+      files:
+        type: "array"
+        items:
+          type: "string"
+      filters:
+        type: "array"
+        items:
+          $ref: "#/definitions/Filter"
+          originalRef: "Filter"
+      name:
+        type: "string"
+        minLength: 1
+        maxLength: 32
+        pattern: "^[a-zA-Z0-9_\\u4e00-\\u9fa5]{1}[\\u4e00-\\u9fa5\\w-]*$"
+      osType:
+        type: "string"
+        minLength: 1
+        maxLength: 16
+      userId:
+        type: "string"
+      uuid:
+        type: "string"
+    title: "FilesetTemplate"
+  Filter:
+    type: "object"
+    required:
+    - "filterBy"
+    - "mode"
+    - "type"
+    properties:
+      filterBy:
+        type: "string"
+      mode:
+        type: "string"
+      rule:
+        type: "string"
+      type:
+        type: "string"
+      values:
+        type: "array"
+        items:
+          type: "string"
+    title: "Filter"
+  PageListResponse«FilesetTemplate»:
+    type: "object"
+    properties:
+      records:
+        type: "array"
+        description: "分页查询结果列表"
+        items:
+          $ref: "#/definitions/FilesetTemplate"
+          originalRef: "FilesetTemplate"
+      totalCount:
+        type: "integer"
+        format: "int32"
+        description: "总数"
+    title: "PageListResponse«FilesetTemplate»"
+  UuidObject:
+    type: "object"
+    properties:
+      uuid:
+        type: "string"
+    title: "UuidObject"
