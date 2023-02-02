@@ -13,6 +13,7 @@ tags:
 paths:
   /v1/export-files:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-sysadmin-role: 'Y'
@@ -101,6 +102,7 @@ paths:
           schema:
             $ref: '#/definitions/BasePage_ExportRecordQueryResponse'
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -132,6 +134,7 @@ paths:
           description: 无返回值
   /v1/export-files/{id}:
     delete:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'

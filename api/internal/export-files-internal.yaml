@@ -11,8 +11,9 @@ tags:
   - name: api-export-files-internal-api
     description: 内部接口
 paths:
-  '/v1/internal/export-files/{id}':
+  /v1/internal/export-files/{id}:
     put:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'

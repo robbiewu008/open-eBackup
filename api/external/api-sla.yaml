@@ -12,6 +12,7 @@ tags:
 paths:
   /v1/slas:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -121,6 +122,7 @@ paths:
           schema:
             type: string
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -218,6 +220,7 @@ paths:
           schema:
             type: string
     put:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -269,6 +272,7 @@ paths:
             type: string
   /v1/slas/{slaId}:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -316,6 +320,7 @@ paths:
           schema:
             type: string
     delete:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081

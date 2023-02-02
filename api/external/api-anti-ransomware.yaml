@@ -16,6 +16,9 @@ produces:
 paths:
   /v1/anti-ransomware/policies:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-impact-subsystem: 不影响
       x-dp-admin-role: 'Y'
@@ -151,6 +154,11 @@ paths:
         '404':
           description: Not Found
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -186,8 +194,13 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/v1/anti-ransomware/policies/{id}':
+  /v1/anti-ransomware/policies/{id}:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -235,6 +248,11 @@ paths:
         '404':
           description: Not Found
     delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -269,6 +287,10 @@ paths:
           description: Forbidden
   /v1/anti-ransomware/action/detect:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -330,7 +352,7 @@ definitions:
       status:
         type: integer
         format: int32
-        description: '防勒索检测状态 1:进行中；2：未感染；3：已感染；4：异常'
+        description: 防勒索检测状态 1:进行中；2：未感染；3：已感染；4：异常
         minimum: 1
         maximum: 4
         x-access-port: 25081
@@ -354,7 +376,7 @@ definitions:
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
-        pattern: '^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        pattern: ^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
         x-impact-subsystem: 不影响
       selectedResources:
         items:
@@ -431,7 +453,7 @@ definitions:
         x-public-api: 'N'
       dataSourceType:
         type: string
-        description: '资源类型。local：本地; external:外部'
+        description: 资源类型。local：本地; external:外部
         enum:
           - local
           - external
@@ -489,14 +511,14 @@ definitions:
       copyTime:
         type: string
         description: 仅检测该时间后的的副本
-        pattern: '^\d{4}\-\d{2}\-\d{2}\s{1}\d{2}:\d{2}:\d{2}$'
+        pattern: ^\d{4}\-\d{2}\-\d{2}\s{1}\d{2}:\d{2}:\d{2}$
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
       startDetectionTime:
         type: string
         description: 首次执行时间
-        pattern: '^\d{4}\-\d{2}\-\d{2}\s{1}\d{2}:\d{2}:\d{2}$'
+        pattern: ^\d{4}\-\d{2}\-\d{2}\s{1}\d{2}:\d{2}:\d{2}$
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
@@ -522,7 +544,8 @@ definitions:
         x-public-api: 'N'
       schedulePolicy:
         type: string
-        description: 调度计划。interval：间隔执行；immediately：立即执行；
+        description: >-
+          调度计划。interval：间隔执行；immediately：立即执行；afterTaskCompleteSet：备份或复制完成后，设置为防篡改副本
         enum:
           - immediately
           - interval
@@ -545,6 +568,14 @@ definitions:
           - 0
           - 1
           - 2
+      setWorm:
+        type: boolean
+        description: 是否设置防篡改副本
+        default: false
+      needDetect:
+        type: boolean
+        description: 是否需要防勒索检测
+        default: true
     required:
       - schedulePolicy
   AntiRansomwareResource:
@@ -678,7 +709,7 @@ definitions:
         description: 集群id
       dataSourceType:
         type: string
-        description: '资源类型。local：本地; external:外部'
+        description: 资源类型。local：本地; external:外部
     required:
       - resourceId
       - resourceName
@@ -709,7 +740,7 @@ definitions:
         description: 集群id
       dataSourceType:
         type: string
-        description: '资源类型。local：本地; external:外部'
+        description: 资源类型。local：本地; external:外部
       description:
         type: string
         description: 防勒索策略描述
