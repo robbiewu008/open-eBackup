@@ -7,6 +7,16 @@ tags:
 paths:
   /v1/internal/protected-objects:
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -66,6 +76,16 @@ paths:
       summary: 分页查询SLA关联资源信息列表【内部接口】
   /v1/internal/protected-objects/action/sync-sla:
     put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -92,6 +112,16 @@ paths:
       summary: 保护对象同步SLA信息变更【内部接口】
   /v1/internal/protected-objects/compliance:
     put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -108,7 +138,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '422':
           description: Validation Error
           schema:
@@ -119,6 +148,16 @@ paths:
       summary: 更新保护对象遵从度【内部接口】
   /v1/internal/protected-objects/count:
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -136,7 +175,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '422':
           description: Validation Error
           schema:
@@ -145,8 +183,18 @@ paths:
         - projected_object_api
       operationId: count_protection_object_v1_internal_protected_objects_count_get
       summary: 根据SLA的ID查询关联资源数量【内部接口】
-  '/v1/internal/protected-objects/{resource_id}':
+  /v1/internal/protected-objects/{resource_id}:
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -168,8 +216,18 @@ paths:
         - projected_object_api
       operationId: query_protection_object_v1_internal_protected_objects__resource_id__get
       summary: 根据资源ID查询保护对象信息【内部接口】
-  '/v1/internal/protected-objects/{resource_id}/action/update-last-backup-time':
+  /v1/internal/protected-objects/{resource_id}/action/update-last-backup-time:
     put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -181,15 +239,13 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '422':
           description: Validation Error
           schema:
             $ref: '#/definitions/HTTPValidationError'
       tags:
         - projected_object_api
-      operationId: >-
-        synchronize_time_v1_internal_protected_objects__resource_id__action_update_last_backup_time_put
+      operationId: synchronize_time_v1_internal_protected_objects__resource_id__action_update_last_backup_time_put
       summary: 更新保护对象的最新备份时间【内部接口】
 definitions:
   BaseExtParam:
@@ -226,7 +282,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[ProtectedObjectQueryResponse]'
+    title: BasePage[ProtectedObjectQueryResponse]
     type: object
   BatchOperationReq:
     properties:
@@ -279,7 +335,7 @@ definitions:
   ComplianceUpdate:
     properties:
       compliance:
-        description: 'SLA遵从度, True：遵从，False：不遵从'
+        description: SLA遵从度, True：遵从，False：不遵从
         title: Compliance
         type: boolean
       resource_id:

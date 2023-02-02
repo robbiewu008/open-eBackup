@@ -7,6 +7,8 @@ tags:
 paths:
   /v1/protected-objects:
     delete:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -44,6 +46,8 @@ paths:
       operationId: delete_v1_protected_objects_delete
       summary: 批量移除保护
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -122,6 +126,8 @@ paths:
       operationId: page_query_v1_protected_objects_get
       summary: 分页查询SLA关联资源信息列表
     post:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -162,6 +168,8 @@ paths:
       operationId: create_v1_protected_objects_post
       summary: 创建保护对象
     put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -201,6 +209,8 @@ paths:
       summary: 修改保护
   /v1/protected-objects/batch:
     post:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -241,6 +251,8 @@ paths:
       summary: 批量创建保护对象
   /v1/protected-objects/status/action/activate:
     put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -279,6 +291,8 @@ paths:
       summary: 批量激活保护
   /v1/protected-objects/status/action/deactivate:
     put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -315,8 +329,10 @@ paths:
         - projected_object_api
       operationId: deactivate_v1_protected_objects_status_action_deactivate_put
       summary: 批量取消激活保护
-  '/v1/protected-objects/{resource_id}/action/backup':
+  /v1/protected-objects/{resource_id}/action/backup:
     post:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -360,8 +376,10 @@ paths:
         - projected_object_api
       operationId: manual_backup_v1_protected_objects__resource_id__action_backup_post
       summary: 手动备份资源
-  '/v1/protected-objects/{resource_id}/backup-time':
+  /v1/protected-objects/{resource_id}/backup-time:
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -409,6 +427,9 @@ paths:
       summary: Readiness
   /v1/protected-objects/sla-compliance:
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
       x-sysadmin-role: 'Y'
       x-dp-admin-role: 'Y'
       x-auditor-role: 'Y'
@@ -471,7 +492,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[ProtectedObjectQueryResponse]'
+    title: BasePage[ProtectedObjectQueryResponse]
     type: object
   BatchOperationReq:
     properties:
@@ -524,7 +545,7 @@ definitions:
   ComplianceUpdate:
     properties:
       compliance:
-        description: 'SLA遵从度, True：遵从，False：不遵从'
+        description: SLA遵从度, True：遵从，False：不遵从
         title: Compliance
         type: boolean
       resource_id:
