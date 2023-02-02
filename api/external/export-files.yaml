@@ -130,7 +130,7 @@ paths:
       responses:
         '200':
           description: 无返回值
-  '/v1/export-files/{id}':
+  /v1/export-files/{id}:
     delete:
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
@@ -169,8 +169,9 @@ paths:
       responses:
         '200':
           description: 无返回值
-  '/v1/export-files/{id}/action/download':
+  /v1/export-files/{id}/action/download:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-sysadmin-role: 'Y'
@@ -205,12 +206,75 @@ paths:
           required: true
           description: 访问令牌
           type: string
+        - name: subId
+          in: query
+          required: false
+          description: 子记录
+          type: string
+          maxLength: 64
       responses:
         '200':
           description: 文件流
           schema:
             type: string
             format: byte
+  /v1/export-files/{id}/agent-logs:
+    get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - api-export-files-api
+      summary: 查询代理导出文件
+      operationId: getAgentExportLogFile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 主记录ID
+          minLength: 1
+          maxLength: 64
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+        - name: pageNo
+          in: query
+          required: false
+          description: 页号
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 255
+        - name: pageSize
+          in: query
+          required: false
+          description: 页大小
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 255
+        - name: orders
+          in: query
+          required: false
+          description: 排序字段
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: 备份代理日志记录
+          schema:
+            $ref: '#/definitions/BasePage_ExportAgentLogQueryResponse'
 definitions:
   ExportFileType:
     description: 导出文件类型
@@ -330,3 +394,52 @@ definitions:
         items:
           type: string
         description: 错误参数
+  ExportAgentLogQueryResponse:
+    type: object
+    properties:
+      uuid:
+        type: string
+        description: 记录ID
+      agentName:
+        type: string
+        description: 代理名称
+      agentEndpoint:
+        type: string
+        description: 代理IP
+      status:
+        type: object
+        description: 记录状态
+      size:
+        type: integer
+        format: int64
+        description: 文件大小
+      errorCode:
+        type: string
+        description: 错误码
+      errorParams:
+        type: string
+        description: 错误参数
+  BasePage_ExportAgentLogQueryResponse:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int64
+        description: 记录总数
+      pages:
+        type: integer
+        format: int64
+        description: 页个数
+      pageSize:
+        type: integer
+        format: int64
+        description: 页大小
+      pageNo:
+        type: integer
+        format: int64
+        description: 页号
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/ExportAgentLogQueryResponse'
+        description: 记录信息
