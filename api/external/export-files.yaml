@@ -356,11 +356,12 @@ definitions:
       params:
         type: object
         additionalProperties:
-          type: string
+          type: object
         description: 创建类型参数
     required:
       - type
       - name
+    type: object
   ExportRecordQueryResponse:
     description: 批量查询返回
     properties:
