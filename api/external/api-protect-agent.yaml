@@ -322,6 +322,123 @@ paths:
       security:
         - Authorization:
             - global
+  /v1/host-agent/alter-register:
+    post:
+      description: 客户端代理自动注册v2，有代理和无代理
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: host-agent_alter-register
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: HostRegisterInfo
+          in: body
+          required: true
+          description: 主机注册参数
+          schema:
+            $ref: '#/definitions/HostRegisterInfo'
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+  /v1/internal/agent/cluster-ip:
+    put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - client-manager-api
+      summary: 自动更新Agent当前Server
+      description: 内部接口，自动更新Agent当前Server
+      operationId: updateAgentClusterIpPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: params
+          description: Agent当前控制器IP列表
+          required: true
+          schema:
+            $ref: '#/definitions/MangerIpDto'
+            originalRef: AgentRegisterConnectionParam
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/host-agent/{agentId}/log/configuration:
+    put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - client-manager-api
+      summary: 更新代理日志配置
+      description: 更新代理日志配置
+      operationId: updateAgentLogConfigurationPUT
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          type: string
+          description: 代理ID
+          minLength: 1
+          maxLength: 64
+        - name: configParam
+          in: body
+          required: true
+          description: 日志配置参数
+          schema:
+            $ref: '#/definitions/AgentLogConfigParam'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: 无返回值
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -495,14 +612,7 @@ definitions:
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
-      isSuperUser:
-        type: boolean
-        description: 是否为超级管理员用户，true：是  false:否
-      superPassword:
-        type: string
-        description: 超级管理员密码
     title: AgentRegisterParam
-    type: object
   AgentsUpdateRequest:
     type: object
     properties:
@@ -683,3 +793,85 @@ definitions:
       userInfo:
         type: string
     title: URL
+  HostRegisterInfo:
+    required:
+      - registerType
+      - type
+      - osType
+      - ips
+    properties:
+      registerType:
+        type: string
+        example: 注册方式
+        description: 注册方式 AGENT , AGENTLESS
+      type:
+        type: string
+        example: 代理类型
+        description: 代理类型
+      osType:
+        type: string
+        example: 操作系统
+        description: 操作系统
+      ips:
+        type: string
+        example: ip地址,同时支持ipv4和ipv6
+        description: ip地址,同时支持ipv4和ipv6
+      password:
+        type: string
+        example: string
+        description: 用户
+      username:
+        type: string
+        example: string
+        description: 密码
+      port:
+        type: string
+        example: 端口
+        description: 端口
+      authMode:
+        type: string
+        example: 认证模式
+        description: 认证模式 BASIC , NTLM, CREDSSP, KERBEROS, CERTIFICATE
+      kerberos:
+        type: string
+        example: Kerberos认证模式下的值
+        description: Kerberos认证模式下的值
+      publicCertificate:
+        type: string
+        example: windows证书模式下的公钥证书
+        description: windows证书模式下的公钥证书
+      privateCertificate:
+        type: string
+        example: windows证书模式下的私钥证书
+        description: windows证书模式下的私钥证书
+      certificate:
+        type: string
+        example: 非windwos证书模式下的证书
+        description: 非windwos证书模式下的证书
+  MangerIpDto:
+    description: Agent当前所有Server列表
+    properties:
+      mangerServerList:
+        type: array
+        items:
+          type: string
+        description: 实际当前Server列表
+    required:
+      - mangerServerList
+  AgentLogConfigParam:
+    type: object
+    required:
+      - logLevel
+    properties:
+      logLevel:
+        type: string
+        description: 日志级别
+        minLength: 1
+        maxLength: 32
+  AgentLogConfigInfo:
+    type: object
+    required:
+      - logLevel
+    properties:
+      logLevel:
+        type: string
