@@ -12,6 +12,7 @@ tags:
 paths:
   /v1/anti-ransomware/airgap/policies:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       x-dm-role: 'N'
@@ -42,6 +43,7 @@ paths:
           description: ok
       x-order: 0
     delete:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       x-dm-role: 'Y'
@@ -85,6 +87,7 @@ paths:
                 request_uuid-timestamp-hostname.
       x-order: 12
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       x-dm-role: 'Y'
@@ -145,6 +148,7 @@ paths:
       x-order: 2
   /v1/anti-ransomware/airgap/policies/{policyId}:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       x-dm-role: 'N'
@@ -181,6 +185,7 @@ paths:
       x-order: 8
   /v1/anti-ransomware/airgap/devices/policy/related:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       x-dm-role: 'Y'
@@ -249,6 +254,11 @@ paths:
             - invalid
           items:
             type: string
+        - name: policyName
+          in: query
+          required: false
+          description: 策略名称
+          type: string
         - name: pageNo
           in: query
           required: false
@@ -288,6 +298,7 @@ paths:
       x-order: 3
   /v1/anti-ransomware/airgap/devices:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       x-dm-role: 'Y'
@@ -354,6 +365,11 @@ paths:
             - enable
             - disable
             - invalid
+        - name: policyName
+          in: query
+          required: false
+          description: 策略名称
+          type: string
         - name: pageNo
           in: query
           required: false
@@ -390,6 +406,7 @@ paths:
       x-order: 4
   /v1/anti-ransomware/airgap/devices/{deviceId}:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       x-dm-role: 'Y'
@@ -438,6 +455,7 @@ paths:
       x-order: 5
   /v1/anti-ransomware/airgap/devices/ports:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       x-dm-role: 'Y'
@@ -496,6 +514,7 @@ paths:
       x-order: 6
   /v1/anti-ransomware/airgap/devices/relate/policy:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       summary: 创建设备策略关联
@@ -524,6 +543,7 @@ paths:
           description: OK
       x-order: 1
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       x-dm-role: 'N'
@@ -553,6 +573,7 @@ paths:
       x-order: 7
   /v1/anti-ransomware/airgap/devices/{deviceId}/enable:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       x-dm-role: 'N'
@@ -579,6 +600,7 @@ paths:
       x-order: 9
   /v1/anti-ransomware/airgap/devices/{deviceId}/disable:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       x-dm-role: 'N'
@@ -605,6 +627,7 @@ paths:
       x-order: 10
   /v1/anti-ransomware/airgap/devices/{deviceId}/relate/policy:
     delete:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
       x-dm-role: 'N'
@@ -709,68 +732,6 @@ definitions:
         description: 允许复制时间窗集合，max = 3
         type: array
     description: 策略更新请求对象
-  AirGapPolicyBatchDeleteRequest:
-    type: object
-    required:
-      - policyIds
-    properties:
-      policyIds:
-        type: array
-        items:
-          type: string
-        description: 策略id列表, max = 200
-    description: 策略批量删除请求对象
-  AirGapPolicyShowPageRequest:
-    type: object
-    properties:
-      pageNo:
-        type: integer
-        format: int32
-        description: 页码 min = 0.
-      pageSize:
-        type: integer
-        format: int32
-        description: 页大小, min = 1, max = 200
-      name:
-        type: string
-        description: 策略名称, max = 64
-    description: 查询策略分页请求对象
-  AirGapDeviceShowPageRequest:
-    type: object
-    properties:
-      pageNo:
-        type: integer
-        format: int32
-        description: 页码,min=0
-      pageSize:
-        type: integer
-        format: int32
-        description: 页大小,min = 1, max = 200
-      policyId:
-        type: string
-        description: policyId
-      name:
-        type: string
-        description: 设备名称
-      esn:
-        type: string
-        description: 设备ESN
-      linkStatus:
-        type: array
-        items:
-          type: string
-        description: 设备在线状态 在线1，离线0
-      replicationLinkStatus:
-        type: array
-        items:
-          type: string
-        description: 复制链路状态 连通open, 断开close,未知unknown
-      policyStatus:
-        type: array
-        items:
-          type: string
-        description: 策略开启状态 enable应用中,disable未应用,invalid已失效
-    description: 查询设备分页请求对象
   AirGapPolicyInfo:
     type: object
     properties:
@@ -881,6 +842,9 @@ definitions:
         description: 关联设备id
     required:
       - portId
+      - name
+      - status
+      - ip
     description: 设备逻辑口信息对象
   AirGapDeviceResponse:
     type: object
@@ -935,8 +899,7 @@ definitions:
         example: OceanProtect
       airGapDevicePortInfos:
         type: array
-        description: 设备关联逻辑口信息(最大支持50个)
-        maxItems: 50
+        description: 设备关联逻辑口信息
         items:
           $ref: '#/definitions/AirGapDevicePortInfo'
     description: 创建设备策略关联请求对象
@@ -972,8 +935,7 @@ definitions:
         example: OceanProtect
       airGapDevicePortInfos:
         type: array
-        description: 设备关联逻辑口信息(最大支持50个)
-        maxItems: 50
+        description: 设备关联逻辑口信息
         items:
           $ref: '#/definitions/AirGapDevicePortInfo'
     description: 更新设备策略关联请求对象
