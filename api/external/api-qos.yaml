@@ -7,6 +7,8 @@ tags:
 paths:
   /v1/qos:
     delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -50,6 +52,8 @@ paths:
       operationId: delete_qos_v1_qos_delete
       summary: 批量删除指定Qos策略
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -105,6 +109,8 @@ paths:
       operationId: query_resources_v1_qos_get
       summary: 分页查询Qos策略列表
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -142,8 +148,10 @@ paths:
         - Qos
       operationId: create_qos_v1_qos_post
       summary: 创建Qos策略
-  '/v1/qos/{qos_id}':
+  /v1/qos/{qos_id}:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -179,6 +187,8 @@ paths:
       operationId: get_qos_v1_qos__qos_id__get
       summary: 查询指定Qos策略
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -252,7 +262,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[QosRes]'
+    title: BasePage[QosRes]
     type: object
   HTTPValidationError:
     properties:
@@ -274,11 +284,11 @@ definitions:
         description: qos 名称
         maxLength: 64
         minLength: 1
-        pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
         title: Name
         type: string
       speed_limit:
-        description: '限制速率,单位M'
+        description: 限制速率,单位M
         maximum: 1024
         minimum: 1
         title: Speed Limit
@@ -300,7 +310,7 @@ definitions:
         title: Name
         type: string
       speed_limit:
-        description: '限制速率,单位M'
+        description: 限制速率,单位M
         title: Speed Limit
         type: integer
       uuid:

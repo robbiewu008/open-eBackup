@@ -49,8 +49,18 @@ paths:
         - Qos
       operationId: query_resources_v1_internal_qos_get
       summary: 分页查询Qos策略列表
-  '/v1/internal/qos/action/revoke/{user_id}':
+  /v1/internal/qos/action/revoke/{user_id}:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -62,7 +72,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '422':
           description: Validation Error
           schema:
@@ -73,6 +82,16 @@ paths:
       summary: Revoke Qos User Id
   /v1/internal/qos/action/verify:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -92,7 +111,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '422':
           description: Validation Error
           schema:
@@ -101,8 +119,18 @@ paths:
         - Qos
       operationId: internal_verify_qos_ownership_v1_internal_qos_action_verify_get
       summary: Internal Verify Qos Ownership
-  '/v1/internal/qos/{qos_id}':
+  /v1/internal/qos/{qos_id}:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -155,7 +183,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[QosRes]'
+    title: BasePage[QosRes]
     type: object
   HTTPValidationError:
     properties:
@@ -177,11 +205,11 @@ definitions:
         description: qos 名称
         maxLength: 64
         minLength: 1
-        pattern: '^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
         title: Name
         type: string
       speed_limit:
-        description: '限制速率,单位M'
+        description: 限制速率,单位M
         maximum: 1024
         minimum: 1
         title: Speed Limit
@@ -203,7 +231,7 @@ definitions:
         title: Name
         type: string
       speed_limit:
-        description: '限制速率,单位M'
+        description: 限制速率,单位M
         title: Speed Limit
         type: integer
       uuid:

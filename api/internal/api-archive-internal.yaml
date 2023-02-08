@@ -1,180 +1,60 @@
 swagger: '2.0'
 info:
+  title: 系统（归档）接口
   version: v1
-  title: ApplicationTitle
-  description: GroupDesc
-schemes:
-  - https
-host: localhost.com
-basePath: /
-tags:
-  - name: nas_tape_archive_copies_download
-  - name: nas_tape_archive_copies_download_progress_query
-  - name: dws_tape_archive_copies_download
 paths:
-  '/v1/internal/dme_archive/{requestId}/action/download-task':
+  /v1/internal/archive/job-examine:
     post:
-      x-impact-subsystem: 不影响
-      x-access-port: 8089
-      x-auth-required: 'Y'
-      x-public-api: 'N'
-      tags:
-        - nas_tape_archive_copies_download
-      summary: NAS磁带归档副本下载
-      description: NAS磁带副本下载
-      operationId: DownloadTapeCopyNAS
+      x-product: OceanProtect X
       consumes:
-        - application/x-www-form-urlencoded
-      parameters:
-        - name: requestId
-          in: path
-          required: true
-          type: string
-          description: 任务ID
-        - name: requestId
-          in: body
-          required: true
-          description: 下载参数
-          schema:
-            $ref: '#/definitions/DownloadTapeCopyNASRequestBody'
-      responses:
-        '200':
-          description: 返回协议状态码
-          schema:
-            type: string
-        '500':
-          description: ''
-          schema:
-            $ref: '#/definitions/RspMsg'
-  '/v1/internal/dme_archive/{requestId}/action/query-process':
-    get:
-      x-impact-subsystem: 不影响
-      x-access-port: 8089
-      x-auth-required: 'Y'
-      x-public-api: 'N'
-      tags:
-        - nas_tape_archive_copies_download_progress_query
-      summary: NAS磁带归档副本下载查询进度
-      description: 下载进度查询
-      operationId: QueryTapeCopyDownloadProgress
-      consumes:
-        - application/x-www-form-urlencoded
-      parameters:
-        - name: requestId
-          in: path
-          required: true
-          type: string
-          description: 任务ID
-      responses:
-        '200':
-          description: 返回http状态码
-          schema:
-            $ref: '#/definitions/ProgressModel'
-        '500':
-          description: ''
-          schema:
-            $ref: '#/definitions/RspMsg'
-  /v1/internal/dme_archive/action/download-to-dpa:
-    post:
-      x-dm-role: 'Y'
-      x-impact-subsystem: 不影响
-      x-access-port: 8089
-      x-auth-required: 'N'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'N'
-      x-public-api: 'N'
-      x-sysadmin-role: 'Y'
-      tags:
-        - dws_tape_archive_copies_download
-      summary: DWS磁带归档副本下载
-      description: 将DWS归档到磁带的副本下载到数据保护一体机
-      operationId: DownloadTapeCopyDWS
+        - application/json
       produces:
         - application/json
       parameters:
-        - name: RestoreDownloadRequest
-          in: body
+        - in: body
+          name: body
           required: true
-          description: 归档副本ID
           schema:
-            $ref: '#/definitions/DownloadTapeCopyDWSRequestBody'
+            description: 任务流程预检查参数
+            title: Param
+            type: object
       responses:
         '200':
-          description: 返回协议状态码
+          description: Successful Response
+          schema: {}
+        '422':
+          description: Validation Error
           schema:
-            type: string
-        '500':
-          description: ''
-          schema:
-            $ref: '#/definitions/RspMsg'
+            $ref: '#/definitions/HTTPValidationError'
+      operationId: entrance_v1_internal_archive_job_examine_post
+      summary: Entrance
 definitions:
-  ErrorRsp:
-    description: 失败时返回的错误对象
-    required:
-      - error_code
-      - error_msg
+  HTTPValidationError:
     properties:
-      error_code:
-        description: 错误码
-        type: string
-        minLength: 8
-        maxLength: 36
-      error_msg:
-        description: 错误描述
-        type: string
-        minLength: 2
-        maxLength: 512
-  DownloadTapeCopyDWSRequestBody:
-    properties:
-      copyId:
-        type: string
-        description: 副本ID
-    required:
-      - copyId
-  ProgressModel:
-    description: 恢复进度查询模型
-    required:
-      - process
-      - status
-    properties:
-      process:
-        type: integer
-        format: int32
-        description: 进度
-      status:
-        type: integer
-        format: int32
-        description: 状态
-  RspMsg:
-    description: 响应模型
-    required:
-      - errorCode
-    properties:
-      errorCode:
-        type: string
-        description: 错误码，成功是0
-      errorMessage:
-        type: string
-        description: 错误描述信息
-      detailParams:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
         type: array
+    title: HTTPValidationError
+    type: object
+  ValidationError:
+    properties:
+      loc:
         items:
           type: string
-        description: 返回参数
-  DownloadTapeCopyNASRequestBody:
-    description: 磁带副本下载参数模型
-    properties:
-      requestId:
+        title: Location
+        type: array
+      msg:
+        title: Message
         type: string
-        description: 任务ID
-      fileSystem:
+      type:
+        title: Error Type
         type: string
-        description: 文件系统名
-      copyId:
-        type: string
-        description: 副本ID
     required:
-      - requestId
-      - fileSystem
-      - copyId
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}

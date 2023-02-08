@@ -7,6 +7,7 @@ tags:
 paths:
   /v1/copies:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -66,6 +67,7 @@ paths:
       summary: 副本列表查询
   /v1/copies/action/query:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -121,6 +123,7 @@ paths:
       summary: 根据Oracle scn查询副本
   /v1/copies/extended_parameters:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -180,6 +183,7 @@ paths:
       summary: 查询Oracle恢复目标主机参数配置
   /v1/copies/statistics:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -233,6 +237,7 @@ paths:
       summary: 指定日期副本数量
   /v1/copies/summary/resources:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -292,6 +297,7 @@ paths:
       summary: 副本资源列表查询
   /v1/copies/summary/statistics:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -330,6 +336,7 @@ paths:
       summary: 资源状态统计
   '/v1/copies/{copy_id}':
     delete:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -380,6 +387,7 @@ paths:
       summary: 删除副本
   '/v1/copies/{copy_id}/action/create-index':
     post:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -417,6 +425,7 @@ paths:
       summary: 创建副本索引
   '/v1/copies/{copy_id}/action/update-retention':
     post:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -464,6 +473,7 @@ paths:
       summary: 修改副本保留策略
   /v1/copies/index:
     delete:
+      x-product: CyberEngine,OceanProtect X
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
@@ -492,6 +502,7 @@ paths:
           description: 操作成功无返回结果，操作失败异常报错。
   /v1/readiness:
     get:
+      x-product: CyberEngine,OceanProtect X
       produces:
         - application/json
       parameters: []

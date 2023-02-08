@@ -17,6 +17,7 @@ tags:
 paths:
   /v1/internal/locks:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - lock
       summary: 锁定资源
@@ -43,6 +44,7 @@ paths:
         '500':
           $ref: '#/responses/CommonErrorResponse'
     delete:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - lock
       x-dm-role: 'Y'
@@ -74,6 +76,7 @@ paths:
               retryable: true
   '/v1/internal/locks/{lockId}':
     delete:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - lock
       x-impact-subsystem: 影响

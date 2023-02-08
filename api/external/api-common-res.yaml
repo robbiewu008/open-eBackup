@@ -7,6 +7,7 @@ tags:
 paths:
   /v1/resource:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -65,6 +66,7 @@ paths:
       summary: 查询所有资源信息列表
   /v1/resource/action/authorize:
     post:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -111,6 +113,7 @@ paths:
       summary: 根据用户ID和资源ID列表授权资源
   /v1/resource/action/revoke:
     post:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -157,6 +160,7 @@ paths:
       summary: 根据用户ID和资源ID列表回收资源
   /v1/resource/action/search:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -215,6 +219,7 @@ paths:
       summary: 全局搜索查询资源信息列表
   /v1/resource/protection/summary:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'

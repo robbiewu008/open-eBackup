@@ -7,6 +7,8 @@ tags:
 paths:
   /v1/restores:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -45,8 +47,18 @@ paths:
       description: Restore API
       operationId: create_restore_v1_restores_post
       summary: 创建恢复
-  '/v1/restores/{copy_id}/action/download':
+  /v1/restores/{copy_id}/action/download:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -70,6 +82,7 @@ paths:
               - $ref: '#/definitions/DownloadRequestSchema'
             description: 下载请求体
             title: Download Req
+          required: false
       responses:
         '200':
           description: Successful Response
@@ -239,7 +252,7 @@ definitions:
     type: string
   RestoreRequestSchema:
     example:
-      copy_id: 'gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012'
+      copy_id: gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012
       ext_parameters:
         AFTER_RESTORE_SCRIPT: after_restore_script.sh
         BEFORE_RESTORE_SCRIPT: before_restore_script.sh
@@ -256,11 +269,11 @@ definitions:
       request_id: 266ea41d-adf5-480b-af50-15b940c2b846
       restore_location: O
       restore_objects:
-        - 'gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/grub'
-        - 'gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/efi'
+        - gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/grub
+        - gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/efi
       restore_target:
         details:
-          - src_id: 'gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/ef'
+          - src_id: gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/ef
             target_id: /tmp
             target_type: File
         env_id: 266ea41d-adf5-480b-af50-15b940c2b846

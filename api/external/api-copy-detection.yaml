@@ -12,6 +12,7 @@ tags:
 paths:
   '/v1/copies/{copy_id}/detect-reports':
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
@@ -65,6 +66,7 @@ paths:
                 request_uuid-timestamp-hostname.
   /v1/copies/detect-details:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
@@ -154,6 +156,9 @@ paths:
               type: string
   /v1/copies/detect-statistics:
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
       x-impact-subsystem: 不影响
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
@@ -217,6 +222,7 @@ paths:
             +uninfected_copy_num、-uninfected_copy_num、
             +infected_copy_num、-infected_copy_num、
             +abnormal_copy_num、-abnormal_copy_num
+            +latest_detection_time、-latest_detection_time
           type: string
           x-access-port: 25081
           x-auth-required: 'Y'
@@ -225,7 +231,7 @@ paths:
         - name: conditions
           in: query
           required: false
-          description: 筛选条件：name、location、policy_name
+          description: 筛选条件：name、location、policy_name、tenant_name
           type: string
       responses:
         '200':
@@ -240,6 +246,7 @@ paths:
               type: string
   /v1/copies/detect-summary:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-auditor-role: 'Y'
       x-access-port: 25081
@@ -282,6 +289,10 @@ paths:
               $ref: '#/definitions/CopyAntiRansomwarDetectionsummary'
   '/v1/copies/{copy_id}/detect-status':
     put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-impact-subsystem: 不影响
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
@@ -306,6 +317,12 @@ paths:
           required: true
           type: string
           description: 副本id
+        - name: ext_parameters
+          in: body
+          required: false
+          description: 更改副本勒索状态扩展参数
+          schema:
+            $ref: '#/definitions/ModifyCopyAntiRansomwareStatusBody'
       responses:
         '200':
           description: ''
@@ -691,6 +708,15 @@ definitions:
         type: integer
         format: int32
         description: 异常副本数量
+      tenant_id:
+        type: string
+        description: 租户id
+      tenant_name:
+        type: string
+        description: 租户名称
+      latest_detection_time:
+        type: string
+        description: 最新检测时间
     required:
       - resource_id
       - name
@@ -823,3 +849,8 @@ definitions:
       - uninspected_copy_num
       - prepare_copy_num
       - abnormal_copy_num
+  ModifyCopyAntiRansomwareStatusBody:
+    properties:
+      is_security_snap:
+        type: boolean
+        description: 防勒索副本是否锁定

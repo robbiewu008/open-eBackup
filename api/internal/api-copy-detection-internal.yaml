@@ -12,6 +12,7 @@ tags:
 paths:
   '/v1/internal/copies/{copy_id}/detection-reports':
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - copies
       summary: 副本报告入库
@@ -49,6 +50,7 @@ paths:
                 request_uuid-timestamp-hostname.
               type: string
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       tags:
         - copies
@@ -94,6 +96,7 @@ paths:
                 request_uuid-timestamp-hostname.
   /v1/internal/copies/status/undetected:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-access-port: 30092
       x-auth-required: 'N'
       x-public-api: 'N'

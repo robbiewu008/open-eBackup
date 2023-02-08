@@ -5,8 +5,18 @@ info:
 tags:
   - name: VMwareInternalAPI
 paths:
-  '/v1/internal/compute-resources/clusters/{cluster_uuid}/config':
+  /v1/internal/compute-resources/clusters/{cluster_uuid}/config:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -31,11 +41,20 @@ paths:
       tags:
         - VMwareInternalAPI
       description: 根据集群计算资源ID查询集群计算资源的配置
-      operationId: >-
-        internal_get_cluster_config_v1_internal_compute_resources_clusters__cluster_uuid__config_get
+      operationId: internal_get_cluster_config_v1_internal_compute_resources_clusters__cluster_uuid__config_get
       summary: 查询集群计算资源的配置【内部接口】
-  '/v1/internal/compute-resources/{compute_res_uuid}/action/refresh':
+  /v1/internal/compute-resources/{compute_res_uuid}/action/refresh:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -52,7 +71,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '404':
           description: Not found
         '422':
@@ -62,11 +80,20 @@ paths:
       tags:
         - VMwareInternalAPI
       description: 刷新计算资源下的虚拟机信息
-      operationId: >-
-        refresh_compute_res_v1_internal_compute_resources__compute_res_uuid__action_refresh_put
+      operationId: refresh_compute_res_v1_internal_compute_resources__compute_res_uuid__action_refresh_put
       summary: 刷新计算资源下的虚拟机信息【内部接口】
-  '/v1/internal/compute-resources/{compute_res_uuid}/datastores':
+  /v1/internal/compute-resources/{compute_res_uuid}/datastores:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -96,11 +123,20 @@ paths:
       tags:
         - VMwareInternalAPI
       description: 根据计算资源ID查询计算资源的数据存储列表
-      operationId: >-
-        list_compute_res_datastore_details_v1_internal_compute_resources__compute_res_uuid__datastores_get
+      operationId: list_compute_res_datastore_details_v1_internal_compute_resources__compute_res_uuid__datastores_get
       summary: 查询计算资源的数据存储列表【内部接口】
-  '/v1/internal/compute-resources/{compute_res_uuid}/folder':
+  /v1/internal/compute-resources/{compute_res_uuid}/folder:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -125,11 +161,20 @@ paths:
       tags:
         - VMwareInternalAPI
       description: 根据计算资源ID查询计算资源的虚拟文件夹信息
-      operationId: >-
-        get_folder_info_v1_internal_compute_resources__compute_res_uuid__folder_get
+      operationId: get_folder_info_v1_internal_compute_resources__compute_res_uuid__folder_get
       summary: 查询计算资源的虚拟文件夹信息【内部接口】
-  '/v1/internal/compute-resources/{compute_res_uuid}/networks':
+  /v1/internal/compute-resources/{compute_res_uuid}/networks:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -159,11 +204,20 @@ paths:
       tags:
         - VMwareInternalAPI
       description: 根据计算资源ID查询计算资源的网络信息列表
-      operationId: >-
-        list_compute_res_network_details_v1_internal_compute_resources__compute_res_uuid__networks_get
+      operationId: list_compute_res_network_details_v1_internal_compute_resources__compute_res_uuid__networks_get
       summary: 查询计算资源的网络信息列表【内部接口】
-  '/v1/internal/virtual-machines/{vm_uuid}':
+  /v1/internal/virtual-machines/{vm_uuid}:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -189,8 +243,18 @@ paths:
         - VMwareInternalAPI
       operationId: internal_get_vm_info_v1_internal_virtual_machines__vm_uuid__get
       summary: 查询VMware虚拟机的详细信息【内部接口】
-  '/v1/internal/virtual-machines/{vm_uuid}/disks':
+  /v1/internal/virtual-machines/{vm_uuid}/disks:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -222,9 +286,18 @@ paths:
       summary: 查询VMware虚拟机的硬盘列表【内部接口】
   /v1/internal/vmbackupagent/:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
-      parameters: []
       responses:
         '200':
           description: Successful Response

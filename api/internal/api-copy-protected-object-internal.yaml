@@ -7,6 +7,16 @@ tags:
 paths:
   /v1/internal/protected-copy-objects/action/sync-sla:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -21,15 +31,13 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '422':
           description: Validation Error
           schema:
             $ref: '#/definitions/HTTPValidationError'
       tags:
         - protected_copy_object_api
-      operationId: >-
-        sync_replica_sla_change_v1_internal_protected_copy_objects_action_sync_sla_put
+      operationId: internal_protected_copy_objects_action_sync_sla_put
       summary: 副本保护对象同步SLA信息变更【内部接口】
 definitions:
   Body_sync_replica_sla_change_v1_internal_protected_copy_objects_action_sync_sla_put:

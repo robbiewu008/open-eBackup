@@ -6,8 +6,10 @@ tags:
   - name: vmware
   - name: virtual-resource
 paths:
-  '/v1/compute-resources/clusters/{cluster_uuid}/config':
+  /v1/compute-resources/clusters/{cluster_uuid}/config:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
@@ -45,11 +47,12 @@ paths:
       tags:
         - vmware
       description: 根据集群计算资源ID查询集群计算资源的配置
-      operationId: >-
-        get_cluster_config_v1_compute_resources_clusters__cluster_uuid__config_get
+      operationId: get_compute_resources_clusters_config
       summary: 查询集群计算资源的配置
-  '/v1/compute-resources/{compute_res_uuid}/datastores':
+  /v1/compute-resources/{compute_res_uuid}/datastores:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
@@ -92,11 +95,12 @@ paths:
       tags:
         - vmware
       description: 根据计算资源ID查询计算资源的数据存储列表
-      operationId: >-
-        list_compute_res_datastore_v1_compute_resources__compute_res_uuid__datastores_get
+      operationId: list_compute_res_datastore_v1_compute_resources__compute_res_uuid__datastores_get
       summary: 查询计算资源的数据存储列表
-  '/v1/compute-resources/{compute_res_uuid}/networks':
+  /v1/compute-resources/{compute_res_uuid}/networks:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
@@ -139,11 +143,12 @@ paths:
       tags:
         - vmware
       description: 根据计算资源ID查询计算资源的网络列表
-      operationId: >-
-        list_compute_res_network_v1_compute_resources__compute_res_uuid__networks_get
+      operationId: list_compute_res_network_v1_compute_resources__compute_res_uuid__networks_get
       summary: 查询计算资源的网络列表
-  '/v1/virtual-machines/{vm_uuid}':
+  /v1/virtual-machines/{vm_uuid}:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
@@ -183,8 +188,10 @@ paths:
       description: 根据VMware虚拟机ID查询VMware虚拟机的详细信息
       operationId: get_vm_info_v1_virtual_machines__vm_uuid__get
       summary: 查询VMware虚拟机的详细信息
-  '/v1/virtual-machines/{vm_uuid}/disks':
+  /v1/virtual-machines/{vm_uuid}/disks:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
@@ -229,6 +236,8 @@ paths:
       summary: 查询VMware虚拟机的硬盘列表
   /v1/virtual-resource:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
@@ -914,6 +923,6 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[VirtualResourceSchema]'
+    title: BasePage[VirtualResourceSchema]
     type: object
 x-components: {}

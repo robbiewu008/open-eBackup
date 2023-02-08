@@ -8,6 +8,7 @@ tags:
 paths:
   /v1/environments:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -66,6 +67,7 @@ paths:
       operationId: query_resources_v1_environments_get
       summary: 查询主机资源信息列表
     post:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -104,6 +106,7 @@ paths:
       summary: 注册资源
   '/v1/environments/rescan/{env_id}':
     put:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -142,6 +145,7 @@ paths:
       summary: 重新扫描资源环境信息
   '/v1/environments/{env_id}':
     delete:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -179,6 +183,7 @@ paths:
       operationId: delete_env_v1_environments__env_id__delete
       summary: 删除资源
     put:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'

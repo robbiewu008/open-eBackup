@@ -13,6 +13,7 @@ tags:
 paths:
   /v1/replication:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -92,7 +93,7 @@ definitions:
           - 2
       duration_unit:
         type: string
-        description: '保留周期单位[d/w/MO/y]'
+        description: 保留周期单位[d/w/MO/y]
         enum:
           - d
           - w

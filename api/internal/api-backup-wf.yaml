@@ -7,6 +7,16 @@ tags:
 paths:
   /v1/internal/workflows/backup/result:
     put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -19,10 +29,10 @@ paths:
               - $ref: '#/definitions/JobSchema'
             description: Job Info
             title: Job
+          required: false
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '422':
           description: Validation Error
           schema:
@@ -30,7 +40,7 @@ paths:
       tags:
         - Backup
       operationId: update_backup_result_v1_internal_workflows_backup_result_put
-      summary: '更新备份流程结果,用于备份任务取消时的回调'
+      summary: 更新备份流程结果,用于备份任务取消时的回调
 definitions:
   HTTPValidationError:
     properties:

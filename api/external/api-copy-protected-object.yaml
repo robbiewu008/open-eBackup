@@ -7,6 +7,8 @@ tags:
 paths:
   /v1/protected-copy-objects:
     delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -45,6 +47,8 @@ paths:
       operationId: delete_v1_protected_copy_objects_delete
       summary: 批量移除副本保护对象
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -85,6 +89,8 @@ paths:
       operationId: create_v1_protected_copy_objects_post
       summary: 创建副本保护对象
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -124,6 +130,8 @@ paths:
       summary: 修改副本保护对象
   /v1/protected-copy-objects/status/action/activate:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -162,6 +170,8 @@ paths:
       summary: 批量激活保护副本
   /v1/protected-copy-objects/status/action/deactivate:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -211,6 +221,7 @@ paths:
       summary: Readiness
   /v1/protected-copy-objects/action/replicate:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
