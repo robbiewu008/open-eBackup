@@ -12,6 +12,8 @@ tags:
 paths:
   /v1/jobs:
     get:
+      x-dm-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -130,9 +132,9 @@ paths:
         - name: statusList
           in: query
           description: >-
-            任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
+            '任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
             PARTIAL_SUCCESS:部分成功 ABORTED: 停止 ABORTING: 停止中 FAIL:失败 ABNORMAL:异常
-            CANCELLED:取消 ABORT_FAILED:停止失败
+            CANCELLED:取消 ABORT_FAILED:停止失败'
           required: false
           type: array
           items:
@@ -179,6 +181,12 @@ paths:
           items:
             type: string
           collectionFormat: multi
+        - name: logLevels
+          in: query
+          required: false
+          description: 任务详情包含特定级别事件标志（使用整数的二进制形式表示多个标志位。目前表示3个标志位，从高位到低位分别表示 “是否包含警告事件”、“是否包含错误事件”、“是否包含严重事件”。）
+          type: integer
+          format: int32
       responses:
         '200':
           description: OK
@@ -196,6 +204,8 @@ paths:
             - global
   /v1/jobs/action/export:
     post:
+      x-dm-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -258,7 +268,7 @@ paths:
           type: string
         - name: lang
           in: query
-          description: '语言，中文为zh_CN,英文为en'
+          description: 语言，中文为zh_CN,英文为en
           required: false
           type: string
           default: en
@@ -305,9 +315,9 @@ paths:
         - name: statusList
           in: query
           description: >-
-            任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
+            '任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
             PARTIAL_SUCCESS:部分成功 ABORTED: 停止 ABORTING: 停止中 FAIL:失败 ABNORMAL:异常
-            CANCELLED:取消 ABORT_FAILED:停止失败
+            CANCELLED:取消 ABORT_FAILED:停止失败'
           required: false
           type: array
           items:
@@ -354,6 +364,12 @@ paths:
           items:
             type: string
           collectionFormat: multi
+        - name: logLevels
+          in: query
+          required: false
+          description: 任务详情包含特定级别事件标志（使用整数的二进制形式表示多个标志位。目前表示3个标志位，从高位到低位分别表示 “是否包含警告事件”、“是否包含错误事件”、“是否包含严重事件”。）
+          type: integer
+          format: int32
       responses:
         '200':
           description: OK
@@ -370,6 +386,8 @@ paths:
             - global
   /v1/jobs/summary:
     get:
+      x-dm-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -417,8 +435,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/jobs/{jobId}':
+  /v1/jobs/{jobId}:
     get:
+      x-dm-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -461,8 +481,9 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/jobs/{jobId}/action/stop':
+  /v1/jobs/{jobId}/action/stop:
     put:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -506,8 +527,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/jobs/{jobId}/logs':
+  /v1/jobs/{jobId}/logs:
     get:
+      x-dm-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
@@ -612,7 +635,7 @@ definitions:
         description: 副本数据时间
       data:
         type: object
-        description: '${jobs.api.data}'
+        description: ${jobs.api.data}
         additionalProperties:
           type: object
       detail:
@@ -712,7 +735,7 @@ definitions:
         description: 实例id
       additionalStatus:
         type: string
-        description: '任务附加状态[取值范围] Database Available:数据库可用；Virtual Machine Available：虚拟机可用'
+        description: 任务附加状态[取值范围] Database Available:数据库可用；Virtual Machine Available：虚拟机可用
       copyId:
         type: string
         description: 副本id
@@ -833,7 +856,7 @@ definitions:
         description: 任务id
       level:
         type: string
-        description: '日志级别[取值范围]info:提示 warning:警告 error:错误 fatal:致命'
+        description: 日志级别[取值范围]info:提示 warning:警告 error:错误 fatal:致命
       logDetail:
         type: string
         description: "任务详情附加信息（失败时为错误码）\r\n\r\n"
@@ -863,23 +886,23 @@ definitions:
     properties:
       abolish:
         type: array
-        description: '${jobs.api.message.abolish}'
+        description: ${jobs.api.message.abolish}
         items:
           type: object
       inContext:
         type: boolean
-        description: '${jobs.api.message.in_context}'
+        description: ${jobs.api.message.in_context}
       payload:
         type: object
-        description: '${jobs.api.message.payload}'
+        description: ${jobs.api.message.payload}
         additionalProperties:
           type: object
       topic:
         type: string
-        description: '${jobs.api.message.topic}'
+        description: ${jobs.api.message.topic}
       traffic:
         type: object
-        description: '${jobs.api.message.traffic}'
+        description: ${jobs.api.message.traffic}
         additionalProperties:
           type: object
     title: JobMessage
