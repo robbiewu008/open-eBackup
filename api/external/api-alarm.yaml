@@ -13,13 +13,12 @@ tags:
     description: Alarm Dump Controller
   - name: alarm-email-notify-api
     description: Email Controller
-  - name: alarm-notify-rule-api
-    description: Notify Controller
   - name: snmp-api
     description: Snmp Controller
 paths:
   /v1/alarms:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -49,19 +48,19 @@ paths:
           x-example: '0x123456'
         - name: createTimeEnd
           in: query
-          description: '创建时间（止）[取值范围]yyyy-MM-dd HH:mm:ss 或 1576058814000：时间戳'
+          description: 创建时间（止）[取值范围]yyyy-MM-dd HH:mm:ss 或 1576058814000：时间戳
           required: false
           type: string
-          x-example: '2019-12-11 18:06:54 or 1576058814000'
+          x-example: 2019-12-11 18:06:54 or 1576058814000
         - name: createTimeStart
           in: query
-          description: '创建时间（起）[取值范围]2019-12-11 18:06:54 或 1576058814000：时间戳'
+          description: 创建时间（起）[取值范围]2019-12-11 18:06:54 或 1576058814000：时间戳
           required: false
           type: string
-          x-example: '2019-12-11 18:06:54 or 1576058814000'
+          x-example: 2019-12-11 18:06:54 or 1576058814000
         - name: language
           in: query
-          description: '语言类型[取值范围]1：中文 2：英文'
+          description: 语言类型[取值范围]1：中文 2：英文
           required: false
           type: string
           default: zh
@@ -156,6 +155,7 @@ paths:
       deprecated: false
   /v2/alarms:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -185,7 +185,7 @@ paths:
           x-example: '0x123456'
         - name: endTime
           in: query
-          description: '创建时间（止）[取值范围]1576058814000：时间戳'
+          description: 创建时间（止）[取值范围]1576058814000：时间戳
           required: false
           type: int64
           maximum: 18446744073709551615
@@ -193,7 +193,7 @@ paths:
           x-example: '1576058814000'
         - name: startTime
           in: query
-          description: '创建时间（起）[取值范围]1576058814000：时间戳'
+          description: 创建时间（起）[取值范围]1576058814000：时间戳
           required: false
           type: int64
           maximum: 18446744073709551615
@@ -201,13 +201,13 @@ paths:
           x-example: '1576058814001'
         - name: language
           in: query
-          description: '语言类型[取值范围]ZH：中文 EN：英文'
+          description: 语言类型[取值范围]ZH：中文 EN：英文
           enum:
             - ZH
             - EN
           required: false
           type: string
-          default: "ZH"
+          default: ZH
         - name: pageNo
           in: query
           description: 分页页码
@@ -238,7 +238,7 @@ paths:
           required: false
           type: string
           format: int32
-          x-example: 'WARNING'
+          x-example: WARNING
         - name: objType
           in: query
           description: >-
@@ -273,6 +273,7 @@ paths:
       deprecated: false
   /v2/alarms/objects:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -298,11 +299,11 @@ paths:
           in: query
           description: 语言类型[取值范围]ZH：中文 EN：英文
           enum:
-           - ZH
-           - EN
+            - ZH
+            - EN
           required: false
           type: string
-          x-example: 'ZH'
+          x-example: ZH
       responses:
         '200':
           description: OK
@@ -322,6 +323,7 @@ paths:
       deprecated: false
   /v1/alarms/action/clear:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-api
       summary: 告警清除
@@ -363,6 +365,7 @@ paths:
       deprecated: false
   /v2/alarms/{sequence}/action/clear:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-api
       summary: 告警清除
@@ -399,6 +402,7 @@ paths:
       deprecated: false
   /v1/alarms/action/export:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-api
       summary: 导出告警
@@ -422,7 +426,7 @@ paths:
             originalRef: EntityID
         - name: lang
           in: query
-          description: '语言类型[取值范围]1：中文 2：英文'
+          description: 语言类型[取值范围]1：中文 2：英文
           required: false
           type: string
           allowEmptyValue: false
@@ -443,6 +447,7 @@ paths:
       deprecated: false
   /v1/alarms/action/test:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-api
       summary: 发送模拟测试告警
@@ -474,6 +479,16 @@ paths:
       deprecated: false
   /v1/alarms/agent:
     post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanProtect X
       tags:
         - alarm-and-event-api
       summary: 新增告警
@@ -509,6 +524,16 @@ paths:
       deprecated: false
   /v1/alarms/agent/action/clear:
     put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanProtect X
       tags:
         - alarm-and-event-api
       summary: 告警清除
@@ -542,6 +567,7 @@ paths:
       deprecated: false
   /v1/alarms/count:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-api
       summary: 告警总数查询
@@ -572,6 +598,7 @@ paths:
       deprecated: false
   /v1/alarms/detail:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-api
       summary: 批量查询告警
@@ -592,19 +619,19 @@ paths:
           x-example: '0x123456'
         - name: createTimeEnd
           in: query
-          description: '创建时间（止）[取值范围]yyyy-MM-dd HH:mm:ss 或 1576058814000：时间戳'
+          description: 创建时间（止）[取值范围]yyyy-MM-dd HH:mm:ss 或 1576058814000：时间戳
           required: false
           type: string
-          x-example: '2019-12-11 18:06:54 or 1576058814000'
+          x-example: 2019-12-11 18:06:54 or 1576058814000
         - name: createTimeStart
           in: query
-          description: '创建时间（起）[取值范围]2019-12-11 18:06:54 或 1576058814000：时间戳'
+          description: 创建时间（起）[取值范围]2019-12-11 18:06:54 或 1576058814000：时间戳
           required: false
           type: string
-          x-example: '2019-12-11 18:06:54 or 1576058814000'
+          x-example: 2019-12-11 18:06:54 or 1576058814000
         - name: language
           in: query
-          description: '语言类型[取值范围]1：中文 2：英文'
+          description: 语言类型[取值范围]1：中文 2：英文
           required: false
           type: string
           default: zh
@@ -698,6 +725,7 @@ paths:
             - global
       deprecated: false
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-api
       summary: 查询指定事件
@@ -737,8 +765,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/alarms/dump/files/{fileId}':
+  /v1/alarms/dump/files/{fileId}:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-dump-api
       summary: 导出告警转储文件
@@ -775,6 +804,7 @@ paths:
             - global
       deprecated: false
     delete:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-dump-api
       summary: 删除告警转储文件
@@ -809,8 +839,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/alarms/dump/files/{fileId}/action/upload':
+  /v1/alarms/dump/files/{fileId}/action/upload:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-dump-api
       summary: 上传告警转储文件到SFTP服务器
@@ -848,6 +879,7 @@ paths:
       deprecated: false
   /v1/alarms/dump/policy:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-dump-api
       summary: 查询告警转储配置
@@ -877,6 +909,7 @@ paths:
             - global
       deprecated: false
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-dump-api
       summary: 更改告警转储配置
@@ -915,6 +948,7 @@ paths:
       deprecated: false
   /v1/alarms/dump/policy/files:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-dump-api
       summary: 批量查询告警转储记录
@@ -967,6 +1001,7 @@ paths:
       deprecated: false
   /v1/alarms/dump/sftp:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-dump-api
       summary: 查询告警转储SFTP配置
@@ -996,6 +1031,7 @@ paths:
             - global
       deprecated: false
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-dump-api
       summary: 修改告警转储SFTP配置
@@ -1034,6 +1070,7 @@ paths:
       deprecated: false
   /v1/alarms/dump/sftp/action/test:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-dump-api
       summary: 测试告警转储SFTP服务器
@@ -1070,8 +1107,18 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/alarms/{sequence}':
+  /v1/alarms/{sequence}:
     delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanProtect X
       tags:
         - alarm-and-event-api
       summary: 告警清除
@@ -1105,6 +1152,7 @@ paths:
       deprecated: false
   /v1/emails:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-email-notify-api
       summary: 获取邮件通知配置
@@ -1134,6 +1182,7 @@ paths:
             - global
       deprecated: false
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-email-notify-api
       summary: 更改邮件通知配置
@@ -1170,50 +1219,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/emails/action/testEmail:
-    put:
-      tags:
-        - alarm-email-notify-api
-      summary: 测试邮件通知
-      operationId: testEmailUsingPUT
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-        - in: body
-          name: vo
-          description: 测试邮箱
-          required: true
-          schema:
-            type: array
-            items:
-              type: string
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/BatchOperationResult'
-            originalRef: BatchOperationResult
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-      deprecated: false
   /v1/emails/action/testServer:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-email-notify-api
       summary: 测试邮件通知
@@ -1252,6 +1260,7 @@ paths:
       deprecated: false
   /v1/events:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-api
       summary: 批量查询事件
@@ -1272,7 +1281,7 @@ paths:
           x-example: '0x123456'
         - name: confirmStatuses
           in: query
-          description: '告警状态 [取值范围] 1:成功 0：失败 3:已恢复'
+          description: 告警状态 [取值范围] 1:成功 0：失败 3:已恢复
           required: false
           type: array
           items:
@@ -1283,19 +1292,19 @@ paths:
           minimum: 1
         - name: createTimeEnd
           in: query
-          description: '创建时间（止）[取值范围]yyyy-MM-dd HH:mm:ss 或 1576058814000：时间戳'
+          description: 创建时间（止）[取值范围]yyyy-MM-dd HH:mm:ss 或 1576058814000：时间戳
           required: false
           type: string
-          x-example: '2019-12-11 18:06:54 or 1576058814000'
+          x-example: 2019-12-11 18:06:54 or 1576058814000
         - name: createTimeStart
           in: query
-          description: '创建时间（起）[取值范围]2019-12-11 18:06:54 或 1576058814000：时间戳'
+          description: 创建时间（起）[取值范围]2019-12-11 18:06:54 或 1576058814000：时间戳
           required: false
           type: string
-          x-example: '2019-12-11 18:06:54 or 1576058814000'
+          x-example: 2019-12-11 18:06:54 or 1576058814000
         - name: language
           in: query
-          description: '语言类型[取值范围]1：中文 2：英文'
+          description: 语言类型[取值范围]1：中文 2：英文
           required: false
           type: string
           default: zh
@@ -1374,7 +1383,7 @@ paths:
           minimum: 1
         - name: types
           in: query
-          description: '告警类型 [取值范围] 1:已恢复告警 5:运行日志 6:操作日志'
+          description: 告警类型 [取值范围] 1:已恢复告警 5:运行日志 6:操作日志
           required: false
           type: array
           items:
@@ -1401,6 +1410,7 @@ paths:
       deprecated: false
   /v1/events/action/export:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-api
       summary: 导出事件
@@ -1424,7 +1434,7 @@ paths:
             originalRef: EntityID
         - name: lang
           in: query
-          description: '语言类型[取值范围]1：中文 2：英文'
+          description: 语言类型[取值范围]1：中文 2：英文
           required: false
           type: string
           allowEmptyValue: false
@@ -1443,175 +1453,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/notify/emails:
-    get:
-      tags:
-        - alarm-notify-rule-api
-      summary: 批量查询通知邮箱地址
-      operationId: getEmailsUsingGET
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/EmailRequest'
-              originalRef: EmailRequest
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-      deprecated: false
-    post:
-      tags:
-        - alarm-notify-rule-api
-      summary: 新增通知邮箱地址
-      operationId: addEmailsUsingPOST
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-        - in: body
-          name: emailRequest
-          description: 新增通知邮箱地址请求体
-          required: true
-          schema:
-            $ref: '#/definitions/EmailRequest'
-            originalRef: EmailRequest
-      responses:
-        '200':
-          description: OK
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-      deprecated: false
-    delete:
-      tags:
-        - alarm-notify-rule-api
-      summary: 删除通知邮箱地址
-      operationId: deleteEmailUsingDELETE
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-        - name: emailRequest
-          in: body
-          required: true
-          description: 删除通知邮箱地址请求体
-          schema:
-            $ref: '#/definitions/EmailRequest'
-      responses:
-        '200':
-          description: OK
-        '204':
-          description: No Content
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-      security:
-        - Authorization:
-            - global
-  /v1/notify/rules:
-    get:
-      tags:
-        - alarm-notify-rule-api
-      summary: 查询邮件通知规则
-      operationId: getRemoteNotifyRuleUsingGET
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/NotifyRuleRequest'
-            originalRef: NotifyRuleRequest
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-      deprecated: false
-    put:
-      tags:
-        - alarm-notify-rule-api
-      summary: 更改邮件通知规则
-      operationId: modifyNotifyBaseInfoUsingPUT
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-        - in: body
-          name: notifyRuleRequest
-          description: 更改邮件通知规则请求体
-          required: true
-          schema:
-            $ref: '#/definitions/NotifyRuleRequest'
-            originalRef: NotifyRuleRequest
-      responses:
-        '200':
-          description: OK
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-      deprecated: false
   /v1/snmp/config:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - snmp-api
       summary: 查询SNMP配置
@@ -1641,6 +1485,7 @@ paths:
             - global
       deprecated: false
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - snmp-api
       summary: 更改SNMP配置
@@ -1679,6 +1524,7 @@ paths:
       deprecated: false
   /v1/snmp/config/action/check:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - snmp-api
       summary: 检查SNMP参数配置是否正确
@@ -1719,6 +1565,7 @@ paths:
       deprecated: false
   /v1/snmp/security-engines:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - snmp-api
       summary: 查询SNMP安全引擎标识
@@ -1751,6 +1598,7 @@ paths:
       deprecated: false
   /v1/snmp/trap/addresses:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - snmp-api
       summary: 批量查询SNMP Trap地址
@@ -1798,6 +1646,7 @@ paths:
             - global
       deprecated: false
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - snmp-api
       summary: 新增SNMP Trap地址
@@ -1835,6 +1684,7 @@ paths:
             - global
       deprecated: false
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - snmp-api
       summary: 修改SNMP Trap地址
@@ -1871,8 +1721,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/snmp/trap/addresses/{id}':
+  /v1/snmp/trap/addresses/{id}:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - snmp-api
       summary: 查询SNMP Trap地址
@@ -1908,6 +1759,7 @@ paths:
             - global
       deprecated: false
     delete:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - snmp-api
       summary: 删除SNMP Trap地址
@@ -1962,7 +1814,7 @@ definitions:
       result:
         type: integer
         format: int32
-        description: '转储结果 (1:成功，2:失败)'
+        description: 转储结果 (1:成功，2:失败)
       resultId:
         type: integer
         format: int64
@@ -2009,7 +1861,7 @@ definitions:
         type: string
         example: test
         description: 告警转储SFTP用户名
-        pattern: '^[^'':\?\\"<>\|\*;`\$&\-\(\)#\!]+$'
+        pattern: ^[^':\?\\"<>\|\*;`\$&\-\(\)#\!]+$
     title: AlarmSftpServerModifyRequest
     description: 修改告警转储SFTP配置请求体
   AlarmSftpServerResponse:
@@ -2060,7 +1912,7 @@ definitions:
         type: string
         example: test
         description: 告警转储SFTP用户名
-        pattern: '^[^'':\?\\"<>\|\*;`\$&\-\(\)#\!]+$'
+        pattern: ^[^':\?\\"<>\|\*;`\$&\-\(\)#\!]+$
     title: AlarmSftpServerTestRequest
     description: 修改告警转储SFTP配置请求体
   AlarmStatisticResponse:
@@ -2103,7 +1955,7 @@ definitions:
         description: 告警来源
       alarmTimeStr:
         type: string
-        example: 'yyyy-MM-dd HH:mm:ss'
+        example: yyyy-MM-dd HH:mm:ss
         description: '告警时间 [取值范围]2020-06-29 20:22:04 UTC+08:00 : yyyy-MM-dd HH:mm:ss 时区时间'
       alarmType:
         type: string
@@ -2122,7 +1974,7 @@ definitions:
       clearStatus:
         type: string
         example: invalid
-        description: '告警是否恢复[取值范围]invalid:无效 uncleared:未清除 cleared:清除'
+        description: 告警是否恢复[取值范围]invalid:无效 uncleared:未清除 cleared:清除
         enum:
           - '-1'
           - '0'
@@ -2148,13 +2000,13 @@ definitions:
         description: 告警实体ID
       firstTimeStr:
         type: string
-        example: 'yyyy-MM-dd HH:mm:ss'
+        example: yyyy-MM-dd HH:mm:ss
         description: >-
           告警第一次产生时间[取值范围]2020-06-29 20:22:04 UTC+08:00 : yyyy-MM-dd HH:mm:ss
           时区时间
       location:
         type: string
-        description: '告警产生根本[举例]eb.err.1073948959  lego.err.1033'
+        description: 告警产生根本[举例]eb.err.1073948959  lego.err.1033
       params:
         type: array
         description: 告警参数
@@ -2208,11 +2060,11 @@ definitions:
       alarmTime:
         type: int64
         example: '1659988737'
-        description: '告警时间 [取值范围] 0~18446744073709551615'
+        description: 告警时间 [取值范围] 0~18446744073709551615
       recoverTime:
         type: int64
         example: '1659988737'
-        description: '告警恢复时间[取值范围]0~18446744073709551615'
+        description: 告警恢复时间[取值范围]0~18446744073709551615
       description:
         type: string
         description: 告警描述
@@ -2221,7 +2073,7 @@ definitions:
         description: 告警详细描述
       location:
         type: string
-        description: '告警产生根本[举例]eb.err.1073948959  lego.err.1033'
+        description: 告警产生根本[举例]eb.err.1073948959  lego.err.1033
       params:
         type: array
         description: 告警参数
@@ -2263,7 +2115,7 @@ definitions:
           2:UNRECOVERY(未恢复) 3:RECOVERY(已恢复) 4:CLEAR(已清除)
       entity:
         type: string
-        description: '告警唯一标识'
+        description: 告警唯一标识
     title: AlarmDto
   BatchOperation:
     type: object
@@ -2329,14 +2181,14 @@ definitions:
         description: 认证协议(v3 协议必填，v2c协议不填写)
       authPwd:
         type: string
-        description: '认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位'
+        description: 认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
       contextEngineId:
         type: string
-        description: '引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下'
-        pattern: '^$|^[0-9A-F]+$'
+        description: 引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下
+        pattern: ^$|^[0-9A-F]+$
       contextName:
         type: string
-        description: '环境名(v3)[取值范围]长度：32位以下'
+        description: 环境名(v3)[取值范围]长度：32位以下
         minLength: 0
         maxLength: 64
       encryptProtocol:
@@ -2345,7 +2197,7 @@ definitions:
         description: 加密协议(v3 协议必填，v2c协议不填写)
       encryptPwd:
         type: string
-        description: '加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位'
+        description: 加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
       securityName:
         type: string
         description: 安全名(v3)
@@ -2358,7 +2210,7 @@ definitions:
         maxLength: 64
       version:
         type: string
-        description: '版本[取值范围]V2C | V3'
+        description: 版本[取值范围]V2C | V3
         pattern: V2C|V3
     title: CheckSnmpConfigRequest
     description: 检查SNMP参数配置是否正确请求体
@@ -2385,11 +2237,11 @@ definitions:
       fileType:
         type: integer
         format: int32
-        description: '文件类型[取值范围]1：csv 2：excel'
+        description: 文件类型[取值范围]1：csv 2：excel
       languageType:
         type: integer
         format: int32
-        description: '语言类型[取值范围]1：中文 2：英文'
+        description: 语言类型[取值范围]1：中文 2：英文
       period:
         type: integer
         format: int32
@@ -2423,11 +2275,11 @@ definitions:
       fileType:
         type: integer
         format: int32
-        description: '文件类型[取值范围]1：csv 2：excel'
+        description: 文件类型[取值范围]1：csv 2：excel
       languageType:
         type: integer
         format: int32
-        description: '语言类型[取值范围]1：中文 2：英文'
+        description: 语言类型[取值范围]1：中文 2：英文
       period:
         type: integer
         format: int32
@@ -2525,7 +2377,7 @@ definitions:
       severity:
         type: integer
         format: int32
-        description: '告警类型[取值范围]0:事件、日志 1:警告 2:次要 3:重要 4:紧急'
+        description: 告警类型[取值范围]0:事件、日志 1:警告 2:次要 3:重要 4:紧急
         minimum: 0.0
         maximum: 9.223372036854776e18
         exclusiveMinimum: false
@@ -2539,7 +2391,7 @@ definitions:
       type:
         type: integer
         format: int32
-        description: '告警类型[取值范围]1：生成告警 2：恢复告警 3：生成事件'
+        description: 告警类型[取值范围]1：生成告警 2：恢复告警 3：生成事件
         minimum: 0.0
         maximum: 9.223372036854776e18
         exclusiveMinimum: false
@@ -2644,7 +2496,7 @@ definitions:
         type: integer
         format: int32
         example: 1
-        description: '通讯协议(0:不启用，1:启用SSL，2:启用TSL)'
+        description: 通讯协议(0:不启用，1:启用SSL，2:启用TSL)
         minimum: 0.0
         maximum: 9.223372036854776e18
         exclusiveMinimum: false
@@ -2693,13 +2545,13 @@ definitions:
     properties:
       alarmSeveritySet:
         type: array
-        description: '邮件通知告警等级[取值范围]warning:警告告警 major:主要告警 critical:危急告警'
+        description: 邮件通知告警等级[取值范围]warning:警告告警 major:主要告警 critical:危急告警
         items:
           type: string
       language:
         type: integer
         format: int32
-        description: '邮件通知语言[取值范围]1:中文2:英文'
+        description: 邮件通知语言[取值范围]1:中文2:英文
         minimum: 0.0
         maximum: 9.223372036854776e18
         exclusiveMinimum: false
@@ -2763,7 +2615,7 @@ definitions:
       language:
         type: string
         example: zh-cn
-        description: '语言类型[取值范围]1：中文 2：英文'
+        description: 语言类型[取值范围]1：中文 2：英文
     title: PerAlarmQueryParam
     description: 查询指定事件请求体
   SnmpRequest:
@@ -2776,14 +2628,14 @@ definitions:
         description: 认证协议(v3 协议必填，v2c协议不填写)
       authPwd:
         type: string
-        description: '认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位'
+        description: 认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
       contextEngineId:
         type: string
-        description: '引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下'
-        pattern: '^$|^[0-9A-F]+$'
+        description: 引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下
+        pattern: ^$|^[0-9A-F]+$
       contextName:
         type: string
-        description: '环境名(v3)[取值范围]长度：32位以下'
+        description: 环境名(v3)[取值范围]长度：32位以下
         minLength: 0
         maxLength: 64
       encryptProtocol:
@@ -2791,7 +2643,7 @@ definitions:
         description: 加密协议(v3 协议必填，v2c协议不填写)
       encryptPwd:
         type: string
-        description: '加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位'
+        description: 加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
       id:
         type: integer
         format: int64
@@ -2812,7 +2664,7 @@ definitions:
         maxLength: 64
       version:
         type: string
-        description: '版本[取值范围]V2C | V3'
+        description: 版本[取值范围]V2C | V3
         pattern: V2C|V3
     title: SnmpRequest
     description: SNMP配置请求体
@@ -2829,7 +2681,7 @@ definitions:
         description: 控制器IPv4地址
       ipv6:
         type: string
-        example: '2016:8:40:96:c11::115'
+        example: 2016:8:40:96:c11::115
         description: 控制器IPv6地址
       nodeName:
         type: string
@@ -2854,7 +2706,7 @@ definitions:
         description: 告警对象类型
       name:
         type: string
-        example: 'license'
+        example: license
         description: 告警对象名称
     title: AlarmObjDto
     description: 查询各控制器安全代理信息响应
@@ -2878,14 +2730,14 @@ definitions:
       port:
         type: integer
         format: int32
-        description: '上报端口[取值范围]0--65535'
+        description: 上报端口[取值范围]0--65535
         minimum: 1.0
         maximum: 65535.0
         exclusiveMinimum: false
         exclusiveMaximum: false
       trapIp:
         type: string
-        description: '上报ip地址[取值范围]IP地址校验规则'
+        description: 上报ip地址[取值范围]IP地址校验规则
     title: SnmpTrapAddress
     description: 修改SNMP Trap地址请求体
   SnmpTrapAddressBase:
@@ -2900,14 +2752,14 @@ definitions:
       port:
         type: integer
         format: int32
-        description: '上报端口[取值范围]0--65535'
+        description: 上报端口[取值范围]0--65535
         minimum: 1.0
         maximum: 65535.0
         exclusiveMinimum: false
         exclusiveMaximum: false
       trapIp:
         type: string
-        description: '上报ip地址[取值范围]IP地址校验规则'
+        description: 上报ip地址[取值范围]IP地址校验规则
     title: SnmpTrapAddressBase
     description: 新增SNMP Trap地址请求体
   SnmpTrapConfigQueryRes:
@@ -2920,19 +2772,19 @@ definitions:
         description: 认证协议(v3 协议必填，v2c协议不填写)
       authPwd:
         type: string
-        description: '认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位'
+        description: 认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
       contextEngineId:
         type: string
-        description: '引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下'
+        description: 引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下
       contextName:
         type: string
-        description: '环境名(v3)[取值范围]长度：32位以下'
+        description: 环境名(v3)[取值范围]长度：32位以下
       encryptProtocol:
         type: string
         description: 加密协议(v3 协议必填，v2c协议不填写)
       encryptPwd:
         type: string
-        description: '加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位'
+        description: 加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
       id:
         type: integer
         format: int64
@@ -2945,5 +2797,5 @@ definitions:
         description: 安全名(V2C)
       version:
         type: string
-        description: '版本[取值范围]V2C | V3'
+        description: 版本[取值范围]V2C | V3
     title: SnmpTrapConfigQueryRes

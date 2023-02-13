@@ -12,6 +12,8 @@ tags:
 paths:
   /v1/inspections/alarms:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -34,7 +36,7 @@ paths:
           type: string
         - name: lang
           in: query
-          description: '语言类型[取值范围]1：中文 2：英文'
+          description: 语言类型[取值范围]1：中文 2：英文
           required: false
           type: string
           default: zh
@@ -73,9 +75,9 @@ definitions:
         additionalProperties:
           type: string
     title: ErrorCode
-  'HashMap«string,object»':
+  HashMap«string,object»:
     type: object
-    title: 'HashMap«string,object»'
+    title: HashMap«string,object»
     additionalProperties:
       type: object
   SmartKitResponse:
@@ -86,7 +88,7 @@ definitions:
         description: 告警信息
         items:
           $ref: '#/definitions/HashMap«string,object»'
-          originalRef: 'HashMap«string,object»'
+          originalRef: HashMap«string,object»
       error:
         description: 错误码
         $ref: '#/definitions/ErrorCode'
