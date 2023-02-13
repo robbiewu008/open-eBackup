@@ -11,9 +11,12 @@ tags:
     description: Host Agent Manager Controller
   - name: host-agent-update-controller
     description: Host Agent Update Controller
+  - name: agent-lan-free-controller
 paths:
   /v1/host-agent:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -57,6 +60,8 @@ paths:
             - global
   /v1/host-agent/action/update:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -102,6 +107,8 @@ paths:
             - global
   /v1/host-agent/agents:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -156,6 +163,16 @@ paths:
             - global
   /v1/host-agent/download:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - client-manager-api
       summary: 下载链接接口，前端不涉及
@@ -168,7 +185,6 @@ paths:
           description: 下载链接唯一标识
           required: false
           type: string
-          allowEmptyValue: false
       responses:
         '200':
           description: OK
@@ -186,6 +202,8 @@ paths:
             - global
       deprecated: false
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -234,6 +252,8 @@ paths:
             - global
   /v1/host-agent/register:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -279,6 +299,8 @@ paths:
             - global
   /v1/host-agent/register/connection:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -324,6 +346,7 @@ paths:
             - global
   /v1/host-agent/alter-register:
     post:
+      x-product: OceanProtect X
       description: 客户端代理自动注册v2，有代理和无代理
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
@@ -360,6 +383,7 @@ paths:
           description: Not Found
   /v1/internal/agent/cluster-ip:
     put:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30081
@@ -439,6 +463,147 @@ paths:
       responses:
         '200':
           description: 无返回值
+  /v1/lanFree:
+    put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - agent-lan-free-controller
+      description: 保存lan-free配置信息
+      operationId: updateLanFree
+      parameters:
+        - name: agentLanFreeDTO
+          in: body
+          required: false
+          description: lan-free配置页面信息
+          schema:
+            $ref: '#/definitions/AgentLanFreeDTO'
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+  /v1/lanFree/query:
+    get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - agent-lan-free-controller
+      description: 查询lan-free配置信息请求
+      operationId: queryLanFree
+      parameters:
+        - name: resourceId
+          in: query
+          required: true
+          description: 资源id
+          type: string
+          minLength: 36
+          maxLength: 36
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AgentLanFreeDTO'
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+  /v1/lanFree/initPage:
+    get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - agent-lan-free-controller
+      summary: 初始化lan-free配置页面
+      operationId: initPage
+      parameters:
+        - name: resourceId
+          in: query
+          required: true
+          description: 资源id
+          type: string
+          minLength: 36
+          maxLength: 36
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AgentLanFreeDTO'
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -875,3 +1040,79 @@ definitions:
     properties:
       logLevel:
         type: string
+  AgentLanFreeWwpn:
+    type: object
+    description: LAN-FREE wwpn请求体
+    required:
+      - wwpn
+      - isManualAdd
+      - isChoose
+      - runningStatus
+    properties:
+      wwpn:
+        type: string
+        description: wwpn
+        minLength: 16
+        maxLength: 32
+      isManualAdd:
+        type: boolean
+        description: 是否客户手动添加
+      isChoose:
+        type: boolean
+        description: 是否被选择
+      runningStatus:
+        description: "运行状态：\n\t0：未知\n\t1：正常\n\t2：运行\n\t10：已连接\n\t11：未连接\n\t14：预拷贝\n\t16：重构\n\t27：在线\n\t28：离线\n\t32：正在均衡\n\t53：初始化中\n\t106：删除中"
+        required: true
+        type: string
+        maxLength: 32
+  AgentLanFreeFcPort:
+    type: object
+    description: lan-free FC请求体
+    required:
+      - id
+      - location
+      - runningStatus
+      - wwpn
+      - isChoose
+    properties:
+      id:
+        type: string
+        description: FC端口编码
+      location:
+        type: string
+        description: FC端口位置
+      runningStatus:
+        description: 运行状态： 0：未知 1：正常 2：运行 10：已连接 11：未连接 14：预拷贝 16：重构 27：在线 28：离线 32：正在均衡 53：初始化中 106：删除中
+        required: true
+        type: string
+      wwpn:
+        type: string
+        description: FC端口wwpn
+        minLength: 16
+        maxLength: 32
+      isChoose:
+        type: string
+        description: 是否被选择
+  AgentLanFreeDTO:
+    type: object
+    description: lan-free 请求结构体
+    required:
+      - resourceId
+      - isDelete
+      - wwpns
+      - fcPorts
+    properties:
+      resourceId:
+        type: string
+        description: 资源id
+        minLength: 36
+        maxLength: 36
+      isDelete:
+        type: boolean
+        description: 是否删除lan-free
+      wwpns:
+        description: 客户端WWPN信息
+        $ref: '#/definitions/AgentLanFreeWwpn'
+      fcPorts:
+        description: FC端口信息
+        $ref: '#/definitions/AgentLanFreeFcPort'

@@ -16,6 +16,16 @@ tags:
 paths:
   /v1/internal/live-mount-policy/action/verify:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X
       tags:
         - live-mount-ownership-verify-controller
       summary: verifyLiveMountPolicyOwnership
@@ -51,6 +61,16 @@ paths:
       deprecated: false
   /v1/internal/live-mount/action/cancel:
     put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       tags:
         - live-mount-internal-controller
       summary: cancelJob
@@ -82,8 +102,18 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/internal/live-mount/action/revoke/{user_id}':
+  /v1/internal/live-mount/action/revoke/{user_id}:
     put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X
       tags:
         - live-mount-internal-controller
       summary: revokeLiveMountUserId
@@ -115,6 +145,16 @@ paths:
       deprecated: false
   /v1/internal/live-mount/action/verify:
     get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X
       tags:
         - live-mount-ownership-verify-controller
       summary: verifyLiveMountOwnership
@@ -148,8 +188,18 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/internal/live-mount/policy/action/revoke/{user_id}':
+  /v1/internal/live-mount/policy/action/revoke/{user_id}:
     put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X
       tags:
         - live-mount-policy-internal-controller
       summary: revokeLiveMountPolicyUserId
@@ -292,7 +342,7 @@ definitions:
           - latest_one
       retentionUnit:
         type: string
-        description: '副本保留策略单位 [取值范围] DAY:天 WEEK:周 MONTH:月 YEAR:年，当副本保留策略选择为固定时间填写'
+        description: 副本保留策略单位 [取值范围] DAY:天 WEEK:周 MONTH:月 YEAR:年，当副本保留策略选择为固定时间填写
         enum:
           - d
           - w
@@ -308,14 +358,14 @@ definitions:
         description: 策略调度周期的时间间隔取值， 当策略调度周期为间隔时填写
       scheduleIntervalUnit:
         type: string
-        description: '策略调度周期单位 [取值范围] HOUR:小时 DAY:天 WEEK:周 MONTH:月，当策略调度周期选择为固定时间填写'
+        description: 策略调度周期单位 [取值范围] HOUR:小时 DAY:天 WEEK:周 MONTH:月，当策略调度周期选择为固定时间填写
         enum:
           - h
           - d
           - w
       schedulePolicy:
         type: string
-        description: '策略调度周期 [取值范围] PERIOD_SCHEDULE:周期调度 AFTER_BACKUP_DONE:备份完成后执行'
+        description: 策略调度周期 [取值范围] PERIOD_SCHEDULE:周期调度 AFTER_BACKUP_DONE:备份完成后执行
         enum:
           - period_schedule
           - after_backup_done
@@ -603,7 +653,7 @@ definitions:
         description: 任务id
       level:
         type: string
-        description: '日志级别[取值范围]info:提示 warning:警告 error:错误 fatal:致命'
+        description: 日志级别[取值范围]info:提示 warning:警告 error:错误 fatal:致命
       logDetail:
         type: string
         description: "任务详情附加信息（失败时为错误码）\r\n\r\n"
@@ -651,7 +701,7 @@ definitions:
         description: 创建时间
       enable_status:
         type: string
-        description: '激活状态[取值范围]activated:激活 disabled:禁用'
+        description: 激活状态[取值范围]activated:激活 disabled:禁用
       id:
         type: string
         description: 即时挂载主键
@@ -801,7 +851,7 @@ definitions:
         description: '副本保留策略 [取值范围] PERMANENT:永久保留 FIXED_TIME:按固定时间保留 LATEST_ONE: 只保留最后一个'
       retentionUnit:
         type: string
-        description: '副本保留策略单位 [取值范围] DAY:天 WEEK:周 MONTH:月 YEAR:年，当副本保留策略选择为固定时间填写'
+        description: 副本保留策略单位 [取值范围] DAY:天 WEEK:周 MONTH:月 YEAR:年，当副本保留策略选择为固定时间填写
       retentionValue:
         type: integer
         format: int32
@@ -812,10 +862,10 @@ definitions:
         description: 策略调度周期的时间间隔取值， 当策略调度周期为间隔时填写
       scheduleIntervalUnit:
         type: string
-        description: '策略调度周期单位 [取值范围] HOUR:小时 DAY:天 WEEK:周 MONTH:月，当策略调度周期选择为固定时间填写'
+        description: 策略调度周期单位 [取值范围] HOUR:小时 DAY:天 WEEK:周 MONTH:月，当策略调度周期选择为固定时间填写
       schedulePolicy:
         type: string
-        description: '策略调度周期 [取值范围] PERIOD_SCHEDULE:周期调度 AFTER_BACKUP_DONE:备份完成后执行'
+        description: 策略调度周期 [取值范围] PERIOD_SCHEDULE:周期调度 AFTER_BACKUP_DONE:备份完成后执行
       scheduleStartTime:
         description: 周期调度首次执行时间
         $ref: '#/definitions/Timestamp'
@@ -851,7 +901,7 @@ definitions:
         description: '副本保留策略 [取值范围] PERMANENT:永久保留 FIXED_TIME:按固定时间保留 LATEST_ONE: 只保留最后一个'
       retentionUnit:
         type: string
-        description: '副本保留策略单位 [取值范围] DAY:天 WEEK:周 MONTH:月 YEAR:年，当副本保留策略选择为固定时间填写'
+        description: 副本保留策略单位 [取值范围] DAY:天 WEEK:周 MONTH:月 YEAR:年，当副本保留策略选择为固定时间填写
       retentionValue:
         type: integer
         format: int32
@@ -862,10 +912,10 @@ definitions:
         description: 策略调度周期的时间间隔取值， 当策略调度周期为间隔时填写
       scheduleIntervalUnit:
         type: string
-        description: '策略调度周期单位 [取值范围] HOUR:小时 DAY:天 WEEK:周 MONTH:月，当策略调度周期选择为固定时间填写'
+        description: 策略调度周期单位 [取值范围] HOUR:小时 DAY:天 WEEK:周 MONTH:月，当策略调度周期选择为固定时间填写
       schedulePolicy:
         type: string
-        description: '策略调度周期 [取值范围] PERIOD_SCHEDULE:周期调度 AFTER_BACKUP_DONE:备份完成后执行'
+        description: 策略调度周期 [取值范围] PERIOD_SCHEDULE:周期调度 AFTER_BACKUP_DONE:备份完成后执行
       scheduleStartTime:
         type: string
         description: 周期调度首次执行时间
@@ -877,7 +927,7 @@ definitions:
         type: string
       mode:
         type: string
-        description: '扩展参数[取值类型] latest:最新副本 specified:指定副本'
+        description: 扩展参数[取值类型] latest:最新副本 specified:指定副本
         enum:
           - latest
           - specified
@@ -942,7 +992,7 @@ definitions:
           - latest_one
       retentionUnit:
         type: string
-        description: '副本保留策略单位 [取值范围] DAY:天 WEEK:周 MONTH:月 YEAR:年，当副本保留策略选择为固定时间填写'
+        description: 副本保留策略单位 [取值范围] DAY:天 WEEK:周 MONTH:月 YEAR:年，当副本保留策略选择为固定时间填写
         enum:
           - d
           - w
@@ -958,14 +1008,14 @@ definitions:
         description: 策略调度周期的时间间隔取值， 当策略调度周期为间隔时填写
       scheduleIntervalUnit:
         type: string
-        description: '策略调度周期单位 [取值范围] HOUR:小时 DAY:天 WEEK:周 MONTH:月，当策略调度周期选择为固定时间填写'
+        description: 策略调度周期单位 [取值范围] HOUR:小时 DAY:天 WEEK:周 MONTH:月，当策略调度周期选择为固定时间填写
         enum:
           - h
           - d
           - w
       schedulePolicy:
         type: string
-        description: '策略调度周期 [取值范围] PERIOD_SCHEDULE:周期调度 AFTER_BACKUP_DONE:备份完成后执行'
+        description: 策略调度周期 [取值范围] PERIOD_SCHEDULE:周期调度 AFTER_BACKUP_DONE:备份完成后执行
         enum:
           - period_schedule
           - after_backup_done

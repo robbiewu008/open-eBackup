@@ -12,8 +12,15 @@ consumes:
 produces:
   - application/json
 paths:
-  '/v2/internal/jsonschemas/{schemaName}/validation/result':
+  /v2/internal/jsonschemas/{schemaName}/validation/result:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       x-auth-required: 'N'
       x-public-api: 'N'
       x-request-examples-url-1: /v2/internal/jsonschemas/Oracle/validation
@@ -76,8 +83,7 @@ paths:
           maxLength: 10240
         - name: schemaName
           in: path
-          description: >-
-            JsonSchema文件名字，按照统一规定给出，如资源相关的文件名为resourceSubType_define.json，则schemaName为resourceSubType
+          description: JsonSchema文件名字，按照统一规定给出，如资源相关的文件名为resourceSubType_define.json，则schemaName为resourceSubType
           required: true
           x-access-port: 30081
           type: string
@@ -92,8 +98,15 @@ paths:
           description: Bad Request
         '404':
           description: Not Found
-  '/v2/internal/jsonschemas/{schemaName}/fields/editable':
+  /v2/internal/jsonschemas/{schemaName}/fields/editable:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       x-auth-required: 'N'
       x-public-api: 'N'
       x-request-examples-url-1: /v2/internal/jsonschemas/Oracle/editable_data
@@ -111,8 +124,7 @@ paths:
       parameters:
         - name: schemaName
           in: path
-          description: >-
-            JsonSchema文件名字，按照统一规定给出，如资源相关的文件名为resourceSubType_define.json，则schemaName为resourceSubType
+          description: JsonSchema文件名字，按照统一规定给出，如资源相关的文件名为resourceSubType_define.json，则schemaName为resourceSubType
           required: true
           x-access-port: 30081
           type: string
@@ -136,8 +148,15 @@ paths:
           description: Bad Request
         '404':
           description: Not Found
-  '/v2/internal/jsonschemas/{schemaName}/fields/secret':
+  /v2/internal/jsonschemas/{schemaName}/fields/secret:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       x-auth-required: 'N'
       x-public-api: 'N'
       x-request-examples-url-1: /v2/internal/jsonschemas/Oracle/secret_data
@@ -155,8 +174,7 @@ paths:
       parameters:
         - name: schemaName
           in: path
-          description: >-
-            JsonSchema文件名字，按照统一规定给出，如资源相关的文件名为resourceSubType_define.json，则schemaName为resourceSubType
+          description: JsonSchema文件名字，按照统一规定给出，如资源相关的文件名为resourceSubType_define.json，则schemaName为resourceSubType
           required: true
           x-access-port: 30081
           type: string

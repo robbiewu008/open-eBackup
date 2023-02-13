@@ -14,6 +14,8 @@ tags:
 paths:
   /v1/kmc/key:
     put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -52,6 +54,8 @@ paths:
             - global
   /v1/kmc/keylifetime:
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -88,6 +92,8 @@ paths:
         - Authorization:
             - global
     put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -112,7 +118,7 @@ paths:
           type: string
         - name: keyLifetime
           in: query
-          description: '密钥生命周期，范围：[30, 180]，单位 天'
+          description: 密钥生命周期，范围：[30, 180]，单位 天
           required: true
           type: integer
           format: int32
@@ -132,6 +138,16 @@ paths:
             - global
   /v1/kms/decrypt:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - kms-api
       summary: 解密
@@ -168,6 +184,16 @@ paths:
       deprecated: false
   /v1/kms/encrypt:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - kms-api
       summary: 加密

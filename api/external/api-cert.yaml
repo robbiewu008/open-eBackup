@@ -12,6 +12,16 @@ tags:
 paths:
   /v1/certs/detail:
     post:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
         - component-rest-api
       summary: 获取证书详情
@@ -51,6 +61,8 @@ paths:
       deprecated: false
   /v1/certs/components:
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'N'
@@ -89,6 +101,8 @@ paths:
         - Authorization:
             - global
     post:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -124,7 +138,7 @@ paths:
           pattern: '[_a-zA-Z][_a-zA-Z0-9 -]{3,31}'
         - name: type
           in: query
-          description: '组件类型。【取值范围】0：内部组件 1：vmware 2：email 3：对象存储 4：A8000 5:其他 6:外部存储'
+          description: 组件类型。【取值范围】0：内部组件 1：vmware 2：email 3：对象存储 4：A8000 5:其他 6:外部存储
           required: true
           type: integer
           format: int32
@@ -142,8 +156,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/certs/components/{componentId}':
+  /v1/certs/components/{componentId}:
     put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -193,6 +209,8 @@ paths:
         - Authorization:
             - global
     delete:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -230,8 +248,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/certs/components/{componentId}/action/import':
+  /v1/certs/components/{componentId}/action/import:
     post:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -260,6 +280,7 @@ paths:
           required: false
           schema:
             type: file
+          type: file
         - name: componentId
           in: path
           description: 组件ID
@@ -271,12 +292,14 @@ paths:
           required: false
           schema:
             type: file
+          type: file
         - in: formData
           name: serverKey
           description: 服务私钥
           required: false
           schema:
             type: file
+          type: file
         - name: serverPass
           in: header
           description: 服务端私钥密码
@@ -296,8 +319,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/certs/components/{componentId}/ca/action/download':
+  /v1/certs/components/{componentId}/ca/action/download:
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -335,8 +360,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/certs/components/{componentId}/crl/action/download':
+  /v1/certs/components/{componentId}/crl/action/download:
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -379,8 +406,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/certs/components/{componentId}/crls':
+  /v1/certs/components/{componentId}/crls:
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -423,8 +452,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/certs/components/{componentId}/crls/action/import':
+  /v1/certs/components/{componentId}/crls/action/import:
     post:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -471,8 +502,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/certs/components/{componentId}/crls/{crlId}':
+  /v1/certs/components/{componentId}/crls/{crlId}:
     delete:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -515,8 +548,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/certs/components/{componentId}/request-file/action/export':
+  /v1/certs/components/{componentId}/request-file/action/export:
     get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -618,7 +653,7 @@ definitions:
       certType:
         type: integer
         format: int32
-        description: '证书类型。【取值范围】0:未知类型, 1:服务证书, 2:CA证书, 3:自签发证书'
+        description: 证书类型。【取值范围】0:未知类型, 1:服务证书, 2:CA证书, 3:自签发证书
       effectiveTime:
         type: integer
         format: int64
@@ -660,7 +695,7 @@ definitions:
       certType:
         type: integer
         format: int32
-        description: '证书类型。【取值范围】0:未知类型, 1:服务证书, 2:CA证书, 3:自签发证书'
+        description: 证书类型。【取值范围】0:未知类型, 1:服务证书, 2:CA证书, 3:自签发证书
       certificateId:
         type: string
         description: 证书ID
@@ -755,7 +790,7 @@ definitions:
       type:
         type: integer
         format: int32
-        description: '组件类型。【取值范围】0：内部组件 1：vmware 2：email 3：对象存储 4：A8000 5:其他 6:外部存储'
+        description: 组件类型。【取值范围】0：内部组件 1：vmware 2：email 3：对象存储 4：A8000 5:其他 6:外部存储
         minimum: 0.0
         maximum: 6.0
         exclusiveMinimum: false
@@ -790,7 +825,7 @@ definitions:
         description: 组件到期剩余天数
       type:
         type: string
-        description: '组件类型。【取值范围】0：内部组件 1：vmware 2：email 3：对象存储 4：A8000 5:其他 6:外部存储'
+        description: 组件类型。【取值范围】0：内部组件 1：vmware 2：email 3：对象存储 4：A8000 5:其他 6:外部存储
       validity:
         type: integer
         format: int32
@@ -824,7 +859,7 @@ definitions:
         description: 吊销列表颁发机构
       validity:
         type: integer
-        description: '有效性【取值范围】0:无效, 1:有效'
+        description: 有效性【取值范围】0:无效, 1:有效
       revokeNumber:
         type: integer
         description: 被吊销的证书数量

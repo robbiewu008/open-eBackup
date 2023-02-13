@@ -7,17 +7,27 @@ info:
 host: localhost
 basePath: /
 tags:
-  - name: '${capacity-api}'
-    description: '${capacity-api}'
-  - name: '${clusters-api}'
-    description: '${clusters-api}'
-  - name: '${performance.api.desc}'
+  - name: ${capacity-api}
+    description: ${capacity-api}
+  - name: ${clusters-api}
+    description: ${clusters-api}
+  - name: ${performance.api.desc}
     description: Performance Controller
 paths:
   /v1/cluster/performance:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-        - '${performance.api.desc}'
+        - ${performance.api.desc}
       summary: 查询性能监控数据
       operationId: getPerformanceUsingGET
       produces:
@@ -82,8 +92,18 @@ paths:
       deprecated: false
   /v1/cluster/performance/config:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-        - '${performance.api.desc}'
+        - ${performance.api.desc}
       summary: 查询性能监控开关
       operationId: getPerformanceConfigUsingGET
       produces:
@@ -110,8 +130,18 @@ paths:
             - global
       deprecated: false
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-        - '${performance.api.desc}'
+        - ${performance.api.desc}
       summary: 修改性能开关
       operationId: enablePerformanceUsingPUT
       consumes:
@@ -129,14 +159,12 @@ paths:
           description: 性能开关，true：开启，false：关闭
           required: false
           type: boolean
-          allowEmptyValue: false
         - name: hasRemoveHistoryData
           in: query
           description: 是否删除历史性能数据
           required: false
           type: boolean
           default: false
-          allowEmptyValue: false
       responses:
         '200':
           description: OK
@@ -154,6 +182,8 @@ paths:
       deprecated: false
   /v1/clusters:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-dp-admin-role: 'Y'
       x-auditor-role: 'Y'
@@ -163,7 +193,7 @@ paths:
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 查询集群信息
       operationId: getClustersInfoUsingGET
       produces:
@@ -243,6 +273,8 @@ paths:
         - Authorization:
             - global
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -252,7 +284,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 创建目标集群
       operationId: createTargetClusterUsingPOST
       consumes:
@@ -288,6 +320,8 @@ paths:
             - global
   /v1/clusters/capacity:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -297,7 +331,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${capacity-api}'
+        - ${capacity-api}
       summary: 查询整系统容量及数据压缩
       operationId: queryClusterStorageUsingGET
       produces:
@@ -325,6 +359,8 @@ paths:
             - global
   /v1/clusters/capacity/tendency:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -334,7 +370,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${capacity-api}'
+        - ${capacity-api}
       summary: 查询整系统容量使用趋势
       operationId: queryClusterStorageTendencyUsingGET
       produces:
@@ -362,8 +398,18 @@ paths:
             - global
   /v1/clusters/copies/import:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 目标端导入复制副本
       operationId: importCopyUsingPOST
       consumes:
@@ -402,6 +448,8 @@ paths:
       deprecated: false
   /v1/clusters/details:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -411,7 +459,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 获取集群详情
       operationId: getClusterDetailInfoUsingGET
       produces:
@@ -439,8 +487,18 @@ paths:
             - global
   /v1/clusters/link/certify:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 目标端集群确认复制链路
       operationId: certifyLinkUsingPUT
       consumes:
@@ -477,8 +535,18 @@ paths:
       deprecated: false
   /v1/clusters/requestion/certify:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 目标端集群确认请求
       operationId: certifyRequestionUsingPUT
       consumes:
@@ -515,6 +583,8 @@ paths:
       deprecated: false
   /v1/clusters/status:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -524,7 +594,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 获取集群状态信息
       operationId: getClusterStatusUsingGET
       produces:
@@ -556,6 +626,8 @@ paths:
             - global
   /v1/clusters/target/relation:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -565,7 +637,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 添加源端与目标集群之间的关系
       operationId: manageClusterRelationUsingPOST
       consumes:
@@ -599,8 +671,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/clusters/{clusterId}':
+  /v1/clusters/{clusterId}:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -610,7 +684,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 修改目标集群
       operationId: modifyTargetClusterUsingPUT
       consumes:
@@ -653,6 +727,8 @@ paths:
         - Authorization:
             - global
     delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
@@ -662,7 +738,7 @@ paths:
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 删除目标集群
       operationId: deleteTargetClusterUsingDELETE
       produces:
@@ -711,8 +787,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/clusters/{clusterId}/nodes':
+  /v1/clusters/{clusterId}/nodes:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -722,7 +800,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 查询集群节点信息
       operationId: queryClusterNodeInfoUsingGET
       produces:
@@ -789,8 +867,18 @@ paths:
             - global
   /v1/internal/clusters/details:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 获取本端存储信息
       operationId: getClusterDetailsInfoUsingGET
       produces:
@@ -813,8 +901,18 @@ paths:
       deprecated: false
   /v1/internal/clusters/local/nodes:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 获取本地集群节点信息
       operationId: queryLocalClusterNodesUsingGET
       produces:
@@ -839,8 +937,18 @@ paths:
       deprecated: false
   /v1/internal/clusters/target-details:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 获取目标集群信息列表
       operationId: queryTargetClustersDetailsUsingGET
       produces:
@@ -865,11 +973,18 @@ paths:
       deprecated: false
   /v1/clusters/resource:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       x-access-port: 30081
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 查询外部集群的资源列表
       description: 目标集群提供，根据资源类型查询资源。
       operationId: queryTargetAntiRansomwareResourceUsingGET
@@ -910,8 +1025,18 @@ paths:
             - global
   /v1/local-storage/service-ips:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 获取存储业务IP信息
       operationId: getTargetStorageInfoUsingGET
       produces:
@@ -940,8 +1065,18 @@ paths:
       deprecated: false
   /v1/storage-users:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 创建存储用户
       operationId: createStorageUserUsingPOST
       consumes:
@@ -979,10 +1114,20 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/storage-users/{userId}':
+  /v1/storage-users/{userId}:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 查询存储用户
       operationId: queryStorageUserUsingGET
       produces:
@@ -1000,6 +1145,11 @@ paths:
           type: string
           maxLength: 256
           minLength: 1
+        - name: esn
+          in: query
+          required: false
+          description: 存储esn
+          type: string
       responses:
         '200':
           description: OK
@@ -1017,8 +1167,18 @@ paths:
             - global
       deprecated: false
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 修改存储用户密码
       operationId: updateUserPwdUsingPUT
       consumes:
@@ -1061,8 +1221,18 @@ paths:
             - global
       deprecated: false
     delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       tags:
-        - '${clusters-api}'
+        - ${clusters-api}
       summary: 删除存储用户
       operationId: deleteStorageUserUsingDELETE
       produces:
@@ -1080,7 +1250,6 @@ paths:
           type: string
           maxLength: 256
           minLength: 1
-          allowEmptyValue: false
         - name: userId
           in: path
           description: 存储管理员用户ID
@@ -1088,6 +1257,11 @@ paths:
           type: string
           maxLength: 256
           minLength: 1
+        - name: esn
+          in: query
+          required: false
+          description: 存储esn
+          type: string
       responses:
         '200':
           description: OK
@@ -1323,13 +1497,24 @@ definitions:
       role:
         type: integer
         format: int32
-        description: 0：复制集群；2：管理集群
+        description: 0：复制集群；2：管理集群；3：备份存储集群
       enableManage:
         type: boolean
         description: 当role为2时，true：管理集群；false：被管理集群
       authUserList:
         $ref: '#/definitions/ClustersRelationUserInfo'
         description: 当role为2时，被授权的数据保护管理员信息集合
+      usedCapacity:
+        type: number
+        format: double
+        description: 已使用容量（kb），备份存储集群返回
+      capacity:
+        type: number
+        format: double
+        description: 总容量（kb），备份存储集群返回
+      storageEsn:
+        type: string
+        description: 存储码
     title: ClustersInfoVo
   CopyReplicationImportParam:
     type: object
@@ -1377,7 +1562,6 @@ definitions:
         description: 保护引擎IPV6
     title: DataProtectionParams
   DoradoAccountRequest:
-    type: object
     properties:
       description:
         type: string
@@ -1394,6 +1578,9 @@ definitions:
         enum:
           - DEVICE_ADMIN_TYPE
           - USER_DEFINED_TYPE
+      esn:
+        type: string
+        description: 存储esn
     title: DoradoAccountRequest
   DoradoUserParams:
     type: object
@@ -1533,7 +1720,7 @@ definitions:
           format: int64
       unit:
         type: string
-        description: '性能指标单位，如mb，gb, io/s'
+        description: 性能指标单位，如mb，gb, io/s
     title: StatisticsData
   StorageFrontServiceInfo:
     type: object
@@ -1601,7 +1788,6 @@ definitions:
         description: 存储设备管理员用户名
     title: StorageSystemInfo
   StorageUserInfo:
-    type: object
     properties:
       createTime:
         type: string
@@ -1618,6 +1804,9 @@ definitions:
         enum:
           - DEVICE_ADMIN_TYPE
           - USER_DEFINED_TYPE
+      esn:
+        type: string
+        description: 存储esn
     title: StorageUserInfo
   TargetClusterRequest:
     properties:
@@ -1625,7 +1814,7 @@ definitions:
         type: string
         example: 保护集群_2
         description: 集群名称
-        pattern: '^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        pattern: ^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
       ip:
         type: string
         description: 集群管理IP
@@ -1647,7 +1836,7 @@ definitions:
       role:
         type: integer
         format: int32
-        description: '0:复制集群；2：管理集群'
+        description: 0:复制集群；2：管理集群；3:：备份存储集群
     title: TargetClusterRequest
     required:
       - clusterName

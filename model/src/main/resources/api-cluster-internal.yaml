@@ -1,0 +1,129 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: ${clusters-api}
+paths:
+  /v1/internal/storage-users/batch:
+    post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${clusters-api}
+      operationId: CreateStorageUserUsingBathPOST
+      consumes:
+        - application/json
+      summary: 批量创建存储用户
+      description: 批量创建存储用户
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: CreateStorageUserUsingBathPOSTRequestBody
+          description: 创建存储用户请求参数
+          required: true
+          schema:
+            items:
+              $ref: '#/definitions/DoradoAccountRequest'
+            type: array
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+          minLength: 1
+          maxLength: 1024
+      responses:
+        '200':
+          description: Demo Information
+          schema:
+            items:
+              $ref: '#/definitions/StorageUserInfo'
+            type: array
+          headers:
+            X-request-id:
+              type: string
+              description: >-
+                This field is the request ID number for task tracking. Format is
+                request_uuid-timestamp-hostname.
+definitions:
+  StorageUserInfo:
+    properties:
+      createTime:
+        type: string
+        description: 用户创建时间
+        minLength: 1
+        maxLength: 100
+      roleId:
+        type: string
+        description: 存储用户角色ID
+        minLength: 1
+        maxLength: 256
+      userId:
+        type: string
+        description: 存储管理员用户ID
+        minLength: 1
+        maxLength: 256
+      userType:
+        type: string
+        description: |-
+          用户类型
+          DEVICE_ADMIN_TYPE:系统角色
+          USER_DEFINED_TYPE:自定义角色
+        enum:
+          - DEVICE_ADMIN_TYPE
+          - USER_DEFINED_TYPE
+      esn:
+        type: string
+        description: 存储esn
+        minLength: 1
+        maxLength: 256
+    title: StorageUserInfo
+  DoradoAccountRequest:
+    properties:
+      description:
+        type: string
+        description: 描述信息
+        minLength: 1
+        maxLength: 256
+      password:
+        type: string
+        description: 密码
+        minLength: 1
+        maxLength: 256
+      userName:
+        type: string
+        description: 用户名
+        minLength: 1
+        maxLength: 256
+      userType:
+        type: string
+        description: |-
+          用户类型
+          DEVICE_ADMIN_TYPE：系统角色
+          USER_DEFINED_TYPE：用户自定义角色
+        enum:
+          - DEVICE_ADMIN_TYPE
+          - USER_DEFINED_TYPE
+      esn:
+        type: string
+        description: 存储esn
+        minLength: 1
+        maxLength: 256
+    title: DoradoAccountRequest

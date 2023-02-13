@@ -1,0 +1,305 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: api-quota
+paths:
+  /v1/users/quota/userIdList:
+    get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - api-quota
+      operationId: listUserQuotaInfoByUserIdUsingGet
+      summary: 查询SAML用户配额信息
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: userIds
+          in: query
+          required: true
+          type: string
+          description: 指定用户Id字符串，以,分割
+      responses:
+        '200':
+          description: |-
+            用户信息列表
+            UserInfo:
+            {
+            userId : string
+            userName :string
+            quotaType: 1 备份 2 归档
+            quota ：总配额 ，单位  byte
+            usedQuota : 已用配额}
+          schema:
+            items:
+              $ref: '#/definitions/UserQuotaPo'
+            type: array
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: >-
+                This field is the request ID number for task tracking. Format is
+                request_uuid-timestamp-hostname.
+  /v1/users/quota:
+    post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - api-quota
+      operationId: setUserQuotaUsingPost
+      summary: 设置/修改配额接口
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: userQuota
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserQuota'
+      responses:
+        '200':
+          description: quota_uuid 额度表唯一id
+          schema:
+            $ref: '#/definitions/UuidObject'
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: >-
+                This field is the request ID number for task tracking. Format is
+                request_uuid-timestamp-hostname.
+    get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - api-quota
+      operationId: listUserQuotaInfoUsingGet
+      parameters:
+        - name: pageNo
+          in: query
+          required: false
+          type: integer
+          format: int32
+          default: 0
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+          default: 20
+        - name: userName
+          in: query
+          required: false
+          type: string
+          maxLength: 255
+        - name: userType
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/pageListResponse'
+definitions:
+  DemoInfo:
+    description: This is a demo
+    required:
+      - name
+    properties:
+      id:
+        type: string
+        description: 唯一标识ID
+        minLength: 32
+        maxLength: 36
+        readOnly: true
+        example: 28f61af50fc9452aa0ed5ea25c3cc3d3
+      name:
+        type: string
+        description: 名称
+        minLength: 2
+        maxLength: 64
+        example: MyDemo
+      description:
+        type: string
+        description: 描述
+        minLength: 2
+        maxLength: 512
+        example: this is a demo
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512
+  aaa:
+    type: array
+    items:
+      $ref: '#/definitions/DemoInfo'
+  List_QuotaBo:
+    type: object
+    properties: {}
+  UserQuotaPo:
+    type: object
+    properties:
+      quotaUuid:
+        type: string
+        description: 数据表id字段
+      userId:
+        type: string
+        description: 用户唯一id
+      resourceId:
+        type: string
+        description: 资源唯一id
+      lastUpdateTime:
+        type: string
+        format: date-time
+        description: 最新修改时间修改时间
+      backupTotalQuota:
+        type: integer
+        format: int64
+        description: 备份总额度 byte
+      backupUsedQuota:
+        type: integer
+        format: int64
+        description: 备份已用额度 byte
+      cloudArchiveTotalQuota:
+        type: integer
+        format: int64
+        description: 对象归档总额度 byte
+      cloudArchiveUsedQuota:
+        type: integer
+        format: int64
+        description: 对象归档已用额度 byte
+  UuidObject:
+    type: object
+    properties:
+      uuid:
+        type: string
+        pattern: '[0-9a-f]{32}'
+  UserQuota:
+    type: object
+    properties:
+      userId:
+        type: string
+      resourceId:
+        type: string
+      backupTotalQuota:
+        type: integer
+        format: int64
+        default: 0
+      cloudArchiveTotalQuota:
+        type: integer
+        format: int64
+        default: 0
+    required:
+      - userId
+      - resourceId
+  UserQuotaBase:
+    type: object
+    required:
+      - totalQuota
+      - taskType
+    properties:
+      totalQuota:
+        type: integer
+        format: int64
+        description: 配额设置。单位 byte 需大于已用配额
+      taskType:
+        type: string
+        description: Backup/CloudArchive
+  userQuotaInfoPageBase:
+    type: object
+    properties:
+      userId:
+        type: string
+      roleId:
+        type: integer
+        format: int64
+      userName:
+        type: string
+      userType:
+        type: string
+      backupTotalQuota:
+        type: integer
+        format: int64
+      backupUsedQuota:
+        type: integer
+        format: int64
+      cloudArchiveTotalQuota:
+        type: integer
+        format: int64
+      cloudArchiveUsedQuota:
+        type: integer
+        format: int64
+      canBackup:
+        type: boolean
+      canRestore:
+        type: boolean
+      canArchive:
+        type: boolean
+      canReplication:
+        type: boolean
+  pageListResponse:
+    type: object
+    properties:
+      totalCount:
+        type: string
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/userQuotaInfoPageBase'

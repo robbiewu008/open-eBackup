@@ -12,6 +12,8 @@ tags:
 paths:
   /v1/sftp/service:
     get:
+      x-dm-role: 'N'
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -49,6 +51,7 @@ paths:
             - global
   /v1/sftp/status:
     put:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -95,6 +98,8 @@ paths:
             - global
   /v1/sftp/users:
     get:
+      x-dm-role: 'N'
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -151,6 +156,8 @@ paths:
         - Authorization:
             - global
     post:
+      x-dm-role: 'N'
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -195,6 +202,8 @@ paths:
         - Authorization:
             - global
     delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -239,8 +248,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/sftp/users/{id}':
+  /v1/sftp/users/{id}:
     post:
+      x-dm-role: 'N'
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -289,8 +300,10 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/sftp/users/{userId}':
+  /v1/sftp/users/{userId}:
     get:
+      x-dm-role: 'N'
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25082
       x-auth-required: 'Y'

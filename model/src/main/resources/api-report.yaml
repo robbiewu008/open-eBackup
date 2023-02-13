@@ -99,6 +99,7 @@ paths:
           description: Not Found
   /v1/report/delete/{reportId}:
     delete:
+      x-product: OceanProtect X
       tags:
         - report
       x-dm-role: 'Y'

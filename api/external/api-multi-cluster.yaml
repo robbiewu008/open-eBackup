@@ -6,10 +6,14 @@ info:
 host: localhost
 basePath: /
 tags:
-  - name: '${api.multi-clusters}'
+  - name: ${api.multi-clusters}
 paths:
   /v1/multi-clusters/resource/summary:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-auditor-role: 'Y'
       x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
@@ -17,7 +21,7 @@ paths:
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - '${api.multi-clusters}'
+        - ${api.multi-clusters}
       summary: 获取多集群资源统计信息
       description: 获取多集群资源统计信息
       operationId: getMultiClusterResources
@@ -35,8 +39,7 @@ paths:
           in: query
           required: true
           type: string
-          description: >-
-            资源类型(All:所有资源,Host:主机,Fileset:文件集,Database:数据库,VirtualMachines:虚拟环境,BigData:大数据,Storage:存储)
+          description: 资源类型(All:所有资源,Host:主机,Fileset:文件集,Database:数据库,VirtualMachines:虚拟环境,BigData:大数据,Storage:存储)
       responses:
         '200':
           description: 资源统计结果模型
@@ -44,6 +47,10 @@ paths:
             $ref: '#/definitions/MultiClusterResourcesVo'
   /v1/multi-clusters/job/summary:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-auditor-role: 'Y'
       x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
@@ -51,7 +58,7 @@ paths:
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - '${api.multi-clusters}'
+        - ${api.multi-clusters}
       summary: 获取多集群任务执行统计信息
       description: 获取多集群任务执行统计信息
       operationId: getMultiClusterJobs
@@ -68,7 +75,7 @@ paths:
         - name: jobPeriod
           in: query
           required: true
-          description: '任务执行时间段(all:所有任务,lastDay:过去24h,lastWeek:过去7天,lastMonth:过去1个月)'
+          description: 任务执行时间段(all:所有任务,lastDay:过去24h,lastWeek:过去7天,lastMonth:过去1个月)
           type: string
       responses:
         '200':
@@ -77,6 +84,10 @@ paths:
             $ref: '#/definitions/MultiClusterJobsVo'
   /v1/multi-clusters/alarm/summary:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-auditor-role: 'Y'
       x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
@@ -84,7 +95,7 @@ paths:
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - '${api.multi-clusters}'
+        - ${api.multi-clusters}
       summary: 获取多集群告警统计信息
       description: 获取多集群告警统计信息
       operationId: getMultiClusterAlarms
@@ -105,6 +116,10 @@ paths:
             $ref: '#/definitions/MultiClusterAlarmsVo'
   /v1/multi-clusters/capacity/summary:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-auditor-role: 'Y'
       x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
@@ -112,7 +127,7 @@ paths:
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - '${api.multi-clusters}'
+        - ${api.multi-clusters}
       summary: 获取多集群容量统计信息
       description: 获取多集群容量统计信息
       operationId: getMultiClusterCapacity
@@ -133,6 +148,10 @@ paths:
             $ref: '#/definitions/MultiClusterCapacityVo'
   /v1/multi-clusters/sla-compliance/summary:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-auditor-role: 'Y'
       x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
@@ -140,7 +159,7 @@ paths:
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - '${api.multi-clusters}'
+        - ${api.multi-clusters}
       summary: 获取多集群SLA遵从度统计信息
       description: 获取多集群SLA遵从度统计信息
       operationId: getMultiClusterSla
@@ -159,15 +178,20 @@ paths:
           description: SLA遵从度统计结果模型
           schema:
             $ref: '#/definitions/MultiClusterSlaComplianceVo'
-  '/v1/multi-clusters/{clusterId}/action/grant-to-manager':
+  /v1/multi-clusters/{clusterId}/action/grant-to-manager:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - '${api.multi-clusters}'
+        - ${api.multi-clusters}
       summary: 指定某个被管理集群为管理集群
       description: 指定某个被管理集群为管理集群
       operationId: grantToManager
@@ -200,6 +224,7 @@ paths:
             type: string
   /v1/multi-clusters/action/sync:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -210,7 +235,7 @@ paths:
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - '${api.multi-clusters}'
+        - ${api.multi-clusters}
       summary: 同步被管理集群
       description: 同步所有被管理集群到另一个管理集群
       operationId: syncManagedClustersToManageClusters
@@ -229,15 +254,20 @@ paths:
           description: OK
           schema:
             type: string
-  '/v1/multi-clusters/{clusterId}/action/revoke-manager':
+  /v1/multi-clusters/{clusterId}/action/revoke-manager:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
       tags:
-        - '${api.multi-clusters}'
+        - ${api.multi-clusters}
       summary: 取消某个管理集群为被管理集群
       description: 取消某个管理集群为被管理集群
       operationId: revokeManager
@@ -266,15 +296,20 @@ paths:
           description: 操作结果
           schema:
             type: string
-  '/v1/multi-clusters/{clusterId}/auth-users':
+  /v1/multi-clusters/{clusterId}/auth-users:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${api.multi-clusters}'
+        - ${api.multi-clusters}
       summary: 把被管理集群授权给指定的数据保护管理员
       description: 将被管理集群数据保护管理员权限授权给一个管理集群数据保护管理员
       operationId: createManagedClustersAuth
@@ -298,15 +333,20 @@ paths:
       responses:
         '200':
           description: ''
-  '/v1/multi-clusters/{clusterId}/auth-users/{userId}':
+  /v1/multi-clusters/{clusterId}/auth-users/{userId}:
     delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${api.multi-clusters}'
+        - ${api.multi-clusters}
       summary: 被管理集群取消授权
       description: 被管理集群取消授权
       operationId: deleteManagedClustersAuth
@@ -331,13 +371,18 @@ paths:
         '200':
           description: ''
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${api.multi-clusters}'
+        - ${api.multi-clusters}
       summary: 被管理集群修改授权
       description: 被管理集群修改授权
       operationId: modifyManagedClustersAuth

@@ -7,13 +7,14 @@ info:
 host: localhost
 basePath: /
 tags:
-  - name: '${system-api}'
+  - name: ${system-api}
     description: System Controller
   - name: health-controller
     description: Health Controller
 paths:
   /internal/health:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - health-controller
       summary: 服务启动状态
@@ -35,287 +36,11 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/system/archiveNetPlaneStatusInfo:
-    get:
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      tags:
-        - '${system-api}'
-      summary: 获得配置状态
-      operationId: getModifyArchiveStatusInfoUsingGET
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ConfigStatus'
-            originalRef: ConfigStatus
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-  /v1/system/archiveNetwork:
-    get:
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      tags:
-        - '${system-api}'
-      summary: 查询归档网络
-      operationId: queryArchiveNetworkUsingGET
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ArchiveNetworkConfig'
-            originalRef: ArchiveNetworkConfig
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-    put:
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      tags:
-        - '${system-api}'
-      summary: 修改归档网络
-      operationId: modifyArchiveNetworkUsingPUT
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-        - in: body
-          name: initNetworkBody
-          description: 初始化配置请求体
-          required: true
-          schema:
-            $ref: '#/definitions/InitNetworkBody'
-            originalRef: InitNetworkBody
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ConfigStatus'
-            originalRef: ConfigStatus
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-  /v1/system/backupNetPlaneStatusInfo:
-    get:
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      tags:
-        - '${system-api}'
-      summary: 获得备份网络状态
-      operationId: getModifyBackupStatusInfoUsingGET
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ConfigStatus'
-            originalRef: ConfigStatus
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-  /v1/system/backupNetwork:
-    get:
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      tags:
-        - '${system-api}'
-      summary: 查询备份网络
-      operationId: queryBackupNetworkUsingGET
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/BackupNetworkConfig'
-            originalRef: BackupNetworkConfig
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-    put:
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      tags:
-        - '${system-api}'
-      summary: 修改备份网络
-      operationId: modifyBackupNetworkUsingPUT
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-        - in: body
-          name: initNetworkBody
-          description: 初始化配置请求体
-          required: true
-          schema:
-            $ref: '#/definitions/InitNetworkBody'
-            originalRef: InitNetworkBody
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ConfigStatus'
-            originalRef: ConfigStatus
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
   /v1/system/esn:
-    get:
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'N'
-      x-sysadmin-role: 'Y'
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      tags:
-        - '${system-api}'
-      summary: 查询设备ESN
-      operationId: queryEsnUsingGET
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/EsnInfo'
-            originalRef: DeviceInfo
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
+    x-product: CyberEngine,OceanProtect X
   /v1/system/expandBackupService:
     post:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -325,7 +50,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${system-api}'
+        - ${system-api}
       summary: 扩容网络
       operationId: expansionNetworkUsingPOST
       consumes:
@@ -362,8 +87,10 @@ paths:
       security:
         - Authorization:
             - global
+      x-order: 6
   /v1/system/expandBackupServiceIp:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -373,7 +100,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${system-api}'
+        - ${system-api}
       summary: 查询扩容前备份/归档Ip段范围
       operationId: getExpansionIpRangeUsingGET
       produces:
@@ -399,8 +126,10 @@ paths:
       security:
         - Authorization:
             - global
+      x-order: 7
   /v1/system/expandControllerStatus:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -410,7 +139,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${system-api}'
+        - ${system-api}
       summary: 查询扩容网络状态
       operationId: getExpansionStatusInfoUsingGET
       produces:
@@ -436,8 +165,10 @@ paths:
       security:
         - Authorization:
             - global
+      x-order: 8
   /v1/system/initConfig:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -447,7 +178,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${system-api}'
+        - ${system-api}
       summary: 是否需要初始化
       operationId: getInitConfigUsingGET
       produces:
@@ -473,7 +204,9 @@ paths:
       security:
         - Authorization:
             - global
+      x-order: 9
     post:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -483,7 +216,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${system-api}'
+        - ${system-api}
       summary: 创建初始化网络
       operationId: createInitConfigUsingPOST
       consumes:
@@ -520,8 +253,10 @@ paths:
       security:
         - Authorization:
             - global
+      x-order: 10
   /v1/system/initStatusInfo:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -531,7 +266,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${system-api}'
+        - ${system-api}
       summary: 获得初始化状态
       operationId: getInitStatusInfoUsingGET
       produces:
@@ -557,32 +292,10 @@ paths:
       security:
         - Authorization:
             - global
-  /v1/system/language:
-    get:
-      tags:
-        - '${system-api}'
-      summary: 查询语言请求
-      operationId: queryInstallationLanguageUsingGET
-      produces:
-        - '*/*'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ConfigLanguage'
-            originalRef: ConfigLanguage
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-      deprecated: false
+      x-order: 12
   /v1/system/time:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -592,7 +305,7 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
-        - '${system-api}'
+        - ${system-api}
       summary: 查询系统时间
       operationId: getSystemTimeUsingGET
       produces:
@@ -618,27 +331,7 @@ paths:
       security:
         - Authorization:
             - global
-  /v1/system/machine-code:
-    get:
-      tags:
-        - '${system-api}'
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      summary: 查询设备机器码
-      operationId: queryMachineCodeUsingGET
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          required: true
-          description: Access token
-          type: string
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/MachineCodeInfo'
+      x-order: 13
 securityDefinitions:
   Authorization:
     type: apiKey
