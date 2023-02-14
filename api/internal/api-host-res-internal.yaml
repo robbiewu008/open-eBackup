@@ -5,8 +5,18 @@ info:
 tags:
   - name: host
 paths:
-  '/v1/internal/resource/host/{host_id}':
+  /v1/internal/resource/host/{host_id}:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -32,8 +42,18 @@ paths:
         - host
       operationId: internal_get_host_v1_internal_resource_host__host_id__get
       summary: 根据主机ID查询主机信息【内部接口】
-  '/v1/internal/resource/host/{host_id}/refresh_host':
+  /v1/internal/resource/host/{host_id}/refresh_host:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -77,11 +97,20 @@ paths:
           description: Internal Server Error
       tags:
         - host
-      operationId: >-
-        host_refresh_host_cluster_v1_internal_resource_host__host_id__refresh_host_put
+      operationId: host_refresh_host_cluster_v1_internal_resource_host__host_id__refresh_host_put
       summary: 刷新主机信息【内部接口】
-  '/v1/internal/resource/host/{host_id}/asm-info':
+  /v1/internal/resource/host/{host_id}/asm-info:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       tags:
         - host
       summary: 根据主机ID查询主机ASM信息列表

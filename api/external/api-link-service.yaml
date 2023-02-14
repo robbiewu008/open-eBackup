@@ -7,6 +7,16 @@ tags:
 paths:
   /v1/internal/service-links:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:
@@ -49,6 +59,16 @@ paths:
       operationId: query_v1_internal_service_links_get
       summary: 获取链路状态列表【内部接口】
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -66,7 +86,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '404':
           description: Not found
         '422':

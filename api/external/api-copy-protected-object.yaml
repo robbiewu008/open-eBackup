@@ -208,17 +208,6 @@ paths:
         - protected_copy_object_api
       operationId: deactivate_v1_protected_copy_objects_status_action_deactivate_put
       summary: 批量取消激活保护副本
-  /v1/readiness:
-    get:
-      produces:
-        - application/json
-      parameters: []
-      responses:
-        '200':
-          description: Successful Response
-          schema: {}
-      operationId: readiness_v1_readiness_get
-      summary: Readiness
   /v1/protected-copy-objects/action/replicate:
     post:
       x-product: OceanProtect X

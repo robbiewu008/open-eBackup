@@ -414,17 +414,6 @@ paths:
         - projected_object_api
       operationId: query_protection_time_v1_protected_objects__resource_id__backup_time_get
       summary: 查询保护对象的备份时间信息
-  /v1/readiness:
-    get:
-      produces:
-        - application/json
-      parameters: []
-      responses:
-        '200':
-          description: Successful Response
-          schema: {}
-      operationId: readiness_v1_readiness_get
-      summary: Readiness
   /v1/protected-objects/sla-compliance:
     get:
       x-product: CyberEngine,OceanProtect X

@@ -8,6 +8,8 @@ tags:
 paths:
   /v1/resource/host/:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -78,6 +80,16 @@ paths:
       operationId: page_query_hosts_v1_resource_host__get
       summary: 分页查询主机信息列表
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       consumes:
         - application/json
       produces:
@@ -104,8 +116,10 @@ paths:
         - host
       operationId: create_host_v1_resource_host__post
       summary: 注册主机
-  '/v1/resource/host/{cluster_id}/nodes':
+  /v1/resource/host/{cluster_id}/nodes:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -147,8 +161,10 @@ paths:
         - host
       operationId: host_cluster_info_v1_resource_host__cluster_id__nodes_get
       summary: 根据集群ID查询集群的主机信息列表
-  '/v1/resource/host/{host_id}':
+  /v1/resource/host/{host_id}:
     delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -185,6 +201,8 @@ paths:
       operationId: delete_host_v1_resource_host__host_id__delete
       summary: 根据主机ID删除主机
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -222,8 +240,10 @@ paths:
         - host
       operationId: get_host_v1_resource_host__host_id__get
       summary: 根据主机ID查询主机信息
-  '/v1/resource/host/{host_id}/action/modify':
+  /v1/resource/host/{host_id}/action/modify:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -273,8 +293,10 @@ paths:
         - host
       operationId: modify_host_v1_resource_host__host_id__action_modify_put
       summary: 修改主机名名称
-  '/v1/resource/host/{host_id}/action/sync-snmp-conf':
+  /v1/resource/host/{host_id}/action/sync-snmp-conf:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -310,11 +332,12 @@ paths:
           description: Internal Server Error
       tags:
         - host
-      operationId: >-
-        synchronize_snmp_to_host_v1_resource_host__host_id__action_sync_snmp_conf_post
+      operationId: synchronize_snmp_to_host_v1_resource_host__host_id__action_sync_snmp_conf_post
       summary: 同步Trap信息到Oracle主机
-  '/v1/resource/host/{host_id}/asm-auth':
+  /v1/resource/host/{host_id}/asm-auth:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -360,8 +383,10 @@ paths:
         - host
       operationId: asm_auth_v1_resource_host__host_id__asm_auth_post
       summary: 修改ASM授权
-  '/v1/resource/host/{host_id}/asm-authinfo':
+  /v1/resource/host/{host_id}/asm-authinfo:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -399,6 +424,8 @@ paths:
       summary: 根据主机ID查询主机ASM授权信息
   /v1/resource/hosts/upgradeable-versions:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -452,6 +479,8 @@ paths:
       summary: 查询主机可升级的版本
   /v1/resource/host/action/migrate:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       tags:
         - host
       summary: 迁移主机
@@ -582,7 +611,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[HostDetail]'
+    title: BasePage[HostDetail]
     type: object
   ClusterHost:
     properties:

@@ -7,6 +7,8 @@ tags:
 paths:
   /v1/import-resources:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -94,7 +96,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[ImportResourceSchema]'
+    title: BasePage[ImportResourceSchema]
     type: object
   HTTPValidationError:
     properties:
