@@ -13,8 +13,9 @@ consumes:
 produces:
   - application/json
 paths:
-  '/v2/environments/{envId}/resources':
+  /v2/environments/{envId}/resources:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -68,10 +69,11 @@ paths:
             $ref: '#/definitions/EnvironmentResourceList'
   /v2/resources:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-request-examples-url-1: 'POST  https://host:25081/v2/resources'
+      x-request-examples-url-1: POST  https://host:25081/v2/resources
       x-request-examples-description-1: 注册NAS SHARE
       x-request-examples-text-1: >-
         {
@@ -138,6 +140,7 @@ paths:
           schema:
             $ref: '#/definitions/UuidObject'
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -208,11 +211,12 @@ paths:
             $ref: '#/definitions/ProtectedResourcePageListResponse'
   /v2/environments:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-impact-subsystem: 不影响
-      x-request-examples-url-2: 'POST https://host:25080/v2/environments'
+      x-request-examples-url-2: POST https://host:25080/v2/environments
       x-request-examples-description-2: 注册Nas设备
       x-request-examples-text-2: >-
         {
@@ -292,7 +296,7 @@ paths:
             "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
           }
         }
-      x-request-examples-url-1: 'POST https://host:25801/v2/environments'
+      x-request-examples-url-1: POST https://host:25801/v2/environments
       x-request-examples-description-1: 注册HDFS集群
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
@@ -328,8 +332,9 @@ paths:
             $ref: '#/definitions/UuidObject'
           examples:
             application/json: ''
-  '/v2/resources/{resourceId}':
+  /v2/resources/{resourceId}:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -355,6 +360,7 @@ paths:
           schema:
             $ref: '#/definitions/ProtectedResourceResponse'
     delete:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -378,6 +384,7 @@ paths:
         '200':
           description: 操作成功无返回结果，操作失败异常报错。
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -406,8 +413,9 @@ paths:
       responses:
         '200':
           description: 操作成功无返回结果，操作失败异常报错。
-  '/v2/environments/{envId}':
+  /v2/environments/{envId}:
     put:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -444,6 +452,7 @@ paths:
           schema:
             type: string
     delete:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -473,8 +482,9 @@ paths:
           description: ''
           schema:
             type: string
-  '/v2/{resourceId}/authentication':
+  /v2/{resourceId}/authentication:
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -503,8 +513,9 @@ paths:
       responses:
         '200':
           description: '--'
-  '/v2/environments/{envId}/authentication':
+  /v2/environments/{envId}/authentication:
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -540,8 +551,9 @@ paths:
           description: ''
           schema:
             type: string
-  '/v2/resources/{resId}/action/scan':
+  /v2/resources/{resId}/action/scan:
     put:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
@@ -567,6 +579,7 @@ paths:
           description: '--'
   /v2/environments/action/check:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -597,6 +610,7 @@ paths:
             type: array
   /v2/resources/action/check:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -625,8 +639,9 @@ paths:
             items:
               $ref: '#/definitions/ActionResult'
             type: array
-  '/v2/resources/{resourceId}/action/check':
+  /v2/resources/{resourceId}/action/check:
     get:
+      x-product: OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -986,10 +1001,16 @@ definitions:
               认证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里
 
               认证信息扩展参数key定义：
-              |  key|类型  |说明  |
+              |  key|  类型  | 是否必填 |说明  |
               |--|--|--|
-              |  centification| string | 证书文件文本内容 |
-              |  revocationlist| string | 证书吊销列表文件文本内容 |
+              |  enableCert| string | 是 | 是否开启证书校验 0-不开启，1-开启 |
+              |  centification| string | 否 | 证书文件文本内容 |
+              |  revocationlist| string | 否 | 证书吊销列表文件文本内容 |
+
+              ## HCS
+              |  key|  类型  | 是否必填 |说明  |
+              |--|--|--|
+              |  storages| string | 是 |  存储资源信息，JSON对象序列化之后的字符串，例：[{\"username\":\"admin\",\"password\":\"\",\"ip\":\"88.1.XX.XX\",\"port\":8088,\"enableCert\":0,\"certification\":\"\"}]  |
   AuthTypeInfo:
     description: 认证类型
     properties:
@@ -1039,24 +1060,37 @@ definitions:
         type: string
         description: 环境的版本
       dependencies:
-        type: object
-        additionalProperties:
-          type: array
-          items:
-            type: object
+        type: array
+        items:
+          type: object
+          additionalProperties:
             description: 依赖资源
+            properties:
+              uuid:
+                type: string
+                description: 环境绑定的agent代理id
         description: 依赖参数，依赖其他资源
       extendInfo:
         type: object
         additionalProperties:
           type: string
-        description: 环境扩展参数，存放不同环境的自定义扩展属性
+        description: |-
+          环境扩展参数，存放不同环境的自定义扩展属性，针对每种应用进行单独说明
+
+          ## HCS
+          |参数名称  | 参数类型 | 是否必填 | 参数解释 |
+          |--|--|--|--|
+          | domain | String | 是 | HSC |
+          | ip | String | 是 | HSC生产环境ip |
+          | storages | String | 是 | 平台对接的后端存储信息。json序列化之后的字符串，例如："[{\"username\":\"admin\",\"port\":8088,\"ip\":\"88.1.XX.XX\"}]" |
       auth:
         $ref: '#/definitions/Authentication'
+        description: 环境认证信息
     required:
       - name
       - type
       - subType
+    type: object
   UpdateEnvironmentRequest:
     description: 受保护对象请求体
     properties:
