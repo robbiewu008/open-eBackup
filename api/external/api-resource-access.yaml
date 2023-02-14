@@ -998,18 +998,18 @@ definitions:
             additionalProperties:
               type: string
             description: |-
-              认证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里
-
-              认证信息扩展参数key定义：
-              |  key|  类型  | 是否必填 |说明  |
-              |--|--|--|
+              认证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里。认证信息扩展参数key定义：
+              ## 公共参数
+              | key| 类型 | 是否必填 |说明 |
+              |--|--|--|--|
               |  enableCert| string | 是 | 是否开启证书校验 0-不开启，1-开启 |
               |  centification| string | 否 | 证书文件文本内容 |
               |  revocationlist| string | 否 | 证书吊销列表文件文本内容 |
 
               ## HCS
+
               |  key|  类型  | 是否必填 |说明  |
-              |--|--|--|
+              |--|--|--|--|
               |  storages| string | 是 |  存储资源信息，JSON对象序列化之后的字符串，例：[{\"username\":\"admin\",\"password\":\"\",\"ip\":\"88.1.XX.XX\",\"port\":8088,\"enableCert\":0,\"certification\":\"\"}]  |
   AuthTypeInfo:
     description: 认证类型
