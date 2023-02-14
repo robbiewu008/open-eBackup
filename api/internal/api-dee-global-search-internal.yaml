@@ -12,6 +12,7 @@ tags:
 paths:
   /v1/internal/search/file:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8086

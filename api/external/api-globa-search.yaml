@@ -12,6 +12,7 @@ tags:
 paths:
   /v1/search/file:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-dp-admin-role: 'Y'
