@@ -24,9 +24,13 @@ tags:
   - name: secret-manager-api
   - name: service-manager-api
   - name: sftp-manager-api
+  - name: upgrade-manager-api
+    description: 升级相关接口
+  - name: pvc-manager-api
 paths:
   /v1/infra/logs/level/info:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 25081
@@ -50,6 +54,7 @@ paths:
           description: Bad Request
   /v1/infra/logs/level/setup:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 25081
@@ -78,6 +83,7 @@ paths:
           description: Bad Request
   /v1/infra/logs/export_package:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -102,7 +108,7 @@ paths:
             type: string
         - name: componentName
           in: query
-          description: '子系统模块名称[取值范围]，INFRA代表基础设施，DME代表高级备份引擎， DEE代表数据使能，PM代表管理服务'
+          description: 子系统模块名称[取值范围]，INFRA代表基础设施，DME代表高级备份引擎， DEE代表数据使能，PM代表管理服务
           required: true
           type: array
           items:
@@ -135,6 +141,7 @@ paths:
           description: Not Found
   /v1/infra/inspect/service/status:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -156,8 +163,33 @@ paths:
             $ref: '#/definitions/NodeListServiceResponse'
         '400':
           description: Bad Request
+  /v1/infra/inspect/service/backupbusinessstatus:
+    get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
+      tags:
+        - inspect-info-api
+      summary: 数据保护巡检项，当前包含管理数据备份策略配置检查、离线主机检查、失败任务检查
+      x-swagger-router-controller: service.apis.controllers.inspect_controller
+      operationId: check_backup_business_status
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/InspectBussinessResponse'
+        '400':
+          description: Bad Request
   /v1/infra/inspect/config/status:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -181,6 +213,7 @@ paths:
           description: Bad Request
   /v1/infra/inspect/resource/status:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -204,6 +237,7 @@ paths:
           description: Bad Request
   /v1/infra/collect/all/info:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -241,6 +275,7 @@ paths:
           description: Bad Request
   /v1/infra/collect/node/info:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 25081
@@ -271,6 +306,7 @@ paths:
           description: Bad Request
   /v1/infra/collect/ip/info:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 8088
@@ -294,6 +330,7 @@ paths:
           description: Bad Request
   /v1/infra/collect/netplane/info:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -328,6 +365,7 @@ paths:
           description: Bad Request
   /v1/infra/data/backup:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -355,6 +393,7 @@ paths:
           description: Bad Request
   /v1/infra/data/db/backup:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 影响
       x-access-port: 25081
@@ -380,6 +419,7 @@ paths:
           description: Bad Request
   /v1/infra/data/recover:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -407,6 +447,7 @@ paths:
           description: Bad Request
   /v1/infra/pod/info:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 影响
       x-access-port: 25081
@@ -436,6 +477,7 @@ paths:
           description: Bad Request
   /v1/infra/pod/status:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -465,6 +507,7 @@ paths:
           description: Bad Request
   /v1/infra/pod/delete:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -494,6 +537,7 @@ paths:
           description: Bad Request
   /v1/infra/pod/stop:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 影响
       x-access-port: 25081
@@ -526,6 +570,7 @@ paths:
           description: Bad Request
   /v1/infra/internal/map/pod/node:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -555,6 +600,7 @@ paths:
           description: Bad Request
   /v1/infra/external/pod/recover:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 影响
       x-access-port: 25081
@@ -587,6 +633,7 @@ paths:
           description: Bad Request
   /v1/infra/configmap/info:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 影响
       x-access-port: 25081
@@ -626,6 +673,7 @@ paths:
           description: Bad Request
   /v1/infra/configmap/setup:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -668,6 +716,7 @@ paths:
           description: Bad Request
   /v1/infra/configmap/create:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 影响
       x-access-port: 25081
@@ -710,6 +759,7 @@ paths:
           description: Bad Request
   /v1/infra/configmap/delete:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 影响
       x-access-port: 25081
@@ -747,6 +797,7 @@ paths:
           description: Bad Request
   /v1/infra/secret/info:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -786,6 +837,7 @@ paths:
           description: Bad Request
   /v1/infra/secret/setup:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -828,6 +880,7 @@ paths:
           description: Bad Request
   /v1/infra/secret/create:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -870,6 +923,7 @@ paths:
           description: Bad Request
   /v1/infra/secret/delete:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -907,6 +961,7 @@ paths:
           description: Bad Request
   /v1/infra/external/service/update/password:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 25081
@@ -918,9 +973,16 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - service-manager-api
-      summary: 更新内部组件database/kafka/redis密码，成功后重启所有POD
+      summary: 更新密码-database/kafka/redis
       x-swagger-router-controller: service.apis.controllers.status_controller
       operationId: update_password
+      parameters:
+        - name: body
+          in: body
+          description: 更新类型 [all|database|kafka|redis]
+          required: true
+          schema:
+            $ref: '#/definitions/UpdatePasswordInfo'
       responses:
         '200':
           description: OK
@@ -930,6 +992,7 @@ paths:
           description: Bad Request
   /v1/infra/internal/cert/action/replace:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -960,6 +1023,7 @@ paths:
           description: Bad Request
   /v1/infra/sftp/secret/add_user:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -990,6 +1054,7 @@ paths:
           description: Bad Request
   /v1/infra/sftp/secret/delete_user:
     delete:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -1020,6 +1085,7 @@ paths:
           description: Bad Request
   /v1/infra/sftp/secret/password:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -1050,6 +1116,7 @@ paths:
           description: Bad Request
   /v1/infra/sftp/dme_a/info:
     get:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 8088
@@ -1069,6 +1136,98 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/ConfigMapInfoResponse'
+        '400':
+          description: Bad Request
+  /v1/infra/external/upgrade/checker:
+    post:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
+      tags:
+        - upgrade-manager-api
+      description: 升级前检查接口
+      operationId: future_checker
+      parameters:
+        - name: imageVersion
+          in: query
+          required: true
+          description: 升级目标镜像版本
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+  /v1/infra/external/upgrade/precondition:
+    post:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
+      tags:
+        - upgrade-manager-api
+      summary: 升级，升级前置预处理
+      operationId: upgrade_precondition
+      parameters:
+        - name: imageVersion
+          in: query
+          required: true
+          description: 升级目标镜像的版本
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+  /v1/infra/internal/pvc/list:
+    get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
+      tags:
+        - pvc-manager-api
+      summary: 查询指定namespace的PVC名称列表
+      x-swagger-router-controller: service.apis.controllers.pvc_controller
+      operationId: query_pvc_list
+      parameters:
+        - name: nameSpace
+          in: query
+          description: 命名空间
+          type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PvcListResponse'
         '400':
           description: Bad Request
 definitions:
@@ -1420,7 +1579,7 @@ definitions:
         description: 业务IP地址
       componentList:
         type: object
-        description: '组件名称列表，[取值范围]INFRA,DME,DEE,PM'
+        description: 组件名称列表，[取值范围]INFRA,DME,DEE,PM
   LogLevelParam:
     properties:
       log_level:
@@ -1431,6 +1590,16 @@ definitions:
           - WARN
           - ERROR
           - DEBUG
+  UpdatePasswordInfo:
+    properties:
+      update_module:
+        type: string
+        description: 密码更新模块
+        enum:
+          - all
+          - database
+          - redis
+          - kafka
   CertType:
     properties:
       cert_type:
@@ -1499,6 +1668,97 @@ definitions:
       control:
         type: string
         description: POD所在控制器
+  DeviceInfoResponse:
+    description: 查询设备信息响应对象
+    properties:
+      productMode:
+        type: integer
+        format: int32
+        description: |-
+          1:X8000带备份软件
+          2:X8000备份介质 + 备份软件
+        example: 1
+        minimum: 1
+        maximum: 3
+      resourcePermission:
+        type: integer
+        format: int32
+        description: |-
+          1:只读
+          2:可读写
+        example: 1
+        minimum: 1
+        maximum: 2
+    required:
+      - productMode
+      - resourcePermission
+  InspectBussinessResponse:
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/BussinessInspectionData'
+      error:
+        $ref: '#/definitions/ErrorResponse'
+  BussinessInspectionData:
+    type: object
+    description: 巡检结果详细信息，包含管理数据备份策略配置、在线/离线主机数量、成功/失败/终止任务数量
+    properties:
+      managementDataBackupPolicyInspection:
+        $ref: '#/definitions/InspectionDataManagementDataBackupPolicy'
+      hostInspection:
+        $ref: '#/definitions/InspectionDataHost'
+      taskInspection:
+        $ref: '#/definitions/InspectionDataTask'
+  InspectionDataManagementDataBackupPolicy:
+    type: object
+    description: 巡检结果详细信息，包含管理数据备份策略配置巡检结果
+    properties:
+      inspectionResult:
+        type: boolean
+        description: 当前项巡检结果
+  InspectionDataHost:
+    type: object
+    description: 巡检结果详细信息，包含主机巡检结果
+    properties:
+      inspectionResult:
+        type: boolean
+        description: 当前项巡检结果
+      onlineHostCount:
+        type: integer
+        description: 在线主机数量
+      offlineHostCount:
+        type: integer
+        description: 离线主机数量
+  InspectionDataTask:
+    type: object
+    description: 巡检结果详细信息，包含任务巡检结果
+    properties:
+      inspectionResult:
+        type: boolean
+        description: 当前项巡检结果
+      successTaskCount:
+        type: integer
+        description: 成功任务数量
+      failedTaskCount:
+        type: integer
+        description: 失败任务数量
+      abortTaskCount:
+        type: integer
+        description: 终止任务数量
+      inspectionDateRangeWithDay:
+        type: integer
+        description: 任务巡检时间范围，单位天
+  PvcListResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        description: PVC名称列表
+        items:
+          type: string
+          description: pvc name
+      error:
+        $ref: '#/definitions/ErrorResponse'
 parameters:
   data_type:
     name: data_type
