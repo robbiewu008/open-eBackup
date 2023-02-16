@@ -1,19 +1,19 @@
 swagger: '2.0'
 info:
   version: v1
-  title: ApplicationTitle
-  description: GroupDesc
+  title: 浏览代理资源接口
+  description: 浏览代理资源
 schemes:
   - https
-host: localhost.com
 basePath: /
 tags:
   - name: host
   - name: app
   - name: task
 paths:
-  '/v2/agents/{agentId}/resources':
+  /v2/agents/{agentId}/resources:
     get:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -36,17 +36,111 @@ paths:
           minLength: 1
           maxLength: 50
           description: Agent代理UUID
-        - name: ListResourcesDetailsRequestBody
-          in: body
+        - name: envId
+          in: query
           required: true
-          description: 需要列表资源父资源信息
-          schema:
-            $ref: '#/definitions/ListResourceReqV2'
+          type: string
+          description: 受保护环境UUID
+        - name: pageNo
+          in: query
+          required: true
+          description: 起始
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          description: 分页大小
+          type: integer
+          format: int32
+        - name: orders
+          in: query
+          required: false
+          description: 排序字段
+          type: string
+        - name: conditions
+          in: query
+          required: false
+          type: string
+          description: 查询条件
+        - name: resourceIds
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+          description: 父资源UUID列表
       responses:
         '200':
           description: ''
           schema:
             $ref: '#/definitions/ListResourceRsp'
+  /v1/agents/config:
+    get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - host
+      summary: 查询应用配置信息
+      operationId: QueryAppConfigInfo
+      parameters:
+        - name: subType
+          in: query
+          required: true
+          description: 资源子类型
+          type: string
+        - name: script
+          in: query
+          required: false
+          description: 脚本名称
+          type: string
+        - name: hostUuids
+          in: query
+          required: true
+          description: 主机uuid
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: key-脚本名称，value-配置信息
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+  /v1/agents/task/status:
+    put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - task
+      summary: 传递任务状态
+      operationId: DeliverTaskStatus
+      parameters:
+        - name: deliverTaskReq
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DeliverTaskReq'
+      responses:
+        '200':
+          description: ''
 definitions:
   AppResource:
     description: 应用资源对象
@@ -109,31 +203,29 @@ definitions:
         items:
           $ref: '#/definitions/AppResource'
         description: 数据列表
-  ListResourceReqV2:
-    properties:
-      envId:
-        type: string
-        description: 受保护环境uuid
-      pageNo:
-        type: integer
-        format: int32
-        description: 分页页面编码
-      pageSize:
-        type: integer
-        format: int32
-        description: 分页数据条数
-      orders:
-        type: string
-        description: 排序字段：display_timestamp
-      conditions:
-        type: string
-        description: 查询条件
-      applications:
-        items:
-          $ref: '#/definitions/Application'
-        description: 资源信息列表，如果涉及多层资源查询，需要把从上到下的资源一并下发
-        type: array
+  AgentDto:
+    type: object
     required:
-      - envId
-      - pageNo
-      - pageSize
+      - endpoint
+    properties:
+      endpoint:
+        type: string
+        description: ip地址
+  DeliverTaskReq:
+    type: object
+    required:
+      - taskId
+      - status
+      - agents
+    properties:
+      taskId:
+        type: string
+        description: 任务ID
+      status:
+        type: string
+        description: 任务状态。SUCCESS, FAIL
+      agents:
+        type: array
+        items:
+          $ref: '#/definitions/AgentDto'
+        description: agent信息
