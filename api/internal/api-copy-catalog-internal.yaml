@@ -1069,6 +1069,64 @@ paths:
             type: array
             items:
               $ref: '#/definitions/ReplicatedCopies'
+  /v1/internal/copies/excess-copies:
+    delete:
+      x-request-examples-url-1: v1/internal/copies/excess-copies
+      x-request-examples-text-1:
+        resource_id: xxxxxx
+        retention_quantity: 2
+        generated_by: Backup
+        user_id: xxxxx
+      x-request-examples-1:
+        resource_id: xxxxxx
+        retention_quantity: 2
+        generated_by: Backup
+        user_id: xxxxx
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X
+      produces:
+        - application/json
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: 删除资源多余副本请求
+          schema:
+            $ref: '#/definitions/DeleteExcessCopiesRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      tags:
+        - copies
+      operationId: internal_delete_excess_copies
+      consumes:
+        - application/json
+      summary: 副本按数量保留情况下，删除多余副本
+      description: 副本按数量保留情况下，删除多余副本
 definitions:
   BasePage_CopyResourceSummarySchema_:
     properties:
@@ -1897,4 +1955,24 @@ definitions:
       esn:
         type: string
         description: esn
+  DeleteExcessCopiesRequest:
+    type: object
+    required:
+      - resource_id
+      - retention_quantity
+      - generated_by
+    properties:
+      resource_id:
+        type: string
+        description: 资源id
+      retention_quantity:
+        type: integer
+        format: int32
+        description: 副本最大保留数量
+      generated_by:
+        type: string
+        description: 副本生成类型
+      user_id:
+        type: string
+        description: 用户id
 x-components: {}
