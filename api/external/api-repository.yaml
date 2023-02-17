@@ -22,6 +22,7 @@ tags:
 paths:
   /v1/backup-storage/nodes:
     get:
+      x-product: OceanProtect X
       tags:
         - backup-vol-controller
       summary: 查询节点信息
@@ -54,6 +55,7 @@ paths:
       deprecated: false
   /v1/backup-storage/nodes/relocation:
     post:
+      x-product: OceanProtect X
       tags:
         - backup-vol-controller
       summary: 回迁指定节点
@@ -92,6 +94,7 @@ paths:
       deprecated: false
   /v1/backup-storage/nodes/relocation/info:
     get:
+      x-product: OceanProtect X
       tags:
         - backup-vol-controller
       summary: 查询需要回迁的节点信息
@@ -122,8 +125,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/backup-storage/nodes/{nodeId}/{type}':
+  /v1/backup-storage/nodes/{nodeId}/{type}:
     get:
+      x-product: OceanProtect X
       tags:
         - backup-vol-controller
       summary: 查询节点路径空闲容量
@@ -141,7 +145,7 @@ paths:
           description: 节点ID
           required: true
           type: string
-          pattern: '^[a-zA-Z0-9]{1,1024}$'
+          pattern: ^[a-zA-Z0-9]{1,1024}$
         - name: type
           in: path
           description: 卷类型
@@ -168,6 +172,7 @@ paths:
       deprecated: false
   /v1/backup-storage/volumes:
     get:
+      x-product: OceanProtect X
       tags:
         - backup-vol-controller
       summary: 查询标准备份池卷
@@ -219,6 +224,7 @@ paths:
             - global
       deprecated: false
     post:
+      x-product: OceanProtect X
       tags:
         - backup-vol-controller
       summary: 创建标准备份池卷
@@ -255,8 +261,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/backup-storage/volumes/index/{nodeId}':
+  /v1/backup-storage/volumes/index/{nodeId}:
     get:
+      x-product: OceanProtect X
       tags:
         - backup-vol-controller
       summary: 查询索引卷是否存在
@@ -274,7 +281,7 @@ paths:
           description: 节点ID
           required: true
           type: string
-          pattern: '^[a-zA-Z0-9]{1,1024}$'
+          pattern: ^[a-zA-Z0-9]{1,1024}$
       responses:
         '200':
           description: OK
@@ -291,8 +298,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/backup-storage/volumes/{name}':
+  /v1/backup-storage/volumes/{name}:
     get:
+      x-product: OceanProtect X
       tags:
         - backup-vol-controller
       summary: 查询卷是否存在
@@ -310,7 +318,7 @@ paths:
           description: 卷名
           required: true
           type: string
-          pattern: '^[a-zA-Z0-9]{3,30}$'
+          pattern: ^[a-zA-Z0-9]{3,30}$
       responses:
         '200':
           description: OK
@@ -328,6 +336,7 @@ paths:
             - global
       deprecated: false
     delete:
+      x-product: OceanProtect X
       tags:
         - backup-vol-controller
       summary: 删除标准备份池卷
@@ -345,7 +354,7 @@ paths:
           description: 标准备份池卷名
           required: true
           type: string
-          pattern: '^[a-zA-Z0-9]{3,30}$'
+          pattern: ^[a-zA-Z0-9]{3,30}$
       responses:
         '200':
           description: OK
@@ -361,6 +370,7 @@ paths:
       deprecated: false
   /v1/local-storage:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -398,6 +408,7 @@ paths:
             - global
   /v1/local-storage/access-point:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -435,6 +446,7 @@ paths:
             - global
   /v1/local-storage/action/auth:
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -480,6 +492,7 @@ paths:
             - global
   /v1/local-storage/auth:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -517,6 +530,7 @@ paths:
             - global
   /v1/product-storages:
     get:
+      x-product: OceanProtect X
       tags:
         - product-storages-api
       summary: 分页查询
@@ -575,6 +589,7 @@ paths:
             - global
       deprecated: false
     post:
+      x-product: OceanProtect X
       tags:
         - product-storages-api
       summary: 创建存储信息
@@ -611,8 +626,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/product-storages/{storageId}':
+  /v1/product-storages/{storageId}:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -654,6 +670,7 @@ paths:
         - Authorization:
             - global
     put:
+      x-product: OceanProtect X
       tags:
         - product-storages-api
       summary: 更新存储信息
@@ -696,6 +713,7 @@ paths:
             - global
       deprecated: false
     delete:
+      x-product: OceanProtect X
       tags:
         - product-storages-api
       summary: 删除存储信息
@@ -728,6 +746,7 @@ paths:
       deprecated: false
   /v1/storages:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -781,6 +800,7 @@ paths:
         - Authorization:
             - global
     post:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -829,6 +849,7 @@ paths:
             - global
   /v1/storages/local:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -864,8 +885,9 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/storages/{id}/alarm-threshold':
+  /v1/storages/{id}/alarm-threshold:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -909,6 +931,7 @@ paths:
         - Authorization:
             - global
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -959,8 +982,9 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/storages/{id}/alarm-threshold-local':
+  /v1/storages/{id}/alarm-threshold-local:
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -1011,8 +1035,9 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/storages/{storageId}':
+  /v1/storages/{storageId}:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -1056,6 +1081,7 @@ paths:
         - Authorization:
             - global
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -1110,6 +1136,7 @@ paths:
         - Authorization:
             - global
     delete:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -1152,8 +1179,9 @@ paths:
       security:
         - Authorization:
             - global
-  '/v1/storages/{storageId}/action/import':
+  /v1/storages/{storageId}/action/import:
     post:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -1199,6 +1227,7 @@ paths:
             - global
   /v1/storages/nas/distribution:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1234,6 +1263,7 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
     get:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1279,8 +1309,9 @@ paths:
           description: 异常信息
           schema:
             $ref: '#/definitions/ErrorResponse'
-  '/v1/storages/nas/distribution/{id}':
+  /v1/storages/nas/distribution/{id}:
     put:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1321,6 +1352,7 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
     delete:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1353,6 +1385,7 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
     get:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1386,8 +1419,9 @@ paths:
           description: 异常信息
           schema:
             $ref: '#/definitions/ErrorResponse'
-  '/v1/storages/nas/distribution/{id}/endpoints':
+  /v1/storages/nas/distribution/{id}/endpoints:
     get:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1429,6 +1463,7 @@ paths:
               $ref: '#/definitions/StorageEndpointInfo'
   /v1/local-storage/logic-port:
     get:
+      x-product: OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1461,6 +1496,34 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/LogicPortResponse'
+  /v1/local-storage/authentication/action/regenerate:
+    put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - local-storage-api
+      summary: 自动更新本地存储密码
+      description: 自动更新本地存储密码
+      operationId: updateLocalStorageUserUsingPUT
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -1476,11 +1539,11 @@ definitions:
       nodeId:
         type: string
         description: 节点ID
-        pattern: '^[a-zA-Z0-9]{1,1024}$'
+        pattern: ^[a-zA-Z0-9]{1,1024}$
       realNodeName:
         type: string
         description: 节点名称
-        pattern: '^[a-zA-Z0-9]{1,1024}$'
+        pattern: ^[a-zA-Z0-9]{1,1024}$
     title: AnyBackupNodeRelocation
   AnyBackupNodeVO:
     type: object
@@ -1625,7 +1688,7 @@ definitions:
       type:
         type: integer
         format: int32
-        description: '存储库类型。   1:本地存储库  2:蓝光存储库  3:磁带存储库'
+        description: 存储库类型。   1:本地存储库  2:蓝光存储库  3:磁带存储库
       useHttps:
         type: boolean
         description: 是否使用HTTPS
@@ -1755,7 +1818,7 @@ definitions:
       type:
         type: integer
         format: int32
-        description: '存储库类型。   1:本地存储库  2:蓝光存储库  3:磁带存储库'
+        description: 存储库类型。   1:本地存储库  2:蓝光存储库  3:磁带存储库
       useHttps:
         type: boolean
         description: 是否使用HTTPS
@@ -1922,16 +1985,16 @@ definitions:
         type: integer
         format: int32
         example: 4
-        description: '告警等级[取值范围] 3:重要 4:紧急'
+        description: 告警等级[取值范围] 3:重要 4:紧急
       limitValue:
         type: integer
         format: int64
         example: 80
-        description: '告警阈值，type为1时表示百分比[取值范围]（50-90）;type为2时表示绝对值[取值范围]（正整数）,单位为GB'
+        description: 告警阈值，type为1时表示百分比[取值范围]（50-90）;type为2时表示绝对值[取值范围]（正整数）,单位为GB
       limitValueUnit:
         type: string
         example: 1
-        description: '告警阈值存储单位[取值范围] 1表示TB, 2表示GB，当告警类型是绝对值时进行填写'
+        description: 告警阈值存储单位[取值范围] 1表示TB, 2表示GB，当告警类型是绝对值时进行填写
       matchTime:
         type: integer
         format: int32
@@ -1941,11 +2004,11 @@ definitions:
         type: integer
         format: int64
         example: 50
-        description: '清除告警阈值，type为1时表示百分比[取值范围]（小于告警阈值）;type为2时表示绝对值[取值范围]（小于告警阈值）,单位为GB'
+        description: 清除告警阈值，type为1时表示百分比[取值范围]（小于告警阈值）;type为2时表示绝对值[取值范围]（小于告警阈值）,单位为GB
       recoverValueUnit:
         type: string
         example: 1
-        description: '清除告警阈值存储单位[取值范围] 1表示TB, 2表示GB，当告警类型是绝对值时进行填写'
+        description: 清除告警阈值存储单位[取值范围] 1表示TB, 2表示GB，当告警类型是绝对值时进行填写
       repositoryId:
         type: string
         example: 1
@@ -1954,7 +2017,7 @@ definitions:
         type: integer
         format: int32
         example: 1
-        description: '百分比或者绝对值[取值范围] 1:百分比 2:绝对值'
+        description: 百分比或者绝对值[取值范围] 1:百分比 2:绝对值
     title: RepositoryAlarmThresholdVo
   RepositoryBase:
     type: object
@@ -1976,7 +2039,7 @@ definitions:
       status:
         type: integer
         format: int32
-        description: '存储库状态。 -1:离线  0:在线'
+        description: 存储库状态。 -1:离线  0:在线
       totalSize:
         type: integer
         format: int64
@@ -1984,7 +2047,7 @@ definitions:
       type:
         type: integer
         format: int32
-        description: '存储库类型。   1:本地存储库  2:蓝光存储库  3:磁带存储库'
+        description: 存储库类型。   1:本地存储库  2:蓝光存储库  3:磁带存储库
       usedSize:
         type: integer
         format: int64
@@ -2003,7 +2066,7 @@ definitions:
         type: integer
         format: int32
         example: 4
-        description: '告警等级[取值范围] 3:重要 4:紧急'
+        description: 告警等级[取值范围] 3:重要 4:紧急
         minimum: 0.0
         maximum: 9.223372036854776e18
         exclusiveMinimum: false
@@ -2012,13 +2075,13 @@ definitions:
         type: integer
         format: int64
         example: 80
-        description: '告警阈值，type为1时表示百分比[取值范围]（50-90）;type为2时表示绝对值[取值范围]（正整数）,单位为GB'
+        description: 告警阈值，type为1时表示百分比[取值范围]（50-90）;type为2时表示绝对值[取值范围]（正整数）,单位为GB
         minimum: 1.0
         exclusiveMinimum: false
       limitValueUnit:
         type: string
         example: 1
-        description: '告警阈值存储单位[取值范围] 1表示TB, 2表示GB，当告警类型是绝对值时进行填写'
+        description: 告警阈值存储单位[取值范围] 1表示TB, 2表示GB，当告警类型是绝对值时进行填写
       matchTime:
         type: integer
         format: int32
@@ -2032,18 +2095,18 @@ definitions:
         type: integer
         format: int64
         example: 50
-        description: '清除告警阈值，type为1时表示百分比[取值范围]（小于告警阈值）;type为2时表示绝对值[取值范围]（小于告警阈值）,单位为GB'
+        description: 清除告警阈值，type为1时表示百分比[取值范围]（小于告警阈值）;type为2时表示绝对值[取值范围]（小于告警阈值）,单位为GB
         minimum: 1.0
         exclusiveMinimum: false
       recoverValueUnit:
         type: string
         example: 1
-        description: '清除告警阈值存储单位[取值范围] 1表示TB, 2表示GB，当告警类型是绝对值时进行填写'
+        description: 清除告警阈值存储单位[取值范围] 1表示TB, 2表示GB，当告警类型是绝对值时进行填写
       type:
         type: integer
         format: int32
         example: 1
-        description: '百分比或者绝对值[取值范围] 1:百分比 2:绝对值'
+        description: 百分比或者绝对值[取值范围] 1:百分比 2:绝对值
         minimum: 0.0
         maximum: 9.223372036854776e18
         exclusiveMinimum: false
@@ -2073,14 +2136,14 @@ definitions:
       nodeId:
         type: string
         description: 节点ID
-        pattern: '^[a-zA-Z0-9]{1,1024}$'
+        pattern: ^[a-zA-Z0-9]{1,1024}$
       nodeIp:
         type: string
         description: 节点IP
       nodeName:
         type: string
         description: 节点名称
-        pattern: '^[a-zA-Z0-9]{1,1024}$'
+        pattern: ^[a-zA-Z0-9]{1,1024}$
       pathFreeSize:
         type: integer
         format: int64
@@ -2090,7 +2153,7 @@ definitions:
       pathName:
         type: string
         description: 挂载路径
-        pattern: '/dpa/dpa_fs_[0-9]_[0-9]{2}_[0-9a-zA-Z]{24}/?'
+        pattern: /dpa/dpa_fs_[0-9]_[0-9]{2}_[0-9a-zA-Z]{24}/?
       status:
         type: integer
         format: int32
@@ -2113,7 +2176,7 @@ definitions:
       volName:
         type: string
         description: 卷名
-        pattern: '^[a-zA-Z0-9]{3,30}$'
+        pattern: ^[a-zA-Z0-9]{3,30}$
     title: StandardBackupVol
   StandardBackupVolVO:
     type: object
@@ -2238,7 +2301,7 @@ definitions:
       ak:
         type: string
         description: AK
-        pattern: '^[\S]{1,256}$'
+        pattern: ^[\S]{1,256}$
       alarmEnable:
         type: boolean
         description: 是否开启告警
@@ -2252,7 +2315,7 @@ definitions:
       bucketName:
         type: string
         description: 数据桶名称
-        pattern: '^[\S]{1,256}$'
+        pattern: ^[\S]{1,256}$
       cloudType:
         type: integer
         format: int32
@@ -2264,11 +2327,11 @@ definitions:
       endpoint:
         type: string
         description: 终端节点
-        pattern: '^[\S]{1,256}$'
+        pattern: ^[\S]{1,256}$
       indexBucketName:
         type: string
         description: 索引桶名称
-        pattern: '^[\S]{1,256}$'
+        pattern: ^[\S]{1,256}$
       proxyEnable:
         type: boolean
         description: 是否使用代理
@@ -2284,7 +2347,7 @@ definitions:
       sk:
         type: string
         description: SK
-        pattern: '^[\S]{1,256}$'
+        pattern: ^[\S]{1,256}$
       storageId:
         type: string
         description: 存储id
@@ -2294,7 +2357,7 @@ definitions:
       type:
         type: integer
         format: int32
-        description: '存储库类型。   1:本地存储库  2:蓝光存储库  3:磁带存储库'
+        description: 存储库类型。   1:本地存储库  2:蓝光存储库  3:磁带存储库
       useHttps:
         type: boolean
         description: 是否使用HTTPS
@@ -2343,7 +2406,7 @@ definitions:
         description: 备份存储库名称
         minLength: 1
         maxLength: 32
-        pattern: '^[0-9a-zA-Z_]*$'
+        pattern: ^[0-9a-zA-Z_]*$
       description:
         type: string
         description: 描述
