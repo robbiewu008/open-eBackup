@@ -463,7 +463,7 @@ paths:
       responses:
         '200':
           description: 无返回值
-  /v1/lanFree:
+  /v1/host-agent/{agentId}/lan-free/configuration:
     put:
       x-product: OceanProtect X
       x-dm-role: 'N'
@@ -477,9 +477,13 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - agent-lan-free-controller
-      description: 保存lan-free配置信息
-      operationId: updateLanFree
+      description: 配置lan-free信息
+      operationId: configurationLanFreePUT
       parameters:
+        - name: agentId
+          in: path
+          required: true
+          type: string
         - name: agentLanFreeDTO
           in: body
           required: false
@@ -512,7 +516,6 @@ paths:
           description: Not Found
           schema:
             type: string
-  /v1/lanFree/query:
     get:
       x-product: OceanProtect X
       x-dm-role: 'N'
@@ -526,16 +529,14 @@ paths:
       x-sysadmin-role: 'Y'
       tags:
         - agent-lan-free-controller
-      description: 查询lan-free配置信息请求
-      operationId: queryLanFree
+      summary: 初始化lan-free配置页面
+      description: 初始化配置界面
+      operationId: configurationLanFreeGET
       parameters:
-        - name: resourceId
-          in: query
+        - name: agentId
+          in: path
           required: true
-          description: 资源id
           type: string
-          minLength: 36
-          maxLength: 36
         - name: X-Auth-Token
           in: header
           required: true
@@ -558,7 +559,7 @@ paths:
           description: Not Found
           schema:
             type: string
-  /v1/lanFree/initPage:
+  /v1/host-agent/{agentId}/lan-free/info:
     get:
       x-product: OceanProtect X
       x-dm-role: 'N'
@@ -566,22 +567,19 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
+      x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
         - agent-lan-free-controller
-      summary: 初始化lan-free配置页面
-      operationId: initPage
+      description: 查询lan-free配置信息请求
+      operationId: queryLanFreeGET
       parameters:
-        - name: resourceId
-          in: query
+        - name: agentId
+          in: path
           required: true
-          description: 资源id
           type: string
-          minLength: 36
-          maxLength: 36
         - name: X-Auth-Token
           in: header
           required: true
@@ -591,7 +589,7 @@ paths:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/AgentLanFreeDTO'
+            $ref: '#/definitions/AgentLanFreeViewDTO'
         '401':
           description: Unauthorized
           schema:
@@ -1046,7 +1044,7 @@ definitions:
     required:
       - wwpn
       - isManualAdd
-      - isChoose
+      - chosen
       - runningStatus
     properties:
       wwpn:
@@ -1057,7 +1055,7 @@ definitions:
       isManualAdd:
         type: boolean
         description: 是否客户手动添加
-      isChoose:
+      chosen:
         type: boolean
         description: 是否被选择
       runningStatus:
@@ -1073,7 +1071,7 @@ definitions:
       - location
       - runningStatus
       - wwpn
-      - isChoose
+      - chosen
     properties:
       id:
         type: string
@@ -1090,23 +1088,17 @@ definitions:
         description: FC端口wwpn
         minLength: 16
         maxLength: 32
-      isChoose:
+      chosen:
         type: string
         description: 是否被选择
   AgentLanFreeDTO:
     type: object
     description: lan-free 请求结构体
     required:
-      - resourceId
       - isDelete
       - wwpns
       - fcPorts
     properties:
-      resourceId:
-        type: string
-        description: 资源id
-        minLength: 36
-        maxLength: 36
       isDelete:
         type: boolean
         description: 是否删除lan-free
@@ -1116,3 +1108,39 @@ definitions:
       fcPorts:
         description: FC端口信息
         $ref: '#/definitions/AgentLanFreeFcPort'
+  AgentLanFreeWwpnView:
+    type: object
+    required:
+      - wwpn
+      - runningStatus
+    properties:
+      wwpn:
+        type: string
+        description: wwpn
+      runningStatus:
+        type: string
+        description: 状态
+  AgentLanFreeFcPortView:
+    type: object
+    required:
+      - location
+      - runningStatus
+    properties:
+      location:
+        type: string
+        description: 位置
+      runningStatus:
+        type: string
+        description: 状态
+      wwpn:
+        type: string
+        description: FC端口wwpn
+  AgentLanFreeViewDTO:
+    type: object
+    properties:
+      agentLanFreeWwpnView:
+        description: wwpn信息
+        $ref: '#/definitions/AgentLanFreeWwpnView'
+      agentLanFreeFcPortView:
+        description: FC端口信息
+        $ref: '#/definitions/AgentLanFreeFcPortView'
