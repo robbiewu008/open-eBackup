@@ -11,6 +11,7 @@ tags:
     description: Detect Result Controller
   - name: Task Management
     description: Detect Task Controller
+  - name: Device_Management
 paths:
   /v1/internal/anti/ransomware/detect/copy/false/alarm:
     put:
@@ -163,6 +164,118 @@ paths:
       security:
         - Authorization:
             - global
+  /v1/internal/anti/ransomware/device:
+    post:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8083
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Device_Management
+      summary: 更新或修改设备信息接口
+      operationId: updateDeviceUsingPOST
+      consumes:
+        - application/json
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: 设备ID
+          type: string
+        - name: name
+          in: query
+          required: true
+          description: 设备名称
+          type: string
+        - name: status
+          in: query
+          required: false
+          description: 设备状态
+          type: string
+        - name: type
+          in: query
+          required: false
+          description: 设备类型
+          type: string
+        - name: ip
+          in: query
+          required: true
+          description: 设备地址
+          type: string
+        - name: port
+          in: query
+          required: true
+          description: 设备端口
+          type: string
+        - name: userName
+          in: query
+          required: false
+          description: 用户名称
+          type: string
+        - name: userPwd
+          in: query
+          required: false
+          description: 用户密码
+          type: string
+        - name: enableCert
+          in: query
+          required: false
+          description: 是否校验证书
+          type: string
+        - name: certification
+          in: query
+          required: false
+          description: 证书
+          type: string
+        - name: deviceBelongUserId
+          in: query
+          required: false
+          description: 所属租户
+          type: string
+        - name: vstores
+          in: query
+          required: false
+          description: 租户信息
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: ''
+    delete:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 8083
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Device_Management
+      summary: 删除设备信息接口
+      operationId: deleteDeviceUsingDELETE
+      consumes:
+        - application/json
+      parameters:
+        - name: deviceId
+          in: query
+          required: true
+          description: 设备ID
+          type: string
+      responses:
+        '200':
+          description: ''
 securityDefinitions:
   Authorization:
     type: apiKey
