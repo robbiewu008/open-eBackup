@@ -11,9 +11,13 @@ tags:
     description: Config Controller
   - name: Model Management
     description: Model Controller
+  - name: File Extension Filter Management
+    description: File Extension Filter
+  - name: White List Management
 paths:
   /v1/anti/ransomware/config:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -43,6 +47,7 @@ paths:
         - Authorization:
             - global
     put:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -88,6 +93,7 @@ paths:
             - global
   /v1/anti/ransomware/model:
     post:
+      x-product: OceanProtect X
       x-impact-subsystem: 影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -130,6 +136,7 @@ paths:
         - Authorization:
             - global
     delete:
+      x-product: OceanProtect X
       x-impact-subsystem: 影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -171,6 +178,7 @@ paths:
             - global
   /v1/anti/ransomware/model/activate:
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -216,6 +224,7 @@ paths:
             - global
   /v1/anti/ransomware/models:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -234,16 +243,18 @@ paths:
           name: pageNum
           description: 页的编号
           required: true
-          schema:
-            type: integer
-            format: int64
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 500
         - in: query
           name: pageSize
           description: 每页数量
           required: true
-          schema:
-            type: integer
-            format: int64
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 100
         - name: status
           in: query
           description: 模型状态
@@ -265,6 +276,735 @@ paths:
       security:
         - Authorization:
             - global
+  /v1/anti/ransomware/vstore-detect-configs:
+    get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Config Management
+      summary: 查询租户检测配置
+      operationId: getVstoreDetectConfigs
+      produces:
+        - '*/*'
+      parameters:
+        - name: copyDetectConfigStatus
+          in: query
+          description: 副本检测开启状态
+          required: false
+          type: array
+          items:
+            enum:
+              - ENABLED
+              - DISABLED
+            type: string
+          maxItems: 2
+        - name: ioDetectConfigStatus
+          in: query
+          description: 实时检测开启状态
+          required: false
+          type: array
+          items:
+            enum:
+              - ENABLED
+              - DISABLED
+            type: string
+          maxItems: 2
+        - name: fileExtensionFilterConfigStatus
+          in: query
+          required: false
+          description: 文件后缀拦截开启状态
+          type: array
+          items:
+            enum:
+              - ENABLED
+              - DISABLED
+            type: string
+          maxItems: 2
+        - name: pageNum
+          in: query
+          description: 页的编号
+          required: true
+          type: integer
+          maximum: 100
+          minimum: 1
+          format: int64
+        - name: pageSize
+          in: query
+          description: 每页数量
+          required: true
+          type: integer
+          maximum: 500
+          minimum: 1
+          format: int64
+        - name: vstoreName
+          in: query
+          required: false
+          description: 租户名称
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: Response«List«VstoreDetectConfig»»
+            $ref: '#/definitions/PageListVstoreDetectConfigResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Config Management
+      summary: 修改租户检测配置
+      operationId: updateVstoreDetectConfigs
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: vstoreCopyDetectConfig
+          description: vstoreCopyDetectConfig
+          required: true
+          schema:
+            originalRef: VstoreCopyDetectConfig
+            $ref: '#/definitions/VstoreDetectConfig'
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/anti/ransomware/vstore-infos:
+    get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - File Extension Filter Management
+      summary: 查询可关联文件后缀拦截规则的租户列表
+      operationId: getVstoreInfoUsingGET
+      parameters:
+        - name: pageNum
+          in: query
+          required: true
+          type: integer
+          format: int64
+        - name: pageSize
+          in: query
+          required: true
+          type: integer
+          format: int64
+        - name: vstoreName
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/VstoreInfoResponse'
+  /v1/anti/ransomware/file-extension-filter-rules:
+    get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - File Extension Filter Management
+      summary: 查询租户关联的文件后缀拦截规则
+      operationId: getFileExtensionFilterUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: pageNum
+          in: query
+          required: true
+          type: integer
+          format: int64
+          description: 页的编号
+        - name: pageSize
+          in: query
+          required: true
+          type: integer
+          format: int64
+          description: 每页数量
+          minimum: 1
+          maximum: 100
+        - name: fileExtensionName
+          in: query
+          required: false
+          type: string
+          description: 按文件扩展名查询
+          minLength: 1
+          maxLength: 127
+        - name: fileExtensionType
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+          description: 按文件类型查询
+        - name: vstoreName
+          in: query
+          required: false
+          description: 按租户名查询
+          type: string
+          maxLength: 1024
+          minLength: 1
+        - name: orderBy
+          in: query
+          required: false
+          description: 排序字段
+          type: string
+          enum:
+            - createTime
+            - updateTime
+        - name: orderType
+          in: query
+          required: false
+          description: 排序类型
+          type: string
+          enum:
+            - asc
+            - desc
+        - name: vstoreId
+          in: query
+          required: false
+          description: 按租户ID查询
+          type: string
+          maxLength: 4
+        - name: importStatus
+          in: query
+          required: false
+          description: 按导入状态查询
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            originalRef: CustomFileExtensionResponse
+            $ref: '#/definitions/PageListCustomFileExtensionResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - File Extension Filter Management
+      summary: 修改租户的文件后缀拦截规则
+      operationId: updateFileExtensionFilterUsingPUT
+      consumes:
+        - application/json
+      parameters:
+        - name: modifyUserSuffixRequest
+          in: body
+          required: true
+          description: 修改租户后缀请求
+          schema:
+            $ref: '#/definitions/ModifyUserSuffixRequest'
+      responses:
+        '200':
+          description: ''
+    post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - File Extension Filter Management
+      summary: 关联租户的文件后缀拦截规则
+      operationId: importFileExtensionFilterUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: importUserSuffixRequest
+          description: 新增本地后缀请求
+          required: true
+          schema:
+            originalRef: ImportUserSuffixRequest
+            $ref: '#/definitions/ImportUserSuffixRequest'
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - File Extension Filter Management
+      summary: 删除租户已关联的文件后缀拦截规则
+      operationId: deleteFileExtensionFilterUsingGet
+      consumes:
+        - application/json
+      parameters:
+        - name: importUserSuffixRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ImportUserSuffixRequest'
+          description: 删除文件后缀的请求，包含租户列表和后缀列表
+      responses:
+        '200':
+          description: ''
+  /v1/anti/ransomware/file-extension-filter-rules/action/customization:
+    post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - File Extension Filter Management
+      summary: 增加自定义文件后缀拦截规则
+      operationId: addCustomizationFileExtensionFilterUsingPost
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: addCustomFileExtensionRequest
+          description: 添加自定义勒索文件扩展名请求
+          required: true
+          schema:
+            originalRef: AddCustomFileExtensionRequest
+            $ref: '#/definitions/AddCustomFileExtensionRequest'
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    delete:
+      x-product: OceanProtect X
+      tags:
+        - File Extension Filter Management
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 删除自定义文件后缀拦截规则
+      operationId: deleteCustomizationFileExtensionFilterUsingDelete
+      consumes:
+        - application/json
+      parameters:
+        - name: deleteCustomFileExtensionRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DeleteCustomFileExtensionRequest'
+      responses:
+        '200':
+          description: ''
+  /v1/anti/ransomware/io-detect/summary:
+    get:
+      x-product: CyberEngine,OceanProtect X
+      tags:
+        - Config Management
+      summary: 查询实时检测告警汇总
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: getIoDetectSummary
+      parameters:
+        - name: pageNum
+          in: query
+          required: true
+          description: 页的编号
+          type: integer
+          format: int64
+          maximum: 100
+        - name: pageSize
+          in: query
+          required: true
+          description: 每页数量
+          type: integer
+          format: int64
+          maximum: 500
+      responses:
+        '200':
+          description: 实时检测告警结果汇总
+          schema:
+            $ref: '#/definitions/Response«List«IoDetectSummary»»'
+  /v1/anti/ransomware/vstore-detect-configs/summary:
+    get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Config Management
+      summary: 查询租户检测配置汇总
+      description: 查询租户检测配置汇总
+      operationId: getVstoreDetectConfigsSummary
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/VstoreDetectConfigSummary'
+  /v1/anti/ransomware/file-extension-filter-rules/action/scan:
+    put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - File Extension Filter Management
+      summary: 扫描DeviceManger文件过滤规则和ProtectManger配置规则是否一致
+      operationId: scanFileExtensionFilter
+      responses:
+        '200':
+          description: ''
+  /v1/anti/ransomware/white-list:
+    get:
+      x-product: CyberEngine,OceanProtect X
+      tags:
+        - White List Management
+      summary: 查询勒索检测白名单
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 查询勒索检测白名单
+      operationId: getWhiteListInfoUsingGET
+      parameters:
+        - name: pageNum
+          in: query
+          required: true
+          description: 页码
+          type: integer
+          format: int64
+        - name: pageSize
+          in: query
+          required: true
+          description: 页面大小
+          type: integer
+          format: int64
+        - name: content
+          in: query
+          required: false
+          description: 模糊匹配白名单内容
+          type: string
+        - name: type
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+            enum:
+              - DIR
+              - FILE
+          description: 筛选白名单类型
+        - name: vstoreId
+          in: query
+          required: false
+          description: 租户ID
+          type: string
+        - name: order
+          in: query
+          required: false
+          description: 按时间正序或倒序
+          type: string
+          enum:
+            - asc
+            - desc
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PagedWhiteListInfoResponse'
+    post:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - White List Management
+      summary: 创建勒索检测白名单
+      description: 创建勒索检测白名单
+      operationId: createWhiteListUsingPOST
+      consumes:
+        - application/json
+      parameters:
+        - name: createWhiteListRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateWhiteListRequest'
+      responses:
+        '200':
+          description: OK
+    delete:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - White List Management
+      summary: 删除勒索检测白名单
+      description: 删除勒索检测白名单
+      operationId: deleteWhiteListUsingDELETE
+      consumes:
+        - application/json
+      parameters:
+        - name: deleteWhiteListRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DeleteWhiteListRequest'
+      responses:
+        '200':
+          description: OK
+    put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - White List Management
+      summary: 修改勒索检测白名单
+      description: 修改勒索检测白名单
+      operationId: modifyWhiteListUsingPUT
+      consumes:
+        - application/json
+      parameters:
+        - name: modifyWhiteListRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ModifyWhiteListRequest'
+      responses:
+        '200':
+          description: OK
+  /v1/anti/ransomware/white-list-association:
+    post:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - White List Management
+      summary: 创建勒索检测白名单和租户关联信息
+      description: 创建勒索检测白名单和租户关联信息
+      operationId: createWhiteListAssociationUsingPOST
+      consumes:
+        - application/json
+      parameters:
+        - name: createWhiteListAssociationRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateWhiteListAssociationRequest'
+      responses:
+        '200':
+          description: OK
+    delete:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - White List Management
+      summary: 删除勒索检测白名单和租户关联信息
+      description: 删除勒索检测白名单和租户关联信息
+      operationId: deleteWhiteListAssociationUsingDELETE
+      consumes:
+        - application/json
+      parameters:
+        - name: deleteWhiteListAssociationRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DeleteWhiteListAssociationRequest'
+      responses:
+        '200':
+          description: OK
+    put:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - White List Management
+      summary: 修改勒索检测白名单和租户关联信息
+      description: 修改勒索检测白名单和租户关联信息
+      operationId: modifyWhiteListAssociationUsingPUT
+      consumes:
+        - application/json
+      parameters:
+        - name: modifyWhiteListAssociationRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ModifyWhiteListAssociationRequest'
+      responses:
+        '200':
+          description: OK
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -272,15 +1012,16 @@ securityDefinitions:
     in: header
 definitions:
   ActivateModelRequest:
-    type: object
-    required:
-      - id
     properties:
       id:
         type: string
-        example: 1
+        example: '1'
         description: 模型编号
+        minLength: 1
+        maxLength: 1024
     title: ActivateModelRequest
+    required:
+      - id
   ActivateModelResponse:
     type: object
     properties:
@@ -297,15 +1038,16 @@ definitions:
     required:
       - dynamicDetection
   DeleteModelRequest:
-    type: object
-    required:
-      - id
     properties:
       id:
         type: string
-        example: 1
+        example: '1'
         description: 模型编号
+        minLength: 1
+        maxLength: 1024
     title: DeleteModelRequest
+    required:
+      - id
   DeleteModelResponse:
     type: object
     properties:
@@ -364,3 +1106,409 @@ definitions:
         format: int64
         description: 翻页
     title: Response«List«ModelInfo»»
+  AddCustomFileExtensionRequest:
+    properties:
+      fileExtensionName:
+        type: string
+        description: 自定义待过滤文件扩展名
+        minLength: 1
+        maxLength: 127
+    title: AddCustomFileExtensionRequest
+    required:
+      - fileExtensionName
+  PageListCustomFileExtensionResponse:
+    properties:
+      errorCode:
+        type: integer
+        format: int64
+        description: 错误编码
+      errorMessage:
+        type: string
+        description: 错误描述
+      parameters:
+        type: array
+        items:
+          type: string
+        description: 错误参数
+      records:
+        items:
+          $ref: '#/definitions/CustomFileExtensionResponse'
+        description: 数据
+        type: array
+      totalCount:
+        type: integer
+        format: int64
+        description: 翻页
+    title: CustomFileExtensionResponse
+  DeleteCustomFileExtensionRequest:
+    properties:
+      deleteExtensions:
+        type: array
+        items:
+          type: string
+          minLength: 1
+          maxLength: 127
+        description: 待删除的自定义后缀列表
+    title: DeleteCustomFileExtensionRequest
+  ImportUserSuffixRequest:
+    properties:
+      vstoreIds:
+        type: array
+        description: 导入的租户ID合集
+        items:
+          type: string
+          minLength: 1
+          maxLength: 4
+      extensions:
+        type: array
+        items:
+          type: string
+          minLength: 1
+          maxLength: 127
+        description: 待导入的文件后缀合集
+    title: ImportUserSuffixRequest
+    required:
+      - vstoreIds
+      - extensions
+  PageListVstoreDetectConfigResponse:
+    properties:
+      errorCode:
+        type: integer
+        format: int64
+        description: 错误编码
+      errorMessage:
+        type: string
+        description: 错误描述
+      parameters:
+        type: array
+        description: 错误参数
+        items:
+          type: string
+      records:
+        type: array
+        description: 数据
+        items:
+          originalRef: VstoreDetectConfig
+          $ref: '#/definitions/VstoreDetectConfigResponse'
+      totalCount:
+        type: integer
+        format: int64
+        description: 翻页
+    title: Response«List«VstoreDetectConfig»»
+  VstoreDetectConfigResponse:
+    properties:
+      copyDetectConfigStatus:
+        type: string
+        description: 副本检测开启状态
+        enum:
+          - DISABLED
+          - ENABLED
+      ioDetectConfigStatus:
+        type: string
+        description: 实时检测开启状态
+        enum:
+          - DISABLED
+          - ENABLED
+      vstoreId:
+        type: string
+        description: 租户ID
+      vstoreName:
+        type: string
+        description: 租户名称
+      fileExtensionFilterConfigStatus:
+        type: string
+        description: 文件后缀拦截开启状态
+        enum:
+          - DISABLED
+          - ENABLED
+      enabledFileExtensionFilterRuleCount:
+        type: integer
+        format: int64
+        description: 拦截的文件后缀数量
+    title: VstoreDetectConfig
+  ModifyUserSuffixRequest:
+    properties:
+      vstoreId:
+        type: string
+        description: 修改租户的ID
+        minLength: 1
+        maxLength: 4
+      extensions:
+        type: array
+        items:
+          type: string
+          minLength: 1
+          maxLength: 127
+        description: 修改后该租户的后缀合集
+    required:
+      - vstoreId
+      - extensions
+  CustomFileExtensionResponse:
+    properties:
+      vstoreInfos:
+        type: array
+        items:
+          $ref: '#/definitions/VstoreInfo'
+        description: 关联租户Id
+      fileExtensionName:
+        type: string
+        description: 文件扩展名
+      fileExtensionType:
+        type: string
+        description: 文件类型
+      importStatus:
+        type: string
+        description: 文件操作状态
+      createTime:
+        type: string
+        description: 创建时间
+      updateTime:
+        type: string
+        description: '更新时间: 表现为导入时间'
+  VstoreInfo:
+    properties:
+      vstoreId:
+        type: string
+      vstoreName:
+        type: string
+  VstoreInfoResponse:
+    properties:
+      errorCode:
+        type: integer
+        format: int64
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/VstoreInfo'
+      totalCount:
+        type: integer
+        format: int64
+      parameters:
+        type: array
+        items:
+          type: string
+      errorMessage:
+        type: string
+    required:
+      - records
+  VstoreDetectConfig:
+    description: 租户检测配置请求
+    properties:
+      vstoreIds:
+        type: array
+        items:
+          type: string
+          minLength: 1
+          maxLength: 4
+        description: 租户ID列表
+        minItems: 1
+        maxItems: 1024
+      configField:
+        type: string
+        description: 待配置字段
+        enum:
+          - COPY_DETECT
+          - IO_DETECT
+          - FILE_EXTENSION_FILTER
+      isEnabled:
+        type: boolean
+        description: 是否启用
+    required:
+      - vstoreIds
+      - configField
+      - isEnabled
+  IoDetectSummary:
+    description: 实时检测汇总
+    properties:
+      vstoreName:
+        type: string
+        description: 租户名称
+      alarmCount:
+        type: integer
+        format: int32
+        description: 告警数量
+      alarmIds:
+        type: array
+        items:
+          type: string
+        description: 告警ID列表
+  DetectConfigCount:
+    description: 检测配置计数
+    properties:
+      enabledCount:
+        type: integer
+        format: int64
+        description: 已开启检测的租户数量
+      disabledCount:
+        type: integer
+        format: int64
+        description: 未开启检测的租户数量
+  VstoreDetectConfigSummary:
+    properties:
+      fileExtensionFilterConfigSummary:
+        description: 文件拦截配置汇总
+        $ref: '#/definitions/DetectConfigCount'
+      ioDetectConfigSummary:
+        description: 实时检测配置汇总
+        $ref: '#/definitions/DetectConfigCount'
+      copyDetectConfigSummary:
+        description: 副本检测配置汇总
+        $ref: '#/definitions/DetectConfigCount'
+  Response«List«IoDetectSummary»»:
+    properties:
+      detailParams:
+        type: array
+        description: 错误参数
+        items:
+          type: string
+      errorCode:
+        type: integer
+        format: int64
+        description: 错误编码
+      errorMessage:
+        type: string
+        description: 错误描述
+      records:
+        type: array
+        description: 数据
+        items:
+          $ref: '#/definitions/IoDetectSummary'
+          originalRef: ModelInfo
+      totalCount:
+        type: integer
+        format: int64
+        description: 翻页
+    title: Response«List«ModelInfo»»
+  WhiteListInfoResponse:
+    properties:
+      vstoreInfos:
+        type: array
+        items:
+          $ref: '#/definitions/VstoreInfo'
+        description: 关联的租户信息
+      content:
+        type: string
+        description: 白名单内容
+      type:
+        type: string
+        description: 白名单类型
+        enum:
+          - DIR
+          - FILE
+      id:
+        type: string
+        description: 白名单ID
+      createTime:
+        type: string
+        description: 创建时间
+    required:
+      - vstoreInfos
+      - content
+      - type
+      - id
+      - createTime
+  PagedWhiteListInfoResponse:
+    properties:
+      errorCode:
+        type: integer
+        format: int64
+        description: 错误编码
+      errorMessage:
+        type: string
+        description: 错误描述
+      parameters:
+        type: array
+        items:
+          type: string
+        description: 错误参数
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/WhiteListInfoResponse'
+        description: 数据
+      totalCount:
+        type: integer
+        format: int64
+        description: 总数
+  CreateWhiteListRequest:
+    properties:
+      content:
+        type: string
+        description: 白名单内容
+      type:
+        type: string
+        description: 白名单类型
+        enum:
+          - DIR
+          - FILE
+      vstoreIds:
+        type: array
+        items:
+          type: string
+        description: 租户ID列表
+    required:
+      - content
+      - type
+  DeleteWhiteListRequest:
+    required:
+      - ids
+    properties:
+      ids:
+        type: array
+        items:
+          type: string
+        description: 白名单ID列表
+  ModifyWhiteListRequest:
+    required:
+      - content
+      - id
+    properties:
+      content:
+        type: string
+        description: 修改后的白名单内容
+      id:
+        type: string
+        description: 白名单ID
+  CreateWhiteListAssociationRequest:
+    required:
+      - ids
+      - vstoreIds
+    properties:
+      ids:
+        type: array
+        items:
+          type: string
+        description: 白名单ID列表
+      vstoreIds:
+        type: array
+        items:
+          type: string
+        description: 租户ID列表
+  DeleteWhiteListAssociationRequest:
+    required:
+      - ids
+      - vstoreIds
+    properties:
+      ids:
+        type: array
+        items:
+          type: string
+        description: 白名单ID列表
+      vstoreIds:
+        type: array
+        items:
+          type: string
+        description: 租户ID列表
+  ModifyWhiteListAssociationRequest:
+    required:
+      - vstoreId
+      - ids
+    properties:
+      vstoreId:
+        type: string
+        description: 租户ID
+      ids:
+        type: array
+        items:
+          type: string
+        description: 修改后的白名单ID集合

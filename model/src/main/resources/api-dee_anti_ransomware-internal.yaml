@@ -14,6 +14,7 @@ tags:
 paths:
   /v1/internal/anti/ransomware/detect/copy/false/alarm:
     put:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 影响
       x-access-port: 8083
       x-auth-required: 'N'
@@ -53,6 +54,7 @@ paths:
             - global
   /v1/internal/anti/ransomware/detect/copy/feature:
     delete:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 影响
       x-access-port: 8083
       x-auth-required: 'N'
@@ -88,6 +90,7 @@ paths:
             - global
   /v1/internal/anti/ransomware/detect/task:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 影响
       x-access-port: 8083
       x-auth-required: 'N'
@@ -126,6 +129,7 @@ paths:
         - Authorization:
             - global
     delete:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 影响
       x-access-port: 8083
       x-auth-required: 'N'
@@ -173,48 +177,84 @@ definitions:
       copyId:
         type: string
         description: 副本编号（UUID格式）
+        minLength: 1
+        maxLength: 1024
       copyType:
         type: string
         description: 副本类型
+        minLength: 1
+        maxLength: 1024
       requestId:
         type: string
         description: 请求编号（UUID格式）
+        minLength: 1
+        maxLength: 1024
       resourceId:
         type: string
         description: 资源编号（UUID格式）
+        minLength: 1
+        maxLength: 1024
       resourceType:
         type: string
         description: 资源子类型
+        minLength: 1
+        maxLength: 1024
       snapId:
         type: string
         description: 快照索引
+        minLength: 1
+        maxLength: 1024
       snapMetadata:
         type: string
         description: 快照元数据
+        minLength: 1
+        maxLength: 65536
       storageAddress:
         type: string
         description: 存储地址
+        minLength: 1
+        maxLength: 1024
       storagePassword:
         type: string
         description: 存储密码
+        minLength: 1
+        maxLength: 1024
       storagePort:
         type: string
         description: 存储端口
+        minLength: 1
+        maxLength: 1024
       storageProtocol:
         type: string
         description: 存储协议
+        minLength: 1
+        maxLength: 1024
       storageType:
         type: string
         description: 存储类型
+        minLength: 1
+        maxLength: 1024
       storageUsername:
         type: string
         description: 存储用户
+        minLength: 1
+        maxLength: 1024
       resourceName:
         type: string
         description: 资源名称
+        minLength: 1
+        maxLength: 1024
       copyDisplayTimestamp:
         type: string
         description: 副本创建时间点
+        minLength: 1
+        maxLength: 1024
+      isWorm:
+        type: boolean
+        description: 是否设置防篡改
+      isNeedDetect:
+        type: boolean
+        description: 是否需要检测
     title: AddTaskRequest
     required:
       - copyGn
@@ -230,16 +270,12 @@ definitions:
       - resourceName
       - copyDisplayTimestamp
   AddTaskResponse:
-    type: object
     properties:
       taskCode:
         type: string
         description: 任务编号
     title: AddTaskResponse
   DeleteByCopyIdRequest:
-    type: object
-    required:
-      - copyIdList
     properties:
       copyIdList:
         type: array
@@ -248,7 +284,12 @@ definitions:
         description: 待进行误报处理的副本ID列表
         items:
           type: string
+          minLength: 1
+          maxLength: 1024
+        minItems: 1
     title: DeleteByCopyIdRequest
+    required:
+      - copyIdList
   DeleteByCopyIdResponse:
     type: object
     properties:
@@ -257,16 +298,18 @@ definitions:
         description: 根据副本id删除特征文件是否成功
     title: DeleteByCopyIdResponse
   DeleteTaskRequest:
-    type: object
-    required:
-      - resourceIds
     properties:
       resourceIds:
         type: array
         description: 待删除的副本ID列表
         items:
           type: string
+          minLength: 1
+          maxLength: 1024
+        minItems: 1
     title: DeleteTaskRequest
+    required:
+      - resourceIds
   DeleteTaskResponse:
     type: object
     properties:
@@ -277,16 +320,18 @@ definitions:
           type: string
     title: DeleteTaskResponse
   DetectFalseAlarmRequest:
-    type: object
-    required:
-      - copyIds
     properties:
       copyIds:
         type: array
         description: 待进行误报处理的副本ID列表
         items:
           type: string
+          minLength: 1
+          maxLength: 1024
+        minItems: 1
     title: DetectFalseAlarmRequest
+    required:
+      - copyIds
   DetectFalseAlarmResponse:
     type: object
     properties:
