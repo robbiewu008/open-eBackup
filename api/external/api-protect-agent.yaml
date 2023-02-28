@@ -1095,11 +1095,11 @@ definitions:
     type: object
     description: lan-free 请求结构体
     required:
-      - isDelete
+      - delete
       - wwpns
       - fcPorts
     properties:
-      isDelete:
+      delete:
         type: boolean
         description: 是否删除lan-free
       wwpns:
