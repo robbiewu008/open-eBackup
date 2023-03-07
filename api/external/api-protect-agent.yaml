@@ -1043,7 +1043,7 @@ definitions:
     description: LAN-FREE wwpn请求体
     required:
       - wwpn
-      - isManualAdd
+      - manualAdd
       - chosen
       - runningStatus
     properties:
@@ -1052,7 +1052,7 @@ definitions:
         description: wwpn
         minLength: 16
         maxLength: 32
-      isManualAdd:
+      manualAdd:
         type: boolean
         description: 是否客户手动添加
       chosen:
