@@ -492,6 +492,8 @@ paths:
             - global
   /v1/local-storage/auth:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -517,8 +519,10 @@ paths:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/LocalStorageAuthRes'
+            items:
+              $ref: '#/definitions/LocalStorageAuthRes'
             originalRef: LocalStorageAuthRes
+            type: array
         '401':
           description: Unauthorized
         '403':
@@ -1839,6 +1843,9 @@ definitions:
       userName:
         type: string
         description: 用户名
+      authType:
+        type: string
+        description: '本地用户的类型;枚举 业务认证:serviceAuth 管理认证: managerAuth'
     title: LocalStorageAuthRes
   LocalStorageInfoRes:
     type: object
@@ -2398,6 +2405,9 @@ definitions:
         description: 用户名
         minLength: 1
         maxLength: 64
+      authType:
+        type: string
+        description: '本地用户的类型;枚举 业务认证:serviceAuth 管理认证: managerAuth'
     title: UpdateStorageRequest
   CreateNasDistributionStorageReq:
     properties:
