@@ -12,34 +12,36 @@ tags:
 paths:
   /v1/users/function:
     put:
+      x-dr-role: 'Y'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
         - function-switch-api
       operationId: setFunctionOfUserUsingPut
       summary: 设置用户功能开关
+      description: 支持系统管理员和灾备管理员设置功能开关（灾备管理员只能为SAML用户设置功能开关）
       x-is-registered: 'N'
       x-support-sdk: 'N'
       produces:
         - application/json
       parameters:
-        - name: functionSwitchPo
+        - name: functionSwitchBase
           in: body
           required: true
-          description: 页面查询用户功能开关时传入的FunctionSwitchPo对象
+          description: 页面查询用户功能开关时传入的FunctionSwitchBase对象
           schema:
             $ref: '#/definitions/FunctionSwitchBase'
       responses:
         '200':
-          description: 设置用户功能成功后返回随机字符串
+          description: 设置用户功能成功后返回用户功能ID
           schema:
             $ref: '#/definitions/UuidObject'
         '400':
@@ -54,6 +56,7 @@ paths:
                 request_uuid-timestamp-hostname.
   /v1/users/function/{userId}:
     get:
+      x-dr-role: 'Y'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -68,6 +71,7 @@ paths:
         - function-switch-api
       operationId: getFunctionOfUserUsingGet
       summary: 查询用户功能开关
+      description: 支持系统管理员和灾备管理员查询用户功能开关，其中灾备管理员只能查询SAML用户功能开关
       x-is-registered: 'N'
       x-support-sdk: 'N'
       produces:
@@ -77,12 +81,12 @@ paths:
           in: path
           required: true
           type: string
-          description: 页面查询用户功能开关时传入的用户ID
+          description: 页面查询用户功能开关时传入的用户id
       responses:
         '200':
-          description: 查询用户功能开关
+          description: 以FunctionSwitchPo对象返回的用户功能开关开启情况
           schema:
-            $ref: '#/definitions/functionSwitchPo'
+            $ref: '#/definitions/FunctionSwitchPo'
         '400':
           description: Error response
           schema:
@@ -93,32 +97,6 @@ paths:
               description: >-
                 This field is the request ID number for task tracking. Format is
                 request_uuid-timestamp-hostname.
-    delete:
-      x-product: OceanProtect X
-      x-dm-role: 'N'
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      tags:
-        - function-switch-api
-      summary: 删除用户功能开关
-      operationId: deleteFunctionUsingDelete
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          type: string
-          description: 删除用户功能开关时传入的用户ID
-      responses:
-        '200':
-          description: ''
-          schema:
-            type: string
 definitions:
   DemoInfo:
     description: This is a demo
@@ -166,7 +144,7 @@ definitions:
     properties:
       userId:
         type: string
-        description: 数据保护管理员的用户ID
+        description: 数据保护管理员的用户id
       canBackup:
         type: boolean
         description: 开启/关闭备份功能
@@ -185,6 +163,31 @@ definitions:
       uuid:
         type: string
         description: 返回随机数序列
-  functionSwitchPo:
+  FunctionSwitchPo:
     type: object
-    properties: {}
+    properties:
+      functionId:
+        type: string
+        description: 用户功能表的uuid
+      userId:
+        type: string
+        description: 数据保护管理员的用户ID
+      canBackup:
+        type: boolean
+        description: 开启/关闭备份功能
+      canRestore:
+        type: string
+        description: 开启/关闭恢复功能
+      canArchive:
+        type: string
+        description: 开启/关闭归档功能
+      canReplication:
+        type: string
+        description: 开启/关闭复制功能
+    required:
+      - functionId
+      - userId
+      - canBackup
+      - canRestore
+      - canArchive
+      - canReplication
