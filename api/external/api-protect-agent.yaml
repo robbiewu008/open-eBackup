@@ -1138,9 +1138,9 @@ definitions:
   AgentLanFreeViewDTO:
     type: object
     properties:
-      agentLanFreeWwpnView:
+      wwpns:
         description: wwpn信息
         $ref: '#/definitions/AgentLanFreeWwpnView'
-      agentLanFreeFcPortView:
+      fcPorts:
         description: FC端口信息
         $ref: '#/definitions/AgentLanFreeFcPortView'
