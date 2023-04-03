@@ -39,6 +39,60 @@ paths:
         - protected_copy_object_api
       operationId: internal_protected_copy_objects_action_sync_sla_put
       summary: 副本保护对象同步SLA信息变更【内部接口】
+  /v1/internal/protected-copy-objects/action/count:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected_copy_object_api
+      description: 根据SLA的ID查询关联副本数量【内部接口】
+      operationId: internalProtectedCopyObjectsActionCountGet
+      parameters:
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/Body_sync_replica_sla_change_v1_internal_protected_copy_objects_action_sync_sla_put'
+          description: sla id
+      responses:
+        '200':
+          description: Successful Response
+  /v1/internal/protected-copy-objects/action/verify:
+    get:
+      tags:
+        - protected_copy_object_api
+      x-dr-role: 'Y'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      description: 根据资源ID列表和用户ID校验复制副本资源所属用户是否正确【内部接口】
+      operationId: internalProtectedCopyObjectsActionVerify
+      parameters:
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/Body_sync_replica_sla_change_v1_internal_protected_copy_objects_action_sync_sla_put'
+          description: 资源id和用户id
+      responses:
+        '200':
+          description: Successful Response
 definitions:
   Body_sync_replica_sla_change_v1_internal_protected_copy_objects_action_sync_sla_put:
     properties:
