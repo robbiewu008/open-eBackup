@@ -14,6 +14,7 @@ tags:
 paths:
   /v1/live-mount:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -77,6 +78,7 @@ paths:
         - Authorization:
             - global
     post:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -126,6 +128,7 @@ paths:
             - global
   '/v1/live-mount/environment/{copy_id}':
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -170,6 +173,7 @@ paths:
             - global
   '/v1/live-mount/{live_mount_id}':
     put:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -219,6 +223,7 @@ paths:
         - Authorization:
             - global
     delete:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -272,6 +277,7 @@ paths:
             - global
   '/v1/live-mount/{live_mount_id}/action/activate':
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -317,6 +323,7 @@ paths:
             - global
   '/v1/live-mount/{live_mount_id}/action/deactivate':
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -362,6 +369,7 @@ paths:
             - global
   '/v1/live-mount/{live_mount_id}/action/migrate':
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -414,6 +422,7 @@ paths:
             - global
   '/v1/live-mount/{live_mount_id}/action/update':
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -466,6 +475,7 @@ paths:
             - global
   /v1/livemount-policies:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -477,7 +487,7 @@ paths:
       tags:
         - live-mount-policy-api
       summary: 查询更新策略
-      operationId: getPoliciesUsingGET
+      operationId: getLiveMountPoliciesUsingGET
       produces:
         - '*/*'
       parameters:
@@ -527,6 +537,7 @@ paths:
         - Authorization:
             - global
     post:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -538,7 +549,7 @@ paths:
       tags:
         - live-mount-policy-api
       summary: 创建更新策略
-      operationId: createPolicyUsingPOST
+      operationId: createLiveMountPolicyUsingPOST
       consumes:
         - application/json
       produces:
@@ -572,6 +583,7 @@ paths:
             - global
   '/v1/livemount-policies/{policyId}':
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -583,7 +595,7 @@ paths:
       tags:
         - live-mount-policy-api
       summary: 查询单个更新策略
-      operationId: getPolicyUsingGET
+      operationId: getLiveMountPolicyUsingGET
       produces:
         - '*/*'
       parameters:
@@ -615,6 +627,7 @@ paths:
         - Authorization:
             - global
     delete:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -626,7 +639,7 @@ paths:
       tags:
         - live-mount-policy-api
       summary: 删除更新策略
-      operationId: deletePolicyUsingDELETE
+      operationId: deleteLiveMountPolicyUsingDELETE
       produces:
         - '*/*'
       parameters:
@@ -656,6 +669,7 @@ paths:
             - global
   '/v1/livemount-policies/{policyId}/action/update':
     put:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -667,7 +681,7 @@ paths:
       tags:
         - live-mount-policy-api
       summary: 修改更新策略
-      operationId: updatePolicyUsingPUT
+      operationId: updateLiveMountPolicyUsingPUT
       consumes:
         - application/json
       produces:
