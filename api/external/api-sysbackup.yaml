@@ -12,6 +12,7 @@ tags:
 paths:
   /v1/sysbackup/images:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -23,7 +24,7 @@ paths:
       tags:
         - sysbackup-api
       summary: 备份记录列表
-      operationId: listUsingGET
+      operationId: BackupListUsingGET
       produces:
         - '*/*'
       parameters:
@@ -95,6 +96,7 @@ paths:
         - Authorization:
             - global
     post:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -141,6 +143,7 @@ paths:
             - global
   /v1/sysbackup/images/{imagesId}:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -183,6 +186,7 @@ paths:
         - Authorization:
             - global
     delete:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -226,6 +230,7 @@ paths:
             - global
   /v1/sysbackup/images/{imagesId}/action/download:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -266,6 +271,7 @@ paths:
             - global
   /v1/sysbackup/images/{imagesId}/action/recovery:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -319,6 +325,7 @@ paths:
             - global
   /v1/sysbackup/policy:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -355,6 +362,7 @@ paths:
         - Authorization:
             - global
     post:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -403,6 +411,7 @@ paths:
             - global
   /v1/sysbackup/policy/action/run:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -451,6 +460,7 @@ paths:
             - global
   /v1/sysbackup/sftp/connection:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - sysbackup-api
       summary: 测试SFTP服务器连通性
