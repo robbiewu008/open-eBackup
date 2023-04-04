@@ -77,10 +77,11 @@ paths:
             $ref: '#/definitions/ListResourceRsp'
   /v1/agents/config:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -118,10 +119,11 @@ paths:
               type: string
   /v1/agents/task/status:
     put:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -131,7 +133,7 @@ paths:
       tags:
         - task
       summary: 传递任务状态
-      operationId: DeliverTaskStatus
+      operationId: TransferTaskStatus
       parameters:
         - name: deliverTaskReq
           in: body
