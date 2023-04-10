@@ -147,7 +147,7 @@ paths:
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
-      x-dp-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -184,6 +184,12 @@ paths:
             type: string
             maxLength: 32
           description: 过滤条件-用户类型
+        - name: userId
+          in: query
+          required: false
+          description: 全匹配用户id，数据保护管理员只能查询自己
+          type: string
+          pattern: '[0-9a-f]{32}'
       responses:
         '200':
           description: 返回的分页查询结果
