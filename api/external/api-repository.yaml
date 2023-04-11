@@ -1846,9 +1846,6 @@ definitions:
       authType:
         type: string
         description: '本地用户的类型;枚举 业务认证:serviceAuth 管理认证: managerAuth'
-      modifiable:
-        type: string
-        description: 判断用户是否可修改 0为不可修改,1为可修改
     title: LocalStorageAuthRes
   LocalStorageInfoRes:
     type: object
@@ -2411,6 +2408,9 @@ definitions:
       authType:
         type: string
         description: '本地用户的类型;枚举 业务认证:serviceAuth 管理认证: managerAuth'
+      modifiable:
+        type: string
+        description: 判断用户是否可修改 0为不可修改,1为可修改
     title: UpdateStorageRequest
   CreateNasDistributionStorageReq:
     properties:
