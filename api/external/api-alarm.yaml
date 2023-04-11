@@ -286,7 +286,7 @@ paths:
       tags:
         - alarm-and-event-api
       summary: 批量查询告警对象
-      operationId: findPageUsingGET
+      operationId: findObjectsPageUsingGET
       produces:
         - '*/*'
       parameters:
