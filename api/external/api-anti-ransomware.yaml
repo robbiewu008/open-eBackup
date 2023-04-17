@@ -287,7 +287,8 @@ paths:
           description: Forbidden
   /v1/anti-ransomware/action/detect:
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -653,8 +654,12 @@ definitions:
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
+      isSecuritySnap:
+        type: boolean
+        description: 仅在安全一体机部署形态下生效，是否设置安全快照
     required:
       - copyId
+    type: object
   AntiRansomwareResourceRes:
     description: 资源
     properties:
