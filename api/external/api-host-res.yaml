@@ -819,10 +819,14 @@ definitions:
       hostPassword:
         type: string
         description: 主机密码
+      sshMacs:
+        type: string
+        description: 消息签名算法
     required:
       - hostId
       - hostUserName
       - hostPassword
+    type: object
   MigrationReq:
     description: 迁移主机请求体
     properties:
@@ -838,4 +842,5 @@ definitions:
     required:
       - targetClusterId
       - hostMigrateReq
+    type: object
 x-components: {}
