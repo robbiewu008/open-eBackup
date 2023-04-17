@@ -139,6 +139,21 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+  /v1/infra/inspect/config/version:
+    get:
+      tags:
+      - "inspect-info-api"
+      summary: "查询容器平台和容器应用的L版本"
+      x-swagger-router-controller: "service.apis.controllers.inspect_controller"
+      x-product: "CyberEngine"
+      operationId: "check_config_version"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: '#/definitions/NodeListConfigVersionResponse'
+        "400":
+          description: "Bad Request"
   /v1/infra/inspect/service/status:
     get:
       x-product: CyberEngine,OceanProtect X
@@ -1463,6 +1478,22 @@ definitions:
         type: number
         format: float
         description: 资源使用占比水位线
+  NodeListConfigVersionResponse:
+    type: "object"
+    properties:
+      data:
+        $ref: "#/definitions/ConfigVersion"
+      error:
+        $ref: "#/definitions/ErrorResponse"
+  ConfigVersion:
+    type: "object"
+    properties:
+      applicationVersion:
+        type: "string"
+        description: "应用的L版本号"
+      kubeVersion:
+        type: "string"
+        description: "容器的版本号"
   NodeListDomainResponse:
     type: object
     properties:
