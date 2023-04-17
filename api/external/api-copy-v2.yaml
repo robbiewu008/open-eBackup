@@ -8,8 +8,82 @@ basePath: /
 tags:
   - name: copy-controller
 paths:
+  /v2/copies/summary/resources:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: CyberEngine,OceanProtect X
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          minimum: 0
+          name: pageNo
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: pageSize
+          required: true
+          type: integer
+        - collectionFormat: multi
+          description: |-
+            排序字段(+增序-减序)：(+/-)copyCount，(+/-)displayTimestamp。
+            该参数需要UrlEncode编码。
+          in: query
+          items:
+            type: string
+          name: orders
+          required: false
+          type: array
+        - description: |-
+            条件参数：
+            {
+                "resourceSubType": [
+                    "Fileset"
+                ],
+                "resourceName": "c",
+                "resourceLocation": "4",
+                "resourceStatus": [
+                    "EXIST"
+                ],
+                "protectedSlaName": "a",
+                "protectedStatus": [
+                    true
+                ]
+            }
+            其中resourceName，resourceLocation，protectedSlaName为模糊查询。
+            该参数需要UrlEncode编码。
+          in: query
+          name: conditions
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/CopyResourceSummaryPageResponse'
+      tags:
+        - copy-controller
+      operationId: queryCopySummaryResourceV2
+      summary: 副本资源分页查询
   /v2/copies/available-time-ranges:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -68,8 +142,12 @@ paths:
           schema:
             $ref: '#/definitions/AvailableTimeRangesResponseList'
       x-order: 0
-  '/v2/copies/{copyId}/action/download':
+  /v2/copies/{copyId}/action/download:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -109,8 +187,9 @@ paths:
           schema:
             $ref: '#/definitions/DownLoadResp'
       x-order: 1
-  '/v2/copies/{copyId}/action/verify':
+  /v2/copies/{copyId}/action/verify:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
       x-access-port: 25081
@@ -158,8 +237,12 @@ paths:
               parameters:
                 - param1
                 - param2
-  '/v2/copies/{copyId}/catalogs':
+  /v2/copies/{copyId}/catalogs:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -211,6 +294,62 @@ paths:
           schema:
             $ref: '#/definitions/FileSystemResponseList'
       x-order: 3
+  /v2/internal/copies/{copyId}/action/verify:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - copy-controller
+      summary: 执行副本校验任务
+      description: 内部调用执行副本校验任务
+      operationId: InternalExecuteCopyVerifyTask
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: copyId
+          in: path
+          required: true
+          type: string
+          description: 副本id
+        - name: userId
+          in: query
+          required: false
+          description: 用户id
+          type: string
+      responses:
+        '200':
+          description: 成功响应对象
+          schema:
+            $ref: 'api-restore-v2.yaml#/definitions/UuidObject'
+          examples:
+            application/json: |-
+              {
+                  “uuid”: "12dsd9234812kjfskljflsa"
+              }
+        '404':
+          description: 未找到接口
+        '500':
+          description: 任务失败
+          schema:
+            type: object
+          examples:
+            application/json:
+              errorCode: 1677936643
+              errorMessage: An exception occurs during service processing.
+              parameters:
+                - param1
+                - param2
 definitions:
   FileSystemResponseList:
     description: 文件系统响应体
@@ -294,3 +433,96 @@ definitions:
         description: 请求id
     required:
       - requestId
+  CopyResourceSummarySchema:
+    properties:
+      copyCount:
+        description: 资源副本数量
+        title: Copy Count
+        type: integer
+      properties:
+        description: 副本资源属性
+        title: Properties
+        type: string
+      protectedObjectUuid:
+        description: 保护对象UUID
+        title: Protected Object Uuid
+        type: string
+      protectedResourceId:
+        description: 保护资源ID
+        title: Protected Resource Id
+        type: string
+      protectedSlaId:
+        description: 保护SLA ID
+        title: Protected Sla Id
+        type: string
+      protectedSlaName:
+        description: 保护SLA名称
+        title: Protected Sla Name
+        type: string
+      protectedStatus:
+        description: 保护状态
+        title: Protected Status
+        type: boolean
+      resourceEnvironmentIp:
+        description: 资源环境IP
+        title: Resource Environment Ip
+        type: string
+      resourceEnvironmentName:
+        description: 资源环境名称
+        title: Resource Environment Name
+        type: string
+      resourceId:
+        description: 资源ID
+        title: Resource Id
+        type: string
+      resourceLocation:
+        description: 资源位置
+        title: Resource Location
+        type: string
+      resourceName:
+        description: 资源名称
+        title: Resource Name
+        type: string
+      resourceProperties:
+        description: 资源属性
+        title: Resource Properties
+        type: string
+      resourceStatus:
+        description: 资源状态
+        title: Resource Status
+        type: string
+      resourceSubType:
+        description: 资源子类型
+        title: Resource Sub Type
+        type: string
+      resourceType:
+        description: 资源类型
+        title: Resource Type
+        type: string
+      slaName:
+        description: SLA名称
+        title: Sla Name
+        type: string
+    required:
+      - copyCount
+      - resourceId
+      - resourceLocation
+      - resourceName
+      - resourceProperties
+      - resourceStatus
+      - resourceSubType
+      - resourceType
+    title: CopyResourceSummarySchema
+    type: object
+  CopyResourceSummaryPageResponse:
+    type: object
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数量
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/CopyResourceSummarySchema'
+        description: 副本资源列表
