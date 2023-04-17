@@ -652,6 +652,36 @@ paths:
         '200':
           description: OK
       x-order: 11
+  /v1/internal/anti-ransomware/airgap/devices/page:
+    post:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anti-ransomware-airgap-api
+      summary: 查询设备分页信息
+      description: 查询设备分页信息
+      operationId: ShowInternalPageDevices
+      parameters:
+        - name: ShowInternalPageDevicesRequestBody
+          in: body
+          required: true
+          description: 查询设备分页信息
+          schema:
+            $ref: '#/definitions/AirGapDeviceShowPageRequest'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: string
 definitions:
   ErrorRsp:
     description: 失败时返回的错误对象
@@ -939,3 +969,44 @@ definitions:
         items:
           $ref: '#/definitions/AirGapDevicePortInfo'
     description: 更新设备策略关联请求对象
+  AirGapDeviceShowPageRequest:
+    type: object
+    description: 设备分页查询请求
+    properties:
+      policyId:
+        type: string
+        description: 策略id
+      name:
+        type: string
+        description: 设备名称
+      esn:
+        type: string
+        description: 设备ESN
+      linkStatus:
+        type: array
+        items:
+          type: string
+        description: 设备在线状态
+        enum:
+          - 在线1，离线0
+      replicationLinkStatus:
+        type: array
+        items:
+          type: string
+        description: 复制链路状态
+        enum:
+          - 连通open
+          - ' 断开close'
+          - 未知unknown
+      policyStatus:
+        type: array
+        items:
+          type: string
+        description: 策略开启状态
+        enum:
+          - enable应用中
+          - disable未应用
+          - invalid已失效
+      policyName:
+        type: string
+        description: 策略名称
