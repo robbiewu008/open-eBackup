@@ -13,6 +13,7 @@ tags:
 paths:
   /v2/internal/resources/{resourceId}:
     get:
+      x-product: OceanProtect X
       tags:
         - protected-resource-api
       x-dm-role: 'N'
@@ -232,6 +233,66 @@ paths:
             }
           schema:
             type: string
+  /v2/internal/resources{resourceId}/action/clean-next-backup:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      description: 清除下次备份类型和原因
+      operationId: cleanNextBackup
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+          description: 资源id
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v2/internal/resources{resourceId}/next-backup-type-and-cause:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      description: 查询下次备份类型和原因
+      operationId: QueryNextBackupAndCause
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+          description: 资源id
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+          examples:
+            application/json:
+              next_backup_change_cause: restore_success_to_full_label
+              next_backup_type: full
 definitions:
   Authentication:
     type: object
