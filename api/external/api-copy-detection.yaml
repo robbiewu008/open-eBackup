@@ -10,9 +10,12 @@ basePath: /
 tags:
   - name: copies-detect-report
 paths:
-  '/v1/copies/{copy_id}/detect-reports':
+  /v1/copies/{copy_id}/detect-reports:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
       x-impact-subsystem: 不影响
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
@@ -66,7 +69,10 @@ paths:
                 request_uuid-timestamp-hostname.
   /v1/copies/detect-details:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
       x-impact-subsystem: 不影响
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
@@ -156,7 +162,8 @@ paths:
               type: string
   /v1/copies/detect-statistics:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-impact-subsystem: 不影响
@@ -246,7 +253,10 @@ paths:
               type: string
   /v1/copies/detect-summary:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000
       x-impact-subsystem: 不影响
       x-auditor-role: 'Y'
       x-access-port: 25081
@@ -287,9 +297,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/CopyAntiRansomwarDetectionsummary'
-  '/v1/copies/{copy_id}/detect-status':
+  /v1/copies/{copy_id}/detect-status:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -322,7 +333,7 @@ paths:
           required: false
           description: 更改副本勒索状态扩展参数
           schema:
-            $ref: '#/definitions/ModifyCopyAntiRansomwareStatusBody'
+            $ref: '#/definitions/UpdateCopyDetectionStatusRequestBody'
       responses:
         '200':
           description: ''
@@ -363,7 +374,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[CopyResourceSummarySchema]'
+    title: BasePage[CopyResourceSummarySchema]
     type: object
   CopyDetail:
     properties:
@@ -531,7 +542,38 @@ definitions:
         description: 检测模型
       detection_time:
         type: string
-        description: 检测时间
+        description: 检测时间（%Y-%m-%d %H:%M:%S）
+      total_file_size:
+        type: integer
+        format: int64
+        description: 总文件大小
+      changed_file_count:
+        type: integer
+        format: int64
+        description: 修改文件数量
+      added_file_count:
+        type: integer
+        format: int64
+        description: 新增文件数量
+      deleted_file_count:
+        type: integer
+        format: int64
+        description: 删除文件数量
+      handle_false:
+        type: boolean
+        description: 是否误报处理
+      generate_type:
+        type: string
+        description: 生成方式
+      is_security_snapshot:
+        type: boolean
+        description: 是否安全快照
+      tenant_name:
+        type: string
+        description: 所属租户名称
+      snapshot_time:
+        type: string
+        description: 快照时间（%Y-%m-%d %H:%M:%S）
     title: CopySchema
     required:
       - deletable
@@ -551,6 +593,7 @@ definitions:
       - timestamp
       - uuid
       - anti_status
+    type: object
   DemoInfo:
     description: This is a demo
     required:
@@ -605,7 +648,7 @@ definitions:
       timestamp:
         type: string
         description: 副本完成时间
-        pattern: '^\d{4}\-\d{2}\-\d{2}\s{1}\d{2}:\d{2}:\d{2}$'
+        pattern: ^\d{4}\-\d{2}\-\d{2}\s{1}\d{2}:\d{2}:\d{2}$
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
@@ -623,7 +666,7 @@ definitions:
       detection_time:
         type: string
         description: 副本检测时间
-        pattern: '^\d{4}\-\d{2}\-\d{2}\s{1}\d{2}:\d{2}:\d{2}$'
+        pattern: ^\d{4}\-\d{2}\-\d{2}\s{1}\d{2}:\d{2}:\d{2}$
         x-access-port: 25081
         x-auth-required: 'Y'
         x-public-api: 'Y'
@@ -717,6 +760,52 @@ definitions:
       latest_detection_time:
         type: string
         description: 最新检测时间
+      latest_snapshot_time:
+        type: string
+        description: 最新快照时间
+      status:
+        type: integer
+        format: int32
+        description: 资源检测安全状态
+      device_ip:
+        type: string
+        description: 所属存储设备IP
+      device_name:
+        type: string
+        description: 所属存储设备名称
+      total_file_size:
+        type: integer
+        format: int64
+        description: 最新检测的总文件大小
+      added_file_count:
+        type: integer
+        format: int64
+        description: 最新检测的新增文件数量
+      changed_file_count:
+        type: integer
+        format: int64
+        description: 最新检测的修改文件数量
+      deleted_file_count:
+        type: integer
+        format: int64
+        description: 最新检测的删除文件数量
+      latest_copy_id:
+        type: string
+        description: 最新检测副本ID
+      total_detect_copy_num:
+        type: integer
+        format: int32
+        description: 检测副本总数量
+      handle_false_count:
+        type: integer
+        format: int32
+        description: 误报处理数量
+      end_copy_time:
+        type: string
+        description: 最晚的副本生成时间
+      start_copy_time:
+        type: string
+        description: 最早的副本生成时间
     required:
       - resource_id
       - name
@@ -730,6 +819,7 @@ definitions:
       - uninspected_copy_num
       - prepare_copy_num
       - abnormal_copy_num
+    type: object
   UpdateDetectionStatusRequestBody:
     description: 更改勒索状态副本信息
     properties:
@@ -800,7 +890,7 @@ definitions:
         description: 总的数据条数
         title: Total
         type: integer
-    title: 'BasePage[CopyResourceSummarySchema]'
+    title: BasePage[CopyResourceSummarySchema]
     required:
       - items
       - page_no
@@ -840,6 +930,45 @@ definitions:
         type: integer
         format: int32
         description: 异常副本数量
+      device_ip:
+        type: string
+        description: 所属存储设备IP
+      device_name:
+        type: string
+        description: 所属存储设备名称
+      total_file_size:
+        type: integer
+        format: int32
+        description: 最新检测快照的总文件大小
+      added_file_count:
+        type: integer
+        format: int32
+        description: 最新检测快照的新增文件数量
+      changed_file_count:
+        type: integer
+        format: int32
+        description: 最新检测快照的修改文件数量
+      deleted_file_count:
+        type: integer
+        format: int32
+        description: 最新检测快照的删除文件数量
+      total_detect_copy_num:
+        type: integer
+        format: int32
+        description: 检测副本总数量
+      handle_false_count:
+        type: integer
+        format: int32
+        description: 误报处理数量
+      end_copy_time:
+        type: string
+        description: 快照结束时间
+      start_copy_time:
+        type: string
+        description: 快照起始时间
+      resource_location:
+        type: string
+        description: 资源位置
     required:
       - resource_sub_type
       - total_copy_num
@@ -849,8 +978,10 @@ definitions:
       - uninspected_copy_num
       - prepare_copy_num
       - abnormal_copy_num
-  ModifyCopyAntiRansomwareStatusBody:
+    type: object
+  UpdateCopyDetectionStatusRequestBody:
     properties:
       is_security_snap:
         type: boolean
         description: 防勒索副本是否锁定
+    type: object

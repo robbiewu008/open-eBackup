@@ -10,9 +10,16 @@ basePath: /
 tags:
   - name: copies
 paths:
-  '/v1/internal/copies/{copy_id}/detection-reports':
+  /v1/internal/copies/{copy_id}/detection-reports:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
       tags:
         - copies
       summary: 副本报告入库
@@ -50,7 +57,13 @@ paths:
                 request_uuid-timestamp-hostname.
               type: string
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
       x-impact-subsystem: 不影响
       tags:
         - copies
@@ -96,7 +109,14 @@ paths:
                 request_uuid-timestamp-hostname.
   /v1/internal/copies/status/undetected:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
       x-access-port: 30092
       x-auth-required: 'N'
       x-public-api: 'N'
@@ -140,6 +160,104 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/BasePageCopySchema'
+  /v1/internal/copies/detect/statistics:
+    get:
+      tags:
+        - copies
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      summary: 获得资源维度副本防勒索统计列表 - 内部接口
+      description: 获得资源维度副本防勒索统计列表 - 内部接口
+      operationId: ShowDetectionStatistics
+      parameters:
+        - name: page_no
+          in: query
+          required: true
+          description: 分页页面编码
+          type: integer
+          format: int32
+        - name: page_size
+          in: query
+          required: true
+          description: 分页数据条数
+          type: integer
+          format: int32
+        - name: orders
+          in: query
+          required: false
+          description: 排序
+          type: string
+        - name: conditions
+          in: query
+          required: false
+          description: 条件参数
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: 'api-copy-detection.yaml#/definitions/CopyStatisticsBasePage'
+      x-order: 0
+  /v1/internal/copies/detect/details:
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - copies
+      summary: 获取副本维度的防勒索检测信息列表 - 内部接口
+      description: 获取副本维度的防勒索检测信息列表 - 内部接口
+      operationId: ShowDetectionDetails
+      parameters:
+        - name: resource_id
+          in: query
+          required: true
+          description: 资源的uuid
+          type: string
+        - name: page_no
+          in: query
+          required: true
+          description: 分页页面编码
+          type: integer
+          format: int32
+        - name: page_size
+          in: query
+          required: true
+          description: 分页数据条数
+          type: integer
+          format: int32
+        - name: orders
+          in: query
+          required: false
+          description: 排序
+          type: string
+        - name: conditions
+          in: query
+          required: false
+          description: 条件参数
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: 'api-copy-detection.yaml#/definitions/CopyDetailBasePage'
 definitions:
   DemoInfo:
     description: This is a demo
@@ -309,7 +427,7 @@ definitions:
       status:
         type: integer
         format: int32
-        description: '0：准备中；1:进行中；2：未感染；3：已感染；4：异常；'
+        description: 0：准备中；1:进行中；2：未感染；3：已感染；4：异常；
         minimum: 0
         maximum: 4
         x-access-port: 30092
@@ -522,7 +640,7 @@ definitions:
       status:
         type: integer
         format: int32
-        description: '0：准备中；1:进行中；2：未感染；3：已感染；4：异常；'
+        description: 0：准备中；1:进行中；2：未感染；3：已感染；4：异常；
     required:
       - status
   BasePageCopySchema:
