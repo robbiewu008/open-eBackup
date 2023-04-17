@@ -138,7 +138,8 @@ paths:
             - global
   /v1/kms/decrypt:
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -146,7 +147,7 @@ paths:
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
+      x-public-api: 'N'
       x-sysadmin-role: 'Y'
       tags:
         - kms-api
@@ -184,7 +185,8 @@ paths:
       deprecated: false
   /v1/kms/encrypt:
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -192,7 +194,7 @@ paths:
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
+      x-public-api: 'N'
       x-sysadmin-role: 'Y'
       tags:
         - kms-api
@@ -228,6 +230,29 @@ paths:
         - Authorization:
             - global
       deprecated: false
+  /v1/secret/redis:
+    get:
+      x-dr-role: 'Y'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - kmc-api
+      description: 获取common-secret中Redis密码
+      operationId: secretRedisGET
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+            format: int32
 securityDefinitions:
   Authorization:
     type: apiKey
