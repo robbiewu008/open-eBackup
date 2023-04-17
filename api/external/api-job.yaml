@@ -12,7 +12,6 @@ tags:
 paths:
   /v1/jobs:
     get:
-      x-dr-role: 'N'
       x-dm-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
@@ -133,9 +132,9 @@ paths:
         - name: statusList
           in: query
           description: >-
-            '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
+            ''''''''''''''''任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
             PARTIAL_SUCCESS:部分成功 ABORTED: 停止 ABORTING: 停止中 FAIL:失败 ABNORMAL:异常
-            CANCELLED:取消 ABORT_FAILED:停止失败'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+            CANCELLED:取消 ABORT_FAILED:停止失败''''''''''''''''
           required: false
           type: array
           items:
@@ -182,12 +181,6 @@ paths:
           items:
             type: string
           collectionFormat: multi
-        - name: excludeTypes
-          in: query
-          required: false
-          description: 是否需要排除掉传入的任务类型
-          type: boolean
-          default: false
         - name: logLevels
           in: query
           required: false
@@ -322,9 +315,9 @@ paths:
         - name: statusList
           in: query
           description: >-
-            ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
+            ''''''''''''''''任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
             PARTIAL_SUCCESS:部分成功 ABORTED: 停止 ABORTING: 停止中 FAIL:失败 ABNORMAL:异常
-            CANCELLED:取消 ABORT_FAILED:停止失败''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+            CANCELLED:取消 ABORT_FAILED:停止失败''''''''''''''''
           required: false
           type: array
           items:
