@@ -243,6 +243,40 @@ paths:
         - VMwareInternalAPI
       operationId: internal_get_vm_info_v1_internal_virtual_machines__vm_uuid__get
       summary: 查询VMware虚拟机的详细信息【内部接口】
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - VMwareInternalAPI
+      summary: 删除VMware虚拟机
+      description: 删除VMware虚拟机信息
+      operationId: delete_vm_res_v1_internal_virtual_machines__vm_uuid__delete
+      parameters:
+        - name: vm_uuid
+          in: path
+          required: true
+          type: string
+          description: VMware虚拟机ID
+      responses:
+        '200':
+          description: Successful Response
+        '404':
+          description: Not found
+          schema:
+            type: string
+        '422':
+          description: ValidationError
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
   /v1/internal/virtual-machines/{vm_uuid}/disks:
     get:
       x-product: OceanProtect X
