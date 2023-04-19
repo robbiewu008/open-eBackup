@@ -74,6 +74,102 @@ paths:
         - projected_object_api
       operationId: internal_page_query_v1_internal_protected_objects_get
       summary: 分页查询SLA关联资源信息列表【内部接口】
+    delete:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - projected_object_api
+      summary: 批量移除保护
+      description: 批量移除保护
+      operationId: internal_delete_v1_internal_protected_objects_delete
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: 批量移除保护请求
+          schema:
+            $ref: '#/definitions/BatchOperationReq'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+    put:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - projected_object_api
+      summary: 修改保护
+      description: 修改保护
+      operationId: internal_modify_v1_internal_protected_objects_put
+      parameters:
+        - name: user_id
+          in: query
+          required: false
+          description: 用户id
+          type: string
+          maxLength: 64
+        - name: body
+          in: body
+          required: true
+          description: 修改保护对象参数
+          schema:
+            $ref: '#/definitions/ModifyProtectionSubmitReq'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
   /v1/internal/protected-objects/action/sync-sla:
     put:
       x-product: CyberEngine,OceanProtect X
@@ -247,6 +343,252 @@ paths:
         - projected_object_api
       operationId: synchronize_time_v1_internal_protected_objects__resource_id__action_update_last_backup_time_put
       summary: 更新保护对象的最新备份时间【内部接口】
+  /v1/internal/protected-objects/batch:
+    post:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - projected_object_api
+      summary: 批量创建保护对象
+      description: 批量创建保护对象
+      operationId: internal_batch_create_v1_internal_protected-objects_batch_post
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          description: 用户ID
+          type: string
+          minLength: 1
+          maxLength: 64
+        - name: body
+          in: body
+          required: true
+          description: 批量创建保护对象请求
+          schema:
+            $ref: '#/definitions/BatchProtectionSubmitReq'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+  /v1/internal/protected-objects/status/action/activate:
+    put:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - projected_object_api
+      summary: 批量激活保护
+      description: 批量激活保护
+      operationId: internal_activate_v1_internal_protected_objects_status_action_activate_put
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: 激活批量操作请求
+          schema:
+            $ref: '#/definitions/BatchOperationReq'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+  /v1/internal/protected-objects/status/action/deactivate:
+    put:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - projected_object_api
+      summary: 批量取消激活保护
+      description: 批量取消激活保护
+      operationId: internal_deactivate_v1_internal_protected_objects_status_action_deactivate
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: 取消激活批量操作请求
+          schema:
+            $ref: '#/definitions/BatchOperationReq'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+  /v1/internal/protected-objects/{resource_id}/action/backup:
+    post:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - projected_object_api
+      summary: 手动备份资源
+      description: 手动备份资源
+      operationId: internal_manual_backup_v1_internal_protected_objects__resource_id__action_backup_post
+      parameters:
+        - name: resource_id
+          in: path
+          required: true
+          type: string
+        - name: user_id
+          in: query
+          required: false
+          description: 用户id
+          type: string
+          maxLength: 64
+        - name: resource_id
+          in: query
+          required: false
+          description: 保护对象资源ID
+          type: string
+          maxLength: 64
+        - name: body
+          in: body
+          required: true
+          description: 手动备份资源请求
+          schema:
+            $ref: '#/definitions/ManualBackupReq'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+  /v1/internal/protected-objects/compliance/statistic:
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - projected_object_api
+      summary: 保护对象遵从度统计
+      description: 保护对象遵从度统计
+      operationId: query_protection_compliance_v1_internal_protected_objects_compliance_statistic
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
 definitions:
   BaseExtParam:
     properties: {}
@@ -721,5 +1063,14 @@ definitions:
       - msg
       - type
     title: ValidationError
+    type: object
+  HTTPValidationError_copy:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
     type: object
 x-components: {}
