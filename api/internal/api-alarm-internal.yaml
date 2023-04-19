@@ -14,6 +14,7 @@ tags:
 paths:
   /v1/internal/alarms:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-internal-api
       summary: 批量查询告警
@@ -29,19 +30,19 @@ paths:
           x-example: '0x123456'
         - name: createTimeEnd
           in: query
-          description: '创建时间（止）[取值范围]yyyy-MM-dd HH:mm:ss 或 1576058814000：时间戳'
+          description: 创建时间（止）[取值范围]yyyy-MM-dd HH:mm:ss 或 1576058814000：时间戳
           required: false
           type: string
-          x-example: '2019-12-11 18:06:54 or 1576058814000'
+          x-example: 2019-12-11 18:06:54 or 1576058814000
         - name: createTimeStart
           in: query
-          description: '创建时间（起）[取值范围]2019-12-11 18:06:54 或 1576058814000：时间戳'
+          description: 创建时间（起）[取值范围]2019-12-11 18:06:54 或 1576058814000：时间戳
           required: false
           type: string
-          x-example: '2019-12-11 18:06:54 or 1576058814000'
+          x-example: 2019-12-11 18:06:54 or 1576058814000
         - name: language
           in: query
-          description: '语言类型[取值范围]1：中文 2：英文'
+          description: 语言类型[取值范围]1：中文 2：英文
           required: false
           type: string
           default: zh
@@ -135,6 +136,7 @@ paths:
             - global
       deprecated: false
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-internal-api
       summary: 新增告警
@@ -170,6 +172,7 @@ paths:
       deprecated: false
   /v1/internal/alarms/action/clear:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-internal-api
       summary: 告警清除
@@ -206,6 +209,7 @@ paths:
       deprecated: false
   /v1/internal/alarms/action/clear/entity:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-internal-api
       summary: 告警清除
@@ -239,6 +243,7 @@ paths:
       deprecated: false
   /v1/internal/alarms/log:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-internal-api
       summary: 新增操作日志
@@ -272,6 +277,7 @@ paths:
       deprecated: false
   /v1/internal/event:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - alarm-and-event-internal-api
       summary: 新增运行事件
@@ -307,6 +313,7 @@ paths:
       deprecated: false
   /v1/snmp/internal/config:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - snmp-internal-api
       summary: 查询SNMP配置
@@ -331,6 +338,7 @@ paths:
       deprecated: false
   /v1/snmp/internal/trap/addresses:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - snmp-internal-api
       summary: 批量查询SNMP Trap地址
@@ -372,6 +380,62 @@ paths:
         - Authorization:
             - global
       deprecated: false
+  /v1/internal/alarms/agent:
+    post:
+      tags:
+        - alarm-and-event-internal-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      summary: 内部接口，接收Agent告警， 支持双向认证（traefik配置）
+      description: 内部接口，接收Agent告警， 支持双向认证（traefik配置）
+      operationId: postAgentAlarm
+      parameters:
+        - name: agentCreateAlarmRequest
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/AgentCreateAlarmRequest'
+      responses:
+        '200':
+          description: id
+          schema:
+            type: string
+  /v1/internal/alarms/agent/action/clear:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - alarm-and-event-internal-api
+      summary: 清除Agent告警， 支持双向认证（traefik配置）
+      description: 内部接口，清除Agent告警， 支持双向认证（traefik配置）
+      operationId: clearAgentAlarm
+      parameters:
+        - name: legoInternalAlarm
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LegoInternalAlarm'
+      responses:
+        '200':
+          description: ''
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -395,7 +459,7 @@ definitions:
       result:
         type: integer
         format: int32
-        description: '转储结果 (1:成功，2:失败)'
+        description: 转储结果 (1:成功，2:失败)
       resultId:
         type: integer
         format: int64
@@ -442,7 +506,7 @@ definitions:
         type: string
         example: test
         description: 告警转储SFTP用户名
-        pattern: '^[^'':\?\\"<>\|\*;`\$&\-\(\)#\!]+$'
+        pattern: ^[^':\?\\"<>\|\*;`\$&\-\(\)#\!]+$
     title: AlarmSftpServerModifyRequest
     description: 修改告警转储SFTP配置请求体
   AlarmSftpServerResponse:
@@ -493,7 +557,7 @@ definitions:
         type: string
         example: test
         description: 告警转储SFTP用户名
-        pattern: '^[^'':\?\\"<>\|\*;`\$&\-\(\)#\!]+$'
+        pattern: ^[^':\?\\"<>\|\*;`\$&\-\(\)#\!]+$
     title: AlarmSftpServerTestRequest
     description: 修改告警转储SFTP配置请求体
   AlarmStatisticResponse:
@@ -536,7 +600,7 @@ definitions:
         description: 告警来源
       alarmTimeStr:
         type: string
-        example: 'yyyy-MM-dd HH:mm:ss'
+        example: yyyy-MM-dd HH:mm:ss
         description: '告警时间 [取值范围]2020-06-29 20:22:04 UTC+08:00 : yyyy-MM-dd HH:mm:ss 时区时间'
       alarmType:
         type: string
@@ -555,7 +619,7 @@ definitions:
       clearStatus:
         type: string
         example: invalid
-        description: '告警是否恢复[取值范围]invalid:无效 uncleared:未清除 cleared:清除'
+        description: 告警是否恢复[取值范围]invalid:无效 uncleared:未清除 cleared:清除
         enum:
           - '-1'
           - '0'
@@ -581,13 +645,13 @@ definitions:
         description: 告警实体ID
       firstTimeStr:
         type: string
-        example: 'yyyy-MM-dd HH:mm:ss'
+        example: yyyy-MM-dd HH:mm:ss
         description: >-
           告警第一次产生时间[取值范围]2020-06-29 20:22:04 UTC+08:00 : yyyy-MM-dd HH:mm:ss
           时区时间
       location:
         type: string
-        description: '告警产生根本[举例]eb.err.1073948959  lego.err.1033'
+        description: 告警产生根本[举例]eb.err.1073948959  lego.err.1033
       params:
         type: array
         description: 告警参数
@@ -688,14 +752,14 @@ definitions:
         description: 认证协议(v3 协议必填，v2c协议不填写)
       authPwd:
         type: string
-        description: '认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位'
+        description: 认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
       contextEngineId:
         type: string
-        description: '引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下'
-        pattern: '^$|^[0-9A-F]+$'
+        description: 引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下
+        pattern: ^$|^[0-9A-F]+$
       contextName:
         type: string
-        description: '环境名(v3)[取值范围]长度：32位以下'
+        description: 环境名(v3)[取值范围]长度：32位以下
         minLength: 0
         maxLength: 64
       encryptProtocol:
@@ -704,7 +768,7 @@ definitions:
         description: 加密协议(v3 协议必填，v2c协议不填写)
       encryptPwd:
         type: string
-        description: '加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位'
+        description: 加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
       securityName:
         type: string
         description: 安全名(v3)
@@ -717,7 +781,7 @@ definitions:
         maxLength: 64
       version:
         type: string
-        description: '版本[取值范围]V2C | V3'
+        description: 版本[取值范围]V2C | V3
         pattern: V2C|V3
     title: CheckSnmpConfigRequest
     description: 检查SNMP参数配置是否正确请求体
@@ -744,11 +808,11 @@ definitions:
       fileType:
         type: integer
         format: int32
-        description: '文件类型[取值范围]1：csv 2：excel'
+        description: 文件类型[取值范围]1：csv 2：excel
       languageType:
         type: integer
         format: int32
-        description: '语言类型[取值范围]1：中文 2：英文'
+        description: 语言类型[取值范围]1：中文 2：英文
       period:
         type: integer
         format: int32
@@ -782,11 +846,11 @@ definitions:
       fileType:
         type: integer
         format: int32
-        description: '文件类型[取值范围]1：csv 2：excel'
+        description: 文件类型[取值范围]1：csv 2：excel
       languageType:
         type: integer
         format: int32
-        description: '语言类型[取值范围]1：中文 2：英文'
+        description: 语言类型[取值范围]1：中文 2：英文
       period:
         type: integer
         format: int32
@@ -884,7 +948,7 @@ definitions:
       severity:
         type: integer
         format: int32
-        description: '告警类型[取值范围]0:事件、日志 1:警告 2:次要 3:重要 4:紧急'
+        description: 告警类型[取值范围]0:事件、日志 1:警告 2:次要 3:重要 4:紧急
         minimum: 0.0
         maximum: 9.223372036854776e18
         exclusiveMinimum: false
@@ -898,7 +962,7 @@ definitions:
       type:
         type: integer
         format: int32
-        description: '告警类型[取值范围]1：生成告警 2：恢复告警 3：生成事件'
+        description: 告警类型[取值范围]1：生成告警 2：恢复告警 3：生成事件
         minimum: 0.0
         maximum: 9.223372036854776e18
         exclusiveMinimum: false
@@ -1003,7 +1067,7 @@ definitions:
         type: integer
         format: int32
         example: 1
-        description: '通讯协议(0:不启用，1:启用SSL，2:启用TSL)'
+        description: 通讯协议(0:不启用，1:启用SSL，2:启用TSL)
         minimum: 0.0
         maximum: 9.223372036854776e18
         exclusiveMinimum: false
@@ -1052,13 +1116,13 @@ definitions:
     properties:
       alarmSeveritySet:
         type: array
-        description: '邮件通知告警等级[取值范围]warning:警告告警 major:主要告警 critical:危急告警'
+        description: 邮件通知告警等级[取值范围]warning:警告告警 major:主要告警 critical:危急告警
         items:
           type: string
       language:
         type: integer
         format: int32
-        description: '邮件通知语言[取值范围]1:中文2:英文'
+        description: 邮件通知语言[取值范围]1:中文2:英文
         minimum: 0.0
         maximum: 9.223372036854776e18
         exclusiveMinimum: false
@@ -1107,7 +1171,7 @@ definitions:
       language:
         type: string
         example: zh-cn
-        description: '语言类型[取值范围]1：中文 2：英文'
+        description: 语言类型[取值范围]1：中文 2：英文
     title: PerAlarmQueryParam
     description: 查询指定事件请求体
   SnmpRequest:
@@ -1120,14 +1184,14 @@ definitions:
         description: 认证协议(v3 协议必填，v2c协议不填写)
       authPwd:
         type: string
-        description: '认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位'
+        description: 认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
       contextEngineId:
         type: string
-        description: '引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下'
-        pattern: '^$|^[0-9A-F]+$'
+        description: 引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下
+        pattern: ^$|^[0-9A-F]+$
       contextName:
         type: string
-        description: '环境名(v3)[取值范围]长度：32位以下'
+        description: 环境名(v3)[取值范围]长度：32位以下
         minLength: 0
         maxLength: 64
       encryptProtocol:
@@ -1135,7 +1199,7 @@ definitions:
         description: 加密协议(v3 协议必填，v2c协议不填写)
       encryptPwd:
         type: string
-        description: '加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位'
+        description: 加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
       id:
         type: integer
         format: int64
@@ -1156,7 +1220,7 @@ definitions:
         maxLength: 64
       version:
         type: string
-        description: '版本[取值范围]V2C | V3'
+        description: 版本[取值范围]V2C | V3
         pattern: V2C|V3
     title: SnmpRequest
     description: SNMP配置请求体
@@ -1173,7 +1237,7 @@ definitions:
         description: 控制器IPv4地址
       ipv6:
         type: string
-        example: '2016:8:40:96:c11::115'
+        example: 2016:8:40:96:c11::115
         description: 控制器IPv6地址
     title: SnmpSecurityAgentResponse
     description: 查询各控制器安全代理信息响应
@@ -1197,14 +1261,14 @@ definitions:
       port:
         type: integer
         format: int32
-        description: '上报端口[取值范围]0--65535'
+        description: 上报端口[取值范围]0--65535
         minimum: 1.0
         maximum: 65535.0
         exclusiveMinimum: false
         exclusiveMaximum: false
       trapIp:
         type: string
-        description: '上报ip地址[取值范围]IP地址校验规则'
+        description: 上报ip地址[取值范围]IP地址校验规则
     title: SnmpTrapAddress
     description: 修改SNMP Trap地址请求体
   SnmpTrapAddressBase:
@@ -1219,14 +1283,14 @@ definitions:
       port:
         type: integer
         format: int32
-        description: '上报端口[取值范围]0--65535'
+        description: 上报端口[取值范围]0--65535
         minimum: 1.0
         maximum: 65535.0
         exclusiveMinimum: false
         exclusiveMaximum: false
       trapIp:
         type: string
-        description: '上报ip地址[取值范围]IP地址校验规则'
+        description: 上报ip地址[取值范围]IP地址校验规则
     title: SnmpTrapAddressBase
     description: 新增SNMP Trap地址请求体
   SnmpTrapConfigQueryRes:
@@ -1239,19 +1303,19 @@ definitions:
         description: 认证协议(v3 协议必填，v2c协议不填写)
       authPwd:
         type: string
-        description: '认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位'
+        description: 认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
       contextEngineId:
         type: string
-        description: '引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下'
+        description: 引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下
       contextName:
         type: string
-        description: '环境名(v3)[取值范围]长度：32位以下'
+        description: 环境名(v3)[取值范围]长度：32位以下
       encryptProtocol:
         type: string
         description: 加密协议(v3 协议必填，v2c协议不填写)
       encryptPwd:
         type: string
-        description: '加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位'
+        description: 加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
       id:
         type: integer
         format: int64
@@ -1264,5 +1328,44 @@ definitions:
         description: 安全名(V2C)
       version:
         type: string
-        description: '版本[取值范围]V2C | V3'
+        description: 版本[取值范围]V2C | V3
     title: SnmpTrapConfigQueryRes
+  AgentCreateAlarmRequest:
+    type: object
+    required:
+      - sourceType
+      - alarmId
+    properties:
+      alarmSource:
+        type: string
+        maxLength: 64
+      sourceType:
+        type: string
+        maxLength: 64
+      alarmId:
+        type: string
+        maxLength: 64
+      params:
+        type: string
+        maxLength: 1024
+      severity:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 4
+      createTime:
+        type: integer
+        format: int64
+      type:
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 5
+      userId:
+        type: string
+        maxLength: 64
+      resourceId:
+        type: string
+        maxLength: 64
+      isSuccess:
+        type: boolean
