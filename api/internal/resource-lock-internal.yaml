@@ -74,12 +74,18 @@ paths:
               errorMessage: System error.
               parameters: []
               retryable: true
-  '/v1/internal/locks/{lockId}':
+  /v1/internal/locks/{lock_id}:
     delete:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - lock
-      x-impact-subsystem: 影响
+      x-impact-subsystem: 不影响
       x-access-port: 30092
       x-auth-required: 'N'
       x-public-api: 'N'
@@ -91,17 +97,10 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: lockId
+        - name: lock_id
           in: path
           required: true
           type: string
-          description: 资源锁id
-          minLength: 1
-          maxLength: 64
-          x-impact-subsystem: 不影响
-          x-access-port: 30092
-          x-auth-required: 'N'
-          x-public-api: 'N'
         - name: requestId
           in: query
           required: true
@@ -186,7 +185,7 @@ definitions:
         x-public-api: 'N'
       lockType:
         type: string
-        description: '资源锁类型:r-读锁  w-写锁'
+        description: 资源锁类型:r-读锁  w-写锁
         enum:
           - r
           - w
@@ -242,6 +241,6 @@ responses:
     examples:
       application/json:
         errorCode: '112344'
-        errorMessage: 'param {0} can not be null'
+        errorMessage: param {0} can not be null
         parameters:
           - xxx
