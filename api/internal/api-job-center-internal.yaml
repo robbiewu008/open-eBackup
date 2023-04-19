@@ -13,6 +13,7 @@ tags:
 paths:
   /v1/internal/jobs:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Job internal API
       summary: 查询任务
@@ -187,6 +188,7 @@ paths:
             - global
       deprecated: false
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Job internal API
       summary: 创建任务
@@ -222,6 +224,7 @@ paths:
       deprecated: false
   /v1/internal/jobs/action/batchUpdate:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Job internal API
       summary: 批量更新任务
@@ -257,6 +260,7 @@ paths:
       deprecated: false
   /v1/internal/jobs/action/update-schedule-policy:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Job internal API
       summary: updateJobSchedulePolicy
@@ -290,6 +294,7 @@ paths:
       deprecated: false
   /v1/internal/jobs/action/verify:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Job internal API
       summary: verifyJobOwnership
@@ -325,6 +330,7 @@ paths:
       deprecated: false
   /v1/internal/jobs/log/insert:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Job internal API
       summary: 新增任务日志
@@ -360,6 +366,7 @@ paths:
       deprecated: false
   /v1/internal/jobs/status/count:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Job internal API
       summary: statusCount
@@ -390,11 +397,12 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/internal/jobs/{jobId}/action/abort':
+  /v1/internal/jobs/{jobId}/action/abort:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Job internal API
-      summary: '${jobs.api.abort}'
+      summary: ${jobs.api.abort}
       operationId: abortTaskUsingPUT
       consumes:
         - application/json
@@ -421,8 +429,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/internal/jobs/{jobId}/action/update':
+  /v1/internal/jobs/{jobId}/action/update:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Job internal API
       summary: 更新任务
@@ -459,8 +468,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/internal/jobs/{jobId}/logs':
+  /v1/internal/jobs/{jobId}/logs:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Job internal API
       summary: queryJobLogs
@@ -522,6 +532,7 @@ paths:
       deprecated: false
   /v1/internal/jobs/running/action/reset:
     put:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Job internal API
       x-dm-role: 'Y'
@@ -551,6 +562,61 @@ paths:
               errorMessage: Operation failed
               retryable: false
               parameters: null
+  /v1/internal/jobs/queue-scope:
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-request-examples-url-1: https://127.0.0.1:25080/v1/internal/jobs/queue-scope?sub_type=xxx&job_type=xxx
+      tags:
+        - Job internal API
+      summary: 提取任务排队域
+      description: 提取任务排队域
+      operationId: extractQueueScopeUsingGet
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: sub_type
+          in: query
+          required: true
+          description: 资源子类型
+          type: string
+        - name: job_type
+          in: query
+          required: true
+          description: 任务类型
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -569,7 +635,7 @@ definitions:
         description: 副本数据时间
       data:
         type: object
-        description: '${jobs.api.data}'
+        description: ${jobs.api.data}
         additionalProperties:
           type: object
       detail:
@@ -783,7 +849,7 @@ definitions:
         description: 任务id
       level:
         type: string
-        description: '日志级别[取值范围]info:提示 warning:警告 error:错误 fatal:致命'
+        description: 日志级别[取值范围]info:提示 warning:警告 error:错误 fatal:致命
       logDetail:
         type: string
         description: "任务详情附加信息（失败时为错误码）\r\n\r\n"
@@ -813,23 +879,23 @@ definitions:
     properties:
       abolish:
         type: array
-        description: '${jobs.api.message.abolish}'
+        description: ${jobs.api.message.abolish}
         items:
           type: object
       inContext:
         type: boolean
-        description: '${jobs.api.message.in_context}'
+        description: ${jobs.api.message.in_context}
       payload:
         type: object
-        description: '${jobs.api.message.payload}'
+        description: ${jobs.api.message.payload}
         additionalProperties:
           type: object
       topic:
         type: string
-        description: '${jobs.api.message.topic}'
+        description: ${jobs.api.message.topic}
       traffic:
         type: object
-        description: '${jobs.api.message.traffic}'
+        description: ${jobs.api.message.traffic}
         additionalProperties:
           type: object
     title: JobMessage
