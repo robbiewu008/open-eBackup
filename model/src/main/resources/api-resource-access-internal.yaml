@@ -233,7 +233,7 @@ paths:
             }
           schema:
             type: string
-  /v2/internal/resources{resourceId}/action/clean-next-backup:
+  /v2/internal/resources/{resourceId}/action/clean-next-backup:
     put:
       x-dr-role: 'N'
       x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
@@ -261,7 +261,7 @@ paths:
           description: ''
           schema:
             type: string
-  /v2/internal/resources{resourceId}/next-backup-type-and-cause:
+  /v2/internal/resources/{resourceId}/next-backup-type-and-cause:
     get:
       x-dr-role: 'N'
       x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
