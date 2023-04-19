@@ -1069,19 +1069,17 @@ paths:
             type: array
             items:
               $ref: '#/definitions/ReplicatedCopies'
-  /v1/internal/copies/excess-copies:
+  /v1/internal/copies/{resource_id}/excess-copies:
     delete:
-      x-request-examples-url-1: v1/internal/copies/excess-copies
+      x-request-examples-url-1: v1/internal/copies/b3eea8a5-c515-58c5-a495-79a8a64dacef/excess-copies
       x-request-examples-text-1:
-        resource_id: xxxxxx
         retention_quantity: 2
         generated_by: Backup
-        user_id: xxxxx
+        user_id: 278cceba0ec64722a6117cd468c533e5
       x-request-examples-1:
-        resource_id: xxxxxx
         retention_quantity: 2
         generated_by: Backup
-        user_id: xxxxx
+        user_id: 278cceba0ec64722a6117cd468c533e5
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30092
@@ -1095,6 +1093,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: resource_id
+          in: path
+          required: true
+          type: string
+          description: 资源id
         - name: request
           in: body
           required: true
@@ -1127,6 +1130,125 @@ paths:
         - application/json
       summary: 副本按数量保留情况下，删除多余副本
       description: 副本按数量保留情况下，删除多余副本
+  /v1/internal/replicated_copies:
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      summary: get replicated copy list
+      description: get replicated copy list
+      operationId: query_replicated_copies
+      parameters:
+        - name: copy_id
+          in: query
+          required: false
+          description: 指定副本ID
+          type: string
+        - name: esn
+          in: query
+          required: false
+          description: 指定副本ID对应的esn_list
+          type: string
+      responses:
+        '200':
+          description: 指定副本ID对应的esn_list
+          schema:
+            $ref: '#/definitions/ReplicatedCopies'
+  /v1/internal/copies/action/delete-storage/{storage_id}:
+    delete:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      summary: 删除归档存储中全部副本
+      description: 删除归档存储中全部副本
+      operationId: delete_archive_copy_by_storage_id
+      parameters:
+        - name: storage_id
+          in: path
+          required: true
+          type: string
+          description: 指定归档存储ID
+      responses:
+        '200':
+          description: 该归档存储下所有副本
+          schema:
+            type: string
+  /v1/internal/copies/{copy_id}/action/count:
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      summary: 根据副本id，统计该副本经过live mount产生的子副本数量
+      description: 根据副本id，统计该副本经过live mount产生的子副本数量
+      operationId: count_copy_by_parent_id
+      parameters:
+        - name: copy_id
+          in: path
+          required: true
+          type: string
+          description: 副本id
+          minLength: 1
+          maxLength: 64
+      responses:
+        '200':
+          description: mount产生的子副本数量
+          schema:
+            type: integer
+            format: int32
+  /v1/internal/copies/action/check-delete:
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      summary: 判断副本能否被删除
+      description: 判断副本能否被删除
+      operationId: check_copy_can_delete
+      parameters:
+        - name: copy_id_list
+          in: query
+          required: false
+          description: 副本列表
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: 检查结果
+          schema:
+            type: integer
+            format: int32
 definitions:
   BasePage_CopyResourceSummarySchema_:
     properties:
@@ -1958,13 +2080,9 @@ definitions:
   DeleteExcessCopiesRequest:
     type: object
     required:
-      - resource_id
       - retention_quantity
       - generated_by
     properties:
-      resource_id:
-        type: string
-        description: 资源id
       retention_quantity:
         type: integer
         format: int32
