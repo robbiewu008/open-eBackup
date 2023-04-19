@@ -1,0 +1,126 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: ai_sorter_api
+paths:
+  /v1/internal/aisorter:
+    post:
+      x-request-examples-url-1: https://127.0.0.1:25080/v1/internal/aisorter
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - ai_sorter_api
+      summary: AI调度对job进行重新排序
+      description: AI调度对job进行重新排序
+      operationId: rescheduleJobUsingPost
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: List of Jobs
+          schema:
+            items:
+              $ref: '#/definitions/JobSchema'
+            type: array
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '502':
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+  /v1/internal/aisorter/retrain:
+    get:
+      x-request-examples-url-1: https://120.0.0.1:25080/v1/internal/aisorter/retrain
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - ai_sorter_api
+      summary: 模型训练
+      description: 模型训练
+      operationId: retrainAisorterUsingGet
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful Response
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+definitions:
+  JobSchema:
+    type: object
+    description: List of Jobs
+    properties: {}
+  HTTPValidationError:
+    type: object
+    properties:
+      detail:
+        type: array
+        items:
+          $ref: '#/definitions/ValidationError'
+  ValidationError:
+    type: object
+    required:
+      - loc
+      - msg
+      - type
+    properties:
+      loc:
+        type: array
+        items:
+          type: string
+      msg:
+        type: string
+      type:
+        type: string
