@@ -293,6 +293,152 @@ paths:
             application/json:
               next_backup_change_cause: restore_success_to_full_label
               next_backup_type: full
+  /v2/internal/resources:
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - protected-resource-api
+      summary: page query protected resource
+      description: page query protected resource
+      operationId: queryResources
+      parameters:
+        - name: queryParam
+          in: body
+          required: false
+          description: 内部查询接口参数
+          schema:
+            $ref: '#/definitions/InternalResourceQueryParam'
+      responses:
+        '200':
+          description: PageListResponse
+          schema:
+            $ref: '#/definitions/PageListResponse'
+  /v2/internal/resources/tenants:
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - protected-resource-api
+      summary: 查询租户列表
+      description: 查询租户列表
+      operationId: listTenants
+      parameters:
+        - name: pageNo
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: resourceId
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PageListResponse'
+  /v2/internal/resources/storageInfo:
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - protected-resource-api
+      summary: 查询存储设备信息
+      description: 查询存储设备信息
+      operationId: listStorageInfo
+      parameters:
+        - name: tenantId
+          in: query
+          required: false
+          description: 租户ID
+          type: string
+        - name: deviceId
+          in: query
+          required: false
+          description: 设备ID
+          type: string
+      responses:
+        '200':
+          description: 存储设备信息
+          schema:
+            $ref: '#/definitions/StorageInfo'
+  /v2/internal/resources/fileSystems:
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      summary: 查询文件系统信息
+      description: 查询文件系统信息
+      operationId: listFileSystems
+      parameters:
+        - name: pageNo
+          in: query
+          required: false
+          description: 页码
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          description: 页面大小
+          type: integer
+          format: int32
+        - name: tenantId
+          in: query
+          required: false
+          description: 租户Id
+          type: string
+        - name: resourceId
+          in: query
+          required: false
+          description: 文件系统ID
+          type: string
+      responses:
+        '200':
+          description: 文件系统列表
+          schema:
+            $ref: '#/definitions/PageListResponse'
 definitions:
   Authentication:
     type: object
@@ -372,3 +518,67 @@ definitions:
           环境扩展参数，存放不同环境的自定义扩展属性
       auth:
         $ref: '#/definitions/Authentication'
+  InternalResourceQueryParam:
+    type: object
+    properties:
+      pageNo:
+        type: integer
+        format: int32
+      pageSize:
+        type: integer
+        format: int32
+      conditions:
+        type: string
+      shouldQueryDependency:
+        type: boolean
+      orders:
+        type: array
+        items:
+          type: string
+  PageListResponse:
+    type: object
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+      records:
+        type: array
+        items:
+          type: object
+  PageListResponseTenantInfo:
+    type: object
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+      records:
+        type: array
+        items:
+          type: object
+  StorageInfo:
+    type: object
+    properties:
+      tenantId:
+        type: string
+        description: 租户ID
+      deviceId:
+        type: string
+        description: 设备ID
+      endpoint:
+        type: string
+        description: 地址
+      port:
+        type: string
+        description: 端口
+      userName:
+        type: string
+        description: 用户名
+      password:
+        type: string
+        description: 密码
+      type:
+        type: string
+        description: 类型
+      userId:
+        type: string
+        description: 用户ID
