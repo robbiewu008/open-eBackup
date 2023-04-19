@@ -33,6 +33,66 @@ paths:
       description: Restore Abort API
       operationId: abort_job_v1_internal_restore_action_abort_put
       summary: 恢复终止回调
+  /v1/internal/restores/action/download:
+    post:
+      x-request-examples-url-1: /v1/internal/restores/action/download
+      x-request-examples-text-1: |-
+        {
+          "paths": ["/root"],
+          "recordId: "123",
+          "userId": "123",
+          "copyId": "123"
+        }
+      x-request-examples-1: |-
+        {
+          "paths": ["/root"],
+          "recordId: "123",
+          "userId": "123",
+          "copyId": "123"
+        }
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - Restore_Manager
+      summary: 下载副本中的指定文件
+      description: 下载副本中的指定文件
+      operationId: download_v1_internal_restores_action_download
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DownloadRequestSchema'
+          description: 下载请求体
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/DownloadResponseSchema'
+          examples:
+            application/json:
+              request_id: '123'
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
 definitions:
   DownloadRequestSchema:
     properties:
@@ -43,8 +103,23 @@ definitions:
         maxItems: 9223372036854776000
         title: Paths
         type: array
+      recordId:
+        type: string
+        description: 导出文件记录id
+        maxLength: 64
+      userId:
+        type: string
+        description: 用户id
+        maxLength: 64
+      copyId:
+        type: string
+        description: 副本id
+        maxLength: 64
     required:
       - paths
+      - recordId
+      - userId
+      - copyId
     title: DownloadRequestSchema
     type: object
   DownloadResponseSchema:
@@ -188,7 +263,7 @@ definitions:
     type: string
   RestoreRequestSchema:
     example:
-      copy_id: 'gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012'
+      copy_id: gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012
       ext_parameters:
         AFTER_RESTORE_SCRIPT: after_restore_script.sh
         BEFORE_RESTORE_SCRIPT: before_restore_script.sh
@@ -205,11 +280,11 @@ definitions:
       request_id: 266ea41d-adf5-480b-af50-15b940c2b846
       restore_location: O
       restore_objects:
-        - 'gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/grub'
-        - 'gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/efi'
+        - gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/grub
+        - gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/efi
       restore_target:
         details:
-          - src_id: 'gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/ef'
+          - src_id: gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/ef
             target_id: /tmp
             target_type: File
         env_id: 266ea41d-adf5-480b-af50-15b940c2b846
