@@ -12,6 +12,7 @@ tags:
 paths:
   /v1/schedules:
     post:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Scheduler API
       summary: createSchedule
@@ -47,6 +48,7 @@ paths:
             - global
       deprecated: false
     delete:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Scheduler API
       summary: batchDeleteSchedule
@@ -74,8 +76,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/schedules/next-time/{schedule_id}':
+  /v1/schedules/next-time/{schedule_id}:
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Scheduler API
       summary: getNextTime
@@ -103,8 +106,9 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  '/v1/schedules/{schedule_id}':
+  /v1/schedules/{schedule_id}:
     delete:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - Scheduler API
       summary: deleteSchedule
@@ -130,6 +134,61 @@ paths:
         - Authorization:
             - global
       deprecated: false
+  /v1/internal/schedules/crons/{cron}/next-time:
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-request-examples-url-1: https://127.0.0.1:25080/v1/internal/schedules/crons/{cron}/next-time?cron=XXX&fromDate=XXX&times=XXX
+      tags:
+        - Scheduler API
+      summary: 获取首次备份时间
+      description: 获取首次备份时间
+      operationId: getCronNextTimeUsingGet
+      parameters:
+        - name: cron
+          in: path
+          required: true
+          type: string
+        - name: fromDate
+          in: query
+          required: false
+          description: 指定的开始时间点
+          type: string
+        - name: times
+          in: query
+          required: false
+          description: 指定的下次执行次数
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
 securityDefinitions:
   Authorization:
     type: apiKey
