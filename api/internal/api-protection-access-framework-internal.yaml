@@ -157,6 +157,413 @@ paths:
         - Authorization:
             - global
       deprecated: false
+  /v1/internal/live-mount/clone:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - dm-live-mount-controller
+      summary: cloneCopy
+      operationId: cloneCopyUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountCloneRequest»'
+            originalRef: Identity«LiveMountCloneRequest»
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CopyInfo'
+            originalRef: CopyInfo
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/execute:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - dm-live-mount-controller
+      summary: executeLiveMount
+      operationId: executeLiveMountUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountExecuteParam»'
+            originalRef: Identity«LiveMountExecuteParam»
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/migrate:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - dm-live-mount-controller
+      summary: migrateLiveMount
+      operationId: migrateLiveMountUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountMigrateParam»'
+            originalRef: Identity«LiveMountMigrateParam»
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/performance:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - dm-live-mount-controller
+      summary: updatePerformanceSetting
+      operationId: updatePerformanceSettingUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountEntity»'
+            originalRef: Identity«LiveMountEntity»
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/pre-check:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - dm-live-mount-controller
+      summary: createLiveMountPreCheck
+      operationId: createLiveMountPreCheckUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountCreateCheckParam»'
+            originalRef: Identity«LiveMountCreateCheckParam»
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: boolean
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/refresh:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - dm-live-mount-controller
+      summary: refreshTargetResource
+      operationId: refreshTargetResourceUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountRefreshParam»'
+            originalRef: Identity«LiveMountRefreshParam»
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/live-mount/unmount:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - dm-live-mount-controller
+      summary: unmountLiveMount
+      operationId: unmountLiveMountUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: identity
+          description: identity
+          required: true
+          schema:
+            $ref: '#/definitions/Identity«LiveMountUnmountParam»'
+            originalRef: Identity«LiveMountUnmountParam»
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/resources/login:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - ResourceInternalController
+      summary: ${api.resource.login}
+      operationId: connectResourceUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: param
+          description: ${api.resource.login.param}
+          required: false
+          schema:
+            $ref: '#/definitions/LoginParamRequest'
+            originalRef: LoginParamRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ResourceConnectResp'
+            originalRef: ResourceConnectResp
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/internal/resources/{env_id}/remove:
+    delete:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - ResourceInternalController
+      summary: removeResource
+      operationId: removeResourceUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: env_id
+          in: path
+          description: 受保护环境ID
+          required: false
+          type: string
+        - name: sub_type
+          in: query
+          description: 资源子类型
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
   /v1/internal/restore-task/action/create:
     post:
       x-dr-role: 'N'
