@@ -5,66 +5,6 @@ info:
 tags:
   - name: copies
 paths:
-  /v1/copies:
-    get:
-      x-product: CyberEngine,OceanProtect X
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      produces:
-        - application/json
-      parameters:
-        - description: 分页页面编码
-          in: query
-          minimum: 0
-          name: page_no
-          required: true
-          type: integer
-        - description: 分页数据条数
-          in: query
-          maximum: 200
-          minimum: 0
-          name: page_size
-          required: true
-          type: integer
-        - collectionFormat: multi
-          description: 排序字段：display_timestamp
-          in: query
-          items:
-            type: string
-          name: orders
-          required: false
-          type: array
-        - description: >-
-            条件参数：%location%，%resource_name%，%sla_name%，%resource_location%，!properties，!resource_properties，!sla_properties
-          in: query
-          name: conditions
-          required: false
-          type: string
-        - description: 访问令牌
-          in: header
-          name: X-Auth-Token
-          required: true
-      responses:
-        '200':
-          description: Successful Response
-          schema:
-            $ref: '#/definitions/BasePage_CopySchema_'
-        '404':
-          description: Not Found
-        '422':
-          description: Validation Error
-          schema:
-            $ref: '#/definitions/HTTPValidationError'
-      tags:
-        - copies
-      operationId: query_resources_v1_copies_get
-      summary: 副本列表查询
   /v1/copies/action/query:
     get:
       x-product: CyberEngine,OceanProtect X
@@ -334,7 +274,7 @@ paths:
         - copies
       operationId: resource_status_statistics_v1_copies_summary_statistics_get
       summary: 资源状态统计
-  '/v1/copies/{copy_id}':
+  /v1/copies/{copy_id}:
     delete:
       x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
@@ -385,7 +325,7 @@ paths:
         - copies
       operationId: delete_copy_v1_copies__copy_id__delete
       summary: 删除副本
-  '/v1/copies/{copy_id}/action/create-index':
+  /v1/copies/{copy_id}/action/create-index:
     post:
       x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
@@ -423,7 +363,7 @@ paths:
         - copies
       operationId: create_copy_index_v1_copies__copy_id__action_create_index_post
       summary: 创建副本索引
-  '/v1/copies/{copy_id}/action/update-retention':
+  /v1/copies/{copy_id}/action/update-retention:
     post:
       x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
@@ -502,14 +442,22 @@ paths:
           description: 操作成功无返回结果，操作失败异常报错。
   /v1/readiness:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'Y'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       produces:
         - application/json
-      parameters: []
       responses:
         '200':
           description: Successful Response
-          schema: {}
       operationId: readiness_v1_readiness_get
       summary: Readiness
 definitions:
@@ -543,7 +491,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[CopyResourceSummarySchema]'
+    title: BasePage[CopyResourceSummarySchema]
     type: object
   BasePage_CopySchema_:
     properties:
@@ -575,7 +523,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[CopySchema]'
+    title: BasePage[CopySchema]
     type: object
   CopyArchiveMapSchema:
     properties:
@@ -1286,7 +1234,7 @@ definitions:
       status:
         type: integer
         format: int32
-        description: '0：准备中；1:进行中；2：未感染；3：已感染；4：异常；'
+        description: 0：准备中；1:进行中；2：未感染；3：已感染；4：异常；
         minimum: 0
         maximum: 4
         x-access-port: 30092
@@ -1311,7 +1259,7 @@ definitions:
       status:
         type: integer
         format: int32
-        description: '0：准备中；1:进行中；2：未感染；3：已感染；4：异常；'
+        description: 0：准备中；1:进行中；2：未感染；3：已感染；4：异常；
     required:
       - status
   CopyAntiRansomwareReport:

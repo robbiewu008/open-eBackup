@@ -4,67 +4,7 @@ info:
   version: v1
 tags:
   - name: import-resources
-paths:
-  /v1/import-resources:
-    get:
-      x-product: OceanProtect X
-      x-dm-role: 'N'
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'N'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      produces:
-        - application/json
-      parameters:
-        - description: 分页页面编码
-          in: query
-          minimum: 0
-          name: page_no
-          required: true
-          type: integer
-        - description: 分页数据条数
-          in: query
-          maximum: 200
-          minimum: 0
-          name: page_size
-          required: true
-          type: integer
-        - collectionFormat: multi
-          description: 排序字段：
-          in: query
-          items:
-            type: string
-          name: orders
-          required: false
-          type: array
-        - description: 条件参数：
-          in: query
-          name: conditions
-          required: false
-          type: string
-        - description: 访问令牌
-          in: header
-          name: X-Auth-Token
-          required: true
-      responses:
-        '200':
-          description: Successful Response
-          schema:
-            $ref: '#/definitions/BasePage_ImportResourceSchema_'
-        '404':
-          description: Not Found
-        '422':
-          description: Validation Error
-          schema:
-            $ref: '#/definitions/HTTPValidationError'
-      tags:
-        - import-resources
-      operationId: query_resources_v1_import_resources_get
-      summary: 查询import-resources信息列表
+paths: {}
 definitions:
   BasePage_ImportResourceSchema_:
     properties:

@@ -7,17 +7,16 @@ tags:
 paths:
   /v1/internal/agent/{host_ip}/databases:
     get:
-      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'N'
-      x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30092
       x-auth-required: 'N'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
       x-public-api: 'N'
-      x-sysadmin-role: 'N'
+      x-sysadmin-role: 'Y'
       produces:
         - application/json
       parameters:

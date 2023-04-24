@@ -7,7 +7,17 @@ tags:
 paths:
   /v1/internal/resource:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       produces:
         - application/json
       parameters:
@@ -52,9 +62,19 @@ paths:
         - Resource
       operationId: query_resources_v1_internal_resource_get
       summary: 查询所有资源信息列表【内部接口】
-  '/v1/internal/resource/action/revoke/{user_id}':
+  /v1/internal/resource/action/revoke/{user_id}:
     put:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       produces:
         - application/json
       parameters:
@@ -66,7 +86,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '404':
           description: Not Found
         '422':
@@ -79,7 +98,17 @@ paths:
       summary: 根据用户ID回收资源【内部接口】
   /v1/internal/resource/action/verify:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       produces:
         - application/json
       parameters:
@@ -99,7 +128,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '404':
           description: Not Found
         '422':
@@ -110,9 +138,19 @@ paths:
         - Resource
       operationId: verify_resource_ownership_v1_internal_resource_action_verify_get
       summary: 根据资源ID列表和用户ID校验资源所属用户是否正确【内部接口】
-  '/v1/internal/resource/{resource_id}':
+  /v1/internal/resource/{resource_id}:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       produces:
         - application/json
       parameters:
@@ -124,7 +162,6 @@ paths:
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '404':
           description: Not Found
         '422':
@@ -135,80 +172,6 @@ paths:
         - Resource
       operationId: query_resource_by_id_v1_internal_resource__resource_id__get
       summary: 根据资源ID查询资源信息【内部接口】
-  /v1/internal/resource/anti-ransomware:
-    get:
-      x-product: CyberEngine,OceanProtect X
-      x-access-port: 25082
-      x-auth-required: 'N'
-      x-public-api: 'N'
-      tags:
-        - Resource
-      summary: 根据资源类型和要排除的资源id查询防勒索资源列表
-      description: 根据资源类型和要排除的资源id，分页查询防勒索资源列表
-      operationId: query_anti_ransomware_resource
-      produces:
-        - application/json
-      parameters:
-        - name: resource_sub_type
-          in: query
-          required: false
-          description: |-
-            资源子类型
-            vim.VirtualMachine：vimware
-            NasShare：NasShare
-            NasFileSystem：NasFileSystem
-          type: string
-          enum:
-            - NasShare
-            - vim.VirtualMachine
-            - NasFileSystem
-          x-access-port: 25082
-          x-auth-required: 'N'
-          x-public-api: 'N'
-        - name: away_res_ids
-          in: query
-          required: false
-          description: 需要排除的资源ID列表
-          type: array
-          items:
-            type: string
-        - name: page_no
-          in: query
-          required: true
-          description: 分页页面编码
-          type: integer
-          format: int32
-          minimum: 0
-          exclusiveMaximum: true
-          x-access-port: 25082
-          x-auth-required: 'N'
-          x-public-api: 'N'
-        - name: page_size
-          in: query
-          required: true
-          description: 分页数据条数
-          type: integer
-          format: int32
-          minimum: 0
-          maximum: 200
-          x-access-port: 25082
-          x-auth-required: 'N'
-          x-public-api: 'N'
-        - name: name
-          in: query
-          required: false
-          description: 资源名称
-          type: string
-        - name: path
-          in: query
-          required: false
-          description: 资源路径
-          type: string
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/BasePage_Resource'
 definitions:
   AsmInfoSchema:
     properties:
@@ -352,7 +315,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[AsmInfoSchema]'
+    title: BasePage[AsmInfoSchema]
     type: object
   BasePage_DatabaseInstanceSchema_:
     properties:
@@ -384,7 +347,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[DatabaseInstanceSchema]'
+    title: BasePage[DatabaseInstanceSchema]
     type: object
   BasePage_DatabaseSchema_:
     properties:
@@ -416,7 +379,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[DatabaseSchema]'
+    title: BasePage[DatabaseSchema]
     type: object
   BasePage_EnvironmentResourceSchema_:
     properties:
@@ -448,7 +411,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[EnvironmentResourceSchema]'
+    title: BasePage[EnvironmentResourceSchema]
     type: object
   BasePage_EnvironmentSchema_:
     properties:
@@ -480,7 +443,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[EnvironmentSchema]'
+    title: BasePage[EnvironmentSchema]
     type: object
   BasePage_FilesetSchema_:
     properties:
@@ -512,7 +475,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[FilesetSchema]'
+    title: BasePage[FilesetSchema]
     type: object
   BasePage_HdfsSchema_:
     properties:
@@ -544,7 +507,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[HdfsSchema]'
+    title: BasePage[HdfsSchema]
     type: object
   BasePage_HyperVResourceSchema_:
     properties:
@@ -576,7 +539,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[HyperVResourceSchema]'
+    title: BasePage[HyperVResourceSchema]
     type: object
   BasePage_ImportResourceSchema_:
     properties:
@@ -608,7 +571,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[ImportResourceSchema]'
+    title: BasePage[ImportResourceSchema]
     type: object
   BasePage_KerberosAuthorizedResourceSchema_:
     properties:
@@ -640,7 +603,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[KerberosAuthorizedResourceSchema]'
+    title: BasePage[KerberosAuthorizedResourceSchema]
     type: object
   BasePage_KubernetesClusterSchema_:
     properties:
@@ -672,7 +635,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[KubernetesClusterSchema]'
+    title: BasePage[KubernetesClusterSchema]
     type: object
   BasePage_KubernetesDatasetSchema_:
     properties:
@@ -704,7 +667,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[KubernetesDatasetSchema]'
+    title: BasePage[KubernetesDatasetSchema]
     type: object
   BasePage_KubernetesResourceSchema_:
     properties:
@@ -736,7 +699,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[KubernetesResourceSchema]'
+    title: BasePage[KubernetesResourceSchema]
     type: object
   BasePage_RegisterDatabaseSchema_:
     properties:
@@ -768,7 +731,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[RegisterDatabaseSchema]'
+    title: BasePage[RegisterDatabaseSchema]
     type: object
   BasePage_VirtualResourceSchema_:
     properties:
@@ -800,7 +763,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[VirtualResourceSchema]'
+    title: BasePage[VirtualResourceSchema]
     type: object
   Database:
     properties:
@@ -2265,7 +2228,7 @@ definitions:
         type: boolean
       labels:
         default: []
-        description: '标签(只在Common类型数据集时可填，格式为[''App=Postgres'',''App=Others''])'
+        description: 标签(只在Common类型数据集时可填，格式为['App=Postgres','App=Others'])
         items: {}
         title: Labels
         type: array
@@ -2337,7 +2300,7 @@ definitions:
         type: string
       verify_status:
         default: 0
-        description: 'MySQL集群集群校验状态，0-未校验，1-校验中,2-校验通过，3-校验未通过'
+        description: MySQL集群集群校验状态，0-未校验，1-校验中,2-校验通过，3-校验未通过
         title: Verify Status
         type: integer
       version:

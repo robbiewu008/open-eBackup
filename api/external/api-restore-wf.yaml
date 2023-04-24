@@ -47,56 +47,6 @@ paths:
       description: Restore API
       operationId: create_restore_v1_restores_post
       summary: 创建恢复
-  /v1/restores/{copy_id}/action/download:
-    post:
-      x-product: OceanProtect X
-      x-dm-role: 'N'
-      x-impact-subsystem: 影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - description: 副本id
-          in: path
-          maxLength: 64
-          name: copy_id
-          required: true
-          type: string
-        - description: 授权token
-          in: header
-          name: X-Auth-Token
-          required: true
-          type: string
-        - in: body
-          name: body
-          schema:
-            allOf:
-              - $ref: '#/definitions/DownloadRequestSchema'
-            description: 下载请求体
-            title: Download Req
-          required: false
-      responses:
-        '200':
-          description: Successful Response
-          schema:
-            $ref: '#/definitions/DownloadResponseSchema'
-        '422':
-          description: Validation Error
-          schema:
-            $ref: '#/definitions/HTTPValidationError'
-      tags:
-        - Restore_Manager
-      description: Download API
-      operationId: download_v1_restores__copy_id__action_download_post
-      summary: 下载副本中的指定文件
 definitions:
   DownloadRequestSchema:
     properties:

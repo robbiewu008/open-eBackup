@@ -2,32 +2,7 @@ swagger: '2.0'
 info:
   title: 系统（归档）接口
   version: v1
-paths:
-  /v1/internal/archive/job-examine:
-    post:
-      x-product: OceanProtect X
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            description: 任务流程预检查参数
-            title: Param
-            type: object
-      responses:
-        '200':
-          description: Successful Response
-          schema: {}
-        '422':
-          description: Validation Error
-          schema:
-            $ref: '#/definitions/HTTPValidationError'
-      operationId: entrance_v1_internal_archive_job_examine_post
-      summary: Entrance
+paths: {}
 definitions:
   HTTPValidationError:
     properties:
