@@ -14,10 +14,21 @@ tags:
 paths:
   /internal/health:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'Y'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - health-controller
-      summary: 服务启动状态
+      summary: 检查服务启动的健康状态
+      description: 检查健康状态
       operationId: healthUsingGET_1
       produces:
         - '*/*'
@@ -37,7 +48,46 @@ paths:
             - global
       deprecated: false
   /v1/system/esn:
-    x-product: CyberEngine,OceanProtect X
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - ${system-api}
+      summary: 查询设备ESN
+      operationId: queryEsnUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/EsnInfo'
+            originalRef: DeviceInfo
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      x-order: 5
   /v1/system/expandBackupService:
     post:
       x-product: OceanProtect X
@@ -206,13 +256,15 @@ paths:
             - global
       x-order: 9
     post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -256,13 +308,15 @@ paths:
       x-order: 10
   /v1/system/initStatusInfo:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -332,6 +386,126 @@ paths:
         - Authorization:
             - global
       x-order: 13
+  /v1/system/internal/initConfig:
+    get:
+      x-dr-role: 'Y'
+      x-dm-role: 'Y'
+      x-product: OceanProtect X
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
+      tags:
+        - ${system-api}
+      summary: 是否需要初始化
+      description: 是否需要初始化
+      operationId: getInitConfigInternalUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ConfigStatus'
+            originalRef: ConfigStatus
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      x-order: 9
+  /v2/system/ports:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${system-api}
+      summary: 获取所有端口信息
+      description: 获取逻辑端口和以太网端口，绑定端口信息
+      operationId: getAllPortsUsingPost
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: storageAuth
+          in: body
+          required: true
+          description: 用户信息
+          schema:
+            $ref: '#/definitions/StorageAuth'
+      responses:
+        '200':
+          description: 所有端口列表集合
+          schema:
+            $ref: '#/definitions/AllPortListResponseDto'
+  /v1/internal/service/filesystem/workload/id:
+    get:
+      x-dr-role: 'Y'
+      x-dm-role: 'Y'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - ${system-api}
+      summary: 创建文件系统类型
+      description: 创建文件系统类型
+      operationId: createFileSystemInternalUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 新建文件系统类型的ID
+          schema:
+            originalRef: ConfigStatus
+            type: integer
+            format: int64
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      x-order: 9
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -738,3 +912,117 @@ definitions:
       machineCode:
         type: string
         description: 设备机器码
+  BondPortDto:
+    type: object
+    description: 绑定端口对象
+    required:
+      - name
+      - ownIngController
+      - healthStatus
+      - runningStatus
+      - portIdList
+    properties:
+      name:
+        type: string
+        description: 端口名称
+      ownIngController:
+        type: string
+        description: 端口归属控制器
+      healthStatus:
+        type: string
+        description: 健康状态 正常 1 故障 2 降级 5
+      runningStatus:
+        type: string
+        description: 运行状态  已连接 10  未连接11
+      portIdList:
+        type: array
+        items:
+          type: string
+        description: 端口列表
+  EthPortDto:
+    type: object
+    description: 以太网端口
+    properties:
+      id:
+        type: string
+        description: 编号
+      name:
+        type: string
+        description: 名称
+      ownIngController:
+        type: string
+        description: 端口归属控制器
+      logicType:
+        type: string
+        description: 端口逻辑类型 容器前端端口 13  容器后端端口 14 管理端口 2
+      healthStatus:
+        type: string
+        description: 健康状态
+      runningStatus:
+        type: string
+        description: 运行状态
+      macAddress:
+        type: string
+        description: MAC地址
+      location:
+        type: string
+        description: 位置
+      mtu:
+        type: string
+        description: 最大传输单元
+      maxSpeed:
+        type: string
+        description: 最大工作效率
+  LogicPortDto:
+    type: object
+    description: 逻辑端口信息
+    properties:
+      name:
+        type: string
+        description: 名称
+      homePortName:
+        type: string
+        description: 逻辑端口归属名称
+      homePortType:
+        type: string
+        description: 端口逻辑类型
+      homePortId:
+        type: string
+        description: 父端口ID
+      ip:
+        type: string
+        description: ip
+      mask:
+        type: string
+        description: 子网掩码/前缀
+      gateWay:
+        type: string
+        description: 网关
+      role:
+        type: string
+        description: 逻辑端口角色
+      ipType:
+        type: string
+        description: IP类型
+      supportProtocol:
+        type: string
+        description: 协议
+  AllPortListResponseDto:
+    type: object
+    description: 端口信息集合
+    properties:
+      bondPortList:
+        type: array
+        items:
+          $ref: '#/definitions/BondPortDto'
+        description: 绑定端口列表
+      ethPortDtoList:
+        type: array
+        items:
+          $ref: '#/definitions/EthPortDto'
+        description: 以太网端口
+      logicPortDtoList:
+        type: array
+        items:
+          $ref: '#/definitions/LogicPortDto'
+        description: 逻辑端口列表
