@@ -56,6 +56,7 @@ paths:
                 This field is the request ID number for task tracking. Format is
                 request_uuid-timestamp-hostname.
               type: string
+      x-order: 0
     get:
       x-dr-role: 'N'
       x-dm-role: 'N'
@@ -107,6 +108,7 @@ paths:
               description: >-
                 This field is the request ID number for task tracking. Format is
                 request_uuid-timestamp-hostname.
+      x-order: 4
   /v1/internal/copies/status/undetected:
     get:
       x-dr-role: 'N'
@@ -160,6 +162,7 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/BasePageCopySchema'
+      x-order: 1
   /v1/internal/copies/detect/statistics:
     get:
       tags:
@@ -168,7 +171,7 @@ paths:
       x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -213,7 +216,7 @@ paths:
       x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -258,6 +261,7 @@ paths:
           description: ''
           schema:
             $ref: 'api-copy-detection.yaml#/definitions/CopyDetailBasePage'
+      x-order: 3
 definitions:
   DemoInfo:
     description: This is a demo
