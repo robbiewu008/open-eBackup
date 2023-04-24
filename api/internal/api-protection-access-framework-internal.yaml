@@ -21,10 +21,10 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 25081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
+      x-auditor-role: 'Y'
       x-dp-admin-role: 'N'
       x-public-api: 'N'
       x-sysadmin-role: 'N'
@@ -205,13 +205,12 @@ paths:
       deprecated: false
   /v1/internal/jobs/{jobId}/action/update-status:
     put:
-      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'N'
-      x-sysadmin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 30081
       x-auth-required: 'N'
