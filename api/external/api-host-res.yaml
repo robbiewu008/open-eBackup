@@ -80,16 +80,17 @@ paths:
       operationId: page_query_hosts_v1_resource_host__get
       summary: 分页查询主机信息列表
     post:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
-      x-impact-subsystem: 影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       consumes:
         - application/json
       produces:

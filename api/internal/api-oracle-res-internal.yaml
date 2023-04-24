@@ -7,16 +7,17 @@ tags:
 paths:
   /v1/internal/agent/{host_ip}/databases:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
-      x-impact-subsystem: 影响
-      x-access-port: 30092
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
       x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -45,62 +46,6 @@ paths:
           description: Internal Server Error
       operationId: query_database_by_agent_v1_internal_agent__host_ip__databases_get
       summary: 查询代理主机注册的可用Oracle数据库信息列表【内部接口】
-  /v1/internal/databases:
-    get:
-      x-product: OceanProtect X
-      x-dm-role: 'Y'
-      x-impact-subsystem: 影响
-      x-access-port: 30092
-      x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'N'
-      x-sysadmin-role: 'Y'
-      produces:
-        - application/json
-      parameters:
-        - description: 分页页面编码
-          in: query
-          minimum: 0
-          name: page_no
-          required: true
-          type: integer
-        - description: 分页数据条数
-          in: query
-          maximum: 200
-          minimum: 0
-          name: page_size
-          required: true
-          type: integer
-        - collectionFormat: multi
-          description: 排序字段：
-          in: query
-          items:
-            type: string
-          name: orders
-          required: false
-          type: array
-        - description: 条件参数：%inst_name%，%name%，!discriminator，!properties，path%，%authorized_user%
-          in: query
-          name: conditions
-          required: false
-          type: string
-      responses:
-        '200':
-          description: Successful Response
-          schema:
-            $ref: '#/definitions/BasePage_DatabaseSchema_'
-        '404':
-          description: Not Found
-        '422':
-          description: Validation Error
-          schema:
-            $ref: '#/definitions/HTTPValidationError'
-      tags:
-        - databases
-      operationId: query_resources_v1_internal_databases_get
-      summary: 查询Oracle数据库列表
 definitions:
   AsmInfoSchema:
     properties:

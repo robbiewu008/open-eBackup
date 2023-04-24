@@ -7,16 +7,17 @@ tags:
 paths:
   /v1/internal/compute-resources/clusters/{cluster_uuid}/config:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
-      x-impact-subsystem: 影响
-      x-access-port: 30092
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
       x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -45,16 +46,17 @@ paths:
       summary: 查询集群计算资源的配置【内部接口】
   /v1/internal/compute-resources/{compute_res_uuid}/action/refresh:
     put:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
-      x-impact-subsystem: 影响
-      x-access-port: 30092
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
       x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -84,16 +86,17 @@ paths:
       summary: 刷新计算资源下的虚拟机信息【内部接口】
   /v1/internal/compute-resources/{compute_res_uuid}/datastores:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
-      x-impact-subsystem: 影响
-      x-access-port: 30092
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
       x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -127,16 +130,17 @@ paths:
       summary: 查询计算资源的数据存储列表【内部接口】
   /v1/internal/compute-resources/{compute_res_uuid}/folder:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
-      x-impact-subsystem: 影响
-      x-access-port: 30092
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
       x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -165,16 +169,17 @@ paths:
       summary: 查询计算资源的虚拟文件夹信息【内部接口】
   /v1/internal/compute-resources/{compute_res_uuid}/networks:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
-      x-impact-subsystem: 影响
-      x-access-port: 30092
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
       x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -279,16 +284,17 @@ paths:
             $ref: '#/definitions/HTTPValidationError'
   /v1/internal/virtual-machines/{vm_uuid}/disks:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
-      x-impact-subsystem: 影响
-      x-access-port: 30092
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
       x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -320,16 +326,17 @@ paths:
       summary: 查询VMware虚拟机的硬盘列表【内部接口】
   /v1/internal/vmbackupagent/:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
-      x-impact-subsystem: 影响
-      x-access-port: 30092
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
       x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       responses:

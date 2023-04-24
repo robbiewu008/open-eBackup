@@ -7,16 +7,17 @@ tags:
 paths:
   /v1/internal/workflows/backup/result:
     put:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30081
-      x-auth-required: 'Y'
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       consumes:
         - application/json
       produces:

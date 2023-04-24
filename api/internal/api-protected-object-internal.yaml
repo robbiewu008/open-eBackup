@@ -7,16 +7,17 @@ tags:
 paths:
   /v1/internal/protected-objects:
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -172,16 +173,17 @@ paths:
             type: string
   /v1/internal/protected-objects/action/sync-sla:
     put:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       consumes:
         - application/json
       produces:
@@ -208,16 +210,17 @@ paths:
       summary: 保护对象同步SLA信息变更【内部接口】
   /v1/internal/protected-objects/compliance:
     put:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       consumes:
         - application/json
       produces:
@@ -244,16 +247,17 @@ paths:
       summary: 更新保护对象遵从度【内部接口】
   /v1/internal/protected-objects/count:
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -281,16 +285,17 @@ paths:
       summary: 根据SLA的ID查询关联资源数量【内部接口】
   /v1/internal/protected-objects/{resource_id}:
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -314,16 +319,17 @@ paths:
       summary: 根据资源ID查询保护对象信息【内部接口】
   /v1/internal/protected-objects/{resource_id}/action/update-last-backup-time:
     put:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:

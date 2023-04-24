@@ -61,16 +61,17 @@ paths:
       summary: 分页查询Qos策略列表
   /v1/internal/qos/action/revoke/{user_id}:
     put:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -92,16 +93,17 @@ paths:
       summary: Revoke Qos User Id
   /v1/internal/qos/action/verify:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -131,16 +133,17 @@ paths:
       summary: Internal Verify Qos Ownership
   /v1/internal/qos/{qos_id}:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:

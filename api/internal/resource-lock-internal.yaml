@@ -17,12 +17,18 @@ tags:
 paths:
   /v1/internal/locks:
     post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - lock
       summary: 锁定资源
       x-impact-subsystem: 不影响
-      x-access-port: 30092
+      x-access-port: 30081
       x-auth-required: 'N'
       x-public-api: 'N'
       description: 创建资源锁
@@ -44,18 +50,19 @@ paths:
         '500':
           $ref: '#/responses/CommonErrorResponse'
     delete:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - lock
-      x-dm-role: 'Y'
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30092
+      x-access-port: 30081
       x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       summary: 清空资源锁
       description: 清空资源锁信息(当前用于管理数据恢复后使用)
       operationId: DeleteAllResourceLock

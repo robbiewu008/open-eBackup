@@ -7,16 +7,17 @@ tags:
 paths:
   /v1/internal/protected-copy-objects/action/sync-sla:
     put:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       consumes:
         - application/json
       produces:
@@ -49,9 +50,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - protected_copy_object_api
       description: 根据SLA的ID查询关联副本数量【内部接口】
@@ -70,7 +71,7 @@ paths:
     get:
       tags:
         - protected_copy_object_api
-      x-dr-role: 'Y'
+      x-dr-role: 'N'
       x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -78,9 +79,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       description: 根据资源ID列表和用户ID校验复制副本资源所属用户是否正确【内部接口】
       operationId: internalProtectedCopyObjectsActionVerify
       parameters:
