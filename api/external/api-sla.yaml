@@ -12,6 +12,7 @@ tags:
 paths:
   /v1/slas:
     post:
+      x-dr-role: 'N'
       x-request-examples-description-1: 安全一体机场景，应用类型固定为CloudBackupFileSystem，最多4个快照策略，type固定为backup，action固定为snapshot，附加参数包括：是否重试auto_retry、重试次数auto_retry_times、重试等待分钟数auto_retry_wait_minutes、是否安全快照is_security_snap、是否立即检测need_detect、失败告警alarm_after_failure
       x-request-examples-url-2: /v1/slas
       x-request-examples-text-2:
@@ -76,7 +77,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -278,13 +279,14 @@ paths:
           schema:
             type: string
     put:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -431,13 +433,14 @@ paths:
           schema:
             type: string
     delete:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'

@@ -14,13 +14,14 @@ produces:
 paths:
   /v2/internal/jsonschemas/{schemaName}/validation/result:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
-      x-sysadmin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-required: 'N'
       x-public-api: 'N'
       x-request-examples-url-1: /v2/internal/jsonschemas/Oracle/validation
@@ -100,13 +101,14 @@ paths:
           description: Not Found
   /v2/internal/jsonschemas/{schemaName}/fields/editable:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
-      x-sysadmin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-required: 'N'
       x-public-api: 'N'
       x-request-examples-url-1: /v2/internal/jsonschemas/Oracle/editable_data
@@ -150,13 +152,14 @@ paths:
           description: Not Found
   /v2/internal/jsonschemas/{schemaName}/fields/secret:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
-      x-sysadmin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-auth-required: 'N'
       x-public-api: 'N'
       x-request-examples-url-1: /v2/internal/jsonschemas/Oracle/secret_data

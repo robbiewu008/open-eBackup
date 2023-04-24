@@ -243,9 +243,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - protected-resource-api
       description: 清除下次备份类型和原因
@@ -271,9 +271,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - protected-resource-api
       description: 查询下次备份类型和原因
