@@ -18,6 +18,7 @@ tags:
 paths:
   /v1/alarms:
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
@@ -137,6 +138,14 @@ paths:
             minLength: 1
             maxLength: 10240
             type: string
+        - name: deviceNames
+          in: query
+          description: 一体机告警来源
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
       responses:
         '200':
           description: OK
@@ -323,7 +332,17 @@ paths:
       deprecated: false
   /v1/alarms/action/clear:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 告警清除
@@ -365,7 +384,17 @@ paths:
       deprecated: false
   /v2/alarms/{sequence}/action/clear:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 告警清除
@@ -402,7 +431,17 @@ paths:
       deprecated: false
   /v1/alarms/action/export:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 导出告警
@@ -429,7 +468,6 @@ paths:
           description: 语言类型[取值范围]1：中文 2：英文
           required: false
           type: string
-          allowEmptyValue: false
       responses:
         '200':
           description: OK
@@ -447,7 +485,17 @@ paths:
       deprecated: false
   /v1/alarms/action/test:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 发送模拟测试告警
@@ -477,84 +525,46 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/alarms/agent:
-    post:
-      x-dm-role: 'N'
+  /v2/alarms/devices:
+    get:
+      x-product: CyberEngine
+      x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
+      x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: OceanProtect X
       tags:
         - alarm-and-event-api
-      summary: 新增告警
-      operationId: postAgentAlarmUsingPOST
-      consumes:
-        - application/json
+      summary: 批量查询告警来源设备
+      operationId: findPageCEDevUsingGET
       produces:
         - '*/*'
       parameters:
-        - in: body
-          name: legoInternalAlarm
-          description: 请求体
+        - name: X-Auth-Token
+          in: header
+          description: Access token
           required: true
-          schema:
-            $ref: '#/definitions/LegoInternalAlarm'
-            originalRef: LegoInternalAlarm
+          type: string
+        - name: language
+          in: query
+          description: 语言类型[取值范围]ZH：中文 EN：英文
+          enum:
+            - ZH
+            - EN
+          required: false
+          type: string
+          x-example: ZH
       responses:
         '200':
           description: OK
           schema:
-            type: string
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-      deprecated: false
-  /v1/alarms/agent/action/clear:
-    put:
-      x-dm-role: 'N'
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      x-product: OceanProtect X
-      tags:
-        - alarm-and-event-api
-      summary: 告警清除
-      operationId: clearAgentAlarmUsingPUT
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - in: body
-          name: legoInternalAlarm
-          description: 请求体
-          required: true
-          schema:
-            $ref: '#/definitions/LegoInternalAlarm'
-            originalRef: LegoInternalAlarm
-      responses:
-        '200':
-          description: OK
-        '201':
-          description: Created
+            type: array
+            $ref: '#/definitions/AlarmDevDto'
+            originalRef: AlarmDevDto
         '401':
           description: Unauthorized
         '403':
@@ -567,7 +577,17 @@ paths:
       deprecated: false
   /v1/alarms/count:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 告警总数查询
@@ -598,7 +618,17 @@ paths:
       deprecated: false
   /v1/alarms/detail:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 批量查询告警
@@ -635,16 +665,13 @@ paths:
           required: false
           type: string
           default: zh
-          allowEmptyValue: false
         - name: pageNum
           in: query
           description: 分页起始页码
           required: false
           type: integer
           maximum: 60000.0
-          exclusiveMaximum: false
           minimum: 1.0
-          exclusiveMinimum: false
           format: int32
           x-example: 1
         - name: pageSize
@@ -653,9 +680,7 @@ paths:
           required: false
           type: integer
           maximum: 200.0
-          exclusiveMaximum: false
           minimum: 5.0
-          exclusiveMinimum: false
           format: int32
           x-example: 20
         - name: severities
@@ -669,8 +694,6 @@ paths:
             type: integer
             format: int32
           collectionFormat: multi
-          maximum: 4
-          minimum: 1
         - name: sortColumn
           in: query
           description: 分页排序字段
@@ -706,8 +729,6 @@ paths:
           items:
             type: string
           collectionFormat: multi
-          maximum: 50
-          minimum: 1
       responses:
         '200':
           description: OK
@@ -725,7 +746,17 @@ paths:
             - global
       deprecated: false
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 查询指定事件
@@ -767,7 +798,17 @@ paths:
       deprecated: false
   /v1/alarms/dump/files/{fileId}:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 导出告警转储文件
@@ -804,7 +845,17 @@ paths:
             - global
       deprecated: false
     delete:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 删除告警转储文件
@@ -841,7 +892,17 @@ paths:
       deprecated: false
   /v1/alarms/dump/files/{fileId}/action/upload:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 上传告警转储文件到SFTP服务器
@@ -879,7 +940,17 @@ paths:
       deprecated: false
   /v1/alarms/dump/policy:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 查询告警转储配置
@@ -909,7 +980,17 @@ paths:
             - global
       deprecated: false
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 更改告警转储配置
@@ -948,7 +1029,17 @@ paths:
       deprecated: false
   /v1/alarms/dump/policy/files:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 批量查询告警转储记录
@@ -967,9 +1058,7 @@ paths:
           required: false
           type: integer
           maximum: 200.0
-          exclusiveMaximum: false
           minimum: 5.0
-          exclusiveMinimum: false
           format: int32
           x-example: 10
         - name: startIndex
@@ -978,9 +1067,7 @@ paths:
           required: false
           type: integer
           maximum: 60000.0
-          exclusiveMaximum: false
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
           x-example: 1
       responses:
@@ -1001,7 +1088,17 @@ paths:
       deprecated: false
   /v1/alarms/dump/sftp:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 查询告警转储SFTP配置
@@ -1031,7 +1128,17 @@ paths:
             - global
       deprecated: false
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 修改告警转储SFTP配置
@@ -1070,7 +1177,17 @@ paths:
       deprecated: false
   /v1/alarms/dump/sftp/action/test:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 测试告警转储SFTP服务器
@@ -1152,7 +1269,17 @@ paths:
       deprecated: false
   /v1/emails:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-email-notify-api
       summary: 获取邮件通知配置
@@ -1169,7 +1296,7 @@ paths:
         '200':
           description: OK
           schema:
-            $ref: '#/definitions/NotifyEmailServerRequest'
+            $ref: '#/definitions/EmailServerQueryResponse'
             originalRef: NotifyEmailServerRequest
         '401':
           description: Unauthorized
@@ -1182,7 +1309,17 @@ paths:
             - global
       deprecated: false
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-email-notify-api
       summary: 更改邮件通知配置
@@ -1221,7 +1358,17 @@ paths:
       deprecated: false
   /v1/emails/action/testServer:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-email-notify-api
       summary: 测试邮件通知
@@ -1260,7 +1407,17 @@ paths:
       deprecated: false
   /v1/events:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 批量查询事件
@@ -1288,8 +1445,6 @@ paths:
             type: integer
             format: int32
           collectionFormat: multi
-          maximum: 3
-          minimum: 1
         - name: createTimeEnd
           in: query
           description: 创建时间（止）[取值范围]yyyy-MM-dd HH:mm:ss 或 1576058814000：时间戳
@@ -1308,16 +1463,13 @@ paths:
           required: false
           type: string
           default: zh
-          allowEmptyValue: false
         - name: pageNum
           in: query
           description: 分页起始页码
           required: false
           type: integer
           maximum: 60000.0
-          exclusiveMaximum: false
           minimum: 1.0
-          exclusiveMinimum: false
           format: int32
           x-example: 1
         - name: pageSize
@@ -1326,9 +1478,7 @@ paths:
           required: false
           type: integer
           maximum: 200.0
-          exclusiveMaximum: false
           minimum: 5.0
-          exclusiveMinimum: false
           format: int32
           x-example: 20
         - name: severities
@@ -1342,8 +1492,6 @@ paths:
             type: integer
             format: int32
           collectionFormat: multi
-          maximum: 4
-          minimum: 1
         - name: sortColumn
           in: query
           description: 分页排序字段
@@ -1379,8 +1527,6 @@ paths:
           items:
             type: string
           collectionFormat: multi
-          maximum: 50
-          minimum: 1
         - name: types
           in: query
           description: 告警类型 [取值范围] 1:已恢复告警 5:运行日志 6:操作日志
@@ -1390,8 +1536,14 @@ paths:
             type: integer
             format: int32
           collectionFormat: multi
-          maximum: 3
-          minimum: 1
+        - name: deviceNames
+          in: query
+          description: 一体机告警来源
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
       responses:
         '200':
           description: OK
@@ -1410,7 +1562,17 @@ paths:
       deprecated: false
   /v1/events/action/export:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 导出事件
@@ -1437,7 +1599,6 @@ paths:
           description: 语言类型[取值范围]1：中文 2：英文
           required: false
           type: string
-          allowEmptyValue: false
       responses:
         '200':
           description: OK
@@ -1455,7 +1616,17 @@ paths:
       deprecated: false
   /v1/snmp/config:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 查询SNMP配置
@@ -1485,7 +1656,17 @@ paths:
             - global
       deprecated: false
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 更改SNMP配置
@@ -1524,7 +1705,17 @@ paths:
       deprecated: false
   /v1/snmp/config/action/check:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 检查SNMP参数配置是否正确
@@ -1565,7 +1756,17 @@ paths:
       deprecated: false
   /v1/snmp/security-engines:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 查询SNMP安全引擎标识
@@ -1598,7 +1799,17 @@ paths:
       deprecated: false
   /v1/snmp/trap/addresses:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 批量查询SNMP Trap地址
@@ -1646,7 +1857,17 @@ paths:
             - global
       deprecated: false
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 新增SNMP Trap地址
@@ -1684,7 +1905,17 @@ paths:
             - global
       deprecated: false
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 修改SNMP Trap地址
@@ -1723,7 +1954,17 @@ paths:
       deprecated: false
   /v1/snmp/trap/addresses/{id}:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 查询SNMP Trap地址
@@ -1759,7 +2000,17 @@ paths:
             - global
       deprecated: false
     delete:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 删除SNMP Trap地址
@@ -2710,6 +2961,15 @@ definitions:
         description: 告警对象名称
     title: AlarmObjDto
     description: 查询各控制器安全代理信息响应
+  AlarmDevDto:
+    type: object
+    properties:
+      name:
+        type: string
+        example: CyberEngine
+        description: 告警来源设备名称
+    title: AlarmDevDto
+    description: 查询一体机告警的来源设备
   SnmpTrapAddress:
     type: object
     required:
@@ -2799,3 +3059,48 @@ definitions:
         type: string
         description: 版本[取值范围]V2C | V3
     title: SnmpTrapConfigQueryRes
+  EmailServerQueryResponse:
+    type: object
+    properties:
+      protocol:
+        type: integer
+        format: int32
+        description: 0:禁用安全协议，1：SSL/TLS认证，2：smartTLS认证
+      server:
+        type: string
+        description: 邮件服务器
+      port:
+        type: integer
+        format: int32
+        description: 服务器端口（默认为25）
+      emailFrom:
+        type: string
+        description: 发件箱
+      isValidateEnable:
+        type: boolean
+        description: 是否需要验证
+      userName:
+        type: string
+        description: 用户名
+      isProxyEnable:
+        type: boolean
+        description: 是否使用代理
+      proxyServer:
+        type: string
+        description: 代理服务器
+      proxyPort:
+        type: integer
+        format: int32
+        description: 端口（默认为1080）
+      testEmail:
+        type: string
+        description: 邮件测试收件箱
+      isSslEnable:
+        type: boolean
+        description: 当前邮件传输是否使用SSL加密
+      sslSmtpPort:
+        type: string
+        description: 启用SSL SMTP服务器的端口号，默认端口（465）
+      isTlsEnable:
+        type: boolean
+        description: 当前邮件传输是否使用Tls加密
