@@ -10,7 +10,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -46,7 +46,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -86,7 +86,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -122,7 +122,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -178,7 +178,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -219,7 +219,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -258,7 +258,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -297,7 +297,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -339,7 +339,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -378,7 +378,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -417,7 +417,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -451,7 +451,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -493,7 +493,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -529,7 +529,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -592,7 +592,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -637,7 +637,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -688,7 +688,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -745,7 +745,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -853,7 +853,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -888,7 +888,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -931,7 +931,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -973,7 +973,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -1022,7 +1022,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -1102,9 +1102,15 @@ paths:
             type: string
   /v1/internal/copies/index-status:
     put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
       x-product: CyberEngine,OceanProtect X
-      x-impact-subsystem: 影响
-      x-access-port: 25081
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
       x-auth-required: 'N'
       x-public-api: 'N'
       tags:
@@ -1291,7 +1297,7 @@ paths:
         user_id: 278cceba0ec64722a6117cd468c533e5
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
