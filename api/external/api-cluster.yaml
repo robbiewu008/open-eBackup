@@ -396,56 +396,6 @@ paths:
       security:
         - Authorization:
             - global
-  /v1/clusters/copies/import:
-    post:
-      x-product: OceanProtect X
-      x-dm-role: 'N'
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      tags:
-        - ${clusters-api}
-      summary: 目标端导入复制副本
-      operationId: importCopyUsingPOST
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-        - in: body
-          name: importParam
-          description: 导入副本参数
-          required: false
-          schema:
-            originalRef: CopyReplicationImportParam
-            $ref: '#/definitions/CopyReplicationImportParam'
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: boolean
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-      deprecated: false
   /v1/clusters/details:
     get:
       x-product: OceanProtect X
@@ -485,102 +435,6 @@ paths:
       security:
         - Authorization:
             - global
-  /v1/clusters/link/certify:
-    put:
-      x-product: OceanProtect X
-      x-dm-role: 'N'
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      tags:
-        - ${clusters-api}
-      summary: 目标端集群确认复制链路
-      operationId: certifyLinkUsingPUT
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-        - in: body
-          name: request
-          description: 认证链路请求信息
-          required: false
-          schema:
-            originalRef: ClusterCertifyRequest
-            $ref: '#/definitions/ClusterCertifyRequest'
-      responses:
-        '200':
-          description: OK
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-      deprecated: false
-  /v1/clusters/requestion/certify:
-    put:
-      x-product: OceanProtect X
-      x-dm-role: 'N'
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      tags:
-        - ${clusters-api}
-      summary: 目标端集群确认请求
-      operationId: certifyRequestionUsingPUT
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          description: Access token
-          required: true
-          type: string
-        - in: body
-          name: request
-          description: 集群确认请求信息
-          required: false
-          schema:
-            originalRef: JobRequestionCertifyRequest
-            $ref: '#/definitions/JobRequestionCertifyRequest'
-      responses:
-        '200':
-          description: OK
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
-      deprecated: false
   /v1/clusters/status:
     get:
       x-product: OceanProtect X
@@ -971,58 +825,6 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/clusters/resource:
-    get:
-      x-product: OceanProtect X
-      x-dm-role: 'N'
-      x-impact-subsystem: 不影响
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-sysadmin-role: 'Y'
-      x-access-port: 30081
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      tags:
-        - ${clusters-api}
-      summary: 查询外部集群的资源列表
-      description: 目标集群提供，根据资源类型查询资源。
-      operationId: queryTargetAntiRansomwareResourceUsingGET
-      produces:
-        - '*/*'
-      parameters:
-        - name: resourceSubType
-          in: query
-          description: 资源类型
-          required: true
-          type: string
-        - name: name
-          in: query
-          required: true
-          description: 资源名称
-          type: string
-        - name: path
-          in: query
-          required: true
-          description: 资源位置
-          type: string
-      responses:
-        '200':
-          description: 资源信息
-          schema:
-            items:
-              $ref: '#/definitions/ResourceAntiRansomware'
-            originalRef: AntiRansomwareResourcePage«AntiRansomwareResource»
-            type: array
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-      security:
-        - Authorization:
-            - global
   /v1/local-storage/service-ips:
     get:
       x-product: OceanProtect X
@@ -1275,6 +1077,36 @@ paths:
         - Authorization:
             - global
       deprecated: false
+  /v1/internal/clusters/{clusterId}/target-details:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - ${clusters-api}
+      summary: 内部接口，通过集群id查询集群信息。
+      description: 内部接口，通过集群id查询集群信息。
+      operationId: queryTargetClusterDetailsByClusterId
+      parameters:
+        - name: clusterId
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: 集群id
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/TargetClusterVo'
 securityDefinitions:
   Authorization:
     type: apiKey

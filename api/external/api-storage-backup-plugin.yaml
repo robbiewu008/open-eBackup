@@ -12,8 +12,13 @@ consumes:
 produces:
   - application/json
 paths:
-  '/v1/plugins/storage/nas/filesystems/{fileSystemId}':
+  /v1/plugins/storage/nas/filesystems/{fileSystemId}:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -23,7 +28,7 @@ paths:
         - api-storage-backup-plugin
       operationId: ShowStorageFileSystemInfo
       summary: 根据文件系统ID查询文件系统详情
-      description: '查询外部设备的文件系统详细信息,包括文件系统基本信息,以及NFS信息,CIFS信息.'
+      description: 查询外部设备的文件系统详细信息,包括文件系统基本信息,以及NFS信息,CIFS信息.
       produces:
         - application/json
       parameters:
@@ -52,8 +57,13 @@ paths:
           description: 文件系统详细信息展示
           schema:
             $ref: '#/definitions/FileSystemInfo'
-  '/v1/plugins/storage/nas/filesystems/{mountPointId}/folders':
+  /v1/plugins/storage/nas/filesystems/{mountPointId}/folders:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
@@ -95,6 +105,10 @@ paths:
           schema:
             type: string
     delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -131,42 +145,12 @@ paths:
           description: ''
           schema:
             type: string
-  '/v1/plugins/storage/nas/filesystems/{fileSystemId}/shares':
-    get:
-      tags:
-        - api-storage-backup-plugin
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      x-dp-admin-role: 'Y'
-      summary: 通过文件系统id查询共享信息
-      description: 通过文件系统id查询共享信息
-      operationId: ListShares
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - name: fileSystemId
-          in: path
-          required: true
-          type: string
-          description: 文件系统id
-        - name: X-Auth-Token
-          in: header
-          required: true
-          description: 访问令牌
-          type: string
-      responses:
-        '200':
-          description: 共享信息集合
-          schema:
-            items:
-              $ref: '#/definitions/ShareResponse'
-            type: array
   /v1/plugins/storage/nas/filesystems/mount:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -209,8 +193,12 @@ paths:
           description: 挂载文件返回体
           schema:
             $ref: '#/definitions/MountResponse'
-  '/v1/plugins/storage/nas/filesystems/{mountPointId}/files':
+  /v1/plugins/storage/nas/filesystems/{mountPointId}/files:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -256,6 +244,10 @@ paths:
             $ref: '#/definitions/DeeFileSystemResponse'
   /v1/plugins/storage/nas/filesystems:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -295,6 +287,10 @@ paths:
           schema:
             $ref: '#/definitions/FileSystemResponseList'
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -329,6 +325,7 @@ paths:
             type: string
   /v1/plugins/storage/nas/auth-users:
     get:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -377,6 +374,7 @@ paths:
             $ref: '#/definitions/NasUserInfos'
   /v1/plugins/storage/nas/auth-user-groups:
     get:
+      x-product: OceanProtect X
       x-dm-role: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -423,8 +421,9 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/NasUserGroupInfos'
-  '/v1/plugins/storage/nas/filesystems/{envId}/files':
+  /v1/plugins/storage/nas/filesystems/{envId}/files:
     post:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -694,7 +693,7 @@ definitions:
       protocolType:
         type: integer
         format: int32
-        description: '协议类型  -1:不包含nfs和cifs  0:只包含cifs  1：包含nfs 2：包含cfs和cifs'
+        description: 协议类型  -1:不包含nfs和cifs  0:只包含cifs  1：包含nfs 2：包含cfs和cifs
       securityStyle:
         type: integer
         format: int32

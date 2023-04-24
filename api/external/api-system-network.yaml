@@ -8,89 +8,11 @@ schemes:
 host: localhost.com
 basePath: /
 tags:
-  - name: '${system-api}'
+  - name: ${system-api}
 paths:
-  /v1/system/network/service-ip-count:
-    get:
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      x-rd-admin-role: 'Y'
-      tags:
-        - '${system-api}'
-      summary: 初始化网络需要配置的服务IP段个数
-      description: |-
-        通过查询当前的节点个数来确定需要配置几个服务IP段;
-        双控需要配置 1个服务IP段
-        四控需要配置 2个服务IP段
-      operationId: ListServiceIpCount
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          required: true
-          description: Access token
-          type: string
-      responses:
-        '200':
-          description: 需要返回的Ip个数
-          schema:
-            $ref: '#/definitions/IpCountResponse'
-  /v1/system/standard-backup-service:
-    get:
-      x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      tags:
-        - '${system-api}'
-      summary: 获取当前标准备份服务状态
-      description: 获取标准备份服务状态
-      operationId: ListStandardBackupService
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          required: true
-          type: string
-          description: Access token
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/StandardServiceStatusResponse'
-  /v1/system/init-standard-backup-service:
-    post:
-      x-impact-subsystem: 影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      x-rd-admin-role: 'Y'
-      tags:
-        - '${system-api}'
-      summary: 初始化标准备份服务
-      description: 初始化标准备份服务
-      operationId: RegisterInitStandardBackupService
-      parameters:
-        - name: X-Auth-Token
-          in: header
-          required: true
-          description: Access token
-          type: string
-        - name: RegisterInitStandardBackupServiceRequestBody
-          in: body
-          required: true
-          description: 标准备份服务请求体
-          schema:
-            $ref: '#/definitions/StandardBackupServiceConfig'
-      responses:
-        '200':
-          description: 需要返回的Ip个数
-          schema:
-            $ref: '#/definitions/ConfigStatus'
   /v1/system/service-status-info:
     get:
+      x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -98,7 +20,7 @@ paths:
       x-sysadmin-role: 'Y'
       x-rd-admin-role: 'Y'
       tags:
-        - '${system-api}'
+        - ${system-api}
       summary: 查询服务进度
       description: |-
         查询服务进度:
