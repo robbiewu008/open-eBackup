@@ -7,14 +7,16 @@ tags:
 paths:
   /v1/copies/action/query:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30092
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
+      x-public-api: 'N'
       x-sysadmin-role: 'Y'
       produces:
         - application/json
