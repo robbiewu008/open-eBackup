@@ -8,6 +8,7 @@ tags:
 paths:
   /v1/resource/host/:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -84,12 +85,12 @@ paths:
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 25081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
-      x-public-api: 'N'
+      x-public-api: 'Y'
       x-sysadmin-role: 'N'
       consumes:
         - application/json
@@ -119,6 +120,7 @@ paths:
       summary: 注册主机
   /v1/resource/host/{cluster_id}/nodes:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -164,13 +166,14 @@ paths:
       summary: 根据集群ID查询集群的主机信息列表
   /v1/resource/host/{host_id}:
     delete:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
+      x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -202,6 +205,7 @@ paths:
       operationId: delete_host_v1_resource_host__host_id__delete
       summary: 根据主机ID删除主机
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -339,6 +343,7 @@ paths:
       summary: 同步Trap信息到Oracle主机
   /v1/resource/hosts/upgradeable-versions:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响

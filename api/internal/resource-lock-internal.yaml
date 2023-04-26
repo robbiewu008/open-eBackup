@@ -28,7 +28,7 @@ paths:
         - lock
       summary: 锁定资源
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-public-api: 'N'
       description: 创建资源锁
@@ -56,7 +56,7 @@ paths:
         - lock
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'

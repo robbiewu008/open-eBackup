@@ -7,7 +7,17 @@ tags:
 paths:
   /v1/internal/restore/action/abort:
     put:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       consumes:
         - application/json
       produces:
@@ -20,10 +30,10 @@ paths:
               - $ref: '#/definitions/JobSchema'
             description: Job Info
             title: Job
+          required: false
       responses:
         '200':
           description: Successful Response
-          schema: {}
         '422':
           description: Validation Error
           schema:

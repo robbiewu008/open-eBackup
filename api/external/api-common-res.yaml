@@ -66,6 +66,8 @@ paths:
       summary: 查询所有资源信息列表
   /v1/resource/action/authorize:
     post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -113,6 +115,8 @@ paths:
       summary: 根据用户ID和资源ID列表授权资源
   /v1/resource/action/revoke:
     post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -219,6 +223,8 @@ paths:
       summary: 全局搜索查询资源信息列表
   /v1/resource/protection/summary:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -401,7 +407,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[AsmInfoSchema]'
+    title: BasePage[AsmInfoSchema]
     type: object
   BasePage_DatabaseInstanceSchema_:
     properties:
@@ -433,7 +439,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[DatabaseInstanceSchema]'
+    title: BasePage[DatabaseInstanceSchema]
     type: object
   BasePage_DatabaseSchema_:
     properties:
@@ -465,7 +471,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[DatabaseSchema]'
+    title: BasePage[DatabaseSchema]
     type: object
   BasePage_EnvironmentResourceSchema_:
     properties:
@@ -497,7 +503,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[EnvironmentResourceSchema]'
+    title: BasePage[EnvironmentResourceSchema]
     type: object
   BasePage_EnvironmentSchema_:
     properties:
@@ -529,7 +535,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[EnvironmentSchema]'
+    title: BasePage[EnvironmentSchema]
     type: object
   BasePage_FilesetSchema_:
     properties:
@@ -561,7 +567,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[FilesetSchema]'
+    title: BasePage[FilesetSchema]
     type: object
   BasePage_HdfsSchema_:
     properties:
@@ -593,7 +599,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[HdfsSchema]'
+    title: BasePage[HdfsSchema]
     type: object
   BasePage_HyperVResourceSchema_:
     properties:
@@ -625,7 +631,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[HyperVResourceSchema]'
+    title: BasePage[HyperVResourceSchema]
     type: object
   BasePage_ImportResourceSchema_:
     properties:
@@ -657,7 +663,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[ImportResourceSchema]'
+    title: BasePage[ImportResourceSchema]
     type: object
   BasePage_KerberosAuthorizedResourceSchema_:
     properties:
@@ -689,7 +695,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[KerberosAuthorizedResourceSchema]'
+    title: BasePage[KerberosAuthorizedResourceSchema]
     type: object
   BasePage_KubernetesClusterSchema_:
     properties:
@@ -721,7 +727,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[KubernetesClusterSchema]'
+    title: BasePage[KubernetesClusterSchema]
     type: object
   BasePage_KubernetesDatasetSchema_:
     properties:
@@ -753,7 +759,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[KubernetesDatasetSchema]'
+    title: BasePage[KubernetesDatasetSchema]
     type: object
   BasePage_KubernetesResourceSchema_:
     properties:
@@ -785,7 +791,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[KubernetesResourceSchema]'
+    title: BasePage[KubernetesResourceSchema]
     type: object
   BasePage_RegisterDatabaseSchema_:
     properties:
@@ -817,7 +823,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[RegisterDatabaseSchema]'
+    title: BasePage[RegisterDatabaseSchema]
     type: object
   BasePage_VirtualResourceSchema_:
     properties:
@@ -849,7 +855,7 @@ definitions:
       - page_size
       - page_no
       - items
-    title: 'BasePage[VirtualResourceSchema]'
+    title: BasePage[VirtualResourceSchema]
     type: object
   Database:
     properties:
@@ -2314,7 +2320,7 @@ definitions:
         type: boolean
       labels:
         default: []
-        description: '标签(只在Common类型数据集时可填，格式为[''App=Postgres'',''App=Others''])'
+        description: 标签(只在Common类型数据集时可填，格式为['App=Postgres','App=Others'])
         items: {}
         title: Labels
         type: array
@@ -2386,7 +2392,7 @@ definitions:
         type: string
       verify_status:
         default: 0
-        description: 'MySQL集群集群校验状态，0-未校验，1-校验中,2-校验通过，3-校验未通过'
+        description: MySQL集群集群校验状态，0-未校验，1-校验中,2-校验通过，3-校验未通过
         title: Verify Status
         type: integer
       version:

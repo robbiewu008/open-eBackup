@@ -7,6 +7,7 @@ tags:
 paths:
   /v1/protected-copy-objects:
     delete:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -14,7 +15,7 @@ paths:
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       consumes:
@@ -47,6 +48,7 @@ paths:
       operationId: delete_v1_protected_copy_objects_delete
       summary: 批量移除副本保护对象
     post:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -54,7 +56,7 @@ paths:
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       consumes:
@@ -89,6 +91,7 @@ paths:
       operationId: create_v1_protected_copy_objects_post
       summary: 创建副本保护对象
     put:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -96,7 +99,7 @@ paths:
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       consumes:
@@ -130,6 +133,7 @@ paths:
       summary: 修改副本保护对象
   /v1/protected-copy-objects/status/action/activate:
     put:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -137,7 +141,7 @@ paths:
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       consumes:
@@ -170,6 +174,7 @@ paths:
       summary: 批量激活保护副本
   /v1/protected-copy-objects/status/action/deactivate:
     put:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -177,7 +182,7 @@ paths:
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       consumes:
@@ -210,6 +215,7 @@ paths:
       summary: 批量取消激活保护副本
   /v1/protected-copy-objects/action/replicate:
     post:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响

@@ -11,7 +11,7 @@ paths:
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -50,7 +50,7 @@ paths:
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -90,7 +90,7 @@ paths:
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -134,7 +134,7 @@ paths:
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -173,7 +173,7 @@ paths:
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -213,16 +213,17 @@ paths:
       summary: 查询计算资源的网络信息列表【内部接口】
   /v1/internal/virtual-machines/{vm_uuid}:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
-      x-impact-subsystem: 影响
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
       x-access-port: 30092
       x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       produces:
         - application/json
       parameters:
@@ -288,7 +289,7 @@ paths:
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -330,7 +331,7 @@ paths:
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 30092
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
