@@ -15,6 +15,7 @@ tags:
 paths:
   /v2/backup_jobs:
     post:
+      x-dr-role: 'N'
       x-request-examples-url-1: /v2/backup_jobs
       x-request-examples-text-1:
         backup_jobs:
@@ -61,9 +62,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       operationId: createBackupJobUsingPost
       consumes:
         - application/json
@@ -79,9 +80,7 @@ paths:
           description: 备份任务，支持批量任务创建
           required: true
           schema:
-            items:
-              $ref: '#/definitions/OpenStackBackupJobReq'
-            type: array
+            $ref: '#/definitions/BatchCreateBackupJobDto'
         - name: X-Auth-Token
           in: header
           required: true
@@ -134,6 +133,7 @@ paths:
           schema:
             type: string
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -142,8 +142,8 @@ paths:
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
         - backup
       operationId: queryJobsUsingGet
@@ -203,6 +203,7 @@ paths:
             type: string
   /v2/backup_jobs/{id}:
     get:
+      x-dr-role: 'N'
       x-request-examples-url-1: /v2/backup_jobs/33ebc900-d277-4a54-8db9-fff33208a480
       x-product: OceanProtect X
       x-dm-role: 'N'
@@ -211,9 +212,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - backup
       operationId: queryJobUsingGet
@@ -275,6 +276,7 @@ paths:
           schema:
             type: string
     put:
+      x-dr-role: 'N'
       x-request-examples-url-1: /v2/backup_jobs/33ebc900-d277-4a54-8db9-fff33208a480
       x-request-examples-text-1:
         backup_job:
@@ -307,9 +309,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       operationId: modifyBackupJobUsingPut
       consumes:
         - application/json
@@ -376,6 +378,7 @@ paths:
           schema:
             type: string
     delete:
+      x-dr-role: 'N'
       x-request-examples-url-1: /v2/backup_jobs/33ebc900-d277-4a54-8db9-fff33208a480
       x-product: OceanProtect X
       x-dm-role: 'N'
@@ -384,9 +387,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - backup
       operationId: deleteJobUsingDelete
@@ -424,6 +427,7 @@ paths:
             type: string
   /v2/backup_jobs/{id}/action:
     post:
+      x-dr-role: 'N'
       x-request-examples-url-1: /v2/backup_jobs/33ebc900-d277-4a54-8db9-fff33208a480/action
       x-request-examples-text-1:
         stop: null
@@ -438,9 +442,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       operationId: switchBackupJobUsingPost
       consumes:
         - application/json
@@ -491,6 +495,7 @@ paths:
             type: string
   /v2/backup_copies/{id}:
     delete:
+      x-dr-role: 'N'
       tags:
         - copy
       x-request-examples-url-1: /v2/backup_copies/33ebc900-d277-4a54-8db9-fff33208a480
@@ -501,9 +506,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       operationId: deleteCopyUsingDelete
       consumes:
         - application/json
@@ -540,6 +545,7 @@ paths:
           schema:
             type: string
     get:
+      x-dr-role: 'N'
       x-request-examples-url-1: /v2/backup_copies/33ebc900-d277-4a54-8db9-fff33208a480
       x-product: OceanProtect X
       x-dm-role: 'N'
@@ -548,9 +554,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - copy
       operationId: queryCopyUsingGet
@@ -592,6 +598,7 @@ paths:
             type: string
   /v2/backup_copies:
     get:
+      x-dr-role: 'N'
       x-request-examples-url-1: /v2/backup_copies
       x-product: OceanProtect X
       x-dm-role: 'N'
@@ -600,9 +607,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - copy
       operationId: queryCopiesUsingGet
@@ -641,6 +648,7 @@ paths:
             type: string
   /v2/backup_restore:
     post:
+      x-dr-role: 'N'
       x-request-examples-url-1: /v2/backup_restore
       x-request-examples-text-1:
         restore_job:
@@ -665,9 +673,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       operationId: createRestoreJobUsingPost
       consumes:
         - application/json
@@ -713,6 +721,7 @@ paths:
           schema:
             type: string
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -720,8 +729,8 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
       x-sysadmin-role: 'Y'
       tags:
         - restore
@@ -770,6 +779,7 @@ paths:
             type: string
   /v2/backup_restore/{id}:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -777,9 +787,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - restore
       operationId: queryRestoreJobUsingGet
@@ -829,6 +839,7 @@ paths:
             type: string
   /v2/backup_quota:
     post:
+      x-dr-role: 'N'
       x-request-examples-url-1: /v2/backup_quota
       x-request-examples-text-1:
         backup_quota:
@@ -845,9 +856,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       operationId: createQuotaUsingPost
       consumes:
         - application/json
@@ -892,7 +903,9 @@ paths:
           description: Bad Gateway
           schema:
             type: string
+      x-order: 0
     get:
+      x-dr-role: 'N'
       x-request-examples-url-1: /v2/backup_quota
       x-product: OceanProtect X
       x-dm-role: 'N'
@@ -901,9 +914,9 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - quota
       operationId: queryQuotaUsingGet
@@ -940,6 +953,7 @@ paths:
           description: Bad Gateway
           schema:
             type: string
+      x-order: 1
 definitions:
   OpenStackBackupJobResp:
     description: 云核OpenStack备份任务Dto
@@ -1286,3 +1300,13 @@ definitions:
     required:
       - all
       - used
+  BatchCreateBackupJobDto:
+    type: object
+    description: OpenStack批量创建备份任务请求体
+    required:
+      - backup_jobs
+    properties:
+      backup_jobs:
+        type: array
+        items:
+          $ref: '#/definitions/OpenStackBackupJobReq'
