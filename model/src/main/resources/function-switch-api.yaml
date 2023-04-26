@@ -54,17 +54,18 @@ paths:
               description: >-
                 This field is the request ID number for task tracking. Format is
                 request_uuid-timestamp-hostname.
+      x-order: 0
   /v1/users/function/{userId}:
     get:
       x-dr-role: 'Y'
-      x-product: OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
-      x-auth-required: 'Y'
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -97,6 +98,7 @@ paths:
               description: >-
                 This field is the request ID number for task tracking. Format is
                 request_uuid-timestamp-hostname.
+      x-order: 1
 definitions:
   DemoInfo:
     description: This is a demo

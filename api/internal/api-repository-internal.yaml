@@ -18,7 +18,17 @@ tags:
 paths:
   /v1/internal/product-storages:
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - product-storages-internal-api
       summary: 根据设备wwns查询资源信息
@@ -58,7 +68,17 @@ paths:
       deprecated: false
   /v1/internal/product-storages/action/verify:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - product-storages-internal-api
       summary: 权限校验
@@ -92,12 +112,23 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/local-storage/internal/ethernet-ports/action/check:
+  /v1/internal/local-storage/ethernet-ports/action/check:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - local-storage-internal-api
       summary: ${api.storages.clearAlarm}
+      description: 校验端口状态
       operationId: checkPortAvailableUsingGET
       produces:
         - '*/*'
@@ -127,12 +158,23 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/local-storage/internal/info:
+  /v1/internal/local-storage/info:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - local-storage-internal-api
-      summary: 获取本地存储信息
+      summary: 获取本地存储基本信息内部接口
+      description: 获取本地存储基本信息内部接口
       operationId: getInternalStorageInfoUsingGET
       produces:
         - '*/*'
@@ -154,7 +196,17 @@ paths:
       deprecated: false
   /v1/local-storage/internal/storage/alarm/action/clear/{sequence}:
     delete:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - local-storage-internal-api
       summary: ${api.storages.clearAlarm}
@@ -183,7 +235,17 @@ paths:
       deprecated: false
   /v1/local-storage/internal/storage/alarm/{start}/{end}:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - local-storage-internal-api
       summary: ${api.storages.getLocalStorageAlarm}
@@ -223,7 +285,17 @@ paths:
       deprecated: false
   /v1/local-storage/internal/storage/history/alarm/cleared/{start}/{end}:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - local-storage-internal-api
       summary: ${api.storages.getLocalStorageEvent}
@@ -263,7 +335,17 @@ paths:
       deprecated: false
   /v1/local-storage/internal/storage/history/alarm/recovered/{start}/{end}:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - local-storage-internal-api
       summary: ${api.storages.getLocalStorageEvent}
@@ -301,12 +383,23 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/storages/internal/storage-info:
+  /v1/internal/storages/storage-info:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - storages-internal-api
-      summary: storageInfo
+      summary: 查询存储信息
+      description: 查询存储信息
       operationId: storageInfoUsingGET
       produces:
         - '*/*'
@@ -328,12 +421,23 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/storages/internal/storage/{storageId}:
+  /v1/internal/storages/{storageId}:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - storages-internal-api
       summary: queryFullStorageById
+      description: 查询存储全部信息
       operationId: queryFullStorageByIdUsingGET
       produces:
         - '*/*'
@@ -370,10 +474,10 @@ paths:
       x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - storages-filesystem-internal-api
       description: 根据文件系统名称，快照名称查询快照信息
@@ -400,6 +504,228 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+      x-order: 0
+  /v1/internal/local-storage/filesystem/{id}:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - storages-filesystem-internal-api
+      summary: 通过ID查找本地文件系统
+      operationId: getLocalFileSystemUsingGET
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: id
+      responses:
+        '200':
+          description: return 本地文件系统
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+      x-order: 1
+  /v1/internal/local-storage/replicationpair/{id}:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - storages-filesystem-internal-api
+      summary: 通过ID查询本地远程复制Pair
+      operationId: getLocalRemoteReplicationPairUsingGET
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: id
+      responses:
+        '200':
+          description: 本地远程复制Pair
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+      x-order: 2
+  /v1/internal/local-storage/hypermetropair/{id}:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - storages-filesystem-internal-api
+      summary: 通过ID查询双活Pair
+      operationId: getHyperMetroPairUsingGET
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: id
+      responses:
+        '200':
+          description: return 文件系统双活域
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+      x-order: 3
+  /v1/internal/local-storage/fssnapshot/{id}:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - storages-filesystem-internal-api
+      summary: 查询单个文件系统快照信息
+      operationId: getFsSnapshotDetailUsingGET
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: 文件系统快照ID
+        - name: vStoreId
+          in: query
+          required: false
+          description: 租户id
+          type: string
+      responses:
+        '200':
+          description: 文件系统快照信息
+          schema:
+            $ref: '#/definitions/LocalFileSystemSnapshot'
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+  /v1/internal/local-storage/session:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - local-storage-internal-api
+      summary: 获取本地存储session信息
+      description: 获取本地存储session信息
+      operationId: getLocalStorageSessionUsingGet
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LocalStorageSessionInfo'
+  /v1/internal/storages/import/update-job:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - storages-internal-api
+      summary: 更新导入副本任务
+      description: 更新导入副本任务
+      operationId: updateImportJobUsingPut
+      parameters:
+        - name: isCleanScanTaskResult
+          in: query
+          required: false
+          type: boolean
+        - name: jobId
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -1295,3 +1621,21 @@ definitions:
       - name
       - isSecuritySnap
       - isInProtectionPeriod
+  LocalStorageSessionInfo:
+    type: object
+    properties:
+      deviceId:
+        type: string
+        description: 设备ID
+      sessionToken:
+        type: string
+        description: token
+      linkIp:
+        type: string
+        description: ip
+      port:
+        type: string
+        description: 端口号
+      sessionCookie:
+        type: string
+        description: cookie

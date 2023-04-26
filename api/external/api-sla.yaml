@@ -1,577 +1,767 @@
 swagger: '2.0'
 info:
-  title: SLA管理接口
   version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
 tags:
   - name: sla-api
-paths: {}
+paths:
+  /v1/slas:
+    post:
+      x-dr-role: 'N'
+      x-request-examples-description-1: 安全一体机场景，应用类型固定为CloudBackupFileSystem，最多4个快照策略，type固定为backup，action固定为snapshot，附加参数包括：是否重试auto_retry、重试次数auto_retry_times、重试等待分钟数auto_retry_wait_minutes、是否安全快照is_security_snap、是否立即检测need_detect、失败告警alarm_after_failure
+      x-request-examples-url-2: /v1/slas
+      x-request-examples-text-2:
+        uuid: ''
+        name: test11
+        type: 1
+        application: vim.VirtualMachine
+        policy_list:
+          - uuid: ''
+            name: full
+            type: backup
+            action: full
+            retention:
+              retention_type: 2
+              retention_duration: 1
+              duration_unit: d
+            schedule:
+              trigger: 1
+              interval: 1
+              interval_unit: h
+              start_time: '2021-11-27'
+              window_start: '06:00:00'
+              window_end: '00:00:00'
+            ext_parameters:
+              fine_grained_restore: true
+              ensure_consistency_backup: true
+              qos_id: ''
+              auto_retry: true
+              auto_retry_times: 3
+              auto_retry_wait_minutes: 5
+      x-request-examples-2:
+        uuid: ''
+        name: test11
+        type: 1
+        application: vim.VirtualMachine
+        policy_list:
+          - uuid: ''
+            name: full
+            type: backup
+            action: full
+            retention:
+              retention_type: 2
+              retention_duration: 1
+              duration_unit: d
+            schedule:
+              trigger: 1
+              interval: 1
+              interval_unit: h
+              start_time: '2021-11-27'
+              window_start: '06:00:00'
+              window_end: '00:00:00'
+            ext_parameters:
+              fine_grained_restore: true
+              ensure_consistency_backup: true
+              qos_id: ''
+              auto_retry: true
+              auto_retry_times: 3
+              auto_retry_wait_minutes: 5
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-request-examples-url-1: /v1/slas
+      x-request-examples-text-1:
+        uuid: ''
+        name: needdetect-2
+        type: 1
+        application: CloudBackupFileSystem
+        policy_list:
+          - uuid: ''
+            name: 生产快照
+            type: backup
+            action: snapshot
+            retention:
+              retention_type: 2
+              retention_duration: 2
+              duration_unit: d
+            schedule:
+              trigger: 1
+              interval: 1
+              interval_unit: d
+              start_time: '2023-02-08'
+              window_start: '03:00:00'
+              window_end: '06:00:00'
+            ext_parameters:
+              auto_retry: true
+              auto_retry_times: 3
+              auto_retry_wait_minutes: 5
+              is_security_snap: true
+              need_detect: true
+              alarm_after_failure: true
+      x-request-examples-1:
+        uuid: ''
+        name: needdetect-2
+        type: 1
+        application: CloudBackupFileSystem
+        policy_list:
+          - uuid: ''
+            name: 生产快照
+            type: backup
+            action: snapshot
+            retention:
+              retention_type: 2
+              retention_duration: 2
+              duration_unit: d
+            schedule:
+              trigger: 1
+              interval: 1
+              interval_unit: d
+              start_time: '2023-02-08'
+              window_start: '03:00:00'
+              window_end: '06:00:00'
+            ext_parameters:
+              auto_retry: true
+              auto_retry_times: 3
+              auto_retry_wait_minutes: 5
+              is_security_snap: true
+              need_detect: true
+              alarm_after_failure: true
+      tags:
+        - sla-api
+      operationId: createSLAUsingPOST
+      consumes:
+        - application/json
+      summary: 创建SLA
+      description: 创建SLA
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: slaDto
+          description: 创建SLA请求信息
+          required: true
+          schema:
+            $ref: '#/definitions/SlaDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              uuid: xxxxxxxxxxxx
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 0
+    get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 分页查询SLA
+      description: 分页查询SLA
+      operationId: pageQueryUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page_no
+          in: query
+          required: false
+          description: 起始页
+          type: integer
+          format: int32
+          default: 0
+        - name: page_size
+          in: query
+          required: false
+          description: 每页大小
+          type: integer
+          format: int32
+          default: 20
+        - name: name
+          in: query
+          required: false
+          description: SLA名称
+          type: string
+          maxLength: 128
+        - name: orderBy
+          in: query
+          required: false
+          description: 排队范围
+          type: string
+          default: created_time
+          maxLength: 128
+        - name: orderType
+          in: query
+          required: false
+          description: 排队类型
+          type: string
+          default: asc
+          maxLength: 32
+        - name: types
+          in: query
+          required: false
+          description: SLA类型
+          type: array
+          items:
+            type: integer
+            format: int32
+        - name: applications
+          in: query
+          required: false
+          description: SLA应用类型
+          type: array
+          items:
+            type: string
+        - name: actions
+          in: query
+          required: false
+          description: SLA策略动作
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SlaPageResponse'
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 1
+    put:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 修改SLA
+      description: 修改SLA
+      operationId: modifySLAUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: slaDto
+          in: body
+          required: true
+          description: 修改SLA参数
+          schema:
+            $ref: '#/definitions/SlaDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              uuid: bf51fa6d-a14d-4264-b428-c75542dfc030
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 2
+    delete:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 批量删除SLA
+      description: 批量删除SLA
+      operationId: batchDeleteSLAUsingDELETE
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: slaBatchRequest
+          in: body
+          required: true
+          description: sla批量操作请求体
+          schema:
+            $ref: '#/definitions/SlaBatchRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              slaIds:
+                - xxxxxxxxxxxxxxxxxxx
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 3
+  /v1/slas/{slaId}:
+    get:
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-request-examples-url-1: /v1/slas/56defa38-52c1-4e65-9110-b29612c5973a
+      tags:
+        - sla-api
+      summary: 查询单个SLA
+      description: 查询指定SLA信息
+      operationId: querySLAUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: slaId
+          in: path
+          required: true
+          type: string
+          description: SLA的id
+      responses:
+        '200':
+          description: SLA信息
+          schema:
+            $ref: '#/definitions/SlaDto'
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 5
+    delete:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 删除SLA
+      description: 删除SLA
+      operationId: deleteSLAUsingDELETE
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: slaId
+          in: path
+          required: true
+          type: string
+          description: SLA的id
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              uuid: xxxxxxxxxxxxxxxxxxx
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 4
 definitions:
-  BackupTimeUnit:
-    description: An enumeration.
-    enum:
-      - m
-      - h
-      - d
-      - w
-    title: BackupTimeUnit
-    type: string
-  BaseExtendParam:
-    properties:
-      qos_id:
-        description: 限速策略id
-        title: Qos Id
-        type: string
-    title: BaseExtendParam
-    type: object
-  BasePage_SlaQuery_:
-    properties:
-      items:
-        description: 数据列表
-        items:
-          $ref: '#/definitions/SlaQuery'
-        title: Items
-        type: array
-      page_no:
-        description: 页面编号
-        title: Page No
-        type: integer
-      page_size:
-        description: 每页数据量
-        title: Page Size
-        type: integer
-      pages:
-        description: 总页数
-        title: Pages
-        type: integer
-      total:
-        description: 总的数据条数
-        title: Total
-        type: integer
+  DemoInfo:
+    description: This is a demo
     required:
-      - total
-      - pages
-      - page_size
-      - page_no
-      - items
-    title: BasePage[SlaQuery]
-    type: object
-  HTTPValidationError:
+      - name
     properties:
-      detail:
-        items:
-          $ref: '#/definitions/ValidationError'
-        title: Detail
-        type: array
-    title: HTTPValidationError
-    type: object
-  Policy:
-    properties:
-      action:
-        $ref: '#/definitions/PolicyActionEnum'
-      ext_parameters:
-        allOf:
-          - $ref: '#/definitions/BaseExtendParam'
-        description: |-
-          扩展参数:
-          备份策略扩展参数主要参数key定义：
-          qos_id : 限速策略id 非必传
-          auto_retry : 是否开启自动重试   integer  必传
-          auto_retry_times : 自动重试次数  integer  非必传
-          auto_retry_wait_minutes: 自动重试等待时间(分钟) integer 非必传
-          job_failed_alarm : 是否开启任务失败告警   boolean 必传
-          deduplication : 是否开启目标端重复删除  boolean 必传
-          source_deduplication : 源端重复数据删除  boolean 必传
-
-          复制策略扩展参数key说明
-          qos_id : 限速策略id 非必传
-          external_system_id : 外部复制集群id 必传
-          link_deduplication : 是否开启复制链路重删 必传
-          link_compression : 是否开启复制链路压缩 必传
-
-          归档扩展参数：
-          qos_id : 限速策略id 非必传
-          storage_id：归档存储id，非必传
-          auto_retry : 是否开启自动重试   integer  必传
-          auto_retry_times : 自动重试次数  integer  非必传
-          auto_retry_wait_minutes: 自动重试等待时间(分钟) integer 非必传
-          archive_target_type：副本归档类型  integer  1归档所有副本 2指定副本归档
-          archiving_scope：归档所有副本-归档范围，取值"latest","all_no_archiving",非必传
-          network_access：网络加速，boolean 非必传
-          delete_import_copy：归档后删除原导入副本，  boolean 非必传
-          protocol：归档存储类型，integer枚举[0, 1, 2, 3, 4, 5, 6, 7]
-          auto_index: 是否开启自动索引 boolean 非必传
-        title: Ext Parameters
+      id:
+        type: string
+        description: 唯一标识ID
+        minLength: 32
+        maxLength: 36
+        readOnly: true
+        example: 28f61af50fc9452aa0ed5ea25c3cc3d3
       name:
-        description: 策略名称
+        type: string
+        description: 名称
+        minLength: 2
         maxLength: 64
-        minLength: 1
-        pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
-        title: Name
+        example: MyDemo
+      description:
         type: string
-      retention:
-        allOf:
-          - $ref: '#/definitions/Retention'
-        description: 保留策略
-        title: Retention
-      schedule:
-        allOf:
-          - $ref: '#/definitions/Schedule'
-        description: 策略调度信息
-        title: Schedule
-      type:
-        $ref: '#/definitions/PolicyTypeEnum'
-      uuid:
-        description: 唯一编码
-        format: uuid
-        title: Uuid
-        type: string
-    title: Policy
+        description: 描述
+        minLength: 2
+        maxLength: 512
+        example: this is a demo
+  ErrorRsp:
+    description: 失败时返回的错误对象
     required:
-      - name
-      - schedule
-      - type
-  PolicyActionEnum:
-    description: An enumeration.
-    enum:
-      - full
-      - log
-      - cumulative_increment
-      - difference_increment
-      - replication
-      - archiving
-    title: PolicyActionEnum
-    type: string
-  PolicyQuery:
+      - error_code
+      - error_msg
     properties:
-      action:
-        $ref: '#/definitions/PolicyActionEnum'
-      ext_parameters:
-        description: 扩展参数，不同类型应用各自扩展
-        format: json-string
-        title: Ext Parameters
+      error_code:
+        description: 错误码
         type: string
-      name:
-        description: 策略名称
-        title: Name
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
         type: string
-      retention:
-        allOf:
-          - $ref: '#/definitions/Retention'
-        description: 保留策略
-        title: Retention
-      schedule:
-        allOf:
-          - $ref: '#/definitions/ScheduleQuery'
-        description: 策略调度信息
-        title: Schedule
-      type:
-        $ref: '#/definitions/PolicyTypeEnum'
-      uuid:
-        description: 唯一编码
-        title: Uuid
-        type: string
-    required:
-      - name
-      - schedule
-      - type
-    title: PolicyQuery
+        minLength: 2
+        maxLength: 512
+  RetentionDto:
     type: object
-  PolicyTypeEnum:
-    description: An enumeration.
-    enum:
-      - backup
-      - archiving
-      - replication
-    title: PolicyTypeEnum
-    type: string
-  ResourceSubTypeEnum:
-    description: An enumeration.(云备份和防勒索中application参数均可使用CloudBackupFileSystem)
-    enum:
-      - DBBackupAgent
-      - VMBackupAgent
-      - ABBackupClient
-      - DWSBackupAgent
-      - Fileset
-      - HDFSFileset
-      - DFSFileset
-      - Oracle
-      - OracleApp
-      - SQLServer
-      - DB2
-      - MySQL
-      - GaussDB
-      - SAP HANA
-      - Kingbase
-      - Sybase IQ
-      - Informix
-      - TimesTen
-      - GBase
-      - Dameng
-      - Cassandra
-      - OscarDB
-      - Exchange
-      - VMware vCenter Server
-      - VMware
-      - VMware ESX
-      - VMware ESXi
-      - Hyper-V
-      - HDFS
-      - ms.HostSystem
-      - FusionSphere
-      - vim.ClusterComputeResource
-      - vim.HostSystem
-      - vim.Folder
-      - vim.ResourcePool
-      - OpenStack
-      - HuaweiCloudStack
-      - vim.VirtualMachine
-      - ms.VirtualMachine
-      - Hadoop
-      - FusionInsight
-      - vim.VirtualApp
-      - vim.Datacenter
-      - Common
-      - Replica
-      - K8S-Common-dataset
-      - K8S-MySQL-dataset
-      - K8S-cluster
-      - K8S-namespace
-      - ImportCopy
-      - CloudBackupFileSystem
-    title: ResourceSubTypeEnum
-    type: string
-  Retention:
-    properties:
-      duration_unit:
-        $ref: '#/definitions/RetentionTimeUnit'
-      retention_duration:
-        description: 保留周期
-        title: Retention Duration
-        type: integer
-      retention_type:
-        $ref: '#/definitions/RetentionTypeEnum'
+    description: 保留策略
     required:
       - retention_type
-    title: Retention
-    type: object
-  RetentionTimeUnit:
-    description: An enumeration.
-    enum:
-      - d
-      - w
-      - MO
-      - 'y'
-    title: RetentionTimeUnit
-    type: string
-  RetentionTypeEnum:
-    description: An enumeration.
-    enum:
-      - 1
-      - 2
-    title: RetentionTypeEnum
-    type: integer
-  Schedule:
     properties:
-      days_of_month:
-        description: 每月的某些天，可多选，格式 1-20,21,23
-        pattern: ^\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*$
-        title: Days Of Month
+      retention_type:
+        type: integer
+        format: int32
+        description: 保留类型：1-永久保留 2-临时保留
+      duration_unit:
         type: string
+        description: 保留周期单位[d/w/MO/y]
+        enum:
+          - d
+          - w
+          - MO
+          - 'y'
+      retention_duration:
+        type: integer
+        format: int32
+        description: 保留周期
+  ScheduleDto:
+    type: object
+    description: 策略调度信息
+    required:
+      - trigger
+    properties:
+      trigger:
+        type: integer
+        format: int32
+        description: 调度触发类型,1-周期执行，2-备份完立即执行，3-备份完指定时间执行, 4-指定时间周期执行
+        enum:
+          - 1
+          - 2
+          - 3
+          - 4
+      interval:
+        type: integer
+        format: int32
+        description: 调度间隔周期[分/小时/天/周/月]
+      interval_unit:
+        type: string
+        description: 调度间隔周期单位[m/h/d]
+        enum:
+          - m
+          - h
+          - d
+          - w
+      start_time:
+        type: string
+        format: date-time
+        description: 首次开始时间
+      window_start:
+        type: string
+        format: date-time
+        description: 时间窗开始时间
+      window_end:
+        type: string
+        format: date-time
+        description: 时间窗结束时间
+      days_of_month:
+        type: string
+        description: 每月的某些天
+        pattern: ^\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*$
+      days_of_year:
+        type: string
+        format: date
+        description: 每年的某天
       days_of_week:
-        description: 每周的周几，可多选，格式 List[mon tue wed thu fri sat sun]
+        type: array
         items:
           type: string
-        title: Days Of Week
-        type: array
-      days_of_year:
-        description: 每年的某天，格式 YYYY/MM/DD
-        format: date
-        title: Days Of Year
-        type: string
-      interval:
-        description: 调度间隔周期[分/小时/天/周/月]
-        title: Interval
-        type: integer
-      interval_unit:
-        $ref: '#/definitions/BackupTimeUnit'
-      start_time:
-        description: 首次开始时间，格式 [YYYY/MM/DD HH:mm:ss]/[YYYY/MM/DD]
-        title: Start Time
-      trigger:
-        $ref: '#/definitions/TriggerEnum'
+        description: 每周的周几
       trigger_action:
-        $ref: '#/definitions/TriggerActionEnum'
-      window_end:
-        description: 时间窗结束时间，格式 HH:mm:ss
-        format: time
-        title: Window End
         type: string
-      window_start:
-        description: 时间窗开始时间，格式[HH:mm:ss]
-        format: time
-        title: Window Start
-        type: string
-    required:
-      - trigger
-    title: Schedule
+        description: 指定时间调度类型
+        enum:
+          - year
+          - month
+          - week
+  PolicyDto:
     type: object
-  ScheduleQuery:
-    properties:
-      days_of_month:
-        description: 每月的某些天，可多选，格式 1-20,21,23
-        pattern: ^\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*$
-        title: Days Of Month
-        type: string
-      days_of_week:
-        description: 每周的周几数据库1,2,3 返回前台格式 List[mon tue wed thu fri sat sun]
-        title: Days Of Week
-        type: string
-      days_of_year:
-        description: 每年的某天，格式 YYYY/MM/DD
-        format: date
-        title: Days Of Year
-        type: string
-      interval:
-        description: 调度间隔周期[分/小时/天/周/月]
-        title: Interval
-        type: integer
-      interval_unit:
-        $ref: '#/definitions/BackupTimeUnit'
-      start_time:
-        description: 首次开始时间，格式 [YYYY/MM/DD HH:mm:ss]/[YYYY/MM/DD]
-        title: Start Time
-      trigger:
-        $ref: '#/definitions/TriggerEnum'
-      trigger_action:
-        $ref: '#/definitions/TriggerActionEnum'
-      window_end:
-        description: 时间窗结束时间，格式 HH:mm:ss
-        format: time
-        title: Window End
-        type: string
-      window_start:
-        description: 时间窗开始时间，格式[HH:mm:ss]
-        format: time
-        title: Window Start
-        type: string
-    required:
-      - trigger
-    title: ScheduleQuery
-    type: object
-  SlaBase:
-    properties:
-      application:
-        $ref: '#/definitions/ResourceSubTypeEnum'
-      created_time:
-        description: SLA创建时间
-        format: date-time
-        title: Created Time
-        type: string
-      name:
-        description: SLA名称
-        maxLength: 64
-        minLength: 1
-        pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
-        title: Name
-        type: string
-      type:
-        $ref: '#/definitions/SlaType'
     required:
       - name
+      - retention
+      - schedule
       - type
-      - application
-    title: SlaBase
-    type: object
-  SlaCreate:
     properties:
-      application:
-        $ref: '#/definitions/ResourceSubTypeEnum'
-      created_time:
-        description: SLA创建时间
-        format: date-time
-        title: Created Time
+      uuid:
         type: string
+        description: 策略id
       name:
-        description: SLA名称
-        maxLength: 64
-        minLength: 1
-        pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
-        title: Name
         type: string
-      policy_list:
-        description: SLA对应的策略集合
-        items:
-          $ref: '#/definitions/Policy'
-        maxItems: 16
-        minItems: 1
-        title: Policy List
-        type: array
+        description: 策略名称
+        pattern: ^[a-zA-Z_\\u4e00-\\u9fa5]{1}[\\u4e00-\\u9fa5\\w-]*$
+      action:
+        type: string
+        description: 策略动作：全量备份、日志备份、累积增量备份、差异增量备份、归档、复制
+        enum:
+          - full
+          - log
+          - cumulative_increment
+          - difference_increment
+          - replication
+          - archiving
+          - permanent_increment
+          - snapshot
+      ext_parameters:
+        type: object
+        description: 扩展参数
+      retention:
+        description: 保留策略
+        $ref: '#/definitions/RetentionDto'
+      schedule:
+        description: 策略调度信息
+        $ref: '#/definitions/ScheduleDto'
       type:
-        $ref: '#/definitions/SlaType'
-      user_id:
-        description: 创建SLA的用户
-        maxLength: 64
-        minLength: 1
-        title: User Id
         type: string
+        description: 策略类型：备份策略、归档策略、复制策略
+        enum:
+          - backup
+          - archiving
+          - replication
+  SlaDto:
+    type: object
     required:
       - name
       - type
       - application
       - policy_list
-    title: SlaCreate
-    type: object
-  SlaId:
     properties:
-      uuid:
-        description: SLA唯一编码
-        format: uuid
-        title: Uuid
+      name:
         type: string
-    required:
-      - uuid
-    title: SlaId
-    type: object
-  SlaQuery:
-    properties:
-      application:
-        $ref: '#/definitions/ResourceSubTypeEnum'
-      archival_count:
-        description: SLA关联的归档目标数量
-        title: Archival Count
+        description: SLA名称
+        pattern: ^[a-zA-Z_\\u4e00-\\u9fa5]{1}[\\u4e00-\\u9fa5\\w-]*$
+      type:
         type: integer
-      created_time:
-        description: SLA创建时间
-        format: date-time
-        title: Created Time
+        format: int32
+        description: SLA类型，1-备份 2-容灾
+        enum:
+          - 1
+          - 2
+      application:
         type: string
+        description: 应用类型
+        enum:
+          - Common
+          - Fileset
+          - Oracle
+          - vim.VirtualMachine
+          - Replica
+          - HDFSFileset
+          - HBaseBackupSet
+          - HiveBackupSet
+          - NasShare
+          - NasFileSystem
+          - GaussDBT
+          - MySQL
+          - Redis
+          - KingBase
+          - ClickHouse
+          - PostgreSQL
+          - HCSCloudHost
+          - Dameng
+          - OpenGauss
+          - ElasticSearchBackupSet
+          - KubernetesStatefulSet
+          - FusionCompute
+          - SQLServer
+      created_time:
+        type: string
+        format: date-time
+        description: SLA创建时间
+      user_id:
+        type: string
+        description: 创建SLA的用户
+      policy_list:
+        type: array
+        items:
+          $ref: '#/definitions/PolicyDto'
+        description: SLA对应的策略集合
       is_global:
-        description: 是否是预置策略，true-预置策略  false-非预置策略
-        title: Is Global
         type: boolean
-      name:
-        description: SLA名称
-        maxLength: 64
-        minLength: 1
-        pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
-        title: Name
-        type: string
-      policy_list:
-        description: SLA对应的策略集合
-        items:
-          $ref: '#/definitions/PolicyQuery'
-        title: Policy List
-        type: array
-      replication_count:
-        description: SLA关联的复制目标数量
-        title: Replication Count
+        description: 是否为全局SLA
+        default: false
+      resourceCount:
         type: integer
-      resource_count:
-        description: SLA关联资源的数量
-        title: Resource Count
+        format: int32
+        description: 关联资源数量
+      archivalCount:
         type: integer
-      type:
-        $ref: '#/definitions/SlaType'
-      uuid:
-        description: 唯一编码
-        format: uuid
-        title: Uuid
-        type: string
-    required:
-      - name
-      - type
-      - application
-      - uuid
-      - is_global
-      - policy_list
-    title: SlaQuery
+        format: int32
+        description: 归档策略个数
+      replicationCount:
+        type: integer
+        format: int32
+        description: 复制策略个数
+  SlaPageResponse:
     type: object
-  SlaType:
-    description: An enumeration.
-    enum:
-      - 1
-      - 2
-    title: SlaType
-    type: integer
-  SlaUpdate:
     properties:
-      application:
-        $ref: '#/definitions/ResourceSubTypeEnum'
-      created_time:
-        description: SLA创建时间
-        format: date-time
-        title: Created Time
-        type: string
-      name:
-        description: SLA名称
-        maxLength: 64
-        minLength: 1
-        pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
-        title: Name
-        type: string
-      policy_list:
-        description: SLA对应的策略集合
+      total:
+        type: integer
+        format: int64
+        description: sla总量
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      pageNo:
+        type: integer
+        format: int64
+        description: 当前页
+      pageSize:
+        type: integer
+        format: int64
+        description: 每页大小
+      items:
+        type: array
         items:
-          $ref: '#/definitions/Policy'
-        maxItems: 16
+          $ref: '#/definitions/SlaDto'
+        description: Sla列表对象
+  SlaBatchRequest:
+    type: object
+    description: SLA批量操作请求体
+    required:
+      - slaIds
+    properties:
+      slaIds:
+        type: array
+        description: 请求删除的sla的id
         minItems: 1
-        title: Policy List
-        type: array
-      type:
-        $ref: '#/definitions/SlaType'
-      user_id:
-        description: 创建SLA的用户
-        maxLength: 64
-        minLength: 1
-        title: User Id
-        type: string
-      uuid:
-        description: 唯一编码
-        format: uuid
-        title: Uuid
-        type: string
-    required:
-      - name
-      - type
-      - application
-      - policy_list
-      - uuid
-    title: SlaUpdate
-    type: object
-  TriggerActionEnum:
-    description: An enumeration.
-    enum:
-      - year
-      - month
-      - week
-    title: TriggerActionEnum
-    type: string
-  TriggerEnum:
-    description: An enumeration.
-    enum:
-      - 1
-      - 2
-      - 3
-      - 4
-    title: TriggerEnum
-    type: integer
-  ValidationError:
-    properties:
-      loc:
+        maxItems: 100
         items:
           type: string
-        title: Location
-        type: array
-      msg:
-        title: Message
-        type: string
-      type:
-        title: Error Type
-        type: string
-    required:
-      - loc
-      - msg
-      - type
-    title: ValidationError
-    type: object
-x-components: {}

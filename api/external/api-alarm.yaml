@@ -19,7 +19,7 @@ paths:
   /v1/alarms:
     get:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -164,6 +164,7 @@ paths:
       deprecated: false
   /v2/alarms:
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
@@ -197,16 +198,12 @@ paths:
           description: 创建时间（止）[取值范围]1576058814000：时间戳
           required: false
           type: int64
-          maximum: 18446744073709551615
-          mininum: 0
           x-example: '1576058814000'
         - name: startTime
           in: query
           description: 创建时间（起）[取值范围]1576058814000：时间戳
           required: false
           type: int64
-          maximum: 18446744073709551615
-          mininum: 0
           x-example: '1576058814001'
         - name: language
           in: query
@@ -250,8 +247,7 @@ paths:
           x-example: WARNING
         - name: objType
           in: query
-          description: >-
-            告警对象类型
+          description: 告警对象类型
           required: false
           type: string
           x-example: '244'
@@ -282,6 +278,7 @@ paths:
       deprecated: false
   /v2/alarms/objects:
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
@@ -317,7 +314,6 @@ paths:
         '200':
           description: OK
           schema:
-            type: array
             $ref: '#/definitions/AlarmObjDto'
             originalRef: AlarmObjDto
         '401':
@@ -338,7 +334,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -384,14 +380,14 @@ paths:
       deprecated: false
   /v2/alarms/{sequence}/action/clear:
     put:
-      x-dr-role: 'N'
+      x-dr-role: 'Y'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
@@ -491,7 +487,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -527,6 +523,7 @@ paths:
       deprecated: false
   /v2/alarms/devices:
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
@@ -562,7 +559,6 @@ paths:
         '200':
           description: OK
           schema:
-            type: array
             $ref: '#/definitions/AlarmDevDto'
             originalRef: AlarmDevDto
         '401':
@@ -804,7 +800,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -848,10 +844,10 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'N'
+      x-access-port: 30081
+      x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -896,9 +892,9 @@ paths:
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
-      x-auth-required: 'N'
+      x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -986,7 +982,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -1037,7 +1033,7 @@ paths:
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
       x-dp-admin-role: 'N'
-      x-public-api: 'N'
+      x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
@@ -1134,7 +1130,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -1183,7 +1179,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -1226,6 +1222,7 @@ paths:
       deprecated: false
   /v1/alarms/{sequence}:
     delete:
+      x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1235,7 +1232,7 @@ paths:
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 告警清除
@@ -1275,7 +1272,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -1364,7 +1361,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -1662,7 +1659,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -1711,7 +1708,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -1863,7 +1860,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -1906,12 +1903,12 @@ paths:
       deprecated: false
     put:
       x-dr-role: 'N'
-      x-dm-role: 'Y'
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -2006,7 +2003,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'

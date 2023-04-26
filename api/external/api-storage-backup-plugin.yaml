@@ -374,8 +374,9 @@ paths:
             $ref: '#/definitions/NasUserInfos'
   /v1/plugins/storage/nas/auth-user-groups:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       tags:

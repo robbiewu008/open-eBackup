@@ -8,35 +8,46 @@ schemes:
 host: localhost.com
 basePath: /
 tags:
-  - name: backup-software
+  - name: plugins-storage
 paths:
-  /v1/version:
+  /v1/internal/plugins/storage/nas/action/verify:
     get:
-      x-dr-role: 'Y'
-      tags:
-        - backup-software
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      operationId: QuerySoftwareNameAndVersionUsingGet
-      summary: 查询备份软件信息
-      description: 查询备份软件信息接口
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - plugins-storage
+      operationId: verifyNasFileSystemMountIdOwnership
+      summary: 验证dee文件系统所有权
+      description: 验证dee文件系统所有权
       x-is-registered: 'N'
       x-support-sdk: 'N'
       produces:
         - application/json
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          description: 用户id
+          type: string
+        - name: uuidList
+          in: query
+          required: true
+          description: sla id列表
+          type: array
+          items:
+            type: string
       responses:
         '200':
-          description: 备份软件信息Po类
-          schema:
-            $ref: '#/definitions/SoftwareVersionPo'
+          description: 无返回值
         '400':
           description: Error response
           schema:
@@ -45,30 +56,45 @@ paths:
             X-request-id:
               type: string
               description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
-  /v1/demos/{demo_id}: {}
-  /v1/media/capacity:
+  /v1/internal/plugins/storage/snapshots/{snapshotId}:
     get:
       x-dr-role: 'Y'
-      x-product: OceanProtect X
-      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'Y'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
-      x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
-        - backup-software
-      summary: 查询备份软件的介质容量信息
-      description: 查询本地存储和对象存储总容量和已用容量
-      operationId: QuerySoftwareCapacityUsingGet
+        - plugins-storage
+      summary: 查询快照信息
+      description: 查询快照信息
+      operationId: getSnapshotDetailUsingGET
+      parameters:
+        - name: snapshotId
+          in: path
+          required: true
+          type: string
+          description: 快照ID
+        - name: deviceId
+          in: query
+          required: true
+          description: 设备ID
+          type: string
+        - name: vStoreId
+          in: query
+          required: true
+          description: 租户ID
+          type: string
       responses:
         '200':
-          description: 存储介质信息Po类
+          description: ''
           schema:
-            $ref: '#/definitions/OpCapacityInfoPo'
+            $ref: '#/definitions/StorageFileSystemSnapshotBo'
 definitions:
   DemoInfo:
     description: This is a demo
@@ -110,36 +136,14 @@ definitions:
         type: string
         minLength: 2
         maxLength: 512
-  SoftwareVersionPo:
+  StorageFileSystemSnapshotBo:
     type: object
     properties:
-      productModeString:
+      id:
         type: string
-        description: 备份软件型号
-      pointRelease:
+      name:
         type: string
-        description: 备份软件版本
-      function:
-        type: array
-        items:
-          type: string
-        description: 备份软件支持的功能，默认支持备份、恢复、复制、归档
-  OpCapacityInfoPo:
-    type: object
-    properties:
-      opTotalSize:
-        type: integer
-        format: int64
-        description: op介质总大小 byte
-      opUsedSize:
-        type: integer
-        format: int64
-        description: op介质已用大小 byte
-      archiveTotalSize:
-        type: integer
-        format: int64
-        description: 对象存储介质总大小 byte
-      archiveUsedSize:
-        type: integer
-        format: int64
-        description: 对象存储介质已用大小 byte
+      isSecuritySnap:
+        type: boolean
+      isInProtectionPeriod:
+        type: boolean

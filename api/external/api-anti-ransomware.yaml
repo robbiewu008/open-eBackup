@@ -16,7 +16,8 @@ produces:
 paths:
   /v1/anti-ransomware/policies:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
@@ -154,15 +155,16 @@ paths:
         '404':
           description: Not Found
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'Y'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-access-port: 25081
       x-auth-required: 'Y'
       x-public-api: 'Y'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-sysadmin-role: 'Y'
       tags:
         - anti-ransomware-policy-api
@@ -196,7 +198,8 @@ paths:
           description: Not Found
   /v1/anti-ransomware/policies/{id}:
     put:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
@@ -248,7 +251,8 @@ paths:
         '404':
           description: Not Found
     delete:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'

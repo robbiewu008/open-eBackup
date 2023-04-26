@@ -1,0 +1,138 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: Switch
+    description: 系统开关
+paths:
+  /v1/system/switches:
+    put:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Switch
+      operationId: UpdateSystemSwitchApi
+      consumes:
+        - application/json
+      summary: 修改系统配置开关
+      description: 修改系统开关配置
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      deprecated: false
+      parameters:
+        - in: body
+          name: UpdateSystemSwitchApiRequestBody
+          description: 更新系统开关请求体
+          required: true
+          schema:
+            $ref: '#/definitions/SystemSwitch'
+      responses:
+        '200':
+          description: 接口调用成功无响应参数
+        '500':
+          description: ''
+          schema:
+            type: object
+          examples:
+            application/json:
+              errorCode: 1677936643
+              errorMessage: An exception occurs during service processing.
+              parameters:
+                - param1
+                - param2
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Switch
+      summary: 查询所有系统开关
+      description: 查询系统开关API
+      operationId: ListSystemSwitchApi
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: 系统开关查询响应对象
+          schema:
+            $ref: '#/definitions/QuerySystemSwitchResponse'
+          examples:
+            application/json:
+              switches:
+                - name: REPLICATION_LINK_ENCRYPTION
+                  status: 1
+                - name: BACKUP_LINK_ENCRYPTION
+                  status: 1
+        '400':
+          description: 客户端参数错误
+        '500':
+          description: |-
+            {
+              "errorCode": 1677936643,
+              "errorMessage": "An exception occurs during service processing.",
+              "parameters": [
+                "param1",
+                "param2"
+              ]
+            }
+          schema:
+            type: object
+definitions:
+  QuerySystemSwitchResponse:
+    description: 查询系统开关配置请求体
+    properties:
+      switches:
+        description: 需要更新的系统开关列表
+        $ref: '#/definitions/SystemSwitch'
+    required:
+      - switches
+  SystemSwitch:
+    description: 系统开关信息
+    properties:
+      name:
+        description: |-
+          开关名称：
+          BACKUP_LINK_ENCRYPTION -- 备份链路加密开关
+          REPLICATION_LINK_ENCRYPTION -- 复制链路加密开关
+        type: string
+        minLength: 8
+        maxLength: 36
+        enum:
+          - BACKUP_LINK_ENCRYPTION
+          - REPLICATION_LINK_ENCRYPTION
+      status:
+        description: 0-关闭  1 开启
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 1
+    required:
+      - name
+      - status

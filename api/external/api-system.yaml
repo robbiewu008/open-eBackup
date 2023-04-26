@@ -53,7 +53,7 @@ paths:
       x-product: CyberEngine
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
+      x-auditor-role: 'Y'
       x-dp-admin-role: 'N'
       x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
@@ -90,6 +90,8 @@ paths:
       x-order: 5
   /v1/system/expandBackupService:
     post:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
       x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -140,6 +142,8 @@ paths:
       x-order: 6
   /v1/system/expandBackupServiceIp:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
       x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -179,6 +183,8 @@ paths:
       x-order: 7
   /v1/system/expandControllerStatus:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
       x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -316,7 +322,7 @@ paths:
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -349,6 +355,8 @@ paths:
       x-order: 12
   /v1/system/time:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
       x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -388,16 +396,16 @@ paths:
       x-order: 13
   /v1/system/internal/initConfig:
     get:
-      x-dr-role: 'Y'
-      x-dm-role: 'Y'
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: OceanProtect X
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
-      x-public-api: 'Y'
+      x-public-api: 'N'
       x-sysadmin-role: 'N'
       tags:
         - ${system-api}
@@ -465,11 +473,11 @@ paths:
             $ref: '#/definitions/AllPortListResponseDto'
   /v1/internal/service/filesystem/workload/id:
     get:
-      x-dr-role: 'Y'
-      x-dm-role: 'Y'
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'

@@ -1,0 +1,746 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: Detect Report API
+  description: 侦测报告API
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: DetectReportAPI
+paths:
+  /v1/anti-ransomware/detect/report/query-resource:
+    get:
+      tags:
+        - DetectReportAPI
+      x-dr-role: 'N'
+      x-product: CyberEngine
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-request-examples-url-1: GET /console/rest/v1/anti-ransomware/detect/report/query-resource
+      x-request-examples-description-1: 查询当前用户下的所有存储设备信息
+      x-request-examples-url-2: GET /console/rest/v1/anti-ransomware/detect/report/query-resource?deviceId=46756ac1-e874-434d-832c-18a873df451d
+      x-request-examples-description-2: 查询对应存储设备下的所有租户信息
+      x-request-examples-url-3: GET /console/rest/v1/anti-ransomware/detect/report/query-resource?deviceId=46756ac1-e874-434d-832c-18a873df451d&tenantId=fdffbd0a-803a-4e12-b71e-300188d0ce8d
+      x-request-examples-description-3: 查询对应租户下的所有文件系统信息
+      operationId: ListQueryResources
+      summary: 查询安全一体机资源（设备、租户和文件系统）
+      description: 查询安全一体机资源（设备、租户和文件系统）
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: deviceId
+          in: query
+          required: false
+          description: 查询存储设备时允许为空，查询租户、文件系统时不为空
+          type: string
+          allowEmptyValue: true
+          default: null
+          minLength: 0
+          maxLength: 64
+        - name: tenantId
+          in: query
+          required: false
+          description: 查询存储设备、租户时允许为空，查询文件系统时不为空
+          type: string
+          allowEmptyValue: true
+          default: null
+          minLength: 0
+          maxLength: 64
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/QueryResourceResponse'
+          examples:
+            application/json:
+              - uuid: 46756ac1-e874-434d-832c-18a873df451d
+                name: Huawei.Storage_01
+                endpoint: 8.40.129.170
+                port: 8088
+              - uuid: cb3cfa8f-c770-45f7-bd84-249a2942af2d
+                name: Huawei.Storage_02
+                endpoint: 8.40.129.171
+                port: 8088
+              - uuid: 47289ecc-fd43-465e-9c6d-312a0f03f8ab
+                name: Huawei.Storage_03
+                endpoint: 8.40.129.172
+                port: 8088
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+  /v1/anti-ransomware/detect/report/{reportId}:
+    get:
+      tags:
+        - DetectReportAPI
+      x-dr-role: 'N'
+      x-product: CyberEngine
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-request-examples-url-1: https://10.29.181.96:25080/console/rest/v1/anti-ransomware/detect/report/0a1134c2-d714-41df-bc52-579922b152f9
+      x-request-examples-description-1: 查询报告id为0a1134c2-d714-41df-bc52-579922b152f9的详细侦测报告
+      operationId: ShowDetectReportById
+      summary: 查看文件系统详细报告
+      description: 查看文件系统详细报告
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          type: string
+          description: 报告id
+          minLength: 0
+          maxLength: 64
+      responses:
+        '200':
+          description: 报告详细信息
+          schema:
+            $ref: '#/definitions/ViewDetectReportResponse'
+          examples:
+            application/json:
+              detectStartTime: '2023-03-04 20:51:52'
+              detectEndTime: '2023-03-04 23:04:42'
+              fileSystemName: fs_0
+              fileSystemLocation: CyberEngine OceanProtect/op60/System_vStore/fs_0
+              snapshotCount: 5
+              handleFalseCount: 0
+              reportCreateTime: 1678069240790
+              infectionSnapshotCount: 1
+              snapshotDetectDataList:
+                - generated_time: '2023-03-04T20:51:52'
+                  name: fs_0_1677934312
+                  generate_type: IO_DETECT
+                  anti_status: 3
+                  model: 1.0.0
+                  detection_time: '2023-03-15 06:23:21'
+                  total_file_size: 1000
+                  added_file_count: 2
+                  changed_file_count: 3
+                  deleted_file_count: 4
+                  handle_false: false
+                - generated_time: '2023-03-04T21:21:02'
+                  name: fs_0_1677936062
+                  generate_type: IO_DETECT
+                  anti_status: 2
+                  model: 1.0.0
+                  detection_time: '2023-03-19 06:23:21'
+                  total_file_size: 1000
+                  added_file_count: 2
+                  changed_file_count: 3
+                  deleted_file_count: 4
+                  handle_false: false
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+  /v1/anti-ransomware/detect/report:
+    post:
+      x-request-examples-url-1: https://10.29.181.96:25080/console/rest/v1/anti-ransomware/detect/report
+      x-request-examples-description-1: 添加文件系统侦测报告
+      x-request-examples-text-1:
+        reportName: Report_Test
+        storageName: op53
+        storageId: c3d138ed05f646a9a927b184ca52ec44
+        storageEndpoint: 8.46.51.53
+        storagePort: 25081
+        tenantName: v8
+        tenantId: '8'
+        fileSystemName: demo
+        fileSystemId: 04e3825e-b162-37c6-bbc4-5f4aa8bbe7c5
+        detectTimeRange:
+          - '2023-03-03T14:52:45'
+          - '2023-03-04T15:20:55'
+      x-request-examples-1:
+        reportName: Report_Test
+        storageName: op53
+        storageId: c3d138ed05f646a9a927b184ca52ec44
+        storageEndpoint: 8.46.51.53
+        storagePort: 25081
+        tenantName: v8
+        tenantId: '8'
+        fileSystemName: demo
+        fileSystemId: 04e3825e-b162-37c6-bbc4-5f4aa8bbe7c5
+        detectTimeRange:
+          - '2023-03-03T14:52:45'
+          - '2023-03-04T15:20:55'
+      tags:
+        - DetectReportAPI
+      x-dr-role: 'N'
+      x-product: CyberEngine
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: AddDetectReport
+      consumes:
+        - application/x-www-form-urlencoded
+      summary: 报告列表中添加文件系统
+      description: 报告列表中添加文件系统
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: AddDetectReportRequestBody
+          in: body
+          required: false
+          description: 添加文件系统详细报告请求
+          schema:
+            $ref: '#/definitions/AddDetectReportRequestBody'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json: Status：200 OK
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          examples:
+            application/json:
+              errorCode: '1677929218'
+              errorMessage: The parameter is incorrect
+              retryable: false
+              parameters: null
+            application/xml:
+              errorCode: '1677929483'
+              errorMessage: Cause:The number of existing users has reached the upper limit.Suggestion:Contact the administrator to delete unused users or increase the user number threshold.
+              retryable: false
+              parameters: null
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          examples:
+            application/json:
+              errorCode: '1677929497'
+              errorMessage: Cause:Access denied.Suggestion:Contact the administrator assign the rights.
+              retryable: false
+              parameters: null
+    get:
+      tags:
+        - DetectReportAPI
+      x-dr-role: 'N'
+      x-product: CyberEngine
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-request-examples-url-1: https://10.29.181.96:25080/console/rest/v1/anti-ransomware/detect/report?startPage=1&pageSize=20&name=report
+      x-request-examples-description-1: 分页查询报表列表
+      operationId: ListQueryDetectReport
+      summary: 分页查询报表列表
+      description: 分页查询报表列表
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: query
+          required: false
+          description: 报告名称模糊查询
+          type: string
+          allowEmptyValue: true
+        - name: startPage
+          in: query
+          required: false
+          description: 起始页
+          type: integer
+          format: int32
+          allowEmptyValue: true
+          default: 0
+          minimum: 0
+          exclusiveMaximum: true
+        - name: pageSize
+          in: query
+          required: false
+          description: 页大小
+          type: integer
+          format: int32
+          default: 10
+          allowEmptyValue: true
+          minimum: 0
+          maximum: 200
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PageListResponse'
+          examples:
+            application/json:
+              totalCount: 1
+              records:
+                - uuid: e16f961f-990a-4651-8d9a-aa7d30c80bf6
+                  reportName: Report_03
+                  userName: sysadmin
+                  userId: 88a94c476f12a21e016f12a246e50009
+                  storageName: Huawei.Storage_03
+                  storageEndpoint: 8.40.129.172
+                  storagePort: 8088
+                  storageId: 47289ecc-fd43-465e-9c6d-312a0f03f8ab
+                  tenantName: vStore_03
+                  tenantId: 08cbf2f0-4d4a-466d-8394-349c208e03a4
+                  fileSystemName: File System_06
+                  fileSystemId: 04845bde-2711-4b67-894c-8aa922ba6cd8
+                  addReportTime: 1676966772705
+                  inputDetectStartTime: '2023-02-15 00:00:00'
+                  inputDetectEndTime: '2023-02-17 00:00:00'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+  /v1/anti-ransomware/detect/report/delete:
+    delete:
+      x-request-examples-description-1: 通过报告ID列表批量删除文件系统侦测报告
+      x-request-examples-text-1: f797bff1-26b0-40fa-a3de-df75f9a22bcb,f797bff1-26b0-40fa-a3de-df75f9a22aba
+      x-request-examples-1: f797bff1-26b0-40fa-a3de-df75f9a22bcb,f797bff1-26b0-40fa-a3de-df75f9a22aba
+      tags:
+        - DetectReportAPI
+      x-dr-role: 'N'
+      x-product: CyberEngine
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-request-examples-url-1: https://10.29.181.96:25080/console/rest/v1/anti-ransomware/detect/report/delete
+      operationId: DeleteDetectReportById
+      summary: 批量删除文件系统详细报告
+      description: 批量删除文件系统详细报告
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: reportIdList
+          in: query
+          required: false
+          description: 批量删除侦测报告字符串，两个ID之间使用逗号进行间隔
+          type: array
+          items:
+            type: string
+          minItems: 0
+          maxItems: 20
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json: Status：200 OK
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          examples:
+            application/json:
+              errorCode: '1677929497'
+              errorMessage: Cause:Access denied.Suggestion:Contact the administrator assign the rights.
+              retryable: false
+              parameters: null
+        '500':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          examples:
+            application/json:
+              errorCode: '1677929217'
+              errorMessage: The object does not exist
+              retryable: false
+              parameters: null
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+definitions:
+  AddDetectReportRequestBody:
+    description: 添加文件系统详细报告请求
+    required:
+      - reportName
+      - storageName
+      - storageId
+      - storageEndpoint
+      - storagePort
+      - tenantName
+      - tenantId
+      - fileSystemName
+      - fileSystemId
+      - detectTimeRange
+    properties:
+      reportName:
+        type: string
+        description: 报告名称
+        minLength: 1
+        maxLength: 30
+        example: Report_01
+        pattern: ^[a-z0-9A-Z\_]+$
+      storageName:
+        type: string
+        description: 存储设备名称
+        minLength: 2
+        maxLength: 64
+        example: Huawei.Storage_01
+      storageId:
+        type: string
+        description: 存储设备ID
+        minLength: 2
+        maxLength: 512
+        example: 46756ac1-e874-434d-832c-18a873df451d
+      storageEndpoint:
+        type: string
+        description: 存储设备IP
+        example: 8.40.129.170
+        minLength: 8
+        maxLength: 16
+      storagePort:
+        type: integer
+        format: int32
+        description: 存储设备port
+        example: 8088
+      tenantName:
+        type: string
+        description: 租户名称
+        example: vStore_01
+        minLength: 1
+        maxLength: 50
+      tenantId:
+        type: string
+        description: 租户ID
+        example: fdffbd0a-803a-4e12-b71e-300188d0ce8d
+      fileSystemName:
+        type: string
+        description: 文件系统名称
+        example: File System_01
+      fileSystemId:
+        type: string
+        description: 文件系统ID
+        example: 9f91a697-22d0-4c85-b2f6-5963a2c1f62a
+      detectTimeRange:
+        type: array
+        items:
+          type: string
+        description: 勒索检测的时间范围detectTimeRange[0]为开始时间，detectTimeRange[1]为结束时间
+        example: '["2023-03-03T14:52:45", "2023-03-04T15:20:55"]'
+    type: object
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+      - retryable
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512
+      retryable:
+        type: boolean
+        description: 重试
+        default: false
+      parameters:
+        type: string
+        description: 参数
+        default: null
+    type: object
+  QueryResourceResponse:
+    type: object
+    required:
+      - uuid
+      - name
+    properties:
+      uuid:
+        type: string
+        description: 资源的uuid
+      name:
+        type: string
+        description: 资源的名称
+      endpoint:
+        type: string
+        description: 存储设备资源的ip
+        default: null
+      port:
+        type: integer
+        format: int32
+        description: 存储设备资源的端口
+  ViewDetectReportResponse:
+    type: object
+    required:
+      - reportName
+      - detectStartTime
+      - detectEndTime
+      - fileSystemName
+      - fileSystemLocation
+      - snapshotCount
+      - handleFalseTimes
+      - reportCreateTime
+      - infectionSnapshotCount
+      - snapshotDetectDataList
+    properties:
+      reportName:
+        type: string
+        description: 报告名称
+        minLength: 1
+        maxLength: 30
+        pattern: ^[a-z0-9A-Z\_]+$
+      detectStartTime:
+        type: string
+        description: 实际侦测开始时间
+      detectEndTime:
+        type: string
+        description: 实际侦测结束时间
+      fileSystemName:
+        type: string
+        description: 文件系统名称
+      fileSystemLocation:
+        type: string
+        description: 文件系统位置
+      snapshotCount:
+        type: integer
+        format: int32
+        description: 生成快照数量
+      handleFalseTimes:
+        type: integer
+        format: int32
+        description: 快照误报处理次数
+      reportCreateTime:
+        type: integer
+        format: int64
+        description: 报告创建时间
+      infectionSnapshotCount:
+        type: integer
+        format: int32
+        description: 感染快照数
+      snapshotDetectDataList:
+        type: array
+        items:
+          $ref: '#/definitions/SnapchatDetailsAntiRansomware'
+        description: 历史快照侦测数据
+  SnapchatDetailsAntiRansomware:
+    type: object
+    required:
+      - generated_time
+      - name
+      - generate_type
+      - anti_status
+      - model
+      - detection_time
+      - total_file_size
+      - added_file_count
+      - changed_file_count
+      - deleted_file_count
+      - handle_false
+    properties:
+      generated_time:
+        type: string
+        description: 快照时间
+      name:
+        type: string
+        description: 快照名称
+      generate_type:
+        type: string
+        description: 快照生成方式
+      anti_status:
+        type: integer
+        format: int32
+        description: 安全状态
+      model:
+        type: string
+        description: 侦测模型
+      detection_time:
+        type: string
+        description: 侦测结束时间
+      total_file_size:
+        type: integer
+        format: int64
+        description: 总文件大小
+      added_file_count:
+        type: integer
+        format: int64
+        description: 新增文件数量
+      changed_file_count:
+        type: integer
+        format: int64
+        description: 修改文件数量
+      deleted_file_count:
+        type: integer
+        format: int64
+        description: 删除文件数量
+      handle_false:
+        type: boolean
+        description: 误报标记
+        default: false
+  DetectReportPageResponse:
+    type: object
+    required:
+      - uuid
+      - reportName
+      - userName
+      - userId
+      - storageName
+      - storageEndpoint
+      - storagePort
+      - storageId
+      - tenantName
+      - tenantId
+      - fileSystemName
+      - fileSystemId
+      - addReportTime
+      - inputDetectStartTime
+      - inputDetectEndTime
+    properties:
+      uuid:
+        type: string
+        example: e16f961f-990a-4651-8d9a-aa7d30c80bf6
+        description: 侦测报告UUID
+      reportName:
+        type: string
+        example: Report_03
+        description: 报告名称
+      userName:
+        type: string
+        example: sysadmin
+        description: 添加报告的用户名称
+      userId:
+        type: string
+        example: 88a94c476f12a21e016f12a246e50009
+        description: 添加报告的用户ID
+      storageName:
+        type: string
+        example: Huawei.Storage_03
+        description: 存储设备名称
+      storageEndpoint:
+        type: string
+        example: 8.40.129.172
+        description: 存储设备IP
+      storagePort:
+        type: integer
+        format: int32
+        example: 8088
+        description: 存储设备端口
+      storageId:
+        type: string
+        example: 47289ecc-fd43-465e-9c6d-312a0f03f8ab
+        description: 存储设备ID
+      tenantName:
+        type: string
+        example: vStore_03
+        description: 租户名称
+      tenantId:
+        type: string
+        example: 08cbf2f0-4d4a-466d-8394-349c208e03a4
+        description: 租户ID
+      fileSystemName:
+        type: string
+        example: File System_06
+        description: 文件系统名称
+      fileSystemId:
+        type: string
+        example: 04845bde-2711-4b67-894c-8aa922ba6cd8
+        description: 文件系统ID
+      addReportTime:
+        type: integer
+        format: int64
+        example: 1676966772705
+        description: 侦测报告报告添加时间(时间戳)
+      inputDetectStartTime:
+        type: string
+        example: '2023-02-15 00:00:00'
+        description: 用户输入勒索检测开始时间
+      inputDetectEndTime:
+        type: string
+        example: '2023-02-17 00:00:00'
+        description: 用户输入勒索检测截止时间
+  PageListResponse:
+    type: object
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/DetectReportPageResponse'
+        description: 记录

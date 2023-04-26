@@ -10,8 +10,19 @@ tags:
   - name: kerberos-internal-controller
     description: Kerberos Internal Controller
 paths:
-  '/v1/internal/kerberos/{kerberos_id}':
+  /v1/internal/kerberos/{kerberos_id}:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - kerberos-internal-controller
       summary: getKerberosById

@@ -24,7 +24,7 @@ paths:
   /v1/local-storage:
     get:
       x-dr-role: 'N'
-      x-dm-role: 'N'
+      x-dm-role: 'Y'
       x-product: OceanProtect X8000,OceanProtect X6000
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -63,7 +63,9 @@ paths:
             - global
   /v1/local-storage/access-point:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -101,7 +103,9 @@ paths:
             - global
   /v1/local-storage/action/auth:
     put:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -149,7 +153,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-dm-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -546,7 +550,9 @@ paths:
       x-order: 1
   /v1/storages/local:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -585,7 +591,9 @@ paths:
       x-order: 2
   /v1/storages/{id}/alarm-threshold:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -629,12 +637,14 @@ paths:
         - Authorization:
             - global
     put:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -682,12 +692,14 @@ paths:
             - global
   /v1/storages/{id}/alarm-threshold-local:
     put:
-      x-product: OceanProtect X
-      x-impact-subsystem: 影响
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -929,7 +941,8 @@ paths:
       x-order: 7
   /v1/storages/nas/distribution:
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -965,7 +978,8 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1013,7 +1027,8 @@ paths:
             $ref: '#/definitions/ErrorResponse'
   /v1/storages/nas/distribution/{id}:
     put:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1054,7 +1069,8 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
     delete:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1087,7 +1103,8 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1123,7 +1140,8 @@ paths:
             $ref: '#/definitions/ErrorResponse'
   /v1/storages/nas/distribution/{id}/endpoints:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1165,14 +1183,15 @@ paths:
               $ref: '#/definitions/StorageEndpointInfo'
   /v1/local-storage/logic-port:
     get:
-      x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-dr-role: 'Y'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -1200,12 +1219,13 @@ paths:
             $ref: '#/definitions/LogicPortResponse'
   /v1/local-storage/authentication/action/regenerate:
     put:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
-      x-rd-admin-role: 'Y'
+      x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'

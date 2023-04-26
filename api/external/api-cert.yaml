@@ -12,15 +12,16 @@ tags:
 paths:
   /v1/certs/detail:
     post:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
-      x-auth-required: 'Y'
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
-      x-public-api: 'Y'
+      x-public-api: 'N'
       x-sysadmin-role: 'Y'
       tags:
         - component-rest-api
@@ -321,8 +322,9 @@ paths:
             - global
   /v1/certs/components/{componentId}/ca/action/download:
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
-      x-dm-role: 'Y'
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'

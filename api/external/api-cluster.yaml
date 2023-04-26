@@ -16,8 +16,9 @@ tags:
 paths:
   /v1/cluster/performance:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -92,8 +93,9 @@ paths:
       deprecated: false
   /v1/cluster/performance/config:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -130,14 +132,15 @@ paths:
             - global
       deprecated: false
     put:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
-      x-auth-required: 'Y'
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -643,8 +646,9 @@ paths:
             - global
   /v1/clusters/{clusterId}/nodes:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'N'
+      x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -721,11 +725,12 @@ paths:
             - global
   /v1/internal/clusters/details:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
@@ -755,11 +760,12 @@ paths:
       deprecated: false
   /v1/internal/clusters/local/nodes:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
@@ -791,11 +797,12 @@ paths:
       deprecated: false
   /v1/internal/clusters/target-details:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
@@ -918,15 +925,16 @@ paths:
       deprecated: false
   /v1/storage-users/{userId}:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'Y'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
-      x-public-api: 'N'
+      x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
         - ${clusters-api}
@@ -969,13 +977,14 @@ paths:
             - global
       deprecated: false
     put:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -1023,15 +1032,16 @@ paths:
             - global
       deprecated: false
     delete:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 30081
+      x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'Y'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
-      x-public-api: 'N'
+      x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
         - ${clusters-api}
@@ -1083,8 +1093,8 @@ paths:
       x-product: OceanProtect X8000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'

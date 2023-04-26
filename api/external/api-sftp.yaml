@@ -302,10 +302,11 @@ paths:
             - global
   /v1/sftp/users/{userId}:
     get:
+      x-dr-role: 'N'
       x-dm-role: 'N'
       x-product: OceanProtect X
       x-impact-subsystem: 不影响
-      x-access-port: 25082
+      x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
@@ -335,6 +336,57 @@ paths:
           schema:
             $ref: '#/definitions/SftpUserDetailMesResponse'
             originalRef: SftpUserDetailMesResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/sftp/users/{id}/threshold:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sftp-manager-api
+      summary: 修改sftp用户密码
+      operationId: changeLimitSpaceThresholdUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: 用户ID
+          required: true
+          type: string
+        - name: spaceThreshold
+          in: query
+          required: false
+          description: '"^0.[5-8](\\d?)|0.9(0?)|0$"'
+          type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
         '401':
           description: Unauthorized
         '403':

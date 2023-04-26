@@ -17,12 +17,12 @@ paths:
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30081
-      x-auth-required: 'Y'
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - ${clusters-api}
       summary: 增加底座角色权限

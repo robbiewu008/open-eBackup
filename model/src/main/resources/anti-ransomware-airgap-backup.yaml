@@ -12,6 +12,7 @@ tags:
 paths:
   /v1/anti-ransomware/airgap/policies:
     post:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -43,6 +44,7 @@ paths:
           description: ok
       x-order: 0
     delete:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -87,6 +89,7 @@ paths:
                 request_uuid-timestamp-hostname.
       x-order: 12
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -148,6 +151,7 @@ paths:
       x-order: 2
   /v1/anti-ransomware/airgap/policies/{policyId}:
     put:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -185,6 +189,7 @@ paths:
       x-order: 8
   /v1/anti-ransomware/airgap/devices/policy/related:
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -298,6 +303,7 @@ paths:
       x-order: 3
   /v1/anti-ransomware/airgap/devices:
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -406,6 +412,7 @@ paths:
       x-order: 4
   /v1/anti-ransomware/airgap/devices/{deviceId}:
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -455,6 +462,7 @@ paths:
       x-order: 5
   /v1/anti-ransomware/airgap/devices/ports:
     get:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -514,6 +522,7 @@ paths:
       x-order: 6
   /v1/anti-ransomware/airgap/devices/relate/policy:
     post:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -543,6 +552,7 @@ paths:
           description: OK
       x-order: 1
     put:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -573,6 +583,7 @@ paths:
       x-order: 7
   /v1/anti-ransomware/airgap/devices/{deviceId}/enable:
     put:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -600,6 +611,7 @@ paths:
       x-order: 9
   /v1/anti-ransomware/airgap/devices/{deviceId}/disable:
     put:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -627,6 +639,7 @@ paths:
       x-order: 10
   /v1/anti-ransomware/airgap/devices/{deviceId}/relate/policy:
     delete:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       tags:
         - anti-ransomware-airgap-api
@@ -664,7 +677,7 @@ paths:
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - anti-ransomware-airgap-api
       summary: 查询设备分页信息

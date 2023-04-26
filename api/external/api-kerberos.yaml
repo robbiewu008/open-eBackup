@@ -12,7 +12,9 @@ tags:
 paths:
   /v1/kerberos:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -66,7 +68,8 @@ paths:
         - Authorization:
             - global
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -148,7 +151,8 @@ paths:
             - global
   /v1/kerberos/{kerberos_id}:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -231,7 +235,8 @@ paths:
         - Authorization:
             - global
     delete:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081

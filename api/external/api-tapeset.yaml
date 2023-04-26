@@ -18,10 +18,12 @@ produces:
 paths:
   /v1/tape-library/libraries:
     get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
-      x-dp-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -67,6 +69,8 @@ paths:
           description: Not Found
   /v1/tape-library/libraries/action/scan:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -100,8 +104,9 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/v1/tape-library/libraries/{tapeLibrarySn}/drives':
+  /v1/tape-library/libraries/{tapeLibrarySn}/drives:
     get:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
@@ -192,8 +197,10 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/v1/tape-library/libraries/{tapeLibrarySn}/drives/{driverSn}':
+  /v1/tape-library/libraries/{tapeLibrarySn}/drives/{driverSn}:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -249,8 +256,9 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/v1/tape-library/libraries/{tapeLibrarySn}/slots':
+  /v1/tape-library/libraries/{tapeLibrarySn}/slots:
     get:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
@@ -328,12 +336,14 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes':
+  /v1/tape-library/libraries/{tapeLibrarySn}/tapes:
     get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
-      x-dp-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -463,8 +473,10 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}':
+  /v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}:
     delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -510,8 +522,10 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
-  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/empty':
+  /v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/empty:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -561,8 +575,10 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/erase':
+  /v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/erase:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -612,8 +628,10 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/export':
+  /v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/export:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -669,8 +687,10 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/identify':
+  /v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/identify:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -720,8 +740,10 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/import':
+  /v1/tape-library/libraries/{tapeLibrarySn}/tapes/{tapeLabel}/action/import:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -779,6 +801,7 @@ paths:
           description: Not Found
   /v1/tape-library/media-sets:
     get:
+      x-product: OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
@@ -872,6 +895,9 @@ paths:
         '404':
           description: Not Found
     post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
@@ -913,8 +939,11 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  '/v1/tape-library/media-sets/{mediaSetId}':
+  /v1/tape-library/media-sets/{mediaSetId}:
     get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -954,6 +983,8 @@ paths:
         '404':
           description: Not Found
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -1003,6 +1034,8 @@ paths:
         '404':
           description: Not Found
     delete:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -1039,11 +1072,14 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
-  '/v1/tape-library/media-sets/{mediaSetId}/action/pre-check':
+  /v1/tape-library/media-sets/{mediaSetId}/action/pre-check:
     get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-sysadmin-role: 'Y'
       tags:
         - media-set-api
@@ -1069,6 +1105,49 @@ paths:
           description: 删除介质集预检查回复
           schema:
             $ref: '#/definitions/DelMediaSetPreCheckRes'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /v1/internal/tape-library/media-sets/{mediaSetId}:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - media-set-api
+      summary: 查询介质集详情
+      operationId: getInternalMediaSetUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: mediaSetId
+          in: path
+          description: 介质集UUID
+          required: true
+          type: string
+          maxLength: 256
+          minLength: 1
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/TapeSetDetailResponse'
         '401':
           description: Unauthorized
         '403':
@@ -1394,7 +1473,7 @@ definitions:
           - ENABLE
       driverSn:
         type: string
-        description: '${tape.library.driveSn}'
+        description: ${tape.library.driveSn}
       name:
         type: string
         description: 驱动名称

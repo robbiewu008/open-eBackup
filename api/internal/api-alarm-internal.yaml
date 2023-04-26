@@ -14,7 +14,17 @@ tags:
 paths:
   /v1/internal/alarms:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-internal-api
       summary: 批量查询告警
@@ -46,16 +56,13 @@ paths:
           required: false
           type: string
           default: zh
-          allowEmptyValue: false
         - name: pageNum
           in: query
           description: 分页起始页码
           required: false
           type: integer
           maximum: 60000.0
-          exclusiveMaximum: false
           minimum: 1.0
-          exclusiveMinimum: false
           format: int32
           x-example: 1
         - name: pageSize
@@ -64,9 +71,7 @@ paths:
           required: false
           type: integer
           maximum: 200.0
-          exclusiveMaximum: false
           minimum: 5.0
-          exclusiveMinimum: false
           format: int32
           x-example: 20
         - name: severities
@@ -80,8 +85,6 @@ paths:
             type: integer
             format: int32
           collectionFormat: multi
-          maximum: 4
-          minimum: 1
         - name: sortColumn
           in: query
           description: 分页排序字段
@@ -117,8 +120,6 @@ paths:
           items:
             type: string
           collectionFormat: multi
-          maximum: 50
-          minimum: 1
       responses:
         '200':
           description: OK
@@ -136,7 +137,17 @@ paths:
             - global
       deprecated: false
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-internal-api
       summary: 新增告警
@@ -172,7 +183,17 @@ paths:
       deprecated: false
   /v1/internal/alarms/action/clear:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-internal-api
       summary: 告警清除
@@ -209,7 +230,17 @@ paths:
       deprecated: false
   /v1/internal/alarms/action/clear/entity:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-internal-api
       summary: 告警清除
@@ -243,7 +274,17 @@ paths:
       deprecated: false
   /v1/internal/alarms/log:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-internal-api
       summary: 新增操作日志
@@ -277,7 +318,17 @@ paths:
       deprecated: false
   /v1/internal/event:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-internal-api
       summary: 新增运行事件
@@ -311,12 +362,25 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/snmp/internal/config:
+  /v1/internal/snmp/config:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-internal-api
       summary: 查询SNMP配置
+      description: |-
+        查询snmp参数配置（内部接口）
+        用途：主机snmp trap配置同步
       operationId: getInternalTrapConfigUsingGET
       produces:
         - '*/*'
@@ -336,12 +400,25 @@ paths:
         - Authorization:
             - global
       deprecated: false
-  /v1/snmp/internal/trap/addresses:
+  /v1/internal/snmp/trap/addresses:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-internal-api
       summary: 批量查询SNMP Trap地址
+      description: |-
+        查询Trap IP列表（内部接口）
+        用途：主机snmp trap配置同步
       operationId: queryInternalTrapAddressListUsingGET
       produces:
         - '*/*'
@@ -385,11 +462,11 @@ paths:
       tags:
         - alarm-and-event-internal-api
       x-dr-role: 'N'
-      x-product: OceanProtect X8000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
@@ -412,11 +489,11 @@ paths:
   /v1/internal/alarms/agent/action/clear:
     put:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
-      x-auth-required: 'Y'
+      x-access-port: 30081
+      x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'

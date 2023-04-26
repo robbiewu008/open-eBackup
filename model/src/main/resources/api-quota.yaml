@@ -13,7 +13,7 @@ paths:
   /v1/users/quota:
     put:
       x-dr-role: 'Y'
-      x-product: OceanProtect X8000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -56,13 +56,13 @@ paths:
                 request_uuid-timestamp-hostname.
     get:
       x-dr-role: 'Y'
-      x-product: OceanProtect X8000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
@@ -100,14 +100,14 @@ paths:
                 request_uuid-timestamp-hostname.
   /v1/users/quota/action/check:
     get:
-      x-dr-role: 'N'
-      x-product: OceanProtect X8000
+      x-dr-role: 'Y'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'N'
@@ -140,13 +140,13 @@ paths:
   /v1/users/quota-function:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'

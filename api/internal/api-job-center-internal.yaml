@@ -13,7 +13,17 @@ tags:
 paths:
   /v1/internal/jobs:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - Job internal API
       summary: 查询任务
@@ -76,9 +86,7 @@ paths:
           required: false
           type: integer
           maximum: 200.0
-          exclusiveMaximum: false
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
           x-example: 10
         - name: sourceId
@@ -116,15 +124,14 @@ paths:
           required: false
           type: integer
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
           x-example: 0
         - name: statusList
           in: query
           description: >-
-            任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
+            ''任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
             PARTIAL_SUCCESS:部分成功 ABORTED: 停止 ABORTING: 停止中 FAIL:失败 ABNORMAL:异常
-            CANCELLED:取消 ABORT_FAILED:停止失败
+            CANCELLED:取消 ABORT_FAILED:停止失败''
           required: false
           type: array
           items:
@@ -188,7 +195,17 @@ paths:
             - global
       deprecated: false
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - Job internal API
       summary: 创建任务
@@ -224,7 +241,17 @@ paths:
       deprecated: false
   /v1/internal/jobs/action/batchUpdate:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - Job internal API
       summary: 批量更新任务
@@ -260,7 +287,17 @@ paths:
       deprecated: false
   /v1/internal/jobs/action/update-schedule-policy:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - Job internal API
       summary: updateJobSchedulePolicy
@@ -294,7 +331,17 @@ paths:
       deprecated: false
   /v1/internal/jobs/action/verify:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - Job internal API
       summary: verifyJobOwnership
@@ -330,7 +377,17 @@ paths:
       deprecated: false
   /v1/internal/jobs/log/insert:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - Job internal API
       summary: 新增任务日志
@@ -366,7 +423,17 @@ paths:
       deprecated: false
   /v1/internal/jobs/status/count:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - Job internal API
       summary: statusCount
@@ -399,7 +466,17 @@ paths:
       deprecated: false
   /v1/internal/jobs/{jobId}/action/abort:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - Job internal API
       summary: ${jobs.api.abort}
@@ -431,7 +508,17 @@ paths:
       deprecated: false
   /v1/internal/jobs/{jobId}/action/update:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - Job internal API
       summary: 更新任务
@@ -470,7 +557,17 @@ paths:
       deprecated: false
   /v1/internal/jobs/{jobId}/logs:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - Job internal API
       summary: queryJobLogs
@@ -500,9 +597,7 @@ paths:
           required: false
           type: integer
           maximum: 200.0
-          exclusiveMaximum: false
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
           x-example: 10
         - name: startPage
@@ -511,7 +606,6 @@ paths:
           required: false
           type: integer
           minimum: 0.0
-          exclusiveMinimum: false
           format: int32
           x-example: 0
       responses:
@@ -532,18 +626,19 @@ paths:
       deprecated: false
   /v1/internal/jobs/running/action/reset:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - Job internal API
-      x-dm-role: 'Y'
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30081
       x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       summary: 更新未完成的任务状态
       description: 在管理数据恢复完成后将原本未结束的任务状态更新为未知状态
       operationId: UpdateUnfinishedJobsUsingPut

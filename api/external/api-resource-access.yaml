@@ -15,6 +15,8 @@ produces:
 paths:
   /v2/environments/{envId}/resources:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: OceanProtect X
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
@@ -211,14 +213,43 @@ paths:
             $ref: '#/definitions/ProtectedResourcePageListResponse'
   /v2/environments:
     post:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-impact-subsystem: 不影响
-      x-request-examples-url-2: POST https://host:25080/v2/environments
-      x-request-examples-description-2: 注册Nas设备
-      x-request-examples-text-2: >-
+      x-request-examples-url-2: POST https://host:25801/v2/environments
+      x-request-examples-description-2: 注册HDFS集群
+      x-request-examples-text-2: |-
+        {
+          "name": "HDFS_Cluster",
+          "type": "BigData",
+          "endpoint": "192.168.0.1",
+          "subType": "HDFS",
+          "port": 8888,
+          "extendInfo": {
+            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
+            "kerberosId": "string",//环境鉴权使用的kerberosid
+            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
+            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
+          }
+        }
+      x-request-examples-2: |-
+        {
+          "name": "HDFS_Cluster",
+          "type": "BigData",
+          "endpoint": "192.168.0.1",
+          "subType": "HDFS",
+          "port": 8888,
+          "extendInfo": {
+            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
+            "kerberosId": "string",//环境鉴权使用的kerberosid
+            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
+            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
+          }
+        }
+      x-request-examples-text-1: >-
         {
 
         "name":"DoradoV6_001",
@@ -243,7 +274,7 @@ paths:
         "snapConsistency":"0" // 是否开启快照一致性：0-不打开，1-打开
 
         }}
-      x-request-examples-2: >-
+      x-request-examples-1: >-
         {
 
         "name":"DoradoV6_001",
@@ -268,36 +299,8 @@ paths:
         "snapConsistency":"0" // 是否开启快照一致性：0-不打开，1-打开
 
         }}
-      x-request-examples-text-1: |-
-        {
-          "name": "HDFS_Cluster",
-          "type": "BigData",
-          "endpoint": "192.168.0.1",
-          "subType": "HDFS",
-          "port": 8888,
-          "extendInfo": {
-            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
-            "kerberosId": "string",//环境鉴权使用的kerberosid
-            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
-            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
-          }
-        }
-      x-request-examples-1: |-
-        {
-          "name": "HDFS_Cluster",
-          "type": "BigData",
-          "endpoint": "192.168.0.1",
-          "subType": "HDFS",
-          "port": 8888,
-          "extendInfo": {
-            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
-            "kerberosId": "string",//环境鉴权使用的kerberosid
-            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
-            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
-          }
-        }
-      x-request-examples-url-1: POST https://host:25801/v2/environments
-      x-request-examples-description-1: 注册HDFS集群
+      x-request-examples-url-1: POST https://host:25080/v2/environments
+      x-request-examples-description-1: 注册Nas设备
       x-dp-admin-role: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -415,6 +418,8 @@ paths:
           description: 操作成功无返回结果，操作失败异常报错。
   /v2/environments/{envId}:
     put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
@@ -452,6 +457,8 @@ paths:
           schema:
             type: string
     delete:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
@@ -482,77 +489,9 @@ paths:
           description: ''
           schema:
             type: string
-  /v2/{resourceId}/authentication:
-    put:
-      x-product: OceanProtect X
-      x-impact-subsystem: 不影响
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-sysadmin-role: 'Y'
-      x-access-port: 25082
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      tags:
-        - protected-resource-api
-      summary: 更新资源认证信息
-      description: 更新资源认证信息
-      operationId: UpdateAuthentication
-      parameters:
-        - name: resourceId
-          in: path
-          required: true
-          type: string
-          description: 资源ID
-        - name: updateAuthenticationRequestBody
-          in: body
-          required: true
-          description: 认证信息更新请求
-          schema:
-            $ref: '#/definitions/Authentication'
-      responses:
-        '200':
-          description: '--'
-  /v2/environments/{envId}/authentication:
-    put:
-      x-product: OceanProtect X
-      x-impact-subsystem: 不影响
-      x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-access-port: 25081
-      x-auth-required: 'Y'
-      x-public-api: 'Y'
-      x-dp-admin-role: 'Y'
-      x-sysadmin-role: 'Y'
-      tags:
-        - protected-environment-api
-      summary: 更新环境认证信息
-      description: 更新环境认证信息
-      operationId: UpdateEnvironmentAuthentication
-      parameters:
-        - name: envId
-          in: path
-          required: true
-          type: string
-          description: 受保护环境ID
-        - name: UpdateEnvironmentAuthenticationRequestBody
-          in: body
-          required: true
-          description: 认证信息
-          schema:
-            $ref: '#/definitions/Authentication'
-        - name: X-Auth-Token
-          in: header
-          required: true
-          description: 访问令牌
-          type: string
-      responses:
-        '200':
-          description: ''
-          schema:
-            type: string
   /v2/resources/{resId}/action/scan:
     put:
+      x-dr-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
@@ -579,8 +518,9 @@ paths:
           description: '--'
   /v2/environments/action/check:
     post:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'

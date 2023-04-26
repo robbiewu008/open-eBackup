@@ -18,12 +18,17 @@ tags:
 paths:
   /v1/auth/certificate:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'N'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - ${auth-api}
       summary: 获取证书
@@ -46,12 +51,17 @@ paths:
             - global
   /v1/auth/token:
     post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - ${auth-api}
       summary: 获取token
@@ -87,13 +97,17 @@ paths:
             - global
   /v1/auth/token/verify/action:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      x-auditor-role: 'Y'
+      x-sysadmin-role: 'N'
+      x-auditor-role: 'N'
       tags:
         - ${auth-api}
       summary: 校验token
@@ -120,6 +134,11 @@ paths:
             - global
   /v1/roles:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -155,6 +174,7 @@ paths:
             - global
   /v1/roles/{id}:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -197,6 +217,7 @@ paths:
             - global
   /v1/roles/{id}/users:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -253,10 +274,15 @@ paths:
             - global
   /v1/security:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
-      x-dp-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:
@@ -287,6 +313,7 @@ paths:
         - Authorization:
             - global
     put:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -330,6 +357,7 @@ paths:
             - global
   /v1/security/featureSwitch:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -373,6 +401,7 @@ paths:
             - global
   /v1/security/featureSwitch/{featureName}:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -413,6 +442,7 @@ paths:
             - global
   /v1/security/securityIp:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -447,6 +477,7 @@ paths:
         - Authorization:
             - global
     post:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -492,6 +523,7 @@ paths:
             - global
   /v1/security/weakpassword:
     post:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -535,6 +567,7 @@ paths:
             - global
   /v1/security/weakpassword/{id}:
     delete:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -574,6 +607,7 @@ paths:
             - global
   /v1/security/weakpasswords:
     get:
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -609,6 +643,11 @@ paths:
             - global
   /v1/users:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -674,6 +713,11 @@ paths:
         - Authorization:
             - global
     post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -720,13 +764,17 @@ paths:
             - global
   /v1/users/{logoutType}/action/logout:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
-      x-auditor-role: 'Y'
+      x-sysadmin-role: 'N'
+      x-auditor-role: 'N'
       tags:
         - ${users-api}
       summary: 登出记录日志
@@ -758,12 +806,17 @@ paths:
             - global
   /v1/users/{userId}:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - ${users-api}
       summary: 查询单个用户
@@ -797,6 +850,17 @@ paths:
         - Authorization:
             - global
     put:
+      x-dr-role: 'Y'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine,OceanProtect X
       tags:
         - ${users-api}
       summary: 修改用户信息
@@ -839,6 +903,11 @@ paths:
             - global
       deprecated: false
     delete:
+      x-dr-role: 'Y'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -876,6 +945,11 @@ paths:
             - global
   /v1/users/{userId}/action/lock:
     put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -917,6 +991,11 @@ paths:
             - global
   /v1/users/{userId}/action/reset_password:
     put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -965,6 +1044,11 @@ paths:
             - global
   /v1/users/{userId}/action/unlock:
     put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -1012,6 +1096,11 @@ paths:
             - global
   /v1/users/{userId}/action/update_password:
     put:
+      x-dr-role: 'Y'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -1060,6 +1149,7 @@ paths:
             - global
   /v1/users/{userId}/email:
     put:
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1125,6 +1215,7 @@ paths:
           schema:
             type: string
     get:
+      x-product: CyberEngine,OceanProtect X
       tags:
         - ${users-api}
       x-dm-role: 'N'
@@ -1188,6 +1279,8 @@ paths:
             type: string
   /v1/users/verify-code:
     post:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1196,7 +1289,7 @@ paths:
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - ${users-api}
       summary: 用户发送临时验证码
@@ -1250,6 +1343,8 @@ paths:
             type: string
   /v1/users/verify-code/action/check:
     post:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1258,7 +1353,7 @@ paths:
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       x-request-examples-url-1: /v1/users/verify_code/action/check
       x-request-examples-text-1:
         userId: '123456789'
@@ -1324,6 +1419,8 @@ paths:
             type: string
   /v1/users/password/action/reset:
     put:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -1332,7 +1429,7 @@ paths:
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       x-request-examples-url-1: /v1/users/password/action/reset
       x-request-examples-text-1:
         userId: '123456789'
@@ -1398,15 +1495,17 @@ paths:
             type: string
   /v1/users/login-user:
     get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
-      x-dp-admin-role: 'Y'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - ${users-api}
       summary: 查询当前登录用户信息
@@ -1435,6 +1534,74 @@ paths:
       security:
         - Authorization:
             - global
+  /v1/auth/dynamic-code/send:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
+      tags:
+        - ${auth-api}
+      summary: 发送验证码
+      operationId: sendDynamicCode
+      parameters:
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/SendDynamicCodeRequestBody'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v1/auth/token/verify/action/no-version:
+    get:
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
+      tags:
+        - ${auth-api}
+      summary: 校验token(不考虑密码是否已修改)
+      operationId: verifyTokenNoVersionUsingGET
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -1537,6 +1704,13 @@ definitions:
       userId:
         type: string
         description: 用户ID
+      deployType:
+        type: string
+        description: 部署场景（a8000、cloudbackup、d0、d1、d2、d3、d4、d5）
+      timeZone:
+        type: string
+        description: 系统时区
+        example: Asia/Beijing
     title: LoginResponseBody
   ResetPasswordRequestBody:
     type: object
@@ -1981,6 +2155,22 @@ definitions:
       - randomCode
       - newPassword
       - confirmPassword
+  SendDynamicCodeRequestBody:
+    type: object
+    properties:
+      userName:
+        type: string
+        description: 用户名
+      password:
+        type: string
+        description: 密码
+      userType:
+        type: string
+        description: 用户类型
+      language:
+        type: integer
+        format: int32
+        description: 语言类型
 responses:
   ErrorResponse:
     description: 统一错误响应

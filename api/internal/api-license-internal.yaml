@@ -7,13 +7,66 @@ info:
 host: localhost
 basePath: /
 tags:
-  - name: '${license-api}'
+  - name: ${license-api}
     description: License Controller
 paths:
+  /v1/internal/license:
+    get:
+      x-dr-role: 'Y'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      x-product: CyberEngine
+      tags:
+        - ${license-api}
+      summary: 查询License信息
+      operationId: queryLicenseUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/LicenseInfoVo'
+              originalRef: LicenseInfoVo
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
   /v1/internal/license/function:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine
       tags:
-        - '${license-api}'
+        - ${license-api}
       summary: 校验License
       operationId: functionLicenseUsingGET
       produces:
@@ -24,13 +77,11 @@ paths:
           description: 需要校验的功能名称
           required: true
           type: string
-          allowEmptyValue: false
         - name: resourceType
           in: query
           description: 需要校验的资源类型
           required: true
           type: string
-          allowEmptyValue: false
       responses:
         '200':
           description: OK
@@ -65,7 +116,7 @@ definitions:
       status:
         type: integer
         format: int32
-        description: '状态 0:未激活 1:已激活 2:已过期 3:部分激活'
+        description: 状态 0:未激活 1:已激活 2:已过期 3:部分激活
       totalCapacity:
         type: integer
         format: int64
