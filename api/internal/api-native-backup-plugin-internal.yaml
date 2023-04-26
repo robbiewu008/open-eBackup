@@ -1,1531 +1,1741 @@
----
-swagger: "2.0"
+swagger: '2.0'
 info:
-  version: "v1"
-  title: "NativeBackup插件接口"
+  version: v1
+  title: NativeBackup插件接口
   contact: {}
   license: {}
-host: "localhost"
-basePath: "/"
+host: localhost
+basePath: /
 tags:
-- name: "dme-controller"
-  description: "Dme Controller"
-- name: "dme-internal-controller"
-  description: "Dme Internal Controller"
-- name: "import-copy-internal-controller"
-  description: "Import Copy Internal Controller"
+  - name: dme-controller
+    description: Dme Controller
+  - name: dme-internal-controller
+    description: Dme Internal Controller
+  - name: import-copy-internal-controller
+    description: Import Copy Internal Controller
 paths:
   /v1/eb/internal/copies/extended_parameter:
     get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
-      - "dme-controller"
-      summary: "queryOracleCopyInfo"
-      operationId: "queryOracleCopyInfoUsingGET"
+        - dme-controller
+      summary: queryOracleCopyInfo
+      operationId: queryOracleCopyInfoUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "databaseId"
-        in: "query"
-        description: "databaseId"
-        required: false
-        type: "string"
-      - name: "id"
-        in: "query"
-        description: "id"
-        required: false
-        type: "string"
-      - name: "scn"
-        in: "query"
-        description: "scn"
-        required: false
-        type: "integer"
-        format: "int32"
-      - name: "time"
-        in: "query"
-        description: "time"
-        required: false
-        type: "integer"
-        format: "int32"
+        - name: databaseId
+          in: query
+          description: databaseId
+          required: false
+          type: string
+        - name: id
+          in: query
+          description: id
+          required: false
+          type: string
+        - name: scn
+          in: query
+          description: scn
+          required: false
+          type: integer
+          format: int32
+        - name: time
+          in: query
+          description: time
+          required: false
+          type: integer
+          format: int32
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/OracleTargetHostInformation"
-            originalRef: "OracleTargetHostInformation"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/OracleTargetHostInformation'
+            originalRef: OracleTargetHostInformation
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/internal/copies/scn:
     get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
-      - "dme-controller"
-      summary: "queryCopyByScn"
-      operationId: "queryCopyByScnUsingGET"
+        - dme-controller
+      summary: queryCopyByScn
+      operationId: queryCopyByScnUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "apptype"
-        in: "query"
-        description: "apptype"
-        required: true
-        type: "string"
-      - name: "databaseId"
-        in: "query"
-        description: "databaseId"
-        required: true
-        type: "string"
-      - name: "scn"
-        in: "query"
-        description: "scn"
-        required: true
-        type: "string"
+        - name: apptype
+          in: query
+          description: apptype
+          required: true
+          type: string
+        - name: databaseId
+          in: query
+          description: databaseId
+          required: true
+          type: string
+        - name: scn
+          in: query
+          description: scn
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            type: "array"
+            type: array
             items:
-              type: "string"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+              type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/internal/local-storage:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       tags:
-      - "dme-controller"
-      summary: "updateLocalStorage"
-      operationId: "updateLocalStorageUsingPUT_1"
+        - dme-controller
+      summary: updateLocalStorage
+      operationId: updateLocalStorageUsingPUT_1
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "dmeStorageAuthInfo"
-        description: "dmeStorageAuthInfo"
-        required: true
-        schema:
-          $ref: "#/definitions/DmeStorageAuthInfo"
-          originalRef: "DmeStorageAuthInfo"
+        - in: body
+          name: dmeStorageAuthInfo
+          description: dmeStorageAuthInfo
+          required: true
+          schema:
+            $ref: '#/definitions/DmeStorageAuthInfo'
+            originalRef: DmeStorageAuthInfo
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/internal/s3-storage:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       tags:
-      - "dme-controller"
-      summary: "checkS3Connect"
-      operationId: "checkS3ConnectUsingPOST"
+        - dme-controller
+      summary: checkS3Connect
+      operationId: checkS3ConnectUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "request"
-        description: "request"
-        required: true
-        schema:
-          $ref: "#/definitions/StorageRequest"
-          originalRef: "StorageRequest"
-      responses:
-        "200":
-          description: "OK"
+        - in: body
+          name: request
+          description: request
+          required: true
           schema:
-            $ref: "#/definitions/DmeResponse«S3ConnectCheckResponse»"
-            originalRef: "DmeResponse«S3ConnectCheckResponse»"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/StorageRequest'
+            originalRef: StorageRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DmeResponse«S3ConnectCheckResponse»'
+            originalRef: DmeResponse«S3ConnectCheckResponse»
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/srv_jobmanager/database/timerange:
     get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "dme-controller"
-      summary: "queryDatabaseTimeRange"
-      operationId: "queryDatabaseTimeRangeUsingGET"
+        - dme-controller
+      summary: queryDatabaseTimeRange
+      operationId: queryDatabaseTimeRangeUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "filter"
-        in: "query"
-        description: "filter"
-        required: false
-        type: "string"
+        - name: filter
+          in: query
+          description: filter
+          required: false
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/DmeResponse«CopyTimerange»"
-            originalRef: "DmeResponse«CopyTimerange»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/DmeResponse«CopyTimerange»'
+            originalRef: DmeResponse«CopyTimerange»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/srv_jobmanager/plan:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       tags:
-      - "dme-controller"
-      summary: "queryPlans"
-      operationId: "queryPlansUsingGET"
+        - dme-controller
+      summary: queryPlans
+      operationId: queryPlansUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/DmeResponse«List«DmePlanRequest»»"
-            originalRef: "DmeResponse«List«DmePlanRequest»»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/DmeResponse«List«DmePlanRequest»»'
+            originalRef: DmeResponse«List«DmePlanRequest»»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "dme-controller"
-      summary: "createPlan"
-      operationId: "createPlanUsingPOST"
+        - dme-controller
+      summary: createPlan
+      operationId: createPlanUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "ebackupPlanRequest"
-        description: "ebackupPlanRequest"
-        required: true
-        schema:
-          $ref: "#/definitions/DmePlanRequest"
-          originalRef: "DmePlanRequest"
-      responses:
-        "200":
-          description: "OK"
+        - in: body
+          name: ebackupPlanRequest
+          description: ebackupPlanRequest
+          required: true
           schema:
-            $ref: "#/definitions/DmeResponse«DmeCommonResponse»"
-            originalRef: "DmeResponse«DmeCommonResponse»"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/DmePlanRequest'
+            originalRef: DmePlanRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DmeResponse«DmeCommonResponse»'
+            originalRef: DmeResponse«DmeCommonResponse»
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/srv_jobmanager/plan/run:
     put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "dme-controller"
-      summary: "executePlan"
-      operationId: "executePlanUsingPUT"
+        - dme-controller
+      summary: executePlan
+      operationId: executePlanUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "request"
-        description: "request"
-        required: true
-        schema:
-          $ref: "#/definitions/DmePlanExecuteRequest"
-          originalRef: "DmePlanExecuteRequest"
-      responses:
-        "200":
-          description: "OK"
+        - in: body
+          name: request
+          description: request
+          required: true
           schema:
-            $ref: "#/definitions/DmeResponse«DmeCommonResponse»"
-            originalRef: "DmeResponse«DmeCommonResponse»"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/DmePlanExecuteRequest'
+            originalRef: DmePlanExecuteRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DmeResponse«DmeCommonResponse»'
+            originalRef: DmeResponse«DmeCommonResponse»
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/srv_jobmanager/plan/{id}:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "dme-controller"
-      summary: "getPlan"
-      operationId: "getPlanUsingGET"
+        - dme-controller
+      summary: getPlan
+      operationId: getPlanUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "id"
-        in: "path"
-        description: "id"
-        required: true
-        type: "string"
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/DmeResponse«DmePlanRequest»"
-            originalRef: "DmeResponse«DmePlanRequest»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/DmeResponse«DmePlanRequest»'
+            originalRef: DmeResponse«DmePlanRequest»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
     delete:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "dme-controller"
-      summary: "deletePlan"
-      operationId: "deletePlanUsingDELETE"
+        - dme-controller
+      summary: deletePlan
+      operationId: deletePlanUsingDELETE
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "id"
-        in: "path"
-        description: "id"
-        required: true
-        type: "string"
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/DmeResponse«Void»"
-            originalRef: "DmeResponse«Void»"
-        "204":
-          description: "No Content"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
+            $ref: '#/definitions/DmeResponse«Void»'
+            originalRef: DmeResponse«Void»
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/srv_jobmanager/storagepool:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "dme-controller"
-      summary: "createStoragePool"
-      operationId: "createStoragePoolUsingPOST"
+        - dme-controller
+      summary: createStoragePool
+      operationId: createStoragePoolUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "storagePool"
-        description: "storagePool"
-        required: true
-        schema:
-          $ref: "#/definitions/StoragePool"
-          originalRef: "StoragePool"
-      responses:
-        "200":
-          description: "OK"
+        - in: body
+          name: storagePool
+          description: storagePool
+          required: true
           schema:
-            $ref: "#/definitions/DmeResponse«DmeCommonResponse»"
-            originalRef: "DmeResponse«DmeCommonResponse»"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/StoragePool'
+            originalRef: StoragePool
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DmeResponse«DmeCommonResponse»'
+            originalRef: DmeResponse«DmeCommonResponse»
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/srv_jobmanager/storagepool/:
     get:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "dme-controller"
-      summary: "queryStoragepools"
-      operationId: "queryStoragepoolsUsingGET_1"
+        - dme-controller
+      summary: queryStoragepools
+      operationId: queryStoragepoolsUsingGET_1
       produces:
-      - "*/*"
+        - '*/*'
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/DmeResponse«List«StoragePool»»"
-            originalRef: "DmeResponse«List«StoragePool»»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/DmeResponse«List«StoragePool»»'
+            originalRef: DmeResponse«List«StoragePool»»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/srv_jobmanager/storagepool/{poolId}:
     put:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
       tags:
-      - "dme-controller"
-      summary: "updateStoragepool"
-      operationId: "updateStoragepoolUsingPUT"
+        - dme-controller
+      summary: updateStoragepool
+      operationId: updateStoragepoolUsingPUT
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "poolId"
-        in: "path"
-        description: "poolId"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "storagePool"
-        description: "storagePool"
-        required: true
-        schema:
-          $ref: "#/definitions/StoragePool"
-          originalRef: "StoragePool"
-      responses:
-        "200":
-          description: "OK"
+        - name: poolId
+          in: path
+          description: poolId
+          required: true
+          type: string
+        - in: body
+          name: storagePool
+          description: storagePool
+          required: true
           schema:
-            $ref: "#/definitions/DmeResponse«string»"
-            originalRef: "DmeResponse«string»"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/StoragePool'
+            originalRef: StoragePool
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DmeResponse«string»'
+            originalRef: DmeResponse«string»
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/srv_jobmanager/task:
     get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "dme-controller"
-      summary: "queryTask"
-      operationId: "queryTaskUsingGET"
+        - dme-controller
+      summary: queryTask
+      operationId: queryTaskUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "filter"
-        in: "query"
-        description: "filter"
-        required: false
-        type: "string"
-      - name: "range"
-        in: "query"
-        description: "range"
-        required: false
-        type: "string"
-      - name: "sortby"
-        in: "query"
-        description: "sortby"
-        required: false
-        type: "string"
+        - name: filter
+          in: query
+          description: filter
+          required: false
+          type: string
+        - name: range
+          in: query
+          description: range
+          required: false
+          type: string
+        - name: sortby
+          in: query
+          description: sortby
+          required: false
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/DmeResponse«List«DmeTaskInfo»»"
-            originalRef: "DmeResponse«List«DmeTaskInfo»»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/DmeResponse«List«DmeTaskInfo»»'
+            originalRef: DmeResponse«List«DmeTaskInfo»»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/srv_jobmanager/task/abort:
     put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "dme-controller"
-      summary: "abortTask"
-      operationId: "abortTaskUsingPUT_1"
+        - dme-controller
+      summary: abortTask
+      operationId: abortTaskUsingPUT_1
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "requestId"
-        description: "requestId"
-        required: true
-        schema:
-          type: "string"
-      responses:
-        "200":
-          description: "OK"
+        - in: body
+          name: requestId
+          description: requestId
+          required: true
           schema:
-            $ref: "#/definitions/DmeResponse«string»"
-            originalRef: "DmeResponse«string»"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DmeResponse«string»'
+            originalRef: DmeResponse«string»
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/srv_jobmanager/task/count:
     get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "dme-controller"
-      summary: "queryTaskCount"
-      operationId: "queryTaskCountUsingGET"
+        - dme-controller
+      summary: queryTaskCount
+      operationId: queryTaskCountUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "filter"
-        in: "query"
-        description: "filter"
-        required: false
-        type: "string"
+        - name: filter
+          in: query
+          description: filter
+          required: false
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/DmeResponse«DmeCommonResponse»"
-            originalRef: "DmeResponse«DmeCommonResponse»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/DmeResponse«DmeCommonResponse»'
+            originalRef: DmeResponse«DmeCommonResponse»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/eb/srv_jobmanager/task/{taskId}:
     get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
-      - "dme-controller"
-      summary: "getTaskById"
-      operationId: "getTaskByIdUsingGET"
+        - dme-controller
+      summary: getTaskById
+      operationId: getTaskByIdUsingGET
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - name: "taskId"
-        in: "path"
-        description: "taskId"
-        required: true
-        type: "string"
+        - name: taskId
+          in: path
+          description: taskId
+          required: true
+          type: string
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           schema:
-            $ref: "#/definitions/DmeResponse«DmeTaskInfo»"
-            originalRef: "DmeResponse«DmeTaskInfo»"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/DmeResponse«DmeTaskInfo»'
+            originalRef: DmeResponse«DmeTaskInfo»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/internal/copies:
     post:
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
       tags:
-      - "import-copy-internal-controller"
-      summary: "saveImportCopy"
-      operationId: "saveImportCopyUsingPOST"
+        - import-copy-internal-controller
+      summary: saveImportCopy
+      operationId: saveImportCopyUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "saveImportCopyParam"
-        description: "saveImportCopyParam"
-        required: true
-        schema:
-          $ref: "#/definitions/SaveImportCopyParam"
-          originalRef: "SaveImportCopyParam"
+        - in: body
+          name: saveImportCopyParam
+          description: saveImportCopyParam
+          required: true
+          schema:
+            $ref: '#/definitions/SaveImportCopyParam'
+            originalRef: SaveImportCopyParam
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/internal/eb/cleanremote:
     post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
-      - "dme-internal-controller"
-      summary: "cleanRemote"
-      operationId: "cleanRemoteUsingPOST"
+        - dme-internal-controller
+      summary: cleanRemote
+      operationId: cleanRemoteUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "request"
-        description: "request"
-        required: true
-        schema:
-          $ref: "#/definitions/CleanRemoteRequest"
-          originalRef: "CleanRemoteRequest"
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/CleanRemoteRequest'
+            originalRef: CleanRemoteRequest
       responses:
-        "200":
-          description: "OK"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
   /v1/internal/eb/updateLogicIps:
     post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
       tags:
-      - "dme-internal-controller"
-      summary: "updateLogicIps"
-      operationId: "updateLogicIpsUsingPOST"
+        - dme-internal-controller
+      summary: updateLogicIps
+      operationId: updateLogicIpsUsingPOST
       consumes:
-      - "application/json"
+        - application/json
       produces:
-      - "*/*"
+        - '*/*'
       parameters:
-      - in: "body"
-        name: "dmeLogicIpsRequest"
-        description: "dmeLogicIpsRequest"
-        required: true
-        schema:
-          $ref: "#/definitions/DmeLogicIpsRequest"
-          originalRef: "DmeLogicIpsRequest"
-      responses:
-        "200":
-          description: "OK"
+        - in: body
+          name: dmeLogicIpsRequest
+          description: dmeLogicIpsRequest
+          required: true
           schema:
-            $ref: "#/definitions/InitNetworkResult"
-            originalRef: "InitNetworkResult"
-        "201":
-          description: "Created"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
-        "404":
-          description: "Not Found"
+            $ref: '#/definitions/DmeLogicIpsRequest'
+            originalRef: DmeLogicIpsRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/InitNetworkResult'
+            originalRef: InitNetworkResult
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
       security:
-      - Authorization:
-        - "global"
+        - Authorization:
+            - global
       deprecated: false
 securityDefinitions:
   Authorization:
-    type: "apiKey"
-    name: "TOKEN"
-    in: "header"
+    type: apiKey
+    name: TOKEN
+    in: header
 definitions:
   CleanRemoteRequest:
-    type: "object"
+    type: object
     properties:
       localDevice:
-        $ref: "#/definitions/DmeLocalDevice"
-        originalRef: "DmeLocalDevice"
+        $ref: '#/definitions/DmeLocalDevice'
+        originalRef: DmeLocalDevice
       remoteDevice:
-        $ref: "#/definitions/DmeRemoteDevice"
-        originalRef: "DmeRemoteDevice"
-    title: "CleanRemoteRequest"
+        $ref: '#/definitions/DmeRemoteDevice'
+        originalRef: DmeRemoteDevice
+    title: CleanRemoteRequest
   CopyTimerange:
-    type: "object"
+    type: object
     properties:
       TIMERANGE:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/TimeRange"
-          originalRef: "TimeRange"
-    title: "CopyTimerange"
+          $ref: '#/definitions/TimeRange'
+          originalRef: TimeRange
+    title: CopyTimerange
   DbInfo:
-    type: "object"
+    type: object
     properties:
       ASMPassword:
-        type: "string"
+        type: string
       ASMUsername:
-        type: "string"
+        type: string
       ArchiveLogKeepDays:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       BackupLevel:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       BackupParameter:
-        type: "string"
+        type: string
       BackupType:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       Compress:
-        type: "boolean"
+        type: boolean
       DatabaseName:
-        type: "string"
+        type: string
       DatabasePassword:
-        type: "string"
+        type: string
       DatabaseUUID:
-        type: "string"
+        type: string
       DatabaseUsername:
-        type: "string"
+        type: string
       Dedup:
-        type: "boolean"
+        type: boolean
       EncAlgo:
-        type: "string"
+        type: string
       FailPostScript:
-        type: "string"
+        type: string
       Hosts:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/DmeHost"
-          originalRef: "DmeHost"
+          $ref: '#/definitions/DmeHost'
+          originalRef: DmeHost
       LimitSpeed:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       NumberOfChannels:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       PostScript:
-        type: "string"
+        type: string
       PreScript:
-        type: "string"
-    title: "DbInfo"
+        type: string
+    title: DbInfo
   Disk:
-    type: "object"
+    type: object
     properties:
       DiskDataStoreBackingInfo:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/DiskStorageObject"
-          originalRef: "DiskStorageObject"
+          $ref: '#/definitions/DiskStorageObject'
+          originalRef: DiskStorageObject
       DiskDatastoreMoRef:
-        type: "string"
+        type: string
       DiskDatastoreName:
-        type: "string"
+        type: string
       DiskID:
-        type: "string"
-    title: "Disk"
+        type: string
+    title: Disk
   DiskStorageObject:
-    type: "object"
+    type: object
     properties:
       DataStoreWWN:
-        type: "string"
+        type: string
       ProductStorage:
-        $ref: "#/definitions/ProductStorage"
-        originalRef: "ProductStorage"
-    title: "DiskStorageObject"
+        $ref: '#/definitions/ProductStorage'
+        originalRef: ProductStorage
+    title: DiskStorageObject
   DmeCommonResponse:
-    type: "object"
+    type: object
     properties:
       COUNT:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       ID:
-        type: "string"
+        type: string
       REQUESTID:
-        type: "string"
-    title: "DmeCommonResponse"
+        type: string
+    title: DmeCommonResponse
   DmeFilter:
-    type: "object"
+    type: object
     properties:
       BY:
-        type: "string"
+        type: string
       MODE:
-        type: "string"
+        type: string
       RULE:
-        type: "string"
+        type: string
       TYPE:
-        type: "string"
+        type: string
       VALUE:
-        type: "string"
-    title: "DmeFilter"
+        type: string
+    title: DmeFilter
   DmeHost:
-    type: "object"
+    type: object
     properties:
       ASMInstance:
-        type: "string"
+        type: string
       DatabaseInstance:
-        type: "string"
+        type: string
       DeployRole:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       ID:
-        type: "string"
+        type: string
       IP:
-        type: "string"
+        type: string
       IsCluster:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       Port:
-        type: "string"
+        type: string
       Status:
-        type: "integer"
-        format: "int32"
-    title: "DmeHost"
+        type: integer
+        format: int32
+    title: DmeHost
   DmeLocalDevice:
-    type: "object"
+    type: object
     properties:
       cert:
-        type: "string"
+        type: string
       mgrIp:
-        type: "array"
+        type: array
         items:
-          type: "string"
+          type: string
       password:
-        type: "string"
+        type: string
       port:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       userName:
-        type: "string"
-    title: "DmeLocalDevice"
+        type: string
+    title: DmeLocalDevice
   DmeLogicIpsRequest:
-    type: "object"
+    type: object
     properties:
       LocalDevice:
-        $ref: "#/definitions/DmeLocalDevice"
-        originalRef: "DmeLocalDevice"
+        $ref: '#/definitions/DmeLocalDevice'
+        originalRef: DmeLocalDevice
       newLogicIpNames:
-        type: "array"
+        type: array
         items:
-          type: "string"
+          type: string
       originLogicIpNames:
-        type: "array"
+        type: array
         items:
-          type: "string"
-    title: "DmeLogicIpsRequest"
+          type: string
+    title: DmeLogicIpsRequest
   DmePlanExecuteRequest:
-    type: "object"
+    type: object
     properties:
       BACKUPGUID:
-        type: "string"
+        type: string
       EXPARAMETERS:
-        type: "object"
+        type: object
         additionalProperties:
-          type: "object"
+          type: object
       JOBID:
-        type: "string"
+        type: string
       ORACLEINFO:
-        $ref: "#/definitions/DbInfo"
-        originalRef: "DbInfo"
+        $ref: '#/definitions/DbInfo'
+        originalRef: DbInfo
       PLANID:
-        type: "string"
+        type: string
       REQUESTID:
-        type: "string"
+        type: string
       VMINFO:
-        $ref: "#/definitions/VMInfo"
-        originalRef: "VMInfo"
-    title: "DmePlanExecuteRequest"
+        $ref: '#/definitions/VMInfo'
+        originalRef: VMInfo
+    title: DmePlanExecuteRequest
   DmePlanRequest:
-    type: "object"
+    type: object
     properties:
       BACKUPTYPE:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       DESCRIPTION:
-        type: "string"
+        type: string
       ID:
-        type: "string"
+        type: string
       NAME:
-        type: "string"
+        type: string
       PROTECTEDID:
-        type: "string"
+        type: string
       PROTECTEDOBJECTS:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/DmeProtectedObject"
-          originalRef: "DmeProtectedObject"
+          $ref: '#/definitions/DmeProtectedObject'
+          originalRef: DmeProtectedObject
       STORAGEPOOLID:
-        type: "string"
-    title: "DmePlanRequest"
+        type: string
+    title: DmePlanRequest
   DmeProtectedObject:
-    type: "object"
+    type: object
     properties:
       FILTERS:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/DmeFilter"
-          originalRef: "DmeFilter"
+          $ref: '#/definitions/DmeFilter'
+          originalRef: DmeFilter
       ID:
-        type: "string"
+        type: string
       TYPE:
-        type: "string"
-    title: "DmeProtectedObject"
+        type: string
+    title: DmeProtectedObject
   DmeRemoteDevice:
-    type: "object"
+    type: object
     properties:
       ESN:
-        type: "string"
+        type: string
       cert:
-        type: "string"
+        type: string
       mgrIp:
-        type: "array"
+        type: array
         items:
-          type: "string"
+          type: string
       netplaneinfo:
-        type: "string"
+        type: string
       passwordPM:
-        type: "string"
+        type: string
       port:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       portPM:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       userNamePM:
-        type: "string"
-    title: "DmeRemoteDevice"
+        type: string
+    title: DmeRemoteDevice
   DmeResponseError:
-    type: "object"
+    type: object
     properties:
       Code:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       Description:
-        type: "string"
+        type: string
       Params:
-        type: "array"
+        type: array
         items:
-          type: "string"
-    title: "DmeResponseError"
+          type: string
+    title: DmeResponseError
   DmeResponse«CopyTimerange»:
-    type: "object"
+    type: object
     properties:
       Data:
-        $ref: "#/definitions/CopyTimerange"
-        originalRef: "CopyTimerange"
+        $ref: '#/definitions/CopyTimerange'
+        originalRef: CopyTimerange
       Error:
-        $ref: "#/definitions/DmeResponseError"
-        originalRef: "DmeResponseError"
+        $ref: '#/definitions/DmeResponseError'
+        originalRef: DmeResponseError
       exceptionIfError:
-        $ref: "#/definitions/LegoCheckedException"
-        originalRef: "LegoCheckedException"
-    title: "DmeResponse«CopyTimerange»"
+        $ref: '#/definitions/LegoCheckedException'
+        originalRef: LegoCheckedException
+    title: DmeResponse«CopyTimerange»
   DmeResponse«DmeCommonResponse»:
-    type: "object"
+    type: object
     properties:
       Data:
-        $ref: "#/definitions/DmeCommonResponse"
-        originalRef: "DmeCommonResponse"
+        $ref: '#/definitions/DmeCommonResponse'
+        originalRef: DmeCommonResponse
       Error:
-        $ref: "#/definitions/DmeResponseError"
-        originalRef: "DmeResponseError"
+        $ref: '#/definitions/DmeResponseError'
+        originalRef: DmeResponseError
       exceptionIfError:
-        $ref: "#/definitions/LegoCheckedException"
-        originalRef: "LegoCheckedException"
-    title: "DmeResponse«DmeCommonResponse»"
+        $ref: '#/definitions/LegoCheckedException'
+        originalRef: LegoCheckedException
+    title: DmeResponse«DmeCommonResponse»
   DmeResponse«DmePlanRequest»:
-    type: "object"
+    type: object
     properties:
       Data:
-        $ref: "#/definitions/DmePlanRequest"
-        originalRef: "DmePlanRequest"
+        $ref: '#/definitions/DmePlanRequest'
+        originalRef: DmePlanRequest
       Error:
-        $ref: "#/definitions/DmeResponseError"
-        originalRef: "DmeResponseError"
+        $ref: '#/definitions/DmeResponseError'
+        originalRef: DmeResponseError
       exceptionIfError:
-        $ref: "#/definitions/LegoCheckedException"
-        originalRef: "LegoCheckedException"
-    title: "DmeResponse«DmePlanRequest»"
+        $ref: '#/definitions/LegoCheckedException'
+        originalRef: LegoCheckedException
+    title: DmeResponse«DmePlanRequest»
   DmeResponse«DmeTaskInfo»:
-    type: "object"
+    type: object
     properties:
       Data:
-        $ref: "#/definitions/DmeTaskInfo"
-        originalRef: "DmeTaskInfo"
+        $ref: '#/definitions/DmeTaskInfo'
+        originalRef: DmeTaskInfo
       Error:
-        $ref: "#/definitions/DmeResponseError"
-        originalRef: "DmeResponseError"
+        $ref: '#/definitions/DmeResponseError'
+        originalRef: DmeResponseError
       exceptionIfError:
-        $ref: "#/definitions/LegoCheckedException"
-        originalRef: "LegoCheckedException"
-    title: "DmeResponse«DmeTaskInfo»"
+        $ref: '#/definitions/LegoCheckedException'
+        originalRef: LegoCheckedException
+    title: DmeResponse«DmeTaskInfo»
   DmeResponse«List«DmePlanRequest»»:
-    type: "object"
+    type: object
     properties:
       Data:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/DmePlanRequest"
-          originalRef: "DmePlanRequest"
+          $ref: '#/definitions/DmePlanRequest'
+          originalRef: DmePlanRequest
       Error:
-        $ref: "#/definitions/DmeResponseError"
-        originalRef: "DmeResponseError"
+        $ref: '#/definitions/DmeResponseError'
+        originalRef: DmeResponseError
       exceptionIfError:
-        $ref: "#/definitions/LegoCheckedException"
-        originalRef: "LegoCheckedException"
-    title: "DmeResponse«List«DmePlanRequest»»"
+        $ref: '#/definitions/LegoCheckedException'
+        originalRef: LegoCheckedException
+    title: DmeResponse«List«DmePlanRequest»»
   DmeResponse«List«DmeTaskInfo»»:
-    type: "object"
+    type: object
     properties:
       Data:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/DmeTaskInfo"
-          originalRef: "DmeTaskInfo"
+          $ref: '#/definitions/DmeTaskInfo'
+          originalRef: DmeTaskInfo
       Error:
-        $ref: "#/definitions/DmeResponseError"
-        originalRef: "DmeResponseError"
+        $ref: '#/definitions/DmeResponseError'
+        originalRef: DmeResponseError
       exceptionIfError:
-        $ref: "#/definitions/LegoCheckedException"
-        originalRef: "LegoCheckedException"
-    title: "DmeResponse«List«DmeTaskInfo»»"
+        $ref: '#/definitions/LegoCheckedException'
+        originalRef: LegoCheckedException
+    title: DmeResponse«List«DmeTaskInfo»»
   DmeResponse«List«StoragePool»»:
-    type: "object"
+    type: object
     properties:
       Data:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/StoragePool"
-          originalRef: "StoragePool"
+          $ref: '#/definitions/StoragePool'
+          originalRef: StoragePool
       Error:
-        $ref: "#/definitions/DmeResponseError"
-        originalRef: "DmeResponseError"
+        $ref: '#/definitions/DmeResponseError'
+        originalRef: DmeResponseError
       exceptionIfError:
-        $ref: "#/definitions/LegoCheckedException"
-        originalRef: "LegoCheckedException"
-    title: "DmeResponse«List«StoragePool»»"
+        $ref: '#/definitions/LegoCheckedException'
+        originalRef: LegoCheckedException
+    title: DmeResponse«List«StoragePool»»
   DmeResponse«S3ConnectCheckResponse»:
-    type: "object"
+    type: object
     properties:
       Data:
-        $ref: "#/definitions/S3ConnectCheckResponse"
-        originalRef: "S3ConnectCheckResponse"
+        $ref: '#/definitions/S3ConnectCheckResponse'
+        originalRef: S3ConnectCheckResponse
       Error:
-        $ref: "#/definitions/DmeResponseError"
-        originalRef: "DmeResponseError"
+        $ref: '#/definitions/DmeResponseError'
+        originalRef: DmeResponseError
       exceptionIfError:
-        $ref: "#/definitions/LegoCheckedException"
-        originalRef: "LegoCheckedException"
-    title: "DmeResponse«S3ConnectCheckResponse»"
+        $ref: '#/definitions/LegoCheckedException'
+        originalRef: LegoCheckedException
+    title: DmeResponse«S3ConnectCheckResponse»
   DmeResponse«Void»:
-    type: "object"
+    type: object
     properties:
       Error:
-        $ref: "#/definitions/DmeResponseError"
-        originalRef: "DmeResponseError"
+        $ref: '#/definitions/DmeResponseError'
+        originalRef: DmeResponseError
       exceptionIfError:
-        $ref: "#/definitions/LegoCheckedException"
-        originalRef: "LegoCheckedException"
-    title: "DmeResponse«Void»"
+        $ref: '#/definitions/LegoCheckedException'
+        originalRef: LegoCheckedException
+    title: DmeResponse«Void»
   DmeResponse«string»:
-    type: "object"
+    type: object
     properties:
       Data:
-        type: "string"
+        type: string
       Error:
-        $ref: "#/definitions/DmeResponseError"
-        originalRef: "DmeResponseError"
+        $ref: '#/definitions/DmeResponseError'
+        originalRef: DmeResponseError
       exceptionIfError:
-        $ref: "#/definitions/LegoCheckedException"
-        originalRef: "LegoCheckedException"
-    title: "DmeResponse«string»"
+        $ref: '#/definitions/LegoCheckedException'
+        originalRef: LegoCheckedException
+    title: DmeResponse«string»
   DmeStorageAuthInfo:
-    type: "object"
+    type: object
     properties:
       password:
-        type: "string"
+        type: string
       username:
-        type: "string"
-    title: "DmeStorageAuthInfo"
+        type: string
+    title: DmeStorageAuthInfo
   DmeTaskInfo:
-    type: "object"
+    type: object
     properties:
       ENDTIME:
-        type: "string"
+        type: string
       ID:
-        type: "string"
+        type: string
       PLANID:
-        type: "string"
+        type: string
       PROGRESS:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       REQUESTID:
-        type: "string"
+        type: string
       SPACESAVINGRATE:
-        type: "string"
+        type: string
       SPEED:
-        type: "string"
+        type: string
       STARTTIME:
-        type: "string"
+        type: string
       STATUS:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       SUBJOBCOUNT:
-        type: "integer"
-        format: "int32"
-    title: "DmeTaskInfo"
+        type: integer
+        format: int32
+    title: DmeTaskInfo
   InitNetworkResult:
-    type: "object"
+    type: object
     properties:
       network:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/InitNetworkResultDesc"
-          originalRef: "InitNetworkResultDesc"
+          $ref: '#/definitions/InitNetworkResultDesc'
+          originalRef: InitNetworkResultDesc
       okay:
-        type: "boolean"
-    title: "InitNetworkResult"
+        type: boolean
+    title: InitNetworkResult
   InitNetworkResultDesc:
-    type: "object"
+    type: object
     properties:
       code:
-        type: "string"
+        type: string
         enum:
-        - "InitNetworkResultCode.SUCCESS(code=0)"
-        - "InitNetworkResultCode.FAILURE(code=-1)"
+          - InitNetworkResultCode.SUCCESS(code=0)
+          - InitNetworkResultCode.FAILURE(code=-1)
       desc:
-        type: "string"
-    title: "InitNetworkResultDesc"
+        type: string
+    title: InitNetworkResultDesc
   LegoCheckedException:
-    type: "object"
+    type: object
     properties:
       accessoryResult:
-        type: "object"
+        type: object
       cause:
-        $ref: "#/definitions/Throwable"
-        originalRef: "Throwable"
+        $ref: '#/definitions/Throwable'
+        originalRef: Throwable
       emeiStorErrCode:
-        type: "string"
+        type: string
       errorCode:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       errorMessageKey:
-        type: "string"
+        type: string
       httpStatus:
-        type: "string"
+        type: string
         enum:
-        - "100 CONTINUE"
-        - "101 SWITCHING_PROTOCOLS"
-        - "102 PROCESSING"
-        - "103 CHECKPOINT"
-        - "200 OK"
-        - "201 CREATED"
-        - "202 ACCEPTED"
-        - "203 NON_AUTHORITATIVE_INFORMATION"
-        - "204 NO_CONTENT"
-        - "205 RESET_CONTENT"
-        - "206 PARTIAL_CONTENT"
-        - "207 MULTI_STATUS"
-        - "208 ALREADY_REPORTED"
-        - "226 IM_USED"
-        - "300 MULTIPLE_CHOICES"
-        - "301 MOVED_PERMANENTLY"
-        - "302 FOUND"
-        - "302 MOVED_TEMPORARILY"
-        - "303 SEE_OTHER"
-        - "304 NOT_MODIFIED"
-        - "305 USE_PROXY"
-        - "307 TEMPORARY_REDIRECT"
-        - "308 PERMANENT_REDIRECT"
-        - "400 BAD_REQUEST"
-        - "401 UNAUTHORIZED"
-        - "402 PAYMENT_REQUIRED"
-        - "403 FORBIDDEN"
-        - "404 NOT_FOUND"
-        - "405 METHOD_NOT_ALLOWED"
-        - "406 NOT_ACCEPTABLE"
-        - "407 PROXY_AUTHENTICATION_REQUIRED"
-        - "408 REQUEST_TIMEOUT"
-        - "409 CONFLICT"
-        - "410 GONE"
-        - "411 LENGTH_REQUIRED"
-        - "412 PRECONDITION_FAILED"
-        - "413 PAYLOAD_TOO_LARGE"
-        - "413 REQUEST_ENTITY_TOO_LARGE"
-        - "414 URI_TOO_LONG"
-        - "414 REQUEST_URI_TOO_LONG"
-        - "415 UNSUPPORTED_MEDIA_TYPE"
-        - "416 REQUESTED_RANGE_NOT_SATISFIABLE"
-        - "417 EXPECTATION_FAILED"
-        - "418 I_AM_A_TEAPOT"
-        - "419 INSUFFICIENT_SPACE_ON_RESOURCE"
-        - "420 METHOD_FAILURE"
-        - "421 DESTINATION_LOCKED"
-        - "422 UNPROCESSABLE_ENTITY"
-        - "423 LOCKED"
-        - "424 FAILED_DEPENDENCY"
-        - "425 TOO_EARLY"
-        - "426 UPGRADE_REQUIRED"
-        - "428 PRECONDITION_REQUIRED"
-        - "429 TOO_MANY_REQUESTS"
-        - "431 REQUEST_HEADER_FIELDS_TOO_LARGE"
-        - "451 UNAVAILABLE_FOR_LEGAL_REASONS"
-        - "500 INTERNAL_SERVER_ERROR"
-        - "501 NOT_IMPLEMENTED"
-        - "502 BAD_GATEWAY"
-        - "503 SERVICE_UNAVAILABLE"
-        - "504 GATEWAY_TIMEOUT"
-        - "505 HTTP_VERSION_NOT_SUPPORTED"
-        - "506 VARIANT_ALSO_NEGOTIATES"
-        - "507 INSUFFICIENT_STORAGE"
-        - "508 LOOP_DETECTED"
-        - "509 BANDWIDTH_LIMIT_EXCEEDED"
-        - "510 NOT_EXTENDED"
-        - "511 NETWORK_AUTHENTICATION_REQUIRED"
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
       localizedMessage:
-        type: "string"
+        type: string
       message:
-        type: "string"
+        type: string
       parameters:
-        type: "array"
+        type: array
         items:
-          type: "string"
+          type: string
       retryable:
-        type: "boolean"
+        type: boolean
       stackTrace:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/StackTraceElement"
-          originalRef: "StackTraceElement"
+          $ref: '#/definitions/StackTraceElement'
+          originalRef: StackTraceElement
       suppressed:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/Throwable"
-          originalRef: "Throwable"
-    title: "LegoCheckedException"
+          $ref: '#/definitions/Throwable'
+          originalRef: Throwable
+    title: LegoCheckedException
   OracleTargetHostInformation:
-    type: "object"
+    type: object
     properties:
       PFILE:
-        type: "string"
-    title: "OracleTargetHostInformation"
+        type: string
+    title: OracleTargetHostInformation
   ProductStorage:
-    type: "object"
+    type: object
     properties:
       IP:
-        type: "string"
+        type: string
       Password:
-        type: "string"
+        type: string
       Port:
-        type: "string"
+        type: string
       Type:
-        type: "string"
+        type: string
       Username:
-        type: "string"
-    title: "ProductStorage"
+        type: string
+    title: ProductStorage
   S3ConnectCheckResponse:
-    type: "object"
+    type: object
     properties:
       Capacity:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       Quota:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       Status:
-        type: "integer"
-        format: "int32"
-    title: "S3ConnectCheckResponse"
+        type: integer
+        format: int32
+    title: S3ConnectCheckResponse
   SaveImportCopyParam:
-    type: "object"
+    type: object
     properties:
       chain_id:
-        type: "string"
+        type: string
       generated_by:
-        type: "string"
+        type: string
       generated_time:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       name:
-        type: "string"
+        type: string
       resource_id:
-        type: "string"
+        type: string
       resource_sub_type:
-        type: "string"
+        type: string
       resource_type:
-        type: "string"
+        type: string
       uuid:
-        type: "string"
-    title: "SaveImportCopyParam"
+        type: string
+    title: SaveImportCopyParam
   StackTraceElement:
-    type: "object"
+    type: object
     properties:
       className:
-        type: "string"
+        type: string
       fileName:
-        type: "string"
+        type: string
       lineNumber:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       methodName:
-        type: "string"
+        type: string
       nativeMethod:
-        type: "boolean"
-    title: "StackTraceElement"
+        type: boolean
+    title: StackTraceElement
   StoragePool:
-    type: "object"
+    type: object
     properties:
       DESCRIPTION:
-        type: "string"
+        type: string
       ID:
-        type: "string"
+        type: string
       NAME:
-        type: "string"
+        type: string
       UNITLIST:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/StorageUnit"
-          originalRef: "StorageUnit"
-    title: "StoragePool"
+          $ref: '#/definitions/StorageUnit'
+          originalRef: StorageUnit
+    title: StoragePool
   StorageRequest:
-    type: "object"
+    type: object
     properties:
       ak:
-        type: "string"
-        description: "AK"
-        pattern: "^[\\S]{1,256}$"
+        type: string
+        description: AK
+        pattern: ^[\S]{1,256}$
       alarmEnable:
-        type: "boolean"
-        description: "是否开启告警"
+        type: boolean
+        description: 是否开启告警
       alarmLimitValueUnit:
-        type: "string"
-        description: "告警阈值单位"
+        type: string
+        description: 告警阈值单位
       alarmThreshold:
-        type: "integer"
-        format: "int64"
-        description: "告警阈值"
+        type: integer
+        format: int64
+        description: 告警阈值
       bucketName:
-        type: "string"
-        description: "数据桶名称"
-        pattern: "^[\\S]{1,256}$"
+        type: string
+        description: 数据桶名称
+        pattern: ^[\S]{1,256}$
       cloudType:
-        type: "integer"
-        format: "int32"
-        description: "云存储类型"
+        type: integer
+        format: int32
+        description: 云存储类型
         minimum: 0.0
         maximum: 4.0
         exclusiveMinimum: false
         exclusiveMaximum: false
       endpoint:
-        type: "string"
-        description: "终端节点"
-        pattern: "^[\\S]{1,256}$"
+        type: string
+        description: 终端节点
+        pattern: ^[\S]{1,256}$
       indexBucketName:
-        type: "string"
-        description: "索引桶名称"
-        pattern: "^[\\S]{1,256}$"
+        type: string
+        description: 索引桶名称
+        pattern: ^[\S]{1,256}$
       proxyEnable:
-        type: "boolean"
-        description: "是否使用代理"
+        type: boolean
+        description: 是否使用代理
       proxyHostName:
-        type: "string"
-        description: "代理主机名"
+        type: string
+        description: 代理主机名
       proxyUserName:
-        type: "string"
-        description: "代理用户名"
+        type: string
+        description: 代理用户名
       proxyUserPwd:
-        type: "string"
-        description: "代理用户密码"
+        type: string
+        description: 代理用户密码
       sk:
-        type: "string"
-        description: "SK"
-        pattern: "^[\\S]{1,256}$"
+        type: string
+        description: SK
+        pattern: ^[\S]{1,256}$
       storageId:
-        type: "string"
-        description: "存储id"
+        type: string
+        description: 存储id
       storageName:
-        type: "string"
-        description: "存储库名字"
+        type: string
+        description: 存储库名字
       type:
-        type: "integer"
-        format: "int32"
-        description: "存储库类型。   1:本地存储库  2:蓝光存储库  3:磁带存储库"
+        type: integer
+        format: int32
+        description: 存储库类型。   1:本地存储库  2:蓝光存储库  3:磁带存储库
       useHttps:
-        type: "boolean"
-        description: "是否使用HTTPS"
-    title: "StorageRequest"
+        type: boolean
+        description: 是否使用HTTPS
+    title: StorageRequest
   StorageUnit:
-    type: "object"
+    type: object
     properties:
       FILESYSTEM:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       PASSWORD:
-        type: "string"
+        type: string
       PATH:
-        type: "string"
+        type: string
       PROTOCOL:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       USERNAME:
-        type: "string"
-    title: "StorageUnit"
+        type: string
+    title: StorageUnit
   Throwable:
-    type: "object"
+    type: object
     properties:
       cause:
-        $ref: "#/definitions/Throwable"
-        originalRef: "Throwable"
+        $ref: '#/definitions/Throwable'
+        originalRef: Throwable
       localizedMessage:
-        type: "string"
+        type: string
       message:
-        type: "string"
+        type: string
       stackTrace:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/StackTraceElement"
-          originalRef: "StackTraceElement"
+          $ref: '#/definitions/StackTraceElement'
+          originalRef: StackTraceElement
       suppressed:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/Throwable"
-          originalRef: "Throwable"
-    title: "Throwable"
+          $ref: '#/definitions/Throwable'
+          originalRef: Throwable
+    title: Throwable
   TimeRange:
-    type: "object"
+    type: object
     properties:
       ENDTIME:
-        type: "integer"
-        format: "int64"
+        type: integer
+        format: int64
       STARTTIME:
-        type: "integer"
-        format: "int64"
-    title: "TimeRange"
+        type: integer
+        format: int64
+    title: TimeRange
   VMInfo:
-    type: "object"
+    type: object
     properties:
       BackupLevel:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       Compress:
-        type: "boolean"
+        type: boolean
       ConsistencyBackup:
-        type: "boolean"
+        type: boolean
       Dedup:
-        type: "boolean"
+        type: boolean
       Disks:
-        type: "array"
+        type: array
         items:
-          $ref: "#/definitions/Disk"
-          originalRef: "Disk"
+          $ref: '#/definitions/Disk'
+          originalRef: Disk
       ExecHost:
-        $ref: "#/definitions/DmeHost"
-        originalRef: "DmeHost"
+        $ref: '#/definitions/DmeHost'
+        originalRef: DmeHost
       LimitSpeed:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       ParentRelation:
-        $ref: "#/definitions/VMParentRelationInfo"
-        originalRef: "VMParentRelationInfo"
+        $ref: '#/definitions/VMParentRelationInfo'
+        originalRef: VMParentRelationInfo
       PostScript:
-        type: "string"
+        type: string
       PreScript:
-        type: "string"
+        type: string
       ProductManager:
-        $ref: "#/definitions/VMWareVCenterInfo"
-        originalRef: "VMWareVCenterInfo"
+        $ref: '#/definitions/VMWareVCenterInfo'
+        originalRef: VMWareVCenterInfo
       VmID:
-        type: "string"
+        type: string
       VmMachinePath:
-        type: "string"
+        type: string
       VmName:
-        type: "string"
+        type: string
       VmRef:
-        type: "string"
-    title: "VMInfo"
+        type: string
+    title: VMInfo
   VMParentRelationInfo:
-    type: "object"
+    type: object
     properties:
       ClusterMoRef:
-        type: "string"
+        type: string
       HostMoRef:
-        type: "string"
-    title: "VMParentRelationInfo"
+        type: string
+    title: VMParentRelationInfo
   VMWareVCenterInfo:
-    type: "object"
+    type: object
     properties:
       Certs:
-        type: "string"
+        type: string
       IP:
-        type: "string"
+        type: string
       Password:
-        type: "string"
+        type: string
       Port:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       Protocol:
-        type: "integer"
-        format: "int32"
+        type: integer
+        format: int32
       UserName:
-        type: "string"
-    title: "VMWareVCenterInfo"
+        type: string
+    title: VMWareVCenterInfo
