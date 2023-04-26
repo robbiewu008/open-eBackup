@@ -7,8 +7,9 @@ tags:
 paths:
   /v1/resource-catalogs:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'

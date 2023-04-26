@@ -179,6 +179,8 @@ paths:
       summary: 指定日期副本数量
   /v1/copies/summary/resources:
     get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-product: CyberEngine,OceanProtect X
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -212,8 +214,7 @@ paths:
           name: orders
           required: false
           type: array
-        - description: >-
-            条件参数：%resource_name%，%resource_location%，%sla_name%，%resource_environment_name%，%resource_environment_ip%，!properties，!resource_properties，!sla_properties，%protected_sla_name%，resource_id，resource_name，resource_type，resource_sub_type，resource_location，resource_status，properties，resource_properties，resource_environment_name，resource_environment_ip，sla_name，protected_resource_id，protected_object_uuid，protected_sla_id，protected_sla_name，protected_status，copy_count
+        - description: 条件参数：%resource_name%，%resource_location%，%sla_name%，%resource_environment_name%，%resource_environment_ip%，!properties，!resource_properties，!sla_properties，%protected_sla_name%，resource_id，resource_name，resource_type，resource_sub_type，resource_location，resource_status，properties，resource_properties，resource_environment_name，resource_environment_ip，sla_name，protected_resource_id，protected_object_uuid，protected_sla_id，protected_sla_name，protected_status，copy_count
           in: query
           name: conditions
           required: false
