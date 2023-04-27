@@ -19,7 +19,7 @@ paths:
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-sysadmin-role: 'N'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - copies
       summary: 副本报告入库
@@ -64,7 +64,7 @@ paths:
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-sysadmin-role: 'N'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       tags:
         - copies
@@ -118,7 +118,7 @@ paths:
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-sysadmin-role: 'N'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-access-port: 30092
       x-auth-required: 'N'
       x-public-api: 'N'
@@ -168,7 +168,7 @@ paths:
       tags:
         - copies
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30092
@@ -213,7 +213,7 @@ paths:
   /v1/internal/copies/detect/details:
     get:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30092
