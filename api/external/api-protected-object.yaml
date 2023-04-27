@@ -8,7 +8,7 @@ paths:
   /v1/protected-objects:
     delete:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -48,7 +48,7 @@ paths:
       summary: 批量移除保护
     get:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -129,7 +129,7 @@ paths:
       summary: 分页查询SLA关联资源信息列表
     post:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -171,7 +171,8 @@ paths:
       operationId: create_v1_protected_objects_post
       summary: 创建保护对象
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -213,7 +214,7 @@ paths:
   /v1/protected-objects/batch:
     post:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -256,7 +257,7 @@ paths:
   /v1/protected-objects/status/action/activate:
     put:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -297,7 +298,7 @@ paths:
   /v1/protected-objects/status/action/deactivate:
     put:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -338,7 +339,7 @@ paths:
   /v1/protected-objects/{resource_id}/action/backup:
     post:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -386,7 +387,7 @@ paths:
   /v1/protected-objects/{resource_id}/backup-time:
     get:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -425,7 +426,7 @@ paths:
   /v1/protected-objects/sla-compliance:
     get:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-sysadmin-role: 'Y'
