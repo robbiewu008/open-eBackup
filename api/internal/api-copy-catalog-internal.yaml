@@ -385,7 +385,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'N'
       x-sysadmin-role: 'N'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       consumes:
         - application/json
       produces:
@@ -787,7 +787,8 @@ paths:
       summary: get copies info by chain id
   /v1/internal/copies/{copy_id}:
     delete:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30092
@@ -1063,7 +1064,13 @@ paths:
       summary: Internal Update Copy Status
   /v1/internal/copies/{copy_id}/detail:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - copies
       summary: 更新副本详情detail字段
@@ -1108,7 +1115,7 @@ paths:
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-sysadmin-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-access-port: 30092
       x-auth-required: 'N'
@@ -1145,7 +1152,8 @@ paths:
             type: string
   /v1/internal/copies/{copy_id}/properties:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - copies
       x-dm-role: 'N'
@@ -1185,7 +1193,8 @@ paths:
             type: string
   /v1/internal/copies/{copy_id}/worm-status:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30092
@@ -1235,7 +1244,8 @@ paths:
       summary: Internal Update Copy Worm Status
   /v1/internal/replicated-copies:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - copies
       description: 创建复制副本和esn关联关系
@@ -1263,7 +1273,7 @@ paths:
             type: string
     get:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - copies
       x-dm-role: 'N'
@@ -1305,7 +1315,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'N'
       x-sysadmin-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       produces:
         - application/json
       parameters:
