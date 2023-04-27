@@ -15,7 +15,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
@@ -72,7 +72,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-auditor-role: 'Y'
       x-dp-admin-role: 'Y'
@@ -163,7 +163,7 @@ paths:
   /v1/copies/detect-statistics:
     get:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-impact-subsystem: 不影响
@@ -256,7 +256,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-auditor-role: 'Y'
       x-access-port: 25081
@@ -300,7 +300,7 @@ paths:
   /v1/copies/{copy_id}/detect-status:
     put:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
