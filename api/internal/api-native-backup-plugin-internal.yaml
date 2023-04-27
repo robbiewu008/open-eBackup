@@ -128,7 +128,7 @@ paths:
     put:
       x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'N'
+      x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 30081
       x-auth-required: 'N'
@@ -172,7 +172,7 @@ paths:
     post:
       x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'N'
+      x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 30081
       x-auth-required: 'N'
@@ -516,7 +516,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'N'
+      x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'N'
@@ -700,7 +700,7 @@ paths:
     get:
       x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'N'
+      x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'N'

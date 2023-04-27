@@ -141,8 +141,8 @@ paths:
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'Y'
-      x-public-api: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
       x-sysadmin-role: 'N'
       tags:
         - backup
@@ -730,8 +730,8 @@ paths:
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
-      x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - restore
       operationId: queryRestoreJobsUsingGet

@@ -88,10 +88,11 @@ paths:
                 authType: 0
   /v2/internal/environments:
     post:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -115,10 +116,11 @@ paths:
             type: string
   /v2/internal/environments/{envId}:
     delete:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -142,10 +144,11 @@ paths:
             type: string
   /v2/internal/environments/delete/{envId}:
     delete:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -169,10 +172,11 @@ paths:
             type: string
   /v2/internal/environments/host/trust:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -199,10 +203,11 @@ paths:
             type: string
   /v2/internal/environments/host/dmc/trust:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
