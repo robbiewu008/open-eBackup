@@ -8,7 +8,7 @@ paths:
   /v1/internal/workflows/backup/result:
     put:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30092
