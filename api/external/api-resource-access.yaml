@@ -550,8 +550,9 @@ paths:
             type: array
   /v2/resources/action/check:
     post:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -581,8 +582,9 @@ paths:
             type: array
   /v2/resources/{resourceId}/action/check:
     get:
+      x-dr-role: 'N'
       x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
