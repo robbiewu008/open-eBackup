@@ -199,7 +199,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'N'
@@ -264,7 +264,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'N'
@@ -307,15 +307,17 @@ paths:
       deprecated: false
   /v1/product-storages/{storageId}:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'Y'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - product-storages-api
       summary: 查询存储信息
@@ -355,7 +357,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'N'
@@ -408,7 +410,7 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'N'
@@ -445,7 +447,9 @@ paths:
       deprecated: false
   /v1/storages:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -500,7 +504,9 @@ paths:
             - global
       x-order: 0
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -792,7 +798,9 @@ paths:
             - global
       x-order: 3
     put:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -894,7 +902,9 @@ paths:
       x-order: 5
   /v1/storages/{storageId}/action/import:
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -1183,15 +1193,15 @@ paths:
               $ref: '#/definitions/StorageEndpointInfo'
   /v1/local-storage/logic-port:
     get:
-      x-dr-role: 'Y'
+      x-dr-role: 'N'
       x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'N'
-      x-dp-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       tags:

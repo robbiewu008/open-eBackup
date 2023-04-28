@@ -355,7 +355,8 @@ paths:
             - global
   /v1/internal/agent/cluster-ip:
     put:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30081

@@ -17,7 +17,7 @@ paths:
   /v1/eb/internal/copies/extended_parameter:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30081
@@ -75,7 +75,7 @@ paths:
   /v1/eb/internal/copies/scn:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30081
@@ -127,8 +127,8 @@ paths:
   /v1/eb/internal/local-storage:
     put:
       x-dr-role: 'N'
-      x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30081
       x-auth-required: 'N'
@@ -171,8 +171,8 @@ paths:
   /v1/eb/internal/s3-storage:
     post:
       x-dr-role: 'N'
-      x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30081
       x-auth-required: 'N'
@@ -218,7 +218,7 @@ paths:
   /v1/eb/srv_jobmanager/database/timerange:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -259,7 +259,7 @@ paths:
   /v1/eb/srv_jobmanager/plan:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -293,7 +293,7 @@ paths:
       deprecated: false
     post:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -340,7 +340,7 @@ paths:
   /v1/eb/srv_jobmanager/plan/run:
     put:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -387,7 +387,7 @@ paths:
   /v1/eb/srv_jobmanager/plan/{id}:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -427,7 +427,7 @@ paths:
       deprecated: false
     delete:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -468,7 +468,7 @@ paths:
   /v1/eb/srv_jobmanager/storagepool:
     post:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -515,8 +515,8 @@ paths:
   /v1/eb/srv_jobmanager/storagepool/:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'N'
@@ -550,7 +550,7 @@ paths:
   /v1/eb/srv_jobmanager/storagepool/{poolId}:
     put:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -602,7 +602,7 @@ paths:
   /v1/eb/srv_jobmanager/task:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -653,7 +653,7 @@ paths:
   /v1/eb/srv_jobmanager/task/abort:
     put:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -699,8 +699,8 @@ paths:
   /v1/eb/srv_jobmanager/task/count:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'N'
@@ -740,7 +740,7 @@ paths:
   /v1/eb/srv_jobmanager/task/{taskId}:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -780,16 +780,17 @@ paths:
       deprecated: false
   /v1/internal/copies:
     post:
-      x-product: OceanProtect X
-      x-dm-role: 'Y'
-      x-impact-subsystem: 影响
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
       x-access-port: 30081
       x-auth-required: 'N'
-      x-rd-admin-role: 'Y'
-      x-auditor-role: 'Y'
-      x-dp-admin-role: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       tags:
         - import-copy-internal-controller
       summary: saveImportCopy
@@ -824,7 +825,7 @@ paths:
   /v1/internal/eb/cleanremote:
     post:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30081
@@ -868,7 +869,7 @@ paths:
   /v1/internal/eb/updateLogicIps:
     post:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 30081

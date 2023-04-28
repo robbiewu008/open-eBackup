@@ -12,16 +12,16 @@ tags:
 paths:
   /v1/internal/license:
     get:
-      x-dr-role: 'Y'
-      x-dm-role: 'Y'
+      x-dr-role: 'N'
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'N'
-      x-sysadmin-role: 'Y'
+      x-sysadmin-role: 'N'
       x-product: CyberEngine
       tags:
         - ${license-api}

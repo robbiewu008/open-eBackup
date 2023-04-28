@@ -21,7 +21,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -71,7 +71,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -199,7 +199,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -238,7 +238,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -288,7 +288,7 @@ paths:
       x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
-      x-access-port: 25081
+      x-access-port: 30081
       x-auth-required: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -339,11 +339,11 @@ paths:
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
-      x-auth-required: 'N'
+      x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
-      x-public-api: 'N'
+      x-public-api: 'Y'
       x-sysadmin-role: 'N'
       x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:

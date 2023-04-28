@@ -10,12 +10,12 @@ basePath: /
 paths:
   /v1/auth/saml/login:
     get:
-      x-dr-role: 'Y'
-      x-product: OceanProtect X
-      x-dm-role: 'Y'
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
-      x-auth-required: 'N'
+      x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
       x-dp-admin-role: 'N'
@@ -45,7 +45,7 @@ paths:
   /v1/auth/saml/AssertionConsumer:
     post:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
