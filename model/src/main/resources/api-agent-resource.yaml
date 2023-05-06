@@ -13,7 +13,8 @@ tags:
 paths:
   /v2/agents/{agentId}/resources:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -78,7 +79,7 @@ paths:
   /v1/agents/config:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -120,7 +121,7 @@ paths:
   /v1/agents/task/status:
     put:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081

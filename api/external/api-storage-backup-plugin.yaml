@@ -14,7 +14,8 @@ produces:
 paths:
   /v1/plugins/storage/nas/filesystems/{fileSystemId}:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
@@ -59,7 +60,8 @@ paths:
             $ref: '#/definitions/FileSystemInfo'
   /v1/plugins/storage/nas/filesystems/{mountPointId}/folders:
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-rd-admin-role: 'N'
@@ -105,7 +107,8 @@ paths:
           schema:
             type: string
     delete:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -147,7 +150,8 @@ paths:
             type: string
   /v1/plugins/storage/nas/filesystems/mount:
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -195,7 +199,8 @@ paths:
             $ref: '#/definitions/MountResponse'
   /v1/plugins/storage/nas/filesystems/{mountPointId}/files:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -244,7 +249,8 @@ paths:
             $ref: '#/definitions/DeeFileSystemResponse'
   /v1/plugins/storage/nas/filesystems:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -287,7 +293,8 @@ paths:
           schema:
             $ref: '#/definitions/FileSystemResponseList'
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -325,7 +332,8 @@ paths:
             type: string
   /v1/plugins/storage/nas/auth-users:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -375,7 +383,7 @@ paths:
   /v1/plugins/storage/nas/auth-user-groups:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -424,7 +432,8 @@ paths:
             $ref: '#/definitions/NasUserGroupInfos'
   /v1/plugins/storage/nas/filesystems/{envId}/files:
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
