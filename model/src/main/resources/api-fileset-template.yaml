@@ -12,7 +12,8 @@ tags:
 paths:
   /v1/plugins/host/filesystem/filesets/templates:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -79,7 +80,8 @@ paths:
             - global
       deprecated: false
     post:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -129,7 +131,8 @@ paths:
             - global
       deprecated: false
     put:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -142,7 +145,7 @@ paths:
       tags:
         - fileset-templates-api
       summary: 修改文件集模板
-      operationId: updateUsingPUT
+      operationId: updateTemplateUsingPUT
       consumes:
         - application/json
       produces:
@@ -177,7 +180,8 @@ paths:
       deprecated: false
   /v1/plugins/host/filesystem/filesets/templates/{templateId}:
     get:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -223,7 +227,8 @@ paths:
             - global
       deprecated: false
     delete:
-      x-product: OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
