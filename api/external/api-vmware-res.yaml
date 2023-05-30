@@ -9,7 +9,7 @@ paths:
   /v1/compute-resources/clusters/{cluster_uuid}/config:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -53,7 +53,7 @@ paths:
   /v1/compute-resources/{compute_res_uuid}/datastores:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -102,7 +102,7 @@ paths:
   /v1/compute-resources/{compute_res_uuid}/networks:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -151,7 +151,7 @@ paths:
   /v1/virtual-machines/{vm_uuid}:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
@@ -195,7 +195,7 @@ paths:
   /v1/virtual-machines/{vm_uuid}/disks:
     get:
       x-dr-role: 'N'
-      x-product: OceanProtect X
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
@@ -239,6 +239,65 @@ paths:
       description: 根据VMware虚拟机ID查询VMware虚拟机的硬盘列表
       operationId: list_vm_disk_v1_virtual_machines__vm_uuid__disks_get
       summary: 查询VMware虚拟机的硬盘列表
+  /v1/virtual-resource:
+    get:
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - collectionFormat: multi
+          description: 排序字段：children
+          in: query
+          items:
+            type: string
+          name: orders
+          required: false
+          type: array
+        - description: 条件参数：
+          in: query
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_VirtualResourceSchema_'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - virtual-resource
+      operationId: query_resources_v1_virtual_resource_get
+      summary: 查询VMware资源列表    
 definitions:
   ClusterConfigSchema:
     properties:
