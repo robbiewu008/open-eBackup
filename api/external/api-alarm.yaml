@@ -15,11 +15,13 @@ tags:
     description: Email Controller
   - name: snmp-api
     description: Snmp Controller
+  - name: alarm-notify-rule-api
+    description: Notify Controller
 paths:
   /v1/alarms:
     get:
       x-dr-role: 'N'
-      x-product: CyberEngine
+      x-product: OceanCyber
       x-dm-role: 'Y'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -165,8 +167,8 @@ paths:
   /v2/alarms:
     get:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
-      x-dm-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -279,8 +281,8 @@ paths:
   /v2/alarms/objects:
     get:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
-      x-dm-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -338,7 +340,7 @@ paths:
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 告警清除
@@ -380,17 +382,17 @@ paths:
       deprecated: false
   /v2/alarms/{sequence}/action/clear:
     put:
-      x-dr-role: 'Y'
+      x-dr-role: 'N'
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
       x-auditor-role: 'N'
-      x-dp-admin-role: 'N'
+      x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 告警清除
@@ -437,7 +439,7 @@ paths:
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 导出告警
@@ -491,7 +493,7 @@ paths:
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 发送模拟测试告警
@@ -524,8 +526,8 @@ paths:
   /v2/alarms/devices:
     get:
       x-dr-role: 'N'
-      x-product: CyberEngine
-      x-dm-role: 'Y'
+      x-product: OceanCyber
+      x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
       x-auth-required: 'Y'
@@ -583,7 +585,7 @@ paths:
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 告警总数查询
@@ -624,7 +626,7 @@ paths:
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 批量查询告警
@@ -752,7 +754,7 @@ paths:
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 查询指定事件
@@ -804,7 +806,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 导出告警转储文件
@@ -851,7 +853,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 删除告警转储文件
@@ -898,7 +900,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 上传告警转储文件到SFTP服务器
@@ -946,7 +948,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 查询告警转储配置
@@ -986,7 +988,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 更改告警转储配置
@@ -1035,7 +1037,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 批量查询告警转储记录
@@ -1094,7 +1096,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 查询告警转储SFTP配置
@@ -1134,7 +1136,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 修改告警转储SFTP配置
@@ -1183,7 +1185,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-dump-api
       summary: 测试告警转储SFTP服务器
@@ -1276,7 +1278,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-email-notify-api
       summary: 获取邮件通知配置
@@ -1312,11 +1314,11 @@ paths:
       x-access-port: 25081
       x-auth-required: 'Y'
       x-rd-admin-role: 'N'
-      x-auditor-role: 'Y'
+      x-auditor-role: 'N'
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-email-notify-api
       summary: 更改邮件通知配置
@@ -1365,7 +1367,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-email-notify-api
       summary: 测试邮件通知
@@ -1414,7 +1416,7 @@ paths:
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 批量查询事件
@@ -1569,7 +1571,7 @@ paths:
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - alarm-and-event-api
       summary: 导出事件
@@ -1623,7 +1625,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 查询SNMP配置
@@ -1663,7 +1665,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 更改SNMP配置
@@ -1712,7 +1714,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 检查SNMP参数配置是否正确
@@ -1763,7 +1765,7 @@ paths:
       x-dp-admin-role: 'Y'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 查询SNMP安全引擎标识
@@ -1806,7 +1808,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 批量查询SNMP Trap地址
@@ -1864,7 +1866,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 新增SNMP Trap地址
@@ -1912,7 +1914,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 修改SNMP Trap地址
@@ -1961,7 +1963,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 查询SNMP Trap地址
@@ -2007,7 +2009,7 @@ paths:
       x-dp-admin-role: 'N'
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
-      x-product: CyberEngine,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       tags:
         - snmp-api
       summary: 删除SNMP Trap地址
@@ -2039,6 +2041,340 @@ paths:
         - Authorization:
             - global
       deprecated: false
+  /v1/notify/rules:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-notify-rule-api
+      summary: 查询邮件通知规则
+      operationId: getRemoteNotifyRuleUsingGET
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/NotifyRuleRequest'
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+      security:
+        - Authorization: []
+    put:
+      tags:
+        - alarm-notify-rule-api
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 更改邮件通知规则
+      operationId: modifyNotifyBaseInfoUsingPUT
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: notifyRuleRequest
+          in: body
+          required: true
+          description: 更改邮件通知规则请求体
+          schema:
+            $ref: '#/definitions/NotifyRuleRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+      security:
+        - Authorization: []
+  /v1/notify/emails:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-notify-rule-api
+      description: 批量查询通知邮箱地址
+      operationId: getEmailsUsingGET
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmailRequest'
+    post:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-notify-rule-api
+      description: 新增通知邮箱地址
+      operationId: addEmailsUsingPOST
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: emailRequest
+          in: body
+          required: true
+          description: 新增通知邮箱地址请求体
+          schema:
+            $ref: '#/definitions/EmailRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-notify-rule-api
+      description: 删除通知邮箱地址
+      operationId: deleteEmailUsingDELETE
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: emailRequests
+          in: body
+          required: true
+          description: 邮箱地址列表请求体
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmailRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-notify-rule-api
+      description: 修改收件人邮箱信息
+      operationId: modifyEmailUsingPUT
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: modifyEmailRequest
+          in: body
+          required: true
+          description: 修改邮件通知地址结构体
+          schema:
+            $ref: '#/definitions/ModifyEmailRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+        '201':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+  /v1/notify/action/test:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-notify-rule-api
+      description: 测试收件人邮箱
+      operationId: testEmailRecipientUsingPUT
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: emailRequest
+          in: body
+          required: true
+          description: 收件人邮箱信息
+          schema:
+            $ref: '#/definitions/EmailRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -2963,7 +3299,7 @@ definitions:
     properties:
       name:
         type: string
-        example: CyberEngine
+        example: OceanCyber
         description: 告警来源设备名称
     title: AlarmDevDto
     description: 查询一体机告警的来源设备
@@ -3101,3 +3437,22 @@ definitions:
       isTlsEnable:
         type: boolean
         description: 当前邮件传输是否使用Tls加密
+  ModifyEmailRequest:
+    type: object
+    description: 修改收件人邮箱结构体
+    required:
+      - emailAddress
+      - oldEmailAddress
+    properties:
+      emailAddress:
+        type: string
+        description: 修改后邮件通知地址
+      desc:
+        type: string
+        description: 修改后邮件通知描述
+      oldEmailAddress:
+        type: string
+        description: 被修改的邮件通知地址
+      oldDesc:
+        type: string
+        description: 被修改的邮件通知描述
