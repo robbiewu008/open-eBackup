@@ -13,7 +13,7 @@ paths:
   /v1/certs/detail:
     post:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -62,7 +62,8 @@ paths:
       deprecated: false
   /v1/certs/components:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-rd-admin-role: 'N'
       x-auditor-role: 'Y'
@@ -102,7 +103,8 @@ paths:
         - Authorization:
             - global
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -137,6 +139,11 @@ paths:
           required: true
           type: string
           pattern: '[_a-zA-Z][_a-zA-Z0-9 -]{3,31}'
+        - name: sync
+          in: query
+          description: 是否同步到集群节点
+          required: false
+          type: boolean
         - name: type
           in: query
           description: 组件类型。【取值范围】0：内部组件 1：vmware 2：email 3：对象存储 4：A8000 5:其他 6:外部存储
@@ -159,7 +166,8 @@ paths:
             - global
   /v1/certs/components/{componentId}:
     put:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -210,7 +218,8 @@ paths:
         - Authorization:
             - global
     delete:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -237,6 +246,11 @@ paths:
           description: 组件ID
           required: true
           type: string
+        - name: sync
+          in: query
+          description: 是否同步到集群节点
+          required: false
+          type: boolean
       responses:
         '200':
           description: OK
@@ -251,7 +265,8 @@ paths:
             - global
   /v1/certs/components/{componentId}/action/import:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -306,6 +321,11 @@ paths:
           description: 服务端私钥密码
           required: false
           type: string
+        - name: sync
+          in: query
+          description: 是否同步到集群节点
+          required: false
+          type: boolean
       responses:
         '200':
           description: OK
@@ -323,7 +343,7 @@ paths:
   /v1/certs/components/{componentId}/ca/action/download:
     get:
       x-dr-role: 'N'
-      x-product: CyberEngine,OceanProtect X
+      x-product: OceanCyber,OceanProtect X
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -364,7 +384,8 @@ paths:
             - global
   /v1/certs/components/{componentId}/crl/action/download:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -410,7 +431,8 @@ paths:
             - global
   /v1/certs/components/{componentId}/crls:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -456,7 +478,8 @@ paths:
             - global
   /v1/certs/components/{componentId}/crls/action/import:
     post:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -490,6 +513,11 @@ paths:
           description: 证书吊销列表
           required: true
           type: file
+        - name: sync
+          in: query
+          description: 是否同步到集群节点
+          required: false
+          type: boolean
       responses:
         '200':
           description: OK
@@ -506,7 +534,8 @@ paths:
             - global
   /v1/certs/components/{componentId}/crls/{crlId}:
     delete:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -538,6 +567,11 @@ paths:
           description: 吊销列表ID
           required: false
           type: string
+        - name: sync
+          in: query
+          description: 是否同步到集群节点
+          required: false
+          type: boolean
       responses:
         '200':
           description: OK
@@ -552,7 +586,8 @@ paths:
             - global
   /v1/certs/components/{componentId}/request-file/action/export:
     get:
-      x-product: CyberEngine,OceanProtect X
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
