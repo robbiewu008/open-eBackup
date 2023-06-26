@@ -144,6 +144,7 @@ paths:
           description: 是否同步到集群节点
           required: false
           type: boolean
+          default: true
         - name: type
           in: query
           description: 组件类型。【取值范围】0：内部组件 1：vmware 2：email 3：对象存储 4：A8000 5:其他 6:外部存储
@@ -251,6 +252,7 @@ paths:
           description: 是否同步到集群节点
           required: false
           type: boolean
+          default: true
       responses:
         '200':
           description: OK
@@ -326,6 +328,7 @@ paths:
           description: 是否同步到集群节点
           required: false
           type: boolean
+          default: true
       responses:
         '200':
           description: OK
@@ -518,6 +521,7 @@ paths:
           description: 是否同步到集群节点
           required: false
           type: boolean
+          default: true
       responses:
         '200':
           description: OK
@@ -572,6 +576,7 @@ paths:
           description: 是否同步到集群节点
           required: false
           type: boolean
+          default: true
       responses:
         '200':
           description: OK
