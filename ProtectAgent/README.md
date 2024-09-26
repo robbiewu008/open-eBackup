@@ -1,3 +1,0 @@
-# REST_API
-
-该仓库仅用于存放从API Designer基线后自动同步过来的REST接口描述文件
