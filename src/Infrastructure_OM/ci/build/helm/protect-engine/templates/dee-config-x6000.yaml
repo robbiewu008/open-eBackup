@@ -1,0 +1,12 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d1" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dataenableengine-conf
+  namespace: dpa
+data:
+  REDIS_HOST: "infrastructure"
+  REDIS_PORT: "6369"
+{{- end }}

@@ -1,0 +1,18 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d6" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: protectengine-e-dmc
+  namespace: dpa
+  labels:
+    app: protectengine-e-dmc
+spec:
+  ports:
+    - port: 8089
+      name: web
+      targetPort: 18091
+  selector:
+    app: infrastructure
+{{- end }}

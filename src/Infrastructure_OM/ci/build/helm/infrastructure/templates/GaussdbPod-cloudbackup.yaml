@@ -1,0 +1,155 @@
+{{/*
+Get running environment
+*/}}
+{{- $environment:= "" }}
+{{- if .Values.global }}
+{{- $environment = .Values.global.environment }}
+{{- else }}
+{{- $environment = .Values.local.environment }}
+{{- end }}
+
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if or (eq $deploytype "cloudbackup") (eq $deploytype "d3")}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gaussdb
+  namespace: dpa
+spec:
+  selector:
+    matchLabels:
+      app: gaussdb
+  serviceName: gaussdb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gaussdb # has to match .spec.selector.matchLabels
+    spec:
+      serviceAccountName: gaussdb-sa
+      terminationGracePeriodSeconds: 0
+      securityContext:
+        fsGroup: 99
+      containers:
+        - name: gaussdb
+          image: gaussdb:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          securityContext:
+            runAsUser: 1000
+            readOnlyRootFilesystem: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+              drop: ["NET_RAW", "SETFCAP", "KILL", "MKNOD"]
+          envFrom:
+            - configMapRef:
+                name: inf-common-conf
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - check_gaussdb_readiness.sh
+            initialDelaySeconds: 10
+            periodSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - check_health.sh
+            initialDelaySeconds: 40
+            periodSeconds: 25
+            failureThreshold: 3
+            timeoutSeconds: 10
+          volumeMounts:
+            - name: log-path
+              mountPath: /opt/OceanProtect
+            - mountPath: /tmp
+              name: gauss-tmp
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            {{- if eq $environment "Dorado" }}
+            - mountPath: /opt/db_data
+              name: db-block
+            {{- else }}
+            - mountPath: /opt/db_data
+              name: db-volume
+            {{- end }}
+            - name: date-config
+              mountPath: /etc/localtime
+              readOnly: true
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "3Gi"
+              cpu: "2"
+            limits:
+              memory: "3Gi"
+              cpu: "2"
+          {{- end }}
+      initContainers:
+        - name: infrastructure-cert-init
+          image: om:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          command:
+            - /bin/bash
+            - -c
+            - |
+              chmod g+w /opt/OceanProtect
+              chown 0:1000 /tmp
+              chmod 1770 /tmp
+              sh /opt/om/package/cert/script/init_infra_cert.sh;
+              iptables -A OUTPUT -p tcp --dport 6432 -m owner --uid-owner 61100 -j ACCEPT;
+              iptables -A OUTPUT -p all -m owner --uid-owner 61100 -j DROP;
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN"]
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: log-path
+              mountPath: /opt/OceanProtect
+            - mountPath: /tmp
+              name: gauss-tmp
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+      volumes:
+        - name: gauss-tmp
+          emptyDir: {}
+        - name: date-config
+          hostPath:
+            path: /etc/localtime
+        - name: kmc-conf
+          configMap:
+            name: kmc-store-conf
+            defaultMode: 0640
+        {{- if eq $environment "Dorado" }}
+        - name: db-block
+          persistentVolumeClaim:
+            claimName: "db-block"
+        - name: log-path
+          persistentVolumeClaim:
+            claimName: "comm-nas"
+        {{- else }}
+        - name: log-path
+          hostPath:
+            path: /opt/OceanProtect
+        - name: db-volume
+          hostPath:
+            path: /opt/db_data
+        {{- end }}
+{{- end }}

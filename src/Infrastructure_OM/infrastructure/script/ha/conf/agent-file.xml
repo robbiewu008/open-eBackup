@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<syncfile>
+    <desync>
+        <!--自定义黑名单列表 -->
+<!--        <file name="/opt/OperationCenter/AppBase/OC/AppBase/etc/license/t_license.dat"/>-->
+    </desync>
+
+    <!--同步资源名，名称最长不能超过24个字符（包括结束符’\0’） -->
+    <files name="agent">
+    <!--
+        #请在此处添加需要同步的文件或目录
+        #name  : 文件或目录名称
+        #auto   : 文件是否支持实时同步，默认是yes
+        #delete  : 备机文件是否允许删除，默认是yes
+        #说明  ：1. 当前不支持name通配
+        #       2. 配置的文件路径前后不能有空格
+    -->
+        <file name="/opt/ProtectManagerNas/agent" auto="yes" delete="yes" />
+    </files>
+</syncfile>
+

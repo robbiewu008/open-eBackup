@@ -1,0 +1,73 @@
+---
+version: 2.0
+
+#构建环境
+envs:
+  - condition: ENV_VM == "VPC"
+    label: OceanProtect_X8000_1.3.0_euler_arm_VPC
+  - condition: ENV_VM != "VPC"
+    label: X8000_1.3.0_euler_arm
+
+#是否固定构建根目录
+buildspace:
+  fixed: true   
+
+#构建参数，构建命令可通过环境变量使用
+params:
+  - name: CODE_BRANCH
+    value: ${branch}
+  - name: PRODUCT
+    value: ${PRODUCT}
+  - name: infrastructure_BRANCH
+    value: ${infrastructure_BRANCH}
+  - name: OM_BRANCH
+    value: ${OM_BRANCH}
+  - name: tag_image
+    value: ${tag_image}
+  - name: Compile_image
+    value: ${Compile_image}
+  - name: harbor_project
+    value: ${harbor_project}
+  - name: MS_IMAGE_TAG
+    value: ${MS_IMAGE_TAG}
+
+#构建步骤
+steps:
+  CONFIG_ENV:
+    - sh:
+        command: |
+          chmod 777 /run/docker*
+          ls -l /run/docker*
+        sudo: true
+  PRE_BUILD: # 构建准备
+    - checkout:
+        path: ci
+    - gitlab: 
+        url: https://szv-y.codehub.huawei.com/dpa/Infrastructure_OM/infrastructure.git
+        branch: ${infrastructure_BRANCH}
+        path: infrastructure
+    - gitlab: 
+        url: https://szv-y.codehub.huawei.com/dpa/Infrastructure_OM/om.git
+        branch: ${OM_BRANCH}
+        path: OM
+  BUILD:
+    - build_execute:
+        command: bash -c "
+          echo "buildVersion=$(cat ci/app_define.json | awk -F '\"version":' '{print $2}' | awk -F ',' '{print $1}' | sed 's/\"//g').$(date "+%Y%m%d%H%M%S")" > buildInfo.properties
+          && cat buildInfo.properties		
+          && cp -rf infrastructure/conf/Setting.xml ${LCRP_HOME}/conf/ 
+          && sh OM/build/build.sh ${PRODUCT} ${CODE_BRANCH} mspkg
+          && cd infrastructure/script 
+          && sh build_compile_pkg.sh ${PRODUCT} ${CODE_BRANCH} mspkg
+          && sh save_to_artifact.sh"
+        accelerate: false
+        check: true
+  POST_BUILD:
+    - sh:
+          command: |
+            cp -rf OM/pkg/*.tar.gz  pkg/
+            cd pkg
+            tar -zcf Infrastructure_OM.tar.gz  *.tar.gz
+    - upload_cloud_artifact:
+        file_path: 'pkg/Infrastructure_OM.tar.gz'
+    - version_set

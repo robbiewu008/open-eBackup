@@ -1,0 +1,139 @@
+{{/*
+Get running environment
+*/}}
+{{- $environment:= "" }}
+{{- if .Values.global }}
+{{- $environment = .Values.global.environment }}
+{{- else }}
+{{- $environment = .Values.local.environment }}
+{{- end }}
+
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d6" }}
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sftp
+  namespace: dpa
+spec:
+  selector:
+    matchLabels:
+      app: sftp
+  serviceName: sftp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sftp # has to match .spec.selector.matchLabels、
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: sftp_mgmt
+                    operator: In
+                    values:
+                      - up
+      serviceAccountName: sftp-sa
+      securityContext:
+        fsGroup: 99
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: sftp
+          image: sftp:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: "0.5G"
+            limits:
+              cpu: "1"
+              memory: "1G"
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            runAsUser: 15004
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - NET_ADMIN
+              drop: ["SETFCAP", "KILL", "MKNOD"]
+          env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - check_health.sh
+            initialDelaySeconds: 40
+            periodSeconds: 25
+            failureThreshold: 3
+          volumeMounts:
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - name: log-path
+              mountPath: /opt/OceanProtect
+            - name: date-config
+              mountPath: /etc/localtime
+              readOnly: true
+      initContainers:
+        - name: sftp-init
+          image: om:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          command:
+            - /bin/bash
+            - -c
+            - |
+              python /usr/bin/init_logic_ports.py sftp
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN"]
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: DEPLOY_TYPE
+              value: {{ $deploytype }}
+          volumeMounts:
+            - name: log-path
+              mountPath: /opt/OceanProtect
+      volumes:
+        - name: kmc-conf
+          configMap:
+            name: kmc-store-conf
+            defaultMode: 0640
+        - name: date-config
+          hostPath:
+            path: /etc/localtime
+        {{- if eq $environment "Dorado" }}
+        - name: log-path
+          persistentVolumeClaim:
+            claimName: "comm-nas"
+        {{- else }}
+        - name: log-path
+          hostPath:
+            path: /opt/OceanProtect
+        {{- end }}
+{{- end }}

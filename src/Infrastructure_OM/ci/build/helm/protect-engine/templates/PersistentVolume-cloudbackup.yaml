@@ -1,0 +1,21 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if or (eq $deploytype "cloudbackup") (eq $deploytype "d3")}}
+
+{{- if eq .Values.global.environment "Dorado" }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "dme-nas"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: dorado-vf-nas
+  resources:
+    requests:
+      storage: 200Gi
+
+{{- end }}
+
+{{- end }}

@@ -1,0 +1,77 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d8" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: protectengine
+  namespace: dpa
+  labels:
+    app: protectengine
+spec:
+  selector:
+    app: protectengine
+  ports:
+    - port: 8084
+      name: indexer
+    - port: 8089
+      name: web
+      protocol: TCP
+      targetPort: 18089
+    - port: 30064
+      name: dme-replication
+      protocol: TCP
+    - port: 8090
+      name: dme-nginx
+      protocol: TCP
+    - port: 18089
+      name: new-nginx-port
+      protocol: TCP
+  clusterIP: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dme-nginx
+  namespace: dpa
+  labels:
+    app: protectengine
+spec:
+  selector:
+    app: protectengine
+  ports:
+    - port: 8090
+      name: dme-nginx
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dme-jobmanager
+  namespace: dpa
+  labels:
+    app: protectengine
+spec:
+  selector:
+    app: protectengine
+  ports:
+    - port: 8089
+      name: dme-jobmanager
+      protocol: TCP
+      targetPort: 18089
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dme-openstorageapi
+  namespace: dpa
+  labels:
+    app: protectengine
+spec:
+  selector:
+    app: protectengine
+  ports:
+    - port: {{ .Values.dme_openstorageapi_port }}
+      name: dme-openstorageapi
+      protocol: TCP
+{{- end }}

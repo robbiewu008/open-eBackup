@@ -1,0 +1,2 @@
+存放OceanStor 100P基础设施的三方和平台组件，当前包含：kafka、zookeeper、ES、database、redis等。
+编译基础镜像和三方组件包

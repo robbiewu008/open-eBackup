@@ -1,0 +1,5 @@
+[openeuler]
+name=openeuler
+baseurl=openeuler_url
+enabled=1
+gpgcheck=0

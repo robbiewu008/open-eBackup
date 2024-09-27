@@ -1,0 +1,25 @@
+apiVersion: smartkube.io/v1
+metadata:
+name: smartkube-expand-example
+kind: Expansion
+spec:
+  master:
+    name: {{master.node_name}}
+    address: {{master.simbaos_ip}}
+    internalAddress: {{master.internal_address}}
+    user: {{master.kadmin}}
+    password: {{master.kadmin_passwd}}
+    port: 22
+  hosts:
+    {%- for node in hosts %}
+    - name: {{node.node_name}}
+      address: {{node.simbaos_ip}}
+      internalAddress: {{node.internal_address}}
+      serviceAddress: {{node.internal_address}}
+      role: {{node.role}}
+      interface: {{node.management_interface}}
+      managementAddress: {{node.simbaos_ip}}
+      user: {{node.kadmin}}
+      password: {{node.kadmin_passwd}}
+      port: 22
+    {%- endfor %}

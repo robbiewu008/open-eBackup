@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--/*$$$!!Warning: Huawei key information asset. No spread without permission.$$$*/-->
+<!--/*CODEMARK:rLr9evwLcHFK0ocH1vI5dv79JXrhoRrQ3pUSCsHdOM/puzvFwKILKNePe4bG/B98pz4V5doHi56R
+0f3JfrYASX9dpcZzoFk8wkkpq5MAD4QJUCORjqFb2b/ui6eaoMDfu8kCAl6sQMUCLlSeMQP5z0Hy
+yalGD5OxopFA1L5QhRzK/rx3AHhL7EydbLfqpmdR74bWXSLElblU21PYrwv68+p+yhsxDZIdpkFi
+pImZMlDdTiJFKfaV8t//S+b6ZpX+#*/-->
+<!--/*$$$!!Warning: Deleting or modifying the preceding information is prohibited.$$$*/-->
+<project>
+    <dependencies>
+        <dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>OceanProtect X8000</offering>
+                <componentName>OceanProtect_Opensource_3rdparty_Centralized</componentName>
+                <componentVersion>1.2.1RC1</componentVersion>
+            </id>
+            <according>Y</according>
+            <copies>
+                <copy>
+                    <source>master_backup_software_1.3.0/Euler2.10/ARM/third_party_groupware/verify_tool</source>
+                    <dest></dest>
+                </copy>
+            </copies>
+        </dependency>
+    </dependencies>
+</project>

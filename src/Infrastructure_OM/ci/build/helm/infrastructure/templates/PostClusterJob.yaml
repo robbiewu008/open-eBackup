@@ -1,0 +1,71 @@
+{{/*
+Get running environment
+*/}}
+{{- $floatip:= "" }}
+{{- $gatewayip:= "" }}
+{{- if .Values.global }}
+{{- $floatip = .Values.global.floatip }}
+{{- $gatewayip = .Values.global.gatewayip }}
+{{- else }}
+{{- $floatip:= "" }}
+{{- $gatewayip:= "" }}
+{{- end }}
+
+{{- $deploytype:= include "getDeployType" . | default "" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: post-cluster-job
+  namespace: dpa
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-delete-policy": "hook-succeeded, hook-failed"
+spec:
+  template:
+    spec:
+      serviceAccountName: infra-sa
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - gaussdb
+              topologyKey: "kubernetes.io/hostname"
+      restartPolicy: OnFailure
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: post-cluster
+          image: om:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          command:
+            - python3
+            - /opt/upgrade/post_cluster.py
+          securityContext:
+            runAsUser: 99
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: DEPLOY_TYPE
+              value: {{ $deploytype }}
+            - name: FLOAT_IP
+              value: {{ $floatip }}
+            - name: GATEWAY_IP
+              value: {{ $gatewayip }}
+          volumeMounts:
+            - name: common-nas
+              mountPath: /opt/OceanProtect
+            - name: data-nas
+              mountPath: /opt/third_data
+      volumes:
+        - name: common-nas
+          persistentVolumeClaim:
+            claimName: "comm-nas"
+        - name: data-nas
+          persistentVolumeClaim:
+            claimName: "data-nas"

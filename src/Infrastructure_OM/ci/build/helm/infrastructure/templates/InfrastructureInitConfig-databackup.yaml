@@ -1,0 +1,14 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d8" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: infrastructure-init-conf
+  namespace: dpa
+data:
+  tcp_allow_ports: "2181,6432,9092,3306,8088,6369,9200,8089,8091,21171,30070,9300"
+  tcp_allow_ports_ipv6: "2181,6432,9092,3306,8088,6369,9200,8089,8091,21171,30070,9300"
+  udp_allow_ports: "123"
+  udp_allow_ports_ipv6: "123"
+{{- end }}

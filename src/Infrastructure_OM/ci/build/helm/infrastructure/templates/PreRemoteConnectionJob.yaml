@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pre-remote-connection-job
+  namespace: dpa
+  annotations:
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-delete-policy": "hook-succeeded, hook-failed"
+spec:
+  template:
+    spec:
+      serviceAccountName: kmc-sa
+      restartPolicy: OnFailure
+      containers:
+        - name: pre-remote-connection-job
+          image: om:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+          command:
+            - python3
+            - /opt/upgrade/pre_upgrade_job_remote.py

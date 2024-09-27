@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dme-openstorageapi-conf
+  namespace: dpa
+data:
+    INFRA_HOST: "infrastructure.dpa.svc.cluster.local"
+    INFRA_DB_HOST: "gaussdb"
+    INFRA_DB_PORT: "6432"
+    INFRA_HTTP_PORT: "8088"
+
+    OPEN_CERT_VERIFY: "True"
+    OPEN_DATABASE_VERIFY: "False"
+
+    EXTERNAL_CERT_DIR: "/opt/OceanProtect/protectmanager/cert/internal/OpenAPI/OpenAPI.crt.pem"
+    EXTERNAL_KEY_DIR: "/opt/OceanProtect/protectmanager/cert/internal/OpenAPI/OpenAPI.pem"
+    EXTERNAL_CA_DIR: "/opt/OceanProtect/protectmanager/cert/CA/certs/ca.crt.pem"
+    EXTERNAL_CNF_DIR: "/opt/OceanProtect/protectmanager/cert/internal/OpenAPI/OpenAPI.cnf"
+
+    INTERNAL_CERT_DIR: "/opt/OceanProtect/infrastructure/cert/internal/internal.crt.pem"
+    INTERNAL_KEY_DIR: "/opt/OceanProtect/infrastructure/cert/internal/internal.pem"
+    INTERNAL_CA_DIR: "/opt/OceanProtect/infrastructure/cert/internal/ca/ca.crt.pem"
+    INTERNAL_CNF_DIR: "/opt/OceanProtect/infrastructure/cert/internal/internal_cert"
+
+    LIBKMCV3_SO_PATH: "/usr/lib64/libkmcv3.so"
+    MASTER_KS_PATH: "/opt/OceanProtect/protectmanager/kmc/master.ks"
+    BACKUP_KS_PATH: "/kmc_conf/..data/backup.ks"
+
+    NETWORK_CONFIG_PATH: "/opt/network_conf"
+    ANNOTATIONS_CONFIG_PATH: "/opt/podinfo/annotations"
+
+    MOUNT_OPER_PATH: "/usr/bin/mount_oper.sh"
+
+    TIME_SCHEDULER_WORKS: "5"
+    MAX_CACHE_CONNECTION: "1"
+    HTTP_TIME_OUT: "120"
+    MAX_HTTP_RETRIES: "3"
+
+
+    INFRA_HTTP_RETRY_TIMES: "10"
+    INFRA_HTTP_RETRY_INTERVAL: "6"
+
+    PM_HTTP_RETRY_TIMES: "60"
+    PM_HTTP_RETRY_INTERVAL: "10"
+
+    STATUS_QUERY_INTERVAL_SEC: "6"
+    STATUS_QUERY_TIMEOUT_SEC: "14400"
+
+    DATA_REPOSITORY_DIST_ALG: "4"
+    META_REPOSITORY_DIST_ALG: "1"
+    CACHE_REPOSITORY_DIST_ALG: "1"
+    LOG_REPOSITORY_DIST_ALG: "1"
+    INFRA_RETRY_TIMES_FOR_NETWORK_ERROR: "3"
+    INFRA_RETRY_INTERVAL_FOR_NETWORK_ERROR: "40"
+
+    PREPARE_THREAD_POOL_NUM: "5"
+    ACTIVE_THREAD_POOL_NUM: "5"
+    CLEAN_THREAD_POOL_NUM: "3"
+    POST_THREAD_POOL_NUM: "5"
+    GLOBAL_THREAD_POOL_NUM: "10"
+    BIND_AGENT_POOL_NUM: "5"
+    MONITOR_PROCESS_RETRY_TIMES: "5"
+    PM_SYSTEM_BASE_HOST: "pm-system-base.dpa.svc.cluster.local"
+    PM_SYSTEM_BASE_SRV_PORT: "30081"
+    PROTECT_ENGINE_HOST: "protectengine.dpa.svc.cluster.local"
+    DEE_INDEXER_PORT: "8084"
+    DME_ARCHIVE_HOST: "dme-archive.dpa.svc.cluster.local"
+    DME_ARCHIVE_SRV_PORT: "8089"
+    MULTI_FILE_SYSTEM_COUNT_CONFIG_FOR_CONTROLLER: "2"
+    FINISHED_TASK_MAX_KEEP_QUANTITY: "300000"
+    FINISHED_TASK_EXPIRE_PERCENT: "10"
+    AGENT_HEARTBEAT_TIMEOUT: "8"
+    TASK_FAILOVER_INTERVAL: "5"
+    MAIN_TASK_SCHEDULE_TIMEOUT: "48"
+    INFRA_RETRY_TIMES: "60"
+    INFRA_RETRY_INTERVAL: "10"

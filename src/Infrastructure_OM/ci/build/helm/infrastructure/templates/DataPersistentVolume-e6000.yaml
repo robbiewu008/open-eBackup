@@ -1,0 +1,37 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if eq .Values.global.environment "Dorado" }}
+{{- if eq $deploytype "d7" }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "data-nas"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 350Gi
+  selector:
+    matchLabels:
+      app: data-nas
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: "data-nas"
+  namespace: dpa
+  labels:
+    app: data-nas
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 350Gi
+  mountOptions:
+    - nolock
+  nfs:
+    path: "/data-nas"
+    server: 127.0.0.1
+{{- end }}
+{{- end }}

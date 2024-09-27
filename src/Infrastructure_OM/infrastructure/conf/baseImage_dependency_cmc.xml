@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <artifact>
+        <versionType>Component</versionType>
+        <repoType>Generic</repoType>
+        <id>
+            <offering>OceanProtect A8000</offering>
+            <componentName>Infrastructure</componentName>
+            <componentVersion>${componentVersion}</componentVersion>
+        </id>
+        <isClear>N</isClear>
+        <copies>
+            <copy>
+                <source>baseImage/*</source>
+                <dest>${PRODUCT}/${CODE_BRANCH}/${COMPONENT_TYPE}/${ARCH}</dest>
+            </copy>
+            <copy>
+                <source>cbb/python/*</source>
+                <dest>${PRODUCT}/${CODE_BRANCH}/${COMPONENT_TYPE}/${ARCH}</dest>
+            </copy>
+        </copies>
+    </artifact>
+    <dependencies>
+        <dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>PUMA</offering>
+                <componentName>SimbaOS</componentName>
+                <componentVersion>1.0.144</componentVersion>
+            </id>
+            <according>Y</according>
+            <copies>
+                <copy>
+                    <source>aarch64/images/${slim_image}</source>
+                    <dest></dest>
+                </copy>
+            </copies>
+        </dependency>
+        <dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>EulerOS Server</offering>
+                <componentName>EulerOSServerV200R011C00ARM</componentName>
+                <componentVersion>2023.03.20.172211</componentVersion>
+            </id>
+            <according>Y</according>
+            <copies>
+                <copy>
+                    <source>Software/aarch64/${PACKAGE1}</source>
+                    <dest></dest>
+                </copy>
+            </copies>
+        </dependency>
+        <dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>EulerOS Server</offering>
+                <componentName>EulerOSServerV200R011C00ARM</componentName>
+                <componentVersion>2023.03.20.172211</componentVersion>
+            </id>
+            <according>Y</according>
+            <copies>
+                <copy>
+                    <source>Software/aarch64/CompileTools/${PACKAGE2}</source>
+                    <dest></dest>
+                </copy>
+            </copies>
+        </dependency>
+        <dependency>
+            <versionType>BVersion</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>BiSheng JDK8 Enterprise</offering>
+                <version>BiSheng JDK8 Enterprise 202.1.0.420.B002</version>
+            </id>
+            <copies>
+                <copy>
+                    <source>${jdk_package}</source>
+                    <dest></dest>
+                </copy>
+            </copies>
+        </dependency>
+        <dependency>
+            <versionType>BVersion</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>GaussDB Kernel</offering>
+                <version>GaussDB Kernel 505.0.0.SPC1500.B002</version>
+            </id>
+            <copies>
+                <copy>
+                    <source>Lite/Euler2.11_arm_64/GaussDB-Kernel_505.0.0.SPC1500.B002_Server_ARM_Lite.tar.gz</source>
+                    <dest></dest>
+                </copy>
+            </copies>
+        </dependency>
+
+        <dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>OceanProtect A8000</offering>
+                <componentName>ProtectAgent-Client</componentName>
+                <componentVersion>1.6.0</componentVersion>
+            </id>
+            <according>Y</according>
+            <copies>
+                <copy>
+                    <source>/dorado/${FILECLIENT_BRANCH}/FileClient/fileClient_aarch64.tar.gz</source>
+                    <dest>.</dest>
+                </copy>
+            </copies>
+        </dependency>
+    </dependencies>
+</project>

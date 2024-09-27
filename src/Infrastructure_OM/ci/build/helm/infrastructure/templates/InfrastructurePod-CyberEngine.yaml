@@ -1,0 +1,368 @@
+{{/*
+Get running environment
+*/}}
+{{- $environment:= "" }}
+{{- if .Values.global }}
+{{- $environment = .Values.global.environment }}
+{{- else }}
+{{- $environment = .Values.local.environment }}
+{{- end }}
+
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d5"}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: infrastructure
+  namespace: dpa
+spec:
+  selector:
+    matchLabels:
+      app: infrastructure
+  serviceName: infrastructure
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: infrastructure # has to match .spec.selector.matchLabels
+    spec:
+      serviceAccountName: infra-sa
+      terminationGracePeriodSeconds: 0
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        fsGroup: 99
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: zookeeper
+          image: zookeeper:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 99
+            readOnlyRootFilesystem: true
+            capabilities:
+              add: ["SYS_ADMIN", "NET_ADMIN"]
+              drop: ["NET_RAW", "SETFCAP", "KILL", "MKNOD", "CHOWN"]
+          envFrom:
+            - configMapRef:
+                name: inf-common-conf
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - /opt/script/check_health.sh
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
+            timeoutSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.zookeeperImagePort }}
+            periodSeconds: 2
+          volumeMounts:
+            - name: common-path
+              mountPath: /opt/OceanProtect
+            - name: data-nas
+              mountPath: /opt/third_data
+            - name: date-config
+              mountPath: /etc/localtime
+              readOnly: true
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "2Gi"
+              cpu: "1"
+          {{- end }}
+        - name: kafka
+          image: kafka:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 99
+            readOnlyRootFilesystem: true
+            capabilities:
+              add: ["SYS_ADMIN", "NET_ADMIN"]
+              drop: ["NET_RAW", "SETFCAP", "KILL", "MKNOD", "CHOWN"]
+          envFrom:
+            - configMapRef:
+                name: inf-common-conf
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          livenessProbe:
+            initialDelaySeconds: 600
+            periodSeconds: 20
+            tcpSocket:
+              port: 9092
+            timeoutSeconds: 10
+            failureThreshold: 3
+          volumeMounts:
+            - name: common-path
+              mountPath: /opt/OceanProtect
+            - name: data-nas
+              mountPath: /opt/third_data
+            - name: date-config
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: common-secret
+              mountPath: "/etc/common-secret"
+              readOnly: true
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - mountPath: /tmp
+              name: kafka-tmp
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "2Gi"
+              cpu: "1"
+          {{- end }}
+        - name: redis
+          image: redis:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 99
+            readOnlyRootFilesystem: true
+            capabilities:
+              add: ["SYS_ADMIN", "NET_ADMIN"]
+              drop: ["NET_RAW", "SETFCAP", "KILL", "MKNOD"]
+          envFrom:
+            - configMapRef:
+                name: inf-common-conf
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - /opt/script/check_health.sh
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
+            timeoutSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 6369  # 兼容之前的版本升级
+            periodSeconds: 2
+          volumeMounts:
+            - name: common-path
+              mountPath: /opt/OceanProtect
+            - name: data-nas
+              mountPath: /opt/third_data
+            - name: date-config
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: common-secret
+              mountPath: "/etc/common-secret"
+              readOnly: true
+            - mountPath: /tmp
+              name: redis-tmp
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "2Gi"
+              cpu: "1"
+          {{- end }}
+        - name: om
+          image: om:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: inf-common-conf
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+            - name: DEPLOY_TYPE
+              value: {{ $deploytype }}
+            - name: IMAGE_VERSION
+              value: {{ .Values.global.version }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - /opt/om/package/check_health.sh
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
+            timeoutSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.omImagePort }}
+            periodSeconds: 2
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsUser: 99
+            capabilities:
+              add: ["SYS_ADMIN"]
+              drop: ["NET_RAW", "SETFCAP", "KILL", "MKNOD"]
+          volumeMounts:
+            - name: euleros-latest
+              mountPath: /etc/euleros-latest
+              readOnly: true
+            - name: date-config
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: ip-config
+              mountPath: /etc/sysconfig/network-scripts/ifcfg-eth4
+            - name: common-path
+              mountPath: /opt/OceanProtect
+            - name: data-nas
+              mountPath: /opt/third_data
+            - name: dee-nas
+              mountPath: /opt/dee_data
+            - name: pm-nas
+              mountPath: /opt/pm_data
+            - name: agent-nas
+              mountPath: /opt/agent_data
+            - name: om-tmp
+              mountPath: /tmp
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - name: os-log
+              mountPath: /opt/os_log
+            - name: k8s-log
+              mountPath: /opt/k8s_log
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "2"
+            limits:
+              memory: "2Gi"
+              cpu: "2"
+          {{- end }}
+      initContainers:
+        - name: init-gaussdb
+          image: om:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+          command: [ "/bin/bash","-c","--" ]
+          args: [ "sh /opt/script/infra_init_ctnr_gaussdb.sh" ]
+          volumeMounts:
+            - name: data-nas
+              mountPath: /opt/third_data
+            - name: common-path
+              mountPath: /opt/OceanProtect
+            - name: om-tmp
+              mountPath: /om-tmp
+            - name: redis-tmp
+              mountPath: /redis-tmp
+            - name: kafka-tmp
+              mountPath: /kafka-tmp
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: DEPLOY_TYPE
+              value: {{ $deploytype }}
+      volumes:
+        - name: redis-tmp
+          emptyDir: {}
+        - name: om-tmp
+          emptyDir: {}
+        - name: kafka-tmp
+          emptyDir: {}
+        - name: date-config
+          hostPath:
+            path: /etc/localtime
+        - name: ip-config
+          hostPath:
+            path: /etc/sysconfig/network-scripts/ifcfg-eth4
+        - name: common-secret
+          secret:
+            secretName: common-secret
+        - name: kmc-conf
+          configMap:
+            name: kmc-store-conf
+            defaultMode: 0640
+        - name: os-log
+          hostPath:
+            path: /var/log
+        - name: k8s-log
+          hostPath:
+            path: /opt/k8s/log
+        - name: euleros-latest
+          hostPath:
+            path: /etc/euleros-latest
+        {{- if eq $environment "Dorado" }}
+        - name: data-nas
+          persistentVolumeClaim:
+            claimName: "data-nas"
+        - name: common-path
+          persistentVolumeClaim:
+            claimName: "comm-nas"
+        - name: dee-nas
+          persistentVolumeClaim:
+            claimName: "dee-nas"
+        - name: pm-nas
+          persistentVolumeClaim:
+            claimName: "pm-nas2"
+        - name: agent-nas
+          persistentVolumeClaim:
+            claimName: "agent-nas"
+        {{- else }}
+        - name: common-path
+          hostPath:
+            path: /opt/OceanProtect
+        - name: data-nas
+          hostPath:
+            path: /opt/third_data
+        - name: dee-nas
+          hostPath:
+            path: /opt/dee_data
+        - name: pm-nas
+          hostPath:
+            path: /opt/pm_data
+        - name: agent-nas
+          hostPath:
+            path: /opt/agent_data
+        {{- end }}
+{{- end }}

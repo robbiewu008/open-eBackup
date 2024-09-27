@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: digital-version-conf
+  namespace: dpa
+data:
+  digitalVersion: "current_digital_version"

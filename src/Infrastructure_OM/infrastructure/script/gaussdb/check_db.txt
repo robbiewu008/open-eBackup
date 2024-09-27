@@ -1,0 +1,16 @@
+  echo "waiting db running..."
+  COUNTER=0
+  while [ $COUNTER -lt 300 ]; do
+  res=$(/usr/local/gaussdb/bin/gs_ctl -D  /usr/local/gaussdb/data -u $PGUSER query | grep DB_STATE | grep Normal)
+  if [[ ! -z "$res" ]]; then
+      echo "start gaussdb success"
+      break 2
+  else
+      echo "waiting db  running..."
+  fi
+
+  let COUNTER++
+
+  sleep 2
+  done
+  echo "error: start gaussdb failed..."

@@ -1,0 +1,28 @@
+---
+version: 2.0
+
+#构建环境
+envs:
+  - condition: ENV_VM == "VPC"
+    label: OceanProtect_X8000_1.3.0_euler_arm_VPC
+  - condition: ENV_VM != "VPC"
+    label: X8000_1.3.0_euler_arm
+
+#是否固定构建根目录
+buildspace:
+  fixed: true   
+
+#构建参数，构建命令可通过环境变量使用
+params:
+  - name: CODE_BRANCH
+    value: master
+
+#构建步骤
+steps:
+  PRE_BUILD: # 构建准备
+    - checkout
+  BUILD:
+    - build_execute:
+        command: cd script/; sh build_local_euler_yum.sh
+        accelerate: false
+        check: false

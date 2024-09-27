@@ -1,0 +1,22 @@
+{
+    "rpm": {
+        "enabled": true,
+        "update": true,
+        "add": add_rpm_str,
+        "remove": remove_rpm_str
+    },
+    "file": {
+        "enabled": true,
+        "remove": remove_file_str
+    },
+    "cmd": {
+        "enabled": false,
+        "keep": [
+        ]
+    },
+    "lib": {
+        "enabled": false,
+        "keep": [
+        ]
+    }
+}

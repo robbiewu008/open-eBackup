@@ -1,0 +1,61 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: infrastructure
+  namespace: dpa
+  labels:
+    app: infrastructure
+spec:
+  ports:
+    - port: {{ .Values.kafkaImagePort }}
+      name: kafka
+    - port: {{ .Values.zookeeperImagePort }}
+      name: zookeeper
+    - port: 2888
+      name: zookeeper-quorum
+    - port: 3888
+      name: zookeeper-election
+    - port: 6369
+      name: redis
+    {{- if eq $deploytype "d7" }}
+    - port: {{ .Values.omImagePort}}
+      name: om
+      targetPort: 18088
+    {{- else }}
+    - port: {{ .Values.omImagePort}}
+      name: om
+    {{- end }}
+    {{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d2") (eq $deploytype "d3") (eq $deploytype "d4") (eq $deploytype "d6") (eq $deploytype "d7") (eq $deploytype "d8") (eq $deploytype "d10") }}
+    - port: {{ .Values.elasticsearchImagePort }}
+      name: es
+    - port: 9300
+      name: es-transport
+    {{- end }}
+  {{- if or (eq $deploytype "d8") (eq $deploytype "d10") }}
+  clusterIP: None
+  {{- end }}
+  selector:
+    app: infrastructure
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: infrastructure-zk-kafka
+  namespace: dpa
+  labels:
+    app: infrastructure
+spec:
+  ports:
+    - port: {{ .Values.kafkaImagePort }}
+      name: kafka
+    - port: {{ .Values.zookeeperImagePort }}
+      name: zookeeper
+  {{- if or (eq $deploytype "d8") (eq $deploytype "d10") }}
+  clusterIP: None
+  {{- end }}
+  selector:
+    app: infrastructure
