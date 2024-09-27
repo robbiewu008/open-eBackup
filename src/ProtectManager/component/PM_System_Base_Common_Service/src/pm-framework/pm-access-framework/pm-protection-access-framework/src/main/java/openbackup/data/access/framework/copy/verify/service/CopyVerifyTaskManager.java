@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- */
-
 package openbackup.data.access.framework.copy.verify.service;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;

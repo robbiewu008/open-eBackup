@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- */
-
 package openbackup.data.access.framework.servitization.controller;
 
 import static openbackup.system.base.common.constants.Constants.HUAWEI_CLOUD_STACK;

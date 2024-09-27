@@ -1,9 +1,3 @@
-/*
- *
- *  * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- *
- */
-
 package openbackup.access.framework.resource.schedule;
 
 import openbackup.access.framework.resource.schedule.ResourceScanSchedule;

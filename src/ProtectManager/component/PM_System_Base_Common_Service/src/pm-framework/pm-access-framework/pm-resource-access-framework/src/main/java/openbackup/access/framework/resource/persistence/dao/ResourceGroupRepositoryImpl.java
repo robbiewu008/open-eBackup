@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- */
-
 package openbackup.access.framework.resource.persistence.dao;
 
 import openbackup.access.framework.resource.persistence.model.ResourceGroupExtendField;

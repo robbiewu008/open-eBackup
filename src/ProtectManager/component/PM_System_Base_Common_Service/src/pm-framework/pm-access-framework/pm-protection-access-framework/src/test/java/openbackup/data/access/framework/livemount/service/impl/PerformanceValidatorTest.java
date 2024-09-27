@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- */
-
 package openbackup.data.access.framework.livemount.service.impl;
 
 import static org.mockito.ArgumentMatchers.any;

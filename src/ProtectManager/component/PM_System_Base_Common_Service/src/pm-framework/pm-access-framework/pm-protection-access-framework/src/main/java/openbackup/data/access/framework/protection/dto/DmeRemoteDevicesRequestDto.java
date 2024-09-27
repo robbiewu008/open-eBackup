@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2024. All rights reserved.
- */
-
 package openbackup.data.access.framework.protection.dto;
 
 import openbackup.system.base.sdk.cluster.model.ClusterDetailInfo;

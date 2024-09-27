@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- */
-
 package openbackup.access.framework.resource.service.kerberos;
 
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;

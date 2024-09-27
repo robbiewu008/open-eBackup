@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- */
-
 package openbackup.data.access.client.sdk.api.framework.dee;
 
 import openbackup.data.protection.access.provider.sdk.restore.v2.DeeCopiesRelatedTask;

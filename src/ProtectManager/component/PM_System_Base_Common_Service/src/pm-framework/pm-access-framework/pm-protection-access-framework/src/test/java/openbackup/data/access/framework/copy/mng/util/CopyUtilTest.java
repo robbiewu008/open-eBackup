@@ -1,8 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- *
- */
-
 package openbackup.data.access.framework.copy.mng.util;
 
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;

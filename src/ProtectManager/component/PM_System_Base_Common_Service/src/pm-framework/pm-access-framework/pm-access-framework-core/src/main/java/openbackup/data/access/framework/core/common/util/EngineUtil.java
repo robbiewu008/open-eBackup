@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- */
-
 package openbackup.data.access.framework.core.common.util;
 
 import openbackup.system.base.sdk.job.model.JobTypeEnum;

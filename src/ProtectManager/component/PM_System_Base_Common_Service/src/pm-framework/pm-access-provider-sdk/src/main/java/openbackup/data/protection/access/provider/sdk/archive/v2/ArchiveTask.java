@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- */
-
 package openbackup.data.protection.access.provider.sdk.archive.v2;
 
 import openbackup.data.protection.access.provider.sdk.backup.v2.DataLayout;

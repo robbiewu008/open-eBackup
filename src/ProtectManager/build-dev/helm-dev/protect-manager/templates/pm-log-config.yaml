@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: protectmanager-conf
-  namespace: dpa
-data:
-  maxLogSize: "10"
-  protectmanager-log: |-
-  {{ .Files.Get "config/pm_log.conf" | indent 4}}

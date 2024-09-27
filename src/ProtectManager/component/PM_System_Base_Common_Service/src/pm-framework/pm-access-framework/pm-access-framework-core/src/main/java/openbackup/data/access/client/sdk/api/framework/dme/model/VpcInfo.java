@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- */
-
 package openbackup.data.access.client.sdk.api.framework.dme.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

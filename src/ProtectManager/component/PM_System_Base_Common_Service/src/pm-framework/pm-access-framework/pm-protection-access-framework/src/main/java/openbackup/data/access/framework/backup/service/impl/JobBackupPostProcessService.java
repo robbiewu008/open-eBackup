@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- */
-
 package openbackup.data.access.framework.backup.service.impl;
 
 import static openbackup.data.access.framework.protection.common.util.JobExtendInfoUtil.getProtectedObjExtParam;

@@ -1,1 +1,0 @@
-protect-manager install success

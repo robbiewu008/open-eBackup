@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- */
-
 package openbackup.data.access.client.sdk.api.framework.dmc.model;
 
 import openbackup.system.base.common.utils.JSONObject;

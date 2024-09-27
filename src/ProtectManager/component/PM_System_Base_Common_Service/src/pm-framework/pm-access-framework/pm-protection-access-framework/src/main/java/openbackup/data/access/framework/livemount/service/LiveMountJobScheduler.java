@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2023. All rights reserved.
- */
-
 package openbackup.data.access.framework.livemount.service;
 
 import openbackup.access.framework.resource.dto.DeliverTaskReq;

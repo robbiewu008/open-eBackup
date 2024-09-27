@@ -1,15 +1,5 @@
 #!/bin/bash
 
-#########################################
-# Copyright (c) 2022-2022 Huawei .
-# All rights reserved.
-#
-# Please send feedback to http://www.huawei.com
-#
-# Function Agent注册脚本
-# revise note
-########################################
-
 set +x
 
 #获取下载链接和解压私钥

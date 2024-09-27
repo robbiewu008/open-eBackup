@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
- */
-
 package openbackup.data.access.framework.protection.common.converters;
 
 import openbackup.data.access.framework.core.common.enums.DmeJobStatusEnum;

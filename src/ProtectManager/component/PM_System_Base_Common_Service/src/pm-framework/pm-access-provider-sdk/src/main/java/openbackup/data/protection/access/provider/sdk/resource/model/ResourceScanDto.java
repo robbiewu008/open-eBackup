@@ -1,9 +1,3 @@
-/*
- *
- *  * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- *
- */
-
 package openbackup.data.protection.access.provider.sdk.resource.model;
 
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;

@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
- */
-
 package openbackup.access.framework.resource.testdata;
 
 import openbackup.access.framework.resource.dto.ProtectedEnvironmentDto;

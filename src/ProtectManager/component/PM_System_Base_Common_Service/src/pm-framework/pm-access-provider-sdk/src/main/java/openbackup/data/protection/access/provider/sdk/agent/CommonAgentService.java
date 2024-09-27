@@ -1,9 +1,3 @@
-/*
- *
- *  * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- *
- */
-
 package openbackup.data.protection.access.provider.sdk.agent;
 
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;

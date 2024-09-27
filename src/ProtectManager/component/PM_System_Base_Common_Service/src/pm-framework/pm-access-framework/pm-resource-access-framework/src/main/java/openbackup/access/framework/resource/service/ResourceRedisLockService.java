@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- */
-
 package openbackup.access.framework.resource.service;
 
 import openbackup.system.base.sdk.resource.model.ResourceLockEntity;

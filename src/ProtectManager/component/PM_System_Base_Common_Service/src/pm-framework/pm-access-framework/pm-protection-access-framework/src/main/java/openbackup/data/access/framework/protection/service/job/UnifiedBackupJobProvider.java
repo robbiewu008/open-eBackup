@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- */
-
 package openbackup.data.access.framework.protection.service.job;
 
 import com.huawei.oceanprotect.coordinator.constans.DispatchConstant;
