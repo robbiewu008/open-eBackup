@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DataProcess.h
- * @brief  The implemention Class of DataProcess
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef DP_H
 #define DP_H
 

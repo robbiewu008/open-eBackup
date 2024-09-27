@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file OracleInfo.h
- * @brief  The implemention about OracleInfo
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef __AGENT_ORACLE_INFO_H__
 #define __AGENT_ORACLE_INFO_H__
 

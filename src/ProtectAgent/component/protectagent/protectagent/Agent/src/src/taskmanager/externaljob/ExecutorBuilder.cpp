@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file builder.h
- * @brief Implement for builder
- * @version 1.1.0
- * @date 2022-1-13
- * @author caomin 511255
- */
 #include "taskmanager/externaljob/ExecutorBuilder.h"
 #include "common/Types.h"
 

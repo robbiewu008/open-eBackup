@@ -1,13 +1,3 @@
-/**
-* Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
-*
-* @file DefaultRemoteHostFilter.cpp
-* @brief Filter logic port in job param
-* @version 0.1
-* @date 2023-07-05
-* @author wangyunlong w30045225
-*/
-
 #include "taskmanager/filter/DefaultRemoteHostFilter.h"
 #include "taskmanager/externaljob/Job.h"
 #include "common/Defines.h"

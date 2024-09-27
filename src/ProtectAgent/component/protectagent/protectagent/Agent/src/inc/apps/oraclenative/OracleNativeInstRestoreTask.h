@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file CSystemExec.h
- * @brief  Contains function declarations no on-premies database live moun task Operations
- * @version 1.0.0
- * @date 2020-04-02
- * @author wangguitao 00510599
- */
 #ifndef AGENT_ORACLE_NATIVE_INST_RESTORE_TASK
 #define AGENT_ORACLE_NATIVE_INST_RESTORE_TASK
 

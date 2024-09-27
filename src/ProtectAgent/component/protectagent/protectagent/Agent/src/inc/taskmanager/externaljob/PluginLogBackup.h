@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file PluginLogBackup.h
- * @brief  Contains function declarations about Log Backup
- * @version 1.1.0
- * @date 2022-01-04
- * @author lixilong lwx1101878
- */
 #ifndef WAL_BACKUP_H
 #define WAL_BACKUP_H
 

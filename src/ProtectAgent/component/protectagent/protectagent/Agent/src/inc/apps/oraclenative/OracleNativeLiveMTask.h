@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file OracleNativeLiveMTask.h
- * @brief  no on-premies database live moun task
- * @version 1.0.0
- * @date 2020-02-04
- * @author wangguitao 00510599
- */
 #ifndef AGENT_ORACLE_NATIVE_LIVEMOUNT_TASK
 #define AGENT_ORACLE_NATIVE_LIVEMOUNT_TASK
 

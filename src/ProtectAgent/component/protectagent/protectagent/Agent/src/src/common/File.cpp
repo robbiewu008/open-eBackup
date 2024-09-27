@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file File.cpp
- * @brief  Contains function declarations FILE Operations
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifdef WIN32
 #include <tchar.h>
 #include <atlstr.h>

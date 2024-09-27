@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file ConnectionTable.h
- * @brief  JsonToStruct
- * @version 1.0.0.0
- * @date 2021-10-27
- * @author kWX884906
- */
-
 #ifndef TR_JSON_WITH_STRUCT_H
 #define TR_JSON_WITH_STRUCT_H
 

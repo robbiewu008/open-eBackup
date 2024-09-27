@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file ThriftService.cpp
- * @brief  implement for ThriftService
- * @version 1.1.0
- * @date 2021-08-31
- * @author caomin 00511255
- */
-
 #include <thriftservice/detail/ThriftService.h>
 #include <thriftservice/detail/ThriftFactory.h>
 #include <servicefactory/include/ServiceFactory.h>

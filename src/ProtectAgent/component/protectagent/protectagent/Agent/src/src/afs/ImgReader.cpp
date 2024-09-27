@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file imgreader.cpp
- * @brief AFS - Reader image data class.
- *
- */
-
 #include "afs/ImgReader.h"
 #include "afs/LogMsg.h"
 #include "afs/PartitionHandler.h"

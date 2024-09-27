@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file AbnormalHandler.cpp
- * @brief  Contains function declarations monitor abnormal handler
- * @version 1.0.0
- * @date 2020-08-01
- * @author yangwenjun 00275736
- */
 #include "tools/monitor/AbnormalHandler.h"
 
 #include <sstream>

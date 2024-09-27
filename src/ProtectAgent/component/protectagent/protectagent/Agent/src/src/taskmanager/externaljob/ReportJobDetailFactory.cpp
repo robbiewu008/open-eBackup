@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @brief  impl for ReportJobDetailFactory
- * @version 1.1.0
- * @date 2021-12-30
- * @author caomin 00511255
- */
-
 #include "taskmanager/externaljob/ReportJobDetailFactory.h"
 
 #include <chrono>

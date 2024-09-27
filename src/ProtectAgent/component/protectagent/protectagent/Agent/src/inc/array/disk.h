@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file disk.h
- * @brief  The implemention about disk
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef __AGENT_DISK_H__
 #define __AGENT_DISK_H__
 

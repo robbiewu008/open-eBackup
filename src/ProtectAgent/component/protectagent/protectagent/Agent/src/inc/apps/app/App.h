@@ -1,19 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file App.h
- * @brief  Contains function declarations App
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
-// ------------------------------------------------------------------------------
-// desc:   备份不区分应用类型插件相关接口定义，不考虑同一主机安装不同应用的场景，但需要支持同一主机安装同一应用
-// 对于同一主机上相同应用的不同实例需要提供相同的应用鉴权的用户名密码。（当前实现SQLServer还不支持操作系统鉴权方式。）
-// 的所有批量接口，在其中一个操作执行失败时则中断当前接口操作的执行，返回对应的失败信息。
-// Copyright (C), 2015-2025, Huawei Tech. Co., Ltd.
-// ------------------------------------------------------------------------------
-
 #ifndef __AGENT_APP_H__
 #define __AGENT_APP_H__
 

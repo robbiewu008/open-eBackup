@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepCheckDBExists.h
- * @brief  Contains function declarations TaskStepCheckDBExists
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
 #ifndef AGENT_BACKUP_STEP_CHECK_ORACLE_EXISTS_H
 #define AGENT_BACKUP_STEP_CHECK_ORACLE_EXISTS_H
 

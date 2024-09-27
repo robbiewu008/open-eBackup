@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file SSLHandle.h
- * @brief  The implemention about SSL
- * @version 1.0.0
- * @date 2014-12-6
- * @author lili 00254913
- */
 #ifndef _SSLHANDLE_H_
 #define _SSLHANDLE_H_
 

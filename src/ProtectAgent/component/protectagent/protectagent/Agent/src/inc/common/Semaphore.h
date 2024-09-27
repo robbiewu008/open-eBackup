@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file Semaphore.h
- * @author t00302329
- * @brief 利用互斥锁和条件变量实现信号量
- * @version 0.1
- * @date 2021-01-09
- *
- */
 #ifndef __SEMAPHORE_H__
 #define __SEMAPHORE_H__
 

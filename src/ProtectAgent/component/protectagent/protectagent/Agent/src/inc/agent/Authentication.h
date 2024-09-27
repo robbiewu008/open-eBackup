@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Authentication.h
- * @brief  The implemention about VMwareNativeCleanupVddkLibTask
- * @version 1.0.0.0
- * @date 2015-01-19
- * @author xuchong 00300551
- */
 #ifndef _AGENT_AUTHENTICATION_H_
 #define _AGENT_AUTHENTICATION_H_
 

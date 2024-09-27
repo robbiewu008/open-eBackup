@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file JobServiceHandler.h
- * @brief  Factory for Service Center
- * @version 1.1.0
- * @date 2021-08-31
- * @author kangjiawei WX884906
- */
 #ifndef JSON_HELPER_HPP
 #define JSON_HELPER_HPP
 #include <memory>

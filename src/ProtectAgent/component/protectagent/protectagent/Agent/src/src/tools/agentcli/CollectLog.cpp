@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file CollectLog.cpp
- * @brief  Contains function declarations CollectLog
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
 #include "tools/agentcli/CollectLog.h"
 #include "common/Defines.h"
 #include "common/Path.h"

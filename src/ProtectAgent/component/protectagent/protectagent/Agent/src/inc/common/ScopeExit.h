@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file ScopeExit.h
- * @author t00302329
- * @brief 提供SCOPE_EXIT机制，在作用域退出时自动执行相关的清理动作
- * @version 0.1
- * @date 2021-01-05
- *
- */
 #ifndef __SCOPE_EXIT_H__
 #define __SCOPE_EXIT_H__
 

@@ -1,14 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TestHost.cpp
- * @brief Check host link status
- * @version 0.1
- * @date 2021-04-25
- * @author wangguitao 00510599
- */
-
-
 #include <sstream>
 #include "common/Log.h"
 #include "message/curlclient/HttpClientInterface.h"

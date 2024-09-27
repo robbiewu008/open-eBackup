@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file StackTracer.cpp
- * @brief  The implemention about Cloud Protector call-stack trace utility
- * @version 1.0.0.0
- * @date 2015-02-06
- * @author WuZhanglin 00281912
- */
 #include "common/StackTracer.h"
 #include <csignal>
 #include <cstdlib>

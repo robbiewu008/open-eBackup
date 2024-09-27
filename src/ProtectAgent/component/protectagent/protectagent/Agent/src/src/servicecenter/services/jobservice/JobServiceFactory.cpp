@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file JobServiceHandler.cpp
- * @brief  implement for ServiceFactory
- * @version 1.1.0
- * @date 2021-11-18
- * @author caomin 00511255
- */
 #include "servicecenter/services/jobservice/detail/JobServiceFactory.h"
 #include "servicecenter/services/jobservice/detail/JobServerRpcPublishObserver.h"
 #include "apps/appprotect/plugininterface/JobServiceHandler.h"

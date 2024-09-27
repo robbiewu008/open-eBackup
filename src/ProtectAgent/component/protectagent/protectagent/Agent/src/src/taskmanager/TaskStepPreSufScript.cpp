@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepPreSufScript.cpp
- * @brief  Contains function declarations for TaskStepPreSufScript
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "taskmanager/TaskStepPreSufScript.h"
 #include "common/Log.h"
 #include "common/JsonUtils.h"

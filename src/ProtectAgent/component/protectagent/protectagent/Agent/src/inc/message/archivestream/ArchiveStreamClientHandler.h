@@ -1,12 +1,3 @@
-/* *
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file ArchiveStreamClientHandler.h
- * @brief  Contains function declarations for ArchiveStreamClientHandler
- * @version 1.0.0
- * @date 2021-05-17
- * @author lwx1045600
- */
 #ifndef GET_FILE_CLIENT_HANDLER_H
 #define GET_FILE_CLIENT_HANDLER_H
 

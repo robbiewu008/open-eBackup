@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
-* @file RpcPublishObserver.cpp
-* @brief  The implemention about RpcPublishObserver.cpp
-* @version 1.0.0.0
-* @date 2021-11-17
-* @author jwx966562
-*/
 #include "servicecenter/messageservice/include/RpcPublishObserver.h"
 #include "common/Log.h"
 #include "servicecenter/servicefactory/include/ServiceFactory.h"

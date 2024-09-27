@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file ThriftClient.cpp
- * @brief  implement for ThreadProxy
- * @version 1.1.0
- * @date 2021-12-14
- * @author caomin 00511255
- */
 #ifndef THREAD_PROXY_H_
 #define THREAD_PROXY_H_
 #include <future>

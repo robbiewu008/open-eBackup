@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepPrepareTargetLun.cpp
- * @brief  Contains function declarations TaskStepPrepareTargetLun
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
 #include "apps/vmwarenative/TaskStepPrepareTargetLun.h"
 #include "plugins/DataProcessClientHandler.h"
 #include "apps/vmwarenative/VMwareDef.h"

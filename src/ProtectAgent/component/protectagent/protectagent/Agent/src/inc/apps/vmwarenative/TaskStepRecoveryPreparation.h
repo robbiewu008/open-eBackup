@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepRecoveryPreparation.h
- * @brief  Contains function declarations TaskStepRecoveryPreparation
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
 #ifndef __AGENT_TASKSTEP_RECOVERY_PREPARATION_H__
 #define __AGENT_TASKSTEP_RECOVERY_PREPARATION_H__
 

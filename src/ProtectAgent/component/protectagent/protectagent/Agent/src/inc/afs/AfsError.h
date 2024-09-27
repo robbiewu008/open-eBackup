@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file afs_error.h
- * @brief AFS (- Error code definition
- *
- */
-
 #ifndef INCLUDE_AFS_ERROR_H_
 #define INCLUDE_AFS_ERROR_H_
 

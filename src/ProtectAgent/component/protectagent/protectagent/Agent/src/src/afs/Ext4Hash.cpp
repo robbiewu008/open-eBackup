@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file ext4hash.cpp
- * @brief Afs - Analyze EXT file system.
- *
- */
-
 #ifndef CPPUNIT_MAIN
 #define CPPUNIT_STATIC static
 #else

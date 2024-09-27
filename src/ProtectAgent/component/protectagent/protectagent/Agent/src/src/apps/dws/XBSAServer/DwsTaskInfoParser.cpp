@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- *
- * @Description parse DWS task infomation.
- * @Create 2022-06-18
- * @Author wuchuan wwx563312
- */
 #include "apps/dws/XBSAServer/DwsTaskInfoParser.h"
 #include <fstream>
 #include <vector>

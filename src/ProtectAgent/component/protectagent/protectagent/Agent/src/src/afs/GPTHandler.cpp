@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file GPThandler.cpp
- * @brief AFS - Analyze GPT partition.
- *
- */
-
 #include "afs/GPTHandler.h"
 #include "afs/RawReader.h"
 #include "afs/AfsLVM.h"

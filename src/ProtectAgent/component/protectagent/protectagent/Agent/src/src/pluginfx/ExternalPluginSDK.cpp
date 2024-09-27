@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- *
- * @file ExternalPluginSDK.cpp
- * @brief The implemention Plugin Manager
- * @version 1.0.0.0
- * @date 2022-02-07
- * @author wangguitao 00510599
- */
 #include <map>
 #include "common/Log.h"
 #include "common/Path.h"

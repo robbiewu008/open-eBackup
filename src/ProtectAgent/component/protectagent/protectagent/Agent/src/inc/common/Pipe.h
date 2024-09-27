@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Pipe.h
- * @brief  Contains function declarations Pipe
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
 #ifndef PIPE_FILE_H
 #define PIPE_FILE_H
 

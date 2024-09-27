@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepBackupDataBlock.cpp
- * @brief  Contains function declarations for TaskStepBackupDataBlock
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "apps/vmwarenative/TaskStepBackupDataBlock.h"
 #include <ctime>
 #include "plugins/DataProcessClientHandler.h"

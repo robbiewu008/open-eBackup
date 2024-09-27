@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file VMwareNativePrepareAfsBitmapTask.h
- * @brief  Contains function declarations VMwareNativePrepareAfsBitmapTask
- * @version 1.0.0
- * @date
- * @author
- */
 #ifndef AGENT_VMWARENATIVE_BACKUP_AFSBITMAP_TASK
 #define AGENT_VMWARENATIVE_BACKUP_AFSBITMAP_TASK
 

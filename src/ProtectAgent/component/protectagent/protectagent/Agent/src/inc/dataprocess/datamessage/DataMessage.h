@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DataMessage.h
- * @brief  Contains function declarations DataMessage
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
 #ifndef __DATAMESSAGE_H__
 #define __DATAMESSAGE_H__
 

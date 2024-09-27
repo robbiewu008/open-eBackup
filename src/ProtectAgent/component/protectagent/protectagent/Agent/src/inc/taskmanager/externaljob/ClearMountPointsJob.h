@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file ClearMountPointsJob.h
- * @brief  Contains function declarations about Log Backup
- * @version 1.1.0
- * @date 2022-01-13
- * @author lixilong lwx1101878
- */
 #ifndef CLEAR_MOUNT_POINTS_H
 #define CLEAR_MOUNT_POINTS_H
 

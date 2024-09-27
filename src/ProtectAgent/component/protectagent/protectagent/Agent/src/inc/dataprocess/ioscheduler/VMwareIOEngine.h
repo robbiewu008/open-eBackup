@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file VMwareIOEngine.h
- * @author t00302329
- * @brief VMware IO读写接口
- * @version 0.1
- * @date 2021-01-14
- *
- */
 #ifndef __VMWARE_IO_ENGINE_H__
 #define __VMWARE_IO_ENGINE_H__
 

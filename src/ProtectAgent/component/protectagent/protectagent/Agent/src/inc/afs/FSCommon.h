@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file FSCommon.h
- * @brief AFS - Analyze file system common class.
- *
- */
-
 #ifndef __AFS_COMMON_H__
 #define __AFS_COMMON_H__
 

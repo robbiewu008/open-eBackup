@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DppSocket.cpp
- * @brief  socket client hander
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao w00510599
- */
 #include "message/tcp/DppSocket.h"
 #include "common/Log.h"
 #include "common/TimeOut.h"

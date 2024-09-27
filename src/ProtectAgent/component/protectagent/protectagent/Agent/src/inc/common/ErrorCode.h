@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file ErrorCode.h
- * @brief  Contains function declarations ErrorCode Operations
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef _AGENT_ERROR_CODE_H_
 #define _AGENT_ERROR_CODE_H_
 

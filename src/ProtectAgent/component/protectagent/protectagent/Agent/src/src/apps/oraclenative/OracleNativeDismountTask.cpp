@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file OracleNativeDismountTask.h
- * @brief  Contains function declarations for OracleNativeDismountTask
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "apps/oraclenative/OracleNativeDismountTask.h"
 
 #include "common/Utils.h"

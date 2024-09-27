@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepOracleNative.h
- * @brief  Contains function declarations oracle native backup base class
- * @version 1.0.0
- * @date 2020-01-27
- * @author wangguitao 00510599
- */
 #ifndef AGENT_BACKUP_STEP_ORACLENATIVE
 #define AGENT_BACKUP_STEP_ORACLENATIVE
 

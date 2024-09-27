@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file CdpDataPath.h
- * @brief  Contains function declarations for CdpDataPath
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef DATA_PATH_PROCESS_H
 #define DATA_PATH_PROCESS_H
 

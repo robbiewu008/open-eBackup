@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file thinPoolBridge.cpp
- *
- * @brief AFS - LVM Thin Pool bridge class
- *
- */
-
 #include "afs/ThinPoolBridge.h"
 #include <exception>
 #include "afs/StripeSegment.h"

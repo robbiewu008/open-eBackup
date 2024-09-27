@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file ntfsutility.cpp
- * @brief Analyze NTFS file system.
- *
- */
-
 #include "afs/NtfsUtility.h"
 #include "afs/LogMsg.h"
 #include "afs/AfsError.h"

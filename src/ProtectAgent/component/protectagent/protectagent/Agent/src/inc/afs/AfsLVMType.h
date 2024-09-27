@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file AfsLVMType.h
- *
- * @brief Afs - A C/C++ Library for analyze format of a disk image.
- *
- */
-
 #ifndef __LVM_TYPE_H__
 #define __LVM_TYPE_H__
 

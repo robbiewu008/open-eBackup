@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file VMwareNativeRestorePreparationTask.cpp
- * @brief  The implemention about VMwareNativeRestorePreparationTask
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "apps/vmwarenative/VMwareNativeRestorePreparationTask.h"
 #include "apps/vmwarenative/TaskStepVMwareNative.h"
 #include "taskmanager/TaskStepLinkTarget.h"

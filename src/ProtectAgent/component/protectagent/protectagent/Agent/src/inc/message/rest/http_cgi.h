@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DataProcess.h
- * @brief  The implemention Class of CGI
- * @version 1.0.0.0
- * @date 2015-01-19
- * @author xuchong 00300551
- */
 #ifndef _AGENT_HTTP_CGI_H_
 #define _AGENT_HTTP_CGI_H_
 

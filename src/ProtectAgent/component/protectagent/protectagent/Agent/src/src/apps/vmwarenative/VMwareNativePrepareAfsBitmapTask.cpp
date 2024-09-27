@@ -1,10 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- * Description: 无效数据识别功能实现
- * Author:hw
- * Create:2024-01-13
- * Notes:无
- */
 #include "apps/vmwarenative/VMwareNativePrepareAfsBitmapTask.h"
 #include "apps/vmwarenative/TaskStepVMwareNative.h"
 #include "apps/vmwarenative/TaskStepPrepareAfsBitmap.h"

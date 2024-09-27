@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepClearDataBase.h
- * @brief  Contains function declarations TaskStepClearDataBase
- * @version 1.0.0
- * @date 2020-03-28
- * @author wangguitao 00510599
- */
 #ifndef AGENT_BACKUP_STEP_CLEAR_DATABASE_H
 #define AGENT_BACKUP_STEP_CLEAR_DATABASE_H
 

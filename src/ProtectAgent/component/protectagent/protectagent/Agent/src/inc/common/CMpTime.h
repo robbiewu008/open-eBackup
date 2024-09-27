@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file CMpTime.h
- * @brief  Contains function declarations CMpTime
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
 #ifndef AGENT_TIME_H
 #define AGENT_TIME_H
 

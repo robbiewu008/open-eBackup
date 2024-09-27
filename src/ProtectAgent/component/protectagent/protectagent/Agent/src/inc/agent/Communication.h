@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Communication.h
- * @brief  Contains function declarations for Communication
- * @version 0.1
- * @date 2015-01-19
- * @author xuchong 00300551
- */
 #ifndef _AGENT_COMMUNICATION_H_
 #define _AGENT_COMMUNICATION_H_
 

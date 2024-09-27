@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file GPTHandler.h
- * @brief AFS - Analyze GPT partition.
- *
- */
 #ifndef __AFS_PARTITION_H__
 #define __AFS_PARTITION_H__
 

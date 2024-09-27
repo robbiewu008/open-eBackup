@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file VolumeGroup.h
- *
- * @brief AFS - LVM volume group class
- *
- */
-
 #ifndef VG_VOLUMEGROUP_H_
 #define VG_VOLUMEGROUP_H_
 

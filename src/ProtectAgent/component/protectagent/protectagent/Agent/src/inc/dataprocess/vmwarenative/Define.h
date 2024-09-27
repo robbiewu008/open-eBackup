@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Define.h
- * @brief  The implemention about Define
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef __AGENT_VMWARENATIVE_DEFINE_H__
 #define __AGENT_VMWARENATIVE_DEFINE_H__
 

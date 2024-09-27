@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- *
- * @file SDK jni file
- * @brief  The implemention about SDK jni
- * @version 1.1.0
- * @date 2022-2-8
- * @author caomin c00511255
- */
-
 #include "pluginfx/com_huawei_oceanprotect_sdk_agent_plugin_lib_security_ability_definition_SecurityUtil.h"
 #include "pluginfx/ExternalPluginSDK.h"
 #include "pluginfx/jnitostd.h"

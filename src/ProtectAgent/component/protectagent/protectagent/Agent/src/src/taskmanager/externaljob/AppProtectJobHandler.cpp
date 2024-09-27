@@ -1,13 +1,3 @@
-﻿/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file AppProtectJobHandler.cpp
- * @brief Implement for excuting external job
- * @version 1.1.0
- * @date 2021-11-18
- * @author wangguitao 00510599
- */
-
 #include "taskmanager/externaljob/PluginMainJob.h"
 #include "taskmanager/externaljob/PluginJobFactory.h"
 #include "taskmanager/externaljob/ReportJobDetailFactory.h"

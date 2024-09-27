@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file LVMVolumeGroupManager.h
- *
- * @brief Afs - A C/C++ Library for analyze format of a disk image.
- *
- */
-
 #ifndef PARTITION_ILVMVOLUMEGROUP_H_
 #define PARTITION_ILVMVOLUMEGROUP_H_
 

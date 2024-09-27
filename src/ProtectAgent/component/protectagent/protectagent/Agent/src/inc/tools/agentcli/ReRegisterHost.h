@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
- *
- * @file ReRegisterHost.h
- * @brief re-register the client agent
- * @version 1.0.0
- * @date 2022-12-09
- * @author kWX884906
- */
-
 #ifndef _RE_REGISTER_HOST_H_
 #define _RE_REGISTER_HOST_H_
 

@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- *
- * @file AlarmMgr.cpp
- * @brief alarm management
- * @date 2022-2-21
- */
 #include "alarm/AlarmMgr.h"
 #include "common/Log.h"
 #include "common/Ip.h"

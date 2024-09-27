@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file AgentCli.cpp
- * @brief  Contains function declarations for Agent cli command files
- * @version 0.1
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
-
 #include <vector>
 #include <algorithm>
 #include "common/Path.h"

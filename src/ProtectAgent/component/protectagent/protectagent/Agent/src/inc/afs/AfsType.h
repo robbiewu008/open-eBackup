@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file afs_type.h
- * @brief AFS - Define constant for library.
- *
- */
-
 #ifndef INCLUDE_AFS_TYPE_H_
 #define INCLUDE_AFS_TYPE_H_
 

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @brief  plugin sub job
- * @version 1.1.0
- * @date 2021-11-19
- * @author kWX884906
- */
-
 #include "taskmanager/externaljob/PluginSubGeneJob.h"
 #include "common/Log.h"
 #include "common/JsonUtils.h"

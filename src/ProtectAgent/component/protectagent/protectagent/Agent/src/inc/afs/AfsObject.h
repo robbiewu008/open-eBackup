@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file AfsObject.h
- * @brief AFS - A C/C++ Library for analyze format of a disk image.
- *
- */
-
 #ifndef AFSOBJECT_H
 #define AFSOBJECT_H
 

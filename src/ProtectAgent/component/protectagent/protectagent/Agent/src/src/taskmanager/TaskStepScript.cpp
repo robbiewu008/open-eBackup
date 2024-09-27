@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepScript.cpp
- * @brief  Implementation of the Class TaskStepScript
- * @version 1.0.0
- * @date 2019-11-15
- * @author wangguitao 00510599
- */
 #include "taskmanager/TaskStepScript.h"
 #include "common/ErrorCode.h"
 #include "common/Utils.h"

@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file JobStateAction.h
- * @brief Implement for function of state transient
- * @version 1.1.0
- * @date 2021-11-20
- * @author wangguitao 00510599
- */
-
 #ifndef JOB_STATE_H
 #define JOB_STATE_H
 

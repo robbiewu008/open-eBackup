@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskContext.cpp
- * @brief  The implemention TaskContext
- * @version 1.0.0.0
- * @date 2019-11-15
- * @author wangguitao 00510599
- */
 #include "taskmanager/TaskContext.h"
 
 #include "common/CMpThread.h"

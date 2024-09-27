@@ -1,12 +1,3 @@
-/**
-* Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
-* @file DmeRestClient.cpp
-* @brief Implement for send rest request to dme
-* @version 1.1.0
-* @date 2021-11-20
-* @author jwx966562
-*/
-
 #ifdef LINUX
 #include <netdb.h>
 #include <sys/types.h>

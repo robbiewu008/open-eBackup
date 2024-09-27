@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Ip.h
- * @brief  The implemention about secure Ip
- * @version 1.0.0.0
- * @date 2021-05-15
- * @author wangguitao 00510599
- */
 #ifndef __AGENT_SECURE_IP_H__
 #define __AGENT_SECURE_IP_H__
 

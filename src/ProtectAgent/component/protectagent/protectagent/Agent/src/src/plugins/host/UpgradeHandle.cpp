@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file UpgradeHandle.cpp
- * @brief Contains functions that handle the upgration of agent
- * @version 1.0.0.0
- * @date 2021-08-13
- * @author sheny sWX1041731
- */
 #include "plugins/host/UpgradeHandle.h"
 #include <fstream>
 #include <sstream>

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file PluginRunController.h
- * @brief  The implemention about ExternalPlugin.h
- * @version 1.0.0.0
- * @date 2021-10-13
- * @author jwx966562
- */
 #include <fstream>
 #include <mutex>
 #include "common/Defines.h"

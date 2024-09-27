@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file ChangeIP.cpp
- * @brief  Contains function declarations for ChangeIP
- * @version 1.0.0
- * @date 2021-07-13
- * @author liuliyue
- */
 #include <sstream>
 #include <ctime>
 #include "common/CMpTime.h"

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DPAUser.h
- * @brief  Contains function declarations oracle native backup base class
- * @version 1.0.0
- * @date 2020-11-13
- * @author wangguitao 00510599
- */
 #include "apps/oraclenative/TaskStepClearDataBase.h"
 
 #include <map>

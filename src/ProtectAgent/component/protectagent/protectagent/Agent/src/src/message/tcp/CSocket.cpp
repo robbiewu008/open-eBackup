@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Socket.cpp
- * @brief  Contains function declarations Socket
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "message/tcp/CSocket.h"
 #include "common/Log.h"
 #include "common/TimeOut.h"

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TCPClientHandler.h
- * @brief  Contains function declarations for TCPClientHandler
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef _TCPCLIENT_HANDLER_H
 #define _TCPCLIENT_HANDLER_H
 

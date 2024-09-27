@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- *
- * @file OraclePluginHandler.h
- * @brief Service class for the Oracle plug-in
- * @version 1.0.0.0
- * @date 2023-03-06
- * @author kWX884906
- */
 #ifndef _ORACLE_PLUGIN_HANDLER_H
 #define _ORACLE_PLUGIN_HANDLER_H
 #include <thread>

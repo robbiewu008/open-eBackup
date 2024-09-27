@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file alarmdb.cpp
- * @brief  The implemention about trap
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author liuly
- */
 #include "alarm/Trap.h"
 
 #include <algorithm>

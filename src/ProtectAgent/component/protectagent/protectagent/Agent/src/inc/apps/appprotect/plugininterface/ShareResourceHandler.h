@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file ExternalPluginParse.h
- * @brief  The implemention about ExternalPluginParse.h
- * @version 1.1.0
- * @date 2021-11-8
- * @author jwx966562
- */
 #ifndef _SHARE_RESOURCE_HANDLER_H
 #define _SHARE_RESOURCE_HANDLER_H
 

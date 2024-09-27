@@ -1,15 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file AbnormalHandler.cpp
- * @brief  Implementation of the Class OracleNativeBackup
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
-#if !defined(EA_D163ECBB_394E_4005_B063_2E501765B4E2__INCLUDED_)
-#define EA_D163ECBB_394E_4005_B063_2E501765B4E2__INCLUDED_
-
 #include <map>
 #include <set>
 #include <vector>

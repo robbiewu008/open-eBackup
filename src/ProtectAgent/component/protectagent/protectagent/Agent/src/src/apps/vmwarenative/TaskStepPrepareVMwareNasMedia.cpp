@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepPrepareVMwareNasMedia.cpp
- * @brief  Contains function declarations TaskStepPrepareVMwareNasMedia
- * @version 1.0.0
- * @date 2020-02-04
- * @author wangguitao 00510599
- */
 #include "apps/vmwarenative/TaskStepPrepareVMwareNasMedia.h"
 #include "plugins/DataProcessClientHandler.h"
 #include "apps/vmwarenative/VMwareDef.h"

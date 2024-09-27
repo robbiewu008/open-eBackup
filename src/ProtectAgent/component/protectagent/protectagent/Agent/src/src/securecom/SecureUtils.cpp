@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Utils.cpp
- * @brief  Contains function declarations secure utils functions
- * @version 1.0.0
- * @date 2021-05-15
- * @author wangguitao 00510599
- */
 #include <vector>
 #include <iostream>
 #include "common/ErrorCode.h"

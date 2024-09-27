@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file VMwareNativeBackupPreparationTask.h
- * @brief  Contains function declarations VMwareNativeBackupPreparationTask
- * @version 1.0.0
- * @date 2020-06-27
- * @author wangguitao 00510599
- */
 #ifndef AGENT_VMWARENATIVE_BACKUP_PREPARATION_TASK
 #define AGENT_VMWARENATIVE_BACKUP_PREPARATION_TASK
 

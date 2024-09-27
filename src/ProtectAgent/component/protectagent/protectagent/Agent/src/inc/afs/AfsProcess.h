@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file AfsProcess.h
- * @brief  Contains function declarations AfsProcess
- * @version 1.0.0
- */
 #ifndef AFS_PROCESS_H_
 #define AFS_PROCESS_H_
 

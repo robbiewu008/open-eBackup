@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Condition.cpp
- * @brief  The implemention about Condition
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "dataprocess/vmwarenative/Condition.h"
 
 using namespace AGENT_VMWARENATIVE_CONDITION;

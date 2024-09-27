@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- *
- * @file UpdateCertHandle.h
- * @brief Contains functions that handle the upgration of certificate
- * @version 1.6.0.0
- * @date 2023-11-08
- * @author gongqinhua g30046491
-*/
-
 #ifndef UPDATE_CERT_HANDLE_H_
 #define UPDATE_CERT_HANDLE_H_
 

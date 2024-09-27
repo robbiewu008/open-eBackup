@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file SystemCall.h
- * @brief  Contains function declarations for SystemCall
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef _SYSTEM_CALL_H_
 #define _SYSTEM_CALL_H_
 #include "common/Defines.h"

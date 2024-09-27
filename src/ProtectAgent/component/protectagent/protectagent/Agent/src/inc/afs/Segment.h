@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file Segment.h
- *
- * @brief AFS - Segment interface
- *
- */
-
 #ifndef LV_LVSEGMENT_H_
 #define LV_LVSEGMENT_H_
 

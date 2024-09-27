@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file PrepareFileSystem.cpp
- * @brief Mount And Umount File System
- * @version 1.1.0
- * @date 2021-10-30
- * @author lixilong wx1101878
- */
 #include "servicecenter/services/device/PrepareFileSystem.h"
 
 #include "common/Log.h"

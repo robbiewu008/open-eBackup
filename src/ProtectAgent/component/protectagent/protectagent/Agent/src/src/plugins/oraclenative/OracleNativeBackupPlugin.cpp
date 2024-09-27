@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file OracleNativeBackupPlugin.cpp
- * @brief  Implementation of the Class OracleNativeBackupPlugin
- * @version 1.0.0
- * @date 2019-11-15
- * @author wangguitao 00510599
- */
 #include <vector>
 #include <map>
 #include "plugins/oraclenative/OracleNativeBackupPlugin.h"

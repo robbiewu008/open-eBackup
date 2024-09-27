@@ -1,12 +1,3 @@
-/**
-* Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
-* @file RestClientCommon.h
-* @brief Implement for RestClientCommon
-* @version 1.1.0
-* @date 2021-11-22
-* @author jwx966562
-*/
-
 #include "message/curlclient/RestClientCommon.h"
 #include "common/ConfigXmlParse.h"
 #include "common/Log.h"

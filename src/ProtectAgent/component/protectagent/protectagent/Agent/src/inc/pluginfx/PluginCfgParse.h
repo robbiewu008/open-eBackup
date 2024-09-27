@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file PluginCfgParse.h
- * @brief  The implemention about PluginCfgParse.h
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef _AGENT_PLUGIN_CFG_PARSE_H
 #define _AGENT_PLUGIN_CFG_PARSE_H
 

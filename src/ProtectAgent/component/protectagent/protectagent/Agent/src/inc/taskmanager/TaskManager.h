@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file FileSearcher.cpp
- * @brief  The implemention about single instance, manage all tasks
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef _AGENT_TASKMANAGER_H_
 #define _AGENT_TASKMANAGER_H_
 

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file PhysicalVolume.h
- *
- * @brief AFS - LVM physical volume.
- *
- */
-
 #ifndef PV_PHYSICALVOLUME_H_
 #define PV_PHYSICALVOLUME_H_
 

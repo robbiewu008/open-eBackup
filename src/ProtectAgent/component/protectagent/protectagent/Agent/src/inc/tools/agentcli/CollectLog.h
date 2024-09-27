@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file CollectLog.h
- * @brief  The implemention about CollectLog.h
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef _AGENTCLI_COLLECTLOG_H_
 #define _AGENTCLI_COLLECTLOG_H_
 

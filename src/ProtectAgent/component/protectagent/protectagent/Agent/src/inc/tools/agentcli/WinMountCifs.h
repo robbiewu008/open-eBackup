@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
- *
- * @file WinMountCifs.h
- * @brief mount cifs on windows
- * @version 1.0.0
- * @date 2022-07-07
- * @author kWX884906
- */
-
 #ifndef _WIN_MOUNT_CIFS_H_
 #define _WIN_MOUNT_CIFS_H_
 

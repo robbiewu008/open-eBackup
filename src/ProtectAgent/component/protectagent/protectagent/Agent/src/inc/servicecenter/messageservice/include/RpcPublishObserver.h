@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- * @file RpcPublishObserver.h
- * @brief  The implemention about RpcPublishObserver.h
- * @version 1.0.0.0
- * @date 2021-11-17
- * @author jwx966562
- */
 #ifndef _RPC_PUBLISH_OBSERVER_H
 #define _RPC_PUBLISH_OBSERVER_H
 

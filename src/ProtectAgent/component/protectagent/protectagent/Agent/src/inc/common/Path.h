@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Path.h
- * @brief  The implemention Path
- * @version 1.0.0.0
- * @date 2019-11-15
- * @author wangguitao 00510599
- */
 #ifndef __AGENT_PATH_H__
 #define __AGENT_PATH_H__
 

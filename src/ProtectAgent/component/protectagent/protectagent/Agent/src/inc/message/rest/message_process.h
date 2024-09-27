@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file CMessageBody.h
- * @brief  处理消息体，作为agent内部通信消息
- * @version 1.0.0
- * @date 2015-02-02
- * @author xuchong 00300551
- */
 #ifndef _AGENT_MESSAGE_PROCESS_H_
 #define _AGENT_MESSAGE_PROCESS_H_
 

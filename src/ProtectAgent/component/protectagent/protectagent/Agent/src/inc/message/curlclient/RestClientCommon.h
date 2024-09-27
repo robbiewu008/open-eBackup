@@ -1,11 +1,3 @@
-/**
-* Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
-* @file RestClientCommon.h
-* @brief Implement for RestClientCommon
-* @version 1.1.0
-* @date 2021-11-22
-* @author jwx966562
-*/
 #ifndef _REST_CLIENT_COMMON_H
 #define _REST_CLIENT_COMMON_H
 #include <sstream>

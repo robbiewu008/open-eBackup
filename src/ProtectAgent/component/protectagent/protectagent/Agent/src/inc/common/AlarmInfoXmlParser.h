@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2021. All rights reserved.
- *
- * @file ConfigXmlParse.h
- * @brief  Contains function declarations AlarmInfoXmlParser Operations
- * @version 1.0.0
- * @date 2021-06-24
- * @author kWX884906
- */
 #ifndef __ALARM_INFO_XML_PARSER_H__
 #define __ALARM_INFO_XML_PARSER_H__
 

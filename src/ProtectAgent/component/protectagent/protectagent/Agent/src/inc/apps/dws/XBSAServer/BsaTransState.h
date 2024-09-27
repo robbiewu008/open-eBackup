@@ -1,10 +1,3 @@
-/* *
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * Description: XBSA transaction state machine definition.
- * Create: 2021-05-18
- * Author: wuchuan wwx563312
- */
 #ifndef _BSA_TRANS_STATE_H_
 #define _BSA_TRANS_STATE_H_
 

@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file TaskScheduler.h
- * @author t00302329
- * @brief 实现IO任务调度
- * @version 0.1
- * @date 2021-01-11
- *
- */
 #ifndef __TASK_SCHEDULER_H__
 #define __TASK_SCHEDULER_H__
 

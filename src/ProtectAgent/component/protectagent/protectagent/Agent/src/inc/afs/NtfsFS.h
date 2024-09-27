@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file ntfsfs.h
- * @brief Analyze NTFS file system.
- *
- */
 #ifndef __AFS_NTFS_H__
 #define __AFS_NTFS_H__
 

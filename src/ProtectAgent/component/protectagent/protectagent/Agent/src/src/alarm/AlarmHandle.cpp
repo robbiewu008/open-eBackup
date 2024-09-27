@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file AlarmHandle.cpp
- * @brief  The implemention about alarm
- * @version 1.0.0.0
- * @date 2021-06-17
- * @author kangjw kWX884906
- */
 #include "alarm/AlarmHandle.h"
 #include "common/Ip.h"
 #include "common/Log.h"

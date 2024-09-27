@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file OracleLunInfo.cpp
- * @brief  Contains function declarations oracle lun info
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "apps/oracle/OracleLunInfo.h"
 #include "common/Log.h"
 #include "common/Path.h"

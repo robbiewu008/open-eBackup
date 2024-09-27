@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file rawreader.cpp
- * @brief AFS - Read data from raw format image
- *
- */
-
 #include "afs/RawReader.h"
 #include <stdio.h>
 #include "afs/LVMReader.h"

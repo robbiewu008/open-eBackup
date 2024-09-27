@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepBackupOpenDisk.h
- * @brief  Contains function declarations TaskStepBackupCloseDisk
- * @version 1.0.0
- */
 #ifndef __AGENT_TASKSTEP_BACKUP_CLOSEDISK_H__
 #define __AGENT_TASKSTEP_BACKUP_CLOSEDISK_H__
 

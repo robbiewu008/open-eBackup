@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2021. All rights reserved.
- *
- * @file TestHost.h
- * @brief Test the link status of host
- * @version 1.0.0
- * @date 2020-04-12
- * @author wangguitao 00510599
- */
 #ifndef _AGENTCLI_TESTHOST_H_
 #define _AGENTCLI_TESTHOST_H_
 

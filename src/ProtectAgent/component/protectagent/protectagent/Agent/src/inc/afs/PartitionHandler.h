@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file PartitionHandler.h
- * @brief AFS - Partition handler class.
- *
- */
-
 #ifndef PARTITIONHANDLER_H
 #define PARTITIONHANDLER_H
 

@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file partitionhandler.cpp
- * @brief AFS - Partition handler class.
- *
- */
 #include "afs/PartitionHandler.h"
 #include "afs/RawReader.h"
 #include "afs/LogMsg.h"

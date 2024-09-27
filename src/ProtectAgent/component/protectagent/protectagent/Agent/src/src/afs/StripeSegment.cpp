@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file stripeSegment.cpp
- *
- * @brief AFS - Stripe segment class.
- *
- */
-
 #include <string.h>
 #include <climits>
 #include <algorithm>

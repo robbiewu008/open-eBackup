@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file AppProtectJobHandler.cpp
- * @brief Implement for excuting external job
- * @version 1.1.0
- * @date 2024-07-16
- * @author dengbowen d30043983
- */
-
 #include <fstream>
 #include <sstream>
 #include <algorithm>

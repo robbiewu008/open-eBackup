@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TaskStepInitVMwareDiskLib.h
- * @brief  Contains function declarations for TaskStepInitVMwareDiskLib
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef AGENT_BACKUP_STEP_VMWARENATIVE_INIT_VMWAREDISKLIB_H
 #define AGENT_BACKUP_STEP_VMWARENATIVE_INIT_VMWAREDISKLIB_H
 

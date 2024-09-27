@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file RepositoryFactory.cpp
- * @brief Mount And Umount File System
- * @version 1.1.0
- * @date 2022-02-22
- * @author lixilong wx1101878
- */
 #include "servicecenter/services/device/RepositoryFactory.h"
 #include "servicecenter/services/device/CacheRepository.h"
 #include "servicecenter/services/device/LogRepository.h"

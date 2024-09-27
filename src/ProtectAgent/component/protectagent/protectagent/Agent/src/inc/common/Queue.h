@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file Queue.h
- * @author t00302329
- * @brief 实现双端队列模型
- * @version 0.1
- * @date 2021-01-09
- *
- */
 #ifndef __QUEUE_H__
 #define __QUEUE_H__
 

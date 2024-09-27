@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file FileIOEngine.h
- * @author t00302329
- * @brief 文件IO读写接口
- * @version 0.1
- * @date 2021-01-16
- *
- */
 #ifndef __FILE_IO_ENGINE_H__
 #define __FILE_IO_ENGINE_H__
 

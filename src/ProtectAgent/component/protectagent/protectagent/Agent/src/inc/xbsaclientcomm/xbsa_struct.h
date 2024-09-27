@@ -1,25 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file xbsa.h
- * @brief  Contains function declarations xbsa
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
-/* xbsa.h
- *
- * This is a sample C header file describing the XBSA.
- *
- * This appendix is not a normative part of the
- * specification and is provided for illustrative
- * purposes only.
- *
- * Implementations must ensure that the sizes of integer
- * datatypes match their names, not necessarily the typedefs
- * presented in this example.
- *
- */
 #ifndef XBSASTRUCT
 #define XBSASTRUCT
 

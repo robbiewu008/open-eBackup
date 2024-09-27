@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file filesystem.cpp
- * @brief Afs - Analyze file system interface.
- *
- */
-
 #include "afs/FileSystem.h"
 #include "afs/Ext4FS.h"
 #include "afs/NtfsFS.h"

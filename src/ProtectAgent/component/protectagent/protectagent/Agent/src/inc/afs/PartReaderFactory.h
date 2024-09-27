@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file partReaderFactory.h
- * @brief AFS - Partition reader information.
- *
- */
-
 #ifndef IMAGE_PARTREADERFACTORY_H_
 #define IMAGE_PARTREADERFACTORY_H_
 #include <list>

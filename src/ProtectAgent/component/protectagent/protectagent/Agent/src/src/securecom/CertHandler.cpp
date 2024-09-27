@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- *
- * @file CertHandler.cpp
- * @brief  functions for handle cert
- * @version 1.0.0
- * @date 2023-11-24
- * @author hejainfan 00668904
- */
-
 #include "common/Defines.h"
 #include "common/Path.h"
 #include "securecom/CryptAlg.h"

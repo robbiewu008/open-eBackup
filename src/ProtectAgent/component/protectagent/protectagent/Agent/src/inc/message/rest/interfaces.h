@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file interfaces.h
- * @brief  The implemention about interfaces
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef __AGENT_REST_INTERFACES_H__
 #define __AGENT_REST_INTERFACES_H__
 

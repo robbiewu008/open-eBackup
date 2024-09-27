@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file  logicalVolume.cpp
- * @brief AFS - LVM logical volume.
- *
- */
-
 #include "afs/PartitionHandler.h"
 #include "afs/LogicalVolume.h"
 #include "afs/StripeSegment.h"

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DataPathProcessClient.cpp
- * @brief  Contains function declarations DataPathProcessClient
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #include "plugins/DataPathProcessClient.h"
 #include "common/Log.h"
 #include "common/ErrorCode.h"

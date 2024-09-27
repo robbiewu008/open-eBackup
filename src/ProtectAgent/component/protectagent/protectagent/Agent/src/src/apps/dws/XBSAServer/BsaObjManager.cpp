@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- *
- * @Description manage XBSA object.
- * @Create 2022-06-18
- * @Author wuchuan wwx563312
- */
-
 #include "apps/dws/XBSAServer/BsaObjManager.h"
 #include <common/CMpTime.h>
 #include "common/Log.h"

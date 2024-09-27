@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file WALBackupJob.cpp
- * @brief  Contains function declarations about Log Backup
- * @version 1.1.0
- * @date 2022-01-04
- * @author lixilong lwx1101878
- */
 #include "taskmanager/externaljob/PluginLogBackup.h"
 
 #include <fstream>

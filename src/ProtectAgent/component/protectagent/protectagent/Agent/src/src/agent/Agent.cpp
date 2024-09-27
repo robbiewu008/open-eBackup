@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Agent.cpp
- * @brief  The implemention about Agent
- * @version 1.0.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
-#if (defined LINUX) && (!defined ENABLE_TSAN)
 #include <gperftools/malloc_extension.h>
 #endif
 

@@ -1,10 +1,3 @@
-/* *
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * Description: XBSA transaction manager.
- * Create: 2021-05-18
- * Author: wuchuan wwx563312
- */
 #include "apps/dws/XBSAServer/BsaTransManager.h"
 #include "common/File.h"
 #include "apps/dws/XBSAServer/BsaTransState.h"

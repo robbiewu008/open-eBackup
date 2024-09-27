@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file SslSocketPasswordFactory.h
- * @brief  Implement for TSSLSocketFactory
- * @version 1.1.0
- * @date 2021-11-02
- * @author caomin 00511255
- */
 #ifndef SSL_SOCKET_PASSWORD_FACTORY_H_
 #define SSL_SOCKET_PASSWORD_FACTORY_H_
 

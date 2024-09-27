@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file OSAClient.h
- * @author h00606494
- * @brief OpenStorage API Client
- * @version 0.1
- * @date 2024-04-05
- */
-
 #ifdef LINUX
 #include "common/Log.h"
 #include "common/Defines.h"

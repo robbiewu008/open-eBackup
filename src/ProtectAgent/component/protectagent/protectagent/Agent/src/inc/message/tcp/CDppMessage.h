@@ -1,16 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Message.h
- * @brief  Implementation of the Class Message
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
-
-#if !defined(EA_C7849FDE_421E_43f5_A7EB_6D01673A8C72__INCLUDED_)
-#define EA_C7849FDE_421E_43f5_A7EB_6D01673A8C72__INCLUDED_
-
 #include "jsoncpp/include/json/value.h"
 #include "jsoncpp/include/json/json.h"
 #include "common/Types.h"

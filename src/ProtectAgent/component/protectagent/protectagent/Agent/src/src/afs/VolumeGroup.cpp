@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file volumeGroup.cpp
- *
- * @brief AFS - LVM volume group class
- *
- */
-
 #include <cstdlib>
 #include <climits>
 #include "afs/LogicalVolume.h"

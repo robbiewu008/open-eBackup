@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file ITimer.h
- * @brief  Base for Service ITimer
- * @version 1.1.0
- * @date 2021-08-31
- * @author caomin 00511255
- */
 #ifndef ITIMER_H_
 #define ITIMER_H_
 #include <functional>

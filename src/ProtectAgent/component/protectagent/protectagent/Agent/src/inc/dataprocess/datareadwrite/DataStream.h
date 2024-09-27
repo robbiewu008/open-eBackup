@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file DataStream.h
- * @brief  Contains function declarations about DataStream
- * @version 1.0.0
- * @date 2020-08-01
- * @author wangguitao 00510599
- */
 #ifndef DATA_INTERFACE_H
 #define DATA_INTERFACE_H
 

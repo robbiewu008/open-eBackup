@@ -1,12 +1,3 @@
-/**
-* Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
-*
-* @file DefaultRemoteHostFilter.h
-* @brief Filter logic port in job param
-* @version 0.1
-* @date 2023-07-05
-* @author wangyunlong w30045225
-*/
 #ifndef FILTER_DEFAULT_REMOTE_HOST_FILTER_H
 #define FILTER_DEFAULT_REMOTE_HOST_FILTER_H
 

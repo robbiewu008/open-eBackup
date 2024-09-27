@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file JobStateDB.cpp
- * @brief Implement for application protect
- * @version 1.1.0
- * @date 2021-11-10
- * @author lwx943115
- */
 #include "taskmanager/externaljob/JobStateDB.h"
 #include "common/DB.h"
 #include "common/Log.h"

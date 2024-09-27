@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file ExternalPluginParse.h
- * @brief  The implemention about PluginRegisterHandler.cpp
- * @version 1.1.0
- * @date 2021-10-13
- * @author machenglin mwx1011302
- */
 #include "apps/appprotect/plugininterface/PluginRegisterHandler.h"
 #include "pluginfx/ExternalPluginRunState.h"
 #include "pluginfx/ExternalPluginManager.h"

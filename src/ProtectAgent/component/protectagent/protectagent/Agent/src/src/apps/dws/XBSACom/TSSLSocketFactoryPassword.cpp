@@ -1,12 +1,3 @@
-/* *
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file TSSLSocketFactoryPassword.cpp
- * @brief  Contains function declarations for datamover microservice management
- * @version 1.0.0
- * @date 2021-6-2
- * @author zhangxiaobo zwx920197
- */
 #include "XBSACom/TSSLSocketFactoryPassword.h"
 #include "common/Log.h"
 #include "common/Path.h"

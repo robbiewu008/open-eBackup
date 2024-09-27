@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- *
- * @file ExternalPluginSDK.h
- * @brief  header file of external plugin sdk external interfaces
- * @version 1.0.0.0
- * @date 2022-02-07
- * @author wangguitao 00510599
- */
-
 #ifndef _EXTERNAL_PLUGIN_SDK_H
 #define _EXTERNAL_PLUGIN_SDK_H
 

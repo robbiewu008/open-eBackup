@@ -1,14 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
- *
- * @file VMwareNativeBackupCleanupTask.cpp
- * @author w00558987
- * @brief 提供VMwareNative高级备份资源清理功能
- * @version 0.1
- * @date 2021-01-05
- *
- */
-
 #include "apps/vmwarenative/VMwareNativeBackupCleanupTask.h"
 #include "apps/vmwarenative/TaskStepVMwareNative.h"
 #include "apps/vmwarenative/TaskStepUmountVMwareNasMedia.h"

@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- *
- * @file ThinPoolBridge.h
- *
- * @brief AFS - LVM Thin Pool bridge class
- *
- */
-
 #ifndef LVM_THINPOOLBRIDGE_H_
 #define LVM_THINPOOLBRIDGE_H_
 

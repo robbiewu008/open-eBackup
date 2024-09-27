@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2022. All rights reserved.
- *
- * @file CodeConvert.h
- * @brief The implemention about SSL
- * @version 1.0.0.0
- * @date 2014-6-12
- * @author lili 00254913
- */
 #ifndef _CODECONVERT_H_
 #define _CODECONVERT_H_
 

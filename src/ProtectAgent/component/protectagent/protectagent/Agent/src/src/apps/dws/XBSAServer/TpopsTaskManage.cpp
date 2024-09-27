@@ -1,10 +1,3 @@
-/**QUERY_LIMITQUERY_LIMIT
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- *
- * Description: TPOPS task manager.
- * Create: 2023-10-22
- * Author: jwx966562
-*/
 #include "apps/dws/XBSAServer/TpopsTaskManage.h"
 #include <vector>
 #include "common/Path.h"

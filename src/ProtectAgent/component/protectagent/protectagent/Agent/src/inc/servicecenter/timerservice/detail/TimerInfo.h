@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- *
- * @file TimerInfo.h
- * @brief  impl for Service TimerInfo
- * @version 1.1.0
- * @date 2021-08-31
- * @author caomin 00511255
- */
 #ifndef TIMER_INFO_H_
 #define TIMER_INFO_H_
 namespace timerservice {

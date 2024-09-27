@@ -1,13 +1,3 @@
-/**
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- *
- * @file Connection.cpp
- * @brief  Implementation of the Class CConnection
- * @version 1.0.0.0
- * @date 2019-11-15
- * @author wangguitao 00510599
- */
-
 #include "message/tcp/CConnection.h"
 
 #include "common/Ip.h"
