@@ -1,0 +1,36 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+package openbackup.access.framework.resource.persistence.dao;
+
+import openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentExtendInfoPo;
+import openbackup.system.base.security.callee.CalleeMethod;
+import openbackup.system.base.security.callee.CalleeMethods;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
+
+/**
+ * Protected Environment Extend Info Mapper
+ *
+ * @author l00272247
+ * @since 2021-10-18
+ */
+@Mapper
+@Component
+@CalleeMethods(
+    name = "environment_dao",
+    value = {@CalleeMethod(name = "selectById")})
+public interface ProtectedEnvironmentExtendInfoMapper extends BaseMapper<ProtectedEnvironmentExtendInfoPo> {
+}

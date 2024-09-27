@@ -1,0 +1,36 @@
+version: '2.0'
+env:
+  label: OceanStor_100P_Euler_ARM_pool
+buildspace:
+  fixed: true
+params:
+  - name: PRODUCT
+    value: dorado
+  - name: CODE_BRANCH
+    value: master
+steps:
+  PRE_BUILD:
+    - checkout:
+        path: ${serviceName}
+    - gitlab: 
+        url: https://gitlab.huawei.com/dpa/protectmanager/PM_GUI.git
+        branch: ${CODE_BRANCH}
+        path: PM_GUI
+    - cmake_graph:
+        cmake_root_path: ./${serviceName}/src/KMS/encryp/KMC/kmc_source
+  BUILD:
+    - build_execute:
+        command: bash -c "
+          echo "buildVersion=$(cat ${serviceName}/app_define.json | awk -F '\"version":' '{print $2}' | awk -F ',' '{print $1}' | sed 's/\"//g').$(date "+%Y%m%d%H%M%S")" > buildInfo.properties
+          && cat buildInfo.properties
+          && sh ${serviceName}/CI/build.sh "
+        accelerate: false
+        check:
+          buildcheck: true
+          dependency:
+            - tool_type: maven
+              project_dir: ${serviceName}/src
+  POST_BUILD:
+    - upload_cloud_artifact:
+        file_path: '${serviceName}/pkg/*.tar.gz'
+    - version_set

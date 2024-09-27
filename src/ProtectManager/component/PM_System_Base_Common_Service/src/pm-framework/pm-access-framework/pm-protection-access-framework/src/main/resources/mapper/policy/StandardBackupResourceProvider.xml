@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="openbackup.data.access.framework.livemount.dao.LiveMountPolicyEntityDao" >
+    <resultMap id="BaseResultMap" type="openbackup.data.access.framework.livemount.entity.LiveMountPolicyEntity" >
+        <id column="POLICY_ID" property="policyId" jdbcType="VARCHAR" />
+        <result column="NAME" property="name" jdbcType="VARCHAR" />
+        <result column="COPY_DATA_SELECTION_POLICY" property="copyDataSelectionPolicy" jdbcType="VARCHAR" />
+        <result column="SCHEDULE_POLICY" property="schedulePolicy" jdbcType="VARCHAR" />
+        <result column="SCHEDULE_INTERVAL" property="scheduleInterval" jdbcType="INTEGER" />
+        <result column="SCHEDULE_INTERVAL_UNIT" property="scheduleIntervalUnit" jdbcType="VARCHAR" />
+        <result column="SCHEDULE_START_TIME" property="scheduleStartTime" jdbcType="VARCHAR" />
+        <result column="RETENTION_POLICY" property="retentionPolicy" jdbcType="VARCHAR" />
+        <result column="RETENTION_VALUE" property="retentionValue" jdbcType="INTEGER" />
+        <result column="RETENTION_UNIT" property="retentionUnit" jdbcType="VARCHAR" />
+        <result column="LATEST_COPY_FOR" property="latestCopyFor" jdbcType="VARCHAR" />
+        <result column="AFTER_COPY_GENERATED" property="afterCopyGenerated" jdbcType="VARCHAR" />
+        <result column="LIVE_MOUNT_COUNT" property="liveMountCount" javaType="INTEGER" />
+    </resultMap>
+
+    <select id = "selectPolicy" resultMap="BaseResultMap" parameterType="map">
+        select
+            t1.*, (select count(t2.policy_id) from live_mount as t2 left join live_mount_policy as t1
+        on t2.policy_id = t1.policy_id where t2.policy_id = #{policyId}) as live_mount_count
+        from live_mount_policy as t1
+        where t1.policy_id = #{policyId}
+    </select>
+
+</mapper>

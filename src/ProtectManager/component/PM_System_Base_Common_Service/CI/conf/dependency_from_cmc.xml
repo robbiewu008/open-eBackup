@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<project>
+    <artifact>
+        <versionType>Component</versionType>
+        <repoType>Generic</repoType>
+        <id>
+            <offering>OceanProtect A8000</offering>
+            <componentName>DataEnableEngine</componentName>
+            <componentVersion>1.1.0</componentVersion>
+            <snapshot>N</snapshot>
+        </id>
+        <isClear>N</isClear>
+        <copies>
+            <copy>
+                <source></source>
+                <dest></dest>
+            </copy>
+        </copies>
+    </artifact>
+    <dependencies>
+        <dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>OceanProtect A8000</offering>
+                <componentName>DataEnableEngine</componentName>
+                <componentVersion>1.1.0</componentVersion>
+            </id>
+            <according>Y</according>
+            <copies>
+                <copy>
+                    <source>dorado/BR_Dev/3rd/euler-arm/kmc-3.1.1.tar.gz</source>
+                    <dest>.</dest>
+                </copy>
+            </copies>
+        </dependency>
+    </dependencies>
+</project>

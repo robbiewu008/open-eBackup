@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="openbackup.access.framework.resource.persistence.dao.ProtectedResourceAgentMapper">
+    <resultMap id="BaseResultMap"
+        type="openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentPo">
+        <id column="uuid" property="uuid"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+        <result column="sub_type" property="subType"/>
+        <result column="path" property="path"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="parent_name" property="parentName"/>
+        <result column="parent_uuid" property="parentUuid"/>
+        <result column="root_uuid" property="rootUuid"/>
+        <result column="link_status" property="linkStatus"/>
+        <result column="protection_status" property="protectionStatus"/>
+        <result column="source_Type" property="sourceType"/>
+        <result column="user_id" property="userId"/>
+        <result column="authorized_user" property="authorizedUser"/>
+        <result column="user_name" property="username"/>
+        <association property="protectedAgentExtendPo" column="uuid"
+            javaType="openbackup.access.framework.resource.persistence.model.ProtectedAgentExtendPo"
+            select="openbackup.access.framework.resource.persistence.dao.ProtectedAgentExtendMapper.selectById">
+            <id column="uuid" property="uuid"/>
+            <result column="cpu_rate" property="cpuRate"/>
+            <result column="mem_rate" property="memRate"/>
+            <result column="last_update_time" property="lastUpdateTime"/>
+            <result column="is_shared" property="isShared"/>
+        </association>
+        <collection property="extendInfoList" column="uuid"
+            ofType="openbackup.access.framework.resource.persistence.model.ProtectedResourceExtendInfoPo"
+            select="openbackup.access.framework.resource.persistence.dao.ProtectedResourceExtendInfoMapper.selectByResourceId">
+            <id column="uuid" property="uuid"/>
+            <result column="resource_id" property="resourceId"/>
+            <result column="key" property="key"/>
+            <result column="value" property="value"/>
+        </collection>
+        <collection property="labelList" column="uuid"
+                    ofType="com.huawei.oceanprotect.system.base.label.entity.Label"
+                    select="com.huawei.oceanprotect.system.base.label.dao.LabelServiceDao.getLabelsByResourceId">
+            <id column="uuid" property="uuid"/>
+            <result column="NAME" property="name"/>
+        </collection>
+    </resultMap>
+    <sql id="SelectResourceAndEnvironmentBase">
+        select r.uuid,
+               r.name,
+               r.type,
+               r.sub_type,
+               r.path,
+               r.created_time,
+               r.parent_name,
+               r.parent_uuid,
+               r.root_uuid,
+               r.source_type,
+               r.version,
+               r.protection_status,
+               r.user_id,
+               r.authorized_user,
+               r.auth,
+               e.endpoint,
+               e.port,
+               e.user_name,
+               e.password,
+               e.link_status,
+               e.location,
+               e.os_type,
+               e.os_name,
+               e.scan_interval,
+               e.is_cluster,
+               e.cert_name,
+               e.time_zone,
+               GROUP_CONCAT(DISTINCT l.name ORDER BY l.name ASC SEPARATOR ', ') as label_names
+        from resources as r
+                 left join environments as e on r.uuid = e.uuid
+                 left join t_host_agent_info po on po.uuid = r.uuid
+                 left join t_label_r_resource_object as lr on lr.RESOURCE_OBJECT_ID = r.uuid
+                 left join t_label as l on l.uuid = lr.LABEL_ID
+    </sql>
+
+    <sql id="SelectResourceAndEnvironmentCountBase">
+        SELECT COUNT(DISTINCT r.uuid)
+        FROM resources as r
+                 LEFT JOIN environments as e ON r.uuid = e.uuid
+                 LEFT JOIN t_host_agent_info po ON po.uuid = r.uuid
+                 LEFT JOIN t_label_r_resource_object as lr ON lr.RESOURCE_OBJECT_ID = r.uuid
+                 LEFT JOIN t_label as l ON l.uuid = lr.LABEL_ID
+    </sql>
+
+    <sql id="SelectScenarioNotOne">
+        select resource_id from RES_EXTEND_INFO where resource_id not in (select resource_id from RES_EXTEND_INFO where key = 'scenario' and value = 1)
+    </sql>
+
+    <sql id="SelectFilteredAgentResourceIdByScenario">
+        select distinct resource_id from RES_EXTEND_INFO
+        <where>
+            <if test="filteredByPluginTypeIds != null and filteredByPluginTypeIds.size() > 0 ">
+                and resource_id in
+                <foreach collection="filteredByPluginTypeIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="scenario != null">
+                and key = 'scenario' and value = #{scenario}
+            </if>
+        </where>
+    </sql>
+
+    <sql id="SelectFilteredAgentResourceIdByScenarioZero">
+        select distinct resource_id from RES_EXTEND_INFO
+        <where>
+            <!-- vmware无scenario字段，所以这里适配，将内置agentId查出来, 查外置指查非内置 -->
+            resource_id not in (select resource_id from RES_EXTEND_INFO where key = 'scenario' and value = 1)
+            <if test="filteredByPluginTypeIds != null and filteredByPluginTypeIds.size() > 0 ">
+                and resource_id in
+                <foreach collection="filteredByPluginTypeIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </sql>
+
+    <sql id="SelectFilteredAgentResourceIdByScenarioOne">
+        select distinct resource_id from RES_EXTEND_INFO
+        <where>
+            key = 'scenario' and value = '1'
+            <if test="filteredByPluginTypeIds != null and filteredByPluginTypeIds.size() > 0 ">
+                and resource_id in
+                <foreach collection="filteredByPluginTypeIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </sql>
+
+    <sql id="CommonFuzzyQuery">
+        <if test="type != null and type != ''">
+            AND r.type = #{type}
+        </if>
+        <if test="subType != null and subType.size() > 0">
+            AND sub_type in
+            <foreach collection="subType" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="isCluster != null">
+            AND is_cluster = #{isCluster}
+        </if>
+        <if test="uuid != null and uuid != ''">
+            AND r.uuid like #{uuid}
+        </if>
+        <if test="resourceSetId != null and resourceSetId != ''">
+            AND r.uuid in
+            (select resource_object_id from t_resource_set_r_resource_object where
+            resource_set_id = #{resourceSetId})
+        </if>
+        <if test="name != null and name != ''">
+            AND r.name like #{name}
+        </if>
+        <if test="endpoint != null and endpoint != ''">
+            AND e.endpoint like #{endpoint}
+        </if>
+        <if test="linkStatus != null and linkStatus.size() > 0">
+            AND link_status in
+            <foreach collection="linkStatus" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="osType != null and osType.size() > 0">
+            AND os_type in
+            <foreach collection="osType" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="version != null and version != ''">
+            AND r.version like #{version}
+        </if>
+        <if test="labelName != null and labelName != ''">
+            AND UPPER(l.name) LIKE CONCAT('%', UPPER(#{labelName}), '%')
+        </if>
+        <if test="authorizedUser != null and authorizedUser != ''">
+            AND r.authorized_user like #{authorizedUser}
+        </if>
+    </sql>
+
+    <sql id="FuzzyQueryResourceColumnsZero">
+        <choose>
+            <when test="tag != null and tag != ''">
+                r.uuid in (select resource_id from RES_EXTEND_INFO where resource_id in (
+                <include refid="SelectFilteredAgentResourceIdByScenarioZero"/>) and key = 'tag' and value
+                like #{tag})
+            </when>
+            <otherwise>
+                r.uuid in (
+                <include refid="SelectFilteredAgentResourceIdByScenarioZero"/>
+                )
+            </otherwise>
+        </choose>
+        <include refid="CommonFuzzyQuery"/>
+        <!-- 外置代理需要筛选用户id，共享参数为true则不通过userId筛选 -->
+        <if test="domainId != null and domainId != ''">
+            AND (r.uuid in (select resource_object_id from  T_DOMAIN_R_RESOURCE_OBJECT where domain_id = #{domainId}) OR is_shared is true)
+        </if>
+        <if test="isShared != null and isShared.size() > 0">
+            AND is_shared in
+            <foreach collection="isShared" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </sql>
+
+    <sql id="FuzzyQueryResourceColumnsOne">
+        <choose>
+            <when test="tag != null and tag != ''">
+                r.uuid in (select resource_id from RES_EXTEND_INFO where resource_id in (
+                <include refid="SelectFilteredAgentResourceIdByScenarioOne"/>) and key = 'tag' and value
+                like #{tag})
+            </when>
+            <otherwise>
+                r.uuid in (
+                <include refid="SelectFilteredAgentResourceIdByScenarioOne"/>
+                )
+            </otherwise>
+        </choose>
+        <include refid="CommonFuzzyQuery"/>
+    </sql>
+
+    <sql id="FuzzyQueryResourceColumns">
+        <choose>
+            <when test="scenario != null and scenario == '0'.toString()">
+                <where>
+                    <include refid="FuzzyQueryResourceColumnsZero"/>
+                </where>
+            </when>
+            <when test="scenario != null and scenario == '1'.toString()">
+                <where>
+                    <include refid="FuzzyQueryResourceColumnsOne"/>
+                </where>
+            </when>
+            <otherwise>
+                <where>
+                    (<include refid="FuzzyQueryResourceColumnsZero"/>)
+                    OR
+                    (<include refid="FuzzyQueryResourceColumnsOne"/>)
+                </where>
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="SelectResourcesOrderBy">
+        <choose>
+            <when test="cpuRate == 'asc'">
+                order by cpu_rate asc, r.created_time desc, r.uuid asc
+            </when>
+            <when test="cpuRate == 'desc'">
+                order by cpu_rate desc, r.created_time desc, r.uuid asc
+            </when>
+            <when test="memRate == 'asc'">
+                order by mem_rate asc, r.created_time desc, r.uuid asc
+            </when>
+            <when test="memRate == 'desc'">
+                order by mem_rate desc, r.created_time desc, r.uuid asc
+            </when>
+            <otherwise>
+                order by r.created_time desc, r.uuid asc
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="GroupBy">
+        GROUP BY r.uuid, r.name, r.type, r.sub_type, r.path, r.created_time,
+             r.parent_name, r.parent_uuid, r.root_uuid, r.source_type, r.version,
+             r.protection_status, r.user_id, r.authorized_user, r.auth, e.endpoint,
+             e.port, e.user_name, e.password, e.link_status, e.location, e.os_type,
+             e.os_name, e.scan_interval, e.is_cluster, e.cert_name, e.time_zone
+    </sql>
+
+    <select id="queryAgentResourceList" parameterType="map"
+        resultMap="BaseResultMap">
+        <include refid="SelectResourceAndEnvironmentBase"/>
+        <include refid="FuzzyQueryResourceColumns"/>
+        <include refid="GroupBy"/>
+        <include refid="SelectResourcesOrderBy"/>
+    </select>
+
+    <select id="queryAgentResourceCount" parameterType="map"
+        resultType="java.lang.Integer">
+        <include refid="SelectResourceAndEnvironmentCountBase"/>
+        <include refid="FuzzyQueryResourceColumns"/>
+    </select>
+
+    <select id="querySharedAgentIds" resultType="java.lang.String">
+            select UUID from T_HOST_AGENT_INFO where IS_SHARED = true;
+    </select>
+</mapper>
