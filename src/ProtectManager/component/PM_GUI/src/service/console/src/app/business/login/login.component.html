@@ -144,7 +144,7 @@
     </lv-group>
   </div>
 
-  <div class="main_footer">{{ copyRightLabel }}</div>
+  <div class="main_footer" *ngIf="showCopyRight">{{ copyRightLabel }}</div>
 </div>
 
 <ng-template #pwdComplexTipTpl>

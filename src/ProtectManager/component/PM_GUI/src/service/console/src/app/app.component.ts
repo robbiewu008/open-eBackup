@@ -162,6 +162,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   colorDark = false;
 
+  // 开源
+  isOpenVersion = includes(
+    [DataMap.Deploy_Type.openOem.value, DataMap.Deploy_Type.openServer.value],
+    this.i18n.get('deploy_type')
+  );
+
   protectionRouterUrlList = [
     RouterUrl.ProtectionDatabase,
     RouterUrl.ProtectionBigData,
@@ -254,6 +260,14 @@ export class AppComponent implements OnInit, OnDestroy {
       .titleService.setTitle(this.baseUtilService.getProductName());
     this.setFavicon();
     this.listenStoragechange();
+    // 开源处理
+    if (this.isOpenVersion) {
+      this.versionLabel = `${this.i18n.get(
+        'common_version_label',
+        [],
+        true
+      )}${this.i18n.get('common_open_version_label')}`;
+    }
   }
 
   showGuidePop() {

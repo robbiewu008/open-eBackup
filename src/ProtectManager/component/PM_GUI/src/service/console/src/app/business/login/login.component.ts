@@ -160,6 +160,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   // 登录错误信息
   loginErrorMsg: string;
 
+  showCopyRight = !includes(
+    [DataMap.Deploy_Type.openOem.value, DataMap.Deploy_Type.openServer.value],
+    this.i18n.get('deploy_type')
+  );
+
   constructor(
     public router: Router,
     public fb: FormBuilder,
