@@ -1,15 +1,5 @@
 #!/bin/bash
 
-#########################################
-# Copyright (c) 2022-2022 Huawei .
-# All rights reserved.
-#
-# Please send feedback to http://www.huawei.com
-#
-# Function agent签名脚本
-# revise note
-########################################
-
 set +x
 
 #动作 生成私钥，对信息签名
