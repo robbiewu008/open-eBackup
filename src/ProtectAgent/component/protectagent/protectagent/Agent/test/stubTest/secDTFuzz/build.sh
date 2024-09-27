@@ -16,11 +16,6 @@ else
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${AGENT_ROOT}/bin
 fi
  
-export cmc_user=p_ciArtifact
-export cmc_pwd="encryption:ETMsDgAAAYWZguqfABFBRVMvR0NNL05vUGFkZGluZwCAABAAEBMG1JSYl+HNdWoh2xTsIOoAAAAqylgeKzik6xoE+eMga6I3TrTiY9lcodqK86EW4waRd53dbSqXZ5O2E/ruABTp7d8K52StBves9rACbK+2rWBlvA=="
-export opensource_user=p_ciOpenSource
-export opensource_pwd="encryption:ETMsDgAAAYYMPEgSABFBRVMvR0NNL05vUGFkZGluZwCAABAAEFJn+pOPurvRnoPftH426+8AAAAwAIXLEokPz/bIzvi4yb1DJdM92prAxA/CYDK8U/OB5tDDI4sxFhoBnsz1B8Lht5SfABSlwcVBRbZYP36QkvBvjXvC/wmvnQ=="
- 
 main()
 {
     chmod -R 777 ${HOME}

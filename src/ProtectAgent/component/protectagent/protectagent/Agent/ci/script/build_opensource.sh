@@ -8,7 +8,8 @@ packagetype=$3
 OUTPUT_CODE_DIR=${WORKSPACE}/output/code
 OUTPUT_DIR_ASAN=${WORKSPACE}/output/finalpkg_ASAN/
 SDK_DIR=${WORKSPACE}/../../../../open-source-obligation/PluginSDK/${systemtypeage}/
-AGENT_PKG=${WORKSPACE}/../../../../open-source-obligation/dependency/Linux
+AGENT_PKG=${WORKSPACE}/../../../../open-source-obligation/dependency/Linux+
+OPENSOURCE_BIN_PATH=${WORKSPACE}/../../../../open-source-obligation/Agent
 cd ${WORKSPACE}/
 export HOME=${WORKSPACE}
 OUTPUT_DIR=${WORKSPACE}/output/finalpkg/
@@ -52,8 +53,7 @@ if [ "${systemtypeage}" != "ASAN" ];then
 else
     cd ${WORKSPACE}
     source ${WORKSPACE}/Agent/build/env.sh
-    sh ${WORKSPACE}/Agent/build/download_opensrc.sh copy
-    # sh ${WORKSPACE}/Agent/build/download_tools.sh
+    cp -f OPENSOURCE_BIN_PATH ./
     sh ${WORKSPACE}/Agent/build/agent_pack_backup.sh ASAN
     cp ${WORKSPACE}/AGENT_PACK_TEMP/*.tar.xz ${OUTPUT_DIR}
 fi
