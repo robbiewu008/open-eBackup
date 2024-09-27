@@ -1,4 +1,3 @@
-
 package openbackup.system.base.service.secret;
 
 import static org.mockito.ArgumentMatchers.any;

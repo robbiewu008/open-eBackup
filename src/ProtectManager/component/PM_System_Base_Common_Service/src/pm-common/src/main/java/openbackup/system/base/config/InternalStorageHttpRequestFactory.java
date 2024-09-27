@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
- */
-
 package openbackup.system.base.config;
 
 import org.slf4j.Logger;

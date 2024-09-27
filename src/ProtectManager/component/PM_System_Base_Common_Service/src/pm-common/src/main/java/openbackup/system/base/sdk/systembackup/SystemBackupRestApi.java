@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- */
-
 package openbackup.system.base.sdk.systembackup;
 
 import openbackup.system.base.common.rest.CommonFeignConfiguration;

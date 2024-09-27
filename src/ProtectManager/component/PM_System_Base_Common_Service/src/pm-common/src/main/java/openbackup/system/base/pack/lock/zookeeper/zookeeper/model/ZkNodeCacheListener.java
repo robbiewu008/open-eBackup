@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
- */
-
 package openbackup.system.base.pack.lock.zookeeper.zookeeper.model;
 
 import org.apache.curator.framework.recipes.cache.NodeCache;

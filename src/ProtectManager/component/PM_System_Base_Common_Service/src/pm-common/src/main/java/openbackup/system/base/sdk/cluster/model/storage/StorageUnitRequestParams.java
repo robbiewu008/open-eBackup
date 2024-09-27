@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2024. All rights reserved.
- */
-
 package openbackup.system.base.sdk.cluster.model.storage;
 
 import lombok.AllArgsConstructor;

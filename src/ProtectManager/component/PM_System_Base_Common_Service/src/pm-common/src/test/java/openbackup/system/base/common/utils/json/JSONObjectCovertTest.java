@@ -1,6 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- */
 package openbackup.system.base.common.utils.json;
 
 import static org.assertj.core.api.BDDAssertions.then;

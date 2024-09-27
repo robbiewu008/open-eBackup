@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2018-2019. All rights reserved.
- */
-
 package openbackup.system.base.service.email;
 
 import openbackup.system.base.common.utils.ExceptionUtil;

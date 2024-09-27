@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2021. All rights reserved.
- */
-
 package openbackup.system.base.sdk.cluster.api;
 
 import openbackup.system.base.sdk.cluster.model.BackupStorageUnit;

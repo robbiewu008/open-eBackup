@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
- */
-
 package openbackup.system.base.pack.lock.zookeeper.zookeeper.impl;
 
 import lombok.extern.slf4j.Slf4j;

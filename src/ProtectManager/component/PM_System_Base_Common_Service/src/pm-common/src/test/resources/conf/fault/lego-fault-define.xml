@@ -1,9 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
-<!--
-  ~ Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
-  -->
-
 <trapcfg moMainType="lego.dic.legosystem.maintype" moSubType="lego.dic.legosystem.subtype">
     <traps>
         <trap ID="0x000803220001" TrapType="1" KeyIndexs="" Severity="3"/>

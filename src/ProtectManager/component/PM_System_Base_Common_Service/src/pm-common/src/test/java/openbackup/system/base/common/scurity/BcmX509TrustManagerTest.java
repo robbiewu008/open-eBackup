@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- */
-
 package openbackup.system.base.common.scurity;
 
 import openbackup.system.base.common.rest.CommonX509TrustHandler;

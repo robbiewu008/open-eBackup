@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2021. All rights reserved.
- */
-
 package openbackup.system.base.task;
 
 import openbackup.system.base.common.utils.ExceptionUtil;

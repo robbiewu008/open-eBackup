@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
- */
-
 package openbackup.system.base.sdk.storage.model;
 
 import openbackup.system.base.sdk.storage.enums.StorageAuthStatus;

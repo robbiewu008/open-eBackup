@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
- */
-
 package openbackup.system.base.sdk.storage.api;
 
 import openbackup.system.base.config.feign.dorado.DoradoClusterFeignConfiguration;

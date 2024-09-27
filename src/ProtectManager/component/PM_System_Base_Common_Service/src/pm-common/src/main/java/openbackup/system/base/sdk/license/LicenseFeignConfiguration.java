@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
- */
-
 package openbackup.system.base.sdk.license;
 
 import openbackup.system.base.common.model.storage.StorageResponse;

@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
- */
-
 package openbackup.system.base.common.model.repository;
 
 import openbackup.system.base.common.model.storage.S3StorageStatusResponse;

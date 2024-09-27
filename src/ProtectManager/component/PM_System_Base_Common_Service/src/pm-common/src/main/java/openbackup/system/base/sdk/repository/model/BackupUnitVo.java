@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2024. All rights reserved.
- */
-
 package openbackup.system.base.sdk.repository.model;
 
 import openbackup.system.base.sdk.cluster.model.StorageUnitVo;

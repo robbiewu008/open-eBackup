@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
- */
-
 package openbackup.system.base.sdk.copy.model;
 
 import openbackup.system.base.common.constants.CommonErrorCode;

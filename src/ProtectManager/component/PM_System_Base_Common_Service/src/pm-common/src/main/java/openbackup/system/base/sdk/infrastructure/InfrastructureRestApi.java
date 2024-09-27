@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
- */
-
 package openbackup.system.base.sdk.infrastructure;
 
 import openbackup.system.base.bean.ConfigMapOperationParam;

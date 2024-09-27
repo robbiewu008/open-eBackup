@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2024. All rights reserved.
- */
-
 package openbackup.system.base.util;
 
 import org.springframework.util.StringUtils;
