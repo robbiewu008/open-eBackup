@@ -16,7 +16,6 @@ ARG mvn_tag=3.6.3-1.3
 #
 # Build Service Image
 #
-#FROM emei-il.huawei.com/misc/boilerplate/mvn:${mvn_tag} as build
 FROM open-ebackup-1.0:base
 
 RUN luseradd -u 15012 -g nobody -s /sbin/nologin pm_gui

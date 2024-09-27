@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#
-# Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
-#
-
 CUR_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 BASE_PATH=${CUR_PATH}/../..
 CODE_BRANCH=${PM_BRANCH}

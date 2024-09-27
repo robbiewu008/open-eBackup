@@ -31,10 +31,6 @@ echo tag_image=${tag_image}
 echo code_branch=${code_branch}
 echo inf_branch=${inf_branch}
 
-echo "docker login harbor"
-docker login harbors.inhuawei.com -u User -p User1234
-L_BASE_TAG="oceanprotect-dataprotect-1.0.rc1:base"
-
 echo "modify PM version."
 sh ${BASE_PATH}/CI/script/common.sh
 
@@ -67,22 +63,6 @@ function clean_all_docker() {
 
     echo "Clearing all docker images"
     docker images | tr -s ' ' | cut -d ' ' -f 3 | xargs -I {} # docker rmi -f {}
-}
-
-function import_base_image() {
-    echo "pull base-image from harbor"
-    docker pull harbors.inhuawei.com/a8000/${inf_branch}/${tag_image}/${L_BASE_TAG}
-    if [ $? -ne 0 ]; then
-        echo "pull base image failed"
-        exit 1
-    fi
-
-    docker tag harbors.inhuawei.com/a8000/${inf_branch}/${tag_image}/${L_BASE_TAG} ${L_BASE_TAG}
-    echo "download base image success"
-
-    echo "Clearing the image tag=none"
-    docker images | grep "<none>" | tr -s ' ' | cut -d ' ' -f 3 | xargs -I {} # docker rmi -f {}
-
 }
 
 function build_image() {
@@ -166,7 +146,6 @@ function build_all_image() {
 function build_ms_image() {
     MS_NAME=$1
     if [[ "${G_App_Common}" =~ "${MS_NAME}" ]]; then
-        import_base_image
         build_image ${MS_NAME}
     else
         import_base_image
@@ -178,7 +157,6 @@ function main() {
     clean_all_docker
     copy_pkg
     if [ $# = 0 ]; then
-        import_base_image
         build_all_image
     else
         MS_NAME=$1
