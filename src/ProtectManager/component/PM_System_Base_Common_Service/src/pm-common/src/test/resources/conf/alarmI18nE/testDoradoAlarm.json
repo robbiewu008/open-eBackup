@@ -1,8 +1,0 @@
-{
-  "0x64006E0001.alarm.name": "Job Failed",
-  "0x64006E0001.alarm.advice": "Step1 Log in to ProtectManager. In the navigation pane, choose \"Insight\" > \"Jobs\" > \"Historical Jobs\". Locate the failed job based on the resource name in the alarm information.<br>Step2 Click the job type to view the details and perform operations according to the handling suggestions.<br>Step3 This alarm is automatically cleared when the resource successfully runs a job of the same type next time.",
-  "0x64006E0001.alarm.desc": "Resource ([resource_name]) running job [job_type]{0:backup;1:archive;2:replication} [job_status]{0:failed;1:partially succeeded;2:succeeded}.",
-  "0x64006E0001.alarm.desc.detail": "Resource ([resource_name]) running job [job_type]{0:backup;1:archive;2:replication} [job_status]{0:failed;1:partially succeeded;2:succeeded}.",
-  "0x64006E0001.alarm.effect": "Resources cannot be protected or restored.",
-  "0x64006E0001.alarm.argument.explain": "1. [resource_name]: Resource name<br>2. [job_type]: Job type<br>3. [job_status]: Failure status (failed or partially successful)<br>4. [resource_id]: Resource ID"
-}

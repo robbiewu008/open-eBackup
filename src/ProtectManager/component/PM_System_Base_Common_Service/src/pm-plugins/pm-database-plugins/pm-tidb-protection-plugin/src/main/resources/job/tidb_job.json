@@ -1,9 +1,0 @@
-{
-  "subTypes": ["TiDB-cluster", "TiDB-database", "TiDB-table"],
-  "queueTypes": [
-    {
-      "jobTypes": ["BACKUP", "RESTORE", "COPY_DELETE"],
-      "queueScope": "root_uuid"
-    }
-  ]
-}

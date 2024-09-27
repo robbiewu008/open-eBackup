@@ -1,7 +1,0 @@
-{
-  "name": "backup1",
-  "description": "Backup VM1 weekly",
-  "type": "volume",
-  "instance_id": "a7ac8fac-b904-4434-ad65-891744a3c000",
-  "copy_id": "6883573e-ba4e-4fd5-8df5-f59b6c365b5b"
-}

@@ -1,9 +1,0 @@
-{
-  "subTypes": ["GaussDBT"],
-  "queueTypes": [
-    {
-      "jobTypes": ["BACKUP", "RESTORE", "COPY_DELETE"],
-      "queueScope": "root_uuid"
-    }
-  ]
-}

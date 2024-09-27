@@ -1,8 +1,0 @@
-{
-  "0x64006E0001.alarm.name": "任务失败",
-  "0x64006E0001.alarm.advice": "步骤1 登录Protect Manager，在导航栏选择“监控 > 任务 > 历史任务”，根据告警信息中的资源名称查找该资源的失败任务。<br>步骤2 单击任务类型查看任务详情，根据错误处理建议进行操作。<br>步骤3 待下一次该资源运行同类型的任务成功后，告警将自动清除。",
-  "0x64006E0001.alarm.desc": "资源（[resource_name]）运行[job_type]{0:备份;1:归档;2:复制}任务[job_status]{0:失败;1:部分成功;2:成功}。",
-  "0x64006E0001.alarm.desc.detail": "资源（[resource_name]）运行[job_type]{0:备份;1:归档;2:复制}任务[job_status]{0:失败;1:部分成功;2:成功}。",
-  "0x64006E0001.alarm.effect": "无法对资源进行保护或恢复。",
-  "0x64006E0001.alarm.argument.explain":"1.[resource_name]资源名称<br>2.[job_type]任务类型<br>3.[job_status]失败状态（失败,部分成功）<br>4.[resource_id]资源id"
-}

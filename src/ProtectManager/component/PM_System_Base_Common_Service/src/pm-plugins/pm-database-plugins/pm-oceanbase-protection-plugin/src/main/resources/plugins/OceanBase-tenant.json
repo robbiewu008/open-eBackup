@@ -1,9 +1,0 @@
-{
-  "type": "Database",
-  "subType": "OceanBase-tenant",
-  "functions": {
-    "scan": {
-      "auto-scan": false
-    }
-  }
-}

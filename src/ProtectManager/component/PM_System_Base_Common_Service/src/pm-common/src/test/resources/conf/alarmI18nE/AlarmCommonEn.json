@@ -1,8 +1,0 @@
-{
-  "alarm_label": "alarm_test",
-  "0x1064032C0001.alarm.name": "Alarm dump failed",
-  "0x1064032C0001.alarm.desc": "The alarm data dump process is abnormal and the dump fails.",
-  "0x1064032C0001.alarm.effect": "1. The system stops running unexpectedly due to power failure, physical damage, etc. 2. Dump target disk is damaged or insufficient space. 3. The number of alarms does not meet the dump requirements.",
-  "0x1064032C0001.alarm.advice": "Possible reason 1: The system stops unexpectedly due to power failure, physical damage, etc. The dump failure caused by this reason does not need to be repaired. <br>Possible cause 2: The dump target disk is damaged or has insufficient space. <br>  1.1 Please contact the system administrator to check whether the disk is damaged. <br>   Yes => Please contact the relevant hardware support engineer to try to repair the disk or replace it with a new one. <br>   No=>Go to step [1.1.1]. <br>    1.1.1 Check whether the disk space is insufficient. <br>     Yes => Expand the disk capacity or dump data to a larger capacity disk. <br>     No => Please contact technical support engineers for assistance.",
-  "0x1064032C0001.alarm.location": "N/A"
-}

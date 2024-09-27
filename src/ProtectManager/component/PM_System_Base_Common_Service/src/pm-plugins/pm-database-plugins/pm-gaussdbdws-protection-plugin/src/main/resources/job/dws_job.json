@@ -1,9 +1,0 @@
-{
-  "subTypes": ["DWS-cluster", "DWS-database", "DWS-schema", "DWS-table"],
-  "queueTypes": [
-    {
-      "jobTypes": ["BACKUP", "RESTORE"],
-      "queueScope": "root_uuid"
-    }
-  ]
-}

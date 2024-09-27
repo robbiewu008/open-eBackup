@@ -1,6 +1,0 @@
-enable: true
-sensitiveWords:
-  - rule: fuzz
-    keys: pass,pwd,key,crypto,session,token,fingerprint,auth,enc,dec,tgt,iqn,initiator,secret,cert,salt,private,verfiycode,email,phone,rand,safe,user_info,PKCS1,base64,AES128,AES256,RSA,SHA1,SHA256,SHA384,SHA512,algorithm,AccountNumber,bank,cvv,checkno,mima,CardPinNumber,IDNumber
-  - rule: word
-    keys: ak,iv,mk,sk

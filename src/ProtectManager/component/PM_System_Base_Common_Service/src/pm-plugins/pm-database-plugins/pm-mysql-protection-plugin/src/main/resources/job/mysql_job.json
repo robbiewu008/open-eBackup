@@ -1,9 +1,0 @@
-{
-  "subTypes": ["MySQL", "MySQL-instance", "MySQL-cluster", "MySQL-clusterInstance", "MySQL-database"],
-  "queueTypes": [
-    {
-      "jobTypes": ["BACKUP", "RESTORE", "COPY_DELETE", "live_mount"],
-      "queueScope": "root_uuid"
-    }
-  ]
-}
