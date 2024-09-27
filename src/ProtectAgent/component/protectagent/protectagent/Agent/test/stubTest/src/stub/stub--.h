@@ -1,18 +1,15 @@
-/******************************************************************************
-  文件名          : stub.h
-  版本号          : 1.0
-  作者            : 郑万刚
-  生成日期        : 2015-09-14
-  文件描述        : 动态打桩工具接口声明文件，支持SUSE10-x64平台
-  其它            : 
-                    本文件封装了stubInner.h中的函数（C++中请不要
-				      使用stubInner.h）
-					本stub工具不能完成对构造函数和析构函数的打桩
-  功能说明 :
-                    使用Stub类实现动态打桩
-					在整个测试开始之前调用Stub::Init();
-					在整个测试完成之后调用Stub::Destroy();				
-******************************************************************************/
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef __STUB_H__
 #define __STUB_H__
 

@@ -1,18 +1,15 @@
-/******************************************************************************
-版权所有 (C), 2006-2020, 华为技术有限公司
-
-  文件名          : stub.h
-  版本号          : 1.0
-  作者            : 王永峰
-  生成日期        : 2009-04-01
-  文件描述        : 动态打桩工具接口声明文件，支持SUSE 平台
-  其它            :
-                    在C++中请不要使用下面这一系列的函数，请使用最后的Stub类
-  功能说明 :
-                    主要用于单元测试动态打桩，
-                    支持运行时使用全局函数对全局函数和类成员函数（包括虚函数和静态函数）进行打桩替换
-                    不支持对构造函数和析构函数打桩
-******************************************************************************/
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef __DYNAMIC_STUB__
 #define __DYNAMIC_STUB__
 

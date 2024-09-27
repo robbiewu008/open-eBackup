@@ -1,11 +1,15 @@
 /*
- * Copyright (C), 2001-2020, Huawei Tech. Co., Ltd.
- * Description: oracle native backup base class
- * Author: wangguitao w00510599
- * Create: 2020-01-27
- * History:
- *   2020-01-27 initial
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef _AGENT_BACKUP_STEP_TESTORACLENATIVE_
 #define _AGENT_BACKUP_STEP_TESTORACLENATIVE_
 #define protected public
