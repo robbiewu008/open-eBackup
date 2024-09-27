@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{5C936137-56B3-41E4-8F55-4F5E0A235162}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>virt_hyperv_test</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>virt_hyperv_test</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>
+    </LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level1</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>
+      </SDLCheck>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NDEBUG;WIN32;__WINDOWS__;STDCXX_98_HEADERS;CURL_STATICLIB;SUPPORT_SSL;FRAME_SIGN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4273;4251;4819</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>..\..\..\src;..\..\..\test_win;..\..\..\test_win\llt_stub;..\..\..\..\..\framework\inc;..\..\..\..\..\framework\inc\common;..\..\..\..\..\framework\inc\client;..\..\..\..\..\framework\inc\server;..\..\..\..\..\framework\inc\rpc;..\..\..\..\..\framework\inc\rpc\certificateservice;..\..\..\..\..\framework\inc\thrift_interface;..\..\..\..\..\framework\dep\agent_sdk\include\message\archivestream;..\..\..\..\..\framework\dep\agent_sdk\include;..\..\..\..\..\Module\src;..\..\..\..\..\Module\src\common;..\..\..\..\..\Module\dt_utils\gmock\googletest-release\googletest\include;..\..\..\..\..\Module\dt_utils\gmock\googletest-release\googlemock\include;..\..\..\..\..\Module\platform\securec\include;..\..\..\..\..\Module\open_src\thrift\lib\cpp\src;..\..\..\..\..\Module\open_src\jsoncpp\include;..\..\..\..\..\Module\open_src\tinyxml2\include;..\..\..\..\..\Module\open_src\openssl\include;..\..\..\..\..\Module\open_src\boost\.libs\include;..\..\..\..\..\Module\open_src\zlib;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <OptimizeReferences>
+      </OptimizeReferences>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <AdditionalDependencies>zlib.lib;wbemuuid.lib;VssApi.lib;VirtDisk.lib;uuid.lib;jsoncppobj.lib;log_util.lib;system.lib;metafile_parser.lib;config_reader_util.lib;common_util.lib;basic_job.lib;rpc.lib;thrift_client.lib;thrift_server.lib;securec.lib;libssl.lib;libcrypto.lib;agentsdk.lib;thrift_interface.lib;servicefactory_obj.lib;gtest.lib;gtest_main.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\..\..\framework\lib;..\..\..\..\..\Module\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration />
+      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\test_win\protect_engines\hyperv\HyperVProtectEngineTest.cpp" />
+    <ClCompile Include="..\..\..\test_win\protect_engines\hyperv\HyperVProtectEngineRestoreTest.cpp" />
+    <ClCompile Include="..\..\..\test_win\protect_engines\engine_factory\EngineFactoryTest.cpp" />
+    <ClCompile Include="..\..\..\test_win\common\JobHandleTest.cpp" />
+    <ClCompile Include="..\..\..\src\PluginMain.cpp" />
+    <ClCompile Include="..\..\..\src\protect_engines\hyperv\api\powershell\PSClient.cpp" />
+    <ClCompile Include="..\..\..\src\protect_engines\hyperv\api\wmi_client\WMIClient.cpp" />
+    <ClCompile Include="..\..\..\src\repository_handlers\win32filesystem\Win32FileSystemHandler.cpp" />
+    <ClCompile Include="..\..\..\src\protect_engines\hyperv\HyperVProtectEngine.cpp" />
+    <ClCompile Include="..\..\..\src\protect_engines\hyperv\resource_discovery\HyperVResourceAccess.cpp" />
+    <ClCompile Include="..\..\..\src\volume_handlers\hyperv_volume\HyperVVolumeHandler.cpp" />
+    <ClCompile Include="..\..\..\src\protect_engines\hyperv\utils\executor\WinCmdExector.cpp" />
+    <ClCompile Include="..\..\..\src\job_controller\jobs\backup\BackupIoTask.cpp" />
+    <ClCompile Include="..\..\..\src\job_controller\jobs\backup\BackupJob.cpp" />
+    <ClCompile Include="..\..\..\src\job_controller\jobs\VirtualizationBasicJob.cpp" />
+    <ClCompile Include="..\..\..\src\job_controller\jobs\restore\ArchiveRestoreJob.cpp" />
+    <ClCompile Include="..\..\..\src\job_controller\jobs\restore\RestoreIOTask.cpp" />
+    <ClCompile Include="..\..\..\src\job_controller\jobs\restore\RestoreJob.cpp" />
+    <ClCompile Include="..\..\..\src\job_controller\io_scheduler\TaskPool.cpp" />
+    <ClCompile Include="..\..\..\src\job_controller\io_scheduler\TaskScheduler.cpp" />
+    <ClCompile Include="..\..\..\src\common\cert_mgr\CertMgr.cpp" />
+    <ClCompile Include="..\..\..\src\common\utils\Utils.cpp" />
+    <ClCompile Include="..\..\..\src\common\utils\Win32Utils.cpp" />
+    <ClCompile Include="..\..\..\src\common\model\ModelBase.cpp" />
+    <ClCompile Include="..\..\..\src\common\model\ResponseModel.cpp" />
+    <ClCompile Include="..\..\..\src\common\uuid\Uuid.cpp" />
+    <ClCompile Include="..\..\..\src\job_controller\factory\VirtualizationJobFactory.cpp" />
+    <ClCompile Include="..\..\..\src\job_controller\jobs\verify\VerifyJob.cpp" />
+    <ClCompile Include="..\..\..\src\job_controller\jobs\verify\BlockCheckTask.cpp" />
+    <ClCompile Include="..\..\..\src\protect_engines\engine_factory\EngineFactory.cpp" />
+    <ClCompile Include="..\..\..\src\repository_handlers\factory\RepositoryFactory.cpp" />
+    <ClCompile Include="..\..\..\src\common\DirtyRanges.cpp" />
+    <ClCompile Include="..\..\..\src\common\JobHandle.cpp" />
+    <ClCompile Include="..\..\..\src\common\sha256\Sha256.cpp" />
+    <ClCompile Include="..\..\..\src\common\token_mgr\BaseTokenMgr.cpp" />
+    <ClCompile Include="..\..\..\src\common\token_mgr\GetTokenResponse.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
