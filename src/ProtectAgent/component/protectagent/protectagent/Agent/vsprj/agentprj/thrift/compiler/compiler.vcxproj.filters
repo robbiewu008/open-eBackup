@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\audit\t_audit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_as3_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_c_glib_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_cl_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_cpp_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_d_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_dart_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_delphi_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_erl_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_go_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_gv_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_haxe_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_hs_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_html_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_java_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_javame_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_js_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_json_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_lua_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_markdown_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_netstd_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_ocaml_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_perl_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_php_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_py_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_rb_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_rs_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_st_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_swift_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_xml_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_xsd_generator.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\parse.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_typedef.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\common.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\main.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\thriftl.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\thrifty.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\audit\t_audit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_generator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_generator_registry.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_html_generator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_netstd_generator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\generate\t_oop_generator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_base_type.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_const.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_const_value.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_container.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_doc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_enum.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_enum_value.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_field.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_function.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_list.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_map.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_program.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_scope.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_service.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_set.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_struct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_type.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\parse\t_typedef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\windows\config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\common.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\globals.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\logging.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\main.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\platform.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\thrifty.hh">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\thriftl.ll" />
+    <None Include="..\..\..\..\open_src\thrift\compiler\cpp\src\thrift\thrifty.yy" />
+  </ItemGroup>
+</Project>

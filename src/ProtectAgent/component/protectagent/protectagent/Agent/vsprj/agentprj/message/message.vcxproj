@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\src\message\curlclient\CurlHttpClient.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\curlclient\DmeRestClient.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\curlclient\PmRestClient.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\curlclient\RestClientCommon.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\curlclient\SSLHandle.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\rest\http_cgi.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\rest\message_process.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\tcp\BusinessClient.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\tcp\CConnection.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\tcp\CDppMessage.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\tcp\CSocket.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\tcp\DppSocket.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\tcp\MessageHandler.cpp" />
+    <ClCompile Include="..\..\..\src\src\message\tcp\TCPClientHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\inc\message\curlclient\CurlHttpClient.h" />
+    <ClInclude Include="..\..\..\src\inc\message\curlclient\DmeRestClient.h" />
+    <ClInclude Include="..\..\..\src\inc\message\curlclient\PmRestClient.h" />
+    <ClInclude Include="..\..\..\src\inc\message\curlclient\HttpClientInterface.h" />
+    <ClInclude Include="..\..\..\src\inc\message\curlclient\RestClientCommon.h" />
+    <ClInclude Include="..\..\..\src\inc\message\curlclient\SSLHandle.h" />
+    <ClInclude Include="..\..\..\src\inc\message\Message.h" />
+    <ClInclude Include="..\..\..\src\inc\message\rest\http_cgi.h" />
+    <ClInclude Include="..\..\..\src\inc\message\rest\http_status.h" />
+    <ClInclude Include="..\..\..\src\inc\message\rest\interfaces.h" />
+    <ClInclude Include="..\..\..\src\inc\message\rest\message_process.h" />
+    <ClInclude Include="..\..\..\src\inc\message\tcp\BusinessClient.h" />
+    <ClInclude Include="..\..\..\src\inc\message\tcp\CConnection.h" />
+    <ClInclude Include="..\..\..\src\inc\message\tcp\CDppMessage.h" />
+    <ClInclude Include="..\..\..\src\inc\message\tcp\CSocket.h" />
+    <ClInclude Include="..\..\..\src\inc\message\tcp\DppSocket.h" />
+    <ClInclude Include="..\..\..\src\inc\message\tcp\MessageHandler.h" />
+    <ClInclude Include="..\..\..\src\inc\message\tcp\MessageImpl.h" />
+    <ClInclude Include="..\..\..\src\inc\message\tcp\TCPClientHandler.h" />
+    <ClInclude Include="..\..\..\src\inc\message\thrift\AppProtectFramework.h" />
+    <ClInclude Include="..\..\..\src\inc\message\thrift\AppProtectPluginClient.h" />
+    <ClInclude Include="..\..\..\src\inc\message\thrift\JobCenterClient.h" />
+    <ClInclude Include="..\..\..\src\inc\message\thrift\JobExecService.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B8609CEB-46DA-4C01-890D-88F2E73030B3}</ProjectGuid>
+    <RootNamespace>rest</RootNamespace>
+    <ProjectName>message</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetExt>.lib</TargetExt>
+    <OutDir>..\..\..\bin\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\..\bin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\..\bin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\..\bin\</OutDir>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\open_src;..\..\..\platform\securec\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\open_src;..\..\..\platform\securec\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\open_src;..\..\..\platform\securec\include</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\open_src;..\..\..\platform\securec\include;..\..\..\open_src\openssl\include;..\..\..\open_src\curl\include;..\..\..\open_src\thrift\lib\cpp\src;..\..\..\open_src\boost;..\..\..\open_src\tinyxml</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;CURL_STATICLIB;SUPPORT_SSL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4996;4819</DisableSpecificWarnings>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

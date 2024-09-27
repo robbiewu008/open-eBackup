@@ -1,0 +1,156 @@
+#fuzzVersion为测试用例版本，被测代码修改时需更新fuzzVersion版本。
+#parameters：Fuzz相关各种参数
+#fuzz_args：fuzz参数，包括执行次数(count)、执行时间(time)、报告输出路径(reportPath)、种子文件的存放路径(corpusPath)
+#coverage_args：coverage参数
+#reproduce_args：crash复现参数
+#spec：配置测试用例，对于每个测试用例，都会起一个进程去执行，所有用例同时并行执行。
+#name：测试用例名
+#bin：编译生成的二进制可执行文件，放在out目录下
+#cmd：执行测试的命令
+#fun：被测接口名
+
+fuzzVersion: 0.0.1
+parameters:
+  fuzz_args: "-C count -T time -r reportPath -c corpusPath"
+  coverage_args: "-C 1000 -T 10 -r reportPath -c corpusPath"
+  reproduce_args: " -R 1 -t testcaseName -r reportPath -c corpusPath"
+spec:
+  - name: PrepareRecoveryTest
+    bin: /out/FuzzArchiveStream
+    cmd: ./FuzzArchiveStream --gtest_filter=FuzzArchiveStream.PrepareRecoveryTest ${args}
+    fun: ArchiveStreamService::PrepareRecovery
+
+  - name: QueryPrepareStatusTest
+    bin: /out/FuzzArchiveStream
+    cmd: ./FuzzArchiveStream --gtest_filter=FuzzArchiveStream.QueryPrepareStatusTest ${args}
+    fun: ArchiveStreamService::QueryPrepareStatus
+
+  - name: GetBackupInfoTest
+    bin: /out/FuzzArchiveStream
+    cmd: ./FuzzArchiveStream --gtest_filter=FuzzArchiveStream.GetBackupInfoTest ${args}
+    fun: ArchiveStreamService::GetBackupInfo
+
+  - name: GetRecoverObjectListTest
+    bin: /out/FuzzArchiveStream
+    cmd: ./FuzzArchiveStream --gtest_filter=FuzzArchiveStream.GetRecoverObjectListTest ${args}
+    fun: ArchiveStreamService::GetRecoverObjectList
+
+  - name: GetDirMetaDataTest
+    bin: /out/FuzzArchiveStream
+    cmd: ./FuzzArchiveStream --gtest_filter=FuzzArchiveStream.GetDirMetaDataTest ${args}
+    fun: ArchiveStreamService::GetDirMetaData
+
+  - name: GetFileMetaData
+    bin: /out/FuzzArchiveStream
+    cmd: ./FuzzArchiveStream --gtest_filter=FuzzArchiveStream.GetFileMetaData ${args}
+    fun: ArchiveStreamService::GetFileMetaData
+
+  - name: QueryPluginResourceTest
+    bin: /out/FuzzExternalPluginMagager
+    cmd: ./FuzzExternalPluginMagager --gtest_filter=FuzzExternalPluginMagager.QueryPluginResourceTest ${args}
+    fun: ExternalPluginManager::QueryPluginResource
+
+  - name: QueryPluginDetailTest
+    bin: /out/FuzzExternalPluginMagager
+    cmd: ./FuzzExternalPluginMagager --gtest_filter=FuzzExternalPluginMagager.QueryPluginDetailTest ${args}
+    fun: ExternalPluginManager::QueryPluginDetail
+
+  - name: QueryPluginDetailV2Test
+    bin: /out/FuzzExternalPluginMagager
+    cmd: ./FuzzExternalPluginMagager --gtest_filter=FuzzExternalPluginMagager.QueryPluginDetailV2Test ${args}
+    fun: ExternalPluginManager::QueryPluginDetailV2
+
+  - name: CheckPluginTest
+    bin: /out/FuzzExternalPluginMagager
+    cmd: ./FuzzExternalPluginMagager --gtest_filter=FuzzExternalPluginMagager.CheckPluginTest ${args}
+    fun: ExternalPluginManager::CheckPlugin
+
+  - name: WakeUpJobTest
+    bin: /out/FuzzExternalPluginMagager
+    cmd: ./FuzzExternalPluginMagager --gtest_filter=FuzzExternalPluginMagager.WakeUpJobTest ${args}
+    fun: AppProtectPlugin::WakeUpJob
+
+  - name: AbortJobTest
+    bin: /out/FuzzExternalPluginMagager
+    cmd: ./FuzzExternalPluginMagager --gtest_filter=FuzzExternalPluginMagager.AbortJobTest ${args}
+    fun: AppProtectPlugin::AbortJob
+
+  - name: QueryPluginConfigTest
+    bin: /out/FuzzExternalPluginMagager
+    cmd: ./FuzzExternalPluginMagager --gtest_filter=FuzzExternalPluginMagager.QueryPluginConfigTest ${args}
+    fun: ExternalPluginManager::QueryPluginConfig
+
+  - name: DeliverJobStatusTest
+    bin: /out/FuzzExternalPluginMagager
+    cmd: ./FuzzExternalPluginMagager --gtest_filter=FuzzExternalPluginMagager.DeliverJobStatusTest ${args}
+    fun: AppProtectPlugin::DeliverJobStatus
+
+  - name: GetHostIpstest
+    bin: /out/FuzzHost
+    cmd: ./FuzzHost --gtest_filter=FuzzHostAgent.GetHostIpstest ${args}
+    fun: HostPlugin::GetHostIps
+
+  - name: ScanDiskByDpptest
+    bin: /out/FuzzHost
+    cmd: ./FuzzHost --gtest_filter=FuzzHostAgent.ScanDiskByDpptest ${args}
+    fun: HostPlugin::ScanDiskByDpp
+
+  - name: UpgradeAgenttest
+    bin: /out/FuzzHost
+    cmd: ./FuzzHost --gtest_filter=FuzzHostAgent.UpgradeAgenttest ${args}
+    fun: HostPlugin::UpgradeAgent
+
+  - name: ModifyPlugintest
+    bin: /out/FuzzHost
+    cmd: ./FuzzHost --gtest_filter=FuzzHostAgent.ModifyPlugintest ${args}
+    fun: HostPlugin::ModifyPlugin
+
+  - name: UpdateTrapServertest
+    bin: /out/FuzzHost
+    cmd: ./FuzzHost --gtest_filter=FuzzHostAgent.UpdateTrapServertest ${args}
+    fun: HostPlugin::UpdateTrapServer
+
+  - name: ConnectDMEtest
+    bin: /out/FuzzHost
+    cmd: ./FuzzHost --gtest_filter=FuzzHostAgent.ConnectDMEtest ${args}
+    fun: HostPlugin::ConnectDME
+
+  - name: ParsePreparationRequsetParams
+    bin: /out/FuzzVMWare
+    cmd: ./FuzzVMWare --gtest_filter=FuzzVMwareNativeDataPathIml.ParsePreparationRequsetParams ${args}
+    fun: VMwareNativeDataPathImpl::ParsePreparationRequsetParams
+
+  - name: VddKInit
+    bin: /out/FuzzVMWare
+    cmd: ./FuzzVMWare --gtest_filter=FuzzVMwareNativeDataPathIml.VddKInit ${args}
+    fun: VMwareNativeDataPathImpl::VMwareNativeVddkInit
+
+  - name: VddKCleanUp
+    bin: /out/FuzzVMWare
+    cmd: ./FuzzVMWare --gtest_filter=FuzzVMwareNativeDataPathIml.VddKCleanUp ${args}
+    fun: VMwareNativeDataPathImpl::VMwareNativeVddkCleanup
+
+  - name: Preparation
+    bin: /out/FuzzVMWare
+    cmd: ./FuzzVMWare --gtest_filter=FuzzVMwareNativeDataPathIml.Preparation ${args}
+    fun: VMwareNativeDataPathImpl::VMwareNativePreparation
+
+  - name: TargetLunPrepare
+    bin: /out/FuzzVMWare
+    cmd: ./FuzzVMWare --gtest_filter=FuzzVMwareNativeDataPathIml.TargetLunPrepare ${args}
+    fun: VMwareNativeDataPathImpl::TargetLunPrepare
+
+  - name: DataBlockBackup
+    bin: /out/FuzzVMWare
+    cmd: ./FuzzVMWare --gtest_filter=FuzzVMwareNativeDataPathIml.DataBlockBackup ${args}
+    fun: VMwareNativeDataPathImpl::PrepareProcess
+
+  - name: BackupOpenDisk
+    bin: /out/FuzzVMWare
+    cmd: ./FuzzVMWare --gtest_filter=FuzzVMwareNativeDataPathIml.BackupOpenDisk ${args}
+    fun: VMwareNativeDataPathImpl::ParsePreparationRequsetParams
+
+  - name: DataBlockRestore
+    bin: /out/FuzzVMWare
+    cmd: ./FuzzVMWare --gtest_filter=FuzzVMwareNativeDataPathIml.DataBlockRestore ${args}
+    fun: VMwareNativeDataPathImpl::PrepareProcess

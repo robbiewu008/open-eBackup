@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\platform\securec\src\fscanf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\fwscanf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\gets_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\memcpy_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\memmove_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\memset_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\scanf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\securecutil.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\secureinput_a.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\secureinput_w.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\secureprintoutput_a.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\secureprintoutput_w.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\snprintf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\sprintf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\sscanf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\strcat_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\strcpy_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\strncat_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\strncpy_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\strtok_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\swprintf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\swscanf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\vfscanf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\vfwscanf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\vscanf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\vsnprintf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\vsprintf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\vsscanf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\vswprintf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\vswscanf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\vwscanf_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\wcscat_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\wcscpy_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\wcsncat_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\wcsncpy_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\wcstok_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\wmemcpy_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\wmemmove_s.c" />
+    <ClCompile Include="..\..\..\platform\securec\src\wscanf_s.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\platform\securec\include\securec.h" />
+    <ClInclude Include="..\..\..\platform\securec\include\securectype.h" />
+    <ClInclude Include="..\..\..\platform\securec\src\secinput.h" />
+    <ClInclude Include="..\..\..\platform\securec\src\securecutil.h" />
+    <ClInclude Include="..\..\..\platform\securec\src\secureprintoutput.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{57E46F2A-E878-482C-A235-C458E225E63D}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>securec</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\..\bin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\..\bin\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\..\bin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\..\bin\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\platform\securec\include</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4273</DisableSpecificWarnings>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\platform\securec\include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <DisableSpecificWarnings>4273</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\platform\securec\include;..\..\..\platform\securec\src</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>WIN32;__STDC_WANT_SECURE_LIB__=0</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4273;4819</DisableSpecificWarnings>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\platform\securec\include</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4273</DisableSpecificWarnings>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

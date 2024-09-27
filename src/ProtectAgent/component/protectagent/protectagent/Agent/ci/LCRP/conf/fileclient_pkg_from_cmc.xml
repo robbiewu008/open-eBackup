@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ This file is a part of the open-eBackup project.
+ This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one at
+ http://mozilla.org/MPL/2.0/.
+
+ Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+
+ THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+-->
+<project>
+    <artifact>
+        <versionType>Component</versionType>
+        <repoType>Generic</repoType>
+        <id>
+            <offering>OceanProtect A8000</offering>
+            <componentName>ProtectAgent-Client</componentName>
+            <componentVersion>${componentVersion}</componentVersion>
+            <snapshot>Y</snapshot>
+        </id>
+        <isClear>N</isClear>
+        <copies>
+            <copy>
+                <source>DataProtect_${Version}_client*.zip</source>
+                <dest>/dorado/${AGENT_BRANCH}/${PKG_TYPE}/</dest>
+                <dest></dest>
+            </copy>
+        </copies>
+    </artifact>
+    <dependencies>
+        <dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>OceanProtect A8000</offering>
+                <componentName>ProtectAgent-Client</componentName>
+                <componentVersion>${componentVersion_fileclient}</componentVersion>
+            </id>
+            <according>Y</according>
+            <copies>
+                <copy>
+                    <source>/dorado/${AGENT_BRANCH}/${PKG_TYPE}/fileClient_aarch64.tar.gz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${AGENT_BRANCH}/${PKG_TYPE}/fileClient_x86_64.tar.gz</source>
+                    <dest>.</dest>
+                </copy>
+            </copies>
+        </dependency>
+    </dependencies>
+</project>

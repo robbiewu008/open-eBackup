@@ -1,0 +1,36 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+#pragma once
+
+#include <Windows.h>
+
+#include "om_bitmap.h"
+
+
+class CVolBitmap
+{
+public:
+	CVolBitmap(HANDLE hVolume, ULONG ulClusterSize, ULONGLONG ullVolSize);
+	~CVolBitmap();
+
+public:
+	DWORD GetBitmap( OM_BITMAP* out_bitmap);
+
+private:
+	void CVolBitmap::ConvertBitmap(PVOLUME_BITMAP_BUFFER vol_bit_buffer, OM_BITMAP* vol_bitmap);
+
+private:
+	HANDLE m_hVolume;
+	ULONG m_ulClusterSize;
+	ULONGLONG m_ullClusterCount;
+};

@@ -1,0 +1,7 @@
+1.在stubTest/build/makefile中添加#${THRIFT_SERVER} ${THRIFT_CLIENT}的编译
+2.在stubTest/hlt/build目录下依次运行
+source env.sh
+sh hlt_make.sh
+3.在stubTest/build/执行sh test_make.sh
+4.执行时需要把libcommon.so的目录更新到环境变量中，例如
+export LD_LIBRARY_PATH=/home/code/caomin_dev/Agent/bin:${LD_LIBRARY_PATH}

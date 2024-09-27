@@ -1,0 +1,1 @@
+g++ -o roachClient main.cpp RoachClient.cpp MultiThreadBus.cpp CommonDefine.cpp FileTest.cpp -ldl -lpthread

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><settings>
+<!-- 
+ This file is a part of the open-eBackup project.
+ This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one at
+ http://mozilla.org/MPL/2.0/.
+
+ Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+
+ THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+-->
+        <!--本地仓存储主目录路径-->
+        <localRepository>/devcloud/workspace/cmc_temp</localRepository>
+        <!--构建存储主目录路径-->
+        <agentPath>/devcloud/workspace/ebk_base</agentPath>
+        <!--配置本地仓库容量最大值(G单位) -->
+        <cacheSize>60</cacheSize>
+        <!--配置本地仓库容量最大值百分比，达到容量值百分比%大小以上启动清理机制-->
+        <cacheHighPercent>90</cacheHighPercent>
+        <!--配置本地仓库容量最小值百分比，达到容量值百分比%大小以下停止清理机制-->
+        <cacheLowPercent>70</cacheLowPercent>
+        <!--配置用户帐号-->
+        <userName>pOSCIE</userName>
+        <!--配置用户域密码-->
+	<password>encryption:ETMsDgAAAX4udjGYABRBRVMvQ0JDL1BLQ1M1UGFkZGluZwCAABAAEB4wFkU5J3HdKcBQ9DP2DREAAAAgxb9KFYGuxoDypKhMR6VAihNbKjIUZxNKL7IuLe4EJwYAFChhMbhumlcw4Pw40tSey2nOAtaN</password>
+</settings>

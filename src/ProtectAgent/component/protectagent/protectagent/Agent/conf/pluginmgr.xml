@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>                        
+<!-- 
+ This file is a part of the open-eBackup project.
+ This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one at
+ http://mozilla.org/MPL/2.0/.
+
+ Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+
+ THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+-->
+<Config>                        
+    <PluginList>                        
+        <Plugin name="liboracle" version="1.9.0" service="oracle" lazyload="1">                        
+        </Plugin>                        
+        <Plugin name="libdb2" version="1.9.0" service="db2" lazyload="1">                        
+        </Plugin>                        
+        <Plugin name="libhost" version="1.9.0" service="host" lazyload="0">                        
+        </Plugin>                        
+        <Plugin name="libdevice" version="1.9.0" service="device" lazyload="1">                        
+        </Plugin>                        
+        <Plugin name="libexchange" version="1.9.0" service="exchange" lazyload="1">                        
+        </Plugin>                        
+        <Plugin name="libcluster" version="1.9.0" service="cluster" lazyload="1">                        
+        </Plugin>                        
+        <Plugin name="libsqlserver" version="1.9.0" service="sqlserver" lazyload="1">                        
+        </Plugin>                        
+        <Plugin name="libapp" version="1.9.0" service="app" lazyload="1">                        
+        </Plugin>                        
+        <Plugin name="libcache" version="1.9.0" service="cache" lazyload="1">                        
+        </Plugin>                        
+        <Plugin name="libsybase" version="1.9.0" service="sybase" lazyload="1">                        
+        </Plugin>                        
+        <Plugin name="libhana" version="1.9.0" service="hana" lazyload="1">                        
+        </Plugin>                        
+        <Plugin name="libhdrs" version="1.9.0" service="hdrs" lazyload="0">                        
+        </Plugin>                        
+        <Plugin name="librestore" version="1.9.0" service="hana" lazyload="1">                        
+        </Plugin>                        
+        <Plugin name="liboraclenative" version="1.9.0" service="oraclenative" lazyload="0">                        
+        </Plugin>                        
+        <Plugin name="libvmwarenative" version="1.9.0" service="vmwarenative" lazyload="0">                        
+        </Plugin>                        
+    </PluginList>                        
+</Config>                        

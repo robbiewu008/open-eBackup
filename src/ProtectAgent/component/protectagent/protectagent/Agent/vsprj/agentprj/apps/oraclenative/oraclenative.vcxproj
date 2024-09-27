@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F842B102-31A6-4F09-A09D-4EE5EB8ACA61}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>oracle</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\..\..\bin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\..\..\bin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\..\..\bin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\..\..\bin\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level1</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\src\inc;..\..\..\..\platform\securec\include</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <OmitFramePointers>
+      </OmitFramePointers>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level1</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\src\inc;..\..\..\..\platform\securec\include</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <OmitFramePointers>
+      </OmitFramePointers>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\src\inc;..\..\..\..\platform\securec\include</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\src\inc;..\..\..\..\open_src;..\..\..\..\platform\securec\include;..\..\..\..\open_src\openssl\include;..\..\..\..\open_src\tinyxml</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <LinkTimeCodeGeneration />
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\OracleNativeBackup.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\OracleNativeBackupTask.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\OracleNativeCLiveMTask.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\OracleNativeDismountTask.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\OracleNativeExpireCopyTask.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\OracleNativeInstRestoreTask.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\OracleNativeLiveMTask.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\OracleNativePrepareMediaTask.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\OracleNativeRestoreTask.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\OracleNativeTask.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepCheckDBClose.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepCheckDBExists.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepCheckDBOpen.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepClearDataBase.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNative.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNativeBackup.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNativeCLiveMount.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNativeDismount.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNativeExpireCopy.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNativeInstRestore.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNativeLiveMount.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNativeMedia.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNativeMediaData.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNativeMediaLog.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNativeMoveDBF.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNativeNasMedia.h" />
+    <ClInclude Include="..\..\..\..\src\inc\apps\oraclenative\TaskStepOracleNativeRestore.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\OracleNativeBackup.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\OracleNativeBackupTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\OracleNativeCLiveMTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\OracleNativeDismountTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\OracleNativeExpireCopyTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\OracleNativeInstRestoreTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\OracleNativeLiveMTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\OracleNativePrepareMediaTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\OracleNativeRestoreTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\OracleNativeTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepCheckDBClose.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepCheckDBExists.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepCheckDBOpen.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepClearDataBase.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNative.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNativeBackup.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNativeCLiveMount.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNativeDismount.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNativeExpireCopy.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNativeInstRestore.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNativeLiveMount.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNativeMedia.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNativeMediaData.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNativeMediaLog.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNativeMoveDBF.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNativeNasMedia.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\apps\oraclenative\TaskStepOracleNativeRestore.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

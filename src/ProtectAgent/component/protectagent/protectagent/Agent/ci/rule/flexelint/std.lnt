@@ -1,0 +1,11 @@
+//对单个文件进行检查
+-u
+
+//指定整形数和系统指针的大小
+-si4 -sp4
+
+/usr1/flexelint/env-xml.lnt
+
+// 包含include路径设置的lnt文件，各TDT根据自己实际的路径进行修改
+/usr1/flexelint/include.lnt
+

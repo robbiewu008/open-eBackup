@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\AppProtectJobHandler.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\ClearMountPointsJob.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\ExecutorBuilder.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\Job.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\JobPool.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\JobStateDB.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\JobTimer.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\PluginAnyTimeRestore.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\PluginJobFactory.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\PluginLogBackup.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\PluginMainJob.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\PluginSubBusiJob.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\PluginSubGeneJob.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\PluginSubJob.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\PluginSubPostJob.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\PluginSubPrepJob.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\externaljob\ReportJobDetailFactory.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\Task.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\TaskContext.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\TaskManager.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepLinkTarget.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepPrepareNasMedia.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepPreSufScript.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepScanDisk.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepScript.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\filter\DefaultRemoteHostFilter.cpp" />
+    <ClCompile Include="..\..\..\src\src\taskmanager\filter\RemoteHostFilterFactory.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\AppProtectJobHandler.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\BaseJob.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\ClearMountPointsJob.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\ExecutorBuilder.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\Job.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\JobPool.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\JobStateAction.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\JobStateDB.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\JobTimer.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\PluginAnyTimeRestore.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\PluginJobFactory.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\PluginLogBackup.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\PluginMainJob.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\PluginSubBusiJob.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\PluginSubGeneJob.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\PluginSubJob.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\PluginSubPostJob.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\PluginSubPrepJob.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\externaljob\ReportJobDetailFactory.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\Task.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\TaskContext.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\TaskManager.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\TaskStep.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\TaskStepLinkTarget.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\TaskStepPrepareNasMedia.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\TaskStepPreSufScript.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\TaskStepScanDisk.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\TaskStepScript.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\filter\RemoteHostFilter.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\filter\DefaultRemoteHostFilter.h" />
+    <ClInclude Include="..\..\..\src\inc\taskmanager\filter\RemoteHostFilterFactory.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{98903AB0-373A-442E-95C7-B030D753C8D1}</ProjectGuid>
+    <RootNamespace>rest</RootNamespace>
+    <ProjectName>taskmanager</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetExt>.lib</TargetExt>
+    <OutDir>..\..\..\bin\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\..\bin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\..\bin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\..\bin\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\open_src;..\..\..\platform\securec\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\open_src;..\..\..\platform\securec\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\open_src;..\..\..\platform\securec\include</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4273;4251</DisableSpecificWarnings>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\open_src;..\..\..\platform\securec\include;..\..\..\open_src\tinyxml;..\..\..\open_src\openssl\include;..\..\..\open_src\thrift\lib\cpp\src;..\..\..\open_src\boost;..\..\..\open_src\curl\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4273;4251;4819</DisableSpecificWarnings>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

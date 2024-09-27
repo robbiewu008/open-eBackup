@@ -1,0 +1,5 @@
+-i"/usr/include/"
+-i"/usr/include/linux/"
+-i"/usr/include/c++/4.8/"
+-i"/usr/include/c++/4.8/x86_64-suse-linux/"
+-i"/usr1/flexelint/"

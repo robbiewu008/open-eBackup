@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{ad3d221d-8a97-4333-ba6e-c1ae25dc9990}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="securecom">
+      <UniqueIdentifier>{8c68499f-11ba-40c9-868e-13271e56549a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="archivestream">
+      <UniqueIdentifier>{213d07e0-98b3-421f-97bc-c1b43514ce16}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\inc\pluginfx\ExternalPluginSDK.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\AlarmInfoXmlParser.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\CMpThread.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\CMpTime.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\ConfigXmlParse.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\Defines.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\ErrorCode.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\File.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\Ip.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\JsonUtils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\Log.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\MpString.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\Path.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\Types.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\Utils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\CSystemExec.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\securecom\UniqueId.h">
+      <Filter>securecom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\securecom\SecureUtils.h">
+      <Filter>securecom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\securecom\SDPFunc.h">
+      <Filter>securecom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\securecom\KmcCallback.h">
+      <Filter>securecom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\securecom\CryptAlg.h">
+      <Filter>securecom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\message\archivestream\ArchiveStreamClient.h">
+      <Filter>archivestream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\message\archivestream\ArchiveStreamClientHandler.h">
+      <Filter>archivestream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\message\archivestream\ArchiveStreamService.h">
+      <Filter>archivestream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\message\tcp\CConnection.h">
+      <Filter>archivestream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\message\tcp\CDppMessage.h">
+      <Filter>archivestream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\message\tcp\CSocket.h">
+      <Filter>archivestream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\message\tcp\DppSocket.h">
+      <Filter>archivestream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\message\Message.h">
+      <Filter>archivestream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\message\tcp\MessageImpl.h">
+      <Filter>archivestream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\DB.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\inc\common\TimeOut.h">
+      <Filter>common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\src\pluginfx\ExternalPluginSDK.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\AlarmInfoXmlParser.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\CMpThread.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\ConfigXmlParse.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\Ip.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\JsonUtils.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\Log.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\Path.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\Time.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\String.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\Utils.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\SystemExec.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\securecom\UniqueId.cpp">
+      <Filter>securecom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\securecom\SecureUtils.cpp">
+      <Filter>securecom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\securecom\SDPFunc.cpp">
+      <Filter>securecom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\securecom\KmcCallback.cpp">
+      <Filter>securecom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\securecom\CryptAlg.cpp">
+      <Filter>securecom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\message\archivestream\ArchiveStreamClient.cpp">
+      <Filter>archivestream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\message\archivestream\ArchiveStreamClientHandler.cpp">
+      <Filter>archivestream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\message\archivestream\ArchiveStreamService.cpp">
+      <Filter>archivestream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\message\tcp\CConnection.cpp">
+      <Filter>archivestream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\message\tcp\CDppMessage.cpp">
+      <Filter>archivestream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\message\tcp\CSocket.cpp">
+      <Filter>archivestream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\message\tcp\DppSocket.cpp">
+      <Filter>archivestream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\DB.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\src\common\TimeOut.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

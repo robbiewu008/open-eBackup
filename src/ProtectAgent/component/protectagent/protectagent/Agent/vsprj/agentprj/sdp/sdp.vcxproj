@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{60899493-AC08-469D-8E2F-2A45A78F7E42}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>sdp</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\..\bin\</OutDir>
+    <TargetName>libsdp</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\..\bin\</OutDir>
+    <TargetName>libsdp</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;WSEC_COMPILE_SDP;WSEC_COMPILE_CAC_OPENSSL;WSEC_ERR_CODE_BASE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\platform\kmc\src\cac;..\..\..\platform\kmc\src\sdp;..\..\..\platform\kmc\src\kmc;..\..\..\platform\kmc\src\common;..\..\..\platform\kmc\include;..\..\..\platform\securec\include;..\..\..\open_src\openssl\inc32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;WSEC_WIN32;WSEC_COMPILE_SDP;WSEC_COMPILE_CAC_OPENSSL;WSEC_ERR_CODE_BASE=0;__STDC_WANT_SECURE_LIB__=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\platform\kmc\include;..\..\..\platform\kmc\src\common;..\..\..\platform\kmc\src\cac;..\..\..\platform\kmc\src\kmc;..\..\..\platform\kmc\src\sdp;..\..\..\platform\securec\include;..\..\..\open_src\openssl\inc32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;WSEC_WIN32;WSEC_COMPILE_SDP;WSEC_COMPILE_CAC_OPENSSL;WSEC_ERR_CODE_BASE=0;__STDC_WANT_SECURE_LIB__=0</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\open_src\openssl\inc32;..\..\..\platform\kmc\include;..\..\..\open_src\openssl\openssl\include;..\..\..\platform\securec\include;..\..\..\platform\kmc\src\kmc;..\..\..\platform\kmc\src\common;..\..\..\platform\kmc\src\cac;..\..\..\platform\kmc\src\sdp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <LinkTimeCodeGeneration>
+      </LinkTimeCodeGeneration>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;WSEC_WIN32;WSEC_COMPILE_SDP;WSEC_COMPILE_CAC_OPENSSL;WSEC_ERR_CODE_BASE=0;__STDC_WANT_SECURE_LIB__=0;WSEC_COMPILE_MIP_WINDOWS;WSEC_USE_OPENSSL_110</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\platform\kmc\include;..\..\..\open_src\openssl\include;..\..\..\platform\securec\include;..\..\..\platform\kmc\src\kmc;..\..\..\platform\kmc\src\common;..\..\..\platform\kmc\src\cac;..\..\..\platform\kmc\src\mip;..\..\..\platform\kmc\src\sdp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\platform\kmc\include\kmcv2_itf.h" />
+    <ClInclude Include="..\..\..\platform\kmc\include\wsecv2_cbb.h" />
+    <ClInclude Include="..\..\..\platform\kmc\include\wsecv2_config.h" />
+    <ClInclude Include="..\..\..\platform\kmc\include\wsecv2_errorcode.h" />
+    <ClInclude Include="..\..\..\platform\kmc\include\wsecv2_itf.h" />
+    <ClInclude Include="..\..\..\platform\kmc\include\wsecv2_type.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\cac\cacv2_pri.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\common\wsecv2_array.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\common\wsecv2_callbacks.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\common\wsecv2_datetime.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\common\wsecv2_file.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\common\wsecv2_hash.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\common\wsecv2_hmac.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\common\wsecv2_lock.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\common\wsecv2_mem.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\common\wsecv2_order.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\common\wsecv2_share.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\common\wsecv2_util.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\kmc\kmcv2_cfg.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\kmc\kmcv2_ksf.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\kmc\kmcv2_ksm.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\kmc\kmcv2_pri.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\kmc\kmcv3_rk.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\kmc\kmc_mkf.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\kmc\kmc_sync.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\kmc\kmc_utils.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\mip\kmcv3_maskinfo.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\sdp\sdpv1_itf.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\sdp\sdpv1_tlv.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\sdp\sdpv2_itf.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\sdp\sdpv3_alg.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\sdp\sdpv3_type.h" />
+    <ClInclude Include="..\..\..\platform\kmc\src\sdp\sdp_utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\platform\kmc\src\cac\cacv2_ipsi.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\cac\cacv2_mbedtls.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\cac\cacv2_openssl.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\common\wsecv2_array.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\common\wsecv2_callbacks.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\common\wsecv2_datetime.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\common\wsecv2_file.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\common\wsecv2_hash.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\common\wsecv2_hmac.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\common\wsecv2_itf.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\common\wsecv2_lock.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\common\wsecv2_mem.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\common\wsecv2_order.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\common\wsecv2_util.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\kmc\kmcv2_cfg.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\kmc\kmcv2_itf.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\kmc\kmcv2_ksf.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\kmc\kmcv2_ksm.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\kmc\kmcv2_pri.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\kmc\kmcv3_rk.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\kmc\kmc_mkf.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\kmc\kmc_sync.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\kmc\kmc_utils.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\mip\windows\maskinfo_windows.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\sdp\sdpv1_itf.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\sdp\sdpv1_tlv.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\sdp\sdpv2_itf.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\sdp\sdpv3_alg.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\sdp\sdp_hmac.c" />
+    <ClCompile Include="..\..\..\platform\kmc\src\sdp\sdp_utils.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

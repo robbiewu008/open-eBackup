@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DRDriver_17", "DRDriver_17.vcxproj", "{2219E264-240D-45BB-A4F1-277456390700}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Win10 Debug|x64 = Win10 Debug|x64
+		Win10 Debug|x86 = Win10 Debug|x86
+		Win10 Release|x64 = Win10 Release|x64
+		Win10 Release|x86 = Win10 Release|x86
+		Win7 Debug|x64 = Win7 Debug|x64
+		Win7 Debug|x86 = Win7 Debug|x86
+		Win7 Release|x64 = Win7 Release|x64
+		Win7 Release|x86 = Win7 Release|x86
+		Win8 Debug|x64 = Win8 Debug|x64
+		Win8 Debug|x86 = Win8 Debug|x86
+		Win8 Release|x64 = Win8 Release|x64
+		Win8 Release|x86 = Win8 Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2219E264-240D-45BB-A4F1-277456390700}.Win10 Debug|x64.ActiveCfg = Win10 Debug|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win10 Debug|x64.Build.0 = Win10 Debug|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win10 Debug|x64.Deploy.0 = Win10 Debug|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win10 Debug|x86.ActiveCfg = Win10 Debug|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win10 Release|x64.ActiveCfg = Win10 Release|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win10 Release|x64.Build.0 = Win10 Release|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win10 Release|x64.Deploy.0 = Win10 Release|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win10 Release|x86.ActiveCfg = Win10 Release|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win7 Debug|x64.ActiveCfg = Win7 Debug|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win7 Debug|x64.Build.0 = Win7 Debug|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win7 Debug|x64.Deploy.0 = Win7 Debug|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win7 Debug|x86.ActiveCfg = Win7 Debug|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win7 Release|x64.ActiveCfg = Win7 Release|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win7 Release|x64.Build.0 = Win7 Release|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win7 Release|x64.Deploy.0 = Win7 Release|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win7 Release|x86.ActiveCfg = Win7 Release|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win8 Debug|x64.ActiveCfg = Win8 Debug|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win8 Debug|x64.Build.0 = Win8 Debug|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win8 Debug|x64.Deploy.0 = Win8 Debug|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win8 Debug|x86.ActiveCfg = Win8 Debug|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win8 Release|x64.ActiveCfg = Win8 Release|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win8 Release|x64.Build.0 = Win8 Release|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win8 Release|x64.Deploy.0 = Win8 Release|x64
+		{2219E264-240D-45BB-A4F1-277456390700}.Win8 Release|x86.ActiveCfg = Win8 Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

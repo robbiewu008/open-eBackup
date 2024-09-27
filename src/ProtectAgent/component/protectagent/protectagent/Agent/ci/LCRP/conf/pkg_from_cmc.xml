@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ This file is a part of the open-eBackup project.
+ This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one at
+ http://mozilla.org/MPL/2.0/.
+
+ Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+
+ THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+-->
+<project>
+    <artifact>
+        <versionType>Component</versionType>
+        <repoType>Generic</repoType>
+        <id>
+            <offering>OceanProtect A8000</offering>
+            <componentName>ProtectAgent-Client</componentName>
+            <componentVersion>${componentVersion}</componentVersion>
+        </id>
+        <isClear>N</isClear>
+        <copies>
+            <copy>
+                <source>DataProtect_${Version}_client*.zip</source>
+                <dest>/dorado/${AGENT_BRANCH}/${PKG_TYPE}/linux/</dest>
+            </copy>
+        </copies>
+    </artifact>
+    <dependencies>
+        <dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>OceanProtect A8000</offering>
+                <componentName>ProtectAgent-Client</componentName>
+                <componentVersion>${componentVersion}</componentVersion>
+            </id>
+            <according>Y</according>
+            <copies>
+                <copy>
+                    <source>/dorado/Tools</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${HADOOP_BRANCH}/Plugins/Linux/x86_64/HadoopPlugin.tar.gz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${HADOOP_BRANCH}/Plugins/Linux/x86_64/ElasticSearchPlugin.tar.gz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${FILEPLUGIN_BRANCH}/Plugins/Linux/NasPlugin.tar.xz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${FILEPLUGIN_BRANCH}/${PKG_TYPE}/Linux/FilePlugin.tar.xz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${FILEPLUGIN_BRANCH}/Plugins/AIX/FilePlugin_ppc_64.tar.xz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${FILEPLUGIN_BRANCH}/Plugins/Solaris/FilePlugin_sun4v.tar.gz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${GENERALDB_BRANCH}/Plugins/Linux/GeneralDBPlugin.tar.xz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${VIRTUALIZATION_BRANCH}/Plugins/Linux/VirtualizationPlugin.tar.xz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${GENERALDB_BRANCH}/Plugins/AIX/GeneralDBPlugin_ppc_64.tar.xz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${FUSIONCOMPUTE_BRANCH}/Plugins/Linux/FusionComputePlugin.tar.xz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${FILEPLUGIN_BRANCH}/Plugins/Windows/FilePlugin.zip</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${VIRTUALIZATION_BRANCH}/Plugins/Windows/VirtualizationPlugin.zip</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${GENERALDB_BRANCH}/Plugins/Windows/GeneralDBPlugin.zip</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${GENERALDB_BRANCH}/Plugins/Windows/ADDSPlugin.zip</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${FILEPLUGIN_BRANCH}/Plugins/Linux/ObsPlugin.tar.xz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${FILEPLUGIN_BRANCH}/Plugins/Linux/aarch64/cppframework-Linux_aarch64.tar.xz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${FILEPLUGIN_BRANCH}/Plugins/Linux/x86_64/cppframework-Linux_x86_64.tar.xz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${FILEPLUGIN_BRANCH}/Plugins/AIX/cppframework-AIX_ppc_64.tar.xz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${FILEPLUGIN_BRANCH}/Plugins/Solaris/cppframework-SunOS_sun4v.tar.gz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${BLOCKSERVICE_BRANCH}/Plugins/Linux/Block_Service.tar.xz</source>
+                    <dest>.</dest>
+                </copy>
+            </copies>
+        </dependency>
+    </dependencies>
+</project>
