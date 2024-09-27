@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{F76A7EB4-631F-4836-BE5F-1FDA54526412}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>dbrpctool</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.exe</TargetExt>
+    <TargetName>rpctool</TargetName>
+    <OutDir>..\..\bin\</OutDir>
+    <IntDir>dbrpctool.dir\Release\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;WIN32;__WINDOWS__;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\src;..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\platform\SecureCLib_rel\include;..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\third_open_src\boost_rel\include;..\..\..\..\Windows_Compile\Module\platform\securec\include;..\..\..\..\Windows_Compile\framework\dep\agent_sdk\include;..\..\..\..\Windows_Compile\framework\dep\agent_sdk\include\securec;..\..\..\..\Windows_Compile\Module\open_src\jsoncpp\include;..\..\..\..\Windows_Compile\framework\inc;..\..\..\..\Windows_Compile\framework\inc\rpc;..\..\..\..\Windows_Compile\framework\inc\common;..\..\..\..\Windows_Compile\Module\open_src\thrift\lib\cpp\src;..\..\..\..\Windows_Compile\Module\open_src\boost\.libs\include;..\..\..\..\Windows_Compile\framework\inc\rpc\certificateservice;..\..\..\..\Windows_Compile\framework\inc\thrift_interface;..\..\..\..\plugins\database\src\common;..\..\..\..\plugins\database\src\executor</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\..\..\framework\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>agentsdk.lib;basic_job.lib;thrift_interface.lib;libthrift.lib;libthriftnb.lib;libevent.lib;libevent_core.lib;libevent_extras.lib;config_reader_util.lib;common_util.lib;log_util.lib;thrift_client.lib;thrift_server.lib;libcrypto.lib;libssl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\tools\dbrpctool\RPCInterface.cpp" />
+    <ClCompile Include="..\..\src\tools\dbrpctool\RPCToolMain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\database-1.0.0.vcxproj">
+      <Project>{41b4a0cf-1e17-3bbd-b199-f19d6b88a7f8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\executor\executor_obj.vcxproj">
+      <Project>{e9a79d4b-6008-3d2c-8ec2-b798369b46f8}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

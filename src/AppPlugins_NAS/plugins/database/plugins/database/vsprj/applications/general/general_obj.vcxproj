@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{63384E3B-0D4C-3CDA-AF8D-C66FF8C4D066}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>general_obj</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">general_obj.dir\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">general_obj.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">general_obj</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\..\..\plugins\database\src\applications\general\..\..\common;..\..\..\..\..\plugins\database\src\applications\general\..\..\executor;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\common;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\rpc;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\rpc\certificateservice;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\job;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\third_open_src\thrift_rel\include;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\src;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\src\common;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\thrift_interface;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\third_open_src\boost_rel\include;..\..\..\..\..\Windows_Compile\Module\open_src\jsoncpp\include;..\..\..\..\..\Windows_Compile\Module\open_src\thrift\lib\cpp\src;..\..\..\..\..\Windows_Compile\Module\open_src\boost\.libs\include;..\..\..\..\..\Windows_Compile\Module\platform\securec\include;..\..\..\..\..\Windows_Compile\framework\dep\agent_sdk\include;..\..\..\..\..\Windows_Compile\framework\dep\agent_sdk\include\securec;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>NDEBUG;WIN32;__WINDOWS__;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;__WINDOWS__;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\..\plugins\database\src\applications\general\..\..\common;..\..\..\..\..\plugins\database\src\applications\general\..\..\executor;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\common;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\rpc;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\rpc\certificateservice;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\job;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\third_open_src\thrift_rel\include;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\src;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\src\common;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\thrift_interface;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\third_open_src\boost_rel\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\..\..\..\plugins\database\src\applications\general\..\..\common;..\..\..\..\..\plugins\database\src\applications\general\..\..\executor;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\common;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\rpc;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\rpc\certificateservice;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\job;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\third_open_src\thrift_rel\include;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\src;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\src\common;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc\thrift_interface;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\framework\inc;..\..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\third_open_src\boost_rel\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\plugins\database\src\applications\general\CommonBackupJob.cpp" />
+    <ClCompile Include="..\..\..\..\..\plugins\database\src\applications\general\CommonBackupService.cpp" />
+    <ClCompile Include="..\..\..\..\..\plugins\database\src\applications\general\CommonCancelLivemountJob.cpp" />
+    <ClCompile Include="..\..\..\..\..\plugins\database\src\applications\general\CommonDBJob.cpp" />
+    <ClCompile Include="..\..\..\..\..\plugins\database\src\applications\general\CommonDelCopyJob.cpp" />
+    <ClCompile Include="..\..\..\..\..\plugins\database\src\applications\general\CommonLivemountJob.cpp" />
+    <ClCompile Include="..\..\..\..\..\plugins\database\src\applications\general\CommonRestoreJob.cpp" />
+    <ClCompile Include="..\..\..\..\..\plugins\database\src\applications\general\ReportJobDetailHandler.cpp" />
+    <ClCompile Include="..\..\..\..\..\plugins\database\src\applications\general\CommonCheckCopyJob.cpp" />
+    <ClCompile Include="..\..\..\..\..\plugins\database\src\applications\general\CommonInstantRestoreJob.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,5 @@
+add_subdirectory(cluster)
+add_subdirectory(general)
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    add_subdirectory(backint)
+endif()

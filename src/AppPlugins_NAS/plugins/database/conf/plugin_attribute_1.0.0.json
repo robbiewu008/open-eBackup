@@ -1,0 +1,12 @@
+{
+  "application": "TiDB-cluster,TiDB-database,TiDB-table,OceanBase-cluster,OceanBase-tenant,Dameng-singleNode,Dameng-cluster,GaussDBT,MySQL-instance,MySQL-cluster,MySQL-database,MySQL-clusterInstance,SQLServer-database,SQLServer-instance,SQLServer-alwaysOn,SQLServer-clusterInstance,SQLServer-cluster,DB2,PostgreInstance,PostgreClusterInstance,KingBaseInstance,KingBaseClusterInstance,Redis,DWS-cluster,DWS-database,DWS-schema,DWS-table,OpenGauss,OpenGauss-instance,OpenGauss-database,ClickHouse,Oracle,Oracle-cluster,Oracle-clusterInstance,",
+  "name": "GeneralDBPlugin",
+  "application_version": [
+    {
+      "application": "DataBase",
+      "min_version": "",
+      "max_version": ""
+    }
+  ],
+  "run_account": "root"
+}

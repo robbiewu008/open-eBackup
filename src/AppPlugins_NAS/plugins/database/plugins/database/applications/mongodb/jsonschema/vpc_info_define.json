@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": [
+    "array",
+    "null"
+  ],
+  "items": {
+    "type": [
+      "object",
+      "null"
+    ],
+    "properties": {
+      "markId": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "projectId": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "uuid": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "vpcId": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      }
+    },
+    "additionalProperties": false
+  }
+}

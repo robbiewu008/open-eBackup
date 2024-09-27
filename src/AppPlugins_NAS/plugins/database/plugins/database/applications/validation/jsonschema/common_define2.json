@@ -1,0 +1,1674 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "requestId": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+    },
+    "backupJobResult": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "restoreJobResult": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    },
+    "BackupLimit": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "appEnv": {
+      "$ref": "#/definitions/appEnv"
+    },
+    "application": {
+      "$ref": "#/definitions/application"
+    },
+    "applications": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/application"
+      }
+    },
+    "job": {
+      "$ref": "#/definitions/job"
+    },
+    "subJob": {
+      "$ref": "#/definitions/subJob"
+    },
+    "condition": {
+      "$ref": "#/definitions/condition"
+    },
+    "parentResource": {
+      "$ref": "#/definitions/application"
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "auth": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "authType": {
+          "type": "integer",
+          "description": "认证类型",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "extendInfo": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "由各应用检验"
+        }
+      },
+      "additionalProperties": false
+    },
+    "copy": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "extendInfo": {
+          "$ref": "#/definitions/copy_extendInfo"
+        },
+        "format": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.]{0,512}$"
+        },
+        "protectEnv": {
+          "$ref": "#/definitions/appEnv"
+        },
+        "protectObject": {
+          "$ref": "#/definitions/application"
+        },
+        "protectSubObjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/application"
+          }
+        },
+        "repositories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/repository"
+          }
+        },
+        "snapshots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/snapshot"
+          }
+        },
+        "timestamp": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9999999999999
+        },
+        "transactionNo": {
+          "type": "integer"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9]{0,64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "repository": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "auth": {
+          "$ref": "#/definitions/auth"
+        },
+        "endpoint": {
+          "$ref": "#/definitions/endpoint_obj"
+        },
+        "extendAuth": {
+          "$ref": "#/definitions/auth"
+        },
+        "cifsAuth": {
+          "$ref": "#/definitions/auth"
+        },
+        "extendInfo": {
+          "$ref": "#/definitions/repository_extendInfo"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "isLocal": {
+          "type": "boolean"
+        },
+        "path": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "anyOf": [
+              {
+                "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+              },
+              {
+                "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+              },
+              {
+                "pattern": "^$"
+              }
+            ]
+          }
+        },
+        "protocol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "remoteHost": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/repository_remoteHost"
+          }
+        },
+        "remoteName": {
+          "type": "string"
+        },
+        "remotePath": {
+          "type": "string",
+          "anyOf": [
+            {
+              "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+            },
+            {
+              "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "repositoryType": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "role": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "additionalProperties": false
+    },
+    "snapshot": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-@]{0,254}$"
+        },
+        "parentName": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.]{0,255}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "node": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "auth": {
+          "$ref": "#/definitions/auth"
+        },
+        "endpoint": {
+          "type": "string",
+          "anyOf": [
+            {
+              "format": "ipv4"
+            },
+            {
+              "format": "ipv6"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "extendInfo": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "由各应用检验"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.]{0,255}$"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "subType": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "appEnv": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "auth": {
+          "$ref": "#/definitions/auth"
+        },
+        "extendInfo": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "由各应用检验"
+        },
+        "endpoint": {
+          "type": "string",
+          "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_0-9-. ()/:%,;]{0,64}$"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_0-9-. ()/]{0,64}$"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/node"
+          }
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "subType": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "application": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "auth": {
+          "$ref": "#/definitions/auth"
+        },
+        "extendInfo": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "由各应用检验"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_0-9-. ()/]{0,64}$"
+        },
+        "parentId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "parentName": {
+          "type": "string",
+          "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_0-9-. ]{0,64}$"
+        },
+        "subType": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "job": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "copies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/copy"
+          }
+        },
+        "copy": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/copy"
+          }
+        },
+        "extendInfo": {
+          "$ref": "#/definitions/job_extendInfo"
+        },
+        "indexEnv": {
+          "$ref": "#/definitions/appEnv"
+        },
+        "indexProtectObject": {
+          "$ref": "#/definitions/application"
+        },
+        "indexProtectSubObject": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/application"
+          }
+        },
+        "jobId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "jobParam": {
+          "$ref": "#/definitions/job_jobParam"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "targetEnv": {
+          "$ref": "#/definitions/appEnv"
+        },
+        "targetObject": {
+          "$ref": "#/definitions/application"
+        },
+        "restoreSubObjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/application"
+          }
+        },
+        "protectEnv": {
+          "$ref": "#/definitions/appEnv"
+        },
+        "protectObject": {
+          "$ref": "#/definitions/application"
+        },
+        "protectSubObject": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/application"
+          }
+        },
+        "repositories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/repository"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "subJob": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "ignoreFailed": {
+          "type": "boolean"
+        },
+        "jobId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "jobInfo": {
+          "type": "string",
+          "description": "由各应用检验"
+        },
+        "jobName": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "jobPriority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "jobType": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "policy": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "subJobId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "execNodeId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "copy_extendInfo": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "associatedCopies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+          }
+        },
+        "backupHostSN": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+        },
+        "beginSCN": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 9999999999999
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "cluster_id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "endSCN": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 9999999999999
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "backupTime": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 9999999999999
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "beginTime": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 9999999999999
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "endTime": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 9999999999999
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "backupset_dir": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 9999999999999
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "backupSetName": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 9999999999999
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "backupType": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 9999999999999
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "baseBackupSetName": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 9999999999999
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "dbName": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 9999999999999
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "groupId": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 9999999999999
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "tabal_space_info": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 9999999999999
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "timeRange": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 9999999999999
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 9999999999999
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "copy_id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "copyId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "copyIdList": {
+          "type": [
+            "null",
+            "array"
+          ],
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+          }
+        },
+        "cycle": {
+          "type": "string",
+          "pattern": "^[0-9]*$"
+        },
+        "dataAfterReduction": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dataBeforeReduction": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "extendInfo": {
+          "$ref": "#/definitions/copy_extendInfo_extendInfo"
+        },
+        "firstFullBackupTime": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9999999999999
+        },
+        "logDirName": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "level": {
+          "type": "string",
+          "pattern": "^[0-9]*$"
+        },
+        "firstLsn": {
+          "type": "object",
+          "description": "待定"
+        },
+        "lastLsn": {
+          "type": "object",
+          "description": "待定"
+        },
+        "fsRelations": {
+          "$ref": "#/definitions/copy_extendInfo_fsRelations"
+        },
+        "isSanClient": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        },
+        "multiFileSystem": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/node"
+          }
+        },
+        "point": {
+          "type": "string",
+          "pattern": "^[0-9]*$"
+        },
+        "pre_log_index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9999999999999
+        }
+      },
+      "originCopyTimeStamp": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9999999999999
+      },
+      "storage_id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      }
+    },
+    "copy_extendInfo_extendInfo": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "copyId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "dataAfterReduction": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dataBeforeReduction": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "isSanClient": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        },
+        "multiFileSystem": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        }
+      }
+    },
+    "copy_extendInfo_fsRelations": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "newEsn": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+              },
+              "newFsId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+              },
+              "newFsName": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+              },
+              "oldEsn": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+              },
+              "oldFsId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+              },
+              "oldFsName": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+              },
+              "role": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "endpoint_obj": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "ip": {
+          "type": "string",
+          "pattern": "^[0-9A-Za-z.:%/,]*$"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "supportProtocol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      },
+      "additionalProperties": false
+    },
+    "repository_extendInfo": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "enable_ssl": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "true",
+                "false",
+                "0",
+                "1"
+              ]
+            }
+          ]
+        },
+        "isCloneFileSystem": {
+          "type": "boolean"
+        },
+        "service_info": {
+          "type": [
+            "null",
+            "array"
+          ],
+          "items": {
+            "$ref": "#/definitions/repository_extendInfo_serviceInfo"
+          }
+        },
+        "esn": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-=]{0,254}$"
+        },
+        "fsId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+        },
+        "copy_format": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "logBackup": {
+          "$ref": "#/definitions/repository_extendInfo_logBackup"
+        },
+        "storageLogicalIps": {
+          "type": "array",
+          "pattern": "^[0-9A-Za-z.:%/,]*$"
+        },
+        "capacityAvailable": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "storage_info": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "storage_device": {
+              "type": "string",
+              "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+            },
+            "storage_pool": {
+              "type": "string",
+              "pattern": "^[0-9]*$"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "repository_extendInfo_logBackup": {
+      "type": [
+        "null",
+        "object"
+      ],
+      "properties": {
+        "latestDataCopyId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "latestLogCopyName": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "repository_extendInfo_serviceInfo": {
+      "type": "object",
+      "properties": {
+        "ip": {
+          "type": "string",
+          "anyOf": [
+            {
+              "format": "ipv4"
+            },
+            {
+              "format": "ipv6"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "port": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$"
+            },
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535
+            }
+          ]
+        },
+        "agent_os": {
+          "type": "null"
+        },
+        "extend_info": {
+          "type": "null"
+        },
+        "id": {
+          "type": "null"
+        },
+        "iqns": {
+          "type": "null"
+        },
+        "port_type": {
+          "type": "null"
+        },
+        "san_clients": {
+          "type": "null"
+        },
+        "status": {
+          "type": "null"
+        },
+        "support_protocol": {
+          "type": "null"
+        },
+        "wwpns": {
+          "type": "null"
+        }
+      },
+      "additionalProperties": false
+    },
+    "repository_remoteHost": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "ip": {
+          "type": "string",
+          "anyOf": [
+            {
+              "format": "ipv4"
+            },
+            {
+              "format": "ipv6"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "supportProtocol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      },
+      "additionalProperties": false
+    },
+    "job_extendInfo": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "agents": {
+          "type": [
+            "array",
+            "string"
+          ],
+          "items": {
+            "$ref": "#/definitions/job_extendInfo_agent"
+          }
+        },
+        "alarm_after_failure": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        },
+        "backupToolType": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "pattern": "^[0-9]{0,2}$"
+        },
+        "backupTask_sla": {
+          "type": "string",
+          "description": "由各应用检验"
+        },
+        "channel_number": {
+          "type": "string",
+          "pattern": "^[0-9]*$"
+        },
+        "customParams": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "由各应用检验"
+        },
+        "create_lvm_percent": {
+          "type": "string",
+          "pattern": "^[0-9]*$"
+        },
+        "data_after_reduction_before_backup": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "data_before_reduction_before_backup": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "esn": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-=]{0,254}$"
+        },
+        "failedAgents": {
+          "type": [
+            "null",
+            "array"
+          ],
+          "description": "array内容待定"
+        },
+        "mountType": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1"
+          ]
+        },
+        "autoFullBackup": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false"
+          ]
+        },
+        "forceRecovery": {
+          "type": "string",
+          "pattern": "^[0-9]*$"
+        },
+        "isCheckBackupJobType": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false"
+          ]
+        },
+        "forbidWormFileSystem": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        },
+        "metadataPath": {
+          "type": "string",
+          "anyOf": [
+            {
+              "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+            },
+            {
+              "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "multiFileSystem": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        },
+        "multiPostJob": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "true",
+                "false",
+                "0",
+                "1"
+              ]
+            }
+          ]
+        },
+        "next_cause_param": {
+          "type": "string",
+          "pattern": "^[0-9]*$"
+        },
+        "restoreCopyId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "restoreTimestamp": {
+          "type": "string",
+          "pattern": "^[0-9]*$"
+        },
+        "sanclientInvolved": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        },
+        "copyProtectObjectVersion": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.]{0,64}$"
+        },
+        "speedStatistics": {
+          "type": "string",
+          "pattern": "^[0-9]*$"
+        },
+        "slave_node_first": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        },
+        "start_instance_user": {
+          "type": "string",
+          "enum": [
+            ""
+          ]
+        },
+        "targetLocation": {
+          "type": "string",
+          "enum": [
+            "original",
+            "native",
+            "new"
+          ]
+        },
+        "restoreMode": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "restoreType": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "resourceSubType": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "is_consistent": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        },
+        "isEnableChangeEnv": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        },
+        "originBackupId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "restoreOption": {
+          "type": "string",
+          "pattern": "^[0-9]*$"
+        },
+        "first_backup_esn": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+        },
+        "first_backup_target": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+        },
+        "last_backup_esn": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+        },
+        "last_backup_target": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+        },
+        "priority_backup_esn": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+        },
+        "priority_backup_target": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+        },
+        "storage_id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "storage_type": {
+          "type": "string",
+          "enum": [
+            "storage_unit",
+            "storage_unit_group"
+          ]
+        },
+        "failed_node_esn": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+        },
+        "vpc_info": {
+          "type": "string",
+          "pattern": "^[^|;&$><`'!+\\n]*$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "job_extendInfo_agent": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "advanceParams": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "由各应用检验"
+        },
+        "agentOS": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "ip": {
+          "type": "string",
+          "anyOf": [
+            {
+              "format": "ipv4"
+            },
+            {
+              "format": "ipv6"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "iqns": {
+          "type": "null"
+        },
+        "port": {
+          "type": "integer",
+          "description": "端口",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "portType": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "pattern": "^[0-9]*$"
+        },
+        "sanClients": {
+          "type": "null"
+        },
+        "status": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "supportProtocol": {
+          "type": [
+            "null",
+            "integer"
+          ],
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "wwpns": {
+          "type": "null"
+        }
+      },
+      "additionalProperties": false
+    },
+    "job_jobParam": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "advanceParams": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "由各应用检验"
+        },
+        "backupType": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "dataLayout": {
+          "$ref": "#/definitions/job_jobParam_dataLayout"
+        },
+        "qos": {
+          "$ref": "#/definitions/job_jobParam_qos"
+        },
+        "restoreType": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "scripts": {
+          "$ref": "#/definitions/job_jobParam_scripts"
+        }
+      },
+      "additionalProperties": false
+    },
+    "job_jobParam_dataLayout": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "compression": {
+          "type": "boolean"
+        },
+        "deduption": {
+          "type": "boolean"
+        },
+        "encryption": {
+          "type": "boolean"
+        },
+        "extendInfo": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "srcDeduption": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "nativeData": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "job_jobParam_qos": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "backupIops": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bandwidth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "protectIops": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "job_jobParam_scripts": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "failPostScript": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^(.+)[.](sh|bat)$|^$"
+            },
+            {
+              "pattern": "^[^|;&$<>`\\\\!]*$"
+            }
+          ]
+        },
+        "postScript": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^(.+)[.](sh|bat)$|^$"
+            },
+            {
+              "pattern": "^[^|;&$<>`\\\\!]*$"
+            }
+          ]
+        },
+        "preScript": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^(.+)[.](sh|bat)$|^$"
+            },
+            {
+              "pattern": "^[^|;&$<>`\\\\!]*$"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "condition": {
+      "type": [
+        "null",
+        "object"
+      ],
+      "properties": {
+        "conditions": {
+          "type": [
+            "null",
+            "string",
+            "object"
+          ],
+          "description": "由各应用检验"
+        },
+        "pageNo": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pageSize": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "orders": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

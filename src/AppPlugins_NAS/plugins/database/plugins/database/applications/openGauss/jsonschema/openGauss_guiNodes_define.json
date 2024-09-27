@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": [
+      "object",
+      "null"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "ip": {
+        "type": "string",
+        "anyOf": [
+          {
+            "format": "ipv4"
+          },
+          {
+            "format": "ipv6"
+          },
+          {
+            "pattern": "^$"
+          }
+        ]
+      },
+      "port": {
+        "anyOf": [
+          {
+            "type": "string",
+            "pattern": "^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$"
+          },
+          {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535
+          }
+        ]
+      },
+      "agentOS": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$",
+        "description": "目前参数为空字符串，使用框架规则"
+      },
+      "wwpns": {
+        "type": "array",
+        "items": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[^|;&$><`'!\\n]*$",
+          "description": "目前传入参数为空字符串，使用黑名单校验"
+        }
+      },
+      "iqns": {
+        "type": "array",
+        "items": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[^|;&$><`'!\\n]*$",
+          "description": "目前传入参数为空字符串，使用黑名单校验"
+        }
+      },
+      "sanClients": {
+        "type": "array",
+        "items": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[^|;&$><`'!\\n]*$",
+          "description": "目前传入参数为空字符串，使用黑名单校验"
+        }
+      },
+      "advanceParams": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+            }
+          },
+          {
+            "type": "string",
+            "pattern": "^[^|;&$><`'!\\n]*$"
+          }
+        ],
+        "description": "目前参数为空，有需要后续补充"
+      }
+    },
+    "additionalProperties": false
+  }
+}
