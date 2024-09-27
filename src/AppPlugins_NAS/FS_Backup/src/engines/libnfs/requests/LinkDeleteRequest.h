@@ -1,0 +1,35 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+#ifndef LIBNFS_LINK_DELETE_REQUEST_H
+#define LIBNFS_LINK_DELETE_REQUEST_H
+
+#include "LibnfsCommonMethods.h"
+
+class NfsLinkDeleteCbData {
+public:
+    FileHandle fileHandle {};
+    NfsCommonData *writeCommonData;
+};
+
+NfsLinkDeleteCbData* CreateLinkDeleteCbData(FileHandle &fileHandle, NfsCommonData &commonData);
+int SendLinkDelete(FileHandle &fileHandle, NfsLinkDeleteCbData *cbData);
+void SendLinkDeleteCb(int status, struct nfs_context *nfs, void *data, void *privateData);
+void HandleLinkDeleteFailure(NfsCommonData *commonData, int status, FileHandle &fileHandle,
+    struct nfs_context *nfs);
+void LinkDeleteFailureHandling(NfsCommonData *commonData, int status, FileHandle &fileHandle);
+
+int SendLinkDeleteSync(FileHandle &fileHandle, NfsLinkDeleteCbData *cbData);
+int HandleLinkDeleteSyncStatus(int status, FileHandle &fileHandle, std::shared_ptr<Module::NfsContextWrapper> nfs,
+    NfsCommonData *commonData);
+
+#endif // LIBNFS_LINK_DELETE_REQUEST_H

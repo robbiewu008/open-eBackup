@@ -1,0 +1,163 @@
+syntax = "proto2";
+import public "CommandTypes.proto";
+import public "BasicTypes.proto";
+
+import public "BasicCommands.proto";
+
+// Range for Task-related commands: 500-599
+
+// a class with two fields: GUID of task and optional ChainID.
+// uniquely identifies the task within whole system
+message TaskID
+{
+    repeated string GUID = 1;
+    optional ChainID chain_id = 2;
+    optional string flat_task=3;//to store the serialized task information got from adminnode, added by yangxingwei,20160301
+    optional int32 task_status=4;//to store the FLR aborting status,added by yangxingwei,20160301
+}
+
+// enum of task status (non-existing, in-progress, completed, aborted)
+enum TaskStatus
+{
+    NonExistent = 1;
+    Initializing = 2;
+    InProgress = 3;
+    Completed = 4;
+    Aborted = 5;
+    RetryFailed = 6;
+    SyncFailed = 7;
+    Aborting = 8;
+    NeedRetry = 9;
+}
+
+
+// enum of clean task status
+enum CleanTaskStatus
+{
+	CleanTaskNonExistent = 1;
+	CleanTaskSuccess = 2;
+	CleanTaskStillRunning = 3;
+}
+
+message GetTaskState
+{
+    extend BasicCommand
+    {
+        optional GetTaskState cmd = 500;
+    }
+    
+    repeated TaskID task_id = 1;
+    repeated uint64 task_details_retrieved = 2;
+    repeated uint64 task_scan_snap_index = 3;
+    optional string urlprefix = 5;
+}
+
+message BrickSpaceInfo
+{
+    optional uint64 totalSizeBytes = 1;
+    optional uint64 freeBytes = 2;
+    optional string brick_path = 3;
+}
+
+message GetTaskStateReply
+{
+    extensions 100 to max;
+	
+    extend GenericReply
+    {
+        optional GetTaskStateReply cmd = 501;
+    }
+    
+    repeated CommandType task_type = 1;
+    repeated TaskStatus  task_status = 2;
+    repeated int32       task_phase = 3;
+    repeated int32       task_abort_reason = 4;
+    repeated int32       task_progress = 5;
+    // TODO - still not finished !!!
+    repeated uint64      task_details_id = 6;
+    repeated string      task_details_param = 7;
+    repeated uint64      task_speed = 8;
+    repeated uint64  task_data_reduction = 9;
+    repeated uint64  task_brick_status = 10;
+    repeated BrickSpaceInfo  task_brick_space = 11;
+    repeated V3MapInfo v3_map_info = 12; // for v3 map info
+/* BEGIN: Added by yulei, 2016/05/14   PN: for support CERT module */
+    repeated VerifiedCertInfo verified_cert_info = 13; // for cert module
+/* END:   Added by yulei, 2016/05/14 */
+    /*BEGIN Add by zhangyoupeng for fix DTS2016090509335 2016-9-18*/
+    repeated string  task_brick_path = 14;
+    repeated BrickType task_brick_type = 15;
+    repeated string  task_node_ip = 16;
+    /*END Add by zhangyoupeng for fix DTS2016090509335 2016-9-18*/
+    repeated Buckets buckets = 17;
+    repeated uint64 healthStatus = 18;  
+    optional bool need_clean_left_overs = 19;
+    optional uint64 uncompressedchainsize = 20[default = 0];
+    optional string replybody = 21;
+}
+
+message AbortTask
+{
+    extend BasicCommand
+    {
+        optional AbortTask cmd = 502;
+    }
+    
+    repeated TaskID task_id = 1;
+}
+
+message PauseTask
+{
+    extend BasicCommand
+    {
+        optional PauseTask cmd = 503;
+    }
+    
+    repeated TaskID task_id = 1;
+}
+
+message ResumeTask
+{
+    extend BasicCommand
+    {
+        optional ResumeTask cmd = 504;
+    }
+    
+    repeated TaskID task_id = 1;
+}
+
+message CleanTask
+{
+    extend BasicCommand
+    {
+        optional CleanTask cmd = 505;
+    }
+    
+    repeated TaskID task_id = 1;
+    optional string urlprefix = 2;
+}   
+
+message TaskStateAbortedReply
+{
+    extensions 100 to max;
+
+    extend GetTaskStateReply
+    {
+        optional TaskStateAbortedReply cmd = 506;
+    }
+
+    repeated int32      task_error_code = 1;
+    optional string urlprefix = 2;
+}
+
+message CleanTaskReply
+{
+	extensions 100 to max;
+
+    extend GenericReply
+    {
+        optional CleanTaskReply cmd = 508;
+    }
+    
+    repeated CleanTaskStatus clean_task_status = 1;
+}

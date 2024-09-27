@@ -1,0 +1,105 @@
+syntax = "proto2";
+import "BasicCommands.proto";
+import "BasicTypes.proto";
+
+// range of commands for ManageBricksConnectivity command and reply: 800-899
+
+
+
+
+//Nodes status in global repository cluster.
+enum RepositoryNodeStatus
+{
+    NodeNormal = 1;         //normal node
+    NodeAdded  = 2;         //new node
+    NodeUnregistered = 3;   //unregistered node
+    NodeBusy = 4;
+}
+
+
+message ManageBricksConnectivityCommand
+{
+    extend BasicCommand
+    {
+        optional ManageBricksConnectivityCommand cmd = 800;
+    }
+    
+    repeated BrickData brick = 1;
+}
+
+// reply data:
+
+message BrickUsage
+{
+    repeated uint64 totalSizeBytes = 1;
+    repeated uint64 freeBytes = 2;
+    repeated uint64 totalInodes = 3;
+    repeated uint64 freeInodes = 4;
+}
+
+message BrickState
+{
+    repeated string path = 1;
+    repeated BrickStatus currentStatus = 2;
+    repeated BrickUsage usage = 3;
+    repeated string fs_path = 4;
+}
+
+message ManageBricksConnectivityReply
+{
+    extend GenericReply
+    {
+        optional ManageBricksConnectivityReply reply = 801;
+    }
+     
+    repeated BrickState brick = 1;
+    optional bool ReconfClusterReply = 2[default = false];
+    optional RepositoryNodeStatus nodeStatus = 3 [default = NodeNormal];
+    /* BEGIN: Added by yulei, 2016/05/14   PN: for support CERT module */
+    repeated VerifiedCertInfo verified_cert_info = 4; // for cert module
+    /* END:   Added by yulei, 2016/05/14 */
+    optional string ReplyNodeID = 5;
+}
+
+
+//For VIMS Cluster
+
+enum RepositoryClusterType
+{
+    VIMS_Cluster = 1; //only VIMS Cluster for now, add more later.
+}
+
+message ClusterNodes
+{
+    repeated uint32 nodeSeq = 1;
+    repeated string ipAddr  = 2;
+    repeated uint32 port    = 3;    
+    
+}
+
+message ClusterInfo
+{
+    repeated string ClusterName = 1;
+    repeated RepositoryClusterType ClusterType = 2;
+    repeated ClusterNodes ClusterNodes = 3;
+}
+
+
+message UpdateRepositoryClusterConfCmd
+{
+    extend BasicCommand
+    {
+        optional UpdateRepositoryClusterConfCmd cmd = 802;
+    }  
+   repeated ClusterInfo clusterInfo = 1;
+}
+
+message UnregisterNodesFromRepositoryClusterCmd
+{
+    extend BasicCommand
+    {
+        optional UnregisterNodesFromRepositoryClusterCmd cmd = 803;
+    }    
+    repeated BrickData brick = 1;
+    optional bool  isAdminMachine = 2;
+}

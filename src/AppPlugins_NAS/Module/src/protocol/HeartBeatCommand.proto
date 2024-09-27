@@ -1,0 +1,48 @@
+syntax = "proto2";
+import "BasicCommands.proto";
+import "BasicTypes.proto";
+
+
+// range of commands for HeartBeatCommand : 900-999
+
+message HeartBeatCommand
+{
+    extend BasicCommand
+    {
+        optional HeartBeatCommand cmd = 900;
+    }
+    
+    repeated uint64 pulse_rate = 1;
+    repeated string ip = 2;
+    repeated string upsession_id = 3;
+    repeated int32 changed_sys_config = 4;
+    repeated string version = 5;
+    repeated string management_ip = 6;
+    repeated string pe_management_ip = 7;
+    repeated string pe_storage_ip = 8;
+    repeated string mgmt_netmask = 9;
+    repeated string publickey = 10;
+    repeated uint64 machine_role = 11;
+    repeated string register_name = 12;
+}
+
+enum HeartBeatReplyStatus
+{
+    HeartBeatMasterSucc = 1;
+    HeartBeatClientRestart = 2;
+    HeartBeatMasterErr = 3;
+}
+
+message HeartBeatReply
+{
+    extend GenericReply
+    {
+        optional HeartBeatReply hbReply = 901;
+    }
+    
+    repeated HeartBeatReplyStatus hb_reply_status = 1;
+    repeated string sys_config = 2;
+    repeated string primaryIP = 3;
+    repeated string standbyIPs = 4;
+}
+
