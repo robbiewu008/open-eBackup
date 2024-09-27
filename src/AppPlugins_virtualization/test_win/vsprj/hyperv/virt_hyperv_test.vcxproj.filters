@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{27fa1d0a-f170-40a5-92ef-a6a79cd3d735}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+   	<ClCompile Include="..\..\..\test_win\protect_engines\hyperv\HyperVProtectEngineTest.cpp">
+    	<Filter>源文件</Filter>
+	</ClCompile>
+    <ClCompile Include="..\..\..\test_win\protect_engines\hyperv\HyperVProtectEngineRestoreTest.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+	<ClCompile Include="..\..\..\test_win\protect_engines\engine_factory\EngineFactoryTest.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\test_win\common\JobHandleTest.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\PluginMain.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\protect_engines\hyperv\api\powershell\PSClient.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\protect_engines\hyperv\api\wmi_client\WMIClient.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\repository_handlers\win32filesystem\Win32FileSystemHandler.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\protect_engines\hyperv\HyperVProtectEngine.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\protect_engines\hyperv\resource_discovery\HyperVResourceAccess.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\volume_handlers\hyperv_volume\HyperVVolumeHandler.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\protect_engines\hyperv\utils\executor\WinCmdExector.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\job_controller\jobs\backup\BackupIoTask.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\job_controller\jobs\backup\BackupJob.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\job_controller\jobs\VirtualizationBasicJob.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\job_controller\jobs\restore\ArchiveRestoreJob.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\job_controller\jobs\restore\RestoreIOTask.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\job_controller\jobs\restore\RestoreJob.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\job_controller\io_scheduler\TaskPool.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\job_controller\io_scheduler\TaskScheduler.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\common\cert_mgr\CertMgr.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\common\utils\Utils.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\common\utils\Win32Utils.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\common\model\ModelBase.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\common\model\ResponseModel.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\common\uuid\Uuid.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\job_controller\factory\VirtualizationJobFactory.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\job_controller\jobs\verify\VerifyJob.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\job_controller\jobs\verify\BlockCheckTask.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\repository_handlers\factory\RepositoryFactory.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\protect_engines\engine_factory\EngineFactory.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\common\DirtyRanges.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\common\JobHandle.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\common\sha256\Sha256.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\common\token_mgr\BaseTokenMgr.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\common\token_mgr\GetTokenResponse.cpp">
+        <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
