@@ -1,0 +1,27 @@
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <lv-group lvGutter='8px'>
+            <i *ngIf="isHcsUser" lv-icon="aui-widget-datepicker-previous" [lvColorState]="true"
+                (click)="gotoPreviousRoute()"></i>
+            <h1>Kerberos</h1>
+            <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+        </lv-group>
+    </div>
+    <div class="aui-block aui-paginator-container">
+        <div class="aui-operation">
+            <lv-group>
+                <lv-pro-button-group [config]="optsConfig"></lv-pro-button-group>
+            </lv-group>
+            <lv-group lvGutter="8px">
+                <lv-group lvGutter="8px">
+                    <button class="aui-button-icon" lv-button lvSize="auto" (click)="dataTable.fetchData()">
+                        <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                    </button>
+                </lv-group>
+            </lv-group>
+        </div>
+        <div class="list-container">
+            <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Managing Clusters">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839274445.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792395424">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Managing Clusters</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792395424"></a><a name="EN-US_TOPIC_0000001792395424"></a>
+  <h1 class="topictitle1">Managing Clusters</h1>
+  <div>
+   <p>After a Kubernetes cluster is registered with the <span>product</span>, you can perform related operations on the Kubernetes cluster.</p>
+   <p>Choose <span class="uicontrol"><b><span id="EN-US_TOPIC_0000001792395424__en-us_topic_0000001839142377_text194759416387"><strong>Protection</strong></span> &gt; Containers &gt; Kubernetes FlexVolume</b></span> to switch to the <span><strong>Cluster</strong></span> tab page.</p>
+   <p><a href="#EN-US_TOPIC_0000001792395424__table51069596392">Table 1</a> describes the related operations.</p>
+   <div class="tablenoborder">
+    <a name="EN-US_TOPIC_0000001792395424__table51069596392"></a><a name="table51069596392"></a>
+    <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792395424__table51069596392" frame="border" border="1" rules="all">
+     <caption>
+      <b>Table 1 </b>Cluster-related operations
+     </caption>
+     <colgroup>
+      <col style="width:21.279999999999998%">
+      <col style="width:47.27%">
+      <col style="width:31.45%">
+     </colgroup>
+     <thead align="left">
+      <tr>
+       <th align="left" class="cellrowborder" valign="top" width="21.279999999999998%" id="mcps1.3.4.2.4.1.1"><p>Operation</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="47.27%" id="mcps1.3.4.2.4.1.2"><p>Description</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="31.45%" id="mcps1.3.4.2.4.1.3"><p>Navigation Path</p></th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td class="cellrowborder" valign="top" width="21.279999999999998%" headers="mcps1.3.4.2.4.1.1 "><p>Scanning for cluster resources</p></td>
+       <td class="cellrowborder" valign="top" width="47.27%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>The <span>product</span> automatically scans Kubernetes clusters every hour. If namespaces or StatefulSets in a registered Kubernetes cluster have changed, the <span>product</span> automatically updates the namespaces or StatefulSets after scanning. This operation enables you to immediately update the changed information to the <span>product</span>.</p> <p><strong>Note</strong></p> <p>If you do not select to apply SLA policies to newly created StatefulSets when creating a periodic backup job, the system will not associate the newly discovered StatefulSets with an SLA after scanning.</p></td>
+       <td class="cellrowborder" valign="top" width="31.45%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Resource Scan</strong></span></b></span>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="21.279999999999998%" headers="mcps1.3.4.2.4.1.1 "><p>Testing cluster connectivity</p></td>
+       <td class="cellrowborder" valign="top" width="47.27%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>Manual connectivity test of the registered Kubernetes cluster is used to check the connectivity between the cluster and the agent host and between the cluster and the production environment.</p></td>
+       <td class="cellrowborder" valign="top" width="31.45%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Test Connectivity</strong></span></b></span>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="21.279999999999998%" headers="mcps1.3.4.2.4.1.1 "><p>Authorizing cluster resources</p></td>
+       <td class="cellrowborder" valign="top" width="47.27%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>By default, only the system administrator has the permission to protect resources. If you want to assign this permission to a data protection administrator, authorize the data protection administrator as the system administrator to protect resources.</p> <p><strong>Note</strong></p>
+        <ul>
+         <li id="EN-US_TOPIC_0000001792395424__en-us_topic_0000001839223137_li1491782615119">Users cannot be authorized to protect resources that have been associated with SLAs. You need to remove the protection of resources before performing authorization.</li>
+         <li id="EN-US_TOPIC_0000001792395424__en-us_topic_0000001839223137_li14274329155112">A single resource can be authorized only to a single data protection administrator.</li>
+        </ul></td>
+       <td class="cellrowborder" valign="top" width="31.45%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Authorize Resource</strong></span></b></span> and select a data protection administrator you want to authorize.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="21.279999999999998%" headers="mcps1.3.4.2.4.1.1 "><p>Reclaiming cluster resources</p></td>
+       <td class="cellrowborder" valign="top" width="47.27%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to reclaim resources authorized to the data protection administrator. The data protection administration is not permitted to protect the resources that have been reclaimed.</p> <p><strong>Note</strong></p> <p>Users are not allowed to reclaim resources that have been associated with SLAs. You need to remove the protection of resources before reclaiming them.</p></td>
+       <td class="cellrowborder" valign="top" width="31.45%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Reclaim Resource</strong></span></b></span>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="21.279999999999998%" headers="mcps1.3.4.2.4.1.1 "><p>Modifying the cluster registration information</p></td>
+       <td class="cellrowborder" valign="top" width="47.27%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to change the registered Kubernetes cluster name or to synchronize the changes of the registered Kubernetes configuration file, management IP address of storage resources, username, and password.</p> <p><strong>Note</strong></p> <p>Modify the registration information when no backup or restoration job is running. Otherwise, the job will fail.</p></td>
+       <td class="cellrowborder" valign="top" width="31.45%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify</strong></span></b></span>.</p> <p><a href="en-us_topic_0000001839274437.html#EN-US_TOPIC_0000001839274437__table613227155112">Table 1</a> describes the parameters of Kubernetes cluster registration information.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="21.279999999999998%" headers="mcps1.3.4.2.4.1.1 "><p>Deleting a cluster</p></td>
+       <td class="cellrowborder" valign="top" width="47.27%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>If you no longer need to protect a Kubernetes cluster or use it as a restore target, you can perform this operation to delete the Kubernetes cluster.</p> <p><strong>Note</strong></p> <p>If a namespace or StatefulSet in a cluster has been associated with an SLA, the cluster cannot be deleted. Disassociate the namespace or StatefulSet from the SLA before deletion.</p></td>
+       <td class="cellrowborder" valign="top" width="31.45%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Delete</strong></span></b></span>.</p></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001839274445.html">Cluster, Namespace, and StatefulSet</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

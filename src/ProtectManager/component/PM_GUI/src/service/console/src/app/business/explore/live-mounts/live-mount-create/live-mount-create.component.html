@@ -1,0 +1,119 @@
+<lv-wizard [lvMode]="'icon'" [lvStatus]="'process'" [lvActiveIndex]="activeIndex" class="aui-gutter-column-lg">
+    <lv-wizard-step>{{'explore_select_resource_label' | i18n}}</lv-wizard-step>
+    <lv-wizard-step>{{'common_select_copydata_label' | i18n}}</lv-wizard-step>
+    <lv-wizard-step>{{'common_mount_options_label' | i18n}}</lv-wizard-step>
+    <lv-wizard-step>{{'common_summary_label' | i18n}}</lv-wizard-step>
+</lv-wizard>
+
+<div [ngClass]="{'visible': activeIndex === 0, 'hidden': activeIndex !== 0}">
+    <aui-select-resource [componentData]="componentData" (selectResourceChange)="selectResourceChange($event)"
+        [activeIndex]="activeIndex">
+    </aui-select-resource>
+</div>
+
+<div [ngClass]="{'visible': activeIndex === 1, 'hidden': activeIndex !== 1}">
+    <aui-select-copy-data [componentData]="componentData" (selectCopyDataChange)="selectCopyDataChange($event)"
+        [activeIndex]="activeIndex">
+    </aui-select-copy-data>
+</div>
+
+<div [ngClass]="{'visible': activeIndex === 2, 'hidden': activeIndex !== 2}">
+    <ng-container
+        *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.oracle.value,dataMap.Resource_Type.MySQLInstance.value, dataMap.Resource_Type.tdsqlInstance.value]).length">
+        <aui-live-mount-oracle-options [componentData]="componentData"
+            (selectMountOptionChange)="selectMountOptionChange($event)" [activeIndex]="activeIndex">
+        </aui-live-mount-oracle-options>
+    </ng-container>
+    <ng-container
+        *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.virtualMachine.value]).length">
+        <aui-live-mount-vmware-options [componentData]="componentData"
+            (selectMountOptionChange)="selectMountOptionChange($event)" [activeIndex]="activeIndex">
+        </aui-live-mount-vmware-options>
+    </ng-container>
+    <ng-container
+        *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.NASFileSystem.value,dataMap.Resource_Type.NASShare.value]).length">
+        <aui-live-mount-nas-shared-options [componentData]="componentData"
+            (selectMountOptionChange)="selectMountOptionChange($event)" [activeIndex]="activeIndex">
+        </aui-live-mount-nas-shared-options>
+    </ng-container>
+    <ng-container
+        *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.KubernetesCommon.value,dataMap.Resource_Type.KubernetesMySQL.value]).length">
+        <aui-kubernetes-live-mount-options [componentData]="componentData"
+            (selectMountOptionChange)="selectMountOptionChange($event)" [activeIndex]="activeIndex">
+        </aui-kubernetes-live-mount-options>
+    </ng-container>
+    <ng-container
+        *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.fileset.value, dataMap.Resource_Type.volume.value]).length">
+        <aui-live-mount-fileset-options [componentData]="componentData"
+            (selectMountOptionChange)="selectMountOptionChange($event)" [activeIndex]="activeIndex">
+        </aui-live-mount-fileset-options>
+    </ng-container>
+    <ng-container *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.cNwareVm.value]).length">
+        <aui-live-mount-cnware-options [componentData]="componentData"
+            (selectMountOptionChange)="selectMountOptionChange($event)"
+            [activeIndex]="activeIndex"></aui-live-mount-cnware-options>
+    </ng-container>
+</div>
+
+<div [ngClass]="{'visible': activeIndex === 3, 'hidden': activeIndex !== 3}">
+    <ng-container
+        *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.oracle.value,dataMap.Resource_Type.MySQLInstance.value, dataMap.Resource_Type.tdsqlInstance.value]).length">
+        <aui-live-mount-oracle-summary [componentData]="componentData" [activeIndex]="activeIndex">
+        </aui-live-mount-oracle-summary>
+    </ng-container>
+    <ng-container
+        *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.virtualMachine.value]).length">
+        <aui-live-mount-vmware-summary [componentData]="componentData" [activeIndex]="activeIndex">
+        </aui-live-mount-vmware-summary>
+    </ng-container>
+    <ng-container
+        *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.NASFileSystem.value,dataMap.Resource_Type.NASShare.value]).length">
+        <aui-live-mount-nas-shared-summary [componentData]="componentData" [activeIndex]="activeIndex">
+        </aui-live-mount-nas-shared-summary>
+    </ng-container>
+    <ng-container
+        *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.KubernetesCommon.value,dataMap.Resource_Type.KubernetesMySQL.value]).length">
+        <aui-kubernetes-live-mount-summary [componentData]="componentData" [activeIndex]="activeIndex">
+        </aui-kubernetes-live-mount-summary>
+    </ng-container>
+    <ng-container
+        *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.fileset.value, dataMap.Resource_Type.volume.value]).length">
+        <aui-live-mount-fileset-summary [componentData]="componentData" [activeIndex]="activeIndex">
+        </aui-live-mount-fileset-summary>
+    </ng-container>
+    <ng-container *ngIf="!!_intersection(this.componentData.childResourceType, [dataMap.Resource_Type.cNwareVm.value]).length">
+        <aui-live-mount-cnware-summary [componentData]="componentData" [activeIndex]="activeIndex"></aui-live-mount-cnware-summary>
+    </ng-container>
+</div>
+
+
+<ng-template #footerTpl>
+    <div class="lv-modal-btns">
+        <lv-group lvGutter='8px'>
+            <button *ngIf="activeIndex !== 0" lv-button (click)='previous()'>{{ 'common_previous_label' | i18n
+                }}</button>
+            <button *ngIf="activeIndex !== 3" lv-button lvType='primary' (click)='next()'
+                [disabled]="nextBtnDisabled">{{
+                'common_next_label' | i18n }}</button>
+            <button *ngIf="activeIndex === 3" lv-button (click)='finish()' lvType='primary' [lvLoading]='isLoading'>{{
+                'common_finish_label' | i18n }}</button>
+            <button lv-button (click)='modal.close()'>{{ 'common_cancel_label' | i18n }}</button>
+        </lv-group>
+    </div>
+</ng-template>
+
+<ng-template #confirmTpl>
+    <lv-group lvDirection='vertical' lvGutter='16px'>
+        <lv-group class="desc-style">
+            {{ 'protection_live_mount_confirm_desc_label' | i18n: [confirmCopy] }}
+        </lv-group>
+        <lv-group lvGutter='16px'>
+            <span class="position-style">
+                {{ 'insight_job_live_mount_target_label' | i18n }}
+            </span>
+            <span>
+                {{ confirmLocation }}
+            </span>
+        </lv-group>
+    </lv-group>
+</ng-template>

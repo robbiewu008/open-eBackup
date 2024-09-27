@@ -1,0 +1,30 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]='false' class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_adminpwd_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'system_reset_admin_help_label' | i18n}}"
+                lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="adminPasswordErrorTip">
+            <aui-inupt-with-eye formControlName="adminPassword" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_newpwd_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]='baseUtilService.pwdErrorTip'>
+            <aui-inupt-with-eye [lv-tooltip]="pwdComplexTipTpl" lvTooltipTrigger="focus" lvTooltipPosition="topLeft"
+                lvTooltipTheme="light" formControlName="newPassword" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_confirmpwd_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.pwdErrorTip">
+            <aui-inupt-with-eye formControlName="confirmPassword" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+
+<ng-template #pwdComplexTipTpl>
+    <span [innerHTML]="pwdComplexTipLabel"></span>
+</ng-template>

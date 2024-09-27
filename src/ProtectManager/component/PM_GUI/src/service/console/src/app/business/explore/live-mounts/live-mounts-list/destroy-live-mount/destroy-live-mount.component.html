@@ -1,0 +1,19 @@
+<div class="warning-content">
+    {{'explore_destroy_resource_label' | i18n}}
+</div>
+
+<div class="warning-content retains-copy">
+    {{'explore_retains_copy_label' | i18n}}
+    <lv-switch [(ngModel)]="reserveCopy"></lv-switch>
+</div>
+
+<div class="warning-content retains-copy" *ngIf="forceDeleteShow">
+    {{'explore_forced_delete_copy_label' | i18n}}
+    <lv-switch [(ngModel)]="forceDelete"></lv-switch>
+</div>
+
+<div class="warning-checkbox">
+    <label lv-checkbox [(ngModel)]="status" (ngModelChange)="warningConfirmChange($event)">
+        {{'common_warning_confirm_label' | i18n}}
+    </label>
+</div>

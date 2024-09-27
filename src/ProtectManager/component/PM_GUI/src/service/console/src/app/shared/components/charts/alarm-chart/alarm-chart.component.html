@@ -1,0 +1,34 @@
+<div class="alarm-container">
+  <div class="aui-operation">
+    <div class="tittle">{{ 'common_alarms_label' | i18n }}</div>
+    <span class="aui-link" [routerLink]="['/insight/alarms']">
+      {{ 'common_view_details_label' | i18n }} &gt;
+    </span>
+  </div>
+  <div class="alarm-chart-container">
+    <div id="alarm-chart"></div>
+    <div class="alarm-tags">
+      <div class="alarm-tag">
+        <p class="alarm-count">
+          <i class="status-dot" [ngStyle]="{ background: alarmConsts.CRITICAL }"></i>
+          <span class="alarm-count-label">{{ (criticalItem < 1000 ? criticalItem : '999+') | nil }}</span>
+        </p>
+        <p class="aui-text-desc">{{ 'common_alarms_critical_label' | i18n }}</p>
+      </div>
+      <div class="alarm-tag">
+        <p class="alarm-count">
+          <i class="status-dot" [ngStyle]="{ background: alarmConsts.MAJOR }"></i>
+          <span class="alarm-count-label">{{ (majorItem < 1000 ? majorItem : '999+') | nil }}</span>
+        </p>
+        <p class="aui-text-desc">{{ 'common_alarms_major_label' | i18n }}</p>
+      </div>
+      <div class="alarm-tag">
+        <p class="alarm-count">
+          <i class="status-dot" [ngStyle]="{ background: alarmConsts.WARNING }"></i>
+          <span class="alarm-count-label">{{ (warningItem < 1000 ? warningItem : '999+') | nil }}</span>
+        </p>
+        <p class="aui-text-desc">{{ 'common_alarms_warning_label' | i18n }}</p>
+      </div>
+    </div>
+  </div>
+</div>

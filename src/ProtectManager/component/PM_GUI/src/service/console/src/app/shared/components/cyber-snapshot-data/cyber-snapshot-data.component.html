@@ -1,0 +1,97 @@
+<div class="aui-operation" *ngIf="!isHistory">
+    <lv-group></lv-group>
+    <lv-group lvGutter="8px">
+        <lv-group lvGutter="8px">
+            <button class="aui-button-icon" lv-button lvSize="auto" (click)="dataTable.fetchData()">
+                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+            </button>
+        </lv-group>
+    </lv-group>
+</div>
+<div *ngIf="isHistory" class="aui-gutter-column-lg aui-text-label">
+    {{'explore_history_detection_title_label' | i18n}}
+</div>
+<lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+
+<ng-template #snapshotHelpTpl>
+    <div class="custom-icon">
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_security_snapshot_help_label' | i18n}}"
+            lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
+    </div>
+</ng-template>
+
+<ng-template #addFileCountTpl>
+    <div class="custom-icon">
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_add_file_label' | i18n}}" lvTooltipTheme="light"
+            lvColorState='true'></i>
+    </div>
+</ng-template>
+<ng-template #changeFileCountTpl>
+    <div class="custom-icon">
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_modify_file_label' | i18n}}" lvTooltipTheme="light"
+            lvColorState='true'></i>
+    </div>
+</ng-template>
+<ng-template #deleteFileCountTpl>
+    <div class="custom-icon">
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_delete_file_label' | i18n}}" lvTooltipTheme="light"
+            lvColorState='true'></i>
+    </div>
+</ng-template>
+<ng-template #infectedFileCountTpl>
+    <div class="custom-icon">
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_infected_file_help_label' | i18n}}" lvTooltipTheme="light"
+            lvColorState='true'></i>
+    </div>
+</ng-template>
+
+
+
+<ng-template #snapshotrestoreHelpTpl>
+    <div class="custom-icon">
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'common_cyberengine_worm_disrestore_label' | i18n}}"
+            lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
+    </div>
+</ng-template>
+
+<ng-template #statusTpl let-item>
+    <ng-container
+        *ngIf="!_includes([copyStatus.normal.value,copyStatus.invalid.value,copyStatus.verifying.value],item.status); else elseTemplate">
+        <aui-status [value]="item.status" type="snapshotCopyStatus">
+        </aui-status>
+    </ng-container>
+    <ng-template #elseTemplate>
+        <aui-status [value]="item.anti_status" type="detectionSnapshotStatus">
+        </aui-status>
+    </ng-template>
+</ng-template>
+
+<ng-template #timeTpl let-item>
+    <span lv-overflow [ngClass]="{'aui-link': item.display_timestamp}" (click)="getSnapshotDetail(item)">
+        {{item.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss' | nil}}
+    </span>
+</ng-template>
+
+<ng-template #expirationTimeTpl let-item>
+    <span lv-overflow>{{item.expiration_time | date: 'yyyy-MM-dd HH:mm:ss' | nil}}</span>
+</ng-template>
+
+<ng-template #securityTpl let-item>
+    <span>
+        {{(item.is_security_snapshot ? 'common_yes_label' :
+        'common_no_label') | i18n}}
+    </span>
+</ng-template>
+
+<ng-template #totalFileSizeTpl let-item>
+    <ng-container *ngIf="_isNumber(item.total_file_size); else emptyTpl">
+        <span lv-overflow>
+            {{item.total_file_size |
+            capacityCalculateLabel:'1.0-0':unitconst.BYTE: true}}
+        </span>
+    </ng-container>
+</ng-template>
+
+<ng-template #emptyTpl>
+    --
+</ng-template>

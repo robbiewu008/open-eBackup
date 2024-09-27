@@ -1,0 +1,44 @@
+<div class="aui-fullpage">
+    <div class="overview-tag">
+        <lv-group lvGutter="24px" class="title-group">
+            <img src="assets/img/anti_detection_brand.svg" class="logo">
+            <lv-group lvGutter="8px" lvDirection='vertical'>
+                <h1>{{'explore_intelligent_detection_label' | i18n}}</h1>
+                <span class="aui-text-label desc-font">
+                    {{'explore_intelligent_detection_help_label' | i18n}}
+                </span>
+            </lv-group>
+        </lv-group>
+        <lv-group lvGutter="56px" class="statistic-group">
+            <lv-group lvGutter="8px" lvDirection='vertical'>
+                <h1 class="summary-count">
+                    {{protectedFileSystem}}<span class="total-count-summay">/{{totalFileSystem}}</span>
+                </h1>
+                <span class="aui-text-label desc-font" [ngClass]="{'width-en':isEn}">
+                    {{'explore_protected_filesystem_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_cyber_engine_detection_tip_label' | i18n}}"></i>
+                </span>
+            </lv-group>
+            <lv-group lvGutter="8px" lvDirection='vertical'>
+                <h1 class="summary-count">{{totalPolicy}}</h1>
+                <span class="aui-text-label desc-font">
+                    {{'explore_intelligent_detection_policy_label' | i18n}}
+                </span>
+            </lv-group>
+        </lv-group>
+    </div>
+    <div class="aui-block aui-paginator-container">
+        <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+            <lv-tab [lvTitle]="'common_file_systems_label' | i18n" [lvId]="'fileSystem'">
+                <ng-template lv-tab-lazy>
+                    <aui-ransomware-file-system (refreshFileSystem)="refreshFileSystem()"></aui-ransomware-file-system>
+                </ng-template>
+            </lv-tab>
+            <lv-tab [lvTitle]="'explore_intelligent_detection_policy_label' | i18n" [lvId]="'backupPolicy'">
+                <ng-template lv-tab-lazy>
+                    <aui-ransomware-backup-policy (refreshPolicy)="refreshPolicy()"></aui-ransomware-backup-policy>
+                </ng-template>
+            </lv-tab>
+        </lv-tabs>
+    </div>
+</div>

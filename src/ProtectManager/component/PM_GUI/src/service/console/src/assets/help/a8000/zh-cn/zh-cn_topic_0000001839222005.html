@@ -1,0 +1,51 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="周期性执行备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839142153.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839222005">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>周期性执行备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001839222005"></a><a name="ZH-CN_TOPIC_0000001839222005"></a>
+
+<h1 class="topictitle1">周期性执行备份</h1>
+<div><p>将需要保护的资源关联到指定SLA策略，系统将对这些资源按照SLA策略进行保护。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839222005__zh-cn_topic_0000001792342950_zh-cn_topic_0000001839142377_uicontrol865195012392">“<span id="ZH-CN_TOPIC_0000001839222005__zh-cn_topic_0000001792342950_zh-cn_topic_0000001839142377_text4651950123919">保护</span> &gt; 大数据 &gt; GaussDB(DWS)”</span>。</span></li><li id="ZH-CN_TOPIC_0000001839222005__zh-cn_topic_0000001346641948_li121861415184818"><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839222005__uicontrol14705224101119">“<span id="ZH-CN_TOPIC_0000001839222005__text1792112754418">集群</span>”</span>、<span class="uicontrol" id="ZH-CN_TOPIC_0000001839222005__zh-cn_topic_0000001397042241_uicontrol7186131513484">“<span id="ZH-CN_TOPIC_0000001839222005__text8331393414">Schema集</span>”</span>、<span class="uicontrol" id="ZH-CN_TOPIC_0000001839222005__zh-cn_topic_0000001346641948_uicontrol10151651133510">“<span id="ZH-CN_TOPIC_0000001839222005__text32517382346">表集</span>”</span>页签。</span></li><li><span>在需要保护的集群、Schema集或表集所在行，单击<span class="menucascade">“<span class="uicontrol">更多</span> &gt; <span class="uicontrol">保护</span>”</span>。</span><p><p>您也可以勾选多个表集进行批量保护。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>如果您对表集进行保护，需要注意：</p>
+<ul><li>请确保已经在代理主机上成功启动GDS（在GaussDB(DWS)节点上启动GDS会占用生产环境资源，因此，建议在代理主机上启动GDS）。启动GDS的操作请参见GaussDB(DWS)对应版本产品文档的<span class="uicontrol">“安装配置和启动GDS”</span>章节。</li><li>启动GDS的参数中需要有(-d -p -t)这三个参数。每个GDS存放数据的目录不能相同，示例如下：<pre class="screen">/home/gds_user/bin/gds <strong>-d</strong><strong> </strong>/home/gds_user/input_data_1/ <strong>-p</strong> 192.168.97.240:9001 -H 0/0 -l /home/gds_user/gds_log/gds_process1.log -D <strong>-t</strong> 2
+/home/gds_user/bin/gds <strong>-d</strong> /home/gds_user/input_data_2/ <strong>-p</strong> 192.168.97.240:9002 -H 0/0 -l /home/gds_user/gds_log/gds_process2.log -D <strong>-t</strong> 2
+/home/gds_user/bin/gds <strong>-d</strong> /home/gds_user/input_data_3/ <strong>-p</strong> 192.168.97.240:9003 -H 0/0 -l /home/gds_user/gds_log/gds_process3.log -D <strong>-t</strong> 2
+/home/gds_user/bin/gds <strong>-d</strong> /home/gds_user/input_data_4/ <strong>-p</strong> 192.168.97.240:9004 -H 0/0 -l /home/gds_user/gds_log/gds_process4.log -D <strong>-t</strong> 2</pre>
+</li><li>如果您在多个代理主机上启动了GDS，系统会使用GDS个数最多的代理主机进行备份。因此，建议您仅在一个代理主机上以一个用户启动多个GDS，为达到最高性能，对于双控系统，启动GDS的数量推荐为备份存储单元数量的四倍，对于四控系统，启动GDS的数量推荐为备份存储单元数量的八倍。</li><li>如果GaussDB(DWS)是沙箱部署场景，请在执行表集GDS备份前，参见<a href="zh-cn_topic_0000001792342930.html">GDS运行在GaussDB(DWS)沙箱部署场景的注意事项</a>，将沙箱内的GDS配置目录映射至宿主机相应目录。</li></ul>
+</div></div>
+</p></li><li><span>填写<span class="uicontrol">“<span>备份元数据存储路径</span>”</span>。<span style="color:#282B33;">填写一个GaussDB(DWS)节点上的目录，用于存储备份副本元数据。如果目录不存在，会自动创建。GaussDB(DWS)集群用户需要有该目录读写权限。</span></span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>备份元数据存储路径需至少预留20G磁盘空间，请勿配置为系统卷和生产业务卷，否则磁盘空间不足时会影响生产业务运行。</p>
+</div></div>
+</p></li><li><span>选择SLA。</span><p><p>您也可以单击<span class="uicontrol">“<span>创建</span>”</span>，创建新的SLA。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>对Schema集或表集保护时，不支持选择预置SLA。</p>
+</div></div>
+</p></li><li><span>单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839222005__zh-cn_topic_0000001792503842_uicontrol471113581111">“确定”</span>。</span><p><p id="ZH-CN_TOPIC_0000001839222005__zh-cn_topic_0000001792503842_p25041111535">如果当前系统时间已晚于该SLA首次备份的开始时间，则关联备份SLA后可以选择在当前立即执行备份或者根据SLA中设置的备份策略等待下次调度。</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001839142153.html">步骤7：执行备份</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

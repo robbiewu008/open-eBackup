@@ -1,0 +1,7 @@
+<div class="aui-operation aui-custom-modal-container">
+    <div class="aui-custom-modal-title" style="width: 400px;" lv-overflow lvTooltipTheme="light">{{ header | nil}}</div>
+    <div class="aui-custom-modal-operate" *ngIf="!!item.optItems">
+        <lv-operation-menu [lvItemsFn]="optCallback" [lvData]="item">
+        </lv-operation-menu>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+<lv-layout>
+  <lv-header>
+    <lv-group [lvGutter]="groupOptions.largeRowGutter">
+      <div
+        class="logo"
+        [ngClass]="{
+          logo: isCloudBackup,
+          'cyber-logo': isCyberEngine,
+          'protect-logo': !isCloudBackup && !isCyberEngine
+        }"
+      ></div>
+    </lv-group>
+    <lv-group [lvGutter]="groupOptions.largeRowGutter">
+      <div class="language" (click)="toggleLanguage()">{{ languageLabel }}</div>
+    </lv-group>
+  </lv-header>
+  <lv-content class="error-container">
+    <div class="img-container"></div>
+    <h1 class="text-container">{{ errorTitle }}</h1>
+    <div class="text-container">{{ errorDesc }}</div>
+  </lv-content>
+</lv-layout>

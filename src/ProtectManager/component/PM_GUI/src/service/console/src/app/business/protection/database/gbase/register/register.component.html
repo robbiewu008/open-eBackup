@@ -1,0 +1,41 @@
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ 'common_name_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.nameErrorTip">
+            <input lv-input type="text" formControlName="name" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ 'common_host_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nodeErrorTip">
+            <lv-select [lvOptions]="hostOptions" formControlName="node" lvValueKey="value" lvShowFilter lvShowCheckAll
+                lvFilterKey="label" lvFilterMode="contains">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ 'common_log_backup_label' | i18n }}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_enable_sqlserver_log_label' |i18n}}"
+                lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="logBackup"></lv-switch>
+            <lv-form-item *ngIf="formGroup.value.logBackup">
+                <lv-form-label lvRequired>
+                    {{ 'protection_logbackup_file_path_label' | i18n }}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_gbase_cluster_path_tip_label' |i18n}}"
+                        lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="pathErrorTip">
+                    <input lv-input type="text" formControlName="path"
+                        placeholder="{{'protection_logbackup_file_path_tips_label' | i18n}}" />
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

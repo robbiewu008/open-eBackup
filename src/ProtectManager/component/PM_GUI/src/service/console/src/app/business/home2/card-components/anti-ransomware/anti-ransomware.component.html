@@ -1,0 +1,85 @@
+<div class="anti-ransomware">
+  <div class="detail">
+    <div class="title">
+      <ng-container [ngSwitch]="type">
+        <ng-container *ngFor="let info of antiRansomwareType">
+          <span *ngSwitchCase="info.value">
+            {{ info.label | i18n }}
+          </span>
+        </ng-container>
+      </ng-container>
+    </div>
+    <div class="refresh-box">
+      <div>{{ 'common_home_latest_detection_result_label' | i18n }}</div>
+      <div>{{ queryTime | date: 'yyyy-MM-dd HH:mm:ss' }}</div>
+    </div>
+
+    <div class="detection-resource">
+      <div class="num">--</div>
+      <div class="title">
+        {{ 'common_home_detected_resources_label' | i18n }}
+      </div>
+    </div>
+
+    <div
+      class="anti-ransomism-strategy jumpable"
+      (click)="navigate({}, RouterUrl.ExplorePolicyAntiPolicySetting)"
+    >
+      <ng-container *ngIf="type === 0 || type === 3 || type === 4">
+        <div class="num navigator">{{ totalCount }}</div>
+        <div class="title">
+          {{ 'common_home_detection_policies_label' | i18n }}
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="type === 1">
+        <div class="abnormal jumpable" (click)="navigate({ type: 'abnormal' })">
+          <div class="num">
+            <span class="hover navigator">
+              {{ uninfectedCount }}
+            </span>
+          </div>
+          <div class="title">
+            <div class="abnormal-circle"></div>
+            <div class="text">{{ 'common_home_abnormal_label' | i18n }}</div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="type === 2">
+        <div class="infected">
+          <div class="jumpable" (click)="navigate({ type: 'infected' })">
+            <div class="num">
+              <span class="hover navigator">
+                {{ infectedCount }}
+              </span>
+            </div>
+            <div class="title">
+              <div class="infected-circle"></div>
+              <div class="text">{{ 'common_home_infected_label' | i18n }}</div>
+            </div>
+          </div>
+          <div class="jumpable" (click)="navigate({ type: 'abnormal' })">
+            <div class="num">
+              <span class="hover navigator">
+                {{ abnormalCount }}
+              </span>
+            </div>
+            <div class="title">
+              <div class="abnormal-circle"></div>
+              <div class="text">{{ 'common_home_abnormal_label' | i18n }}</div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <div
+    *ngIf="this.detectingCount !== 0"
+    [class]="['chart-box', 'chart-box-' + type]"
+  ></div>
+  <div
+    *ngIf="this.detectingCount === 0"
+    [class]="['chart-box', 'chart-box-' + type, 'static']"
+  ></div>
+</div>

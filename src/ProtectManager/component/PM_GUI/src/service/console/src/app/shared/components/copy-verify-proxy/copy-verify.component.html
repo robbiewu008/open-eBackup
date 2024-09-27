@@ -1,0 +1,20 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_proxy_host_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        [lvOptions]="proxyOptions"
+        formControlName="proxy"
+        lvValueKey="value"
+        lvMode="multiple"
+        lvShowFilter
+        lvShowCheckAll
+        lvFilterKey="label"
+        lvFilterMode="contains"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>

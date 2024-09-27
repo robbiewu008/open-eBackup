@@ -1,0 +1,22 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{ 'common_files_label' | i18n }}</lv-form-label>
+        <lv-form-control>
+            <lv-upload lvAccept=".zip" lvShowUpload="false" [lvFilters]='filters'
+                (lvFilesChange)="crlFilesChange($event)" (lvChange)="filesChange($event)"></lv-upload>
+            <span class="aui-text-help-sm">
+                {{'system_import_backup_file_label' | i18n}}
+            </span>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="!isCyberengine">
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'system_trap_data_encryption_password_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="pwdErrorTip">
+                <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"
+                    placeholder="{{'system_trap_data_encryption_password_tip_label' | i18n}}"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>

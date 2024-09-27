@@ -1,0 +1,11 @@
+<lv-form [lvLabelColon]="false" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'explore_model_file_import_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-upload lvAccept=".zip,.tgz" lvShowUpload="false" (lvChange)="uploadChange($event)" [lvFilters]='filters'>
+            </lv-upload>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

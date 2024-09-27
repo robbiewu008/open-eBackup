@@ -1,0 +1,22 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: SysVersionService
+paths:
+  /v1/version:
+    get:
+      tags:
+        - SysVersionService
+      operationId: GetSysbackupVersion
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object

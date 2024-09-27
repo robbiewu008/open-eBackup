@@ -1,0 +1,218 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: dme-service
+paths:
+  /v1/dme/projects:
+    get:
+      tags:
+        - dme-service
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 查询dme用户关联的项目列表
+      operationId: getDmeVdcProjectsInfos
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          type: string
+        - name: DME-X-Auth-Token
+          in: header
+          required: true
+          type: string
+      responses:
+        '200':
+          description: dme用户关联的项目列表
+          schema:
+            $ref: '#/definitions/DmeProjectsResponse'
+          examples:
+            application/json:
+              total: 1
+              projects:
+                - id: f376b672835a4715b861372c6a1374da
+                  name: test_re
+                  description: null
+                  enabled: true
+                  domain_id: 036941a3aebc45dfaa8e5198c807559e
+                  domain_name: test
+                  vdc_id: 2be9214a-b8c0-4583-86a4-c9403a8223a0
+                  vdc_name: test
+                  create_time: 1724925927000
+                  regions:
+                    - id: cn-global-1
+                      name: null
+  /v1/dme/availability-zones:
+    get:
+      tags:
+        - dme-service
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 查询dme备份集群的可用分区信息（当前所处分区除外）
+      operationId: getDmeAzInfos
+      parameters:
+        - name: DME-X-Auth-Token
+          in: header
+          required: true
+          type: string
+        - name: Az-Id
+          in: header
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DmeAzInfo'
+          examples:
+            application/json:
+              - cluster_id: 0bfcdd51-1891-411b-ad73-27136718af16
+                port: 25081
+                az_name: AZ2
+                az_id: 786AE14EEA1238199CAA8FC934910047
+                ip: 8.40.98.93
+                sn: 2102353GTH10L8000014
+              - cluster_id: c99987d3-dc1d-4ee4-823e-e5247acd520b
+                port: 25081
+                az_name: AZ1
+                az_id: 381FF610C9A838F38367FD88A686D7C1
+                ip: 51.20.97.176
+                sn: 2102355MFQ10PC100001
+definitions:
+  DemoInfo:
+    description: This is a demo
+    required:
+      - name
+    properties:
+      id:
+        type: string
+        description: 唯一标识ID
+        minLength: 32
+        maxLength: 36
+        readOnly: true
+        example: 28f61af50fc9452aa0ed5ea25c3cc3d3
+      name:
+        type: string
+        description: 名称
+        minLength: 2
+        maxLength: 64
+        example: MyDemo
+      description:
+        type: string
+        description: 描述
+        minLength: 2
+        maxLength: 512
+        example: this is a demo
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512
+  DmeProjectsResponse:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int32
+        example: 1
+      projects:
+        items:
+          properties:
+            id:
+              type: string
+              example: f376b672835a4715b861372c6a1374da
+            name:
+              type: string
+              example: test_re
+            description:
+              type: string
+              example: null
+            enabled:
+              type: boolean
+              example: true
+            domain_id:
+              type: string
+              example: 036941a3aebc45dfaa8e5198c807559e
+            domain_name:
+              type: string
+              example: test
+            vdc_id:
+              type: string
+              example: 2be9214a-b8c0-4583-86a4-c9403a8223a0
+            vdc_name:
+              type: string
+              example: test
+            create_time:
+              type: integer
+              format: int32
+              example: 1724925927000
+            regions:
+              items:
+                properties:
+                  id:
+                    type: string
+                    example: cn-global-1
+                  name:
+                    type: string
+                    example: null
+              type: array
+        type: array
+  DmeAzInfo:
+    type: object
+    properties:
+      cluster_id:
+        type: string
+        example: c99987d3-dc1d-4ee4-823e-e5247acd520b
+      port:
+        type: integer
+        format: int32
+        example: 25081
+      az_name:
+        type: string
+        example: AZ1
+      az_id:
+        type: string
+        example: 381FF610C9A838F38367FD88A686D7C1
+      ip:
+        type: string
+        example: 51.20.97.176
+      sn:
+        type: string
+        example: 2102355MFQ10PC100001

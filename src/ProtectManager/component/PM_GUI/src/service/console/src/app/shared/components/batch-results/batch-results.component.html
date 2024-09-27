@@ -1,0 +1,78 @@
+<div *ngIf="showDetectionTip">
+    <lv-alert lvType="info">
+        <span [innerHTML]="realDetectionTip" [lvClosable]="false"></span>
+    </lv-alert>
+</div>
+<div class="modal-table">
+    <lv-group lvGutter='20px' class="batch-result-group">
+        <span>{{'common_task_total_label' | i18n:[total]}}</span>
+        <div class="split-line"></div>
+        <span>
+            <i style="background-color: #7ADFA0;"></i>
+            <span>
+                {{(isBatchReport ? 'common_email_send_success_label' : 'common_task_success_label') |
+                i18n:[successful]}}
+            </span>
+        </span>
+        <div class="split-line"></div>
+        <span>
+            <i style="background-color: #F45C5E;"></i>
+            <span>
+                {{(isBatchReport ? 'common_email_send_fail_label' : 'common_task_fail_label') | i18n:[failed]}}
+            </span>
+        </span>
+        <ng-container *ngIf="running > 0">
+            <div class="split-line"></div>
+            <span>{{'common_task_executing_label' | i18n:[running]}}</span>
+        </ng-container>
+    </lv-group>
+</div>
+<lv-datatable [lvData]='tableData' #lvTable [lvPaginator]='page' lvSize="small" [lvScroll]='{y: "240px"}' lvResize>
+    <thead>
+        <tr>
+            <ng-container *ngFor="let col of columns">
+                <th [lvShowFilter]="col.filter" (lvFilterChange)="filterChange($event)" [(lvFilters)]="col.filterMap"
+                    lvCellKey="{{ col.key }}" lvFilterCheckAll>
+                    {{ col.label}}
+                </th>
+            </ng-container>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor='let item of lvTable.renderData'>
+            <tr>
+                <td>
+                    <span lv-overflow lvTooltipTheme="light">{{item.name | nil }}</span>
+                </td>
+                <td *ngFor="let extend of extendCols">
+                    <span lv-overflow lvTooltipTheme="light">{{item[extend.key] | nil }}</span>
+                </td>
+                <td>
+                    <aui-status [value]="item.status" [type]="resultDataMap"></aui-status>
+                </td>
+                <ng-container *ngIf="item.status; else descTpl">
+                    <td>
+                        <span lv-overflow [lvContentTpl]="successfulTpl" (click)="jumpTask($event)"
+                            [innerHTML]="item.desc"></span>
+                    </td>
+                </ng-container>
+                <ng-template #descTpl>
+                    <td>
+                        <span lv-overflow lvTooltipTheme="light" [innerHTML]="item.desc"></span>
+                    </td>
+                </ng-template>
+                <ng-template #successfulTpl>
+                    <span (click)="jumpTask($event)" [innerHTML]="item.desc"></span>
+                </ng-template>
+            </tr>
+        </ng-container>
+    </tbody>
+</lv-datatable>
+<lv-paginator [hidden]='!tableData.length' #page lvMode='simple' [lvShowPageSizeOptions]="false" [lvPageSize]='pageSize'
+    [lvTotal]='tableData.length'></lv-paginator>
+
+<ng-template #headerTpl>
+    <div class="aui-custom-modal-container">
+        <div class="aui-custom-modal-title">{{'common_execute_result_label' | i18n}}</div>
+    </div>
+</ng-template>

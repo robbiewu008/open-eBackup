@@ -1,0 +1,35 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_restore_to_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
+        <lv-group [lvGutter]="'20px'">
+          <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="restoreToNewLocationOnly"
+            [lv-tooltip]="restoreToNewLocationOnly ? ('protection_cloud_origin_restore_disabled_label' | i18n) : ''">
+            {{ 'common_restore_to_origin_location_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="restoreLocationType.NEW">
+            {{ 'common_restore_to_new_location_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ location }}
+    </lv-form-label>
+
+    <lv-select formControlName="cluster" *ngIf="
+        formGroup.value.restoreTo !== restoreLocationType.ORIGIN;
+        else elseTemplate
+      " [lvOptions]="clusterOptions" lvValueKey="key" lvShowFilter lvFilterKey="label" lvFilterMode="contains"
+      [lvDisabled]="formGroup.value.restoreTo === restoreLocationType.ORIGIN">
+    </lv-select>
+    <ng-template #elseTemplate>
+      <input lv-input disabled [value]="resourceData.environment_name" />
+    </ng-template>
+  </lv-form-item>
+</lv-form>

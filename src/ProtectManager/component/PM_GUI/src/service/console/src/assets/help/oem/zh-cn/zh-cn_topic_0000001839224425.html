@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="添加外部集群">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839144457.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839224425">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>添加外部集群</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001839224425"></a><a name="ZH-CN_TOPIC_0000001839224425"></a>
+  <h1 class="topictitle1">添加外部集群</h1>
+  <div>
+   <div class="section" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_section78501210104814">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p173221111497">已导入外部集群的证书，需要先在外部集群下载<span class="uicontrol" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_uicontrol639178242">“<span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text389565634211">服务端证书</span>”</span>类型的CA证书，然后将该证书导入本地集群，证书类型选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_uicontrol13131716240">“<span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text46143716439">备份集群/多域集群/复制集群</span>”</span>。详细操作请参见<span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_cite2527711612">《安全配置指南》</span>中的<span class="uicontrol" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_uicontrol17460256288">“下载证书”</span>章节和<span class="uicontrol" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_uicontrol15190594273">“导入证书”</span>章节中的<span class="uicontrol" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_uicontrol0601128280">“外部证书”</span>部分。</p>
+   </div>
+   <div class="section" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_section1051316161215">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_zh-cn_topic_0000001092505479_ol1038139939">
+     <li id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_li0198134611381"><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_uicontrol9143133018394">“<span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text34321217571">系统</span> &gt; <span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text075328175610">基础设施</span> &gt; <span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text3912011173416">集群管理</span>”</span>。</span></li>
+     <li id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_li137662151342"><span>单击“<span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text4810132512713">复制集群</span>”页签，进入复制集群界面，单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_zh-cn_topic_0000001092505479_uicontrol1645154510534">“<span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text26407307349">添加</span>”</span>。</span></li>
+     <li id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_zh-cn_topic_0000001092505479_li10626045539"><span>配置外部集群参数。</span><p></p>
+      <div class="p" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p344744712197">
+       相关参数说明如<a href="#ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_table13641194661910">表1</a>所示。 
+       <div class="tablenoborder">
+        <a name="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_table13641194661910"></a><a name="zh-cn_topic_0000001792345630_table13641194661910"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_table13641194661910" frame="border" border="1" rules="all">
+         <caption>
+          <b>表1 </b>外部集群参数说明
+         </caption>
+         <colgroup>
+          <col style="width:34.949999999999996%">
+          <col style="width:65.05%">
+         </colgroup>
+         <thead align="left">
+          <tr id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_row66412046151918">
+           <th align="left" class="cellrowborder" valign="top" width="34.949999999999996%" id="mcps1.3.2.2.3.2.1.2.2.3.1.1"><p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p11641204641917">参数</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="65.05%" id="mcps1.3.2.2.3.2.1.2.2.3.1.2"><p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p3641114610198">说明</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_row4230722204419">
+           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p4230192217448"><span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text15946924164916">名称</span></p></td>
+           <td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p1639118224594">用户自定义外部集群的名称。</p></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_row17641164617192">
+           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p1164184612196"><span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text573293916494">IP地址</span></p></td>
+           <td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p0641104621913">外部集群的管理IP地址，也可以填写备份IP地址。</p></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_row18641204619191">
+           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p116416464192"><span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text2931198155018">端口</span></p></td>
+           <td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 ">
+            <div class="p" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p16641144613195">
+             外部集群的管理端口。
+             <ul id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_ul12650749134513">
+              <li id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_li58279437810">IP地址框输入管理IP地址时，请使用25081。</li>
+              <li id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_li121862045189">IP地址框输入备份IP地址时，请使用30068。</li>
+             </ul>
+            </div></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_row16265655104819">
+           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p192665555481"><span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text18577516818">角色</span></p></td>
+           <td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p18266755104816">添加复制目标集群。添加后，为本地集群和目标集群建立复制关系。本地集群与复制目标集群可以进行数据传输。</p></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_row9641346121912">
+           <td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p164113466197"><span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text497961912506">用户名</span></p></td>
+           <td class="cellrowborder" rowspan="2" valign="top" width="65.05%" headers="mcps1.3.2.2.3.2.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p5324181622217">填写远端设备管理员的用户及其密码。在复制目标集群创建远端设备管理员的具体操作请参考<a href="zh-cn_topic_0000001839224409.html#ZH-CN_TOPIC_0000001839224409">创建用户</a>。</p></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_row12641194631915">
+           <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_p20641646181916"><span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text119016372505">密码</span></p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_li19740172314212"><span>单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_uicontrol13740132319210">“<span id="ZH-CN_TOPIC_0000001839224425__zh-cn_topic_0000001792345630_text167273511413">确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001839144457.html">管理复制集群</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

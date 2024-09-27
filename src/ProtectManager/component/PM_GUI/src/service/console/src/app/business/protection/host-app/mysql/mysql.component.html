@@ -1,0 +1,21 @@
+<div class="aui-fullpage">
+    <div class="aui-block aui-paginator-container">
+        <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+            <lv-tab lvTitle="{{'common_clusters_label' | i18n}}" [lvId]="'cluster'">
+                <ng-template lv-tab-lazy>
+                    <aui-cluster></aui-cluster>
+                </ng-template>
+            </lv-tab>
+            <lv-tab lvTitle="{{'protection_database_instances_label' | i18n}}" [lvId]="'instance'">
+                <ng-template lv-tab-lazy>
+                    <aui-instance-database [activeIndex]="'instance'"></aui-instance-database>
+                </ng-template>
+            </lv-tab>
+            <lv-tab lvTitle="{{'common_database_label' | i18n}}" [lvId]="'database'">
+                <ng-template lv-tab-lazy>
+                    <aui-instance-database [activeIndex]="'database'"></aui-instance-database>
+                </ng-template>
+            </lv-tab>
+        </lv-tabs>
+    </div>
+</div>

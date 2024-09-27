@@ -1,0 +1,9 @@
+<div class="lv-pro-status" [class.lv-pro-status-animate]="statusConfig.animation">
+  <i *ngIf="statusConfig.icon" [lv-icon]="statusConfig.icon" class="lv-pro-status-icon" [style.color]="statusConfig.color"></i>
+
+  <span *ngIf="!statusConfig.icon && statusConfig.color" class="lv-pro-status-dot" [style.backgroundColor]="statusConfig.color">
+    <i class="lv-pro-status-animate-dot" [style.borderColor]="statusConfig.color"></i>
+  </span>
+
+  <span class="lv-pro-status-label" lv-overflow [lvTooltipTheme]="statusConfig.tooltipTheme">{{ statusConfig.label }}</span>
+</div>

@@ -1,0 +1,48 @@
+<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
+    <h2 class="aui-gutter-column-lg">{{'common_basic_info_label' | i18n}}</h2>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_name_label' | i18n}}</lv-form-label>
+        <lv-form-control class="template-control-container" [lvErrorTip]="nameErrorTip">
+            <input lv-input formControlName='name' class="template-control-container" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'protection_os_type_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control class="template-control-container">
+            <lv-select class="template-control-container" [lvOptions]='osTypeOptions' lvValueKey='value'
+                formControlName='os_type' [lvDisabled]="rowItem && !rowItem.isClone">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+<div class="file-path-title lv-form-label-box">
+    <lv-group lvGutter='5px'>
+        <span class="prefix-span">*</span>
+        <h2>{{'common_file_path_label' | i18n}}</h2>
+    </lv-group>
+</div>
+<div class="path-container">
+    <lv-group lvGutter='32px'>
+        <button lv-button lvType="primary" (click)="addPath()">{{'common_add_label' | i18n}}</button>
+        <button lv-button [disabled]="selection.length === 0"
+            (click)="removePath(selection, true)">{{'common_remove_label' | i18n}}</button>
+    </lv-group>
+    <div class="path-table">
+        <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+    </div>
+</div>
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
+    <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="true">
+        <div class="filter-container">
+            <aui-resource-filter [rowItem]="rowItem" [osType]="osType" [filterParams]="filterParams"
+                [subType]="dataMap.Resource_Type.fileset.value" #resourceFilter>
+            </aui-resource-filter>
+        </div>
+    </lv-collapse-panel>
+</lv-collapse>
+
+<ng-template #titleTpl>
+    <span class="custom-collapse-title-text">{{'common_advanced_label'|i18n}}</span>
+</ng-template>

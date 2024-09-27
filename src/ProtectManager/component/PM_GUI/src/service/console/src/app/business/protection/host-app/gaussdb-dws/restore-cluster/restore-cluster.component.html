@@ -1,0 +1,48 @@
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_restore_to_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreLocation">
+                <lv-group [lvGutter]="'24px'">
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="disableOriginLocation"
+                        [lv-tooltip]="disableOriginLocation ? tip : ''">
+                        {{'common_restore_to_origin_location_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreLocationType.NEW">
+                        {{'common_restore_to_new_location_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_location_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <input lv-input type="text" formControlName="originCluster" />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_target_to_cluster_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="cluster" [lvOptions]='clusterOptions' lvShowFilter lvFilterKey="label"
+                    lvFilterMode="contains" lvValueKey='value'>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <div class="tips">
+            <i lv-icon="lv-icon-status-info" class="type-icon"></i>
+            <span class="aui-text-desc">
+                {{'protection_dws_cluster_tip_label' | i18n}}
+            </span>
+        </div>
+    </ng-container>
+</lv-form>

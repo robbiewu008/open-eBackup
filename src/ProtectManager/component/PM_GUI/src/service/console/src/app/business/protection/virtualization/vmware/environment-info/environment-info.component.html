@@ -1,0 +1,21 @@
+<div class="aui-header-1 aui-gutter-column-md">
+    <h2>{{'common_basic_info_label' | i18n}}</h2>
+</div>
+<lv-group class='aui-gutter-column-xxl' lvGutter='20px'>
+    <i *ngIf="online" lv-icon='aui-sla-fusion-compute-online' class="base-info-icon"></i>
+    <i *ngIf="!online" lv-icon='aui-sla-fusion-compute-offline' class="base-info-icon"></i>
+    <lv-form [lvLabelColon]='false' style="width: 100%;">
+        <lv-form-column *ngFor='let column of formItems' lvWidth="50%">
+            <lv-form-item *ngFor='let item of column'>
+                <lv-form-label>{{item.label}}</lv-form-label>
+                <lv-form-control>{{item.content}}</lv-form-control>
+            </lv-form-item>
+        </lv-form-column>
+    </lv-form>
+</lv-group>
+
+<ng-template #timeTpl>
+    <span>
+        {{interval}} {{'common_hour_label'|i18n}}
+    </span>
+</ng-template>

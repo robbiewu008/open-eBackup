@@ -1,0 +1,114 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 3: Registering the GaussDB Project">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839145161.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001839225093">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 3: Registering the GaussDB Project</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001839225093"></a><a name="EN-US_TOPIC_0000001839225093"></a>
+
+<h1 class="topictitle1">Step 3: Registering the GaussDB Project</h1>
+<div><p>Before GaussDB backup and restoration, register GaussDB with the <span>OceanProtect</span>.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>TPOPS has been installed in the production environment, and database instances have been managed on TPOPS.</li><li>The network communication between TPOPS and the <span>OceanProtect</span> is normal.</li><li>If you need to enable <span><strong>XBSA SSL Certificate Management</strong></span>, ensure that the SSL certificate has been obtained during ProtectAgent installation. For details, see "Configuring Certificate Files for Mutual SSL Authentication" in the <i><cite>OceanProtect <span id="EN-US_TOPIC_0000001839225093__en-us_topic_0000001792502994_ph19170214112011">Appliance 1.5.0-1.6.0</span> ProtectAgent Installation Guide</cite></i>.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="EN-US_TOPIC_0000001839225093__li6843163813710"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839225093__en-us_topic_0000001839142377_uicontrol932712545121"><b><span id="EN-US_TOPIC_0000001839225093__en-us_topic_0000001839142377_text49391010171710"><strong>Protection</strong></span> &gt; Databases &gt; GaussDB</b></span>.</span><p><div class="note" id="EN-US_TOPIC_0000001839225093__en-us_topic_0000001839142377_note62461853660"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000001839225093__en-us_topic_0000001839142377_p141794599612">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000001839225093__en-us_topic_0000001839142377_uicontrol1294410117713"><b><span id="EN-US_TOPIC_0000001839225093__en-us_topic_0000001839142377_text1894431114714"><strong>Protection</strong></span> &gt; Cloud Platforms &gt; GaussDB</b></span>.</p>
+</div></div>
+</p></li><li><span>On the <span class="uicontrol"><b><span><strong>Project</strong></span></b></span> tab page, click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register the GaussDB information.</span><p><div class="p"><a href="#EN-US_TOPIC_0000001839225093__table613227155112">Table 1</a> describes GaussDB registration information.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839225093__table613227155112"></a><a name="table613227155112"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839225093__table613227155112" frame="border" border="1" rules="all"><caption><b>Table 1 </b>GaussDB registration information</caption><colgroup><col style="width:25.590000000000003%"><col style="width:74.41%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.590000000000003%" id="mcps1.3.3.2.2.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.41%" id="mcps1.3.3.2.2.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>User-defined name of the GaussDB project.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Management Plane Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Address used by TPOPS to provide services for external systems. If TPOPS is deployed in high availability (HA) mode, you can use one or more management plane addresses for registration. Use commas (,) to separate multiple addresses.</p>
+<p>Example: <strong>192.168.0.0</strong>, <strong>192.168.0.1</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><strong>Management Plane Port</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Port used by TPOPS to provide services for external systems.</p>
+<p>Example: <em>7070</em> or <em>8002</em>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Username created by the user in TPOPS.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>User password created by the user in TPOPS.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Data protection agents that have been registered with the <span>OceanProtect</span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>XBSA Configuration Path</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Absolute path of the user configuration file <strong>xbsa.conf</strong> on the agent host.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>XBSA SSL Certificate Management</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>This function is enabled by default. After this function is enabled, when GaussDB is registered, its certificate will be verified during registration to ensure security of interaction between the <span>OceanProtect</span> and external devices. After this function is disabled, security risks may exist in the communication between the system and the cloud platform. Exercise caution when performing this operation.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Root Certificate</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Root certificate file with the file name extension <strong>.pem</strong>. For details about how to obtain the file, see the preparation item <strong>Certificate</strong> in <a href="en-us_topic_0000001839145153.html#EN-US_TOPIC_0000001839145153__en-us_topic_0000001514140621_table10744125193920">Table 1</a>. This parameter is mandatory only when <span class="uicontrol"><b><span><strong>XBSA SSL Certificate Management</strong></span></b></span> is selected.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>User Certificate</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Client user certificate file with the file name extension <strong>.crt</strong>. For details about how to obtain the file, see the preparation item <strong>Certificate</strong> in <a href="en-us_topic_0000001839145153.html#EN-US_TOPIC_0000001839145153__en-us_topic_0000001514140621_table10744125193920">Table 1</a>. This parameter is mandatory only when <span class="uicontrol"><b><span><strong>XBSA SSL Certificate Management</strong></span></b></span> is selected.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>User Private Key</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Client user private key file with the file name extension <strong>.key</strong>. For details about how to obtain the file, see the preparation item <strong>Certificate</strong> in <a href="en-us_topic_0000001839145153.html#EN-US_TOPIC_0000001839145153__en-us_topic_0000001514140621_table10744125193920">Table 1</a>. This parameter is mandatory only when <span class="uicontrol"><b><span><strong>XBSA SSL Certificate Management</strong></span></b></span> is selected.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Private Key Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Client private key password character string set when the certificate file is created. This parameter is mandatory only when <span class="uicontrol"><b><span><strong>XBSA SSL Certificate Management</strong></span></b></span> is selected.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001839145161.html">Backing Up GaussDB Instances</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

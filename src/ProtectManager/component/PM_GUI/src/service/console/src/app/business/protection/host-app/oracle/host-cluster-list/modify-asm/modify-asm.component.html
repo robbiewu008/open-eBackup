@@ -1,0 +1,40 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'protection_auth_method_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control style="line-height:normal">
+            <lv-select [lvOptions]='authTypeOptions' formControlName='auth_type' lvValueKey='value'></lv-select>
+            <span class="auth-desc"
+                *ngIf="asmAuthType.Database === formGroup.value.auth_type && asmAuthType.Os === data.auth_type">
+                {{'protection_oracle_os_auth_modify_tip_label' | i18n}}
+            </span>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="asmAuthType.Database === formGroup.value.auth_type">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_asm_instance_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{asmInstLabel}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_username_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="requiredErrorTip">
+                <input lv-input type="text" formControlName="username" autocomplete="new-password" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_password_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="requiredErrorTip">
+                <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>

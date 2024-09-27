@@ -1,0 +1,56 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="登录DeviceManager管理界面">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001897468970.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001897309082">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>登录DeviceManager管理界面</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001897309082"></a><a name="ZH-CN_TOPIC_0000001897309082"></a>
+
+<h1 class="topictitle1">登录DeviceManager管理界面</h1>
+<div><p id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_p747234814111">DeviceManager是华为技术有限公司开发的集成存储管理软件。在任意一台与存储系统连接的管理终端上，通过浏览器访问存储系统控制器的管理网口IP地址，使用本地用户名，可以登录DeviceManager管理界面。</p>
+<div class="section" id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_section61612414121"><h4 class="sectiontitle">前提条件</h4><p id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_p15473184891120">使用DeviceManager前请先检查管理终端是否满足以下要求：</p>
+<ul id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_ul79964225126"><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li1247319483115">管理终端操作系统及浏览器的兼容性。<p id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_p15473948161116"><a name="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li1247319483115"></a><a name="zh-cn_topic_0000001913343113_li1247319483115"></a>DeviceManager支持多种操作系统和浏览器，具体的兼容性信息可以通过<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">存储兼容性查询工具</a>进行查询。</p>
+</li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li18996722181218">管理终端和存储设备通信正常。</li></ul>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_section1177444171210"><h4 class="sectiontitle">背景信息</h4><ul id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_ul19473448111114"><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li747318485118">本文以Windows操作系统为例，介绍如何登录DeviceManager。在其他操作系统上登录DeviceManager时，请根据实际情况相应地调整操作过程。</li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li34731248141115">如果当前用户在会话超时时限内（默认为30分钟，可修改）未执行任何操作，系统将会自动退出，用户需要重新登录。</li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li4473248151110">如果某个非超级管理员超过一定时间（默认为60天，可修改）未登录存储系统，该账户会被锁定，并且只能由超级管理员为其解除锁定。解锁方法如下：<p id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_p174734480117"><a name="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li4473248151110"></a><a name="zh-cn_topic_0000001913343113_li4473248151110"></a>超级管理员登录DeviceManager，选择“设置 &gt; 用户与安全 &gt; 用户和角色 &gt; 用户管理”，在需要解锁的用户名所在行，单击“更多 &gt; 解锁”进行解锁。</p>
+<div class="note" id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_note044604811112"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_p15473154801114">超级管理员在“设置 &gt; 用户与安全 &gt; 安全策略”中勾选了“闲置锁定”后，非超级管理员超过一定时间未登录系统，该账户才会被锁定，否则不会被锁定。</p>
+</div></div>
+</li></ul>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_section85575223135"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_ol128210312137"><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li92831231191310"><span>在管理终端运行浏览器。</span></li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li206404452131"><span>在地址栏中输入“https://<em id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_i18473748191113">IPv4</em>:8088或者https://[<em id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_i184731485117">IPv6</em>]:8088”并按“Enter”。</span><p><div class="note" id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_note34491848151110"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_ul15473164871115"><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li11473114810111"><em id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_i19473948101115">IPv4</em>和<em id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_i04731448131111">IPv6</em>代表存储系统的DeviceManager管理IP地址。</li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li547334801114">在有防火墙的环境中，系统对外提供web服务时，需要开启8088端口。</li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li194731548101111">浏览器可能会提示网站的安全证书有问题，此时只要确认IP地址正确，您仍然可以选择忽略该提示并继续访问存储系统。</li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li4473184881115">如果您拥有可用的安全证书，建议通过相关命令导入安全证书以进一步提升系统安全性。</li></ul>
+</div></div>
+</p></li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li1397862191412"><span>（可选）单击右上角语言类型切换语言。</span><p><p id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_p2993182161420">DeviceManager支持简体中文和英文两种语言类型。</p>
+</p></li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li1399412181418"><span>在“认证模式”下选择“本地用户”或“LDAP用户”，并在“用户名”和“密码”中输入登录的用户名和密码。</span><p><div class="note" id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_note89948271414"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_ul17993132191415"><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li89938212147">用户名和密码区分大小写。</li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li15993192141417">如果账号默认密码已修改，请使用更新后的密码登录。</li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li299319219141">当用户安全策略启用密码锁定后（密码锁定默认开启），如果5分钟内密码连续输入错误次数达到“允许输入错误密码次数”（默认为3次），账号将被锁定（默认锁定5分钟由系统自动解锁）。</li></ul>
+</div></div>
+<div class="notice" id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_note970195601414"><span class="noticetitle"><img src="public_sys-resources/notice_3.0-zh-cn.png"> </span><div class="noticebody"><p id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_p4994142181419">为了确保用户账号的安全性，建议定期修改账户密码。可以通过登录DeviceManager后，选择“设置 &gt; 用户与安全 &gt; 用户和角色 &gt; 用户管理”，修改登录账户密码。</p>
+</div></div>
+</p></li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li19568427131419"><span>单击“登录”。</span><p><p id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_p12568102714145">系统进入DeviceManager管理界面。</p>
+<div class="note" id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_note656862710146"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_ul1856822781417"><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li956852719140">首次登录DeviceManager时，需要使用具有管理员权限的用户签署EULA协议，才能进入DeviceManager管理界面。签署协议时，请单击勾选弹出界面内“本人已阅读并同意签署《华为企业业务最终用户许可协议》。”复选框，然后单击“确定”。协议签署会在首次登录进入DeviceManager管理界面后生效。</li><li id="ZH-CN_TOPIC_0000001897309082__zh-cn_topic_0000001913343113_li25681027191416">操作完成后，单击界面右上角的当前登录用户，下拉菜单中单击“注销”，可退出DeviceManager。</li></ul>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001897468970.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

@@ -1,0 +1,13 @@
+<i lv-icon="lv-icon-search" [lvColorState]="true" [ngClass]="{active: isActive()}"
+  #popover='lvPopover'  
+  lv-popover
+  [lvPopoverContent]="filterTpl"
+  [lvPopoverBeforeOpen]="_beforeOpen"
+  lvPopoverTheme="light"
+  lvPopoverPosition="bottom"
+  lvPopoverTrigger="click"
+></i>
+
+<ng-template #filterTpl>
+  <lv-search [(ngModel)]="searchValue" [lvFocus]="true" (lvSearch)="_doSearch($event)" (lvClear)="_clear()" style="width: 200px;"></lv-search>
+</ng-template>

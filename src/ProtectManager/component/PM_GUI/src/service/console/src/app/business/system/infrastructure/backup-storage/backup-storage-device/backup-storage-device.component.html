@@ -1,0 +1,43 @@
+<div>
+  <div class="aui-operation">
+    <lv-group>
+      <lv-pro-button-group [config]="unitOptsConfig" [bindData]="selectionData"> </lv-pro-button-group>
+    </lv-group>
+    <lv-group lvGutter="8px">
+      <lv-group lvGutter="8px">
+        <button class="aui-button-icon" lv-button lvSize="auto" (click)="dataTable.fetchData()">
+          <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+        </button>
+      </lv-group>
+    </lv-group>
+  </div>
+  <lv-pro-table #dataTable [config]="unitTableConfig" [data]="unitTableData">
+  </lv-pro-table>
+</div>
+
+<ng-template #statusTpl let-item>
+  <div *ngIf="item.status === dataMap.Node_Status.deleting.value" lv-overflow class="delete-status">
+    <i lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
+    <span>{{'common_status_deleting_label' | i18n}}</span>
+  </div>
+  <div *ngIf="item.status === dataMap.Node_Status.upgrating.value" lv-overflow class="delete-status">
+    <i lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
+    <span>{{'system_upgrating_label' | i18n}}</span>
+  </div>
+  <div
+    *ngIf="item.status !== dataMap.Node_Status.deleting.value && item.status !== dataMap.Node_Status.upgrating.value">
+    <aui-status [value]="item.status" type="Cluster_Status"></aui-status>
+  </div>
+
+</ng-template>
+
+<ng-template #clusterTpl let-item>
+  <div *ngIf="item.generatedType === dataMap.backupStorageGeneratedType.nonlocal.value">{{ 'common_no_label' | i18n}}
+  </div>
+  <div *ngIf="item.generatedType ===  dataMap.backupStorageGeneratedType.local.value">{{ 'common_yes_label' | i18n}}
+  </div>
+</ng-template>
+
+<ng-template #deviceTypeTPl let-item>
+  <span lv-overflow>{{item.deviceType | textMap: 'poolStorageDeviceType'}}</span>
+</ng-template>

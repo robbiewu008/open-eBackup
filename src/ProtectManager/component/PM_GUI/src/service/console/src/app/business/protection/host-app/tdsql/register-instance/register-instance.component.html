@@ -1,0 +1,265 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" class="tdsql-input" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_cluster_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        [lvDisabled]="!!rowData"
+        [lvOptions]="clusterOptions"
+        formControlName="cluster"
+        lvValueKey="value"
+        lvMode="single"
+        lvShowFilter
+        lvShowCheckAll
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        class="tdsql-input"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'SETID' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="setIdErrorTip">
+      <lv-input-group [lvDisabled]="setIdDisabled" class="tdsql-input">
+        <input
+          lv-input
+          type="text"
+          formControlName="setId"
+          class="tdsql-input"
+          [placeholder]="i18n.get('protection_setid_tips_label')"
+        />
+      </lv-input-group>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_username_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="username"
+        class="tdsql-input"
+        [placeholder]="
+          i18n.get('common_please_enter_label', [
+            i18n.get('common_database_user_name_label')
+          ])
+        "
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_password_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="passwordErrorTip">
+      <div class="tdsql-input">
+        <aui-inupt-with-eye
+          formControlName="password"
+          [placeholder]="
+            i18n.get('common_please_enter_label', [
+              i18n.get('common_database_password_label')
+            ])
+          "
+        ></aui-inupt-with-eye>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_tdsql_repl_password_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ 'protection_tdsql_repl_password_tips_label' | i18n }}"
+        lvTooltipTheme="light"
+        lvTooltipPosition="right"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="passwordErrorTip">
+      <div class="tdsql-input">
+        <aui-inupt-with-eye formControlName="replPassword"></aui-inupt-with-eye>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      <h2>{{ 'protection_data_node_label' | i18n }}</h2>
+    </lv-form-label>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label> </lv-form-label>
+    <lv-form-control>
+      <button
+        lv-button
+        lvType="primary"
+        [disabled]="!formGroup.value.cluster || !formGroup.get('setId').value"
+        (click)="scanDataNodes()"
+      >
+        {{ 'protection_scan_data_node_label' | i18n }}
+      </button>
+    </lv-form-control>
+  </lv-form-item>
+  <div
+    style="flex-direction: column;align-items: normal; margin-top: 20px;"
+    class="aui-gutter-column-sm"
+  >
+    <lv-datatable [lvData]="[{}]" #lvTable formArrayName="dataNodes">
+      <thead>
+        <tr>
+          <th style="width: 200px">{{ 'common_host_label' | i18n }}</th>
+          <th style="width: 120px;">{{ 'common_type_label' | i18n }}</th>
+          <th style="width: 200px;">
+            {{ 'common_parameter_file_path_label' | i18n }}
+          </th>
+          <th style="width: 200px;">
+            {{ 'common_socket_file_path_label' | i18n }}
+          </th>
+          <th>{{ 'protection_proxy_host_label' | i18n }}</th>
+          <th style="width: 120px;">
+            {{ 'protection_priority_label' | i18n }}
+          </th>
+          <th style="width: 140px;">{{ 'common_operation_label' | i18n }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of dataNodes; let i = index">
+          <tr [formGroupName]="i">
+            <td>
+              <lv-form-control class="formControl tdsql-instance-height">
+                <ng-container *ngIf="!dataNodes[i].value.manualAdd">
+                  <span class="node-info">
+                    {{ dataNodes[i].value.host | nil }}
+                  </span>
+                </ng-container>
+                <ng-container *ngIf="dataNodes[i].value.manualAdd">
+                  <input
+                    lv-input
+                    type="text"
+                    formControlName="host"
+                    class="input-position"
+                  />
+                </ng-container>
+              </lv-form-control>
+            </td>
+            <td>
+              <lv-form-control class="formControl tdsql-instance-height">
+                <ng-container *ngIf="!dataNodes[i].value.manualAdd">
+                  <span class="node-info">
+                    {{ dataNodes[i].value.type | textMap: 'tdsqlDataNodeType' }}
+                  </span>
+                </ng-container>
+                <ng-container *ngIf="dataNodes[i].value.manualAdd">
+                  <lv-select
+                    class="input-position"
+                    [lvOptions]="typeOptions"
+                    formControlName="type"
+                    lvValueKey="value"
+                    lvMode="single"
+                  >
+                  </lv-select>
+                </ng-container>
+              </lv-form-control>
+            </td>
+            <td>
+              <lv-form-control
+                [lvErrorTip]="baseUtilService.requiredErrorTip"
+                class="formControl tdsql-instance-height"
+              >
+                <input
+                  lv-input
+                  type="text"
+                  formControlName="defaultFile"
+                  class="input-position"
+                />
+              </lv-form-control>
+            </td>
+            <td>
+              <lv-form-control
+                [lvErrorTip]="baseUtilService.requiredErrorTip"
+                class="formControl tdsql-instance-height"
+              >
+                <input
+                  lv-input
+                  type="text"
+                  formControlName="socket"
+                  class="input-position"
+                />
+              </lv-form-control>
+            </td>
+            <td>
+              <lv-form-control
+                #lvFormControl
+                class="formControl tdsql-instance-height"
+              >
+                <lv-select
+                  class="input-position"
+                  [lvOptions]="proxyOptions"
+                  formControlName="proxy"
+                  lvValueKey="value"
+                  lvMode="single"
+                  lvShowFilter
+                  lvShowCheckAll
+                  lvFilterKey="label"
+                  lvFilterMode="contains"
+                  style="width: 286px;"
+                >
+                </lv-select>
+              </lv-form-control>
+            </td>
+            <td>
+              <lv-form-control
+                #lvFormControl
+                class="formControl tdsql-instance-height"
+              >
+                <lv-select
+                  class="input-position"
+                  [lvOptions]="priorityOptions"
+                  formControlName="priority"
+                  lvValueKey="value"
+                  lvMode="single"
+                  style="width: 80px;"
+                >
+                </lv-select>
+              </lv-form-control>
+            </td>
+            <td>
+              <button
+                lv-button
+                lvType="link"
+                (click)="deleteDataRow(i)"
+                [disabled]="dataNodes.length === 1"
+              >
+                {{ 'common_delete_label' | i18n }}
+              </button>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody></lv-datatable
+    >
+
+    <button
+      lv-button
+      lvType="link"
+      (click)="addDataRow()"
+      [disabled]="dataNodes.length > 50"
+    >
+      <i lv-icon="lv-icon-create"></i>
+      <span>{{ 'common_new_add_label' | i18n }}</span>
+    </button>
+  </div>
+</lv-form>

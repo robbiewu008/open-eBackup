@@ -1,0 +1,259 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+    <ng-container *ngIf="!cookieService.isCloudBackup">
+        <lv-radio-group formControlName="type" [lvGroupName]="'applicationTypeGroup'" class="application-type-group"
+            [ngClass]="{'mgb-specified': formGroup.value.type === applicationTypeView.Specified}">
+            <lv-group lvDirection="vertical">
+                <lv-group lvDirection="horizontal">
+                    <lv-radio [lvViewType]="'button'" [lvValue]="applicationTypeView.General">
+                        {{'protection_general_sla_label'|i18n}}</lv-radio>
+                    <lv-radio [lvViewType]="'button'" [lvValue]="applicationTypeView.Specified">
+                        {{'protection_specifed_application_label'|i18n}}</lv-radio>
+                </lv-group>
+                <div class="aui-text-help-sm desc text-center">{{'protection_select_application_desc_label'|i18n}}
+                </div>
+            </lv-group>
+        </lv-radio-group>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.type === applicationTypeView.General">
+        <div class="application-type-group mgt-24">
+            <lv-group lvDirection="vertical">
+                <lv-radio-group #allGroup formControlName="all">
+                    <lv-radio [lvViewType]="'custom'" [lvValue]="applicationType.Common">
+                        <img [src]="allGroup.isChecked(applicationType.Common) ?
+                        language === 'zh-cn' ?
+                        'assets/img/all_resource_zh-cn_logo_checked.png' :
+                        'assets/img/all_resource_en-us_logo_checked.png' :
+                        language === 'zh-cn' ?
+                        'assets/img/all_resource_zh-cn_logo.png' :
+                        'assets/img/all_resource_en-us_logo.png'" [ngClass]="{'normal': !allGroup.isChecked(applicationType.Common),
+                            'checked':allGroup.isChecked(applicationType.Common)}">
+                    </lv-radio>
+                </lv-radio-group>
+                <div *ngIf="!appUtilsService.isDistributed && !appUtilsService.isDecouple"
+                    class="aui-text-help-sm desc">
+                    {{'protection_all_resource_desc_label' | i18n}}
+                </div>
+                <div *ngIf="appUtilsService.isDistributed || appUtilsService.isDecouple" class="aui-text-help-sm desc">
+                    {{'protection_distributed_all_resource_desc_label' | i18n}}
+                </div>
+            </lv-group>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.type === applicationTypeView.Specified">
+        <!-- 数据库 -->
+        <ng-container *ngIf="!!appHostIcons.length">
+            <h2 class="line-height-h2 aui-gutter-column-sm">{{'common_database_single_label'|i18n}}</h2>
+            <lv-radio-group #appHostGroup formControlName="appHost">
+                <lv-group [lvColumns]='groupColumns(appHostIcons)' lvRowGutter="16px" lvColumnGutter="16px">
+                    <ng-container *ngFor="let icon of appHostIcons">
+                        <lv-radio [lvViewType]="'custom'" [lvValue]="icon.id" class="app-radio">
+                            <div class="card" [ngClass]="{'select': appHostGroup.isChecked(icon.id)}">
+                                <lv-group lvGutter='16px'>
+                                    <div class="app-logo-container" [style.backgroundColor]="icon.color">
+                                        {{icon.prefix}}
+                                    </div>
+                                    <h2>{{icon.label | i18n}}</h2>
+                                    <span class="guide-recommend-label recommend-width" *ngIf="showAppGuide(icon)">
+                                        {{'protection_guide_recommended_label' | i18n}}
+                                    </span>
+                                </lv-group>
+                            </div>
+                        </lv-radio>
+                    </ng-container>
+                </lv-group>
+            </lv-radio-group>
+        </ng-container>
+        <!-- 大数据 -->
+        <ng-container *ngIf="!!bigDataIcons.length">
+            <div class="space"></div>
+            <h2 class="line-height-h2 aui-gutter-column-sm">{{'common_bigdata_label'|i18n}}</h2>
+            <lv-radio-group #bigDataGroup formControlName="bigData" class="application-radio-group">
+                <lv-group [lvColumns]='groupColumns(bigDataIcons)' lvRowGutter="16px" lvColumnGutter="16px">
+                    <ng-container *ngFor="let icon of bigDataIcons">
+                        <lv-radio [lvViewType]="'custom'" [lvValue]="icon.id" class="app-radio">
+                            <div class="card" [ngClass]="{'select': bigDataGroup.isChecked(icon.id)}">
+                                <lv-group lvGutter='16px'>
+                                    <div class="app-logo-container" [style.backgroundColor]="icon.color">
+                                        {{icon.prefix}}
+                                    </div>
+                                    <h2>{{icon.label | i18n}}</h2>
+                                </lv-group>
+                            </div>
+                        </lv-radio>
+                    </ng-container>
+                </lv-group>
+            </lv-radio-group>
+        </ng-container>
+        <!-- 虚拟化 -->
+        <ng-container *ngIf="!!vmIcons.length">
+            <div class="space"></div>
+            <h2 class="line-height-h2 aui-gutter-column-sm">{{'common_virtualization_label'|i18n}}</h2>
+            <lv-radio-group #vmGroup formControlName="vm" class="application-radio-group">
+                <lv-group [lvColumns]='groupColumns(vmIcons)' lvRowGutter="16px" lvColumnGutter="16px">
+                    <ng-container *ngFor="let icon of vmIcons">
+                        <lv-radio [lvViewType]="'custom'" [lvValue]="icon.id" class="app-radio">
+                            <div class="card" [ngClass]="{'select': vmGroup.isChecked(icon.id)}">
+                                <lv-group lvGutter='16px'>
+                                    <div class="app-logo-container" [style.backgroundColor]="icon.color">
+                                        {{icon.prefix}}
+                                    </div>
+                                    <h2>{{icon.label | i18n}}</h2>
+                                    <span class="guide-recommend-label recommend-width" *ngIf="showAppGuide(icon)">
+                                        {{'protection_guide_recommended_label' | i18n}}
+                                    </span>
+                                </lv-group>
+                            </div>
+                        </lv-radio>
+                    </ng-container>
+                </lv-group>
+            </lv-radio-group>
+        </ng-container>
+        <!-- 容器 -->
+        <ng-container *ngIf="!!containerIcons.length">
+            <div class="space"></div>
+            <h2 class="line-height-h2 aui-gutter-column-sm">{{'common_container_label'|i18n}}</h2>
+            <lv-radio-group #containerGroup formControlName="container" class="application-radio-group">
+                <lv-group [lvColumns]='groupColumns(containerIcons)' lvRowGutter="16px" lvColumnGutter="16px">
+                    <ng-container *ngFor="let icon of containerIcons">
+                        <lv-radio [lvViewType]="'custom'" [lvValue]="icon.id" class="app-radio">
+                            <div class="card" [ngClass]="{'select': containerGroup.isChecked(icon.id)}">
+                                <lv-group lvGutter='16px'>
+                                    <div class="app-logo-container" [style.backgroundColor]="icon.color">
+                                        {{icon.prefix}}
+                                    </div>
+                                    <h2>{{icon.label | i18n}}</h2>
+                                </lv-group>
+                            </div>
+                        </lv-radio>
+                    </ng-container>
+                </lv-group>
+            </lv-radio-group>
+        </ng-container>
+        <!-- 云平台 -->
+        <ng-container *ngIf="!!cloudIcons.length">
+            <div class="space"></div>
+            <h2 class="line-height-h2 aui-gutter-column-sm">{{'common_huawei_clouds_label'|i18n}}</h2>
+            <lv-radio-group #cloudGroup formControlName="cloud" class="application-radio-group">
+                <lv-group [lvColumns]='groupColumns(cloudIcons)' lvRowGutter="16px" lvColumnGutter="16px">
+                    <ng-container *ngFor="let icon of cloudIcons">
+                        <lv-radio [lvViewType]="'custom'" [lvValue]="icon.id" class="app-radio">
+                            <div class="card" [ngClass]="{'select': cloudGroup.isChecked(icon.id)}">
+                                <lv-group lvGutter='16px'>
+                                    <div class="app-logo-container" [style.backgroundColor]="icon.color">
+                                        {{icon.prefix}}
+                                    </div>
+                                    <h2>{{icon.label | i18n}}</h2>
+                                </lv-group>
+                            </div>
+                        </lv-radio>
+                    </ng-container>
+                </lv-group>
+            </lv-radio-group>
+        </ng-container>
+        <!-- 应用 -->
+        <ng-container *ngIf="!!applicationIcons.length">
+            <div class="space"></div>
+            <h2 class="line-height-h2 aui-gutter-column-sm">
+                {{'common_application_label'| i18n}}
+            </h2>
+            <lv-radio-group #applicationGroup formControlName="application" class="application-radio-group">
+                <lv-group [lvColumns]='groupColumns(applicationIcons)' lvRowGutter="16px" lvColumnGutter="16px">
+                    <ng-container *ngFor="let icon of applicationIcons">
+                        <lv-radio [lvViewType]="'custom'" [lvValue]="icon.id" class="app-radio">
+                            <div class="card" [ngClass]="{'select': applicationGroup.isChecked(icon.id)}">
+                                <ng-container *ngIf="cookieService.isCloudBackup; else elseTemplate">
+                                    <lv-group lvGutter='16px'>
+                                        <i lv-icon="aui-sla-{{icon.id}}" class="resource-type-icon"></i>
+                                        <h2>{{icon.label | i18n}}</h2>
+                                    </lv-group>
+                                </ng-container>
+                                <ng-template #elseTemplate>
+                                    <lv-group lvGutter='16px'>
+                                        <div class="app-logo-container" [style.backgroundColor]="icon.color">
+                                            {{icon.prefix}}
+                                        </div>
+                                        <h2>{{icon.label | i18n}}</h2>
+                                    </lv-group>
+                                </ng-template>
+                            </div>
+                        </lv-radio>
+                    </ng-container>
+                </lv-group>
+            </lv-radio-group>
+        </ng-container>
+        <!-- 文件服务 -->
+        <ng-container *ngIf="!!storageIcons.length">
+            <div class="space"></div>
+            <h2 class="line-height-h2 aui-gutter-column-sm">
+                {{ (cookieService.isCloudBackup ? 'common_storage_label' : 'common_file_systems_label') | i18n}}
+            </h2>
+            <lv-radio-group #storageGroup formControlName="storage" class="application-radio-group">
+                <lv-group [lvColumns]='groupColumns(storageIcons)' lvRowGutter="16px" lvColumnGutter="16px">
+                    <ng-container *ngFor="let icon of storageIcons">
+                        <lv-radio [lvViewType]="'custom'" [lvValue]="icon.id" class="app-radio">
+                            <div class="card"
+                                [ngClass]="{'select': storageGroup.isChecked(icon.id), 'detect-card': isHyperdetect}">
+                                <ng-container *ngIf="cookieService.isCloudBackup; else elseTemplate">
+                                    <lv-group lvGutter='16px'>
+                                        <i lv-icon="aui-sla-{{icon.id}}" class="resource-type-icon"></i>
+                                        <h2>{{icon.label | i18n}}</h2>
+                                    </lv-group>
+                                </ng-container>
+                                <ng-template #elseTemplate>
+                                    <lv-group lvGutter='16px'>
+                                        <div class="app-logo-container" [style.backgroundColor]="icon.color">
+                                            {{icon.prefix}}
+                                        </div>
+                                        <h2>{{icon.label | i18n}}</h2>
+                                        <span class="guide-recommend-label recommend-width" *ngIf="showAppGuide(icon)">
+                                            {{'protection_guide_recommended_label' | i18n}}
+                                        </span>
+                                    </lv-group>
+                                </ng-template>
+                            </div>
+                        </lv-radio>
+                    </ng-container>
+                </lv-group>
+            </lv-radio-group>
+        </ng-container>
+        <!-- 裸机 -->
+        <ng-container *ngIf="!!bareMetalIcons.length">
+            <div class="space"></div>
+            <h2 class="line-height-h2 aui-gutter-column-sm">{{'common_bare_metal_label'|i18n}}</h2>
+            <lv-radio-group #bareMetalGroup formControlName="bareMetal" class="application-radio-group">
+                <lv-group [lvColumns]='groupColumns(bareMetalIcons)' lvRowGutter="16px" lvColumnGutter="16px">
+                    <ng-container *ngFor="let icon of bareMetalIcons">
+                        <lv-radio [lvViewType]="'custom'" [lvValue]="icon.id" class="app-radio">
+                            <div class="card" [ngClass]="{'select': bareMetalGroup.isChecked(icon.id)}">
+                                <lv-group lvGutter='16px'>
+                                    <div class="app-logo-container" [style.backgroundColor]="icon.color">
+                                        {{icon.prefix}}
+                                    </div>
+                                    <h2>{{icon.label | i18n}}</h2>
+                                </lv-group>
+                            </div>
+                        </lv-radio>
+                    </ng-container>
+                </lv-group>
+            </lv-radio-group>
+        </ng-container>
+        <ng-container *ngIf="!!copiesIcons.length">
+            <div class="space"></div>
+            <h2 class="line-height-h2 aui-gutter-column-sm">{{'common_copies_label'|i18n}}</h2>
+            <lv-radio-group #copiesGroup formControlName="copies" class="application-radio-group">
+                <lv-group [lvColumns]='groupColumns(copiesIcons)' lvRowGutter="16px" lvColumnGutter="16px">
+                    <ng-container *ngFor="let icon of copiesIcons">
+                        <lv-radio [lvViewType]="'custom'" [lvValue]="icon.id" class="app-radio">
+                            <div class="card" [ngClass]="{'select': copiesGroup.isChecked(icon.id)}">
+                                <lv-group lvGutter='16px'>
+                                    <i lv-icon="aui-sla-{{icon.id}}" class="resource-type-icon"></i>
+                                    <h2>{{icon.label | i18n}}</h2>
+                                </lv-group>
+                            </div>
+                        </lv-radio>
+                    </ng-container>
+                </lv-group>
+            </lv-radio-group>
+        </ng-container>
+    </ng-container>
+</lv-form>

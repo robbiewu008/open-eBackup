@@ -1,0 +1,135 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Querying GaussDB (DWS) Information">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839142069.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001839141997">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Querying GaussDB (DWS) Information</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001839141997"></a><a name="EN-US_TOPIC_0000001839141997"></a>
+
+<h1 class="topictitle1">Querying GaussDB (DWS) Information</h1>
+<div><div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792342950_en-us_topic_0000001839142377_uicontrol865195012392"><b><span id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792342950_en-us_topic_0000001839142377_text4651950123919"><strong>Protection</strong></span> &gt; Big Data &gt; GaussDB (DWS)</b></span>.</span></li><li><span>On the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab page, query the GaussDB (DWS) cluster information.</span><p><ol type="a"><li>This page displays information about GaussDB (DWS) clusters registered with the <span>OceanProtect</span>.<p><a href="#EN-US_TOPIC_0000001839141997__en-us_topic_0000001397042233_table14170211115420">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839141997__en-us_topic_0000001397042233_table14170211115420"></a><a name="en-us_topic_0000001397042233_table14170211115420"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001397042233_table14170211115420" frame="border" border="1" rules="all"><caption><b>Table 1 </b>GaussDB (DWS) cluster information</caption><colgroup><col style="width:19.189999999999998%"><col style="width:80.81%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="19.189999999999998%" id="mcps1.3.1.2.2.2.1.1.3.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="80.81%" id="mcps1.3.1.2.2.2.1.1.3.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><p>Name of the GaussDB (DWS) cluster</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><p><span><strong>Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><p>Status of the GaussDB (DWS) cluster</p>
+<ul><li><span><strong>Offline</strong></span>: If the connection between the agent host and GaussDB (DWS) cluster is abnormal, <span class="uicontrol"><b><span><strong>Status</strong></span></b></span> is <span class="uicontrol"><b><span><strong>Offline</strong></span></b></span>.</li><li><span><strong>Normal</strong></span>: The GaussDB (DWS) cluster is available and the data has been backed up. All processes are running and the primary-standby relationship is normal.</li><li><span><strong>Unavailable</strong></span>: The GaussDB (DWS) cluster is unavailable.</li><li><span><strong>Degraded</strong></span>: The GaussDB (DWS) cluster is available but the data has not been backed up.</li><li><span><strong>Unstarted</strong></span>: The GaussDB (DWS) cluster is not started.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><p><span><strong>Version</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><p>Specifies the GaussDB (DWS) version.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><p>SLA</p>
+</td>
+<td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><p>If an SLA is associated with a resource, the SLA name is displayed. Otherwise, <strong>--</strong> is displayed.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><p><span><strong>SLA Compliance</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><div class="p">Whether a backup job is successfully executed based on the backup frequency or backup window set in the SLA.<ul id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_en-us_topic_0000001792344094_ul1823814519293"><li id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919">If the backup time of a backup job (except for the first full backup) meets the backup time window or backup interval requirements and the backup job is executed successfully, SLA compliance is met.</li><li id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912">If the backup time does not meet the backup time window or backup frequency requirements, for example, if the backup frequency set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup frequency or backup window.</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><p><span><strong>Protection Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><p>Whether the GaussDB (DWS) cluster is protected.</p>
+<ul><li><span><strong>Unprotected</strong></span>: The GaussDB (DWS) cluster is not associated with an SLA, or it is associated with an SLA but protection is disabled.</li><li><span><strong>Protected</strong></span>: The GaussDB (DWS) cluster has been associated with an SLA and protection has been activated.</li><li><span><strong>Creating</strong></span>: The GaussDB (DWS) cluster has been associated with an SLA and protection is being created.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><p><span><strong>Owner</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><p>Data protection administrator to which resources are allocated for management. If <strong>--</strong> is displayed, the resource has not been allocated to the data protection administrator.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Click the cluster name and check the overview, copy information, and related jobs.</li></ol>
+</p></li><li><span>On <span class="uicontrol"><b><span><strong>Schema Sets</strong></span></b></span> and <span class="uicontrol"><b><span><strong>Table Sets</strong></span></b></span> tab pages, view information about GaussDB (DWS) schema sets and table sets.</span><p><ol type="a"><li>This page displays the details about GaussDB (DWS) schema sets and table sets.<p><a href="#EN-US_TOPIC_0000001839141997__en-us_topic_0000001397042233_table19966163675618">Table 2</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839141997__en-us_topic_0000001397042233_table19966163675618"></a><a name="en-us_topic_0000001397042233_table19966163675618"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001397042233_table19966163675618" frame="border" border="1" rules="all"><caption><b>Table 2 </b>GaussDB (DWS) schema set/table set parameters</caption><colgroup><col style="width:25.55%"><col style="width:74.45%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.55%" id="mcps1.3.1.2.3.2.1.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.45%" id="mcps1.3.1.2.3.2.1.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><p>Name of the GaussDB (DWS) schema set or table set</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 "><p><span><strong>Owning Cluster</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><p>Cluster to which the GaussDB (DWS) schema set or table set belongs</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 "><p><span><strong>Owning Database</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><p>Database to which the GaussDB (DWS) schema set or table set belongs</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 "><p><span><strong>SLA</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><p>If an SLA has been associated with the GaussDB (DWS) schema set or table set, the SLA name is displayed. Otherwise, <span class="uicontrol"><b>--</b></span> is displayed.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 "><p><span><strong>SLA Compliance</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><div class="p">Whether a backup job is successfully executed based on the backup frequency or backup window set in the SLA.<ul id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_en-us_topic_0000001792344094_ul1823814519293_1"><li id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919_1">If the backup time of a backup job (except for the first full backup) meets the backup time window or backup interval requirements and the backup job is executed successfully, SLA compliance is met.</li><li id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912_1">If the backup time does not meet the backup time window or backup frequency requirements, for example, if the backup frequency set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup frequency or backup window.</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 "><p><span><strong>Protection Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><p>Whether the GaussDB (DWS) schema set or table set is protected.</p>
+<ul><li><span><strong>Unprotected</strong></span>: The GaussDB (DWS) schema set or table set is not associated with an SLA, or it is associated with an SLA but protection is disabled.</li><li><span><strong>Protected</strong></span>: The GaussDB (DWS) schema set or table set is associated with an SLA and protection is enabled.</li><li><span><strong>Creating</strong></span>: The GaussDB (DWS) schema set or table set is associated with an SLA and protection is being created.</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Click the name and check the overview, copy information, and related jobs. <ul id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_ul865415431221"><li id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_li165311431228">Overview<p id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_p18940145516325"><a name="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_li165311431228"></a><a name="en-us_topic_0000001792344110_li165311431228"></a>Display the SLA information, job execution time, and total number of copies.</p>
+</li><li id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_li15654174342214">Copy data<p id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_p565454392218"><a name="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_li15654174342214"></a><a name="en-us_topic_0000001792344110_li15654174342214"></a>You can search for copies by year, month, and day.</p>
+<p id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_p6521122942916">If <span><img id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_image7611125417346" src="en-us_image_0000001792344154.png"></span> is displayed below the time, a copy exists at the time.</p>
+</li><li id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_li0654134382213">Related jobs<p id="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_p1747754963312"><a name="EN-US_TOPIC_0000001839141997__en-us_topic_0000001792344110_li0654134382213"></a><a name="en-us_topic_0000001792344110_li0654134382213"></a>Displays backup and restoration jobs.</p>
+</li></ul>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001839142069.html">GaussDB (DWS) Cluster Environment</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -1,0 +1,94 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 巡检管理接口
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: Inspection Api
+    description: Inspection Controller
+paths:
+  /v1/inspections/alarms:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Inspection Api
+      summary: 查询任务/资源/告警
+      operationId: getInspectionInfoUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: lang
+          in: query
+          description: '语言类型[取值范围]1：中文 2：英文'
+          required: false
+          type: string
+          default: zh
+          pattern: zh|en
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SmartKitResponse'
+            originalRef: SmartKitResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  ErrorCode:
+    type: object
+    properties:
+      errId:
+        type: integer
+        format: int32
+        description: 错误ID
+      errMsg:
+        type: object
+        description: 错误信息
+        additionalProperties:
+          type: string
+    title: ErrorCode
+  'HashMap«string,object»':
+    type: object
+    title: 'HashMap«string,object»'
+    additionalProperties:
+      type: object
+  SmartKitResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        description: 告警信息
+        items:
+          $ref: '#/definitions/HashMap«string,object»'
+          originalRef: 'HashMap«string,object»'
+      error:
+        description: 错误码
+        $ref: '#/definitions/ErrorCode'
+        originalRef: ErrorCode
+    title: SmartKitResponse

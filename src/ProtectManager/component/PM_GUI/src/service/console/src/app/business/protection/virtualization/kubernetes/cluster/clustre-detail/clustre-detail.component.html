@@ -1,0 +1,50 @@
+<ng-container *ngIf="subType === dataMap.Resource_Type.kubernetesClusterCommon.value; else elseTemplate">
+    <h3 class="aui-gutter-column-lg">{{'common_basic_info_label' | i18n}}</h3>
+    <lv-group [lvColumns]='["110px", "auto", "auto", "auto"]' class="aui-gutter-column-xl">
+        <div>
+            <i lv-icon="{{rowItem?.linkStatus === dataMap.resource_LinkStatus_Special.offline.value ? 'aui-icon-summary-cluster-offline' : 'aui-icon-summary-cluster'}}"
+                class="base-info-icon"></i>
+        </div>
+        <lv-group lvGutter='12px'>
+            <span class="aui-text-label">{{'common_name_label' | i18n}}</span>
+            <span class="cluster-name" lv-overflow>{{rowItem?.name | nil}}</span>
+        </lv-group>
+        <lv-group lvGutter='12px'>
+            <span class="aui-text-label">{{'common_ip_address_label' | i18n}}</span>
+            <span>{{rowItem?.endpoint | nil}}</span>
+        </lv-group>
+    </lv-group>
+    <h3 class="aui-gutter-column-lg">{{'protection_name_space_label' | i18n}}</h3>
+    <lv-pro-table #dataTableN [config]="tableConfigN" [data]="tableDataN"></lv-pro-table>
+</ng-container>
+<ng-template #elseTemplate>
+    <lv-tabs>
+        <lv-tab lvTitle="{{'common_basic_info_label' | i18n}}">
+            <lv-group [lvColumns]='["110px", "auto", "auto", "auto"]' class="aui-gutter-column-xl">
+                <div>
+                    <i lv-icon="{{rowItem?.linkStatus === dataMap.resource_LinkStatus_Special.offline.value ? 'aui-icon-summary-cluster-offline' : 'aui-icon-summary-cluster'}}"
+                        class="base-info-icon"></i>
+                </div>
+                <lv-group lvGutter='12px'>
+                    <span class="aui-text-label">{{'common_name_label' | i18n}}</span>
+                    <span class="cluster-name" lv-overflow>{{rowItem?.name | nil}}</span>
+                </lv-group>
+                <lv-group lvGutter='12px'>
+                    <span class="aui-text-label">{{'common_ip_address_label' | i18n}}</span>
+                    <span>{{rowItem?.endpoint | nil}}</span>
+                </lv-group>
+            </lv-group>
+            <h3 class="aui-gutter-column-md">{{'protection_proxy_host_label' | i18n}}</h3>
+            <lv-pro-table #clusterNode [config]="nodeTableConfig" [data]="nodeTableData"></lv-pro-table>
+        </lv-tab>
+        <lv-tab lvTitle="{{'protection_storage_resource_label' | i18n}}">
+            <lv-pro-table #dataTableS [config]="tableConfigS" [data]="tableDataS"></lv-pro-table>
+        </lv-tab>
+        <lv-tab lvTitle="{{'protection_name_space_label' | i18n}}">
+            <lv-pro-table #dataTableN [config]="tableConfigN" [data]="tableDataN"></lv-pro-table>
+        </lv-tab>
+        <lv-tab lvTitle="StatefulSet">
+            <lv-pro-table #dataTableF [config]="tableConfigF" [data]="tableDataF"></lv-pro-table>
+        </lv-tab>
+    </lv-tabs>
+</ng-template>

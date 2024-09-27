@@ -1,0 +1,30 @@
+<div class="aui-fullpage">
+    <div class="aui-block aui-paginator-container">
+        <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+            <lv-tab lvTitle="{{'protection_cluster_label' | i18n}}" lvId="cluster">
+                <ng-template lv-tab-lazy>
+                    <aui-kubernetes-cluster [subType]="clusterSubType"></aui-kubernetes-cluster>
+                </ng-template>
+            </lv-tab>
+            <lv-tab lvTitle="{{'protection_name_space_label' | i18n}}" lvId="namespace">
+                <ng-template lv-tab-lazy>
+                    <aui-base-template [resourceSubType]="namespaceSubType" [extraConfig]="namespaceExtraConfig"
+                        [columns]="namespaceColumns">
+                    </aui-base-template>
+                </ng-template>
+            </lv-tab>
+            <lv-tab [lvTitle]="titleTpl" lvId="dataset">
+                <ng-template lv-tab-lazy>
+                    <aui-base-template [resourceSubType]="datasetSubType" [extraConfig]="datasetExtraConfig"
+                        [columns]="datasetColumns">
+                    </aui-base-template>
+                </ng-template>
+            </lv-tab>
+        </lv-tabs>
+    </div>
+</div>
+
+<ng-template #titleTpl>
+    <span lv-tooltip="{{'protection_kubernetes_dataset_tip_label' | i18n}}">{{'protection_kubernetes_dataset_label' |
+        i18n}}</span>
+</ng-template>

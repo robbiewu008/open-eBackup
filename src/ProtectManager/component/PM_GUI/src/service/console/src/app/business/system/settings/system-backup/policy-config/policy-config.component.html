@@ -1,0 +1,116 @@
+<p class="aui-text-help-sm aui-gutter-column-lg">
+    {{'system_backup_tip_label'|i18n}}
+</p>
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'system_launch_time_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-time-picker formControlName="backupTime" lvPlaceholder="HH:mm" [lvFormat]="'HH:mm'">
+            </lv-time-picker>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'system_max_self_backup_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="keepCountErrorTip">
+            <input lv-input type="text" formControlName="keepCount" placeholder="3~20" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'system_sftp_ip_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+            <input lv-input type="text" formControlName="destIp"
+                placeholder="{{'common_ip4_ipv6_placeholder_label' | i18n}}" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'system_sftp_username_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'system_sftp_user_info_label' | i18n}}" lvTooltipPosition="top"
+                lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="destUsernameErrorTip">
+            <input lv-input type="text" formControlName="destUsername" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'system_sftp_password_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="destPwdErrorTip">
+            <aui-inupt-with-eye formControlName="destPwd" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'system_sftp_port_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="destPortErrorTip">
+            <input lv-input type="text" formControlName="destPort" placeholder="1~65535" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'system_backup_dest_label' | i18n}}
+            <i *ngIf="isCyberengine" lv-icon="aui-icon-help" lv-tooltip="{{'system_backup_dest_help_label' | i18n}}"
+                lvTooltipPosition="top" lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="destPathErrorTip">
+            <input lv-input type="text" formControlName="destPath" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'system_trap_data_encryption_password_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{encryptionPasswordTip}}" lvTooltipTheme="light"
+                class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="encryptedPwdErrorTip">
+            <aui-inupt-with-eye [lv-tooltip]="pwdComplexTipTpl" lvTooltipTrigger="focus" lvTooltipPosition="topLeft"
+                lvTooltipTheme="light" formControlName="backupPwd" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'system_trap_encryption_confirm_password_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="encryptedPwdErrorTip">
+            <aui-inupt-with-eye formControlName="confirmPassword" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+
+
+<ng-template #tipContentTpl>
+    <div [innerHTML]="'system_policy_edit_info_label' | i18n"></div>
+</ng-template>
+
+
+<ng-template #pwdComplexTipTpl>
+    <span [innerHTML]="pwdComplexTip"></span>
+</ng-template>
+
+
+<ng-template #footerTpl>
+    <div class="lv-modal-btns">
+        <lv-group lvGutter='8px'>
+            <button lv-button (click)='test()' [disabled]="formGroup.get('destIp').invalid
+                || formGroup.get('destUsername').invalid
+                || formGroup.get('destPwd').invalid
+                || formGroup.get('destPort').invalid">
+                {{ 'common_test_label' | i18n }}
+            </button>
+            <button lv-button lvType='primary' (click)='ok()' [disabled]="formGroup.invalid">
+                {{'common_ok_label' | i18n }}
+            </button>
+            <button lv-button (click)='modal.close()'>
+                {{ 'common_cancel_label' | i18n }}
+            </button>
+        </lv-group>
+    </div>
+</ng-template>

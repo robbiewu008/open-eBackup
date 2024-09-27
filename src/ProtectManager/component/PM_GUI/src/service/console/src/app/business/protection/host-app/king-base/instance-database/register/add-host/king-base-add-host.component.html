@@ -1,0 +1,76 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_host_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select formControlName="host" [lvOptions]='hostOptions' lvValueKey='value' lvShowFilter
+                lvFilterKey="label" lvFilterMode="contains" [lvDisabled]="item && hostStatus">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_username_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'common_input_operate_database_username_label' | i18n}}"
+                lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="usernameErrorTip">
+            <input lv-input type="text" formControlName="userName" autocomplete="new-password"/>
+        </lv-form-control>
+    </lv-form-item>
+
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_database_client_path_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]='pathErrorTip'>
+            <input lv-input type="text" formControlName="client"/>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_dataplane_ip_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+            <input lv-input type="text" formControlName="business_ip" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_database_port_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="portErrorTip">
+            <input lv-input type="text" formControlName="port" placeholder='1~65535'/>
+        </lv-form-control>
+    </lv-form-item>
+
+    <lv-form-item *ngIf="false">
+        <lv-form-label lvRequired>
+            {{'protection_auth_method_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select formControlName="auth_method" [lvOptions]='authMethodOptions' lvValueKey='value'>
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+
+    <ng-container *ngIf="formGroup.value.auth_method === dataMap.postgre_Auth_Method_Type.database.value">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_database_user_name_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <input lv-input type="text" formControlName="database_username" autocomplete="new-password" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_database_password_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="nameErrorTip">
+                <aui-inupt-with-eye formControlName="database_password"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>

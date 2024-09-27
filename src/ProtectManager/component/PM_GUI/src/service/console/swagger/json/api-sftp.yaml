@@ -1,0 +1,690 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: SFTP服务管理接口
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: sftp-manager-api
+    description: SFTP服务管理接口
+paths:
+  /v1/sftp/service:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sftp-manager-api
+      summary: 查询sftp服务信息
+      operationId: queryServiceUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SftpServiceResponse'
+            originalRef: SftpServiceResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/sftp/status:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - sftp-manager-api
+      summary: 开关sftp服务
+      operationId: switchSftpStatusUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: SftpSwitchRequest
+          description: SFTP开关参数
+          required: true
+          schema:
+            $ref: '#/definitions/SftpSwitchRequest'
+            originalRef: SftpSwitchRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/sftp/users:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sftp-manager-api
+      summary: 分页查询sftp用户
+      operationId: queryNodeSftpByPageUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: pageNum
+          in: query
+          description: pageNum
+          required: true
+          type: integer
+          minimum: 1.0
+          format: int32
+        - name: pageSize
+          in: query
+          description: pageSize
+          required: true
+          type: integer
+          maximum: 200.0
+          minimum: 1.0
+          format: int32
+        - name: username
+          in: query
+          description: 用户名
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SftpQueryUserResponse'
+            originalRef: SftpQueryUserResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sftp-manager-api
+      summary: 创建sftp普通用户
+      operationId: createSftpNormalUserUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: sftpUserRequest
+          description: 用户信息
+          required: true
+          schema:
+            $ref: '#/definitions/SftpUserRequest'
+            originalRef: SftpUserRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sftp-manager-api
+      summary: 批量删除sftp用户
+      operationId: deleteUserUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: userList
+          description: 用户数组
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SftpDeleteUerRequest'
+              originalRef: SftpDeleteUerRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SftpDeleteUserResponse'
+            originalRef: SftpDeleteUserResponse
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+  /v1/sftp/users/{id}:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sftp-manager-api
+      summary: 修改sftp用户密码
+      operationId: changePasswordUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: 用户ID
+          required: true
+          type: string
+        - in: body
+          name: sftpModifyPasswordRequest
+          description: 修改密码信息
+          required: true
+          schema:
+            $ref: '#/definitions/SftpModifyPasswordRequest'
+            originalRef: SftpModifyPasswordRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/sftp/users/{userId}:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sftp-manager-api
+      summary: 查询sftp用户详情
+      operationId: querySftpUserDetailUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: userId
+          in: path
+          description: 用户ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SftpUserDetailMesResponse'
+            originalRef: SftpUserDetailMesResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  '/v1/sftp/users/{id}/threshold':
+    put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sftp-manager-api
+      description: 修改sftp普通用户的阈值
+      operationId: changeThresholdUserPUT
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Sftp普通用户id
+        - name: spaceThreshold
+          in: query
+          required: true
+          description: 新阈值的小数值
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v1/sftp/modify:
+    put:
+      tags:
+        - sftp-manager-api
+      summary: 修改SFTP配置
+      description: 修改SFTP配置
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: modifySftpConfigUsingPUT
+      parameters:
+        - name: SftpSwitchRequest
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/SftpSwitchRequest'
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization: []
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  SftpDeleteUerRequest:
+    type: object
+    properties:
+      userId:
+        type: integer
+        format: int64
+        description: 用户ID
+      username:
+        type: string
+        description: 用户名
+    title: SftpDeleteUerRequest
+  SftpDeleteUserResponse:
+    type: object
+    properties:
+      failCount:
+        type: integer
+        format: int32
+        description: 删除失败的数量
+      results:
+        type: array
+        description: 用户集合
+        items:
+          $ref: '#/definitions/SftpDeletedUserBo'
+          originalRef: SftpDeletedUserBo
+      succeedCount:
+        type: integer
+        format: int32
+        description: 删除成功的数量
+      total:
+        type: integer
+        format: int32
+        description: 用户总数
+    title: SftpDeleteUserResponse
+  SftpDeletedUserBo:
+    type: object
+    properties:
+      errorCode:
+        type: integer
+        format: int64
+        description: 删除失败的用户对应的错误码
+      targetName:
+        type: string
+        description: 目标删除用户名
+      userId:
+        type: integer
+        format: int64
+        description: 目标删除用户ID
+    title: SftpDeletedUserBo
+  SftpModifyPasswordRequest:
+    type: object
+    properties:
+      id:
+        type: string
+        description: 用户ID
+      newPassword:
+        type: string
+        description: 新密码
+      password:
+        type: string
+        description: 密码
+    title: SftpModifyPasswordRequest
+  SftpQueryUserResponse:
+    type: object
+    properties:
+      count:
+        type: integer
+        format: int32
+        description: 用户总数
+      users:
+        type: array
+        description: 用户数组
+        items:
+          $ref: '#/definitions/SftpUserBo'
+          originalRef: SftpUserBo
+    title: SftpQueryUserResponse
+  SftpSwitchRequest:
+    properties:
+      ip:
+        type: string
+        description: SFTP服务IP
+      status:
+        type: integer
+        format: int32
+        description: SFTP服务状态
+      mask:
+        type: string
+        description: IPv4掩码或者IPv6前缀
+      port:
+        type: string
+        description: 以太网端口
+        enum:
+          - IOM1.P3
+          - IOM0.P3
+      vlanPort:
+        description: 业务端口配置的Vlan信息
+        $ref: '#/definitions/VlanPortVo'
+      isWormEnable:
+        type: boolean
+        description: 是否开启worm
+      isWormExist:
+        type: boolean
+        description: worm是否已经创建
+      wormType:
+        type: integer
+        format: int32
+        description: worm模式
+      wormDefProtectPeriod:
+        type: string
+        description: 默认保护期
+      defProtectTimeUnit:
+        type: string
+        description: 默认保护期单位
+      isWormAutoLock:
+        type: boolean
+        description: 是否自动锁定
+      wormAutoLockTime:
+        type: string
+        description: 锁定等待时长
+      autoLockTimeUnit:
+        type: string
+        description: 自动锁定时间单位 44：分钟 45：小时 46：天 47：月 48：年
+      isWormAutoDel:
+        type: boolean
+        description: 是否自动删除
+      homePortType:
+        type: string
+        description: 端口逻辑类型 1:以太网端口类型，7：绑定端口类型，8：vlan端口类型
+        enum:
+          - '1'
+          - '7'
+          - '8'
+    title: SftpSwitchRequest
+    required:
+      - status
+    type: object
+  SftpServiceResponse:
+    properties:
+      ip:
+        type: string
+        description: SFTP服务IP
+      status:
+        type: integer
+        format: int32
+        description: SFTP服务状态
+      ipType:
+        type: string
+        description: SFTP服务IP类型，系统初始化的IP类型
+        enum:
+          - IPV4
+          - IPV6
+      port:
+        type: string
+        description: 以太网端口
+        enum:
+          - IOM1.P3
+          - IOM0.P3
+      isWormEnable:
+        type: boolean
+        description: 是否开启worm
+      isWormExist:
+        type: boolean
+        description: worm是否已经创建
+      wormType:
+        type: integer
+        format: int32
+        description: 'worm模式: 1 法规遵从; 3 企业遵从'
+        pattern: '1,3'
+      wormDefProtectPeriod:
+        type: string
+        description: 默认保护期
+      defProtectTimeUnit:
+        type: string
+        description: 默认保护期单位
+      wormAutoLockTime:
+        type: string
+        description: 锁定等待时长
+      autoLockTimeUnit:
+        type: string
+        description: 自动锁定时间单位 44：分钟 45：小时 46：天 47：月 48：年
+      isWormAutoDel:
+        type: string
+        description: 是否自动删除
+      mask:
+        type: string
+        description: sftp逻辑端口掩码
+      homePortType:
+        type: string
+        description: sftp逻辑端口类型
+      vlanPort:
+        description: 逻辑辑端口配置的Vlan信息
+        $ref: '#/definitions/VlanPortVo'
+    title: SftpServiceResponse
+    type: object
+  SftpUserBo:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: 用户ID
+      limitSpaceQuota:
+        type: string
+        description: 用户空间配额
+      unit:
+        type: string
+        description: 空间配额单位
+      username:
+        type: string
+        description: 用户名
+    title: SftpUserBo
+  SftpUserDetailMesResponse:
+    type: object
+    properties:
+      limitSpaceQuota:
+        type: string
+        description: 用户空间配额
+      spaceUsedRate:
+        type: string
+        description: 空间使用率
+      unit:
+        type: string
+        description: 空间配额单位
+      usedSpaceQuota:
+        type: string
+        description: 用户已用空间
+      username:
+        type: string
+        description: 用户名
+    title: SftpUserDetailMesResponse
+  SftpUserRequest:
+    type: object
+    properties:
+      limitSpaceQuota:
+        type: string
+        description: 用户空间配额
+        pattern: '[0-9]+'
+      password:
+        type: string
+        description: 密码
+      unit:
+        type: string
+        description: 空间配额单位
+      username:
+        type: string
+        description: 用户名
+    title: SftpUserRequest
+  VlanPortVo:
+    type: object
+    required:
+      - portType
+      - tags
+    properties:
+      portType:
+        type: string
+        description: vlan端口类型，1:以太网端口 7:绑定端口
+        enum:
+          - '1'
+          - '7'
+      tags:
+        type: array
+        items:
+          type: string
+        description: vlan id

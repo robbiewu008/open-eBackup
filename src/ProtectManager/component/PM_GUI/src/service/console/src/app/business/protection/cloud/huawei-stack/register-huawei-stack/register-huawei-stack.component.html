@@ -1,0 +1,190 @@
+<lv-form [lvLabelColon]="false" [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>{{ 'common_name_label' | i18n }}</lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired
+      >{{ 'common_ip_address_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        [lv-tooltip]="'protection_hcs_ip_tips_label' | i18n"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+      <input lv-input type="text" formControlName="ip" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired
+      >{{ 'common_domain_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        [lv-tooltip]="'protection_hcs_domain_tips_label' | i18n"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="domainNameErrorTip">
+      <input lv-input formControlName="domain_name" type="text" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired
+      >{{ 'common_username_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ 'protection_hcs_environment_user_name_label' | i18n }}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="userNameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="username"
+        autocomplete="new-password"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>{{
+      'common_password_label' | i18n
+    }}</lv-form-label>
+    <lv-form-control [lvErrorTip]="passwordErrorTip">
+      <lv-input-group [lvSuffix]="pwdSuffixTpl" class="input-group-full">
+        <input
+          lv-input
+          [type]="pwdVisible ? 'text' : 'password'"
+          formControlName="password"
+          autocomplete="new-password"
+          (copy)="copy()"
+          (cut)="copy()"
+        />
+      </lv-input-group>
+      <ng-template #pwdSuffixTpl>
+        <i
+          [lv-icon]="pwdVisible ? 'aui-icon-eye-open' : 'aui-icon-eye-close'"
+          [class]="{ 'pos-polyfill': pwdVisible }"
+          lvColorState="true"
+          (click)="pwdVisible = !pwdVisible"
+        ></i>
+      </ng-template>
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_proxy_host_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        [lv-tooltip]="agentTipsTpl"
+        lvTooltipPosition="right"
+        class="configform-constraint"
+        lvPopoverPosition="right"
+        lvColorState="true"
+        (mouseenter)="helpHover()"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        [lvOptions]="proxyOptions"
+        formControlName="agents"
+        lvValueKey="value"
+        lvMode="multiple"
+        lvShowFilter
+        lvShowCheckAll
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        [lvContentTemplate]="contentTpl"
+      >
+      </lv-select>
+      <ng-template #contentTpl let-item>
+        <lv-group lvGutter="4px">
+          <i
+            lv-icon="{{
+              item.linkStatus ===
+              DataMap.resource_LinkStatus_Special.normal.value
+                ? 'aui-host-online'
+                : 'aui-host-offline'
+            }}"
+          ></i>
+          <span>{{ item.label }}</span>
+          <span class="aui-text-help-sm">
+            {{
+              item.extendInfo.scenario === DataMap.proxyHostType.builtin.value
+                ? hostBuiltinLabel
+                : hostExternalLabel
+            }}</span
+          >
+        </lv-group>
+      </ng-template>
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_verify_cert_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-switch formControlName="cert"> </lv-switch>
+      <div *ngIf="formGroup.value.cert">
+        <lv-form-item>
+          <lv-form-label lvRequired>
+            {{ 'protection_cinder_cert_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control>
+            <lv-upload
+              lvAccept=".pem"
+              lvShowUpload="false"
+              [lvFilters]="cinderCertFilters"
+              [(lvFiles)]="cinderFiles"
+              (lvFilesChange)="cinderFilesChange($event)"
+              (lvChange)="cinderChange($event)"
+            ></lv-upload>
+          </lv-form-control>
+        </lv-form-item>
+      </div>
+      <div *ngIf="!formGroup.value.cert">
+        <i lv-icon="lv-icon-status-warning-info"></i>
+        <span class="aui-text-label">
+          {{ 'protection_register_cloud_cert_tips_label' | i18n }}
+        </span>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+
+<div class="aui-gutter-column-xl"></div>
+<h2 class="dataStore-position">
+  <lv-group [lvGutter]="'5px'">
+    {{ 'protection_storage_resource_label' | i18n }}
+  </lv-group>
+</h2>
+<div class="aui-operation">
+  <lv-pro-button-group
+    [config]="optItems"
+    [bindData]="tableData?.data"
+  ></lv-pro-button-group>
+</div>
+<span class="show-tips">
+  <i lv-icon="lv-icon-status-info" class="icon-info" lvColorState="true"></i>
+  {{ 'common_hcs_add_data_store_label' | i18n }}</span
+>
+<lv-pro-table
+  #dataTable
+  [config]="tableConfig"
+  [data]="tableData"
+></lv-pro-table>
+
+<ng-template #agentTipsTpl>
+  <span [innerHTML]="agentTips"></span>
+</ng-template>

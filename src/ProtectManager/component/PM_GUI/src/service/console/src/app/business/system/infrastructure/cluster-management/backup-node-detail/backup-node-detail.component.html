@@ -1,0 +1,344 @@
+<div class="detail-container">
+  <div class="detail-header">
+    <img src="assets/img/backup_cluster.svg" class="cluster-icon">
+    <lv-form-control class="detail-head">
+      <lv-form-item>
+        <lv-form-control class="node-name">
+          {{ drawData.clusterName }}
+        </lv-form-control>
+      </lv-form-item>
+
+      <lv-group>
+        <lv-form-control>
+          <aui-status [value]="drawData.status" type="Cluster_Status"></aui-status>
+        </lv-form-control>
+        <lv-form-control>
+          <lv-group [lvGutter]="'4px'">
+            <span>&nbsp; &nbsp; | &nbsp;</span>
+            <img src="assets/img/ha_logo.svg" class="node-icon">
+            <span>
+              {{
+              drawData.role === 7
+              ? primaryNodeLabel
+              : drawData.role === 5
+              ? memberNodeLabel
+              : backupNodeLabel
+              }}
+            </span>
+          </lv-group>
+        </lv-form-control>
+      </lv-group>
+
+
+      <lv-form-item>
+        {{storageInfo.mode}}
+      </lv-form-item>
+      <div>
+        <lv-group lvGutter='8px'>
+          <lv-group lvGutter='8px' class="aui-link" (click)="openDeviceManage()" pmpermission
+            pmOperation='OpenDeviceManagement'>
+            <span>{{ 'common_device_management_label' | i18n }}</span>
+            <i lv-icon="aui-icon-open-link" lvColorState='true'></i>
+          </lv-group>
+          <i lv-icon="aui-icon-notice" [lv-tooltip]="infoTip" lvTooltipTheme="light" lvColorState="true" lv-overflow></i>
+        </lv-group>
+      </div>
+    </lv-form-control>
+  </div>
+
+  <h2>{{ basicInfoLabel }}</h2>
+  <lv-form [lvLabelColon]="false" class="formGroup basicInfo" [formGroup]="formGroup">
+    <lv-form-column lvWidth="50%">
+      <lv-form-item *ngFor="let item of leftItems">
+        <lv-form-label>
+          {{ item.label }}
+        </lv-form-label>
+        <lv-form-control>
+          <span lv-overflow>
+            {{ item.value | nil }}
+          </span>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form-column>
+
+    <lv-form-column lvWidth="50%">
+      <lv-form-item *ngFor="let item of rightItems">
+        <lv-form-label>
+          {{ item.label}}
+        </lv-form-label>
+        <lv-form-control *ngIf="item.key === rightItems[0].key">
+          <div class='percent-bar' *ngIf="item.label === rightItems[0]['label']; else emptyTpl">
+            <lv-progress [lvValue]="storageInfo.sizePercent" [lvSize]="'small'" [lvColors]='progressBarColor'
+              [lvLabel]="progressLabelTpl" lvDecimals="3"></lv-progress>
+            <div class='size-percent'>
+              {{storageInfo.usedCapacity | capacityCalculateLabel:'1.1-3':unitconst.KB:
+              true}}/{{storageInfo.totalCapacity | capacityCalculateLabel:'1.1-3':unitconst.KB:
+              true}}
+            </div>
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+      <div style="margin-top: 5px">
+        <aui-current-system-time></aui-current-system-time>
+      </div>
+    </lv-form-column>
+    <lv-form-item>
+      <lv-form-label>{{ ipLabel }}</lv-form-label>
+      <lv-form-control *ngIf="drawData.ipArr.length > 1">
+        <ng-container *ngFor="let ip of drawData.ipArr">
+          {{ ip }}<br />
+        </ng-container>
+      </lv-form-control>
+      <lv-form-control *ngIf="drawData.ipArr.length === 1">
+        {{ drawData.clusterIp }}
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>
+        {{'system_gaussdb_ip_address_label' | i18n}}
+      </lv-form-label>
+      <lv-form-control>
+        {{storageInfo.gaussdbIp | nil}}
+      </lv-form-control>
+    </lv-form-item>
+  </lv-form>
+
+  <div class="aui-header-2 aui-gutter-column-sm">
+    <h2> {{'common_manger_auth_label'|i18n}}
+
+    </h2>
+    <div class="aui-operation">
+      <lv-group lvGutter="8px">
+        <a (click)="modify()" *ngIf="isView"
+        [ngClass]="{'aui-link': managerAble,'aui-link-disabled':!managerAble || !isAuth,'en-management-width':isEn}"
+        pmpermission pmOperation='ModifyAuthenticationStatus'>
+        {{'common_modify_label' | i18n}}</a>
+        <a *ngIf="!isView"
+          [ngClass]="{'aui-link': formGroup.valid,'aui-link-disabled': formGroup.invalid}"
+          (click)="save()">{{ 'common_save_label' | i18n }}</a>
+        <a *ngIf="!isView" class="aui-link" (click)="cancel()">{{ 'common_cancel_label' | i18n }}</a>
+      </lv-group>
+    </div>
+  </div>
+
+  <lv-form [formGroup]="formGroup" class="auth">
+    <ng-container *ngIf="!isView">
+      <div class='box' lvGutter="30px">
+        <lv-form-item>
+          <lv-form-label lvRequired>{{'common_username_label' | i18n}}</lv-form-label>
+          <lv-form-control [lvErrorTip]='nameErrorTip'>
+            <input lv-input style="width:270px" type="text" formControlName="userName" autocomplete="new-password" />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
+          <lv-form-control [lvErrorTip]='pwdErrorTip'>
+            <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"
+            autocomplete="new-password"></aui-inupt-with-eye>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>{{'common_status_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            <aui-status [value]="formGroup.value.status" type="Storage_Status"></aui-status>
+          </lv-form-control>
+        </lv-form-item>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isView">
+      <lv-form-column lvWidth="50%">
+        <lv-form-item>
+          <lv-form-label>{{'common_username_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            <span lv-overflow>
+              {{formGroup.value.userName | nil}}
+            </span>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>{{'common_status_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            <aui-status [value]="formGroup.value.status" type="Storage_Status"></aui-status>
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form-column>
+      <lv-form-column lvWidth="50%">
+        <lv-form-item>
+          <lv-form-label>{{'common_password_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            ********
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form-column>
+    </ng-container>
+  </lv-form>
+
+  <div class="aui-header-2 aui-gutter-column-sm">
+    <h2> {{'common_severice_auth_label'|i18n}}
+    </h2>
+    <div class="aui-operation">
+      <lv-group lvGutter="8px">
+        <a (click)="updateStoragePwd()" *ngIf="isAuth && isUpdate"
+        [ngClass]="{'aui-link': isView,'aui-link-disabled':!isView,'en-width':isEn}"
+        pmpermission pmOperation='ModifyAuthenticationStatus'>
+        {{'system_update_password_label' | i18n}}</a>
+        <a (click)="authService()" *ngIf="isAuth && !isUpdate"
+        [ngClass]="{'aui-link': serviceAble,'aui-link-disabled':!serviceAble || !isView,'en-width':isEn}"
+        pmpermission pmOperation='ModifyAuthenticationStatus'>
+        {{'common_modify_label' | i18n}}</a>
+        <a *ngIf="!isAuth"
+          [ngClass]="{'aui-link': authForm.valid,'aui-link-disabled': authForm.invalid}"
+          (click)="save()">{{ 'common_save_label' | i18n }}</a>
+        <a *ngIf="!isAuth" class="aui-link" (click)="cancel()">{{ 'common_cancel_label' | i18n }}</a>
+      </lv-group>
+    </div>
+  </div>
+
+      <span class="info-message" *ngIf="authForm.value.status === 'ABNORMAL'">
+        <i lv-icon="lv-icon-status-info" class="lv-icon"></i>
+        {{'system_service_auth_fail_info_label' | i18n}}
+        <span class="aui-link" (click)="openDeviceManage()">{{'system_goto_devicemanager_label' | i18n}}</span>
+      </span>
+
+  <lv-form [formGroup]="authForm" class="auth">
+    <ng-container *ngIf="!isAuth">
+      <div class="box" lvGutter="30px">
+        <lv-form-item>
+          <lv-form-label lvRequired>{{'common_username_label' | i18n}}</lv-form-label>
+          <lv-form-control [lvErrorTip]='nameErrorTip'>
+            <input lv-input type="text" style="width:270px" formControlName="userName" autocomplete="new-password" />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
+          <lv-form-control [lvErrorTip]='pwdErrorTip'>
+            <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"
+              autocomplete="new-password"></aui-inupt-with-eye>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>{{'common_status_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            <aui-status [value]="authForm.value.status" type="Storage_Status"></aui-status>
+          </lv-form-control>
+        </lv-form-item>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isAuth">
+      <lv-form-column lvWidth="50%">
+        <lv-form-item>
+          <lv-form-label>{{'common_username_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            <span lv-overflow>
+              {{authForm.value.userName | nil}}
+            </span>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>{{'common_status_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            <aui-status [value]="authForm.value.status" type="Storage_Status"></aui-status>
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form-column>
+      <lv-form-column lvWidth="50%">
+        <lv-form-item>
+          <lv-form-label>{{'common_password_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            ********
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form-column>
+    </ng-container>
+  </lv-form>
+
+  <lv-collapse [lvType]="'simple'">
+    <lv-collapse-panel lvTitle="{{'common_controller_label' | i18n}}">
+      <div class="card-container">
+        <div *ngFor="let item of nodesData" class="node-card">
+          <div class="card-header">
+            <div class="card-title">{{ item.nodeName }}</div>
+            <div class="card-status">
+              <aui-status [value]="item.status" type="Cluster_Node_Status"></aui-status>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="card-row">
+              <div class="row-label">
+                {{ 'system_management_ipv4_label' | i18n }}
+              </div>
+              <div class="row-prop">
+                {{ item.managementIPv4 | nil }}
+              </div>
+            </div>
+            <div class="card-row">
+              <div class="row-label">
+                {{ 'system_management_ipv6_label' | i18n }}
+              </div>
+              <div class="row-prop">
+                {{ item.managementIPv6 | nil }}
+              </div>
+            </div>
+            <div class="card-row">
+              <div class="row-label">
+                {{ 'system_backup_network_ip_label' | i18n }}({{
+                'system_data_backup_engine_label' | i18n
+                }})
+              </div>
+              <div class="row-prop">
+                {{ item.backupEngineIp | nil }}
+              </div>
+            </div>
+            <div class="card-row">
+              <div class="row-label">
+                {{ 'system_backup_network_ip_label' | i18n }}({{
+                'system_data_use_engine_label' | i18n
+                }})
+              </div>
+              <div class="row-prop">
+                {{ item.deeEngineIp | nil }}
+              </div>
+            </div>
+            <div class="card-row">
+              <div class="row-label">
+                {{ 'system_archiving_network_ip_label' | i18n }}({{
+                'system_data_archiving_engine_label' | i18n
+                }})
+              </div>
+              <div class="row-prop">
+                {{ item.archiveEngineIp | nil }}
+              </div>
+            </div>
+
+            <div class="card-row">
+              <div class="row-label">
+                {{ 'common_replication_network_ip_address_label' | i18n }}({{
+                'common_replication_archiving_engine_label' | i18n
+                }})
+              </div>
+              <div class="row-prop">
+                {{ item.copyEngineIp | nil }}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <lv-paginator lvMode="simple" [lvShowPageSizeOptions]="false" [lvPageSize]="pageSize" [lvTotal]="total"
+        [hidden]="!total" [lvPageIndex]="pageIndex" (lvPageChange)="clusterPageChange($event)"
+        [lvPageSizeOptions]="sizeOptions"></lv-paginator>
+    </lv-collapse-panel>
+  </lv-collapse>
+</div>
+
+<ng-template #infoTip>
+  <lv-group lvDirection="vertical" class="info">
+    <span class="info-content" innerHTML="1.{{'system_cluster_device_time_desc_label' | i18n}}"></span>
+    <span class="info-content" innerHTML="2.{{'system_cluster_alarms_settings_tips_label' | i18n}}"></span>
+  </lv-group>
+</ng-template>
+<ng-template #emptyTpl>
+  --
+</ng-template>

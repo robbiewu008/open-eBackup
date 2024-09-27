@@ -1,0 +1,285 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item
+    *ngIf="sourceType === dataMap.Resource_Type.generalInstance.value"
+  >
+    <lv-form-label lvRequired>
+      {{ 'common_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group
+        formControlName="type"
+        [lvGroupName]="'typeGroup'"
+        [lvDisabled]="item"
+      >
+        <lv-group [lvGutter]="'24px'">
+          <lv-radio [lvValue]="dataMap.Instance_Type.single.value">
+            {{ 'protection_single_instance_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="dataMap.Instance_Type.cluster.value">
+            {{ 'protection_cluster_instance_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item
+    *ngIf="sourceType === dataMap.Resource_Type.generalDatabase.value"
+  >
+    <lv-form-label lvRequired>
+      {{ 'common_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select
+        formControlName="databaseType"
+        [lvOptions]="databaseTypeOptions"
+        lvValueKey="value"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_databasename_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="name"
+        placeholder="{{ 'protection_generaldb_name_placeholder_label' | i18n }}"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item
+    *ngIf="
+      (sourceType === dataMap.Resource_Type.generalInstance.value &&
+        formGroup.value.type === dataMap.Instance_Type.single.value) ||
+      (sourceType === dataMap.Resource_Type.generalDatabase.value &&
+        formGroup.value.databaseType ===
+          dataMap.generalDbClusterType.single.value)
+    "
+  >
+    <lv-form-label lvRequired>
+      {{ 'common_host_label' | i18n }}
+      <aui-agent-jumper-tips [type]="agentType"></aui-agent-jumper-tips>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="agentsErrorTip">
+      <lv-select
+        formControlName="agents"
+        [lvOptions]="hostOptions"
+        lvValueKey="value"
+        lvShowFilter
+        lvFilterKey="label"
+        lvFilterMode="contains"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item
+    *ngIf="
+      sourceType === dataMap.Resource_Type.generalDatabase.value &&
+      formGroup.value.databaseType !== dataMap.generalDbClusterType.single.value
+    "
+  >
+    <lv-form-label lvRequired>
+      {{ 'common_host_label' | i18n }}
+      <aui-agent-jumper-tips [type]="agentType"></aui-agent-jumper-tips>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="agentsErrorTip">
+      <lv-select
+        formControlName="databaseAgents"
+        [lvOptions]="hostOptions"
+        lvValueKey="value"
+        lvMode="multiple"
+        lvShowFilter
+        lvFilterKey="label"
+        lvFilterMode="contains"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item
+    *ngIf="formGroup.value.type === dataMap.Instance_Type.single.value"
+  >
+    <lv-form-label lvRequired>
+      {{ 'protection_database_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="verifyScript"
+        [lvOptions]="scriptOptions"
+        lvValueKey="value"
+        lvShowFilter
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        [lvDisabled]="!!item"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item
+    *ngIf="formGroup.value.type === dataMap.Instance_Type.single.value"
+  >
+    <lv-form-label>
+      {{ 'protection_auth_mode_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select
+        formControlName="authMode"
+        [lvOptions]="authOptions"
+        lvValueKey="value"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item
+    *ngIf="
+      formGroup.value.authMode === dataMap.Database_Auth_Method.db.value &&
+      formGroup.value.type === dataMap.Instance_Type.single.value
+    "
+  >
+    <lv-form-label lvRequired>
+      {{ 'common_database_user_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="userName"
+        autocomplete="new-password"
+        placeholder="{{
+          'protection_database_username_placeholder_label' | i18n
+        }}"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item
+    *ngIf="
+      formGroup.value.authMode === dataMap.Database_Auth_Method.db.value &&
+      formGroup.value.type === dataMap.Instance_Type.single.value
+    "
+  >
+    <lv-form-label lvRequired>
+      {{ 'common_database_password_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="passwordErrorTip">
+      <aui-inupt-with-eye
+        formControlName="password"
+        [lvPasteAllowed]="false"
+      ></aui-inupt-with-eye>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item
+    *ngIf="
+      formGroup.value.authMode === dataMap.Database_Auth_Method.db.value &&
+      formGroup.value.type === dataMap.Instance_Type.single.value
+    "
+  >
+    <lv-form-label>
+      {{ 'protection_database_auth_extend_info_label' | i18n }}
+      <i
+        *ngIf="!!formGroup.get('verifyScript').value"
+        lv-icon="aui-icon-help"
+        [lv-tooltip]="authExtenInfoTipsTpl"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+        (mouseenter)="authHelpHover()"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="textAreaErrorTips">
+      <lv-input-group [lvSuffix]="suffixTpl" style="width: 100%;">
+        <input
+          lv-input
+          [type]="pwdType"
+          formControlName="authExtendInfo"
+          autocomplete="new-password"
+          (copy)="copy()"
+          (cut)="copy()"
+        />
+      </lv-input-group>
+      <ng-template #suffixTpl>
+        <i
+          [lv-icon]="!showPwd ? 'aui-icon-eye-close' : 'aui-icon-eye-open'"
+          lvTooltipPosition="right"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+          (click)="showDbPwd()"
+        ></i>
+      </ng-template>
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item
+    *ngIf="formGroup.value.type === dataMap.Instance_Type.cluster.value"
+  >
+    <lv-form-label lvRequired>
+      {{ 'protection_cluster_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="cluster"
+        [lvOptions]="clusterOptions"
+        lvValueKey="value"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+
+  <ng-container
+    *ngIf="formGroup.value.type === dataMap.Instance_Type.cluster.value"
+  >
+    <div class="aui-gutter-column-lg"></div>
+    <h3 class="aui-gutter-column-lg">
+      <lv-group [lvGutter]="'5px'">
+        <span style="color: red;padding-right: 4px;">*</span>
+        {{ 'protection_database_instance_label' | i18n }}
+      </lv-group>
+    </h3>
+    <div class="aui-operation">
+      <lv-pro-button-group [config]="optsConfig"></lv-pro-button-group>
+    </div>
+    <lv-pro-table
+      #dataTable
+      [config]="tableConfig"
+      [data]="tableData"
+    ></lv-pro-table>
+  </ng-container>
+  <lv-form-item>
+    <lv-form-label [lvRequired]="requireCustomParams">
+      {{ 'protection_custom_params_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        [lv-tooltip]="customParamsTipsTpl"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="textAreaErrorTips">
+      <lv-input-lint>
+        <textarea
+          rows="4"
+          lv-input
+          maxlength="500"
+          formControlName="customParams"
+          [placeholder]="customParamsPlaceholder"
+        ></textarea>
+      </lv-input-lint>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+
+<ng-template #authExtenInfoTipsTpl>
+  <span
+    [innerHTML]="databaseAuthTip"
+  ></span>
+</ng-template>
+
+<ng-template #customParamsTipsTpl>
+  <span
+    innerHTML="{{ 'protection_generaldb_customparams_tips_label' | i18n }}"
+  ></span>
+</ng-template>

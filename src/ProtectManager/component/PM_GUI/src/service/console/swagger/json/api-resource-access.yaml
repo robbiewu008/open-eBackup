@@ -1,0 +1,2048 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 资源接入接口
+basePath: /
+tags:
+  - name: protected-environment-api
+  - name: protected-resource-api
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /v2/environments/{envId}/resources:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-environment-api
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      summary: 浏览环境资源
+      description: 浏览环境资源，支持HDFS、HBase受保护环境资源的浏览
+      operationId: ListEnvironmentResource
+      parameters:
+        - name: envId
+          in: path
+          required: true
+          type: string
+          description: 受保护环境ID
+        - name: parentId
+          in: query
+          required: false
+          description: 父资源ID
+          type: string
+        - name: resourceType
+          in: query
+          required: true
+          description: 资源类型
+          type: string
+        - name: resourceSubType
+          in: query
+          required: false
+          description: 资源类型
+          type: string
+        - name: pageNo
+          in: query
+          required: true
+          description: 起始页
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          description: 分页大小
+          type: integer
+          format: int32
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+        - name: conditions
+          in: query
+          required: false
+          description: 条件查询
+          type: string
+        - name: agentId
+          in: query
+          required: false
+          description: agentId
+          type: string
+      responses:
+        '200':
+          description: 环境资源响应体
+          schema:
+            $ref: '#/definitions/EnvironmentResourceList'
+  /v2/resources:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-request-examples-url-1: POST  https://host:25081/v2/resources
+      x-request-examples-description-1: 注册NAS SHARE
+      x-request-examples-text-1: >-
+        {
+          "name": "/8.40.199.102/testName",  // nas share名称
+          "path": "/8.40.199.102/testName",  // nas share路径
+          "parentUuid": "2102352TDQ80C3803201",
+          "type": "Storage",  // nas share 资源类型
+          "subType": "NasShare",  // nas share资源子类型
+          "extendInfo": {
+            "ip": "8.40.199.102",  // nas share IP
+            "shareMode": "1",    // nas share共享模式: 0-CIFS, 1-NFS
+            "authMode": "1",    // nas share 认证模式: 0-密码认证或者Kerberos认证, 1-无认证.
+            "filters": "   
+        [{\"filterBy\":\"Name\",\"type\":\"File\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"/opt/test.txt\"]},{\"filterBy\":\"Name\",\"type\":\"Dir\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"/etc\"]},{\"filterBy\":\"Format\",\"type\":\"File\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"4\",\"5\"]},{\"filterBy\":\"CreateTime\",\"type\":\"File\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"1641761359709\",\"1641768562109\"]}]",   
+        // nas share 过滤参数: filterBy字段是根据什么进行过滤,取值Name-名称;Format-文件格式,
+        type字段是过滤的资源类型:File-文件;Dir-目录, rule字段是过滤的规则,取值Fuzzy-模糊匹配; EXact-精确匹配,
+        mode字段是过滤类型: 取值INCLUDE-包含;EXCLUDE-排除, values字段是具体过滤的内容
+            "kerberosId": ""  //选择Kerberos认证时的id
+          }
+        }
+      x-request-examples-1: >-
+        {
+          "name": "/8.40.199.102/testName",  // nas share名称
+          "path": "/8.40.199.102/testName",  // nas share路径
+          "parentUuid": "2102352TDQ80C3803201",
+          "type": "Storage",  // nas share 资源类型
+          "subType": "NasShare",  // nas share资源子类型
+          "extendInfo": {
+            "ip": "8.40.199.102",  // nas share IP
+            "shareMode": "1",    // nas share共享模式: 0-CIFS, 1-NFS
+            "authMode": "1",    // nas share 认证模式: 0-密码认证或者Kerberos认证, 1-无认证.
+            "filters": "   
+        [{\"filterBy\":\"Name\",\"type\":\"File\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"/opt/test.txt\"]},{\"filterBy\":\"Name\",\"type\":\"Dir\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"/etc\"]},{\"filterBy\":\"Format\",\"type\":\"File\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"4\",\"5\"]},{\"filterBy\":\"CreateTime\",\"type\":\"File\",\"rule\":\"Exact\",\"mode\":\"EXCLUDE\",\"values\":[\"1641761359709\",\"1641768562109\"]}]",   
+        // nas share 过滤参数: filterBy字段是根据什么进行过滤,取值Name-名称;Format-文件格式,
+        type字段是过滤的资源类型:File-文件;Dir-目录, rule字段是过滤的规则,取值Fuzzy-模糊匹配; EXact-精确匹配,
+        mode字段是过滤类型: 取值INCLUDE-包含;EXCLUDE-排除, values字段是具体过滤的内容
+            "kerberosId": ""  //选择Kerberos认证时的id
+          }
+        }
+      x-impact-subsystem: 影响
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      summary: 创建资源
+      description: 创建资源
+      operationId: CreateResource
+      consumes:
+        - application/octet-stream
+        - application/json
+      parameters:
+        - name: CreateResourceRequestBody
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProtectedResourceRequest'
+          description: 创建资源的请求体
+      responses:
+        '200':
+          description: 资源UUID
+          schema:
+            $ref: '#/definitions/UuidObject'
+      x-order: 0
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 支持资源分页查询，支持资源属性、环境属性、受保护对象属性的过滤查询
+      description: 资源分页查询。
+      operationId: ListResources
+      parameters:
+        - name: pageNo
+          in: query
+          required: false
+          type: integer
+          format: int32
+          default: 0
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 页索引
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+          default: 10
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 页大小
+        - name: conditions
+          in: query
+          required: false
+          type: string
+          default: '{}'
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 查询条件(json格式)
+        - name: orders
+          in: query
+          required: false
+          type: array
+          default: '[]'
+          items:
+            type: string
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 排序字段（格式：升序为+field，降序为-field）
+        - name: queryDependency
+          in: query
+          required: false
+          type: boolean
+          default: 'false'
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 是否查询dependency
+      responses:
+        '200':
+          description: 分页查询结果
+          schema:
+            $ref: '#/definitions/ProtectedResourcePageListResponse'
+      x-order: 1
+  /v2/environments:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-impact-subsystem: 不影响
+      x-request-examples-url-2: POST https://host:25080/v2/environments
+      x-request-examples-description-2: 注册Nas设备
+      x-request-examples-text-2: >-
+        {
+
+        "name":"DoradoV6_001",
+
+        "type":"StorageEquipment",
+
+        "subType":"DoradoV6",  //
+        设备类型：DoradoV6、OceanStorV6、OceanStorV5、OceanStorPacific、NetApp、StorageOthers
+
+        "endpoint":"8.40.101.37", // 设备管理ip
+
+        "port":"8088", // 设备端口
+
+        "username":"string", // 用户名
+
+        "password":"string",// 密码
+
+        "extendInfo":{
+
+        "verifyStatus":"1", // 是否校验证书：0-不校验，1-校验
+
+        "snapConsistency":"0" // 是否开启快照一致性：0-不打开，1-打开
+
+        }}
+      x-request-examples-2: >-
+        {
+
+        "name":"DoradoV6_001",
+
+        "type":"StorageEquipment",
+
+        "subType":"DoradoV6",  //
+        设备类型：DoradoV6、OceanStorV6、OceanStorV5、OceanStorPacific、NetApp、StorageOthers
+
+        "endpoint":"8.40.101.37", // 设备管理ip
+
+        "port":"8088", // 设备端口
+
+        "username":"string", // 用户名
+
+        "password":"string",// 密码
+
+        "extendInfo":{
+
+        "verifyStatus":"1", // 是否校验证书：0-不校验，1-校验
+
+        "snapConsistency":"0" // 是否开启快照一致性：0-不打开，1-打开
+
+        }}
+      x-request-examples-text-1: |-
+        {
+          "name": "HDFS_Cluster",
+          "type": "BigData",
+          "endpoint": "192.168.0.1",
+          "subType": "HDFS",
+          "port": 8888,
+          "extendInfo": {
+            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
+            "kerberosId": "string",//环境鉴权使用的kerberosid
+            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
+            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
+          }
+        }
+      x-request-examples-1: |-
+        {
+          "name": "HDFS_Cluster",
+          "type": "BigData",
+          "endpoint": "192.168.0.1",
+          "subType": "HDFS",
+          "port": 8888,
+          "extendInfo": {
+            "loginMode": "string",//环境的鉴权方式，取值：loginWithPassword|loginWithNoAuth|loginWithKerberos
+            "kerberosId": "string",//环境鉴权使用的kerberosid
+            "accessType": "string",//环境访问方式（ip或域名），取值：ip|domain
+            "clusterType": "string"// 环境集群类型，取值：MRS|CDH|FusionInsight
+          }
+        }
+      x-request-examples-url-1: POST https://host:25801/v2/environments
+      x-request-examples-description-1: 注册HDFS集群
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-environment-api
+      summary: 注册环境
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      description: 注册受保护环境，支持HDFS、HBase，NAS受保护环境的注册
+      operationId: RegisterProtectedEnviroment
+      consumes:
+        - application/json
+      parameters:
+        - name: RegisterProtectedEnviromentRequestBody
+          in: body
+          required: true
+          description: 环境名称
+          schema:
+            $ref: '#/definitions/RegisterProtectedEnvironmentRequest'
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: 注册受保护环境UUID
+          schema:
+            $ref: '#/definitions/UuidObject'
+          examples:
+            application/json: ''
+  /v2/resources/{resourceId}:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 根据资源ID查询资源信息
+      description: 查询单个资源信息
+      operationId: ShowResource
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+          description: 资源ID
+      responses:
+        '200':
+          description: 资源信息
+          schema:
+            $ref: '#/definitions/ProtectedResourceResponse'
+      x-order: 2
+    delete:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 删除资源ID对应的资源
+      description: 删除资源ID对应的资源，资源已关联SLA的情况下，不允许删除
+      operationId: DeleteResource
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+          description: 资源ID
+      responses:
+        '200':
+          description: 操作成功无返回结果，操作失败异常报错。
+      x-order: 3
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 更新资源
+      description: 更新资源
+      operationId: UpdateResource
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+          description: 资源ID
+        - name: UpdateResourceRequestBody
+          in: body
+          required: true
+          description: 资源信息
+          schema:
+            $ref: '#/definitions/ProtectedResourceUpdateRequest'
+      responses:
+        '200':
+          description: 操作成功无返回结果，操作失败异常报错。
+      x-order: 4
+  /v2/environments/{envId}:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-environment-api
+      summary: 更新受保护环境
+      description: 更新受保护环境，支持HDFS、HBase，NAS受保护环境的更新
+      operationId: UpdateProtectedEnvironment
+      parameters:
+        - name: envId
+          in: path
+          required: true
+          type: string
+          description: 受保护环境ID
+        - name: UpdateProtectedEnvironmentRequestBody
+          in: body
+          required: true
+          description: 更新受保护环境请求体
+          schema:
+            $ref: '#/definitions/UpdateEnvironmentRequest'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+    delete:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-environment-api
+      summary: 删除受保护环境
+      description: 删除受保护环境，支持HDFS、HBase，NAS受保护环境的删除
+      operationId: DeleteProtectedEnvironment
+      parameters:
+        - name: envId
+          in: path
+          required: true
+          type: string
+          description: 受保护环境ID
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  '/v2/{resourceId}/authentication':
+    put:
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25082
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 更新资源认证信息
+      description: 更新资源认证信息
+      operationId: UpdateAuthentication
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+          description: 资源ID
+        - name: updateAuthenticationRequestBody
+          in: body
+          required: true
+          description: 认证信息更新请求
+          schema:
+            $ref: '#/definitions/Authentication'
+      responses:
+        '200':
+          description: '--'
+  '/v2/environments/{envId}/authentication':
+    put:
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-environment-api
+      summary: 更新环境认证信息
+      description: 更新环境认证信息
+      operationId: UpdateEnvironmentAuthentication
+      parameters:
+        - name: envId
+          in: path
+          required: true
+          type: string
+          description: 受保护环境ID
+        - name: UpdateEnvironmentAuthenticationRequestBody
+          in: body
+          required: true
+          description: 认证信息
+          schema:
+            $ref: '#/definitions/Authentication'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  '/v2/resources/{resId}/action/scan':
+    put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 扫描受保护资源
+      description: 扫描受保护资源
+      operationId: ScanProtectedResources
+      parameters:
+        - name: resId
+          in: path
+          required: true
+          type: string
+          description: 被扫描资源的uuid
+      responses:
+        '200':
+          description: '--'
+      x-order: 5
+  /v2/environments/action/check:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-environment-api
+      summary: 检查待注册环境
+      description: 对未注册的环境进行检查。
+      operationId: CheckEnvironment
+      parameters:
+        - name: checkEnvironmentRequestBody
+          in: body
+          required: true
+          description: 待检查的环境信息
+          schema:
+            $ref: '#/definitions/CheckEnvironmentRequestBody'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v2/resources/action/check:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 检查待注册资源
+      description: 对未注册的资源进行检查。
+      operationId: CheckResource
+      parameters:
+        - name: checkResourceRequestBody
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CheckResourceRequestBody'
+          description: 待检查的资源信息
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v2/resources/allow-restore:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 检查当前资源是否支持恢复
+      description: 检查当前资源是否支持恢复
+      operationId: CheckAllowRestore
+      parameters:
+        - name: resourceIds
+          in: query
+          required: true
+          description: 资源ID列表
+          type: string
+      responses:
+        '200':
+          description: 资源是否允许恢复请求结果
+          schema:
+            items:
+              $ref: '#/definitions/AllowRestoreObject'
+            type: array
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 刚更新是否可恢复字段
+      description: 更新是否可恢复字段
+      operationId: UpdateAllowRestore
+      parameters:
+        - name: updateAllowRestoreRequestBody
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateAllowRestoreRequestBody'
+          description: 更新是否可恢复字段请求体
+      responses:
+        '200':
+          description: 操作成功无返回结果，操作失败异常报错。
+    
+  /v2/resources/{resourceId}/action/check:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 检查已注册资源
+      description: 对已注册的资源进行检查。
+      operationId: CheckProtectedResource
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          type: string
+          description: 待检查的资源ID
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  '/v2/resources/{projectId}/hcs/action/scan':
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 扫描受保护资源(HCS)
+      description: 扫描受保护资源，适配OP服务化。
+      operationId: scanHcsResource
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          type: string
+        - name: projectName
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: '--'
+  /v2/resource/group/{resourceGroupId}:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 查询资源组详情
+      description: 查询单个资源组详细信息
+      operationId: ShowResourceGroup
+      parameters:
+        - name: resourceGroupId
+          in: path
+          required: true
+          type: string
+          description: 资源组uuid
+      responses:
+        '200':
+          description: 资源组详细信息
+          schema:
+            $ref: '#/definitions/ResourceGroupDetailResponse'
+      x-order: 10
+    delete:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 删除资源组
+      description: 删除资源组ID对应的资源组，资源组已关联SLA的情况下，不允许删除
+      operationId: DeleteResourceGroup
+      parameters:
+        - name: resourceGroupId
+          in: path
+          required: true
+          type: string
+          description: 资源组uuid
+      responses:
+        '200':
+          description: 操作成功无返回结果，操作失败异常报错。
+      x-order: 12
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-request-examples-url-1: PUT  https://host:25081/v2/resource/group/{testResourceGroupId}
+      x-request-examples-description-1: 创建资源组
+      x-request-examples-text-1: >-
+        {
+          "name": "testName",  // 资源组名称
+          "resourceIds": ["testId1", "testId2"]  // 资源列表
+        }
+      x-request-examples-1: >-
+        {
+          "name": "testName",  // 资源组名称
+          "resourceIds": ["testId1", "testId2"]  // 资源列表
+        }
+      x-impact-subsystem: 不影响
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      summary: 修改资源组
+      description: 修改资源组
+      operationId: UpdateResourceGroup
+      consumes:
+        - application/octet-stream
+        - application/json
+      parameters:
+        - name: UpdateResourceGroupRequestBody
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateResourceGroupRequestBody'
+          description: 修改资源组的请求体
+        - name: resourceGroupId
+          in: path
+          required: true
+          type: string
+          description: 资源组uuid
+      responses:
+        '200':
+          description: 资源组UUID
+          schema:
+            $ref: '#/definitions/UuidObject'
+      x-order: 11
+  /v2/resource/group/protected-object/{resourceGroupId}:
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-request-examples-url-1: Delete  https://host:25081/v2/resource/group/protected-object/{testResourceGroupId}
+      x-request-examples-description-1: 删除资源组保护
+      x-impact-subsystem: 不影响
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      summary: 删除资源组保护
+      description: 删除资源组保护
+      operationId: DeleteResourceGroupProtectedObject
+      consumes:
+        - application/octet-stream
+        - application/json
+      parameters:
+        - name: resourceGroupId
+          in: path
+          required: true
+          type: string
+          description: 资源组id
+      responses:
+        '200':
+          description: 资源组保护UUID
+          schema:
+            $ref: '#/definitions/UuidObject'
+      x-order: 15
+  /v2/resource/group:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-request-examples-url-1: POST  https://host:25081/v2/resource/group
+      x-request-examples-description-1: 创建资源组
+      x-request-examples-text-1: >-
+        {
+          "name": "testName",  // 资源组名称
+          "path": "testPath", // 资源组路劲
+          "sourceType": "Storage",  // 资源类型
+          "sourceSubType": "NasShare",  // 资源子类型
+          "resourceIds": ["testId1", "testId2"],  // 资源列表
+          "scopeResourceId" : "69cbe812-c992-3555-8617-b5188c52b1e9"  // 资源组所属资源uuid
+        }
+      x-request-examples-1: >-
+        {
+          "name": "testName",  // 资源组名称
+          "path": "testPath", // 资源组路劲
+          "sourceType": "Storage",  // 资源类型
+          "sourceSubType": "NasShare",  // 资源子类型
+          "resourceIds": ["testId1", "testId2"],  // 资源列表
+          "scopeResourceId" : "69cbe812-c992-3555-8617-b5188c52b1e9"  // 资源组所属资源uuid
+        }
+      x-impact-subsystem: 不影响
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      summary: 创建资源组
+      description: 创建资源组
+      operationId: CreateResourceGroup
+      consumes:
+        - application/octet-stream
+        - application/json
+      parameters:
+        - name: CreateResourceGroupRequestBody
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateResourceGroupRequestBody'
+          description: 创建资源组的请求体
+      responses:
+        '200':
+          description: 资源组UUID
+          schema:
+            $ref: '#/definitions/UuidObject'
+      x-order: 8
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-impact-subsystem: 不影响
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 查询资源组列表
+      description: 资源分页查询。
+      operationId: ListResourceGroups
+      parameters:
+        - name: pageNo
+          in: query
+          required: false
+          type: integer
+          format: int32
+          default: 0
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 页索引
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+          default: 10
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 页大小
+        - name: conditions
+          in: query
+          required: false
+          type: string
+          default: '{}'
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 查询条件(json格式)
+        - name: orders
+          in: query
+          required: false
+          type: array
+          default: '[]'
+          items:
+            type: string
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+          description: 排序字段（格式：升序为+field，降序为-field）
+      responses:
+        '200':
+          description: 分页查询结果
+          schema:
+            $ref: '#/definitions/ResourceGroupPageListResponse'
+      x-order: 9
+  /v2/resource/group/protected-object:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-request-examples-url-1: PUT  https://host:25081/v2/resource/group/protected-object
+      x-request-examples-description-1: 修改资源组保护
+      x-request-examples-text-1: >-
+        {
+          "resourceGroupId": "testResourceGroupId",  // 资源组id
+          "slaId": "testSlaId",  // sla id
+          "extParams": "{'key1': 'value1', 'key2': 'value2'}"  高级设置参数
+        }
+      x-request-examples-1: >-
+        {
+          "resourceGroupId": "testResourceGroupId",  // 资源组id
+          "slaId": "testSlaId",  // sla id
+          "extParams": "{'key1': 'value1', 'key2': 'value2'}"  高级设置参数
+        }
+      x-impact-subsystem: 不影响
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      summary: 修改资源组保护
+      description: 修改资源组保护
+      operationId: UpdateResourceGroupProtectedObject
+      consumes:
+        - application/octet-stream
+        - application/json
+      parameters:
+        - name: UpdateResourceGroupProtectedObjectRequestBody
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateResourceGroupProtectedObjectRequestBody'
+          description: 修改资源组保护的请求体
+      responses:
+        '200':
+          description: 资源组保护UUID
+          schema:
+            $ref: '#/definitions/UuidObject'
+      x-order: 14
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-request-examples-url-1: POST  https://host:25081/v2/resource/group/protected-object
+      x-request-examples-description-1: 创建资源组保护
+      x-request-examples-text-1: >-
+        {
+          "resourceGroupId": "testResourceGroupId",  // 资源组id
+          "slaId": "testSlaId",  // sla id
+          "extParams": "{'key1': 'value1', 'key2': 'value2'}"  高级设置参数
+        }
+      x-request-examples-1: >-
+        {
+          "resourceGroupId": "testResourceGroupId",  // 资源组id
+          "slaId": "testSlaId",  // sla id
+          "extParams": "{'key1': 'value1', 'key2': 'value2'}"  高级设置参数
+        }
+      x-impact-subsystem: 不影响
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      summary: 创建资源组保护
+      description: 创建资源组
+      operationId: CreateResourceGroupProtectedObject
+      consumes:
+        - application/octet-stream
+        - application/json
+      parameters:
+        - name: CreateResourceGroupProtectedObjectRequestBody
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateResourceGroupProtectedObjectRequestBody'
+          description: 创建资源组保护的请求体
+      responses:
+        '200':
+          description: 资源组保护UUID
+          schema:
+            $ref: '#/definitions/UuidObject'
+      x-order: 13
+  /v2/resource/group/activate-resource-group:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 资源组批量激活保护
+      description: 资源组批量激活保护
+      operationId: ActivateResourceGroup
+      parameters:
+        - name: activateResourceGroupReq
+          in: body
+          required: true
+          description: 资源组批量激活保护禁用保护请求体
+          schema:
+            $ref: '#/definitions/activateResourceGroupReq'
+      responses:
+        '200':
+          description: 资源组批量添加保护成功
+          schema:
+            type: string
+  /v2/resource/group/deactivate-resource-group:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      summary: 资源组批量禁用保护
+      description: 资源组批量禁用保护
+      operationId: DeactivateResourceGroup
+      parameters:
+        - name: deactivateResourceGroupReq
+          in: body
+          required: true
+          description: 资源组批量激活保护禁用保护请求体
+          schema:
+            $ref: '#/definitions/activateResourceGroupReq'
+      responses:
+        '200':
+          description: 资源组批量禁用保护成功
+          schema:
+            type: string
+definitions:
+  ProtectedEnvironmentRequest:
+    description: 受保护对象请求体
+    properties:
+      uuid:
+        type: string
+        description: 受保护环境UUID
+      name:
+        type: string
+        description: 受保护环境名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      type:
+        type: string
+        description: 环境的类型
+      endpoint:
+        type: string
+        description: 环境的IP地址或域名
+      subType:
+        type: string
+        description: 环境的子类型
+      port:
+        type: integer
+        format: int32
+        description: 环境的接入端口
+      username:
+        type: string
+        description: 环境的用户名
+      password:
+        type: string
+        description: 环境的密码
+      osType:
+        type: string
+        description: 环境的操作系统
+      version:
+        type: string
+        description: 环境的版本
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 环境扩展参数，存放不同环境的自定义扩展属性
+      auth:
+        $ref: '#/definitions/Authentication'
+    required:
+      - name
+      - type
+      - subType
+  ProtectedResourceResponse:
+    description: 创建资源请求体
+    properties:
+      uuid:
+        type: string
+        description: 资源uuid
+      name:
+        type: string
+        description: 资源名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      type:
+        type: string
+        description: 资源主类型
+      subType:
+        type: string
+        description: 资源子类型
+      path:
+        type: string
+        description: 资源路径
+      rootUuid:
+        type: string
+        description: 资源所属根资源uuid，即环境的uuid
+      parentUuid:
+        type: string
+        description: 父资源ID
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 资源扩展属性
+      createdTime:
+        type: string
+        format: date-time
+        description: 资源创建时间
+      version:
+        type: string
+        description: 资源的版本
+      parentName:
+        type: string
+        description: 父资源名称
+      userId:
+        type: string
+        description: 资源所属用户ID
+      authorizedUser:
+        type: string
+        description: 资源所属用户名称
+      protectedObject:
+        $ref: '#/definitions/ProtectedObject'
+      environment:
+        $ref: '#/definitions/ProtectedEnvironment'
+      auth:
+        $ref: '#/definitions/AuthTypeInfo'
+      labelList:
+        type: array
+        items:
+          $ref: '#/definitions/label'
+    required:
+      - name
+      - type
+      - subType
+      - rootUuid
+  EnvironmentResourceList:
+    description: 环境资源列表
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总记录数
+      records:
+        items:
+          $ref: '#/definitions/BaseProtectedResource'
+        description: 创建资源请求体
+        type: array
+  ProtectedObject:
+    properties:
+      slaId:
+        type: string
+        description: SLA的ID
+      slaName:
+        type: string
+        description: SLA的名称
+      slaCompliance:
+        type: boolean
+        description: SLA遵从度
+      status:
+        type: integer
+        format: int32
+        description: 状态
+      envId:
+        type: string
+        description: 受保护环境ID
+      envType:
+        type: string
+        description: 受保护环境类型
+      resourceId:
+        type: string
+        description: 资源ID
+      resourceGroupId:
+        type: string
+        description: 资源组ID
+      extParameters:
+        type: object
+        additionalProperties:
+          type: object
+        description: 扩展参数
+      latestTime:
+        type: string
+        format: date-time
+        description: 最后执行保护时间
+      earliestTime:
+        type: string
+        format: date-time
+        description: 最早执行保护时间
+      chainId:
+        type: string
+        description: 备份链ID
+      uuid:
+        type: string
+        description: 资源组保护对象uuid
+      type:
+        type: string
+        description: 资源组保护对象类型
+      subtype:
+        type: string
+        description: 资源组保护对象子类型
+      path:
+        type: string
+        description: 资源组保护对象主机
+      consistentStatus:
+        type: string
+        description: 保护对象完整性状态
+      consistentResults:
+        type: string
+        description: 保护对象完整性结果
+      name:
+        type: string
+        description: 资源组保护对象名称
+    required:
+      - slaId
+      - slaName
+      - slaCompliance
+      - status
+      - envId
+      - envType
+      - resourceId
+  ProtectedEnvironment:
+    properties:
+      endpoint:
+        type: string
+        description: 环境地址
+      port:
+        type: integer
+        format: int32
+        description: 环境端口
+      linkStatus:
+        type: string
+        description: 连接状态
+      userName:
+        type: string
+        description: 用户名
+      location:
+        type: string
+        description: 位置
+      osType:
+        type: string
+        description: 操作系统类型
+      osName:
+        type: string
+        description: 操作系统名称
+      scanInterval:
+        type: string
+        description: 扫描间隔时间
+  ProtectedResourcePageListResponse:
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 满足分页查询条件的统计数量
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/ProtectedResourceResponse'
+        description: 当前分页的查询记录
+  ProtectedResourceRequest:
+    description: 创建资源请求体
+    properties:
+      uuid:
+        type: string
+        description: 资源uuid
+      name:
+        type: string
+        description: 资源名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      type:
+        type: string
+        description: 资源主类型
+      subType:
+        type: string
+        description: 资源子类型
+      path:
+        type: string
+        description: 资源路径
+      parentUuid:
+        type: string
+        description: 父资源ID
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 资源扩展属性
+      version:
+        type: string
+        description: 资源的版本
+      auth:
+        $ref: '#/definitions/Authentication'
+      certContent:
+        type: string
+        description: 证书文件的文本内容内容
+        minLength: 32
+        maxLength: 100000
+    required:
+      - name
+      - type
+      - subType
+      - parentUuid
+  BaseProtectedResource:
+    description: 创建资源请求体
+    properties:
+      uuid:
+        type: string
+        description: 资源uuid
+      name:
+        type: string
+        description: 资源名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      type:
+        type: string
+        description: 资源主类型
+      subType:
+        type: string
+        description: 资源子类型
+      path:
+        type: string
+        description: 资源路径
+      rootUuid:
+        type: string
+        description: 资源所属根资源uuid，即环境的uuid
+      parentUuid:
+        type: string
+        description: 父资源ID
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 资源扩展属性
+      createdTime:
+        type: string
+        format: date-time
+        description: 资源创建时间
+      parentName:
+        type: string
+        description: 父资源名称
+    required:
+      - name
+      - type
+      - subType
+      - rootUuid
+  ProtectedResourceUpdateRequest:
+    properties:
+      name:
+        type: string
+        description: 资源名称
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 扩展属性
+  Authentication:
+    description: 认证信息
+    allOf:
+      - $ref: '#/definitions/AuthTypeInfo'
+      - type: object
+        properties:
+          authKey:
+            type: string
+            description: 使用用户名密码认证时该字段填用户名，使用AK/SK认证时该字段填充AK
+          authPwd:
+            type: string
+            description: 使用用户名密码认证时该字段填密码，使用AK/SK认证时该字段填充SK
+          extendInfo:
+            type: object
+            additionalProperties:
+              type: string
+            description: |-
+              认证扩展信息，使用其他方式认证时，认证信息放在扩展该字段里。认证信息扩展参数key定义：
+              ## 公共参数
+              | key| 类型 | 是否必填 |说明 |
+              |--|--|--|--|
+              |  enableCert| string | 是 | 是否开启证书校验 0-不开启，1-开启 |
+              |  centification| string | 否 | 证书文件文本内容 |
+              |  revocationlist| string | 否 | 证书吊销列表文件文本内容 |
+
+              ## HCS
+
+              |  key|  类型  | 是否必填 |说明  |
+              |--|--|--|--|
+              |  storages| string | 是 |  存储资源信息，JSON对象序列化之后的字符串，例：[{\"username\":\"admin\",\"password\":\"\",\"ip\":\"88.1.XX.XX\",\"port\":8088,\"enableCert\":0,\"certification\":\"\"}]  |
+  AuthTypeInfo:
+    description: 认证类型
+    properties:
+      authType:
+        type: integer
+        format: int32
+        description: >-
+          0-NO_AUTH, 1-OS_PASSWORD, 2-APP_PASSWORD，3-LADP, 4-AKSK, 5-KERBEROS,
+          6-TOKEN, 7-OAUTH2, 8-OTHER。1到3,authKey填用户名,authPwd填密码， 4 authKey填AK，
+          authPwd填SK, 5,6,7,8认证认证信息在扩展字段中扩充。
+    required:
+      - authType
+  RegisterProtectedEnvironmentRequest:
+    description: 受保护对象请求体
+    properties:
+      name:
+        type: string
+        description: 受保护环境名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      type:
+        type: string
+        description: 环境的类型
+      endpoint:
+        type: string
+        description: 环境的IP地址或域名
+      subType:
+        type: string
+        description: 环境的子类型
+      port:
+        type: integer
+        format: int32
+        description: 环境的接入端口
+      username:
+        type: string
+        description: 环境的用户名
+      password:
+        type: string
+        description: 环境的密码
+      osType:
+        type: string
+        description: 环境的操作系统
+      version:
+        type: string
+        description: 环境的版本
+      dependencies:
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            type: object
+        description: 依赖参数，依赖其他资源
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: |-
+          环境扩展参数，存放不同环境的自定义扩展属性，针对每种应用进行单独说明
+
+          ## HCS
+          |参数名称  | 参数类型 | 是否必填 | 参数解释 |
+          |--|--|--|--|
+          | domain | String | 是 | HSC |
+          | ip | String | 是 | HSC生产环境ip |
+          | storages | String | 是 | 平台对接的后端存储信息。json序列化之后的字符串，例如："[{\"username\":\"admin\",\"port\":8088,\"ip\":\"88.1.XX.XX\"}]" |
+      auth:
+        $ref: '#/definitions/Authentication'
+        description: 环境认证信息
+      scanInterval:
+        type: integer
+        format: int32
+        description: 自动扫描时间间隔，单位是秒
+    required:
+      - name
+      - type
+      - subType
+  UpdateEnvironmentRequest:
+    description: 受保护对象请求体
+    properties:
+      name:
+        type: string
+        description: 受保护环境名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      endpoint:
+        type: string
+        description: 环境的IP地址或域名
+      port:
+        type: integer
+        format: int32
+        description: 环境的接入端口
+      username:
+        type: string
+        description: 环境的用户名
+      password:
+        type: string
+        description: 环境的密码
+      osType:
+        type: string
+        description: 环境的操作系统
+      dependencies:
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            type: object
+            description: 依赖资源
+        description: 依赖参数，依赖其他资源
+      extendInfo:
+        type: object
+        additionalProperties:
+          type: string
+        description: 环境扩展参数，存放不同环境的自定义扩展属性
+      scanInterval:
+        type: integer
+        format: int32
+        description: 自动扫描时间间隔，单位是秒
+    type: object
+  UuidObject:
+    required:
+      - uuid
+    properties:
+      uuid:
+        type: string
+        description: 全球唯一标识。
+  CheckEnvironmentRequestBody:
+    allOf:
+      - $ref: '#/definitions/ProtectedEnvironmentRequest'
+  CheckResourceRequestBody:
+    allOf:
+      - $ref: '#/definitions/ProtectedResourceRequest'
+  ActionResult:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        example: 0
+        description: 错误码
+      bodyErr:
+        type: string
+        example: ''
+        description: 错误码，较code更为具体
+      message:
+        type: string
+        example: ''
+        description: 错误消息
+      detailParams:
+        type: array
+        items:
+          type: string
+        example:
+          - ''
+        description: 错误参数
+  AllowRestoreObject:
+    type: object
+    properties:
+      uuid:
+        type: string
+        example: ''
+        description: 资源ID
+      isAllowRestore:
+        type: string
+        example: ''
+        description: 是否支持做恢复，true为支持，false为不支持
+  CheckAllowRestoreRequestBody:
+    type: object
+    properties:
+      resourceIds:
+        type: array
+        items:
+          type: string
+        description: 资源id集合
+  UpdateAllowRestoreRequestBody:
+    type: object
+    properties:
+      resourceIds:
+        type: array
+        items:
+          type: string
+        description: 资源id集合
+      isAllowRestore:
+        type: string
+        description: 是否支持恢复
+  CreateResourceGroupRequestBody:
+    description: 创建资源组请求体
+    properties:
+      name:
+        type: string
+        description: 资源组名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      path:
+        type: string
+        description: 虚拟机路径
+      sourceType:
+        type: string
+        description: 资源组主类型
+      sourceSubType:
+        type: string
+        description: 资源组子类型
+      resourceIds:
+        type: array
+        items:
+          type: string
+        description: 资源id 列表
+      scopeResourceId:
+        type: string
+        description: 资源组所属资源uuid
+    required:
+      - name
+      - path
+      - sourceType
+      - sourceSubType
+      - resourceIds
+      - scopeResourceId
+    type: object
+  UpdateResourceGroupRequestBody:
+    description: 修改资源组请求体
+    properties:
+      name:
+        type: string
+        description: 资源组名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      resourceIds:
+        type: array
+        items:
+          type: string
+        description: 资源id 列表
+    required:
+      - name
+      - resourceIds
+    type: object
+  ResourceGroupResponse:
+    description: 查询资源组返回
+    properties:
+      uuid:
+        type: string
+        description: 资源组uuid
+      name:
+        type: string
+        description: 资源组名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      path:
+        type: string
+        description: 资源组路径
+      sourceCount:
+        type: integer
+        format: int32
+        description: 所含资源数量
+      sourceType:
+        type: string
+        description: 资源主类型
+      sourceSubType:
+        type: string
+        description: 资源子类型
+      createdTime:
+        type: string
+        format: date-time
+        description: 资源组创建时间
+      protectionStatus:
+        type: integer
+        format: int32
+        description: 保护状态
+      userId:
+        type: string
+        description: 资源所属用户ID
+      protectedObject:
+        $ref: '#/definitions/ProtectedObject'
+    required:
+      - uuid
+      - name
+      - path
+      - sourceCount
+      - sourceType
+      - sourceSubType
+      - createdTime
+      - protectionStatus
+      - userId
+    type: object
+  ResourceGroupPageListResponse:
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 满足分页查询条件的统计数量
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/ResourceGroupResponse'
+        description: 当前分页的查询记录
+    type: object
+    description: 资源组列表返回
+  ResourceGroupDetailResponse:
+    description: 查询资源组详情返回
+    properties:
+      uuid:
+        type: string
+        description: 资源组uuid
+      name:
+        type: string
+        description: 资源组名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      path:
+        type: string
+        description: 资源组路径
+      sourceType:
+        type: string
+        description: 资源主类型
+      sourceSubType:
+        type: string
+        description: 资源子类型
+      createdTime:
+        type: string
+        format: date-time
+        description: 资源组创建时间
+      protectionStatus:
+        type: integer
+        format: int32
+        description: 保护状态
+      userId:
+        type: string
+        description: 资源所属用户ID
+      protectedObject:
+        $ref: '#/definitions/ProtectedObject'
+        description: 保护对象
+      resourceGroupMembers:
+        type: array
+        items:
+          $ref: '#/definitions/ResourceGroupMemberResponse'
+        description: 资源组成员
+    required:
+      - uuid
+      - name
+      - path
+      - sourceType
+      - sourceSubType
+      - createdTime
+      - protectionStatus
+      - userId
+    type: object
+  ResourceGroupMemberResponse:
+    description: 查询资源组返回
+    properties:
+      uuid:
+        type: string
+        description: 资源成员uuid
+      sourceId:
+        type: string
+        description: 资源uuid
+      sourcename:
+        type: string
+        description: 资源名称
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      sourceType:
+        type: string
+        description: 资源类型
+      sourceSubType:
+        type: string
+        description: 资源子类型
+      path:
+        type: string
+        description: 资源路径
+      status:
+        type: string
+        description: 状态
+      sourceGroupId:
+        type: string
+        description: 资源组uuid
+    required:
+      - uuid
+      - sourceId
+      - sourcename
+      - sourceType
+      - sourceSubType
+      - path
+      - status
+      - sourceGroupId
+    type: object
+  CreateResourceGroupProtectedObjectRequestBody:
+    description: 创建资源组保护请求体
+    properties:
+      resourceGroupId:
+        type: string
+        description: 资源组uuid
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      slaId:
+        type: string
+        description: 保护策略uuid
+      extParams:
+        type: object
+        additionalProperties:
+          type: object
+        description: 高级设置
+    required:
+      - resourceGroupId
+      - slaId
+    type: object
+  UpdateResourceGroupProtectedObjectRequestBody:
+    description: 跟新资源组保护请求体
+    properties:
+      resourceGroupId:
+        type: string
+        description: 资源组uuid
+        minLength: 1
+        maxLength: 64
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      slaId:
+        type: string
+        description: 保护策略uuid
+      extParams:
+        type: object
+        additionalProperties:
+          type: object
+        description: 高级设置
+    required:
+      - resourceGroupId
+      - slaId
+    type: object
+  activateResourceGroupReq:
+    type: object
+    description: 资源组批量激活保护/禁用保护请求体
+    required:
+      - resource_ids
+      - is_resource_group
+    properties:
+      resource_ids:
+        type: array
+        items:
+          type: string
+        description: 资源组uuid列表
+      is_resource_group:
+        type: boolean
+        description: 是否是资源组
+  label:
+    type: object
+    properties:
+      name:
+        type: string
+      uuid:
+        type: string

@@ -1,0 +1,73 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Removing an HA Member">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792502622.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001792502602">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Removing an HA Member</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001792502602"></a><a name="EN-US_TOPIC_0000001792502602"></a>
+
+<h1 class="topictitle1">Removing an HA Member</h1>
+<div><p>This section describes how to remove an HA member. After an HA member is removed, the HA member becomes a member node.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><p>HA members have been added to the system.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="menucascade" id="EN-US_TOPIC_0000001792502602__en-us_topic_0000001839142053_menucascade31053579148"><b><span class="uicontrol" id="EN-US_TOPIC_0000001792502602__en-us_topic_0000001839142053_uicontrol41059577142"><span id="EN-US_TOPIC_0000001792502602__en-us_topic_0000001839142053_text1054020121612"><strong>System</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000001792502602__en-us_topic_0000001839142053_uicontrol154661958121418"><span id="EN-US_TOPIC_0000001792502602__en-us_topic_0000001839142053_text8757278167"><strong>Infrastructure</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000001792502602__en-us_topic_0000001839142053_uicontrol54471544151"><span id="EN-US_TOPIC_0000001792502602__en-us_topic_0000001839142053_text1631251418164"><strong>Cluster Management</strong></span></span></b></span>.</span></li><li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001792502602__en-us_topic_0000001839142053_uicontrol1161813395168"><b><span id="EN-US_TOPIC_0000001792502602__en-us_topic_0000001839142053_text353374216166"><strong>Backup Cluster</strong></span></b></span>.</span></li><li><span>Choose <span class="menucascade"><b><span class="uicontrol"><span><strong>HA Management</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Remove HA Member</strong></span></span></b></span>.</span></li><li><span>In the <span class="uicontrol"><b><span><strong>Danger</strong></span></b></span> dialog box, confirm the information and click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span><p><p><span><img src="en-us_image_0000001792502790.png"></span></p>
+<p></p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>After the HA member is removed, the status of the standby node is <span class="uicontrol"><b><span><strong>Deleting</strong></span></b></span>. After a while, the system automatically refreshes the status and the status changes to <span class="uicontrol"><b><span><strong>Online</strong></span></b></span>.</li><li>Forcible removal scenario: If the HA member to be removed is offline, forcibly remove it. Perform the following operations before forcibly removing an HA member:<ol type="a"><li>Log in to the CLI as an administrator or a super administrator.</li><li>Run the following command to check the pod status of <span class="uicontrol"><b>gaussdb-0</b></span>:<pre class="screen">show container_application general name=dataprotect namespace=dpa</pre>
+<p>If the following information is displayed, the pod status is normal.</p>
+<pre class="screen">PodList:
+  Pod Name                      Pod Status  Pod Restart Times  Pod Cpu Percent(%)  Pod Memory Percent(%)  Pod Belong Node  Pod Namespace  Pod Is Ready  
+  ----------------------------  ----------  -----------------  ------------------  ---------------------  ---------------  -------------  ------------  
+  gaussdb-0                     Running     1                  13.33               3.32                   node-1           dpa            true          
+  infrastructure-0              Running     1                  --                  8.89                   node-1           dpa            true          
+  dataenableengine-server-0     Running     0                  34.00               9.71                   node-0           dpa            true          
+  dataenableengine-server-1     Running     1                  34.00               9.71                   node-1           dpa            true          
+  protectengine-e-dma-0         Running     1                  1.33                0.32                   node-1           dpa            true          
+  protectengine-0               Running     1                  --                  12.37                  node-1           dpa            true          
+  protectengine-1               Running     0                  --                  12.37                  node-0           dpa            true          
+  sftp-0                        Running     5                  --                  0.77                   node-1           dpa            true          
+  protectmanager-biz-service-0  Running     0                  13.33               3.73                   node-0           dpa            true          
+  protectmanager-biz-service-1  Running     1                  13.33               3.73                   node-1           dpa            true          
+  protectmanager-system-base-1  Running     1                  16.67               3.90                   node-1           dpa            true          
+  protectmanager-system-base-0  Running     0                  16.67               3.90                   node-0           dpa            true </pre>
+<p>If <span class="uicontrol"><b>gaussdb-0</b></span> pod is not in the running state, forcibly remove the HA member. No further action is required.</p>
+</li><li>Run the <strong>change user_mode current_mode user_mode=developer</strong> command to switch to the developer mode and perform operations as prompted.</li><li>Run the <strong>minisystem</strong> command to enter the minisystem mode.</li><li>If the pod status is normal but the standby node is offline, run the following command to stop the <span class="uicontrol"><b>gaussdb-0</b></span> pod immediately (within 5 minutes) after the command for forcibly removing the HA node is delivered and perform operations as prompted.<pre class="screen">container.sh -c kubectl delete pod gaussdb-0 -n dpa</pre>
+<p>If the following information is displayed, the pod is stopped successfully.</p>
+<pre class="screen">Storage: minisystem&gt; container.sh -c kubectl delete pod gaussdb-0 -n dpa
+DANGER: You are going to perform a danger command. Ensure that no container are being used. Otherwise, this behavior causes container service interruption.
+Suggestion: Before you perform this operation, make sure that the operation will not affect working of system.
+Have you read danger alert message carefully?(y/n)
+y
+Enter "I have read and understand the consequences associated with performing this operation." to confirm running this command.
+I have read and understand the consequences associated with performing this operation.
+pod "gaussdb-0" deleted
+exec kubectl success</pre>
+</li></ol>
+</li></ul>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001792502622.html">Managing the HA</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

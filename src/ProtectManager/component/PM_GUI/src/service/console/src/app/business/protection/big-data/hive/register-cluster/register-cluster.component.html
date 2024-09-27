@@ -1,0 +1,306 @@
+<div class="aui-text-desc aui-gutter-column-lg">
+  {{ 'protection_big_data_register_tip_label' | i18n }}
+</div>
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_hive_server_link_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="serverErrorTip">
+      <input lv-input type="text" formControlName="serverLink" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_zookeeper_namespace_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="serverErrorTip">
+      <input lv-input type="text" formControlName="zookeeperNamespace" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label [lvRequired]="!data.uuid">hive-site.xml</lv-form-label>
+    <lv-form-control>
+      <lv-upload
+        lvAccept=".xml"
+        lvShowUpload="false"
+        [lvFilters]="hiveFilters"
+        (lvFilesChange)="filesChange($event, 'hive')"
+        [lvPlaceholder]="uploadPlaceholder"
+      ></lv-upload>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label [lvRequired]="!data.uuid">hdfs-site.xml</lv-form-label>
+    <lv-form-control>
+      <lv-upload
+        lvAccept=".xml"
+        lvShowUpload="false"
+        [lvFilters]="hdfsFilters"
+        (lvFilesChange)="filesChange($event, 'hdfs')"
+        [lvPlaceholder]="uploadPlaceholder"
+      ></lv-upload>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label [lvRequired]="!data.uuid">core-site.xml</lv-form-label>
+    <lv-form-control>
+      <lv-upload
+        lvAccept=".xml"
+        lvShowUpload="false"
+        [lvFilters]="coreFilters"
+        (lvFilesChange)="filesChange($event, 'core')"
+        [lvPlaceholder]="uploadPlaceholder"
+      ></lv-upload>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>hiveclient.properties</lv-form-label>
+    <lv-form-control>
+      <lv-upload
+        lvAccept=".properties"
+        lvShowUpload="false"
+        [lvFilters]="hiveClientFilters"
+        (lvFilesChange)="filesChange($event, 'client')"
+      ></lv-upload>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_hive_version_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="versionErrorTip">
+      <input lv-input type="text" formControlName="version" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_auth_mode_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="loginMode"
+        [lvOptions]="authOptions"
+        lvValueKey="value"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container
+    *ngIf="clusterAuthType.kerberos.value === formGroup.value.loginMode"
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        Kerberos
+        <i
+          lv-icon="aui-icon-help"
+          [lv-tooltip]="tipsTemplate"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+        <ng-template #tipsTemplate>
+          <span
+            innerHTML="{{
+              'protection_register_cluster_kerberos_tip_label' | i18n
+            }}"
+          ></span>
+        </ng-template>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+        <lv-group lvGutter="8px">
+          <lv-select
+            formControlName="kerberosId"
+            [lvOptions]="kerberosOptions"
+            lvValueKey="kerberosId"
+            lvShowFilter
+            lvFilterKey="label"
+            lvFilterMode="contains"
+          >
+          </lv-select>
+          <button
+            lv-button
+            (click)="createKerberos()"
+            pmpermission
+            pmOperation="CreateKerberos"
+          >
+            {{ 'common_create_label' | i18n }}
+          </button>
+        </lv-group>
+        <div
+          style="width: 75%;"
+          *ngIf="formGroup?.get('kerberosId').status === 'VALID'"
+        >
+          <i
+            style="display: inline-block; margin-right: 4px;"
+            lv-icon="lv-icon-status-info"
+            lvColorState="true"
+            class="type-icon"
+          ></i>
+          <span class="form-tips aui-text-desc">
+            {{ 'protection_kerberos_simple_tips_label' | i18n }}
+          </span>
+        </div>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <ng-container
+    *ngIf="formGroup.value.loginMode === clusterAuthType.kerberos.value"
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'protection_hive_server_principal_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="serverErrorTip">
+        <input lv-input type="text" formControlName="serverPrincipal" />
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <ng-container
+    *ngIf="clusterAuthType.system.value === formGroup.value.loginMode"
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_username_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{ 'protection_register_cluster_user_tip_label' | i18n }}"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="nameErrorTip">
+        <input lv-input type="text" formControlName="username" />
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_proxy_host_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <aui-agent-select
+        [lvOptions]="proxyHostOptions"
+        formControlName="agents"
+        lvValueKey="value"
+        lvMode="multiple"
+      ></aui-agent-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item
+    *ngIf="clusterAuthType.system.value !== formGroup.value.loginMode"
+  >
+    <lv-form-label>
+      {{ 'common_verify_cert_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-switch formControlName="cert"></lv-switch>
+      <div style="width: 460px;" *ngIf="!formGroup?.value.cert">
+        <i
+          style="display: inline-block; margin-right: 4px;"
+          lv-icon="lv-icon-status-warning-info"
+          lvColorState="true"
+          class="type-icon"
+        ></i>
+        <span class="form-tips aui-text-desc">
+          {{ 'protection_hive_cert_tips_label' | i18n }}
+        </span>
+      </div>
+      <ng-container *ngIf="!!formGroup?.value.cert">
+        <lv-form-item>
+          <lv-form-label lvRequired>
+            {{ 'protection_fc_cert_label' | i18n }}</lv-form-label
+          >
+          <lv-form-control>
+            <lv-upload
+              lvAccept=".jks"
+              lvShowUpload="false"
+              [lvFilters]="certFilters"
+              (lvFilesChange)="filesChange($event, 'cert')"
+            ></lv-upload>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label lvRequired>
+            {{ 'common_password_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="passwordErrorTip">
+            <aui-inupt-with-eye
+              formControlName="certPassword"
+              [lvPasteAllowed]="false"
+            ></aui-inupt-with-eye>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label lvRequired>
+            {{ 'common_confirmpwd_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="passwordErrorTip">
+            <aui-inupt-with-eye
+              formControlName="confirmCertPassword"
+              [lvPasteAllowed]="false"
+            ></aui-inupt-with-eye>
+          </lv-form-control>
+        </lv-form-item>
+      </ng-container>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item
+    *ngIf="clusterAuthType.system.value !== formGroup.value.loginMode"
+  >
+    <lv-form-label>
+      {{ 'protection_enbale_security_protocol_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-switch formControlName="useSecProtocols"></lv-switch>
+      <div style="width: 460px;" *ngIf="!formGroup?.value.useSecProtocols">
+        <i
+          style="display: inline-block; margin-right: 4px;"
+          lv-icon="lv-icon-status-warning-info"
+          lvColorState="true"
+          class="type-icon"
+        ></i>
+        <span class="form-tips aui-text-desc">
+          {{ 'protection_hive_cert_tips_label' | i18n }}
+        </span>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+
+<ng-template #modalFooter>
+  <div class="lv-modal-btns">
+    <lv-group lvGutter="14px">
+      <button
+        lv-button
+        lvType="primary"
+        (click)="test()"
+        [disabled]="!enableBtn"
+        [lvLoading]="testLoading"
+      >
+        {{ 'common_test_label' | i18n }}
+      </button>
+      <button
+        lv-button
+        lvType="primary"
+        (click)="ok()"
+        [disabled]="!isTest || !enableBtn"
+        [lvLoading]="okLoading"
+      >
+        {{ 'common_ok_label' | i18n }}
+      </button>
+      <button lv-button (click)="cancle()">
+        {{ 'common_cancel_label' | i18n }}
+      </button>
+    </lv-group>
+  </div>
+</ng-template>

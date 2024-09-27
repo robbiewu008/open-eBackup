@@ -1,0 +1,45 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="手动执行备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001851882641.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001805083874">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>手动执行备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001805083874"></a><a name="ZH-CN_TOPIC_0000001805083874"></a>
+
+<h1 class="topictitle1">手动执行备份</h1>
+<div><p>当您需要立即执行一次备份任务时，可以通过手动备份实现。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><ul><li>手动备份时，SLA中定义的参数（<span class="uicontrol">“<span>失败后自动重试</span>”</span>除外），如<span class="uicontrol">“<span>限速策略</span>”</span>、<span class="uicontrol">“<span>自动索引</span>”</span>、<span class="uicontrol">“<span>应用一致性备份</span>”</span>会应用到手动备份任务中。</li><li>手动备份产生的副本保留时长按照SLA中定义的保留时长进行保留。<p>如果手动备份时选择的保护策略未在SLA中定义，则产生的备份副本保留时长为永久保留。如SLA中未定义永久增量（合成全量）备份，而手动备份时选择的是永久增量（合成全量）备份，则本次手动永久增量（合成全量）备份产生的副本保留时长为永久保留。</p>
+</li><li>如果SLA定义了复制策略或归档策略，则执行手动备份时，系统会按照SLA的定义执行一次复制或归档。</li><li>对集群/主机发起手动备份时，如果集群/主机中存在和集群/主机SLA保护策略不一致的虚拟机，则该虚拟机不会发起备份任务。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001805083874__zh-cn_topic_0000001839142377_uicontrol14456431877">“<span id="ZH-CN_TOPIC_0000001805083874__zh-cn_topic_0000001839142377_text134457431679">保护</span> &gt; 虚拟化 &gt; CNware”</span>。</span></li></ol><ol start="2"><li><span>根据需要备份的类型，选择<span class="uicontrol">“<span>虚拟机</span>”</span>、<span class="uicontrol">“<span>主机</span>”</span>或<span class="uicontrol">“<span>集群</span>”</span>页签。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>选择<span class="uicontrol">“<span>主机</span>”</span>或<span class="uicontrol">“<span>集群</span>”</span>进行备份时，仅会备份与主机/集群SLA相同的虚拟机，不会备份与主机/集群SLA不同的虚拟机。</p>
+</div></div>
+</p></li><li><span>在需要备份的虚拟机、主机或集群所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001805083874__zh-cn_topic_0000001792503838_p870125314544">支持选择多个资源批量进行手动备份。勾选多个资源，在页面左上角选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001805083874__zh-cn_topic_0000001792503838_uicontrol14182155715711">“<span id="ZH-CN_TOPIC_0000001805083874__zh-cn_topic_0000001792503838_text662114113158">更多</span> &gt; <span id="ZH-CN_TOPIC_0000001805083874__zh-cn_topic_0000001792503838_text1068159191519">手动备份</span>”</span>。</p>
+</div></div>
+</p></li><li><span>设置手动备份产生的副本名称。</span><p><p>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
+</p></li><li><span>选择保护策略：<span>全量备份</span>或<span>永久增量（合成全量）备份</span>。</span></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001851882641.html">步骤7：执行备份</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

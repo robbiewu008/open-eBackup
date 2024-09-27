@@ -1,0 +1,15 @@
+<lv-tabs class="aui-tab">
+    <lv-tab lvTitle="{{'common_basic_info_label' | i18n}}">
+        <ng-template lv-tab-lazy>
+            <aui-hcs-tenant-basic-info [data]="treeSelection"></aui-hcs-tenant-basic-info>
+        </ng-template>
+    </lv-tab>
+    <lv-tab lvTitle="{{'protection_storage_resource_label' | i18n}}">
+        <ng-template lv-tab-lazy>
+            <aui-hcs-store-resource-list [data]="treeSelection"></aui-hcs-store-resource-list>
+        </ng-template>
+    </lv-tab>
+</lv-tabs>
+<ng-template #headerTpl>
+    <aui-custom-modal-operate [item]='treeSelection'></aui-custom-modal-operate>
+</ng-template>

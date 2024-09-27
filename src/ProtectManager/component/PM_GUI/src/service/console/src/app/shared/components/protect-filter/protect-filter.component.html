@@ -1,0 +1,88 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup mgt-10">
+    <lv-form-item>
+        <lv-form-label>
+            {{filterLabel}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="enableFilter"></lv-switch>
+            <div *ngIf="formGroup.value.enableFilter" class="mgt-8">
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_filter_type_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-select formControlName="type" [lvOptions]='typeOptions' lvValueKey='value'>
+                        </lv-select>
+                    </lv-form-control>
+                </lv-form-item>
+                <ng-container
+                    *ngIf="formGroup.value.type === dataMap.resourceFilterType.mix.value || formGroup.value.type === dataMap.resourceFilterType.include.value">
+                    <lv-form-item>
+                        <lv-form-label>
+                            {{'protection_include_label' | i18n}}
+                            <i
+                                lv-icon="aui-icon-help"
+                                lv-tooltip="{{'protection_include_tips_label' | i18n:[filterType]}}"
+                                lvTooltipTheme="light"
+                                class="configform-constraint"
+                                lvColorState="true"
+                            ></i>
+                        </lv-form-label>
+                        <lv-form-control [lvErrorTip]="filterErrorTip">
+                            <textarea formControlName='include' rows='3' lv-input
+                                placeholder="{{'protect_filter_tips_label' | i18n:[filterType]}}"
+                                *ngIf="!_includes([dataMap.Resource_Type.tidbCluster.value, dataMap.Resource_Type.tidbDatabase.value], resType)"></textarea>
+                            <textarea formControlName='include' rows='3' lv-input
+                                placeholder="{{'protection_tidb_filter_content_label' | i18n}}"
+                                *ngIf="_includes([dataMap.Resource_Type.tidbCluster.value, dataMap.Resource_Type.tidbDatabase.value], resType)"></textarea>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+                <ng-container *ngIf="formGroup.value.type === dataMap.resourceFilterType.mix.value">
+                    <lv-form-item>
+                        <lv-form-label>
+                            {{'protection_and_exclude_label' | i18n}}
+                            <i
+                                lv-icon="aui-icon-help"
+                                lv-tooltip="{{'protection_include_tips_label' | i18n:[filterType]}}"
+                                lvTooltipTheme="light"
+                                class="configform-constraint"
+                                lvColorState="true"
+                            ></i>
+                        </lv-form-label>
+                        <lv-form-control [lvErrorTip]="filterErrorTip">
+                            <textarea formControlName='andExclude' rows='3' lv-input
+                                placeholder="{{'protect_filter_tips_label' | i18n:[filterType]}}"
+                                *ngIf="!_includes([dataMap.Resource_Type.tidbCluster.value, dataMap.Resource_Type.tidbDatabase.value], resType)"></textarea>
+                            <textarea formControlName='andExclude' rows='3' lv-input
+                                placeholder="{{'protection_tidb_filter_content_label' | i18n}}"
+                                *ngIf="_includes([dataMap.Resource_Type.tidbCluster.value, dataMap.Resource_Type.tidbDatabase.value], resType)"></textarea>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+                <ng-container *ngIf="formGroup.value.type === dataMap.resourceFilterType.exclude.value">
+                    <lv-form-item>
+                        <lv-form-label>
+                            {{'common_exclude_label' | i18n}}
+                            <i
+                                lv-icon="aui-icon-help"
+                                lv-tooltip="{{'protection_include_tips_label' | i18n:[filterType]}}"
+                                lvTooltipTheme="light"
+                                class="configform-constraint"
+                                lvColorState="true"
+                            ></i>
+                        </lv-form-label>
+                        <lv-form-control [lvErrorTip]="filterErrorTip">
+                            <textarea formControlName='exclude' rows='3' lv-input
+                                placeholder="{{'protect_filter_tips_label' | i18n:[filterType]}}"
+                                *ngIf="!_includes([dataMap.Resource_Type.tidbCluster.value, dataMap.Resource_Type.tidbDatabase.value], resType)"></textarea>
+                            <textarea formControlName='exclude' rows='3' lv-input
+                                placeholder="{{'protection_tidb_filter_content_label' | i18n}}"
+                                *ngIf="_includes([dataMap.Resource_Type.tidbCluster.value, dataMap.Resource_Type.tidbDatabase.value], resType)"></textarea>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+            </div>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

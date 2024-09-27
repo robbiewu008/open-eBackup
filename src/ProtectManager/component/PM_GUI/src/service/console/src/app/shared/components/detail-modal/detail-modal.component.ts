@@ -1,0 +1,61 @@
+import {
+  Component,
+  ComponentFactoryResolver,
+  Input,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
+import { ModalRef } from '@iux/live';
+import { JobResourceComponent } from 'app/business/insight/job/job-resource/job-resource.component';
+import { isFunction } from 'lodash';
+
+@Component({
+  selector: 'aui-resource-detail-modal',
+  template: `
+    <ng-container #dmroom></ng-container>
+  `
+})
+export class DetailModalOneComponent implements OnInit {
+  @ViewChild('dmroom', { read: ViewContainerRef, static: false })
+  dmRoom: ViewContainerRef;
+  @Input() config;
+  @Input() data;
+  constructor(private cfr: ComponentFactoryResolver) {}
+
+  ngOnInit() {
+    const compFacotry = this.cfr.resolveComponentFactory(this.config.component);
+    setTimeout(() => {
+      const component: any = this.dmRoom.createComponent(compFacotry).instance;
+      if (component instanceof JobResourceComponent) {
+        component.detailSubType = this.data.subType || this.data.sub_type;
+      }
+      if (isFunction(component.initDetailData)) {
+        component.initDetailData(this.data, this.config);
+      }
+    });
+  }
+}
+
+@Component({
+  selector: 'aui-detail-modal',
+  templateUrl: './detail-modal.component.html'
+})
+export class DetailModalComponent implements OnInit {
+  @Input() resourceConfigs;
+  @Input() detailData;
+  @Input() activeId;
+
+  @ViewChild('headerTpl', { static: true }) headerTpl: TemplateRef<any>;
+
+  constructor(private modal: ModalRef) {}
+
+  ngOnInit() {
+    this.getModalHeader();
+  }
+
+  getModalHeader() {
+    this.modal.setProperty({ lvHeader: this.headerTpl });
+  }
+}

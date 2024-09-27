@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤4：创建Hive备份集">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839160609.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839240537">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤4：创建Hive备份集</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001839240537"></a><a name="ZH-CN_TOPIC_0000001839240537"></a>
+  <h1 class="topictitle1">步骤4：创建Hive备份集</h1>
+  <div>
+   <p>创建Hive集群中需要受保护的备份集，即Hive数据库表集合。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839240537__zh-cn_topic_0000001792361418_zh-cn_topic_0000001839142377_uicontrol186516504391">“<span id="ZH-CN_TOPIC_0000001839240537__zh-cn_topic_0000001792361418_zh-cn_topic_0000001839142377_text8651165012398">保护</span> &gt; 大数据 &gt; Hive”</span>。</span></li>
+     <li><span>选择<span class="uicontrol">“<span>备份集</span>”</span>页签后，单击<span class="uicontrol">“<span>创建</span>”</span>，创建备份集。</span><p></p>
+      <div class="p">
+       相关参数说明如<a href="#ZH-CN_TOPIC_0000001839240537__table43343410374">表1</a>。 
+       <div class="tablenoborder">
+        <a name="ZH-CN_TOPIC_0000001839240537__table43343410374"></a><a name="table43343410374"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001839240537__table43343410374" frame="border" border="1" rules="all">
+         <caption>
+          <b>表1 </b>备份集参数信息
+         </caption>
+         <colgroup>
+          <col style="width:8.57%">
+          <col style="width:14.21%">
+          <col style="width:77.22%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.2.2.1.2.2.4.1.1"><p>参数</p></th>
+           <th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.2.2.1.2.2.4.1.2"><p>说明</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.2.2.1.2.2.4.1.1 "><p><span>名称</span></p></td>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.1.2.2.4.1.2 "><p>自定义备份集名称。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.2.2.1.2.2.4.1.1 "><p><span>集群</span></p></td>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.1.2.2.4.1.2 "><p>选择需要保护的Hive集群。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.2.2.1.2.2.4.1.1 "><p><span>数据库</span></p></td>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.1.2.2.4.1.2 "><p>选择需要保护的Hive数据库，并选择是否开启<span class="uicontrol">“<span>自动保护表</span>”</span>功能。</p>
+            <ul>
+             <li>当开启<span class="uicontrol">“<span>自动保护表</span>”</span>功能，系统将保护该数据库中的所有表，包括后续新增的表。</li>
+             <li>当关闭<span class="uicontrol">“<span>自动保护表</span>”</span>功能，需要用户手动选择要保护的表。
+              <div class="note">
+               <span class="notetitle"> 说明： </span>
+               <div class="notebody">
+                <p>如果数据库中的表已经被保护，则无法开启<span class="uicontrol">“<span>自动保护表</span>”</span>功能。</p>
+               </div>
+              </div></li>
+            </ul></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.2.2.1.2.2.4.1.1 "><p><span>元数据存储路径</span></p></td>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.1.2.2.4.1.2 "><p>选择元数据存放路径。</p> <p>该路径用于临时存放表的元数据信息，备份完成后会自动删除存放的元数据。</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“确定”</span>。</span></li>
+    </ol>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001839160609.html">备份Hive备份集</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

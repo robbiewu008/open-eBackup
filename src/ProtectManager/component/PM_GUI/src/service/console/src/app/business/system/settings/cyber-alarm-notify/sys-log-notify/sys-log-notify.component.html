@@ -1,0 +1,140 @@
+<div>
+  <div class="aui-header-2 mgb-20">
+    <lv-group lvGutter="10px">
+      <h2>{{'common_syslog_notification_label' | i18n}}</h2>
+      <lv-switch [ngModel]="sysLogNotifyStatus" [lvControl]="true" (click)="sysLogNotifyChange()">
+      </lv-switch>
+    </lv-group>
+    <ng-container *ngIf="sysLogNotifyStatus">
+      <lv-group lvGutter='8px' *ngIf="!isModify;else modifyTpl">
+        <span class="aui-link" (click)='modify()'>
+          {{'common_modify_label' | i18n}}
+        </span>
+      </lv-group>
+      <ng-template #modifyTpl>
+        <lv-group lvGutter="8px">
+          <span (click)="save()"
+             [ngClass]="{'aui-link': formGroup.valid, 'aui-link-disabled': !this.formGroup.valid}"
+          >
+            {{'common_save_label' | i18n}}
+          </span>
+          <span class="aui-link" (click)="cancel()">
+            {{'common_cancel_label' | i18n}}
+          </span>
+        </lv-group>
+      </ng-template>
+    </ng-container>
+  </div>
+  <div class="dashed-line aui-gutter-column-md"></div>
+  <div [hidden]="!sysLogNotifyStatus">
+    <lv-form [formGroup]="formGroup">
+      <lv-form-item>
+        <lv-form-label [lvRequired]=isModify>
+          {{'insight_alarm_severity_label' |i18n}}
+        </lv-form-label>
+        <lv-form-control>
+          <ng-container *ngIf="isModify else showSeverityTpl">
+            {{'common_send_label'|i18n}}
+            <lv-select
+              class="min-select"
+              [lvOptions]="severityTypes"
+              formControlName="severity"
+              lvValueKey="value"
+            ></lv-select>
+            {{'system_syslog_alarm_level_label'|i18n}}
+          </ng-container>
+          <ng-template #showSeverityTpl>
+            {{alarmLevelDisplayLabel}}
+          </ng-template>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label [lvRequired]=isModify>
+          {{'common_notification_type_label' |i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="alarmErrorTip">
+          <lv-checkbox-group *ngIf="isModify else showAlarmTypeTpl" formControlName="alarmType">
+            <lv-group lvGutter="48px">
+              <lv-checkbox [lvValue]="sendAlarmType.alarm.value">{{'operation_target_alarm_label'|i18n}}</lv-checkbox>
+              <lv-checkbox [lvValue]="sendAlarmType.recovery.value">{{'common_alarm_recovery_label'|i18n}}</lv-checkbox>
+              <lv-checkbox [lvValue]="sendAlarmType.event.value">{{'common_events_label'|i18n}}</lv-checkbox>
+            </lv-group>
+          </lv-checkbox-group>
+          <ng-template #showAlarmTypeTpl>
+            <span>
+              {{ alarmTypeDisplayLabel }}
+            </span>
+          </ng-template>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label [lvRequired]="isModify">
+          {{'system_language_type_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control >
+          <lv-select
+            *ngIf="isModify"
+            [lvOptions]='languageMethods' lvValueKey='value'
+            formControlName="language">
+          </lv-select>
+          <span *ngIf="!isModify">
+            {{ formGroup.get('language').value|textMap:'SysLogLanguage'}}
+          </span>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label [lvRequired]=isModify>
+          {{'system_syslog_enable_device_name_label' |i18n}}
+        </lv-form-label>
+        <lv-form-control [ngClass]="{'device-name-control':isModify}">
+          <ng-container *ngIf="isModify else showDeviceNameTpl">
+            <lv-checkbox [lvValue]="'true'" formControlName="isSendDeviceName">{{'common_enable_label'|i18n}}</lv-checkbox>
+            <lv-form-item *ngIf="formGroup.get('isSendDeviceName').value">
+              <lv-form-label lvRequired>
+                {{'protection_equipment_name_label'|i18n}}
+              </lv-form-label>
+              <lv-form-control [lvErrorTip]="deviceNameErrorTip">
+                <input lv-input placeholder="{{'system_syslog_device_name_tips_label'|i18n}}" formControlName="deviceName">
+              </lv-form-control>
+            </lv-form-item>
+          </ng-container>
+          <ng-template #showDeviceNameTpl>
+            <span>
+              {{sendDeviceNameDisplayLabel}}
+            </span>
+          </ng-template>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>
+          {{'system_syslog_receive_server_address_label' |i18n}}
+        </lv-form-label>
+        <lv-form-control>
+        <span *ngIf="!isModify">
+          {{'common_total_label' |i18n}} {{tableData.total}}
+        </span>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-group lvDirection="vertical" lvGutter="8px" style="color: #9EA4B3;margin: 10px 0;">
+        <span>{{'system_syslog_receive_server_address_tips_label' |i18n}}</span>
+      </lv-group>
+    </lv-form>
+    <div class="mgt-16">
+      <div class="aui-gutter-column-lg">
+        <div class="aui-operation">
+          <lv-group lvGutter="8px">
+            <button lv-button lvType="primary" [disabled]="dataTable?.data?.total>=4" (click)="addServerNode()"> {{'common_add_label'|i18n}} </button>
+            <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData">
+            </lv-pro-button-group>
+          </lv-group>
+          <button class="aui-button-icon" lv-button lvSize="auto" (click)="getSyslogIp()">
+            <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+          </button>
+        </div>
+      </div>
+      <div class="list-container">
+        <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+      </div>
+    </div>
+  </div>
+</div>

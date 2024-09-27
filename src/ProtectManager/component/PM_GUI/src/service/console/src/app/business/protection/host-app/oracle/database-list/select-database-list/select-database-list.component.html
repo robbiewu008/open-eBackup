@@ -1,0 +1,148 @@
+<ng-container *ngIf="resourceType === protectResourceCategory.oracles; else singleSelectedTpl">
+    <div class="aui-gutter-column-lg">
+        <lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
+            <lv-collapse-panel [lvTitle]="collapsePanelTitleTpl" [lvExpanded]="false">
+                <lv-tabs [(lvActiveIndex)]="activeIndex" [lvBeforeChange]="beforeChange" class="host-register-tabs">
+                    <lv-tab [lvTitle]="tabTotalTitleTpl" [lvId]="0">
+                        <ng-template lv-tab-lazy>
+                            <ng-container
+                                *ngTemplateOutlet="selectedTableTpl;context: { $implicit: totalTableData, async: true }">
+                            </ng-container>
+                        </ng-template>
+                    </lv-tab>
+                    <lv-tab [lvTitle]="tabSelectedTitleTpl" [lvId]="1">
+                        <ng-template lv-tab-lazy>
+                            <ng-container
+                                *ngTemplateOutlet="selectedTableTpl;context: { $implicit: selectionData, async: false }">
+                            </ng-container>
+                        </ng-template>
+                    </lv-tab>
+                </lv-tabs>
+            </lv-collapse-panel>
+        </lv-collapse>
+    </div>
+</ng-container>
+
+<ng-template #collapsePanelTitleTpl>
+    <ng-container *ngTemplateOutlet="selectedTpl"></ng-container>
+</ng-template>
+
+<ng-template #singleSelectedTpl>
+    <div class="aui-gutter-column-lg">
+        <ng-container *ngTemplateOutlet="selectedTpl"></ng-container>
+    </div>
+</ng-template>
+
+<ng-template #selectedTpl>
+    <lv-form>
+        <lv-form-item>
+            <lv-form-label>
+                <span class="aui-h3">
+                    {{ 'protection_selected_database_label' | i18n }}
+                </span>
+            </lv-form-label>
+            <lv-form-control>
+                <ng-container *ngIf="resourceType === protectResourceCategory.oracles">
+                    {{selectionData.length}}
+                </ng-container>
+                <ng-container *ngIf="resourceType !== protectResourceCategory.oracles">
+                    {{resourceData.name}}
+                </ng-container>
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+</ng-template>
+
+
+<ng-template #tabTotalTitleTpl>
+    <div class="host-register-tabnav">
+        <span>{{ 'common_total_label'|i18n }}</span>
+        <span class="host-register-tabnav-num">{{ total }}</span>
+    </div>
+</ng-template>
+
+<ng-template #tabSelectedTitleTpl>
+    <div class="host-register-tabnav">
+        <span>{{ 'common_selected_label'|i18n }}</span>
+        <span class="host-register-tabnav-num">{{ selectionData.length }}</span>
+    </div>
+</ng-template>
+
+<ng-template #selectedTableTpl let-tabledata let-async="async">
+    <lv-datatable #lvTable [lvAsync]="async" [lvData]="tabledata" lvSelectionMode="multiple"
+        [(lvSelection)]="selectionData" [lvPaginator]="page" lvSize="small"
+        (lvSelectionChange)='selectionChange($event)' lvCompareWith="uuid">
+        <thead>
+            <tr>
+                <th lvShowCheckbox width="64px" [lvRowsData]="lvTable.renderData | selectionPipe">
+                </th>
+                <th *ngFor="let col of columns" [lvShowFilter]="col.filter && async"
+                    (lvFilterChange)="filterChange($event)" [(lvFilters)]="col.filterMap" lvCellKey="{{ col.key }}"
+                    lvShowCustom lvFilterCheckAll>
+                    {{ col.label}}
+                    <div lvCustom *ngIf="col.key === 'name' && async">
+                        <i lv-icon="lv-icon-search" [lvColorState]="true" [ngClass]="{ active: !!name }" lv-popover
+                            [lvPopoverContent]="nameFilterTpl" lvPopoverTheme="light" lvPopoverPosition="bottom"
+                            lvPopoverTrigger="click" #namePopover="lvPopover"></i>
+                    </div>
+                    <div lvCustom *ngIf="col.key === 'parent_name' && async">
+                        <i lv-icon="lv-icon-search" [lvColorState]="true" [ngClass]="{ active: !!parent_name }"
+                            lv-popover [lvPopoverContent]="parentNameFilterTpl" lvPopoverTheme="light"
+                            lvPopoverPosition="bottom" lvPopoverTrigger="click" #parentNamePopover="lvPopover"></i>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of lvTable.renderData">
+                <tr>
+                    <td width="64px" lvShowCheckbox [lvRowData]="item" [lvDisabled]='item.sla_id || item.link_status ===
+                    dataMap.resource_LinkStatus_Special.offline.value || !item.verify_status'
+                        lv-tooltip="{{item.sla_id || item.link_status ===
+                        dataMap.resource_LinkStatus_Special.offline.value || !item.verify_status ? ('protection_oracle_disable_protection_label' | i18n) : ''}}"></td>
+                    <td *ngFor="let col of columns">
+                        <ng-container [ngSwitch]="col.key">
+                            <ng-container *ngSwitchCase="'type'">
+                                {{ item.subType | textMap: 'oracleType' }}
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'link_status'">
+                                <aui-status [value]="item.link_status" type="resource_LinkStatus_Special"></aui-status>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'sla_name'">
+                                <span lv-overflow>
+                                    <sla-type [name]="item.sla_name"></sla-type>
+                                </span>
+                            </ng-container>
+                            <ng-container *ngSwitchDefault>
+                                <span lv-overflow>
+                                    {{ item[col.key] }}
+                                </span>
+                            </ng-container>
+                        </ng-container>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+
+    <!-- totalTable分页 -->
+    <ng-container *ngIf="async && total">
+        <lv-paginator #page lvMode="simple" [lvPageSize]="pageSize" [lvTotal]="total" [lvPageSizeOptions]="sizeOptions"
+            lvShowPageSizeOptions="false" [lvPageIndex]="pageIndex" (lvPageChange)="pageChange($event)">
+        </lv-paginator>
+    </ng-container>
+
+    <!-- selectedTable分页 -->
+    <ng-container *ngIf="!async">
+        <lv-paginator #page [hidden]="!tabledata?.length" lvMode="simple" [lvTotal]="tabledata?.length"
+            [lvPageSizeOptions]="sizeOptions" lvShowPageSizeOptions="false" [lvPageSize]="pageSize"></lv-paginator>
+    </ng-container>
+</ng-template>
+
+<ng-template #nameFilterTpl>
+    <lv-search [(ngModel)]="name" (lvSearch)="searchByName($event)" [lvFocus]="true"></lv-search>
+</ng-template>
+
+<ng-template #parentNameFilterTpl>
+    <lv-search [(ngModel)]="parent_name" (lvSearch)="searchByParentName($event)" [lvFocus]="true"></lv-search>
+</ng-template>

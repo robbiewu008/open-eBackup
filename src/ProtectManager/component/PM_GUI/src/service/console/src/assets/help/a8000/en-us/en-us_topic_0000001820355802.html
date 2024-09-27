@@ -1,0 +1,122 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Creating a Drill Plan">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001827336292.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001820355802">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Creating a Drill Plan</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001820355802"></a><a name="EN-US_TOPIC_0000001820355802"></a>
+
+<h1 class="topictitle1">Creating a Drill Plan</h1>
+<div><p>This section describes how to create a drill plan.</p>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><p>If the selected resources support live mount, the drill will be performed in live mount mode. Otherwise, the drill will be performed in common restoration mode.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="menucascade" id="EN-US_TOPIC_0000001820355802__en-us_topic_0000001839142377_menucascade129613499366"><b><span class="uicontrol" id="EN-US_TOPIC_0000001820355802__en-us_topic_0000001839142377_uicontrol13961164915367">Explore</span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000001820355802__en-us_topic_0000001839142377_uicontrol87871551113611">Restoration Drills</span></b></span>.</span></li><li><span>Click <span class="uicontrol"><b>Create Drill Plan</b></span>.</span></li><li><span>Select resources.</span><p><ol type="a"><li id="EN-US_TOPIC_0000001820355802__li1294955620408"><a name="EN-US_TOPIC_0000001820355802__li1294955620408"></a><a name="li1294955620408"></a>Click <span class="uicontrol"><b>Add</b></span>.</li><li>Set <span class="uicontrol"><b>Resource Type</b></span>.</li><li id="EN-US_TOPIC_0000001820355802__li159411634204119"><a name="EN-US_TOPIC_0000001820355802__li159411634204119"></a><a name="li159411634204119"></a>Select resources. You can select one or more resources.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>To select resources of multiple types, repeat <a href="#EN-US_TOPIC_0000001820355802__li1294955620408">3.a</a> to <a href="#EN-US_TOPIC_0000001820355802__li159411634204119">3.c</a>.</p>
+</div></div>
+</li><li>Click <span class="uicontrol"><b>Next</b></span>.</li></ol>
+</p></li><li><span>Make a drill plan.</span><p><ul><li>Make a one-off drill plan.<ol type="a"><li>Set <strong>Drill Type</strong> to <span class="uicontrol"><b>One-off</b></span>.</li><li>Set <strong>Drill Name</strong>.</li><li>Select the execution time. You can select <span class="uicontrol"><b>Execute immediately after creation</b></span> or <span class="uicontrol"><b>Execute at specified time</b></span>. If you select <span class="uicontrol"><b>Execute at specified time</b></span>, specify a time point.</li></ol>
+</li><li>Make a periodic drill plan.<ol type="a"><li>Set <strong>Drill Type</strong> to <span class="uicontrol"><b>Periodic</b></span>.</li><li>Set <strong>Drill Name</strong>.</li><li>Set <strong>Drill Period</strong>. Periodic drills can be performed by hour, day, month, or year.</li><li>Set <strong>First Run At</strong>, which is the start time when the drill plan is executed for the first time.<p>If <span><strong>First Run At</strong></span> is later than the current time, the drill starts based on <span><strong>First Run At</strong></span>. If <span><strong>First Run At</strong></span> is earlier than the current time, the drill starts when the next drill period arrives.</p>
+</li></ol>
+</li></ul>
+</p></li><li><span>Configure execution settings.</span><p><ul><li>Applications whose <strong>Drill Type</strong> is <span class="uicontrol"><b>Live Mount</b></span><ol type="a"><li>Configure <strong>Unmount or Not After Drill</strong>. You can select <span class="uicontrol"><b>Unmount</b></span> or <span class="uicontrol"><b>Not unmount</b></span>. If you select <span class="uicontrol"><b>Not unmount</b></span>, manually unmount the resource before the next drill. Otherwise, the next drill will fail.</li><li>Configure drill settings.<ol class="substepthirdol"><li>Click <span class="uicontrol"><b>Configure</b></span>. The <span class="uicontrol"><b>Live Mount</b></span> window is displayed on the right.</li><li>In the <strong>Mount Target</strong> area, set <span class="uicontrol"><b>Target Location#1</b></span>.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>To add more target locations, click <span class="uicontrol"><b>Add Target Location</b></span>.</p>
+</div></div>
+</li><li>Set <strong>Start Database</strong> to choose whether to start the database after the live mount is complete.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>For MySQL and MariaDB, the database is started by default after the live mount is complete.</p>
+</div></div>
+</li><li>Configure advanced settings. <a href="#EN-US_TOPIC_0000001820355802__table2415328148">Table 1</a> describes the parameters.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>You can set either <strong>Bandwidth (MB/s)</strong> or <strong>Standard IOPS (8 KB)</strong> or both of them. You are advised to set only <strong>Bandwidth (MB/s)</strong> for bandwidth-intensive services and only <strong>Standard IOPS (8 KB)</strong> for IOPS-intensive services. If you cannot determine the service type or the service type changes frequently, you can set both parameters and the system will control the traffic using the parameter with a smaller value.</li><li>You can query the conversion between the standard IOPS (8 KB) model and real I/O model in the conversion table on the management page.</li><li>The maximum traffic of mounted copies is limited to ensure the performance of drill jobs. In addition, the minimum traffic of mounted copies is set to ensure the minimum performance of mounted copies.</li></ul>
+</div></div>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001820355802__table2415328148"></a><a name="table2415328148"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001820355802__table2415328148" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Advanced parameters</caption><colgroup><col style="width:20.59%"><col style="width:20.59%"><col style="width:58.809999999999995%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1"><p>Parameter</p>
+<p></p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" rowspan="3" valign="top" width="20.59205920592059%" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p><span><strong>Bandwidth (MB/s)</strong></span></p>
+<p></p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="20.59205920592059%" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p><span><strong>Min</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="58.81588158815882%" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.2 "><p>Minimum bandwidth for copy live mount.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p><span><strong>Max</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p>Maximum bandwidth for copy live mount.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p><span><strong>Burst</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p>Maximum burst bandwidth for copy live mount. The value of <span><strong>Burst</strong></span> must be greater than that of <strong>Max</strong>.</p>
+<p><span><strong>Burst</strong></span> can be set only after <span><strong>Max</strong></span> is set.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" rowspan="3" valign="top" width="20.59205920592059%" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p><span><strong>Standard IOPS (8 KB)</strong></span></p>
+<p></p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="20.59205920592059%" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p><span><strong>Min</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="58.81588158815882%" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.2 "><p>Average minimum number of standard I/O requests per second for copy live mount.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p><span><strong>Max</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p>Average maximum number of standard I/O requests per second for copy live mount.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p><span><strong>Burst</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p>Maximum burst IOPS for copy live mount. The value of <span><strong>Burst</strong></span> must be greater than that of <strong>Max</strong>.</p>
+<p><span><strong>Burst</strong></span> can be set only after <span><strong>Max</strong></span> is set.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p><span><strong>Max. Burst Duration (s)</strong></span></p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.2 "><p>This parameter needs to be set only when the <span><strong>Burst</strong></span> parameter of the bandwidth or standard IOPS is set. It indicates the maximum duration of burst bandwidth or burst IOPS.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.59205920592059%" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p><span><strong>Normalized Latency (8 KB)</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="20.59205920592059%" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.1 "><p><span><strong>Max</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="58.81588158815882%" headers="mcps1.3.3.2.5.2.1.1.3.2.1.4.3.2.4.1.2 "><p>Maximum latency of the local storage system.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ol>
+</li><li>(Optional) Add verification scripts. Add a pre-drill execution script, an execution script upon drill success, and an execution script upon drill failure. The script format varies according to the operating system. For details, see <a href="en-us_topic_0000001930612734.html">Script Format Requirements of Different OSs</a>.</li><li>Click <span class="uicontrol"><b>Next</b></span>.</li></ol>
+</li><li>Applications whose <strong>Drill Type</strong> is <span class="uicontrol"><b>Restore</b></span><ol type="a"><li>Configure drill settings.<ol class="substepthirdol"><li>Click <span class="uicontrol"><b>Configure</b></span>. The system displays message "Before the restoration, ensure that the database at the target location has been shut down and the target instance has sufficient data directory space. Otherwise, the restoration will fail."<p>Click <span class="uicontrol"><b>Close</b></span>.</p>
+</li><li>The <span class="uicontrol"><b>Restore</b></span> window is displayed on the right.</li><li>Select the target instance. The type and version of the target instance must be the same as those of the original instance.</li><li>Select the target database. If the target instance contains a database that has the same name as the database to be restored, only the database with the same name is displayed. Otherwise, all target databases are displayed.</li><li>Enable or disable <span class="uicontrol"><b>Rename Database</b></span>. This function is disabled by default. If this function is enabled, you need to enter a new database name.</li><li>Enable or disable <span class="uicontrol"><b>Forcible Restoration</b></span>. This function is disabled by default. If this function is enabled, forcibly restore data when the database page is damaged.</li><li>Click <span class="uicontrol"><b>OK</b></span>.</li></ol>
+</li><li>(Optional) Add verification scripts. Add a pre-drill execution script, an execution script upon drill success, and an execution script upon drill failure. The script format varies according to the operating system. For details, see <a href="en-us_topic_0000001930612734.html">Script Format Requirements of Different OSs</a>.</li><li>Click <span class="uicontrol"><b>Next</b></span>.</li></ol>
+</li></ul>
+</p></li><li><span>On the <strong>Overview</strong> tab page, check the drill plan. If the plan is correct, click <span class="uicontrol"><b>Finish</b></span>.</span></li><li><span>After a drill plan is created, you can click its name on the drill plan list page to view its details.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001827336292.html">Restoration Drill</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

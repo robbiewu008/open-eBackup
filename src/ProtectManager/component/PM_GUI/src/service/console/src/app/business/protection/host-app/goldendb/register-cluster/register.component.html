@@ -1,0 +1,27 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <div class="aui-gutter-column-lg"></div>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      <h3>{{ 'protection_manage_node_label' | i18n }}</h3>
+    </lv-form-label>
+  </lv-form-item>
+  <div class="aui-gutter-column-lg"></div>
+  <lv-group lvDirection="vertical" lvGutter='8px'>
+    <div class="aui-operation">
+      <lv-pro-button-group [config]="optsConfig"></lv-pro-button-group>
+    </div>
+    <lv-pro-table
+      #dataTable
+      [config]="tableConfig"
+      [data]="tableData"
+    ></lv-pro-table>
+  </lv-group>
+</lv-form>

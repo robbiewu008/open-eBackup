@@ -1,0 +1,164 @@
+<lv-form [formGroup]='formGroup' [lvLabelColon]='false' class="formGroup">
+    <lv-form-item>
+        <h2>{{basicInfoLabel}}</h2>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{nameLabel}}</lv-form-label>
+        <lv-form-control [lvErrorTip]='nameErrorTip'>
+            <input formControlName="mediaSetName" lv-input class="form-control-input" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{blockSizeLabel}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'system_block_size_tip_label' | i18n}}" lvTooltipTheme="light"
+                class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]='blockRangeErrorTip'>
+            <lv-select formControlName="blockSize" [lvOptions]='blockSizeOptions' lvValueKey='value' [lvDisabled]="data"
+                class="form-control-input">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{compressionLabel}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'system_data_compression_tip_label' | i18n}}"
+                lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="compressionStatus" [lvGroupName]="'compressionGroup'" [lvDisabled]="data">
+                <lv-group [lvGutter]="'24px'">
+                    <lv-radio [lvValue]="dataMap.Archive_Compression_Status.enable.value">
+                        {{dataMap.Archive_Compression_Status.enable.label | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="dataMap.Archive_Compression_Status.disable.value">
+                        {{dataMap.Archive_Compression_Status.disable.label | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <h2 class="aui-gutter-column-sm">{{selectTapesLabel}}</h2>
+    <lv-form-item>
+        <lv-form-label>{{ 'system_servers_label' | i18n }}</lv-form-label>
+        <lv-form-control>
+            {{ node?.clusterName | nil }}
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{controllerLabel}}</lv-form-label>
+        <lv-form-control>
+            <lv-select formControlName="node" [lvOptions]='nodeItems' lvValueKey='value'
+                [lvPlaceholder]="placeholderLabel" [lvDisabled]="data" class="form-control-input">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>{{tapeLabel}}</lv-form-label>
+        <lv-form-control>
+            <span>
+                {{'system_selected_total_tape_label' | i18n: []: true}}{{totalSelectedTape}}
+            </span>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-group class="group" *ngIf="libraries.length">
+        <lv-group class="left" lvDirection='vertical'>
+            <div class="library-container">
+                <lv-menu [lvMenus]="libraries" [lvMode]="'icon'" [lvTheme]="'light'" [(lvActiveItemId)]="active"
+                    (lvItemClick)="itemClick($event)" class="library-select"></lv-menu>
+            </div>
+        </lv-group>
+        <div class="slip"></div>
+        <lv-group class="right aui-paginator-container">
+            <div class="info-container storage-pool-tape-table">
+                <lv-tabs [(lvActiveIndex)]="activeIndex" (lvActiveIndexChange)="selectIndexChange($event)"
+                    [lvSize]="'small'">
+                    <lv-tab [lvTitle]="total" [lvId]="'total'">
+                        <ng-template lv-tab-lazy>
+                            <ng-container *ngTemplateOutlet="tableTpl;">
+                            </ng-container>
+                        </ng-template>
+                    </lv-tab>
+                    <lv-tab [lvTitle]='selected' [lvId]="'selected'">
+                        <ng-template lv-tab-lazy>
+                            <ng-container *ngTemplateOutlet="tableTpl;">
+                            </ng-container>
+                        </ng-template>
+                    </lv-tab>
+                </lv-tabs>
+                <ng-template #tableTpl>
+                    <lv-pro-table #tapeTable [config]="tapeTableConfig" [data]="tapeTableData"></lv-pro-table>
+                </ng-template>
+                <ng-template #total>
+                    <div class="host-register-tabnav">
+                        <span>{{'common_total_label' | i18n}}</span>
+                        <span class="host-register-tabnav-num">{{currentTotalTape}}</span>
+                    </div>
+                </ng-template>
+                <ng-template #selected>
+                    <div class="host-register-tabnav">
+                        <span>{{'common_selected_label' | i18n}}</span>
+                        <span class="host-register-tabnav-num">{{currentSelect}}</span>
+                    </div>
+                </ng-template>
+            </div>
+        </lv-group>
+    </lv-group>
+    <div class="tape-no-data" *ngIf="!libraries.length">
+        <i lv-icon="aui-icon-no-data"></i>
+        <div class="no-data-label">{{'common_no_data_label' | i18n}}</div>
+    </div>
+    <div class="alarm-switch">
+        <span class="capacity-alarm-threshold">{{insufficientLabel}}</span>
+        <lv-switch formControlName="alarmEnable"></lv-switch>
+    </div>
+    <ng-container *ngIf="formGroup.value.alarmEnable">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_alarm_threshold_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'system_alarm_threshold_tip_label' | i18n}}"
+                    lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="rangeErrorTip">
+                <input lv-input formControlName="alarmThreshold" class="form-control-input" />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <h2 class="aui-gutter-column-sm">{{rentainLabel}}</h2>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            <span>{{'system_archive_retention_range_label' | i18n}}</span>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>
+            <lv-select formControlName="retentionType" [lvOptions]='retentionTypes' lvValueKey='value'
+                class="form-control-input"
+                [lvDisabled]="formGroup.value.retentionType === dataMap.Tape_Retention_Type.permanent.value && formGroup.value.type === tapeType.Worm">
+            </lv-select>
+            <div class="show-tips"
+                *ngIf="formGroup.value.retentionType === dataMap.Tape_Retention_Type.immediate.value">
+                <i style="display: inline-block; margin-right: 4px;" lv-icon="lv-icon-status-info" lvColorState="true"
+                    class="type-icon"></i>
+                <span>
+                    {{'system_pool_retention_tip_label' | i18n}}
+                </span>
+            </div>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.retentionType === dataMap.Tape_Retention_Type.temporary.value">
+        <lv-form-item>
+            <lv-form-label></lv-form-label>
+            <lv-form-control [lvErrorTip]='rangeErrorTip'>
+                <lv-group lvGutter='8px' class="group-control">
+                    <input formControlName="retentionDuration" lv-input />
+                    <lv-select formControlName="retentionUnit" [lvOptions]='retentionValueUnits' lvValueKey='value'
+                        class="form-control-input">
+                    </lv-select>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>
+<ng-template #capacityTpl let-item>
+    {{item.usedCapacity ? (item.usedCapacity | capacityCalculateLabel:'1.1-3':unitconst.MB: true) : '--'}}
+</ng-template>

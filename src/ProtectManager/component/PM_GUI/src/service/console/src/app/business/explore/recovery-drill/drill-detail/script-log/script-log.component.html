@@ -1,0 +1,56 @@
+<lv-form class="aui-gutter-column-xl">
+    <lv-form-item>
+        <lv-form-label>
+            {{ 'explore_drill_pre_script_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            <span>{{(item.preScript || preScript) | nil}}</span>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="isExecuteDetail; else elseTemplate">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'explore_drill_post_etra_script_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <span>{{postScript | nil}}</span>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-template #elseTemplate>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'explore_drill_post_script_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <span>{{item.postScript | nil}}</span>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'explore_drill_post_script_failed_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <span>{{item.executeScript | nil}}</span>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-template>
+</lv-form>
+<ng-container *ngIf="isExecuteDetail">
+    <h3 class="aui-gutter-column-md">
+        {{'explore_drill_script_log_title_label' | i18n}}
+    </h3>
+    <lv-radio-group [(ngModel)]="selectedType" [lvGroupName]="'scriptType'">
+        <lv-group>
+            <lv-radio [lvViewType]="'button'" [lvValue]="'pre'">
+                {{"explore_drill_pre_label" | i18n}}
+            </lv-radio>
+            <lv-radio [lvViewType]="'button'" [lvValue]="'post'">
+                {{"explore_drill_post_label" | i18n}}
+            </lv-radio>
+        </lv-group>
+    </lv-radio-group>
+    <div class="log">
+        <span [innerHTML]="logsMap[selectedType]"></span>
+    </div>
+</ng-container>

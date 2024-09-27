@@ -1,0 +1,57 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Performing Periodic Backup">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839143113.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001839223057">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Performing Periodic Backup</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001839223057"></a><a name="EN-US_TOPIC_0000001839223057"></a>
+
+<h1 class="topictitle1">Performing Periodic Backup</h1>
+<div><p>The project or cloud server to be protected needs to be associated with a specified SLA. The system periodically performs backup based on the SLA.</p>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><ul><li>A cloud server can be backed up only when it is in the running, stopped, or suspended state.</li><li>A maximum of 24 disks can be mounted to an agent host. Therefore, if 24 disks have been mounted to an agent host during backup and restoration, the system performs the backup job when there are idle slots.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Periodically Backing Up a Project</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839223057__en-us_topic_0000001839143069_en-us_topic_0000001839142377_uicontrol43503413412"><b><span id="EN-US_TOPIC_0000001839223057__en-us_topic_0000001839143069_en-us_topic_0000001839142377_text1135133411415"><strong>Protection</strong></span> &gt; Cloud Platforms &gt; OpenStack</b></span>.</span></li><li><span>Click the <strong>Project</strong> tab and select the project to be protected.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Protect</strong></span></b></span>.</span><p><p>The system backs up all cloud servers in the project.</p>
+</p></li><li id="EN-US_TOPIC_0000001839223057__li343674154015"><span>Select a preset or user-defined SLA.</span><p><p id="EN-US_TOPIC_0000001839223057__p33248794210">You can also click <span class="uicontrol" id="EN-US_TOPIC_0000001839223057__uicontrol744210206420"><b><span id="EN-US_TOPIC_0000001839223057__text1873812341015"><strong>Create</strong></span></b></span> to create an SLA.</p>
+</p></li><li id="EN-US_TOPIC_0000001839223057__li1316316472413"><span>Select the agent host.</span><p><p id="EN-US_TOPIC_0000001839223057__p13689185885118">If the agent host is not selected, the system performs backup by selecting one or multiple agent hosts from the agent hosts configured during resource registration.</p>
+</p></li><li><span>Set the parameters as follows:</span><p><ol type="a"><li>Set the <strong>SLA Overwrite Policy</strong>.<div class="p">The default option is <strong>Retain existing SLAs of the cloud server</strong>.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>If you choose <span class="uicontrol"><b><span><strong>Retain existing SLAs of the cloud server</strong></span></b></span> when modifying an SLA associated with the project, the cloud server SLA will be replaced when the SLA associated with the cloud server is the same as that associated with the project.</p>
+</div></div>
+</div>
+</li><li>You can select one or more of the following options for <strong>SLA Application Policy</strong>:<ul><li>Apply the project/resource set SLA to all cloud servers that are not associated with any SLA.</li><li>Apply the project/resource set SLA to the newly created cloud server.</li></ul>
+</li><li>Specify the filtering mode for the cloud servers to be filtered in the protection plan. You can select <span class="uicontrol"><b><span><strong>Including and Excluding</strong></span></b></span>, <span class="uicontrol"><b><span><strong>Include only</strong></span></b></span>, or <span class="uicontrol"><b><span><strong>Excluding</strong></span></b></span> to filter protected cloud servers, correspondingly.<p>You can use cloud server names or keywords in those names to exclude or include some cloud servers. Use commas (,) to separate multiple cloud servers.</p>
+<p>Exact match and fuzzy match of cloud server names are supported. Fuzzy match rules include prefix match (for example, abc*), suffix match (for example, *abc), and middle match (for example, *abc*).</p>
+</li></ol>
+</p></li><li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001839223057__en-us_topic_0000001607841256_uicontrol196538515235"><b>OK</b></span>. </span><p><p id="EN-US_TOPIC_0000001839223057__en-us_topic_0000001607841256_p25041111535">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p>
+</p></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Periodically Backing Up Cloud Servers</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839223057__en-us_topic_0000001839143069_en-us_topic_0000001839142377_uicontrol43503413412_1"><b><span id="EN-US_TOPIC_0000001839223057__en-us_topic_0000001839143069_en-us_topic_0000001839142377_text1135133411415_1"><strong>Protection</strong></span> &gt; Cloud Platforms &gt; OpenStack</b></span>.</span></li><li><span>Click the <strong>Cloud Server</strong> tab and select the cloud server to be protected.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Protect</strong></span></b></span>.</span></li><li><span>Determine whether to enable <strong>Automatic Disk Protection</strong>.</span><p><p><strong>Automatic Disk Protection</strong> is enabled by default to back up all disks of a cloud server. You can disable <strong>Automatic Disk Protection</strong> and click <strong><span><strong>Please select</strong></span></strong> to manually select desired cloud disks for backup.</p>
+<p>Automatic disk protection is enabled by default. After this function is enabled, all disks of the cloud server, including newly detected disks, are protected. After automatic disk protection is disabled, you need to manually select disks for protection.</p>
+</p></li><li><span>Select a preset or user-defined SLA.</span><p><p id="EN-US_TOPIC_0000001839223057__en-us_topic_0000001839223057_p33248794210">You can also click <span class="uicontrol" id="EN-US_TOPIC_0000001839223057__en-us_topic_0000001839223057_uicontrol744210206420"><b><span id="EN-US_TOPIC_0000001839223057__en-us_topic_0000001839223057_text1873812341015"><strong>Create</strong></span></b></span> to create an SLA.</p>
+</p></li><li><span>Select the agent host.</span><p><p id="EN-US_TOPIC_0000001839223057__en-us_topic_0000001839223057_p13689185885118">If the agent host is not selected, the system performs backup by selecting one or multiple agent hosts from the agent hosts configured during resource registration.</p>
+</p></li><li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001839223057__en-us_topic_0000001607841256_uicontrol196538515235_1"><b>OK</b></span>. </span><p><p id="EN-US_TOPIC_0000001839223057__en-us_topic_0000001607841256_p25041111535_1">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001839143113.html">Step 12: Performing Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

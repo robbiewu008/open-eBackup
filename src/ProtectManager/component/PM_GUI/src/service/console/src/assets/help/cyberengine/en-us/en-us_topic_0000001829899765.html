@@ -1,0 +1,97 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Adding Storage Devices">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001783221934.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="00-OceanCyber 300 1.2.0 Online Help">
+<meta name="DC.Publisher" content="20240629">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001829899765">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Adding Storage Devices</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001829899765"></a><a name="EN-US_TOPIC_0000001829899765"></a>
+
+<h1 class="topictitle1">Adding Storage Devices</h1>
+<div id="body0000001482253570"><p id="EN-US_TOPIC_0000001829899765__p1278115754119">After a storage device is added, the <span id="EN-US_TOPIC_0000001829899765__text1313824101312">OceanCyber 300 Data Security Appliance</span> can secure the storage device against ransomware.</p>
+<div class="section" id="EN-US_TOPIC_0000001829899765__en-us_topic_0189660025_en-us_topic_0171822616_section57886244"><h4 class="sectiontitle">Prerequisites</h4><p class="msonormal" id="EN-US_TOPIC_0000001829899765__en-us_topic_0189660025_en-us_topic_0171822616_p25390687">For details about the models and versions of the storage devices to be added, use <a href="https://info.support.huawei.com/storage/comp/#/oceancyber" target="_blank" rel="noopener noreferrer">OceanCyber 300 Compatibility Query</a>.</p>
+<ul id="EN-US_TOPIC_0000001829899765__en-us_topic_0189660025_en-us_topic_0171822616_ul5285116"><li id="EN-US_TOPIC_0000001829899765__en-us_topic_0189660025_en-us_topic_0171822616_li47566045">The storage devices to be discovered are running properly.</li><li id="EN-US_TOPIC_0000001829899765__li226013816115">The network connection of the storage devices to be discovered is normal.</li><li id="EN-US_TOPIC_0000001829899765__li245522716117">If the detection type of the storage device to be added is <span id="EN-US_TOPIC_0000001829899765__text5934163616494"><strong>OceanCyber Detection</strong></span>, ensure that the remote device connected to the IP link of the storage device to be added is normal. This ensures that the alarm suppression instruction is successfully sent to the discovered storage device and its peer storage device (no alarm is sent when the replication port is disabled).</li><li id="EN-US_TOPIC_0000001829899765__li6614176132715">If the detection type of the added storage device is <span id="EN-US_TOPIC_0000001829899765__text025833954919"><strong>OceanCyber Detection</strong></span>, ensure that the NFSv3 service has been enabled on the storage device.</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000001829899765__section43453223498"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000001829899765__ol1438326105114"><li id="EN-US_TOPIC_0000001829899765__li1238311616516"><span>On the top menu bar, choose <span id="EN-US_TOPIC_0000001829899765__text1321125142315"><strong>Data Security</strong></span> &gt; <span id="EN-US_TOPIC_0000001829899765__text61625166246"><strong>Storage Device</strong></span>.</span></li><li id="EN-US_TOPIC_0000001829899765__li1438311605118"><span>On the <strong id="EN-US_TOPIC_0000001829899765__b1455873864918">Storage Device</strong> page, click <span id="EN-US_TOPIC_0000001829899765__text71384333243"><strong>Add Device</strong></span></span></li><li id="EN-US_TOPIC_0000001829899765__li511663815219"><span>Set <strong id="EN-US_TOPIC_0000001829899765__b19788115784913">Detection Type</strong> and <strong id="EN-US_TOPIC_0000001829899765__b1527111765017">Device Type</strong>.</span><p><div class="p" id="EN-US_TOPIC_0000001829899765__p58021685174">The detection type can be <span id="EN-US_TOPIC_0000001829899765__text62909179257"><strong>OceanCyber Detection</strong></span> or <span id="EN-US_TOPIC_0000001829899765__text1293153592516"><strong>In Device Detection</strong></span>.<ul id="EN-US_TOPIC_0000001829899765__ul1735564471611"><li id="EN-US_TOPIC_0000001829899765__li13951884181"><strong id="EN-US_TOPIC_0000001829899765__b74931335712">OceanCyber Detection</strong>: The OceanCyber Appliance provides detection capabilities for third-party devices, including storage devices of OceanProtect 1.3.0 and later and OceanStor Pacific 8.1.5 and later, as well as NAS file system storage devices of OceanStor Dorado 6.1.6 and later and OceanStor 6.1.6 and later versions.</li><li id="EN-US_TOPIC_0000001829899765__li209527810185"><strong id="EN-US_TOPIC_0000001829899765__b194663515517">In Device Detection</strong>: The device automatically performs detection and the OceanCyber Appliance monitors the detection. Detection is supported for storage devices of OceanProtect 1.3.0 and later, and NAS file system storage devices of OceanStor Dorado 6.1.5 and later and OceanStor 6.1.5 and later versions.</li></ul>
+</div>
+</p></li><li id="EN-US_TOPIC_0000001829899765__li133831169513"><span>Set storage device parameters. <a href="#EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_as_add_device_tab01">Table 1</a> describes the parameters.</span><p>
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_as_add_device_tab01"></a><a name="en-us_topic_0204825049_en-us_topic_0171822616_as_add_device_tab01"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_as_add_device_tab01" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for adding storage devices</caption><colgroup><col style="width:12.75%"><col style="width:35.36%"><col style="width:51.9%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_row7745481"><th align="left" class="cellrowborder" valign="top" width="12.748725127487251%" id="mcps1.3.3.2.4.2.1.2.4.1.1"><p id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_p23404201">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="35.35646435356465%" id="mcps1.3.3.2.4.2.1.2.4.1.2"><p id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_p16692138">Description</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="51.894810518948105%" id="mcps1.3.3.2.4.2.1.2.4.1.3"><p id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_p9885939">Value</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_row9303578"><td class="cellrowborder" valign="top" width="12.748725127487251%" headers="mcps1.3.3.2.4.2.1.2.4.1.1 "><p id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_p15392350"><span id="EN-US_TOPIC_0000001829899765__text2442205614255"><strong>Device Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="35.35646435356465%" headers="mcps1.3.3.2.4.2.1.2.4.1.2 "><p id="EN-US_TOPIC_0000001829899765__p193541171577">Name of the storage device.</p>
+</td>
+<td class="cellrowborder" valign="top" width="51.894810518948105%" headers="mcps1.3.3.2.4.2.1.2.4.1.3 "><p id="EN-US_TOPIC_0000001829899765__p1968619146020">[Example]</p>
+<p id="EN-US_TOPIC_0000001829899765__p146865141405">Dorado1</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_row22417148"><td class="cellrowborder" valign="top" width="12.748725127487251%" headers="mcps1.3.3.2.4.2.1.2.4.1.1 "><p id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_p3849691"><span id="EN-US_TOPIC_0000001829899765__text47226166266"><strong>IP Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="35.35646435356465%" headers="mcps1.3.3.2.4.2.1.2.4.1.2 "><p id="EN-US_TOPIC_0000001829899765__p1182012913716">Management IPv4 or IPv6 address of the storage device.</p>
+</td>
+<td class="cellrowborder" valign="top" width="51.894810518948105%" headers="mcps1.3.3.2.4.2.1.2.4.1.3 "><p id="EN-US_TOPIC_0000001829899765__p4820119772">[Example]</p>
+<p id="EN-US_TOPIC_0000001829899765__p88201297712">192.168.10.11</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_row29082213"><td class="cellrowborder" valign="top" width="12.748725127487251%" headers="mcps1.3.3.2.4.2.1.2.4.1.1 "><p id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_p6849025"><span id="EN-US_TOPIC_0000001829899765__text77551134152614"><strong>Port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="35.35646435356465%" headers="mcps1.3.3.2.4.2.1.2.4.1.2 "><p id="EN-US_TOPIC_0000001829899765__p1723282418517">Communication port of the storage device.</p>
+</td>
+<td class="cellrowborder" valign="top" width="51.894810518948105%" headers="mcps1.3.3.2.4.2.1.2.4.1.3 "><ul id="EN-US_TOPIC_0000001829899765__ul15278191313613"><li id="EN-US_TOPIC_0000001829899765__li20278181315615">When <span id="EN-US_TOPIC_0000001829899765__text2035317525118"><strong>OceanCyber Detection</strong></span> is selected, the default value is <strong id="EN-US_TOPIC_0000001829899765__b16672839131012">8088</strong>.</li><li id="EN-US_TOPIC_0000001829899765__li730119486614">When <span id="EN-US_TOPIC_0000001829899765__text33232518512"><strong>In Device Detection</strong></span> is selected, the default value is <strong id="EN-US_TOPIC_0000001829899765__b1236175151010">25081</strong>.</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001829899765__row20940748440"><td class="cellrowborder" valign="top" width="12.748725127487251%" headers="mcps1.3.3.2.4.2.1.2.4.1.1 "><p id="EN-US_TOPIC_0000001829899765__p179403481642"><span id="EN-US_TOPIC_0000001829899765__text126676012285"><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="35.35646435356465%" headers="mcps1.3.3.2.4.2.1.2.4.1.2 "><p id="EN-US_TOPIC_0000001829899765__p931612425516">Username for logging in to the storage device.</p>
+</td>
+<td class="cellrowborder" valign="top" width="51.894810518948105%" headers="mcps1.3.3.2.4.2.1.2.4.1.3 "><p id="EN-US_TOPIC_0000001829899765__p0316194211510">Obtain the value from the storage device administrator.</p>
+<div class="note" id="EN-US_TOPIC_0000001829899765__note1169175313191"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000001829899765__p19258191752116">Log in to the system as a system administrator and ensure that the RESTful login mode is available for the user and the password has been initialized. Otherwise, the generated snapshot data may be displayed abnormally.</p>
+</div></div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001829899765__row1968325114419"><td class="cellrowborder" valign="top" width="12.748725127487251%" headers="mcps1.3.3.2.4.2.1.2.4.1.1 "><p id="EN-US_TOPIC_0000001829899765__p1668310511242"><span id="EN-US_TOPIC_0000001829899765__text1453091672818"><strong>Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="35.35646435356465%" headers="mcps1.3.3.2.4.2.1.2.4.1.2 "><p id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_p17900178">Password for logging in to the storage system.</p>
+</td>
+<td class="cellrowborder" valign="top" width="51.894810518948105%" headers="mcps1.3.3.2.4.2.1.2.4.1.3 "><p id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_p40628352">Obtain the value from the storage device administrator.</p>
+<div class="note" id="EN-US_TOPIC_0000001829899765__note8957173202116"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000001829899765__p1947953720217">After the storage device administrator changes the password, notify the OceanCyber Appliance administrator in a timely manner.</p>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="EN-US_TOPIC_0000001829899765__li1254153915224"><span>Verify a certificate. Select the CA certificate file and CRL of the storage device. If <span class="uicontrol" id="EN-US_TOPIC_0000001829899765__uicontrol4582182433411"><b><span id="EN-US_TOPIC_0000001829899765__text10278114313345"><strong>Certificate Verification</strong></span></b></span> is disabled, security risks may exist in the communication between the system and the storage device. You are advised to enable <span class="uicontrol" id="EN-US_TOPIC_0000001829899765__uicontrol460418563342"><b><span id="EN-US_TOPIC_0000001829899765__text660435633414"><strong>Certificate Verification</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000001829899765__li111161654212"><span>Click <strong id="EN-US_TOPIC_0000001829899765__b1319918412311"><span id="EN-US_TOPIC_0000001829899765__text1325918589297"><strong>OK</strong></span></strong>.</span><p><div class="note" id="EN-US_TOPIC_0000001829899765__en-us_topic_0204825049_en-us_topic_0171822616_note30110853"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000001829899765__p141691315125915">The system supports up to eight storage devices.</p>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001783221934.html">Data Security</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

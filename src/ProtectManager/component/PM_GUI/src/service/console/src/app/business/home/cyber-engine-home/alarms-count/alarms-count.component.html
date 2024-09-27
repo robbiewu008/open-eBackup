@@ -1,0 +1,53 @@
+<div class="module-container link-block" (click)="gotoAlarm($event)">
+  <div class="aui-header-1">
+    <lv-group lvGutter="8px">
+      <h2 class="home-module-title">{{ 'common_alarms_label' | i18n }}</h2>
+    </lv-group>
+  </div>
+  <div class="alarms-count">
+    <div class="critical-count" (click)="gotoAlarm($event,alarmSeverity.critical.value)">
+      <div class="count-first-line">
+        <div class="critical-icon"></div>
+        <span class="alarms-number-text">{{ criticalCount }}</span>
+      </div>
+      <div class="count-sub-line" [ngStyle]="{fontSize:i18n.isEn?'14px':'16px'}">
+        {{ 'common_alarms_critical_label' | i18n }}
+      </div>
+    </div>
+    <div class="major-count" (click)="gotoAlarm($event,alarmSeverity.major.value)">
+      <div class="count-first-line">
+        <div class="major-icon"></div>
+        <span class="alarms-number-text">{{ majorCount }}</span>
+      </div>
+      <div class="count-sub-line" [ngStyle]="{fontSize:i18n.isEn?'14px':'16px'}">{{ 'common_alarms_major_label' | i18n }}</div>
+    </div>
+    <div class="warning-count" (click)="gotoAlarm($event,alarmSeverity.warning.value)">
+      <div class="count-first-line">
+        <div class="warning-icon"></div>
+        <span class="alarms-number-text">{{ warningCount }}</span>
+      </div>
+      <div class="count-sub-line" [ngStyle]="{fontSize:i18n.isEn?'14px':'16px'}">
+        {{ 'common_alarms_warning_label' | i18n }}
+      </div>
+    </div>
+  </div>
+
+  <lv-group class="count-bottom">
+    <h3 class="home-module-sub-title">
+      {{ 'common_alarms_distributions_label' | i18n }}
+    </h3>
+    <div class="total-count" lv-overflow>
+      {{ 'common_total_label' | i18n }}：{{ totalCount }}
+    </div>
+  </lv-group>
+  <div class="alarms-lines">
+    <ng-container *ngIf="totalCount>0 else emptyLineTpl">
+      <div class="critical-line line" [ngStyle]="{ width: widthComputer('criticalCount') }"></div>
+      <div class="major-line line" [ngStyle]="{ width: 'calc(' + widthComputer('majorCount') + ' - 3px)' }"></div>
+      <div class="warning-line line" [ngStyle]="{ width: 'calc(' + widthComputer('warningCount') + ' - 3px)' }"></div>
+    </ng-container>
+    <ng-template #emptyLineTpl>
+      <div class="empty-line"></div>
+    </ng-template>
+  </div>
+</div>

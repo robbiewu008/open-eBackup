@@ -1,0 +1,459 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: anti-ransomware-infect-config-api
+    description: 防勒索访问控制api
+paths:
+  /v1/anti-ransomware/infected-copy/config:
+    post:
+      tags:
+        - anti-ransomware-infect-config-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 8084
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: anti-ransomware-infected-copy-config-add
+      summary: 新增禁止操作配置
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: configAddReq
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ConfigAddReq'
+      responses:
+        '200':
+          description: void
+    put:
+      tags:
+        - anti-ransomware-infect-config-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 8084
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: anti-ransomware-infected-copy-config-update
+      summary: 更新禁止操作配置
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: configUpdateReq
+          in: body
+          required: true
+          description: 配置更新请求参数
+          schema:
+            $ref: '#/definitions/ConfigUpdateReq'
+      responses:
+        '200':
+          description: void
+    get:
+      tags:
+        - anti-ransomware-infect-config-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 8084
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: anti-ransomware-infected-copy-config-get
+      summary: 查询config配置项
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: query
+          required: false
+          description: 配置id
+          type: integer
+          format: int32
+        - name: operations
+          in: query
+          required: false
+          description: 副本操作
+          type: array
+          items:
+            type: string
+        - name: resourceName
+          in: query
+          required: false
+          description: 资源名称
+          type: string
+        - name: resourceLocation
+          in: query
+          required: false
+          description: 资源地址
+          type: string
+        - name: resourceIds
+          in: query
+          required: false
+          description: 资源id集合
+          type: array
+          items:
+            type: string
+        - name: resourceSubTypes
+          in: query
+          required: false
+          description: 资源子类型
+          type: array
+          items:
+            type: string
+        - name: pageNo
+          in: query
+          required: true
+          description: 页码
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          description: 页大小
+          type: integer
+          format: int32
+        - name: desc
+          in: query
+          required: false
+          description: 降序
+          type: array
+          items:
+            type: string
+        - name: asc
+          in: query
+          required: false
+          description: 升序
+          type: array
+          items:
+            type: string
+        - name: copyTypes
+          in: query
+          required: false
+          description: 副本类型
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: void
+          schema:
+            $ref: '#/definitions/PageListResponse'
+    delete:
+      tags:
+        - anti-ransomware-infect-config-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 8084
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: anti-ransomware-infected-copy-config-delete
+      summary: 删除
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: configDeleteReq
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ConfigDeleteReq'
+      responses:
+        '200':
+          description: void
+  /v1/internal/anti-ransomware/infected-copy/detected-info:
+    get:
+      tags:
+        - anti-ransomware-infect-config-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 8084
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 查询副本检测信息
+      operationId: anti-ransomware-infected-copy-detected-info
+      parameters:
+        - name: queryCopyDetectInfoReq
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/QueryCopyDetectInfoReq'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/QueryCopyDetectInfoResp'
+definitions:
+  ConfigAddReq:
+    description: |-
+      {
+        "operations": [
+          "NEW_LOCATION_RESTORE",
+          "OLD_LOCATION_RESTORE"
+        ],
+        "selectedResources": [
+          {
+            "resourceId": "res-001",
+            "resourceName": "Server 1",
+            "resourceLocation": "/path/to/server/1",
+            "resourceSubType": "SERVER"
+          },
+          {
+            "resourceId": "res-002",
+            "resourceName": "Database 1",
+            "resourceLocation": "/path/to/database/1",
+            "resourceSubType": "DATABASE"
+          }
+        ]
+      }
+    properties:
+      operations:
+        type: array
+        items:
+          type: string
+        example:
+          - NEW_LOCATION_RESTORE
+          - OLD_LOCATION_RESTORE
+        description: 操作列表
+      selectedResources:
+        items:
+          properties:
+            resourceId:
+              type: string
+              example: res-001
+            resourceName:
+              type: string
+              example: Server 1
+            resourceLocation:
+              type: string
+              example: /path/to/server/1
+            resourceSubType:
+              type: string
+              example: SERVER
+            copyType:
+              type: string
+              description: 副本类型
+        type: array
+        description: 选中的资源
+    type: object
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512
+  PageListResponse:
+    type: array
+    items:
+      type: string
+    description: |-
+      {
+        "totalCount": 2,
+        "startIndex": 0,
+        "pageSize": 10,
+        "totalPages": 1,
+        "records": [
+          {
+            "id": "config-001",
+            "infectedCopyOperations": "NEW_LOCATION_RESTORE,OLD_LOCATION_RESTORE",
+            "resourceId": "res-001",
+            "resourceName": "Server 1",
+            "resourceLocation": "/path/to/server/1",
+            "resourceSubType": "SERVER",
+            "copyType": "Replicated",
+            "createTime": 1691946915000,
+            "updateTime": 1691946915000
+          },
+          {
+            "id": "config-002",
+            "infectedCopyOperations": "FLR_RESTORE,ARCHIVE",
+            "resourceId": "res-002",
+            "resourceName": "Database 1",
+            "resourceLocation": "/path/to/database/1",
+            "resourceSubType": "DATABASE",
+            "copyType": "Replicated",
+            "createTime": 1691946915000,
+            "updateTime": 1691946915000
+          }
+        ]
+      }
+  ConfigUpdateReq:
+    type: object
+    properties:
+      operations:
+        type: array
+        items:
+          type: string
+        example:
+          - NEW_LOCATION_RESTORE
+          - OLD_LOCATION_RESTORE
+      ids:
+        type: array
+        items:
+          type: string
+        example:
+          - df9bec6e-4d06-483c-8f26-41e5671c1ba1
+  ConfigDeleteReq:
+    type: object
+    properties:
+      ids:
+        type: array
+        items:
+          type: string
+        example:
+          - df9bec6e-4d06-483c-8f26-41e5671c1ba1
+  ConfigQueryReq:
+    type: object
+    required:
+      - pageNo
+      - pageSize
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      operations:
+        type: array
+        items:
+          type: string
+        example:
+          - NEW_LOCATION_RESTORE
+          - OLD_LOCATION_RESTORE
+      resourceName:
+        type: string
+        example: Server 1
+      resourceLocation:
+        type: string
+        example: /path/to/server/1
+      resourceIds:
+        type: array
+        items:
+          type: string
+        example:
+          - res-001
+          - res-002
+      resourceSubTypes:
+        type: array
+        items:
+          type: string
+        example:
+          - SERVER
+          - DATABASE
+      pageNo:
+        type: integer
+        format: int32
+        example: 0
+      pageSize:
+        type: integer
+        format: int32
+        example: 10
+      desc:
+        type: array
+        items:
+          type: string
+        example:
+          - createTime
+      asc:
+        type: array
+        items:
+          type: string
+  QueryCopyDetectInfoReq:
+    type: object
+    properties:
+      copyIds:
+        type: array
+        items:
+          type: string
+        example:
+          - copy-001
+          - copy-002
+          - copy-003
+  QueryCopyDetectInfoResp:
+    type: object
+    properties:
+      copyDetectedInfoMap:
+        properties:
+          copy-001:
+            properties:
+              isDetected:
+                type: boolean
+                example: true
+              isInfected:
+                type: boolean
+                example: false
+              infectedCopyOperations:
+                type: string
+                example: NEW_LOCATION_RESTORE,OLD_LOCATION_RESTORE
+          copy-002:
+            properties:
+              isDetected:
+                type: boolean
+                example: true
+              isInfected:
+                type: boolean
+                example: true
+              infectedCopyOperations:
+                type: string
+                example: FLR_RESTORE,ARCHIVE
+          copy-003:
+            properties:
+              isDetected:
+                type: boolean
+                example: false
+              isInfected:
+                type: boolean
+                example: false
+              infectedCopyOperations:
+                type: string
+                example: ''

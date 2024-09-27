@@ -1,0 +1,11 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { TdsqlComponent } from './tdsql.component';
+
+const routes: Routes = [{ path: '', component: TdsqlComponent }];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class TdsqlRoutingModule {}

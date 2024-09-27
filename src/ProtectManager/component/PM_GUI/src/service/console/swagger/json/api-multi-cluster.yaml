@@ -1,0 +1,961 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 多集群管理接口
+  description: 多集群信息统计接口
+host: localhost
+basePath: /
+tags:
+  - name: ${api.multi-clusters}
+paths:
+  /v1/multi-clusters/resource/summary:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 获取多集群资源统计信息
+      description: 获取多集群资源统计信息
+      operationId: getMultiClusterResources
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: resourceType
+          in: query
+          required: true
+          type: string
+          description: 资源类型(All:所有资源,Host:主机,Fileset:文件集,Database:数据库,VirtualMachines:虚拟环境,BigData:大数据,Storage:存储)
+      responses:
+        '200':
+          description: 资源统计结果模型
+          schema:
+            $ref: '#/definitions/MultiClusterResourcesVo'
+  /v1/multi-clusters/job/summary:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 获取多集群任务执行统计信息
+      description: 获取多集群任务执行统计信息
+      operationId: getMultiClusterJobs
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: jobPeriod
+          in: query
+          required: true
+          description: 任务执行时间段(all:所有任务,lastDay:过去24h,lastWeek:过去7天,lastMonth:过去1个月)
+          type: string
+      responses:
+        '200':
+          description: 任务执行统计结果模型
+          schema:
+            $ref: '#/definitions/MultiClusterJobsVo'
+  /v1/multi-clusters/alarm/summary:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 获取多集群告警统计信息
+      description: 获取多集群告警统计信息
+      operationId: getMultiClusterAlarms
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: 告警统计结果模型
+          schema:
+            $ref: '#/definitions/MultiClusterAlarmsVo'
+  /v1/multi-clusters/capacity/summary:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 获取多集群容量统计信息
+      description: 获取多集群容量统计信息
+      operationId: getMultiClusterCapacity
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: 容量统计结果模型
+          schema:
+            $ref: '#/definitions/MultiClusterCapacityVo'
+  /v1/multi-clusters/sla-compliance/summary:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 获取多集群SLA遵从度统计信息
+      description: 获取多集群SLA遵从度统计信息
+      operationId: getMultiClusterSla
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: SLA遵从度统计结果模型
+          schema:
+            $ref: '#/definitions/MultiClusterSlaComplianceVo'
+  /v1/multi-clusters/{clusterId}/action/grant-to-manager:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 指定某个被管理集群为管理集群
+      description: 指定某个被管理集群为管理集群
+      operationId: grantToManager
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: clusterId
+          in: path
+          required: true
+          type: string
+          description: 集群id
+        - name: request
+          in: body
+          required: true
+          description: 本地集群请求参数
+          schema:
+            $ref: '#/definitions/LocalClusterRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+  /v1/multi-clusters/action/sync:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 同步被管理集群
+      description: 同步所有被管理集群到另一个管理集群
+      operationId: syncManagedClustersToManageClusters
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+  /v1/multi-clusters/{clusterId}/action/revoke-manager:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 取消某个管理集群为被管理集群
+      description: 取消某个管理集群为被管理集群
+      operationId: revokeManager
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: clusterId
+          in: path
+          required: true
+          type: string
+          description: 集群id
+        - name: syncToRemote
+          in: query
+          required: false
+          description: 取消管理集群操作，是否同步到远端【true：则会在目标集群也取消管理集群；false：则不在目标集群操作】
+          type: boolean
+      responses:
+        '200':
+          description: 操作结果
+          schema:
+            type: string
+  /v1/multi-clusters/{clusterId}/auth-users:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 把被管理集群授权给指定的数据保护管理员
+      description: 将被管理集群数据保护管理员权限授权给一个管理集群数据保护管理员
+      operationId: createManagedClustersAuth
+      parameters:
+        - name: clusterId
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: 被管理集群id
+          minimum: 2
+          x-impact-subsystem: 不影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+        - name: anagedClustersRelationReq
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/ManagedClustersRelationReq'
+      responses:
+        '200':
+          description: ''
+  /v1/multi-clusters/{clusterId}/auth-users/{userId}:
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 被管理集群取消授权
+      description: 被管理集群取消授权
+      operationId: deleteManagedClustersAuth
+      parameters:
+        - name: clusterId
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: 被管理集群id
+          minimum: 2
+          x-impact-subsystem: 不影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: 管理集群数据保护管理员用户id
+      responses:
+        '200':
+          description: ''
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 被管理集群修改授权
+      description: 被管理集群修改授权
+      operationId: modifyManagedClustersAuth
+      parameters:
+        - name: clusterId
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: 被管理集群id
+          minimum: 2
+          x-impact-subsystem: 不影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+        - name: updateManagedClustersRelationReq
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/UpdateManagedClustersRelationReq'
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: 管理集群数据保护管理员用户id
+      responses:
+        '200':
+          description: ''
+  /v1/multi-clusters/backup/capacity/summary:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 查询备份存储容量统计信息
+      operationId: getMultiClusterBackupCapacitySummary
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: isAllCluster
+          in: query
+          required: false
+          description: 是否查询所有集群
+          type: boolean
+      responses:
+        '200':
+          description: 备份存储容量统计信息
+          schema:
+            items:
+              $ref: '#/definitions/StorageCapacitySummaryVo'
+            type: array
+  /v1/multi-clusters/replication/capacity/summary:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 查询复制存储容量统计信息
+      operationId: getMultiClusterReplicationCapacitySummary
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: isAllCluster
+          in: query
+          required: false
+          description: 是否查询所有集群
+          type: boolean
+      responses:
+        '200':
+          description: 复制存储容量统计信息
+          schema:
+            items:
+              $ref: '#/definitions/StorageCapacitySummaryVo'
+            type: array
+  /v1/multi-clusters/archive/capacity/summary:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 查询归档存储容量统计信息
+      operationId: getMultiClusterArchiveCapacitySummary
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: isAllCluster
+          in: query
+          required: false
+          description: 是否查询所有集群
+          type: boolean
+      responses:
+        '200':
+          description: 归档存储容量统计信息
+          schema:
+            items:
+              $ref: '#/definitions/StorageCapacitySummaryVo'
+            type: array
+  /v1/multi-clusters/nodes/alarm/summary:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-rd-admin-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 获取某个集群各个节点告警统计信息
+      description: 获取某个集群各个节点告警统计信息
+      operationId: getMultiClusterNodeAlarms
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: nodeName
+          in: query
+          required: false
+          description: 节点名称
+          type: string
+          minLength: 0
+          maxLength: 256
+      responses:
+        '200':
+          description: 告警统计结果模型
+          schema:
+            items:
+              $ref: '#/definitions/NodeAlarmsSummaryResponse'
+            type: array
+  /v1/multi-clusters/jobs:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${api.multi-clusters}
+      summary: 多集群近期任务详情
+      description: 多集群近期任务详情
+      operationId: getMultiClusterJobList
+      parameters:
+        - name: statusList
+          in: query
+          required: false
+          description: 任务状态
+          type: array
+          items:
+            type: string
+        - name: startPage
+          in: query
+          required: false
+          description: 开始页
+          type: integer
+        - name: pageSize
+          in: query
+          required: false
+          description: 页大小
+          type: integer
+        - name: orderType
+          in: query
+          required: false
+          description: 排序类型
+          type: string
+        - name: orderBy
+          in: query
+          required: false
+          description: 排序目标
+          type: string
+        - name: isVisible
+          in: query
+          required: false
+          description: 是否是可见任务
+          type: boolean
+        - name: isSystem
+          in: query
+          required: false
+          description: 是否是系统
+          type: boolean
+      responses:
+        '200':
+          description: 任务详情列表
+          schema:
+            $ref: '#/definitions/PageListResponse_MultiClusterJobBo'
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  MultiClusterResourcesVo:
+    description: 资源统计结果模型
+    properties:
+      protectedCount:
+        type: integer
+        format: int32
+        description: 受保护资源数量
+      unprotectedCount:
+        type: integer
+        format: int32
+        description: 未保护资源数量
+      resourceVoList:
+        items:
+          $ref: '#/definitions/MultiClustersSingleResourceVo'
+        description: 具体资源类型保护数量列表
+        type: array
+    required:
+      - protectedCount
+      - unprotectedCount
+    type: object
+  MultiClusterJobsVo:
+    description: 任务执行统计结果模型
+    properties:
+      total:
+        type: integer
+        format: int32
+        description: 任务总数
+      success:
+        type: integer
+        format: int32
+        description: 成功任务数量
+      fail:
+        type: integer
+        format: int32
+        description: 失败任务数量
+      running:
+        type: integer
+        format: int32
+        description: 运行任务数量
+      aborted:
+        type: integer
+        format: int32
+        description: 中止任务数量
+      pending:
+        type: integer
+        format: int32
+        description: 等待任务数量
+      ready:
+        type: integer
+        format: int32
+        description: 就绪任务数量
+      others:
+        type: integer
+        format: int32
+        description: 其他任务数量
+    required:
+      - total
+      - success
+      - fail
+      - running
+      - aborted
+      - pending
+      - ready
+      - others
+  MultiClusterAlarmsVo:
+    description: 告警统计结果模型
+    properties:
+      critical:
+        type: integer
+        format: int32
+        description: 关键告警数量
+      warning:
+        type: integer
+        format: int32
+        description: 警示告警数量
+      major:
+        type: integer
+        format: int32
+        description: 主要告警数量
+      minor:
+        type: integer
+        format: int32
+        description: 主要告警数量
+    required:
+      - critical
+      - warning
+      - major
+      - minor
+  MultiClusterCapacityVo:
+    description: 容量统计结果模型
+    properties:
+      totalCapacity:
+        type: integer
+        format: int64
+        description: 总容量
+      usedCapacity:
+        type: integer
+        format: int64
+        description: 已使用容量
+      freeCapacity:
+        type: integer
+        format: int64
+        description: 未使用容量
+      writeCapacity:
+        type: integer
+        format: int64
+        description: 逻辑用量
+      consumedCapacity:
+        type: integer
+        format: int64
+        description: 物理用量
+      spaceReductionRate:
+        type: string
+        description: 数据缩减比
+      logic:
+        type: string
+        description: 逻辑符号
+    required:
+      - totalCapacity
+      - usedCapacity
+      - freeCapacity
+      - writeCapacity
+      - consumedCapacity
+      - spaceReductionRate
+      - logic
+  MultiClusterSlaComplianceVo:
+    description: SLA遵从度统计结果模型
+    properties:
+      inCompliance:
+        type: integer
+        format: int32
+        description: SLA遵循数量
+      outOfCompliance:
+        type: integer
+        format: int32
+        description: SLA不遵循数量
+    required:
+      - inCompliance
+      - outOfCompliance
+  LocalClusterRequest:
+    description: 本地集群请求参数模型
+    properties:
+      localClusterName:
+        type: string
+        description: 本地集群名称
+      username:
+        type: string
+        description: 本地集群-系统管理员的用户名
+      password:
+        type: string
+        description: 本地集群-系统管理员的密码
+      syncToRemote:
+        type: boolean
+        description: 指定管理集群操作，是否同步到远端【true：则会在目标集群也指定此本地集群为管理集群；false：则不在目标集群操作】
+    required:
+      - localClusterName
+      - username
+      - password
+      - syncToRemote
+  ManagedClustersRelationReq:
+    properties:
+      userId:
+        type: string
+        description: 管理集群数据保护管理员用户id
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+        minLength: 1
+        maxLength: 64
+      managedUserName:
+        type: string
+        description: 被管理集群数据保护管理员用户名
+        minLength: 5
+        maxLength: 64
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      managedPassword:
+        type: string
+        description: 被管理集群数据保护管理员密码
+        minLength: 8
+        maxLength: 64
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+    required:
+      - userId
+      - managedUserName
+      - managedPassword
+  UpdateManagedClustersRelationReq:
+    properties:
+      managedUserName:
+        type: string
+        description: 被管理集群数据保护管理员用户名
+        minLength: 5
+        maxLength: 64
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+      managedPassword:
+        type: string
+        description: 被管理集群数据保护管理员用户密码
+        minLength: 8
+        maxLength: 64
+        x-impact-subsystem: 不影响
+        x-access-port: 25081
+        x-auth-required: 'Y'
+        x-public-api: 'Y'
+    required:
+      - managedUserName
+      - managedPassword
+  DeleteClustersRelationReq:
+    properties:
+      userId:
+        type: string
+        description: 本地用户id
+      managedUserName:
+        type: string
+        description: 被管理集群用户名
+      clusterName:
+        type: string
+        description: 被管理集群名称
+      userName:
+        type: string
+        description: 本地用户名称
+  NodeAlarmsSummaryResponse:
+    type: object
+    properties:
+      esn:
+        type: string
+        description: 节点esn
+      nodeName:
+        type: string
+        description: 节点名称
+      nodeRole:
+        type: string
+        description: 节点角色
+      critical:
+        type: integer
+        format: int32
+        description: 关键告警
+      warning:
+        type: integer
+        format: int32
+        description: 警告告警
+      major:
+        type: integer
+        format: int32
+        description: 主要告警
+      minor:
+        type: integer
+        format: int32
+        description: 次要告警
+  MultiClustersSingleResourceVo:
+    type: object
+    properties:
+      resourceType:
+        type: string
+        description: 资源类型
+      protectedCount:
+        type: integer
+        format: int32
+        description: 保护数量
+      unprotectedCount:
+        type: integer
+        format: int32
+        description: 未保护数量
+  StorageCapacitySummaryVo:
+    type: object
+    properties:
+      totalCapacity:
+        type: integer
+        format: int32
+        description: 总容量
+      usedCapacity:
+        type: integer
+        format: int32
+        description: 已使用容量
+      freeCapacity:
+        type: integer
+        format: int32
+        description: 剩余容量
+      type:
+        type: string
+        description: 类型
+  MultiClusterJobBo:
+    description: 多集群适配，添加集群ID和类型供汇总使用
+    allOf:
+      - $ref: 'api-job-center.yaml#/definitions/JobBo'
+      - type: object
+        properties:
+          clusterId:
+            type: integer
+            format: int32
+            description: 任务所在集群ID
+          role:
+            type: integer
+            format: int32
+            description: 任务所在集群类型
+  PageListResponse_MultiClusterJobBo:
+    type: object
+    description: pageresponse
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+      startIndex:
+        type: integer
+        format: int32
+      pageSize:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/MultiClusterJobBo'

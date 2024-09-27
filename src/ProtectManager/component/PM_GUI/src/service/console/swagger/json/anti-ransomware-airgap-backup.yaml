@@ -1,0 +1,1079 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: anti-ransomware-airgap-api
+paths:
+  /v1/anti-ransomware/airgap/policies:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X
+      tags:
+        - anti-ransomware-airgap-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: CreateAirGapPolicy
+      summary: 新建airgap策略
+      description: Create airgap policies
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: CreateAirGapPolicyRequestBody
+          description: 创建AirGap策略
+          required: true
+          schema:
+            $ref: '#/definitions/AirGapPolicyCreateRequest'
+      responses:
+        '200':
+          description: ok
+      x-order: 0
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - anti-ransomware-airgap-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: DeleteAirGapPolicyBatch
+      consumes:
+        - application/x-www-form-urlencoded
+      summary: 批量删除airgap策略
+      description: Delete airgap policies  batch
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: policyIds
+          in: query
+          required: false
+          description: 策略id集合
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: ok
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: >-
+                This field is the request ID number for task tracking. Format is
+                request_uuid-timestamp-hostname.
+      x-order: 15
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - anti-ransomware-airgap-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: ShowPagePolicies
+      summary: 查询策略
+      description: Get demo airgap policies
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: query
+          required: false
+          description: 策略名称
+          type: string
+        - name: resourceSetId
+          in: query
+          required: false
+          description: 资源集ID
+          type: string
+        - name: pageNo
+          in: query
+          required: false
+          description: 页码
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          description: 页大小
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponsePolicies'
+          headers:
+            X-request-id:
+              type: string
+              description: >-
+                This field is the request ID number for task tracking. Format is
+                request_uuid-timestamp-hostname.
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: >-
+                This field is the request ID number for task tracking. Format is
+                request_uuid-timestamp-hostname.
+      x-order: 3
+  /v1/anti-ransomware/airgap/policies/{policyId}:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X
+      tags:
+        - anti-ransomware-airgap-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: UpdateAirGapPolicy
+      summary: 修改airgap 策略
+      description: Update airgap policies
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: policyId
+          in: path
+          required: true
+          type: string
+          description: 策略id
+        - in: body
+          name: UpdateAirGapPolicyRequestBody
+          description: 防勒索AirGap策略，更新请求对象
+          required: true
+          schema:
+            $ref: '#/definitions/AirGapPolicyUpdateRequest'
+      responses:
+        '200':
+          description: OK
+      x-order: 9
+  /v1/anti-ransomware/airgap/devices/policy/related:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - anti-ransomware-airgap-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: ShowPolicyRelatePage
+      consumes:
+        - application/x-www-form-urlencoded
+      summary: 查询策略关联设备列表
+      description: Get devices policy related
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: policyId
+          in: query
+          required: true
+          type: string
+          description: 策略id
+        - name: name
+          in: query
+          required: false
+          type: string
+          description: 设备名称
+        - name: esn
+          in: query
+          required: false
+          type: string
+          description: 设备ESN
+        - name: linkStatus
+          in: query
+          required: false
+          type: array
+          description: 设备在线状态 在线1，离线0
+          enum:
+            - 0
+            - 1
+          items:
+            type: string
+        - name: replicationLinkStatus
+          in: query
+          required: false
+          type: array
+          description: 复制链路状态 连通open, 断开close,未知unknown
+          enum:
+            - open
+            - close
+            - unknown
+          items:
+            type: string
+        - name: policyStatus
+          in: query
+          required: false
+          type: array
+          description: enable应用中,disable未应用,invalid已失效
+          enum:
+            - enable
+            - disable
+            - invalid
+          items:
+            type: string
+        - name: policyName
+          in: query
+          required: false
+          description: 策略名称
+          type: string
+        - name: pageNo
+          in: query
+          required: false
+          type: integer
+          format: int32
+          description: 页码
+          minimum: 0
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+          description: 页大小
+          minimum: 1
+          maximum: 200
+      responses:
+        '200':
+          description: 设备信息分页对象
+          schema:
+            $ref: '#/definitions/PageListResponseDevices'
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+      x-order: 4
+  /v1/anti-ransomware/airgap/devices:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - anti-ransomware-airgap-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: ShowPageDevices
+      summary: 查询设备分页信息
+      description: Get airgap devices
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: policyId
+          in: query
+          required: false
+          type: string
+          description: 策略id
+        - name: name
+          in: query
+          required: false
+          type: string
+          description: 设备名称
+        - name: esn
+          in: query
+          required: false
+          type: string
+          description: 设备ESN
+        - name: linkStatus
+          in: query
+          required: false
+          description: 设备在线状态 在线1，离线0
+          type: array
+          items:
+            type: string
+          enum:
+            - 0
+            - 1
+        - name: replicationLinkStatus
+          in: query
+          required: false
+          description: 复制链路状态 连通open, 断开close,未知unknown
+          type: array
+          items:
+            type: string
+          enum:
+            - open
+            - close
+            - unknown
+        - name: policyStatus
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+          description: 策略开启状态 enable应用中,disable未应用,invalid已失效
+          enum:
+            - enable
+            - disable
+            - invalid
+        - name: policyName
+          in: query
+          required: false
+          description: 策略名称
+          type: string
+        - name: pageNo
+          in: query
+          required: false
+          type: integer
+          format: int32
+          description: 页码
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+          description: 页大小
+      responses:
+        '200':
+          description: 设备信息分页对象
+          schema:
+            $ref: '#/definitions/PageListResponseDevices'
+          headers:
+            X-request-id:
+              type: string
+              description: >-
+                This field is the request ID number for task tracking. Format is
+                request_uuid-timestamp-hostname.
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: >-
+                This field is the request ID number for task tracking. Format is
+                request_uuid-timestamp-hostname.
+      x-order: 5
+  /v1/anti-ransomware/airgap/devices/{deviceId}:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - anti-ransomware-airgap-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: ShowDeviceDetail
+      summary: 查询设备详情
+      description: Get devices detail
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          type: string
+          description: 设备id
+      responses:
+        '200':
+          description: 设备信息详情
+          schema:
+            $ref: '#/definitions/AirGapDeviceResponse'
+          headers:
+            X-request-id:
+              type: string
+              description: >-
+                This field is the request ID number for task tracking. Format is
+                request_uuid-timestamp-hostname.
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: >-
+                This field is the request ID number for task tracking. Format is
+                request_uuid-timestamp-hostname.
+      x-order: 6
+  /v1/anti-ransomware/airgap/devices/ports:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - anti-ransomware-airgap-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: ShowDevicePorts
+      summary: 查询设备逻辑口
+      description: Get devices ports
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: deviceId
+          in: query
+          required: true
+          description: 设备id
+          type: string
+        - name: deviceType
+          in: query
+          required: true
+          description: 设备类型
+          type: string
+        - name: portName
+          in: query
+          required: false
+          description: 逻辑口名称
+          type: string
+      responses:
+        '200':
+          description: 逻辑口信息列表
+          schema:
+            $ref: '#/definitions/AirGapDevicePortsResponse'
+          headers:
+            X-request-id:
+              type: string
+              description: >-
+                This field is the request ID number for task tracking. Format is
+                request_uuid-timestamp-hostname.
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: >-
+                This field is the request ID number for task tracking. Format is
+                request_uuid-timestamp-hostname.
+      x-order: 7
+  /v1/anti-ransomware/airgap/devices/relate/policy:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X
+      tags:
+        - anti-ransomware-airgap-api
+      summary: 创建设备策略关联
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: create device policy relation
+      operationId: CreateDevicePolicyRelation
+      produces:
+        - application/json
+      parameters:
+        - name: CreateDevicePolicyRelationRequestBody
+          in: body
+          required: true
+          description: 创建设备策略关联请求对象
+          schema:
+            $ref: '#/definitions/DevicePolicyRelationCreateRequest'
+      responses:
+        '200':
+          description: OK
+      x-order: 1
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X
+      tags:
+        - anti-ransomware-airgap-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 更新设备策略关联信息
+      description: update device policy relation
+      operationId: UpdateDevicePolicyRelation
+      produces:
+        - application/json
+      parameters:
+        - name: UpdateDevicePolicyRelationRequestBody
+          in: body
+          required: true
+          description: 更新设备策略关联请求对象
+          schema:
+            $ref: '#/definitions/DevicePolicyRelationUpdateRequest'
+      responses:
+        '200':
+          description: OK
+      x-order: 8
+  /v1/anti-ransomware/airgap/devices/{deviceId}/enable:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X
+      tags:
+        - anti-ransomware-airgap-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 设备启用关联策略
+      description: enable relate policy
+      operationId: EnableRelatePolicy
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          type: string
+          description: 设备id
+      responses:
+        '200':
+          description: OK
+      x-order: 10
+  /v1/anti-ransomware/airgap/devices/{deviceId}/disable:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X
+      tags:
+        - anti-ransomware-airgap-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 设备关闭关联策略
+      description: disable relate policy
+      operationId: DisableRelatePolicy
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          type: string
+          description: 设备id
+      responses:
+        '200':
+          description: OK
+      x-order: 11
+  /v1/anti-ransomware/airgap/devices/{deviceId}/relate/policy:
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X
+      tags:
+        - anti-ransomware-airgap-api
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 删除设备策略关联信息
+      description: delete device policy relation
+      operationId: DeleteDevicePolicyRelation
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          type: string
+          description: 设备id
+      responses:
+        '200':
+          description: OK
+      x-order: 14
+  /v1/internal/anti-ransomware/airgap/devices/page:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'N'
+      tags:
+        - anti-ransomware-airgap-api
+      summary: 查询设备分页信息
+      description: 查询设备分页信息
+      operationId: ShowInternalPageDevices
+      parameters:
+        - name: ShowInternalPageDevicesRequestBody
+          in: body
+          required: true
+          description: 查询设备分页信息
+          schema:
+            $ref: '#/definitions/AirGapDeviceShowPageRequest'
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: string
+      x-order: 2
+  /v1/anti-ransomware/airgap/devices/{deviceId}/replicationlink/disconnect:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anti-ransomware-airgap-api
+      summary: 断开设备复制链路
+      description: disconnect replication link
+      operationId: DisconnectReplicationLink
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          type: string
+          description: 设备id
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: string
+      x-order: 12
+  /v1/internal/anti-ransomware/airgap/devices/{deviceId}/replicationlink/disconnect:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anti-ransomware-airgap-api
+      summary: 断开设备复制链路内部接口
+      description: disconnect replication link Internal interface
+      operationId: DisconnectInternalReplicationLink
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          type: string
+          description: 设备id
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: string
+      x-order: 13
+definitions:
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512
+  AirGapPolicyCreateRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 策略名称, 最大64
+      description:
+        type: string
+        description: 描述, max = 255
+      triggerCycle:
+        type: string
+        description: 策略频率 按天day,按周week
+      triggerWeekFreq:
+        type: string
+        description: 策略周期 "mon,tue,wed,thu,fri,sat,sun"
+      airGapPolicyWindowInfos:
+        type: array
+        items:
+          $ref: '#/definitions/AirGapPolicyWindowInfo'
+        description: 允许复制时间窗集合， 最大3
+    required:
+      - name
+      - triggerCycle
+      - airGapPolicyWindowInfos
+    description: 创建策略请求对象
+  AirGapPolicyWindowInfo:
+    type: object
+    properties:
+      id:
+        type: string
+        description: 唯一标识符
+      startTime:
+        type: string
+        description: 开始时间
+      endTime:
+        type: string
+        description: 结束时间
+    description: 策略时间窗信息对象
+  AirGapPolicyUpdateRequest:
+    type: object
+    required:
+      - name
+      - triggerCycle
+      - airGapPolicyWindowInfos
+    properties:
+      name:
+        type: string
+        description: 策略名称，max = 64
+      description:
+        type: string
+        description: 描述，max = 255
+      triggerCycle:
+        type: string
+        description: 策略频率 按天day,按周week
+      triggerWeekFreq:
+        type: string
+        description: 策略周期 "mon,tue,wed,thu,fri,sat,sun"
+      airGapPolicyWindowInfos:
+        items:
+          $ref: '#/definitions/AirGapPolicyWindowInfo'
+        description: 允许复制时间窗集合，max = 3
+        type: array
+    description: 策略更新请求对象
+  AirGapPolicyInfo:
+    type: object
+    properties:
+      id:
+        type: string
+        description: id
+      name:
+        type: string
+        description: 策略名称
+      description:
+        type: string
+        description: 描述
+      triggerCycle:
+        type: string
+        description: 策略频率
+      triggerWeekFreq:
+        type: string
+        description: 策略周期
+      airGapPolicyWindows:
+        type: array
+        items:
+          $ref: '#/definitions/AirGapPolicyWindowInfo'
+        description: 策略时间窗列表
+      deviceCount:
+        type: integer
+        format: int32
+        description: 关联设备数量
+    description: 策略信息对象
+  AirGapDeviceInfo:
+    type: object
+    properties:
+      id:
+        type: string
+        description: 设备id
+      esn:
+        type: string
+        description: 设备esn
+      name:
+        type: string
+        description: 设备名称
+      linkStatus:
+        type: string
+        description: 设备状态 在线1，离线0
+      replicationLinkStatus:
+        type: string
+        description: 复制链路状态 连通open,断开close
+      policyStatus:
+        type: string
+        description: 策略状态 应用中enable,未应用disable，已失效invalid
+      isForceStop:
+        type: string
+        description: 是否强制终止复制
+      isLinkedDetection:
+        type: string
+        description: 是否联动侦测
+      deviceType:
+        type: string
+        description: 设备类型
+      repTaskIds:
+        type: string
+        description: 复制任务ids
+      airGapPolicyInfo:
+        $ref: '#/definitions/AirGapPolicyInfo'
+    description: 设备信息对象
+  PageListResponseDevices:
+    type: object
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总条数
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/AirGapDeviceInfo'
+        description: 设备信息对象
+    description: 设备列表返回对象
+  PageListResponsePolicies:
+    type: object
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总条数
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/AirGapPolicyInfo'
+        description: 策略信息对象
+    description: 策略列表返回对象
+  AirGapDevicePortInfo:
+    type: object
+    properties:
+      portId:
+        type: string
+        description: 端口id
+      name:
+        type: string
+        description: 逻辑口名称
+      status:
+        type: string
+        description: 逻辑口状态 已激活active, 未激活inactive, 未知unknown
+      ip:
+        type: string
+        description: 逻辑口ip
+      deviceId:
+        type: string
+        description: 关联设备id
+    required:
+      - portId
+      - name
+      - status
+      - ip
+    description: 设备逻辑口信息对象
+  AirGapDeviceResponse:
+    type: object
+    properties:
+      airGapDeviceInfo:
+        $ref: '#/definitions/AirGapDeviceInfo'
+        description: 设备信息对象
+      airGapDevicePortInfos:
+        type: array
+        items:
+          $ref: '#/definitions/AirGapDevicePortInfo'
+        description: 设备逻辑口信息对象
+    description: 设备详情返回对象
+  AirGapDevicePortsResponse:
+    type: object
+    properties:
+      airGapDevicePortInfos:
+        type: array
+        items:
+          $ref: '#/definitions/AirGapDevicePortInfo'
+        description: 设备逻辑口信息对象
+    description: 设备逻辑口列表响应对象
+  DevicePolicyRelationCreateRequest:
+    type: object
+    required:
+      - deviceId
+      - policyId
+      - deviceType
+      - airGapDevicePortInfos
+    properties:
+      deviceId:
+        type: string
+        description: 设备id
+      policyId:
+        type: string
+        description: 策略id
+      isForceStop:
+        type: boolean
+        description: 是否强制终止复制
+        enum:
+          - 'true'
+          - 'false'
+      isLinkedDetection:
+        type: boolean
+        description: 是否联动侦测
+        enum:
+          - 'true'
+          - 'false'
+      deviceType:
+        type: string
+        description: 设备类型
+        example: OceanProtect
+      airGapDevicePortInfos:
+        type: array
+        description: 设备关联逻辑口信息
+        items:
+          $ref: '#/definitions/AirGapDevicePortInfo'
+    description: 创建设备策略关联请求对象
+  DevicePolicyRelationUpdateRequest:
+    type: object
+    required:
+      - deviceId
+      - policyId
+      - deviceType
+      - airGapDevicePortInfos
+    properties:
+      deviceId:
+        type: string
+        description: 设备id
+      policyId:
+        type: string
+        description: 策略id
+      isForceStop:
+        type: boolean
+        description: 是否强制终止复制
+        enum:
+          - 'true'
+          - 'false'
+      isLinkedDetection:
+        type: boolean
+        description: 是否联动侦测
+        enum:
+          - 'true'
+          - 'false'
+      deviceType:
+        type: string
+        description: 设备类型
+        example: OceanProtect
+      airGapDevicePortInfos:
+        type: array
+        description: 设备关联逻辑口信息
+        items:
+          $ref: '#/definitions/AirGapDevicePortInfo'
+    description: 更新设备策略关联请求对象
+  AirGapDeviceShowPageRequest:
+    type: object
+    description: 设备分页查询请求
+    properties:
+      policyId:
+        type: string
+        description: 策略id
+      name:
+        type: string
+        description: 设备名称
+      esn:
+        type: string
+        description: 设备ESN
+      linkStatus:
+        type: array
+        items:
+          type: string
+        description: 设备在线状态
+        enum:
+          - 在线1，离线0
+      replicationLinkStatus:
+        type: array
+        items:
+          type: string
+        description: 复制链路状态
+        enum:
+          - 连通open
+          - ' 断开close'
+          - 未知unknown
+      policyStatus:
+        type: array
+        items:
+          type: string
+        description: 策略开启状态
+        enum:
+          - enable应用中
+          - disable未应用
+          - invalid已失效
+      policyName:
+        type: string
+        description: 策略名称

@@ -1,0 +1,153 @@
+<div class="aui-fullpage">
+  <div class="aui-header-1">
+    <lv-group lvGutter='8px'>
+      <h1>{{ 'system_user_role_label' | i18n }}</h1>
+      <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+    </lv-group>
+  </div>
+  <div class="aui-block aui-paginator-container custom-main-tab">
+    <lv-tabs [(lvActiveIndex)]="tabActiveIndex" (lvActiveIndexChange)="activeIndexChange($event)"
+      [lvBeforeChange]="beforeChange" class="aui-tab" lvType="card">
+      <lv-tab [lvTitle]="userLabel" [lvId]="userType.USER">
+        <ng-template lv-tab-lazy>
+          <div class="aui-operation">
+            <lv-group lvGutter="8px">
+              <button lv-button lvType="primary" (click)="createUser()" pmpermission pmOperation='CreateUserComponent'>
+                {{ 'common_create_label' | i18n }}
+              </button>
+            </lv-group>
+            <lv-group>
+              <button class="aui-button-icon" lv-button lvSize="auto" (click)="initUser(sortSources)">
+                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+              </button>
+            </lv-group>
+          </div>
+          <div class="list-container">
+            <lv-datatable [lvData]="userData" (lvSortChange)="sortUserChange($event)" #userTable lvResize lvSort
+              [(lvActiveSort)]="activeSort" lvResizeMode="expand" [lvScroll]="{ x: '100%' }">
+              <thead>
+                <tr>
+                  <th lvCellKey="userName" [lvShowSort]="cookieService.role !== roleType.DataProtectionAdmin"
+                    lvShowCustom>
+                    {{ 'common_name_label' | i18n }}
+                    <div lvCustom *ngIf="cookieService.role !== roleType.DataProtectionAdmin">
+                      <aui-custom-table-search (search)="searchByUserName($event)"
+                        filterTitle="{{ 'common_name_label' | i18n }}"></aui-custom-table-search>
+                    </div>
+                  </th>
+                  <th lvCellKey="userType" [lvShowFilter]="cookieService.role !== roleType.DataProtectionAdmin"
+                    (lvFilterChange)="filterChange($event)" [(lvFilters)]="userTypeFilterMap" lvFilterCheckAll>
+                    {{'common_type_label' | i18n }}
+                  </th>
+                  <th lvCellKey="roleName" [lvShowFilter]="cookieService.role !== roleType.DataProtectionAdmin"
+                    (lvFilterChange)="filterChange($event)" [(lvFilters)]="roleNameFilterMap" lvFilterCheckAll>{{
+                    'common_role_label' | i18n }}</th>
+                  <th lvCellKey="login">{{ 'common_status_label' | i18n }}</th>
+                  <th lvCellKey="lock">{{ 'common_lock_status_label' | i18n }}</th>
+                  <th lvCellKey="description">{{ 'common_desc_label' | i18n }}</th>
+                  <th lvCellKey="sessionLimit" lvAlign="right"
+                    [lvShowSort]="cookieService.role !== roleType.DataProtectionAdmin">{{
+                    'system_user_maxconnections_label' | i18n }}</th>
+                  <th lvCellKey="neverExpire" [lvShowFilter]="cookieService.role !== roleType.DataProtectionAdmin"
+                    (lvFilterChange)="filterChange($event)" [(lvFilters)]="neverExpireFilterMap" lvFilterCheckAll>{{
+                    'system_password_never_expire_label' | i18n }}
+                  </th>
+                  <th lvCellKey="opt" *ngIf="cookieService.role !== roleType.DataProtectionAdmin" [width]="optWidth">{{
+                    'common_operation_label' | i18n }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let item of userTable.renderData">
+                  <ng-container *ngTemplateOutlet="userViewTpl; context: { $implicit: item }">
+                  </ng-container>
+                </ng-container>
+              </tbody>
+            </lv-datatable>
+          </div>
+          <div class="aui-paginator-wrap">
+            <lv-paginator [lvPageSize]="pageSize" [lvTotal]="total" [lvPageIndex]="pageIndex"
+              (lvPageChange)="userPageChange($event)" [lvPageSizeOptions]="sizeOptions" [hidden]="!total">
+            </lv-paginator>
+          </div>
+        </ng-template>
+      </lv-tab>
+      <lv-tab [lvTitle]="roleLabel" [lvId]="userType.ROLE" *ngIf="cookieService.role !== 2">
+        <ng-template lv-tab-lazy>
+          <div class="aui-operation " style="flex-direction: row-reverse;">
+            <lv-group>
+              <button class="aui-button-icon" lv-button lvSize="auto" (click)="initRole()">
+                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+              </button>
+            </lv-group>
+          </div>
+          <div class="list-container">
+            <lv-datatable [lvData]="roleData" #roleTable>
+              <thead>
+                <tr>
+                  <th lvCellKey="roleName">{{ 'common_name_label' | i18n }}</th>
+                  <th lvCellKey="userNum">
+                    {{ 'system_role_associatedusers_label' | i18n}}
+                  </th>
+                  <th lvCellKey="roleDes">{{ 'common_desc_label' | i18n }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let item of roleTable.renderData">
+                  <tr>
+                    <td>
+                      {{i18n.get(userRoleI18nMap[userRoleType[item.roleId + '']])}}
+                    </td>
+                    <td>
+                      <ng-container *ngIf="item.userNum > 0; else elseTemplate">
+                        <a class="aui-link" id='outerClosable' (click)='queryAssociatedUsers(item)'>{{item.userNum}}</a>
+                      </ng-container>
+                      <ng-template #elseTemplate>
+                        <span>--</span>
+                      </ng-template>
+                    </td>
+                    <td>
+                      <span lv-overflow>{{i18n.get(userRoleDescI18nMap[userRoleType[item.roleId + '']])}}</span>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </lv-datatable>
+          </div>
+        </ng-template>
+      </lv-tab>
+    </lv-tabs>
+  </div>
+</div>
+<ng-template #userViewTpl let-item>
+  <tr>
+    <td>
+      <a lv-overflow class="aui-link" (click)="queryUser(item)">
+        {{item.userName}}
+      </a>
+    </td>
+    <td>
+      <span lv-overflow>{{ item.userType | textMap: 'loginUserType' }}</span>
+    </td>
+    <td>
+      {{i18n.get(userRoleI18nMap[userRoleType[item.rolesSet[0]?.roleId + '']])}}
+    </td>
+    <td>
+      <aui-status [value]="item.login" type="User_Login_Status"></aui-status>
+    </td>
+    <td>
+      {{ item.lock | textMap: 'USRE_LOCK' }}
+    </td>
+    <td>
+      <span lv-overflow>{{ item.description | nil }}</span>
+    </td>
+    <td lvAlign="right">{{ item.sessionControl ? item.sessionLimit: '--' }}</td>
+    <td>{{ item.neverExpire ? i18n.get('common_yes_label') : i18n.get('common_no_label') }}</td>
+    <td *ngIf="cookieService.role !== roleType.DataProtectionAdmin">
+      <lv-operation-menu [lvItemsFn]="optCallback" [lvData]="item"></lv-operation-menu>
+    </td>
+  </tr>
+</ng-template>
+
+<ng-template #dpAdminTipTpl>
+  <p class="aui-text-help-sm" [innerHTML]="openStorageGroupTip"></p>
+</ng-template>

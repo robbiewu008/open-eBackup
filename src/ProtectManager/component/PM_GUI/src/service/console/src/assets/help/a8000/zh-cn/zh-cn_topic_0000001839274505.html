@@ -1,0 +1,33 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="获取kubeconfig配置文件">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839274505">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>获取kubeconfig配置文件</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001839274505"></a><a name="ZH-CN_TOPIC_0000001839274505"></a>
+
+<h1 class="topictitle1">获取kubeconfig配置文件</h1>
+<div><div class="section"><h4 class="sectiontitle">前提条件</h4><p>已获取K8S客户端证书文件<span>client.crt </span>和证书明文私钥文件<span>client_decrypt.key。</span> 获取文件的详细操作，请参见《(For Engineer) DigitalEP V600R005C00 产品文档》中的“生成K8S客户端证书”章节。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>登录生产主机，进入“/opt/paas/srv/kubernetes”目录。</span></li><li><span>执行如下命令，复制<span>kubeconfig_crypto</span>文件，生成<span>kubeconfig</span>文件。</span><p><pre class="screen">cp -p <span>kubeconfig_crypto </span><span>kubeconfig</span></pre>
+</p></li><li><span>执行如下命令，生成证书私钥base64流。</span><p><pre class="screen"><span>tls_base_encode_key=$(cat client_decrypt.key | base64 | tr -d "\n")</span></pre>
+</p></li><li><span><span>执行如下命令，生成客户端证书base64流</span>。</span><p><pre class="screen">tls_server_key_base64=$(cat client.crt | base64 | tr -d "\n")</pre>
+</p></li><li><span><span>执行如下命令，</span><span>替换kubeconfig内容</span>。</span><p><pre class="screen">sed -i "s|client-key-data:.*|client-key-data: ${tls_base_encode_key}|g" kubeconfig</pre>
+<pre class="screen"><span>sed -i "s|client-certificate-data:.*|client-certificate-data: ${tls_server_key_base64}|g" kubeconfig</span></pre>
+</p></li></ol>
+</div>
+<p></p>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

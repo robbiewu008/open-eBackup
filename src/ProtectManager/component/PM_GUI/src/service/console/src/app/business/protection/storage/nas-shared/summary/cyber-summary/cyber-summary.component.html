@@ -1,0 +1,139 @@
+<div class="base-info-bk">
+    <div class="summary-brand"></div>
+    <div class="base-information">
+        <div class="title">
+            <h1>{{source?.name | nil}}</h1>
+            <aui-status [value]="detectionStatus" type="detectionSnapshotStatus">
+            </aui-status>
+        </div>
+        <div class="resource-info">
+            <lv-group [lvColumns]='["140px", "1px", _isEn ? "270px": "240px", "1px", "auto", "1px", "70px"]'>
+                <div class="info-item">
+                    <lv-group lvDirection="vertical">
+                        <span class="aui-text-label">
+                            {{'explore_belong_device_label' | i18n}}
+                        </span>
+                        <span class="text-color-primary source-warp" lv-overflow>
+                            {{source?.environment?.name | nil}}
+                        </span>
+                    </lv-group>
+                    <lv-group lvDirection="vertical" class="mgt-20">
+                        <span class="aui-text-label">
+                            {{'explore_belong_tenant_label' | i18n}}
+                        </span>
+                        <span class="text-color-primary source-warp" lv-overflow>
+                            {{source?.extendInfo?.tenantName | nil}}
+                        </span>
+                    </lv-group>
+                </div>
+                <div class="split-line"></div>
+                <div class="info-item" style="padding: 0 20px;">
+                    <lv-group lvDirection="vertical">
+                        <span class="aui-text-label">
+                            {{'explore_real_detection_policy_label' | i18n}}
+                        </span>
+                        <lv-group>
+                            <span class="text-color-primary io-warp" lv-overflow>
+                                {{ioDetectPolicy | nil}}
+                            </span>
+                            <i lv-icon="lv-icon-arrow-next" class="policy-link" lvColorState="true"
+                                *ngIf="!!ioDetectPolicy" (click)="gotoIoDetectPolicy()"></i>
+                        </lv-group>
+                    </lv-group>
+                    <lv-group class="mgt-20" lvGutter='30px'>
+                        <lv-group lvDirection="vertical">
+                            <span class="aui-text-label">
+                                {{'protection_protected_status_label' | i18n}}
+                            </span>
+                            <span class="text-color-primary" lv-overflow>
+                                <aui-status [value]="detectEnabled" type="ioDetectEnabled"></aui-status>
+                            </span>
+                        </lv-group>
+                        <lv-group lvDirection="vertical">
+                            <span class="aui-text-label">
+                                {{'explore_decoy_detection_status_label' | i18n}}
+                            </span>
+                            <span class="text-color-primary" lv-overflow>
+                                {{isHoneypotDetectEnable | textMap:'switchStatus'}}
+                            </span>
+                        </lv-group>
+                    </lv-group>
+                </div>
+                <div class="split-line"></div>
+                <lv-group class="info-item" lvGutter='30px' style="align-items: end; padding:0 20px;">
+                    <div>
+                        <lv-group lvDirection="vertical">
+                            <span class="aui-text-label">
+                                {{'explore_intelligent_detection_policy_label' | i18n}}
+                            </span>
+                            <lv-group>
+                                <span class="text-color-primary"
+                                    [ngClass]="{'copy-warp-en': _isEn, 'copy-warp': !_isEn}" lv-overflow>
+                                    {{source?.sla_name | nil}}
+                                </span>
+                                <i lv-icon="lv-icon-arrow-next" class="policy-link" lvColorState="true"
+                                    *ngIf="!!source?.sla_name" (click)="gotoCopyDetectPolicy()"></i>
+                            </lv-group>
+                        </lv-group>
+                        <lv-group class="mgt-20" lvGutter='30px'>
+                            <lv-group lvDirection="vertical">
+                                <span class="aui-text-label">
+                                    {{'protection_protected_status_label' | i18n}}
+                                </span>
+                                <span class="text-color-primary" lv-overflow>
+                                    <aui-status [value]="source?.protection_status"
+                                        type="Protection_Status"></aui-status>
+                                </span>
+                            </lv-group>
+                            <lv-group lvDirection="vertical">
+                                <span class="aui-text-label">
+                                    {{'explore_compliance_label' | i18n}}
+                                </span>
+                                <span class="text-color-primary" lv-overflow>
+                                    <aui-status [value]="source?.sla_compliance" type="Sla_Compliance"></aui-status>
+                                </span>
+                            </lv-group>
+                        </lv-group>
+                    </div>
+                    <div class="time-item">
+                        <lv-group lvGutter='14px' class="mgb-8">
+                            <span class="aui-text-label">
+                                {{'protection_last_time_label' | i18n}}
+                            </span>
+                            <span class="text-color-primary" lv-overflow>
+                                {{earliestTime | nil}}
+                            </span>
+                        </lv-group>
+                        <lv-group lvGutter='14px' class="mgb-8">
+                            <span class="aui-text-label">
+                                {{'protection_earliest_time_label' | i18n}}
+                            </span>
+                            <span class="text-color-primary" lv-overflow>
+                                {{latestTime | nil}}
+                            </span>
+                        </lv-group>
+                        <lv-group lvGutter='14px'>
+                            <span class="aui-text-label">
+                                {{'protection_next_time_label' | i18n}}
+                            </span>
+                            <span class="text-color-primary" lv-overflow>
+                                {{nextTime | nil}}
+                            </span>
+                        </lv-group>
+                    </div>
+                </lv-group>
+                <div class="split-line"></div>
+                <div class="info-item" style="padding-left: 20px;">
+                    <h1 class="summary-count">{{totalSnapshot}}</h1>
+                    <span class="aui-text-label desc-font">
+                        {{'explore_snapshot_total_count_label' | i18n}}
+                    </span>
+                </div>
+            </lv-group>
+        </div>
+    </div>
+</div>
+
+<ng-template #emptyTpl>
+    --
+</ng-template>

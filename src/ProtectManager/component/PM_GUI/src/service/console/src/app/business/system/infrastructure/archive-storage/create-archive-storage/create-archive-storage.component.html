@@ -1,0 +1,229 @@
+<lv-form [formGroup]='formGroup' [lvLabelColon]='false' class="formGroup archive-storage-create">
+    <h3 class="aui-gutter-column-xs">{{basicInfoLabel}}</h3>
+    <lv-form-item>
+        <lv-form-label lvRequired="true">{{nameLabel}}</lv-form-label>
+        <lv-form-control [lvErrorTip]='nameErrorTip'>
+            <input formControlName="storageName" lv-input />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired="true">{{typeLabel}}</lv-form-label>
+        <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>
+            <lv-select formControlName="type" [lvOptions]='cloudTypeItems' lvValueKey='value' [lvDisabled]='data'>
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired="true">{{'common_cloud_platform_type_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>
+            <lv-select formControlName="cloudType" [lvOptions]='cloudPlatformTypeItems' lvValueKey='value'
+                [lvDisabled]='data'>
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <!-- 连接模式 -->
+    <ng-container *ngIf="formGroup.value.cloudType === dataMap.Storage_Cloud_Platform.azure.value">
+        <lv-form-item>
+            <lv-form-label lvRequired="true">
+                {{'system_archive_storage_link_mode_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-radio-group formControlName="connectType">
+                    <lv-group [lvGutter]="'30px'">
+                        <lv-radio [lvValue]="dataMap.azureLinkMode.connection.value" [lvDisabled]="!!data">
+                            {{dataMap.azureLinkMode.connection.label | i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="dataMap.azureLinkMode.standard.value" [lvDisabled]="!!data">
+                            {{dataMap.azureLinkMode.standard.label | i18n}}
+                        </lv-radio>
+                    </lv-group>
+                </lv-radio-group>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container
+        *ngIf="formGroup.value.cloudType === dataMap.Storage_Cloud_Platform.azure.value && formGroup.value.connectType === dataMap.azureLinkMode.connection.value; else elseTemplate">
+        <lv-form-item>
+            <lv-form-label lvRequired="true">
+                {{'system_azure_connection_string_uppercase_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
+                <aui-inupt-with-eye formControlName="sk"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired="true">
+                {{'system_azure_blob_container_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
+                <input formControlName="bucketName" lv-input />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-template #elseTemplate>
+        <lv-form-item>
+            <lv-form-label lvRequired="true">{{endpointLabel}}</lv-form-label>
+            <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
+                <input formControlName="endpoint" lv-input
+                    placeholder="{{'common_endpoint_placeholder_label' | i18n}}" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired="true">{{protocolLabel}}</lv-form-label>
+            <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>
+                <lv-select formControlName="useHttps" [lvOptions]='protocolItems' lvValueKey='value' [lvDisabled]='data'
+                    #protocolSelect>
+                </lv-select>
+                <div *ngIf="formGroup.value.useHttps === '0'">
+                    <i lv-icon="lv-icon-status-warning-info" lvColorState='true'></i>
+                    <span>
+                        {{'system_use_http_warn_label' | i18n}}
+                    </span>
+                </div>
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="formGroup.value.useHttps === '1'">
+            <lv-form-item>
+                <lv-form-label lvRequired="true">{{ 'system_certificate_label' | i18n }}</lv-form-label>
+                <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>
+                    <lv-select formControlName="certId" [lvOptions]='certItems' lvValueKey='value'>
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+        <ng-container
+            *ngIf="formGroup.value.cloudType === dataMap.Storage_Cloud_Platform.azure.value && formGroup.value.connectType === dataMap.azureLinkMode.standard.value">
+            <lv-form-item>
+                <lv-form-label lvRequired="true">AK</lv-form-label>
+                <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
+                    <input formControlName="ak" lv-input />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired="true">SK</lv-form-label>
+                <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
+                    <aui-inupt-with-eye formControlName="sk">
+                    </aui-inupt-with-eye>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired="true">
+                    {{'system_azure_blob_port_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]='portErrorTip'>
+                    <input formControlName="port" lv-input />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired="true">
+                    {{'system_azure_blob_container_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
+                    <input formControlName="bucketName" lv-input />
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+        <ng-container
+            *ngIf="!(formGroup.value.cloudType === dataMap.Storage_Cloud_Platform.azure.value && formGroup.value.connectType === dataMap.azureLinkMode.standard.value)">
+            <lv-form-item>
+                <lv-form-label lvRequired="true">AK</lv-form-label>
+                <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
+                    <input formControlName="ak" lv-input />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired="true">SK</lv-form-label>
+                <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
+                    <aui-inupt-with-eye formControlName="sk">
+                    </aui-inupt-with-eye>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired="true">{{dataBucketLabel}}</lv-form-label>
+                <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
+                    <input formControlName="bucketName" lv-input />
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container>
+                <lv-form-item>
+                    <lv-form-label lvRequired="true">{{'common_index_bucket_label' | i18n}}</lv-form-label>
+                    <lv-form-control [lvErrorTip]='maxLengthErrorTip'>
+                        <input formControlName="indexBucketName" lv-input />
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <lv-form-item>
+                <lv-form-label></lv-form-label>
+                <lv-form-control>
+                    <lv-group lvGutter='4px'>
+                        <h3>{{'common_agent_service_label' | i18n}}</h3>
+                        <lv-switch formControlName="proxyEnable" [lvDisabled]='data'></lv-switch>
+                    </lv-group>
+                    <lv-group [lvColumns]='["16px", "auto"]' lvRowGutter="4px" *ngIf="formGroup.value.proxyEnable"
+                        class="proxy-group-tip">
+                        <i lv-icon="lv-icon-status-warning-info" lvColorState='true' class="type-icon"></i>
+                        <span>
+                            {{'system_archive_storage_proxy_help_label' | i18n}}
+                        </span>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="formGroup.value.proxyEnable">
+                <lv-form-item>
+                    <lv-form-label lvRequired>
+                        <span>{{'common_address_label' | i18n}}</span>
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_object_url_http_tip_label' | i18n}}"
+                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                            lvColorState='true'></i>
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="urlErrorTip">
+                        <input lv-input formControlName="proxyHostName"
+                            placeholder="{{'common_service_adress_placeholder_label' | i18n}}" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        <span>{{'common_username_label' | i18n}}</span>
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="maxLengthErrorTip">
+                        <input lv-input formControlName="proxyUserName" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        <span>{{'common_password_label' | i18n}}</span>
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="maxLengthErrorTip">
+                        <aui-inupt-with-eye formControlName="proxyUserPwd" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+        </ng-container>
+    </ng-template>
+    <ng-container
+        *ngIf="!_includes([dataMap.Storage_Cloud_Platform.aws.value, dataMap.Storage_Cloud_Platform.azure.value], formGroup.value.cloudType)">
+        <lv-form-item>
+            <lv-form-label></lv-form-label>
+            <lv-form-control>
+                <lv-group lvGutter='4px'>
+                    <h3>{{capacityThresholdLabel}}</h3>
+                    <lv-switch formControlName="alarmEnable"></lv-switch>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="formGroup.value.alarmEnable">
+            <lv-form-item>
+                <lv-form-label lvRequired>{{alarmThresholdLabel}}</lv-form-label>
+                <lv-form-control [lvErrorTip]='rangeErrorTip'>
+                    <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right">
+                        <input lv-input formControlName="alarmThreshold" [placeholder]='rangeValueLabel' />
+                    </lv-input-group>
+                    <ng-template #unitTpl>
+                        <lv-select [lvOptions]="recoverValueUnits" formControlName="alarmLimitValueUnit"
+                            class="capacity-unit" lvValueKey="value"></lv-select>
+                    </ng-template>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </ng-container>
+</lv-form>

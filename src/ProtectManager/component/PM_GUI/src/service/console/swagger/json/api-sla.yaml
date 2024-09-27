@@ -1,0 +1,1306 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: sla-api
+paths:
+  /v1/slas:
+    post:
+      x-dr-role: 'N'
+      x-request-examples-description-1: 安全一体机场景，应用类型固定为CloudBackupFileSystem，最多4个快照策略，type固定为backup，action固定为snapshot，附加参数包括：是否重试auto_retry、重试次数auto_retry_times、重试等待分钟数auto_retry_wait_minutes、是否安全快照is_security_snap、是否立即检测need_detect、失败告警alarm_after_failure
+      x-request-examples-url-2: /v1/slas
+      x-request-examples-text-2:
+        uuid: ''
+        name: test11
+        type: 1
+        application: vim.VirtualMachine
+        policy_list:
+          - uuid: ''
+            name: full
+            type: backup
+            action: full
+            retention:
+              retention_type: 2
+              retention_duration: 1
+              duration_unit: d
+            schedule:
+              trigger: 1
+              interval: 1
+              interval_unit: h
+              start_time: '2021-11-27'
+              window_start: '06:00:00'
+              window_end: '00:00:00'
+            ext_parameters:
+              fine_grained_restore: true
+              ensure_consistency_backup: true
+              qos_id: ''
+              auto_retry: true
+              auto_retry_times: 3
+              auto_retry_wait_minutes: 5
+      x-request-examples-2:
+        uuid: ''
+        name: test11
+        type: 1
+        application: vim.VirtualMachine
+        policy_list:
+          - uuid: ''
+            name: full
+            type: backup
+            action: full
+            retention:
+              retention_type: 2
+              retention_duration: 1
+              duration_unit: d
+            schedule:
+              trigger: 1
+              interval: 1
+              interval_unit: h
+              start_time: '2021-11-27'
+              window_start: '06:00:00'
+              window_end: '00:00:00'
+            ext_parameters:
+              fine_grained_restore: true
+              ensure_consistency_backup: true
+              qos_id: ''
+              auto_retry: true
+              auto_retry_times: 3
+              auto_retry_wait_minutes: 5
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,HyperDetect
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-request-examples-url-1: /v1/slas
+      x-request-examples-text-1:
+        uuid: ''
+        name: needdetect-2
+        type: 1
+        application: CloudBackupFileSystem
+        policy_list:
+          - uuid: ''
+            name: 生产快照
+            type: backup
+            action: snapshot
+            retention:
+              retention_type: 2
+              retention_duration: 2
+              duration_unit: d
+            schedule:
+              trigger: 1
+              interval: 1
+              interval_unit: d
+              start_time: '2023-02-08'
+              window_start: '03:00:00'
+              window_end: '06:00:00'
+            ext_parameters:
+              auto_retry: true
+              auto_retry_times: 3
+              auto_retry_wait_minutes: 5
+              is_security_snap: true
+              need_detect: true
+              alarm_after_failure: true
+      x-request-examples-1:
+        uuid: ''
+        name: needdetect-2
+        type: 1
+        application: CloudBackupFileSystem
+        policy_list:
+          - uuid: ''
+            name: 生产快照
+            type: backup
+            action: snapshot
+            retention:
+              retention_type: 2
+              retention_duration: 2
+              duration_unit: d
+            schedule:
+              trigger: 1
+              interval: 1
+              interval_unit: d
+              start_time: '2023-02-08'
+              window_start: '03:00:00'
+              window_end: '06:00:00'
+            ext_parameters:
+              auto_retry: true
+              auto_retry_times: 3
+              auto_retry_wait_minutes: 5
+              is_security_snap: true
+              need_detect: true
+              alarm_after_failure: true
+      tags:
+        - sla-api
+      operationId: createSLAUsingPOST
+      consumes:
+        - application/json
+      summary: 创建SLA
+      description: 创建SLA
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: slaDto
+          description: 创建SLA请求信息
+          required: true
+          schema:
+            $ref: '#/definitions/SlaDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              uuid: xxxxxxxxxxxx
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 0
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 分页查询SLA
+      description: 分页查询SLA
+      operationId: pageQueryUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page_no
+          in: query
+          required: false
+          description: 起始页
+          type: integer
+          format: int32
+          default: 0
+        - name: page_size
+          in: query
+          required: false
+          description: 每页大小
+          type: integer
+          format: int32
+          default: 20
+        - name: name
+          in: query
+          required: false
+          description: SLA名称
+          type: string
+          maxLength: 128
+        - name: orderBy
+          in: query
+          required: false
+          description: 排队范围
+          type: string
+          default: created_time
+          maxLength: 128
+        - name: orderType
+          in: query
+          required: false
+          description: 排队类型
+          type: string
+          default: asc
+          maxLength: 32
+        - name: types
+          in: query
+          required: false
+          description: SLA类型
+          type: array
+          items:
+            type: integer
+            format: int32
+        - name: applications
+          in: query
+          required: false
+          description: SLA应用类型
+          type: array
+          items:
+            type: string
+        - name: actions
+          in: query
+          required: false
+          description: SLA策略动作
+          type: array
+          items:
+            type: string
+        - name: isEnabled
+          in: query
+          required: false
+          description: SLA状态
+          type: boolean
+        - name: enabledList
+          in: query
+          required: false
+          description: SLA状态
+          type: array
+          items:
+            type: boolean
+        - name: isGlobal
+          in: query
+          required: false
+          description: 是否为默认SLA
+          type: boolean
+        - name: resourceSetId
+          in: query
+          required: false
+          description: 资源集ID
+          type: string
+          pattern: ^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$;
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SlaPageResponse'
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 1
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,HyperDetect
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 修改SLA
+      description: 修改SLA
+      operationId: modifySLAUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: slaDto
+          in: body
+          required: true
+          description: 修改SLA参数
+          schema:
+            $ref: '#/definitions/SlaDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              uuid: bf51fa6d-a14d-4264-b428-c75542dfc030
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 2
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,HyperDetect
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 批量删除SLA
+      description: 批量删除SLA
+      operationId: batchDeleteSLAUsingDELETE
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: slaBatchRequest
+          in: body
+          required: true
+          description: sla批量操作请求体
+          schema:
+            $ref: '#/definitions/SlaBatchRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              slaIds:
+                - xxxxxxxxxxxxxxxxxxx
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 3
+  /v1/slas/{slaId}:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-request-examples-url-1: /v1/slas/56defa38-52c1-4e65-9110-b29612c5973a
+      tags:
+        - sla-api
+      summary: 查询单个SLA
+      description: 查询指定SLA信息
+      operationId: querySLAUsingGET
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: slaId
+          in: path
+          required: true
+          type: string
+          description: SLA的id
+      responses:
+        '200':
+          description: SLA信息
+          schema:
+            $ref: '#/definitions/SlaDto'
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 5
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,HyperDetect
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 删除SLA
+      description: 删除SLA
+      operationId: deleteSLAUsingDELETE
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: slaId
+          in: path
+          required: true
+          type: string
+          description: SLA的id
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              uuid: xxxxxxxxxxxxxxxxxxx
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 4
+  /v1/hcs/projects:
+    get:
+      tags:
+        - sla-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: getHcsUserProjectsHaveOp
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/HcsProjectsPageResponse'
+          examples:
+            application/json: ''
+  /v1/slas/cyber:
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 批量删除SLA-cyber
+      description: 批量删除SLA-安全一体机
+      operationId: batchDeleteSLACyberUsingDELETE
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: slaBatchRequest
+          in: body
+          required: true
+          description: sla批量操作请求体
+          schema:
+            $ref: '#/definitions/SlaBatchRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              slaIds:
+                - xxxxxxxxxxxxxxxxxxx
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 3
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 修改SLA-cyber
+      description: 修改SLA-安全一体机
+      operationId: modifySLACyberUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: slaDto
+          in: body
+          required: true
+          description: 修改SLA参数
+          schema:
+            $ref: '#/definitions/SlaDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              uuid: bf51fa6d-a14d-4264-b428-c75542dfc030
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 2
+    post:
+      x-dr-role: 'N'
+      x-request-examples-description-1: 安全一体机场景，应用类型固定为CloudBackupFileSystem，最多4个快照策略，type固定为backup，action固定为snapshot，附加参数包括：是否重试auto_retry、重试次数auto_retry_times、重试等待分钟数auto_retry_wait_minutes、是否安全快照is_security_snap、是否立即检测need_detect、失败告警alarm_after_failure
+      x-request-examples-url-2: /v1/slas
+      x-request-examples-text-2:
+        uuid: ''
+        name: test11
+        type: 1
+        application: vim.VirtualMachine
+        policy_list:
+          - uuid: ''
+            name: full
+            type: backup
+            action: full
+            retention:
+              retention_type: 2
+              retention_duration: 1
+              duration_unit: d
+            schedule:
+              trigger: 1
+              interval: 1
+              interval_unit: h
+              start_time: '2021-11-27'
+              window_start: '06:00:00'
+              window_end: '00:00:00'
+            ext_parameters:
+              fine_grained_restore: true
+              ensure_consistency_backup: true
+              qos_id: ''
+              auto_retry: true
+              auto_retry_times: 3
+              auto_retry_wait_minutes: 5
+      x-request-examples-2:
+        uuid: ''
+        name: test11
+        type: 1
+        application: vim.VirtualMachine
+        policy_list:
+          - uuid: ''
+            name: full
+            type: backup
+            action: full
+            retention:
+              retention_type: 2
+              retention_duration: 1
+              duration_unit: d
+            schedule:
+              trigger: 1
+              interval: 1
+              interval_unit: h
+              start_time: '2021-11-27'
+              window_start: '06:00:00'
+              window_end: '00:00:00'
+            ext_parameters:
+              fine_grained_restore: true
+              ensure_consistency_backup: true
+              qos_id: ''
+              auto_retry: true
+              auto_retry_times: 3
+              auto_retry_wait_minutes: 5
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-request-examples-url-1: /v1/slas
+      x-request-examples-text-1:
+        uuid: ''
+        name: needdetect-2
+        type: 1
+        application: CloudBackupFileSystem
+        policy_list:
+          - uuid: ''
+            name: 生产快照
+            type: backup
+            action: snapshot
+            retention:
+              retention_type: 2
+              retention_duration: 2
+              duration_unit: d
+            schedule:
+              trigger: 1
+              interval: 1
+              interval_unit: d
+              start_time: '2023-02-08'
+              window_start: '03:00:00'
+              window_end: '06:00:00'
+            ext_parameters:
+              auto_retry: true
+              auto_retry_times: 3
+              auto_retry_wait_minutes: 5
+              is_security_snap: true
+              need_detect: true
+              alarm_after_failure: true
+      x-request-examples-1:
+        uuid: ''
+        name: needdetect-2
+        type: 1
+        application: CloudBackupFileSystem
+        policy_list:
+          - uuid: ''
+            name: 生产快照
+            type: backup
+            action: snapshot
+            retention:
+              retention_type: 2
+              retention_duration: 2
+              duration_unit: d
+            schedule:
+              trigger: 1
+              interval: 1
+              interval_unit: d
+              start_time: '2023-02-08'
+              window_start: '03:00:00'
+              window_end: '06:00:00'
+            ext_parameters:
+              auto_retry: true
+              auto_retry_times: 3
+              auto_retry_wait_minutes: 5
+              is_security_snap: true
+              need_detect: true
+              alarm_after_failure: true
+      tags:
+        - sla-api
+      operationId: createSLACyberUsingPOST
+      consumes:
+        - application/json
+      summary: 创建SLA-cyber
+      description: 创建SLA-安全一体机
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: slaDto
+          description: 创建SLA请求信息
+          required: true
+          schema:
+            $ref: '#/definitions/SlaDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              uuid: xxxxxxxxxxxx
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 0
+  /v1/slas/{slaId}/cyber:
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 删除SLA-cyber
+      description: 删除SLA-安全一体机
+      operationId: deleteSLACyberUsingDELETE
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: slaId
+          in: path
+          required: true
+          type: string
+          description: SLA的id
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              uuid: xxxxxxxxxxxxxxxxxxx
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 4
+  /v1/slas/active/{slaId}:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 激活SLA
+      description: 激活SLA
+      operationId: activeSLAUsingPost
+      parameters:
+        - name: slaId
+          in: path
+          required: true
+          type: string
+          description: SLA的Id
+          minLength: 1
+          maxLength: 64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          examples:
+            application/json:
+              uuid: bf51fa6d-a14d-4264-b428-c75542dfc030
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+  /v1/slas/deactive/{slaId}:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sla-api
+      summary: 禁用SLA
+      description: 禁用SLA
+      operationId: deactiveSLAUsingPost
+      parameters:
+        - name: slaId
+          in: path
+          required: true
+          type: string
+          description: SLA的Id
+          minLength: 1
+          maxLength: 64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+      x-order: 0
+definitions:
+  DemoInfo:
+    description: This is a demo
+    required:
+      - name
+    properties:
+      id:
+        type: string
+        description: 唯一标识ID
+        minLength: 32
+        maxLength: 36
+        readOnly: true
+        example: 28f61af50fc9452aa0ed5ea25c3cc3d3
+      name:
+        type: string
+        description: 名称
+        minLength: 2
+        maxLength: 64
+        example: MyDemo
+      description:
+        type: string
+        description: 描述
+        minLength: 2
+        maxLength: 512
+        example: this is a demo
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512
+  RetentionDto:
+    type: object
+    description: 保留策略
+    required:
+      - retention_type
+    properties:
+      retention_type:
+        type: integer
+        format: int32
+        description: 保留类型：1-永久保留 2-临时保留
+      duration_unit:
+        type: string
+        description: 保留周期单位[d/w/MO/y]
+        enum:
+          - d
+          - w
+          - MO
+          - 'y'
+      retention_duration:
+        type: integer
+        format: int32
+        description: 保留周期
+  ScheduleDto:
+    type: object
+    description: 策略调度信息
+    required:
+      - trigger
+    properties:
+      trigger:
+        type: integer
+        format: int32
+        description: 调度触发类型,1-周期执行，2-备份完立即执行，3-备份完指定时间执行, 4-指定时间周期执行
+        enum:
+          - 1
+          - 2
+          - 3
+          - 4
+      interval:
+        type: integer
+        format: int32
+        description: 调度间隔周期[分/小时/天/周/月]
+      interval_unit:
+        type: string
+        description: 调度间隔周期单位[m/h/d]
+        enum:
+          - m
+          - h
+          - d
+          - w
+      start_time:
+        type: string
+        format: date-time
+        description: 首次开始时间
+      window_start:
+        type: string
+        format: date-time
+        description: 时间窗开始时间
+      window_end:
+        type: string
+        format: date-time
+        description: 时间窗结束时间
+      days_of_month:
+        type: string
+        description: 每月的某些天
+        pattern: ^\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*$
+      days_of_year:
+        type: string
+        format: date
+        description: 每年的某天
+      days_of_week:
+        type: array
+        items:
+          type: string
+        description: 每周的周几
+      trigger_action:
+        type: string
+        description: 指定时间调度类型
+        enum:
+          - year
+          - month
+          - week
+  PolicyDto:
+    type: object
+    required:
+      - name
+      - retention
+      - schedule
+      - type
+    properties:
+      uuid:
+        type: string
+        description: 策略id
+      name:
+        type: string
+        description: 策略名称
+        pattern: ^[a-zA-Z_\\u4e00-\\u9fa5]{1}[\\u4e00-\\u9fa5\\w-]*$
+      action:
+        type: string
+        description: 策略动作：全量备份、日志备份、累积增量备份、差异增量备份、归档、复制
+        enum:
+          - full
+          - log
+          - cumulative_increment
+          - difference_increment
+          - replication
+          - archiving
+          - permanent_increment
+          - snapshot
+      ext_parameters:
+        type: object
+        description: 扩展参数
+      retention:
+        description: 保留策略
+        $ref: '#/definitions/RetentionDto'
+      schedule:
+        description: 策略调度信息
+        $ref: '#/definitions/ScheduleDto'
+      type:
+        type: string
+        description: 策略类型：备份策略、归档策略、复制策略
+        enum:
+          - backup
+          - archiving
+          - replication
+  SlaDto:
+    type: object
+    required:
+      - name
+      - type
+      - application
+      - policy_list
+    properties:
+      name:
+        type: string
+        description: SLA名称
+        pattern: ^[a-zA-Z_\\u4e00-\\u9fa5]{1}[\\u4e00-\\u9fa5\\w-]*$
+      type:
+        type: integer
+        format: int32
+        description: SLA类型，1-备份 2-容灾
+        enum:
+          - 1
+          - 2
+      application:
+        type: string
+        description: 应用类型
+        enum:
+          - Common
+          - Fileset
+          - Oracle
+          - vim.VirtualMachine
+          - Replica
+          - HDFSFileset
+          - HBaseBackupSet
+          - HiveBackupSet
+          - NasShare
+          - NasFileSystem
+          - GaussDBT
+          - MySQL
+          - Redis
+          - KingBase
+          - ClickHouse
+          - PostgreSQL
+          - HCSCloudHost
+          - Dameng
+          - OpenGauss
+          - ElasticSearchBackupSet
+          - KubernetesStatefulSet
+          - FusionCompute
+          - SQLServer
+      created_time:
+        type: string
+        format: date-time
+        description: SLA创建时间
+      user_id:
+        type: string
+        description: 创建SLA的用户
+      policy_list:
+        type: array
+        items:
+          $ref: '#/definitions/PolicyDto'
+        description: SLA对应的策略集合
+      is_global:
+        type: boolean
+        description: 是否为全局SLA
+        default: false
+      resourceCount:
+        type: integer
+        format: int32
+        description: 关联资源数量
+      archivalCount:
+        type: integer
+        format: int32
+        description: 归档策略个数
+      replicationCount:
+        type: integer
+        format: int32
+        description: 复制策略个数
+      uuid:
+        type: string
+        description: SLA Id
+  SlaPageResponse:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int64
+        description: sla总量
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      pageNo:
+        type: integer
+        format: int64
+        description: 当前页
+      pageSize:
+        type: integer
+        format: int64
+        description: 每页大小
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/SlaDto'
+        description: Sla列表对象
+  SlaBatchRequest:
+    type: object
+    description: SLA批量操作请求体
+    required:
+      - slaIds
+    properties:
+      slaIds:
+        type: array
+        description: 请求删除的sla的id
+        minItems: 1
+        maxItems: 100
+        items:
+          type: string
+  HcsUserRegionName:
+    type: object
+    properties:
+      zh_cn:
+        type: string
+      en_us:
+        type: string
+  HcsUserRegion:
+    type: object
+    properties:
+      region_id:
+        type: string
+      region_status:
+        type: string
+      region_name:
+        $ref: '#/definitions/HcsUserRegionName'
+  HcsUserProjectInfo:
+    type: object
+    properties:
+      regions:
+        type: array
+        items:
+          $ref: '#/definitions/HcsUserRegion'
+      id:
+        type: string
+      name:
+        type: string
+      iam_project_name:
+        type: string
+      display_name:
+        type: string
+      description:
+        type: string
+      enabled:
+        type: boolean
+      domain_id:
+        type: string
+      tenant_id:
+        type: string
+      tenant_name:
+        type: string
+      level:
+        type: string
+      role_id:
+        type: string
+      role_name:
+        type: string
+      is_shared:
+        type: boolean
+  HcsProjectsPageResponse:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int32
+      projects:
+        type: array
+        items:
+          $ref: '#/definitions/HcsUserProjectInfo'

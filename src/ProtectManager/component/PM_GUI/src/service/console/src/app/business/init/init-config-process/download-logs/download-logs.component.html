@@ -1,0 +1,12 @@
+
+  <lv-pro-table
+    #dataTable
+    [config]="tableConfig"
+    [data]="tableData"
+  ></lv-pro-table>
+
+  <ng-template #errorCodeTpl  let-item>
+      <span [innerHTML]="
+      (item.errorCode | i18n: item.errorParams|| []) | nil
+    "></span>
+  </ng-template>

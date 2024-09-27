@@ -1,0 +1,778 @@
+<lv-tabs lvType="card" *ngIf="isTask && (backupTeams.length || archiveTeams.length || replicationTeams.length)">
+    <ng-container *ngIf="backupTeams.length">
+        <lv-tab [lvTitle]="'common_backup_policy_label' | i18n">
+            <ng-container *ngTemplateOutlet="backupTeamsTpl"></ng-container>
+        </lv-tab>
+    </ng-container>
+    <ng-container *ngIf="archiveTeams.length">
+        <lv-tab [lvTitle]="'protection_archival_policy_label' | i18n">
+            <ng-container *ngTemplateOutlet="archiveTeamsTpl"></ng-container>
+        </lv-tab>
+    </ng-container>
+    <ng-container *ngIf="replicationTeams.length">
+        <lv-tab [lvTitle]="'common_replication_policy_label' | i18n">
+            <ng-container *ngTemplateOutlet="replicationTeamsTpl"></ng-container>
+        </lv-tab>
+    </ng-container>
+    <ng-container
+        *ngIf="specialApplication.includes(job.sourceSubType) && job.type === dataMap.Job_type.backup_job.value,">
+        <lv-tab [lvTitle]="'insight_job_advance_protect_params_label' | i18n">
+            <aui-protect-parameter-detail [job]="job"></aui-protect-parameter-detail>
+        </lv-tab>
+    </ng-container>
+</lv-tabs>
+
+
+<lv-tabs class="tabs-content-gutter-xl" [(lvActiveIndex)]="activeIndex" *ngIf="!isTask">
+    <ng-container *ngIf="backupTeams.length">
+        <lv-tab [lvTitle]="'common_backup_policy_label' | i18n" [lvId]="'0'">
+            <ng-container *ngTemplateOutlet="backupTeamsTpl"></ng-container>
+        </lv-tab>
+    </ng-container>
+    <ng-container *ngIf="archiveTeams.length">
+        <lv-tab [lvTitle]="'protection_archival_policy_label' | i18n" [lvId]="'2'">
+            <ng-container *ngTemplateOutlet="archiveTeamsTpl"></ng-container>
+        </lv-tab>
+    </ng-container>
+    <ng-container *ngIf="replicationTeams.length">
+        <lv-tab [lvTitle]="'common_replication_policy_label' | i18n" [lvId]="'3'">
+            <ng-container *ngTemplateOutlet="replicationTeamsTpl"></ng-container>
+        </lv-tab>
+    </ng-container>
+    <!-- 关联资源 -->
+    <lv-tab [lvTitle]="'common_associated_resource_label' | i18n" [lvId]="'1'">
+        <ng-template lv-tab-lazy>
+            <aui-sla-associate-resource [sla]="sla"></aui-sla-associate-resource>
+        </ng-template>
+    </lv-tab>
+</lv-tabs>
+
+<ng-template #backupTeamsTpl>
+    <lv-form [lvLabelColon]="true">
+        <ng-container *ngFor="let item of backupTeams">
+            <div class="aui-gutter-column-lg">
+                <div class="aui-gutter-column-md">
+                    <lv-group lvGutter="8px">
+                        <ng-container *ngIf="_includes(['Gold','Silver','Bronze'],sla.name); else elseTemplate">
+                            <h3>{{i18n.get(slaBackupName[item.action])}}</h3>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                            <h3>{{item.name + (i18n.isEn?' ': '') + '(' + i18n.get(slaBackupName[item.action]) + ')'}}
+                            </h3>
+                        </ng-template>
+                        <span *ngIf="!!item?.triggering">({{'insight_job_sla_trigger_label' | i18n}})</span>
+                    </lv-group>
+                </div>
+
+                <!--周期执行-->
+                <ng-container *ngIf="item.trigger === scheduleTrigger.PERIOD_EXECUTE">
+                    <lv-form-item>
+                        <lv-form-label>{{'protection_backup_frequency_label' | i18n}}</lv-form-label>
+                        <lv-form-control>
+                            <ng-container *ngIf="i18n.isEn">
+                                {{'common_every_label' | i18n}} {{item.interval}} {{item.interval_unit |
+                                textMap: 'Interval_Unit'}}
+                                {{'common_english_since_low_case_label' | i18n}}
+                                {{item.start_time | date: item.action ===
+                                policyAction.LOG
+                                ?
+                                'yyyy-MM-dd HH:mm:ss':'yyyy-MM-dd'}}
+                            </ng-container>
+                            <ng-container *ngIf="!i18n.isEn">
+                                {{'common_from_label' | i18n}}{{item.start_time | date: item.action ===
+                                policyAction.LOG
+                                ?
+                                'yyyy-MM-dd HH:mm:ss':'yyyy-MM-dd'}}{{'common_start_label'
+                                | i18n}}{{'common_comma_label' | i18n}}{{'common_every_label' |
+                                i18n}}{{item.interval}}{{item.interval_unit |
+                                textMap: 'Interval_Unit'}}
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                    <lv-form-item
+                        *ngIf="sla.application !== dataMap.Application_Type.HBaseBackupSet.value || item.action !== policyAction.LOG">
+                        <lv-form-label>{{'protection_copies_retention_label' | i18n}}</lv-form-label>
+                        <lv-form-control>
+                            <ng-container *ngIf="i18n.isEn">
+                                {{item.retention_duration}} {{item.duration_unit | textMap:'Interval_Unit'}}
+                            </ng-container>
+                            <ng-container *ngIf="!i18n.isEn">
+                                {{item.retention_duration}}{{item.duration_unit | textMap:'Interval_Unit'}}
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                    <lv-form-item *ngIf="item.action !== policyAction.LOG">
+                        <lv-form-label>{{'protection_time_window_backup_label'|i18n}}</lv-form-label>
+                        <lv-form-control>
+                            <ng-container *ngIf="i18n.isEn">
+                                {{'common_english_backup_allowed_from_label' | i18n}} {{item.window_start |
+                                date:'HH:mm:ss'}}
+                                {{'common_english_to_low_case_label' | i18n}} {{item.window_end | date: 'HH:mm:ss'}}
+                            </ng-container>
+                            <ng-container *ngIf="!i18n.isEn">
+                                {{'common_from_label' | i18n}}{{item.window_start |
+                                date:'HH:mm:ss'}}{{'common_to_label' |
+                                i18n}} {{item.window_end | date: 'HH:mm:ss'}}
+                                {{'protection_allow_backup_label'|i18n}}
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+
+                <!--指定时间执行-->
+                <ng-container *ngIf="item.trigger === scheduleTrigger.SPECIFIED_TIME">
+                    <!--按年-->
+                    <lv-form-item *ngIf="item.trigger_action === daysOfType.DaysOfYear">
+                        <lv-form-label>
+                            {{'protection_backup_frequency_label' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control>
+                            <ng-container *ngIf="i18n.isEn">
+                                {{item.days_of_year | date:
+                                'MMM dd'}} {{'common_english_of_every_year_lower_label' | i18n}}
+                            </ng-container>
+                            <ng-container *ngIf="!i18n.isEn">
+                                {{'common_every_year_label' | i18n}}{{item.days_of_year | date:
+                                'MM'}}{{'common_month_label' | i18n}}{{item.days_of_year | date:
+                                'dd'}}{{'common_date_day_label'|i18n}}
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                    <!--按月-->
+                    <lv-form-item *ngIf="item.trigger_action === daysOfType.DaysOfMonth">
+                        <lv-form-label>
+                            {{'protection_backup_frequency_label' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control>
+                            <!--按月-最后一天-->
+                            <ng-container *ngIf="item.days_of_month_type === daysOfMonthType.lastDay.value">
+                                <ng-container *ngIf="i18n.isEn">
+                                    {{'common_english_the_last_day_of_every_month_label' | i18n}}
+                                </ng-container>
+                                <ng-container *ngIf="!i18n.isEn">
+                                    {{'common_every_month_label' | i18n}}{{'common_lasts_day_label' | i18n}}
+                                </ng-container>
+                            </ng-container>
+                            <!--按月-指定日期-->
+                            <ng-container *ngIf="item.days_of_month_type === daysOfMonthType.specifiedDate.value">
+                                <ng-container *ngIf="i18n.isEn">
+                                    {{'common_english_days_up_case_label' | i18n}} {{item.days_of_month}}
+                                    {{'common_english_of_every_month_label' | i18n}}
+                                </ng-container>
+                                <ng-container *ngIf="!i18n.isEn">
+                                    {{'common_every_month_label' |
+                                    i18n}}{{item.days_of_month}}{{'common_date_day_label'|i18n}}
+                                </ng-container>
+
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                    <!--按周-->
+                    <lv-form-item *ngIf="item.trigger_action === daysOfType.DaysOfWeek">
+                        <lv-form-label>
+                            {{'protection_backup_frequency_label' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control>
+                            <ng-container *ngIf="i18n.isEn">
+                                <ng-container *ngFor="let week of item.days_of_week;first as isFirst;last as isLast">
+                                    {{week | textMap: 'Days_Of_Week'}}
+                                    <ng-container *ngIf="!isLast">,</ng-container>
+                                </ng-container>
+                                {{'common_english_of_every_week_label' | i18n}}
+                            </ng-container>
+                            <ng-container *ngIf="!i18n.isEn">
+                                {{'common_every_week_label' | i18n}}
+                                <ng-container *ngFor="let week of item.days_of_week;first as isFirst;last as isLast">
+                                    {{week | textMap: 'Days_Of_Week'}}
+                                    <ng-container *ngIf="!isLast">,</ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                    <lv-form-item>
+                        <lv-form-label>{{'protection_copies_retention_label' | i18n}}</lv-form-label>
+                        <lv-form-control>
+                            <ng-container *ngIf="i18n.isEn">
+                                {{item.specified_retention_duration}} {{item.specified_duration_unit | textMap:
+                                'Interval_Unit'}}
+                            </ng-container>
+                            <ng-container *ngIf="!i18n.isEn">
+                                {{item.specified_retention_duration}}{{item.specified_duration_unit | textMap:
+                                'Interval_Unit'}}
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                    <lv-form-item>
+                        <lv-form-label>{{'protection_time_window_backup_label'|i18n}}</lv-form-label>
+                        <lv-form-control>
+                            <ng-container *ngIf="i18n.isEn">
+                                {{'common_english_backup_allowed_from_label' | i18n}} {{item.specified_window_start |
+                                date:
+                                'HH:mm:ss'}} {{'common_english_to_low_case_label'
+                                | i18n}} {{item.specified_window_end | date:
+                                'HH:mm:ss'}}
+                            </ng-container>
+                            <ng-container *ngIf="!i18n.isEn">
+                                {{'common_from_label' | i18n}}{{item.specified_window_start | date:
+                                'HH:mm:ss'}}{{'common_to_label'
+                                | i18n}}{{item.specified_window_end | date:
+                                'HH:mm:ss'}}{{'protection_allow_backup_label'|i18n}}
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+
+                <ng-container
+                    *ngIf="sla.application === appType.HBase && [policyAction.FULL, policyAction.INCREMENT].includes(item.action)">
+                    <lv-form-item>
+                        <lv-form-label>
+                            {{'protection_keep_snapshot_label' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control>
+                            {{item.is_reserved_latest_snapshot | textMap: 'Switch_Status'}}
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+            </div>
+        </ng-container>
+        <ng-container
+            *ngIf="!_includes([appType.GBase, appType.Vmware, appType.Common, appType.LocalFileSystem, appType.LocalLun], sla.application)">
+            <aui-advanced-parameters [appType]="sla.application" [formGroup]="formGroup" [data]="backupTeams"
+                [isSlaDetail]="true">
+            </aui-advanced-parameters>
+        </ng-container>
+        <ng-container [ngSwitch]="sla.application"
+            *ngIf="_includes([appType.GBase, appType.Vmware, appType.Common, appType.LocalFileSystem, appType.LocalLun], sla.application)">
+            <div class="aui-gutter-column-lg">
+                <ng-container *ngSwitchCase="appType.Common">
+                    <aui-general-advanced-parameter [formGroup]="formGroup" [data]="backupTeams" [isSlaDetail]="true">
+                    </aui-general-advanced-parameter>
+                </ng-container>
+                <ng-container *ngSwitchCase="appType.Vmware">
+                    <aui-vmware-advanced-parameter [formGroup]="formGroup" [data]="backupTeams" [isSlaDetail]="true">
+                    </aui-vmware-advanced-parameter>
+                </ng-container>
+                <ng-container *ngSwitchCase="appType.LocalFileSystem">
+                    <aui-local-file-system-advanced-parameter [formGroup]="formGroup" [data]="backupTeams"
+                        [isSlaDetail]="true">
+                    </aui-local-file-system-advanced-parameter>
+                </ng-container>
+                <ng-container *ngSwitchCase="appType.LocalLun">
+                    <aui-local-file-system-advanced-parameter [formGroup]="formGroup" [data]="backupTeams"
+                        [isSlaDetail]="true">
+                    </aui-local-file-system-advanced-parameter>
+                </ng-container>
+            </div>
+        </ng-container>
+    </lv-form>
+</ng-template>
+
+<ng-template #archiveTeamsTpl>
+    <lv-form [lvLabelColon]="true">
+        <ng-container *ngFor="let item of archiveTeams;let index = index">
+            <div class="aui-gutter-column-lg">
+                <div class="aui-gutter-column-md">
+                    <h3>{{'common_policy_params_label' | i18n: [index + 1]}}</h3>
+                </div>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'common_name_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-group lvGutter="8px">
+                            {{item.name | nil}}
+                            <span *ngIf="!!item?.triggering">({{'insight_job_sla_trigger_label' | i18n}})</span>
+                        </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_archive_storage_type_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{item.protocol | textMap: 'Archival_Protocol'}}
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item *ngIf="item.protocol === archivalProtocol.objectStorage.value">
+                    <lv-form-label>
+                        {{'protection_archive_storage_name_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{storageNames.length ?
+                        find(storageNames, {repositoryId: item.storage_id}) ?
+                        find(storageNames, {repositoryId: item.storage_id})['name'] : '--' :'--'
+                        }}
+                    </lv-form-control>
+                </lv-form-item>
+
+                <lv-form-item *ngIf="item.protocol === archivalProtocol.tapeLibrary.value">
+                    <lv-form-label>
+                        {{'protection_archive_storage_name_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{getNodeName(item)}}
+                    </lv-form-control>
+                </lv-form-item>
+
+                <lv-form-item *ngIf="item.protocol === archivalProtocol.tapeLibrary.value">
+                    <lv-form-label>
+                        {{'system_archive_storage_pool_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{getMediaName(item)}}
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item *ngIf="item.protocol === archivalProtocol.tapeLibrary.value">
+                    <lv-form-label>
+                        {{'common_retention_policy_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{getMediaType(item) | nil}}
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>{{'protection_archive_time_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <ng-container *ngIf="item.trigger === dataMap.Archive_Trigger.periodArchive.value">
+                            {{'protection_every_label' | i18n}}{{item.interval}}{{item.interval_unit | textMap:
+                            'Interval_Unit'}}{{'protection_archive_one_label' |
+                            i18n}}{{'common_comma_label'|i18n}}{{'protection_last_time_label'|i18n:[]:
+                            true}}{{item.start_time | date: 'yyyy-MM-dd HH:mm:ss'}}
+                        </ng-container>
+
+                        <ng-container *ngIf="item.trigger === dataMap.Archive_Trigger.immediatelyBackup.value">
+                            {{ sla.application === appType.Replica ? ('protection_replica_success_label' | i18n)
+                            :('protection_backup_success_label' | i18n)}}
+                        </ng-container>
+
+                        <ng-container *ngIf="item.trigger === dataMap.Archive_Trigger.archiveSpecifiedTime.value">
+                            {{'protection_archive_after_copy_label' |
+                            i18n}}{{item.backup_generation}}{{'protection_archive_after_days_label' | i18n}}
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+                <ng-container *ngIf="item.archive_target_type === archiveTargetType.archiveAllCopies.value">
+                    <lv-form-item>
+                        <lv-form-label>{{archiveTargetType.archiveAllCopies.label | i18n}}</lv-form-label>
+                        <lv-form-control>
+                            {{'protection_archival_policy_label' | i18n: []: true}}
+                            {{item.archiving_scope | textMap: 'Archive_Scope'}}
+                            <ng-container *ngIf="item.protocol === archivalProtocol.objectStorage.value">
+                                {{'common_comma_label'|i18n}}{{'common_retention_label'|i18n: []: true}}
+                                {{item.retention_duration}}{{item.duration_unit|textMap: 'Interval_Unit'}}
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+                <ng-container *ngIf="item.archive_target_type === archiveTargetType.specifiedDate.value">
+                    <lv-form-item>
+                        <lv-form-label>{{archiveTargetType.specifiedDate.label | i18n}}</lv-form-label>
+                        <lv-form-control>
+                            <ng-container *ngIf="item.protocol === archivalProtocol.tapeLibrary.value">
+                                <lv-group lvDirection='vertical' lvGutter="8px">
+                                    <lv-group *ngIf="item.copy_type_year">
+                                        {{'protection_choose_every_year_label' |
+                                        i18n}}{{item.generate_time_range_year |
+                                        textMap:
+                                        'Year_Time_Range'}}{{'protection_copy_archiving_label'|i18n}}
+                                    </lv-group>
+                                    <lv-group *ngIf="item.copy_type_month">
+                                        {{'protection_choose_every_month_label' |
+                                        i18n}}{{item.generate_time_range_month
+                                        |
+                                        textMap:
+                                        'Month_Time_Range'}}{{'protection_copy_archiving_label'|i18n}}
+                                    </lv-group>
+                                    <lv-group *ngIf="item.copy_type_week">
+                                        {{'protection_choose_every_week_label' |
+                                        i18n}}{{item.generate_time_range_week |
+                                        textMap:
+                                        'Days_Of_Week'}}{{'protection_copy_archiving_label'|i18n}}
+                                    </lv-group>
+                                </lv-group>
+                            </ng-container>
+                            <ng-container *ngIf="item.protocol !== archivalProtocol.tapeLibrary.value">
+                                <lv-group lvDirection='vertical' lvGutter="8px">
+                                    <lv-group *ngIf="item.copy_type_year">
+                                        {{'protection_choose_every_year_label' |
+                                        i18n}}{{item.generate_time_range_year |
+                                        textMap:
+                                        'Year_Time_Range'}}{{'protection_copy_archiving_retention_label'|i18n}}{{item.retention_duration_year}}{{'common_year_label'
+                                        | i18n}}
+                                    </lv-group>
+                                    <lv-group *ngIf="item.copy_type_month">
+                                        {{'protection_choose_every_month_label' |
+                                        i18n}}{{item.generate_time_range_month
+                                        |
+                                        textMap:
+                                        'Month_Time_Range'}}{{'protection_copy_archiving_retention_label'|i18n}}{{item.retention_duration_month}}{{'common_month_label'
+                                        | i18n}}
+                                    </lv-group>
+                                    <lv-group *ngIf="item.copy_type_week">
+                                        {{'protection_choose_every_week_label' |
+                                        i18n}}{{item.generate_time_range_week |
+                                        textMap:
+                                        'Days_Of_Week'}}{{'protection_copy_archiving_retention_label'|i18n}}{{item.retention_duration_week}}{{'common_weeks_label'
+                                        | i18n}}
+                                    </lv-group>
+                                </lv-group>
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+                <ng-container
+                    *ngIf="item.protocol === archivalProtocol.objectStorage.value && ![appType.CommonShare].includes(sla.application)">
+                    <lv-form-item>
+                        <lv-form-label>
+                            {{'common_limit_rate_policy_single_label' | i18n}}
+                            <i lv-icon="aui-icon-help" lv-tooltip="{{'common_limit_rate_policy_tip_label' | i18n}}"
+                                lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
+                                lvColorState='true'></i>
+                        </lv-form-label>
+                        <lv-form-control>
+                            {{qosNames.length ? find(qosNames, {uuid: item.qos_id}) ? find(qosNames, {uuid:
+                            item.qos_id})['name']: '--':'--'}}
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+                <!-- 驱动数量 -->
+                <lv-form-item *ngIf="item.protocol === archivalProtocol.tapeLibrary.value">
+                    <lv-form-label>
+                        {{'protection_archive_drive_num_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{item.driverCount}}
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item
+                    *ngIf="(autoIndexForObs && item.protocol === archivalProtocol.objectStorage.value) 
+                    || (autoIndexForTape && item.protocol === archivalProtocol.tapeLibrary.value)">
+                    <lv-form-label>
+                        {{'protection_auto_indexing_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{item.auto_index | textMap: 'Switch_Status' }}
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item *ngIf="item.protocol === archivalProtocol.objectStorage.value">
+                    <lv-form-label>{{'protection_network_access_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        {{item.network_access | textMap: 'Switch_Status'}}
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>{{'protection_job_failed_alarm_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        {{item.alarm_after_failure | textMap: 'Switch_Status'}}
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_auto_retry_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <ng-container *ngIf="!item.auto_retry">
+                            {{item.auto_retry | textMap: 'Switch_Status'}}
+                        </ng-container>
+                        <ng-container *ngIf="item.auto_retry">
+                            <ng-container *ngIf="i18n.isEn">
+                                {{'common_retry_times_label' | i18n: []:
+                                true}}{{item.auto_retry_times}} {{'common_times_label' |
+                                i18n}}{{'common_comma_label'|i18n}}
+                                {{'common_waiting_time_label' | i18n: []:
+                                true}}{{item.auto_retry_wait_minutes}} {{'common_minutes_label' | i18n}}
+                            </ng-container>
+                            <ng-container *ngIf="!i18n.isEn">
+                                {{'common_retry_times_label' | i18n: []:
+                                true}}{{item.auto_retry_times}}{{'common_times_label' |
+                                i18n}}{{'common_comma_label'|i18n}}
+                                {{'common_waiting_time_label' | i18n: []:
+                                true}}{{item.auto_retry_wait_minutes}}{{'common_minutes_label' | i18n}}
+                            </ng-container>
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item *ngIf="[appType.ImportCopy].includes(sla.application)">
+                    <lv-form-label>{{'protection_delete_original_import_copy_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        {{item.delete_import_copy | textMap: 'Switch_Status'}}
+                    </lv-form-control>
+                </lv-form-item>
+            </div>
+        </ng-container>
+    </lv-form>
+</ng-template>
+
+
+<ng-template #replicationTeamsTpl>
+    <lv-form [lvLabelColon]="true">
+        <ng-container *ngFor="let item of replicationTeams;let index = index">
+            <div class="aui-gutter-column-lg">
+                <div class="aui-gutter-column-md">
+                    <h3>{{'common_policy_params_label' | i18n: [index + 1]}}</h3>
+                </div>
+            </div>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'common_name_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-group lvGutter="8px">
+                        {{item.name | nil}}
+                        <span *ngIf="!!item?.triggering">({{'insight_job_sla_trigger_label' | i18n}})</span>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 复制模式 -->
+            <lv-form-item *ngIf="isDataBackup && item.replication_target_mode">
+                <lv-form-label>
+                    {{ 'protection_replication_policy_label' | i18n }}
+                </lv-form-label>
+                <lv-form-control>
+                    <div>
+                        <div *ngIf="item.replication_target_mode === replicationModeType.CROSS_DOMAIN">
+                            {{ 'protection_replication_cross_domain_label' | i18n }}
+                        </div>
+                        <div *ngIf="item.replication_target_mode === replicationModeType.INTRA_DOMAIN">
+                            {{ 'protection_replication_intra_domain_label' | i18n }}
+                        </div>
+                        <div *ngIf="item.replication_target_mode === replicationModeType.CROSS_CLOUD">
+                            {{ 'protection_replication_cross_cloud_label' | i18n }}
+                        </div>
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 复制模式在升级上来的SLA中默认为跨域 -->
+            <lv-form-item *ngIf="isDataBackup && !item.replication_target_mode">
+                <lv-form-label>
+                    {{ 'protection_replication_policy_label' | i18n }}
+                </lv-form-label>
+                <lv-form-control>
+                    <div>
+                        {{ 'protection_replication_cross_domain_label' | i18n }}
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 云环境 -->
+            <ng-container *ngIf="item.replication_target_mode === replicationModeType.CROSS_CLOUD">
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'protection_replication_cloud_env_label' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{find(externalSystems, {clusterId: +item.hcs_cluster_id})?.clusterName|nil}}
+                    </lv-form-control>
+                </lv-form-item>
+                <!-- 云环境租户名 -->
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'common_tenant_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{item.tenant_name | nil}}
+                    </lv-form-control>
+                </lv-form-item>
+                <!-- 用户名 -->
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'common_username_label' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{item?.vdc_name | nil}}
+                    </lv-form-control>
+                </lv-form-item>
+                <!-- 复制目标端 -->
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'protection_sla_replication_target_label' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{item?.region_code | nil}}
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <ng-container *ngIf="!isDmeUser">
+                <!-- 复制目标集群 -->
+                <lv-form-item
+                    *ngIf="item.replication_target_mode === replicationModeType.CROSS_DOMAIN || !item.replication_target_mode">
+                    <lv-form-label>{{'common_replication_targer_cluster_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        {{externalSystems.length ? find(externalSystems, {clusterId: +item.external_system_id}) ?
+                        find(externalSystems, {clusterId: +item.external_system_id})['clusterName']: '--': '--'}}
+                    </lv-form-control>
+                </lv-form-item>
+                <!-- 用户名 -->
+                <lv-form-item
+                    *ngIf="item.replication_target_mode === replicationModeType.CROSS_DOMAIN || !item.replication_target_mode">
+                    <lv-form-label>{{'protection_specify_user_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        {{item.userName | nil}}
+                    </lv-form-control>
+                </lv-form-item>
+                <!-- 本地存储类型 -->
+                <lv-form-item *ngIf="item.replication_target_mode !== replicationModeType.CROSS_CLOUD">
+                    <lv-form-label>
+                        {{'protection_sla_replicate_local_storage_type_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{item?.localStorageLabel}}
+                    </lv-form-control>
+                </lv-form-item>
+                <!-- 指定目标位置-->
+                <lv-form-item *ngIf="isDataBackup && item.replication_target_mode !== replicationModeType.CROSS_CLOUD">
+                    <lv-form-label>
+                        {{'specify_the_destination_location_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-group lvGutter="16px">
+                            <span>{{item.replication_storage_type | textMap:'backupStorageTypeSla'}}</span>
+                            <span>{{item?.remoteStorageLabel}}</span>
+                            <span>{{item.replication_storage_name | nil}}</span>
+                        </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+
+            <ng-container *ngIf="isDmeUser">
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_target_availability_zone_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{find(targetZoneOps,{value: item.cluster_esn})?.label | nil}}
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'common_resource_set_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{find(resourceOps,{value: item.project_id})?.label | nil}}
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <lv-form-item>
+                <lv-form-label>{{'protection_frequency_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="item.backupExecuteTrigger">
+                        {{'protection_sla_after_replication_label' | i18n}}
+                    </ng-container>
+                    <ng-container *ngIf="!item.backupExecuteTrigger">
+                        <ng-container *ngIf="i18n.isEn">
+                            {{'common_every_label' | i18n}} {{item.interval}} {{item.interval_unit |
+                            textMap:"Interval_Unit"}} {{'protection_replicate_one_label' | i18n}}
+                        </ng-container>
+                        <ng-container *ngIf="!i18n.isEn">
+                            {{'common_every_label' | i18n}}{{item.interval}}{{item.interval_unit |
+                            textMap:"Interval_Unit"}}{{'protection_replicate_one_label' | i18n}}
+                        </ng-container>
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 复制规则&保留规则 -->
+            <ng-container *ngIf="item.replication_target_type !== dataMap.slaReplicationRule.specify.value">
+                <lv-form-item>
+                    <lv-form-label>{{dataMap.slaReplicationRule.all.label | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <ng-container
+                            *ngIf="item.duration_unit === dataMap.Interval_Unit.persistent.value; else elseTemplate">
+                            <span>{{'protection_copy_all_permanent_retention_label' |
+                                i18n:[item.start_replicate_time |
+                                date:'yyyy-MM-dd HH:mm:ss']}}</span>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                            <span *ngIf="!i18n.isEn">
+                                {{'protection_copy_all_retention_label' | i18n:[item.start_replicate_time |
+                                date:
+                                'yyyy-MM-dd
+                                HH:mm:ss', item.retention_duration + (item.duration_unit | textMap:
+                                'Interval_Unit')]}}
+                            </span>
+                            <span *ngIf="i18n.isEn">
+                                {{'protection_copy_all_retention_label' | i18n:[item.start_replicate_time |
+                                date:
+                                'yyyy-MM-dd
+                                HH:mm:ss', item.retention_duration + ' ' + (item.duration_unit | textMap:
+                                'Interval_Unit')]}}
+                            </span>
+                        </ng-template>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <ng-container *ngIf="item.replication_target_type === dataMap.slaReplicationRule.specify.value">
+                <lv-form-item>
+                    <lv-form-label>{{dataMap.slaReplicationRule.specify.label | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <lv-group lvDirection='vertical' lvGutter="8px">
+                            <lv-group *ngIf="item.copy_type_year">
+                                {{'protection_choose_every_year_label' | i18n}}{{item.generate_time_range_year |
+                                textMap:
+                                'Year_Time_Range'}}{{'protection_copy_retention_label'|i18n}}{{item.retention_duration_year}}{{'common_years_label'
+                                | i18n}}
+                            </lv-group>
+                            <lv-group *ngIf="item.copy_type_month">
+                                {{'protection_choose_every_month_label' | i18n}}{{item.generate_time_range_month
+                                |
+                                textMap:
+                                'Month_Time_Range'}}{{'protection_copy_retention_label'|i18n}}{{item.retention_duration_month}}{{'common_months_label'
+                                | i18n}}
+                            </lv-group>
+                            <lv-group *ngIf="item.copy_type_week">
+                                {{'protection_choose_every_week_label' | i18n}}{{item.generate_time_range_week |
+                                textMap:
+                                'Days_Of_Week'}}{{'protection_copy_retention_label'|i18n}}{{item.retention_duration_week}}{{'common_weeks_label'
+                                | i18n}}
+                            </lv-group>
+                        </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <lv-form-item>
+                <lv-form-label>{{'protection_last_time_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    {{item.start_time | date: 'yyyy-MM-dd HH:mm:ss'}}
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="![appType.CommonShare].includes(sla.application)">
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'common_limit_rate_policy_single_label' | i18n}}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'common_limit_rate_policy_tip_label' | i18n}}"
+                            lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
+                            lvColorState='true'></i>
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{qosNames.length ? find(qosNames, {uuid: item.qos_id}) ? find(qosNames, {uuid:
+                        item.qos_id})['name']: '--':'--'}}
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <lv-form-item *ngIf="item.local_storage_type !== 'BasicDisk'">
+                <lv-form-label>{{'protection_data_redelete_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    {{item.link_deduplication | textMap: 'Switch_Status'}}
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>{{'system_data_compression_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    {{item.link_compression | textMap: 'Switch_Status'}}
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="![appType.GaussDBDWS, appType.CommonShare].includes(sla.application)">
+                <lv-form-item>
+                    <lv-form-label>{{'explore_anti_tampering_setting_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        {{item.is_worm | textMap: 'Switch_Status'}}
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <lv-form-item>
+                <lv-form-label>{{'protection_job_failed_alarm_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    {{item.alarm_after_failure | textMap: 'Switch_Status'}}
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </lv-form>
+</ng-template>

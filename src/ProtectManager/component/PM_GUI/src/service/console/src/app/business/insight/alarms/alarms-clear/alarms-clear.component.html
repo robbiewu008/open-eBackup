@@ -1,0 +1,53 @@
+<span class="description">{{
+  'insight_alarm_clear_confirm_label' | i18n
+}}</span>
+<lv-datatable
+  [lvData]="selectionData"
+  #lvTable
+  [lvPaginator]="page"
+  lvSize="small"
+>
+  <thead>
+    <tr>
+      <th lvCellKey="severityLabel">
+        {{ 'insight_alarm_severity_label' | i18n }}
+      </th>
+      <th lvCellKey="alarmName">{{ 'common_name_label' | i18n }}</th>
+      <th lvCellKey="sourceType">{{ 'insight_alarm_object_label' | i18n }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let item of lvTable.renderData">
+      <tr>
+        <td>{{ item.severityLabel }}</td>
+        <td>
+          <span lv-overflow lvTooltipTheme="light">{{
+            (isAlarm ? item.name : item.alarmName) | i18n
+          }}</span>
+        </td>
+        <td>
+          <span lv-overflow lvTooltipTheme="light">{{
+            (isAlarm ? item.objctType : item.sourceType) | i18n
+          }}</span>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</lv-datatable>
+<lv-paginator
+  [lvPageSize]="pageSize"
+  [hidden]="!selectionData"
+  #page
+  [lvShowPageSizeOptions]="false"
+  lvMode="simple"
+>
+</lv-paginator>
+
+<ng-template #headerTpl>
+  <div class="aui-custom-modal-container">
+    <i class="aui-custom-modal-icon" lv-icon="lv-icon-popup-danger-48"></i>
+    <div class="aui-custom-modal-title">
+      {{ 'common_alarms_warning_label' | i18n }}
+    </div>
+  </div>
+</ng-template>

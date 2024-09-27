@@ -1,0 +1,81 @@
+<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_name_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input formControlName='name' />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'explore_expression_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-input-lint>
+                <textarea placeholder="{{'explore_expression_example_label' | i18n}}" formControlName="expression"
+                    rows='6' maxlength="2000" lv-input style="resize: vertical;"></textarea>
+            </lv-input-lint>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+<h2 class="title-lg">{{'explore_chose_desensitize_rule_label' | i18n}}</h2>
+<button class="title-md" lv-button lvType='primary' (click)="addRules()">{{'common_add_label' | i18n}}</button>
+<div class="rule-list">
+    <lv-datatable [lvData]='ruleData' lvSize="small" #lvTable lvResize lvResizeMode="expand" [lvScroll]="{ x: '100%' }">
+        <thead>
+            <tr>
+                <th width="40px"></th>
+                <th lvCellKey='name' lvShowCustom>
+                    {{'common_name_label' | i18n}}
+                    <div lvCustom>
+                        <aui-custom-table-search (search)="searchByName($event)"
+                            filterTitle="{{'common_name_label' | i18n}}"></aui-custom-table-search>
+                    </div>
+                </th>
+                <th lvCellKey='create_method' lvShowFilter (lvFilterChange)="filterChange($event)"
+                    [(lvFilters)]="methodFilterMap" lvFilterCheckAll>
+                    {{'explore_anonymization_rule_mode_label' | i18n}}</th>
+                <th lvCellKey='type' lvShowFilter (lvFilterChange)="filterChange($event)" [(lvFilters)]="typeFilterMap"
+                    lvFilterCheckAll>
+                    {{'common_type_label' | i18n}}
+                </th>
+                <th lvCellKey='type_description'>{{'common_desc_label' | i18n}}</th>
+                <th lvCellKey='example'>{{'explore_rule_details_label' | i18n}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor='let item of lvTable.renderData'>
+                <tr
+                    [ngClass]='{"lv-table-row-highlight": lvTable.isSelected(item) || (selectedRule && selectedRule.name == item.name)}'>
+                    <td width="40px" (click)='selectionRow(item)'>
+                        <label lv-radio
+                            [ngModel]='lvTable.isSelected(item) || (selectedRule && selectedRule.name == item.name)'></label>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.name}}</span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.create_method | textMap: 'Senesitization_Create_Method'}}</span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.type}}</span>
+                    </td>
+                    <td>
+                        <span *ngIf="dataMapService.getValueConfig('Desensitization_Rule_Type',item.type)" lv-overflow>
+                            {{i18n.get(dataMapService.getValueConfig('Desensitization_Rule_Type',item.type).desc) |
+                            nil}}
+                        </span>
+                        <span *ngIf="!dataMapService.getValueConfig('Desensitization_Rule_Type',item.type)" lv-overflow>
+                            {{item.type_description | nil}}
+                        </span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.example}}</span>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+    <div class="aui-paginator-wrap">
+        <lv-paginator lvMode="simple" [lvShowPageSizeOptions]="false" [lvPageSize]='pageSize' [lvTotal]='total'
+            [lvPageIndex]='pageIndex' (lvPageChange)='pageChange($event)' [lvPageSizeOptions]="sizeOptions"
+            [hidden]="!total"></lv-paginator>
+    </div>
+</div>

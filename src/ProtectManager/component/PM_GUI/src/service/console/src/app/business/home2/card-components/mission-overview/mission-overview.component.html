@@ -1,0 +1,169 @@
+<div class="main">
+  <div class="header">
+    <div class="total-task-box jumpable" (click)="navigate({ type: 'all' })">
+      <div class="num navigator">{{ jobItem.totalItem }}</div>
+      <div class="title">{{ 'common_home_total_jobs_label' | i18n }}</div>
+    </div>
+
+    <div class="split-line"></div>
+
+    <div class="success-box jumpable" (click)="navigate({ type: 'success' })">
+      <div class="success-icon"></div>
+      <div>
+        <div class="num navigator">{{ jobItem.SUCCESS }}</div>
+        <div class="title">{{ 'common_home_successful_label' | i18n }}</div>
+      </div>
+    </div>
+    <div class="fail-box jumpable" (click)="navigate({ type: 'fail' })">
+      <div class="fail-icon"></div>
+      <div>
+        <div class="num navigator">
+          {{ jobItem.FAIL }}
+        </div>
+        <div class="title jumpable">
+          {{ 'common_home_failed_label' | i18n }}
+        </div>
+      </div>
+    </div>
+    <div class="stop-box jumpable" (click)="navigate({ type: 'stop' })">
+      <div class="stop-icon"></div>
+      <div>
+        <div class="num navigator">{{ jobItem.ABORTED }}</div>
+        <div class="title">{{ 'common_home_stopped_label' | i18n }}</div>
+      </div>
+    </div>
+
+    <div class="split-line"></div>
+
+    <div class="executing-box jumpable" (click)="navigate({ type: 'executing' })">
+      <div class="num navigator">{{ jobItem.RUNNING }}</div>
+      <div class="executing-box-footer">
+        <div class="executing-icon"></div>
+        <div class="title">{{ 'common_home_running_label' | i18n }}</div>
+      </div>
+    </div>
+    <div class="wait-box jumpable" (click)="navigate({ type: 'pending' })">
+      <div class="num navigator">{{ jobItem.PENDING }}</div>
+
+      <div class="wait-box-footer">
+        <div class="wait-icon"></div>
+        <div class="title">{{ 'common_home_queuing_label' | i18n }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="model-box">
+      <!-- 模型 -->
+      <!-- 生产环境 -->
+      <div class="production-environment">
+        <div class="title">
+          {{ 'common_home_production_environment_label' | i18n }}
+        </div>
+        <div *ngIf="backingUpNum !== 0" class="detail-box">
+          <!-- <i lv-icon="lv-icon-refresh" class="loading-refresh"></i> -->
+          <div class="icon"></div>
+          <span class="num">{{ backingUpNum }}</span
+          >正在备份
+        </div>
+      </div>
+      <!-- 备份 -->
+      <div
+        [class]="{
+          'backing-up': true,
+          'backing-up-abnormal': backingUpAbnormalNum > 0
+        }"
+        (click)="navigate({ taskType: 'backing-up' })"
+      >
+        <div *ngIf="backingUpAbnormalNum > 0" class="abnormal"></div>
+        <div class="title">{{ 'common_home_backup_label' | i18n }}</div>
+        <div *ngIf="backingUpAbnormalNum > 0" class="detail-box">
+          <div class="icon"></div>
+          <span class="num">{{ backingUpAbnormalNum }}</span>
+          {{ 'common_home_failed_backup_jobs_label' | i18n }}
+          <svg width="16" height="16" style="fill:#808080">
+            <use
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:href="#lv-icon-arrow-next"
+            ></use>
+          </svg>
+        </div>
+      </div>
+      <!-- 复制 -->
+      <div
+        *ngIf="hasDuplicate"
+        [class]="{
+          duplicate: true,
+          'duplicate-abnormal': duplicateAbnormalNum > 0
+        }"
+        (click)="navigate({ taskType: 'duplicate' })"
+      >
+        <div *ngIf="duplicateAbnormalNum > 0" class="abnormal"></div>
+        <div class="title">{{ 'common_home_replication_label' | i18n }}</div>
+        <div *ngIf="duplicateAbnormalNum > 0" class="detail-box">
+          <div class="icon"></div>
+          <span class="num">{{ duplicateAbnormalNum }}</span>
+          {{ 'common_home_failed_replication_jobs_label' | i18n }}
+          <svg width="16" height="16" style="fill:#808080">
+            <use
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:href="#lv-icon-arrow-next"
+            ></use>
+          </svg>
+        </div>
+      </div>
+      <div *ngIf="!hasDuplicate" class="duplicate-not-configured">
+        <div class="title">{{ 'common_home_replication_label' | i18n }}</div>
+      </div>
+      <!-- 归档 -->
+      <div
+        *ngIf="hasArchiving"
+        [class]="{
+          archiving: true,
+          'archiving-abnormal': archivingAbnormalNum > 0
+        }"
+        (click)="navigate({ taskType: 'archiving' })"
+      >
+        <div *ngIf="archivingAbnormalNum > 0" class="abnormal"></div>
+        <div class="title">{{ 'common_home_archiving_label' | i18n }}</div>
+        <div *ngIf="archivingAbnormalNum > 0" class="detail-box">
+          <div class="icon"></div>
+          <span class="num">{{ archivingAbnormalNum }}</span>
+          {{ 'common_home_failed_archive_jobs_label' | i18n }}
+          <svg width="16" height="16" style="fill:#808080">
+            <use
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:href="#lv-icon-arrow-next"
+            ></use>
+          </svg>
+        </div>
+      </div>
+      <div *ngIf="!hasArchiving" class="archiving-not-configured">
+        <div class="title">{{ 'common_home_archiving_label' | i18n }}</div>
+      </div>
+      <!-- 线 -->
+      <div
+        [class]="{
+          line: true,
+          'line-1': backingUpNum !== 0,
+          'line-1-not-work': backingUpNum === 0
+        }"
+      ></div>
+      <div
+        *ngIf="hasDuplicate"
+        [class]="{
+          line: true,
+          'line-2': duplicateNum !== 0,
+          'line-2-not-work': duplicateNum === 0
+        }"
+      ></div>
+      <div
+        *ngIf="hasArchiving"
+        [class]="{
+          line: true,
+          'line-3': archivingNum !== 0,
+          'line-3-not-work': archivingNum === 0
+        }"
+      ></div>
+    </div>
+  </div>
+</div>

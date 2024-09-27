@@ -1,0 +1,97 @@
+<h3 class="modal-table">{{'common_basic_info_label' | i18n}}</h3>
+<lv-form [lvLabelColon]='false' class="formGroup">
+    <lv-form-item>
+        <lv-form-label>{{'common_name_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            {{baseInfo.name | nil}}
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>{{'common_desc_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            {{baseInfo.description | nil}}
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+<div class="rule-table-container">
+    <h3 class="modal-table">{{'explore_identified_rule_label' | i18n}}</h3>
+    <lv-datatable [lvData]="identifiedData" [lvPaginator]="page1" lvSize="small" #lvTable1 lvResize
+        lvResizeMode="expand" [lvScroll]="{ x: '100%' }">
+        <thead>
+            <tr>
+                <th lvCellKey="name">{{'common_name_label' | i18n}}</th>
+                <th lvCellKey="create_method">{{'explore_anonymization_rule_mode_label' | i18n }}</th>
+                <th lvCellKey="expression">{{'explore_expression_label' | i18n }}</th>
+                <th lvCellKey="mask_name">{{'explore_desensitize_rule_label' | i18n }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of lvTable1.renderData">
+                <tr>
+                    <td>
+                        <span lv-overflow>{{item.name}}</span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.create_method | textMap: 'Senesitization_Create_Method'}}</span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.expression}}</span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.mask_name}}</span>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+    <div class="aui-paginator-wrap">
+        <lv-paginator #page1 lvMode="simple" [lvShowPageSizeOptions]="false" [hidden]="!lvTable1.renderData.length">
+        </lv-paginator>
+    </div>
+</div>
+<div class="rule-container">
+    <h3 class="modal-table">{{'explore_desensitize_rule_label' | i18n}}</h3>
+    <lv-datatable [lvData]="desensitizationData" [lvPaginator]="page2" lvSize="small" #lvTable2 lvResize
+        lvResizeMode="expand" [lvScroll]="{ x: '100%' }">
+        <thead>
+            <tr>
+                <th lvCellKey="name">{{'common_name_label' | i18n}}</th>
+                <th lvCellKey="create_method">{{'explore_anonymization_rule_mode_label' | i18n }}</th>
+                <th lvCellKey="type">{{'common_type_label' | i18n }}</th>
+                <th lvCellKey="type_description">{{'explore_rule_description_label' | i18n }}</th>
+                <th lvCellKey="example">{{'explore_rule_details_label' | i18n }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of lvTable2.renderData">
+                <tr>
+                    <td>
+                        <span lv-overflow>{{item.name}}</span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.create_method | textMap: 'Senesitization_Create_Method'}}</span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.type | textMap: 'Desensitization_Rule_Type'}}</span>
+                    </td>
+                    <td>
+                        <span *ngIf="dataMapService.getValueConfig('Desensitization_Rule_Type',item.type)" lv-overflow>
+                            {{i18n.get(dataMapService.getValueConfig('Desensitization_Rule_Type',item.type).desc) |
+                            nil}}
+                        </span>
+                        <span *ngIf="!dataMapService.getValueConfig('Desensitization_Rule_Type',item.type)" lv-overflow>
+                            {{item.type_description | nil}}
+                        </span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.example | nil}}</span>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+    <div class="aui-paginator-wrap">
+        <lv-paginator #page2 lvMode="simple" [lvShowPageSizeOptions]="false" [hidden]="!lvTable2.renderData.length">
+        </lv-paginator>
+    </div>
+</div>

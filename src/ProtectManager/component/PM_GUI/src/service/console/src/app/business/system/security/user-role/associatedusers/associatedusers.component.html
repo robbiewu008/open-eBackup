@@ -1,0 +1,22 @@
+<lv-datatable [lvData]="userData" #userTable lvResize lvSize="small">
+  <thead>
+    <tr>
+      <th lvCellKey="userName">{{ 'common_name_label' | i18n }}</th>
+      <th lvCellKey="description">{{ 'common_desc_label' | i18n }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let item of userTable.renderData">
+      <tr>
+        <td>{{ item.userName }}</td>
+        <td>
+          <span lv-overflow>
+            {{item.description | i18n | nil}}</span>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</lv-datatable>
+<lv-paginator [lvPageSize]="pageSize" [lvPageIndex]="pageIndex" [lvTotal]="total" #page [lvShowPageSizeOptions]="false"
+  lvMode="simple" [hidden]="!total" (lvPageChange)="userPageChange($event)">
+</lv-paginator>

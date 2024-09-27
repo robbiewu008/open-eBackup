@@ -1,0 +1,24 @@
+<div class="nodes-container">
+    <h1 class="nodes-title">
+        {{'system_servers_label' | i18n}}
+    </h1>
+    <div class="nodes-chart-container">
+        <div id="nodes-chart"></div>
+        <div>
+            <div class="capacity-nowrap margin-left-max margin-bottom-max">
+                <div class="status-circle-display-satisfied"></div>
+                <span class="status-number-display">
+                    {{onlineNode}}
+                </span>
+                <div class="status-label-display">{{'common_online_node_label' | i18n}}</div>
+            </div>
+            <div class="capacity-nowrap margin-left-max ">
+                <div class="status-circle-display-unsatisfied"></div>
+                <span class="status-number-display">
+                    {{offlineNode}}
+                </span>
+                <div class="status-label-display">{{'common_offline_node_label' | i18n}}</div>
+            </div>
+        </div>
+    </div>
+</div>

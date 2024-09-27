@@ -1,0 +1,150 @@
+<div>
+  <lv-alert
+    lvType="info"
+    lvClosable="false"
+    *ngIf="appUtilsService.isDistributed"
+  >
+    {{ 'common_config_service_network_tip_label' | i18n }}
+  </lv-alert>
+  <lv-alert
+    lvType="info"
+    lvClosable="false"
+    *ngIf="appUtilsService.isDecouple && serviceType === 'backup'"
+  >
+    {{ 'common_config_decouple_service_network_tip_label' | i18n }}
+  </lv-alert>
+  <lv-group lvGutter="8px" class="refresh-btn" *ngIf="isManual">
+    <button class="aui-button-icon" lv-button lvSize="auto" (click)="refresh()">
+      <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+    </button>
+  </lv-group>
+
+  <lv-datatable [lvData]="tableData" #lvTable>
+    <thead>
+      <tr>
+        <th width="64px"></th>
+        <th lvCellKey="manageIp">
+          {{ 'common_manage_network_ip_label' | i18n }}
+          <i
+            lv-icon="lv-icon-search"
+            [lvColorState]="true"
+            [ngClass]="{ active: !!queryManageIp }"
+            lv-popover
+            [lvPopoverContent]="manageIpTpl"
+            lvPopoverPosition="bottom"
+            lvPopoverTrigger="click"
+            #manageIpPopover="lvPopover"
+          ></i>
+        </th>
+        <th lvCellKey="port">
+          {{ 'common_selected_port_label' | i18n }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of lvTable.renderData">
+        <tr>
+          <td lvShowUnfold [(lvUnfold)]="item.expand" width="64px"></td>
+          <td>
+            {{ item.manageIp }}
+          </td>
+          <td>
+            <lv-group class="type-tip" lvGutter="14px">
+              <span>{{ item.port }}</span>
+              <lv-group
+                *ngIf="
+                  (item.port === 0 && serviceType === 'backup') ||
+                  (appUtilsService.isDistributed &&
+                    serviceType === 'archived' &&
+                    !isEverySelect &&
+                    item.port === 0)
+                "
+                lvGutter="4px"
+              >
+                <i lv-icon="lv-icon-status-failed" lvColorState="true"></i>
+                <span style="color: #f45c5e;">
+                  {{ 'common_selected_port_tip_label' | i18n }}
+                </span>
+              </lv-group>
+            </lv-group>
+          </td>
+        </tr>
+        <tr *ngIf="item.expand" lvInnerUnfold>
+          <td colspan="3" lvInnerUnfold>
+            <lv-datatable
+              [lvData]="item.ipPoolDtoList"
+              lvStripe
+              #lvSubTable
+              lvSize="small"
+              lvSelectionMode="multiple"
+              [lvSelection]="item.selection"
+              (lvSelectionChange)="selectionChange()"
+            >
+              <thead>
+                <tr>
+                  <th
+                    lvShowCheckbox
+                    width="64px"
+                    [lvRowsData]="lvSubTable.renderData"
+                    (lvCheckChange)="checkChange($event, item.manageIp)"
+                    *ngIf="isManual"
+                  ></th>
+                  <th>
+                    {{
+                      (isManual
+                        ? 'common_optional_port_label'
+                        : 'system_selected_port_label'
+                      ) | i18n
+                    }}
+                    <lv-pro-filter-search
+                      #filterSearch
+                      [value]="getfilterPortValue(item)"
+                      (search)="searchByPort($event, item)"
+                      (clear)="clearSearchByPort($event, item)"
+                    ></lv-pro-filter-search>
+                  </th>
+                  <th>
+                    {{ 'common_ip_address_mask_label' | i18n }}
+                    <lv-pro-filter-search
+                      #filterSearch
+                      [value]="getfilterIpValue(item)"
+                      (search)="searchByIpAdress($event, item)"
+                      (clear)="clearSearchByIpAdress($event, item)"
+                    ></lv-pro-filter-search>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let v of lvSubTable.renderData">
+                  <tr>
+                    <td
+                      width="64px"
+                      lvShowCheckbox
+                      [lvRowData]="v"
+                      (lvCheckChange)="checkChange($event, item.manageIp)"
+                      *ngIf="isManual"
+                    ></td>
+                    <td>
+                      <span lv-overflow>{{ v.iface_name }}</span>
+                    </td>
+                    <td>
+                      <span lv-overflow>{{ v.ip_address }}</span>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </lv-datatable>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </lv-datatable>
+</div>
+
+<ng-template #manageIpTpl>
+  <lv-search
+    [(ngModel)]="queryManageIp"
+    (lvSearch)="searchByManageIp($event)"
+    [lvFocus]="true"
+  ></lv-search>
+</ng-template>

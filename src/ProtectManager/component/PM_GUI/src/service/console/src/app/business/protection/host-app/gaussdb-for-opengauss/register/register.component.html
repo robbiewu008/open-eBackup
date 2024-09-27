@@ -1,0 +1,226 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_manage_side_address_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ '' | i18n }}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+      <input lv-input type="text" formControlName="address" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_business_side_address_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ '' | i18n }}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+      <input lv-input type="text" formControlName="businessAddress" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_iam_username_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="iamName"
+        [placeholder]="
+          i18n.get('common_please_enter_label', [
+            i18n.get('protection_iam_username_label')
+          ])
+        "
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_iam_password_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <aui-inupt-with-eye
+        formControlName="iamPassword"
+        [lvPasteAllowed]="false"
+        [placeholder]="
+          i18n.get('common_please_enter_label', [
+            i18n.get('protection_iam_password_label')
+          ])
+        "
+      ></aui-inupt-with-eye>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_iam_account_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="iamAccount"
+        [placeholder]="
+          i18n.get('common_please_enter_label', [
+            i18n.get('protection_iam_account_label')
+          ])
+        "
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_project_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="projectName"
+        [placeholder]="i18n.get('protection_project_name_placeholder_label')"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_project_id_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="projectId"
+        [placeholder]="i18n.get('protection_project_id_placeholder_label')"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_proxy_host_label' | i18n }}
+      <aui-agent-jumper-tips
+        [type]="i18n.get('common_project_label')"
+      ></aui-agent-jumper-tips>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <aui-agent-select [lvOptions]="proxyOptions" formControlName="node" lvValueKey="value" lvMode="multiple">
+      </aui-agent-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{'protection_xbsa_path_label' | i18n}}
+      <i lv-icon="aui-icon-help" lv-tooltip="{{'protetion_xbsa_path_tips_label' | i18n}}" lvTooltipTheme="light"
+        class="configform-constraint" lvColorState="true"></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="pathErrorTip">
+      <input lv-input type="text" formControlName="xbsaConfPath" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'explore_xbsa_ssl_cert_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-switch formControlName="xbsa"></lv-switch>
+      <ng-container *ngIf="formGroup.value.xbsa">
+        <div class="aui-gutter-column-md"></div>
+        <lv-form-item>
+          <lv-form-label [lvRequired]="requireCert">
+            {{ 'explore_root_cert_file_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control>
+            <lv-upload
+              lvAccept=".pem"
+              lvShowUpload="false"
+              [lvFilters]="rootCertFileFilters"
+              (lvFilesChange)="filesChange($event, 'rootCertFile')"
+              [lvPlaceholder]="
+                i18n.get('common_please_select_file_label', [
+                  '.pem',
+                  i18n.get('explore_root_cert_file_label')
+                ])
+              "
+            ></lv-upload>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label [lvRequired]="requireCert">
+            {{ 'explore_user_cert_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control>
+            <lv-upload
+              lvAccept=".crt"
+              lvShowUpload="false"
+              [lvFilters]="userCertFilters"
+              (lvFilesChange)="filesChange($event, 'userCert')"
+              [lvPlaceholder]="
+                i18n.get('common_please_select_file_label', [
+                  '.crt',
+                  i18n.get('explore_client_user_cert_label')
+                ])
+              "
+            ></lv-upload>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label [lvRequired]="requireCert">
+            {{ 'explore_user_private_key_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control>
+            <lv-upload
+              lvAccept=".key"
+              lvShowUpload="false"
+              [lvFilters]="userPrivateKeyFilters"
+              (lvFilesChange)="filesChange($event, 'userPrivateKey')"
+              [lvPlaceholder]="
+                i18n.get('common_please_select_file_label', [
+                  '.key',
+                  i18n.get('explore_client_user_private_key_label')
+                ])
+              "
+            ></lv-upload>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label lvRequired>
+            {{ 'protection_private_key_password_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="usernameErrorTip">
+            <aui-inupt-with-eye
+              formControlName="privateKeyPassword"
+              [lvPasteAllowed]="false"
+              [placeholder]="
+                i18n.get('explore_user_private_key_placeholder_label')
+              "
+            ></aui-inupt-with-eye>
+          </lv-form-control>
+        </lv-form-item>
+      </ng-container>
+      <div *ngIf="!formGroup.value.xbsa">
+        <i lv-icon="lv-icon-status-warning-info"></i>
+        <span class="aui-text-label">
+          {{ 'protection_register_cloud_cert_tips_label' | i18n }}
+        </span>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>

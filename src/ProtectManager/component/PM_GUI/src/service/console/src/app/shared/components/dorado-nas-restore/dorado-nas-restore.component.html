@@ -1,0 +1,268 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label>{{'protection_restore_to_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreLocation">
+                <lv-group [lvGutter]="'30px'">
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN"
+                        [lvDisabled]="restoreToNewLocationOnly || rowCopy?.resource_status === 'NOT_EXIST'"
+                        [lv-tooltip]="rowCopy?.resource_status === 'NOT_EXIST' ?
+                        ('protection_cloud_origin_restore_disabled_label' | i18n) :
+                        restoreToNewLocationOnly ?
+                        ('protection_origin_restore_disabled_label'| i18n) :
+                        ''">
+                        {{'common_restore_to_origin_location_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreLocationType.NEW">{{'common_restore_to_new_location_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio *ngIf="restoreType === restoreTypeEnum.FileRestore && !isNdmp"
+                        [lvValue]="restoreLocationType.NATIVE">
+                        {{'protection_native_position_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label>{{'common_location_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <input lv-input type="text" formControlName="originalLocation" />
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="(isNasFileSystemFileRestore || isCloudArchiveCopy) && !isNdmp">
+            <lv-form-item>
+                <lv-form-label >{{'explore_share_name_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <lv-select formControlName="share" [lvOptions]='shareOptions' lvValueKey="key" lvShowFilter
+                        lvFilterKey='label' lvFilterMode='contains'>
+                    </lv-select>
+                    <div *ngIf="formGroup.value.share !== ''">
+                        <i lv-icon="lv-icon-status-info" class="tip-icon" lvColorState='true'></i>
+                        <span class="tip-content">
+                            {{fileShareMode ===
+                            dataMap.Shared_Mode.nfs.value ? ('protection_nas_pg_restore_nfs_desc_label' | i18n) :
+                            ('protection_nas_pg_restore_cifs_desc_label' | i18n)}}
+                        </span>
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired>
+                    {{'protection_fqdn_ip_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_fqdn_ip_desc_label' | i18n}}"
+                        class="configform-constraint" lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+                    <input lv-input type="text" formControlName="shareIp" />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item *ngIf="fileShareMode === dataMap.Shared_Mode.cifs.value">
+                <lv-form-label lvRequired>
+                    {{'protection_auth_method_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select formControlName="auth_mode" [lvOptions]='authModeOptions' lvValueKey='value'>
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="formGroup.value.auth_mode === dataMap.Nas_Share_Auth_Mode.password.value">
+                <lv-form-item>
+                    <lv-form-label>{{'common_domain_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <input lv-input formControlName="domain" type="text" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'common_username_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <input lv-input formControlName="username" type="text" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <aui-inupt-with-eye formControlName="password"></aui-inupt-with-eye>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <ng-container *ngIf="formGroup.value.auth_mode === dataMap.Nas_Share_Auth_Mode.kerberos.value">
+                <lv-form-item>
+                    <lv-form-label lvRequired>
+                        {{'protection_select_kerberos_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-group lvGutter='8px'>
+                            <lv-select formControlName="kerberos" [lvOptions]='kerberosOptions' lvValueKey='value'
+                                lvShowFilter lvFilterKey='label' lvFilterMode='contains'>
+                            </lv-select>
+                            <button lv-button (click)='createKerberos()'>
+                                {{'common_create_label' | i18n}}
+                            </button>
+                        </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW">
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'protection_storage_device_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="equipment" [lvOptions]='equipmentOptions' lvValueKey="uuid"
+                    lvPlaceholder="{{'common_select_label'|i18n}}" lvShowFilter lvFilterKey='label'
+                    lvFilterMode='contains' [lvVirtualScroll]="equipmentOptions.length > 10">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="formGroup.value.equipment && isDoradoEquipment">
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'common_file_system_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <lv-select formControlName="fileSystem" [lvOptions]='fileSystemOptions' lvValueKey="uuid"
+                        lvShowFilter lvFilterKey='label' lvFilterMode='contains'
+                        [lvVirtualScroll]="fileSystemOptions.length > 10">
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+        <ng-container *ngIf="formGroup.value.equipment && !isNdmp">
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'explore_share_name_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="!(formGroup.value.equipment && !isDoradoEquipment)">
+                        <lv-select formControlName="share" [lvOptions]='shareOptions' lvValueKey="key" lvShowFilter
+                            lvFilterKey='label' lvFilterMode='contains'>
+                        </lv-select>
+                    </ng-container>
+                    <ng-container *ngIf="formGroup.value.equipment && !isDoradoEquipment">
+                        <lv-group lvGutter='8px'>
+                            <lv-select formControlName="share" [lvOptions]='shareOptions' lvValueKey="key" lvShowFilter
+                                lvFilterKey='label' lvFilterMode='contains'>
+                            </lv-select>
+                            <button lv-button (click)='createNasShare()'>
+                                {{'common_register_label' | i18n}}
+                            </button>
+                        </lv-group>
+                    </ng-container>
+                    <div *ngIf="formGroup.value.share !== ''">
+                        <i lv-icon="lv-icon-status-info" class="tip-icon" lvColorState='true'></i>
+                        <span class="tip-content">
+                            {{fileShareMode ===
+                            dataMap.Shared_Mode.nfs.value ? ('protection_nas_pg_restore_nfs_desc_label' | i18n) :
+                            ('protection_nas_pg_restore_cifs_desc_label' | i18n)}}
+                        </span>
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+        <ng-container *ngIf="isDoradoEquipment">
+            <lv-form-item>
+                <lv-form-label lvRequired>
+                    {{'protection_fqdn_ip_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_fqdn_ip_desc_label' | i18n}}"
+                        class="configform-constraint" lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+                    <input lv-input type="text" formControlName="shareIp" />
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+        <ng-container *ngIf="isDoradoEquipment">
+            <lv-form-item *ngIf="fileShareMode === dataMap.Shared_Mode.cifs.value">
+                <lv-form-label lvRequired>
+                    {{'protection_auth_method_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select formControlName="auth_mode" [lvOptions]='authModeOptions' lvValueKey='value'>
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="formGroup.value.auth_mode === dataMap.Nas_Share_Auth_Mode.password.value">
+                <lv-form-item>
+                    <lv-form-label>{{'common_domain_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <input lv-input formControlName="domain" type="text" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'common_username_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <input lv-input formControlName="username" type="text" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <aui-inupt-with-eye formControlName="password"></aui-inupt-with-eye>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <ng-container *ngIf="formGroup.value.auth_mode === dataMap.Nas_Share_Auth_Mode.kerberos.value">
+                <lv-form-item>
+                    <lv-form-label lvRequired>
+                        {{'protection_select_kerberos_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-group lvGutter='8px'>
+                            <lv-select formControlName="kerberos" [lvOptions]='kerberosOptions' lvValueKey='value'
+                                lvShowFilter lvFilterKey='label' lvFilterMode='contains'>
+                            </lv-select>
+                            <button lv-button (click)='createKerberos()'>
+                                {{'common_create_label' | i18n}}
+                            </button>
+                        </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.NATIVE">
+        <!-- 仅副本数据生成方式为对象存储归档时，节点可选 -->
+        <lv-form-item *ngIf="isOceanProtect">
+            <lv-form-label lvRequired>{{'system_servers_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="memberEsn" [lvOptions]='onlineNodeOps' lvValueKey="value" [lvDisabled]="!objStorageArchival">
+                </lv-select>
+                <div *ngIf="abNormalFlag && !objStorageArchival">
+                    <i lv-icon="lv-icon-status-info" class="tip-icon" lvColorState='true'></i>
+                    <span class="tip-content">
+                        {{'protection_nars_abnormal_node_tips_label' | i18n}}
+                    </span>
+                </div>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'common_file_system_label'|i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-group [lvColumns]='["auto", "120px"]' lvGutter='8px'>
+                    <lv-select formControlName="fileSystem" [lvOptions]='nativeFileSystemOptions' lvValueKey="key"
+                        lvShowFilter lvFilterKey='label' lvFilterMode='contains' [lvDisabled]="isOceanProtect && !formGroup.value.memberEsn">
+                    </lv-select>
+                    <button lv-button (click)='createFileSystem()' [disabled]="isOceanProtect && !formGroup.value.memberEsn">
+                        {{'common_create_label' | i18n}}
+                    </button>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container
+        *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW || rowCopy.resource_sub_type === dataMap.Resource_Type.NASShare.value || restoreType === restoreTypeEnum.FileRestore || isCloudArchiveCopy">
+        <lv-form-item>
+            <lv-form-label>{{'protection_over_write_rule_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-radio-group formControlName="originalType">
+                    <lv-group [lvGutter]="'20px'" lvDirection='vertical' class="mgt-8">
+                        <lv-radio [lvValue]="fileReplaceStrategy.Replace">{{'protection_overwrite_label' | i18n}}
+                        </lv-radio>
+                        <ng-container *ngIf="!(rowCopy.resource_sub_type === dataMap.Resource_Type.ndmp.value && this.resourceObj?.extendInfo?.protocol === dataMap.NasFileSystem_Protocol.ndmp.value)">
+                            <lv-radio [lvValue]="fileReplaceStrategy.Ignore">{{'protection_skip_label' | i18n}}</lv-radio>
+                            <lv-radio [lvValue]="fileReplaceStrategy.ReplaceOldFile">
+                                {{'protection_restore_replace_older_label' | i18n}}</lv-radio>
+                        </ng-container>    
+                    </lv-group>
+                </lv-radio-group>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>

@@ -1,0 +1,240 @@
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <lv-group lvGutter="8px" class="drill-title-group">
+            <h1>{{ 'explore_recovery_drill_label' | i18n }}</h1>
+            <lv-group lvGutter='4px' class="aui-link" (click)="gotoReport()" auiRolePermission
+                [rolePermission]="roleOperationMap.report">
+                <span>{{'common_create_report_label' | i18n}}</span>
+                <i lv-icon="aui-icon-open-link"></i>
+            </lv-group>
+        </lv-group>
+    </div>
+    <div class="over-view">
+        <lv-group lvGutter='14px' class="overview-group">
+            <div class="overview">
+                <lv-group lvGutter="8px" class="drill-title-group">
+                    <h2>
+                        {{ 'common_summary_label' | i18n }}
+                        <i lv-icon="aui-icon-help" [lv-tooltip]="summaryHelp" lvTooltipPosition="right"
+                            lvTooltipTheme="light" lvColorState='true'></i>
+                    </h2>
+                    <a lvDropdownPanelClass="job-resource-dropdown" class="tittle" lv-dropdown
+                        [lvDropdownMenus]="options">
+                        {{ overviewTimeText }}
+                        <i #lvDropdownTrigger lv-icon="lv-icon-triangle-down"></i></a>
+                </lv-group>
+                <lv-group [lvColumns]='["20%", "25%", "25%", "30%"]' class="drill-content-group">
+                    <img src="assets/img/drill-overview-clock.png" class="overview-img">
+                    <div class="result-container first">
+                        <h3>{{'explore_drill_times_label' | i18n}}</h3>
+                        <span class="result">{{executeCount | nil}}</span>
+                    </div>
+                    <div class="result-container">
+                        <h3>{{'explore_drill_success_rate_label' | i18n}}</h3>
+                        <span class="result" lv-overflow>
+                            <ng-container *ngIf="_isNumber(successRate); else elseTemplate">
+                                {{_round(successRate*100)}}%
+                            </ng-container>
+                        </span>
+                    </div>
+                    <div class="result-container">
+                        <h3>{{'explore_previous_recovery_time_label' | i18n}}</h3>
+                        <span class="result">
+                            <ng-container *ngIf="_isNumber(averageTime); else elseTemplate">
+                                {{appUtilsService.getDuration(averageTime*1000)}}
+                            </ng-container>
+                        </span>
+                    </div>
+                </lv-group>
+            </div>
+            <div class="abnormal-result">
+                <lv-group lvGutter="8px" class="drill-title-group">
+                    <h2>{{ 'explore_drill_abnormal_result_label' | i18n:[abnormalResultTotal] }}</h2>
+                    <a lvDropdownPanelClass="job-resource-dropdown" class="tittle" lv-dropdown
+                        [lvDropdownMenus]="joibOptions">
+                        {{ joibTimeText }}
+                        <i #lvDropdownTrigger lv-icon="lv-icon-triangle-down"></i></a>
+                </lv-group>
+                <div class="abnormal-table restore-lv-paginator-simple">
+                    <ng-container *ngIf="abnormalResult.length; else elseNoDataTemplate">
+                        <table>
+                            <tr>
+                                <td width='24px'></td>
+                                <td width='40%'>
+                                    <span class="aui-text-label">
+                                        {{'explore_drill_time_label' | i18n}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="aui-text-label mgl-td">
+                                        {{'common_name_label' | i18n}}
+                                    </span>
+                                </td>
+                            </tr>
+                            <ng-container *ngFor="let item of abnormalResult">
+                                <tr class="tr-border">
+                                    <td><i lv-icon="lv-icon-status-failed"></i></td>
+                                    <td>
+                                        <span class="aui-link" (click)="getJobDetail(item)" lv-overflow>
+                                            {{item.startTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil}}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span lv-overflow class="job-source-name mgl-td">
+                                            {{item.sourceName | nil}}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </table>
+                        <div class="aui-paginator-wrap">
+                            <lv-paginator lvMode="simple" lvShowPageSizeOptions="false" [lvPageSize]="abPageSize"
+                                [lvPageIndex]="abPageIndex" [lvTotal]="abnormalResultTotal"
+                                (lvPageChange)="abPageChange($event)" [hidden]="abnormalResultTotal < 6">
+                            </lv-paginator>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </lv-group>
+    </div>
+    <div class="aui-block plan-list">
+        <div class="exercisess-list">
+            <div class="aui-operation">
+                <lv-group [lvGutter]="groupCommon.middleRowGutter">
+                    <div auiRolePermission [rolePermission]="roleOperationMap.restoreExercise">
+                        <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData" [maxDisplayItems]="2">
+                        </lv-pro-button-group>
+                    </div>
+                    <lv-search (lvSearch)="searchPlan()" [lvPlaceHolder]="''" [(ngModel)]="drillName"></lv-search>
+                </lv-group>
+                <lv-group [lvGutter]="groupCommon.middleRowGutter">
+                    <lv-radio-group [(ngModel)]="selectedViewType" [lvGroupName]="'dataViewGroup'"
+                        (ngModelChange)="refresh()">
+                        <lv-group>
+                            <lv-radio [lvViewType]="'button'" [lvValue]="'0'" class="copy-resource-view">
+                                <i lv-icon="aui-icon-sla-list-view" [lvColorState]='true' class="list-view-mgt"></i>
+                            </lv-radio>
+                            <lv-radio [lvViewType]="'button'" [lvValue]="'1'" class="copy-resource-view">
+                                <i lv-icon="aui-icon-sla-card-view" [lvColorState]='true'></i>
+                            </lv-radio>
+                        </lv-group>
+                    </lv-radio-group>
+                    <button class="aui-button-icon" lv-button lvSize="auto" (click)="refresh()">
+                        <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                    </button>
+                </lv-group>
+            </div>
+            <ng-container *ngIf="selectedViewType === '0'; else elseCardTemplate">
+                <div class="list-container">
+                    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+                </div>
+            </ng-container>
+            <ng-template #elseCardTemplate>
+                <ng-container *ngIf="planData.length; else elseNoDataTemplate">
+                    <ng-container *ngFor="let item of planData">
+                        <div class="drill-card">
+                            <div class="card-header">
+                                <i lv-icon="aui-icon-recovery-drill-card-title" class="card-header-icon"></i>
+                                <h2 class="mgt-name" lv-overflow>{{item.name}}</h2>
+                            </div>
+                            <div class="card-content">
+                                <lv-group lvGutter='8px' [lvColumns]='["33%", "33%", "auto"]'>
+                                    <lv-group lvGutter='4px' lvDirection='vertical'>
+                                        <lv-group lvGutter='4px'>
+                                            <ng-container *ngIf="item.recentJobStatus">
+                                                <i
+                                                    lv-icon="{{item.recentJobStatus === dataMap.Job_status.success.value ? 'lv-icon-status-succeed' : 'lv-icon-status-failed'}}"></i>
+                                                <h2>{{item.recentJobStatus | textMap: 'Job_status'}}</h2>
+                                            </ng-container>
+                                            <ng-container *ngIf="!item.recentJobStatus">
+                                                <aui-status [value]="item.status" type="drillStatus"></aui-status>
+                                            </ng-container>
+                                        </lv-group>
+                                        <span class="aui-text-label">
+                                            {{'explore_recent_result_label' | i18n}}
+                                        </span>
+                                    </lv-group>
+                                    <lv-group lvGutter='4px' lvDirection='vertical'>
+                                        <h2>
+                                            <ng-container *ngIf="_isNumber(item.successRate); else elseTemplate">
+                                                {{_round(item.successRate*100)}}%
+                                            </ng-container>
+                                        </h2>
+                                        <span class="aui-text-label">
+                                            {{'explore_drill_success_rate_label' | i18n}}
+                                        </span>
+                                    </lv-group>
+                                    <lv-group lvGutter='4px' lvDirection='vertical'>
+                                        <h2>
+                                            <ng-container *ngIf="_isNumber(item.averageTime); else elseTemplate">
+                                                {{appUtilsService.getDuration(item.averageTime*1000)}}
+                                            </ng-container>
+                                        </h2>
+                                        <span class="aui-text-label">
+                                            {{'explore_previous_recovery_time_label' | i18n}}
+                                        </span>
+                                    </lv-group>
+                                </lv-group>
+                            </div>
+                        </div>
+                    </ng-container>
+                </ng-container>
+                <lv-paginator [lvPageSize]="pageSize" [lvPageIndex]="pageIndex" [lvTotal]="total"
+                    (lvPageChange)="pageChange($event)" [hidden]="!total">
+                </lv-paginator>
+            </ng-template>
+        </div>
+    </div>
+</div>
+
+<ng-template #nameTpl let-item>
+    <span lv-overflow class="aui-link" (click)="getDetail(item)">
+        {{item.name | nil}}
+    </span>
+</ng-template>
+
+<ng-template #intervalTpl let-item>
+    <ng-container *ngIf="item.type === dataMap.drillType.period.value; else elseTemplate">
+        <lv-group lvDirection='vertical'>
+            <span lv-overflow>
+                <ng-container *ngIf="_isEn">
+                    {{'protection_execution_period_label' | i18n}}:{{item.interval}} {{item.intervalUnit |
+                    textMap:'recoveryDrillUnit'}}
+                </ng-container>
+                <ng-container *ngIf="!_isEn">
+                    {{'protection_execution_period_label' | i18n}}：{{item.interval}}{{item.intervalUnit |
+                    textMap:'recoveryDrillUnit'}}
+                </ng-container>
+            </span>
+            <span lv-overflow class="aui-text-label">
+                <ng-container *ngIf="_isEn">
+                    {{'protection_last_time_label' | i18n}}:{{item.startTime | date: 'yyyy-MM-dd HH:mm:ss' | nil}}
+                </ng-container>
+                <ng-container *ngIf="!_isEn">
+                    {{'protection_last_time_label' | i18n}}：{{item.startTime | date: 'yyyy-MM-dd HH:mm:ss' | nil}}
+                </ng-container>
+            </span>
+        </lv-group>
+    </ng-container>
+</ng-template>
+
+<ng-template #elseTemplate>
+    --
+</ng-template>
+
+<ng-template #recentJobStartTimeTpl let-item>
+    <span lv-overflow>{{item.nextExecuteTime | date: 'yyyy-MM-dd HH:mm:ss' | nil}}</span>
+</ng-template>
+
+
+<ng-template #elseNoDataTemplate>
+    <div class="no-data">
+        <i lv-icon="lv-icon-no-data"></i>
+        <div class="no-data-label">{{'common_no_data_label' | i18n}}</div>
+    </div>
+</ng-template>
+
+<ng-template #summaryHelp>
+    <span innerHTML="{{'explore_drill_summary_help_label' | i18n}}" class="sla-tooltip"></span>
+</ng-template>

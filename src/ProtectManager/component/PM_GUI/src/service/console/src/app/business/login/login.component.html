@@ -1,0 +1,161 @@
+<div class="login-container" [ngClass]="{'default_bg':!whitebox.isWhitebox,'whitebox_bg':whitebox.isWhitebox}">
+  <div class="login-top">
+    <aui-logo-title class="logo"></aui-logo-title>
+    <div class="language" (click)="toggleLanguage()">{{ languageLabel }}</div>
+  </div>
+  <div class="login-content" *ngIf="!isModifyPasswd">
+    <h1 class="login_product_text">{{productName}}</h1>
+    <ng-container *ngTemplateOutlet="errorTpl"> </ng-container>
+    <lv-form [formGroup]="loginFormGroup" class="formGroup" [lvLabelColon]="false">
+      <!-- 用户类型 -->
+      <lv-form-item *ngIf="isOceanProtect || isCyberEngine">
+        <lv-form-label></lv-form-label>
+        <lv-form-control>
+          <lv-select formControlName="userType" [lvOptions]="userTypeOptions" lvValueKey="value" lvSize="large">
+          </lv-select>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label></lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+          <input lv-input lvSize="large" type="text" placeholder="{{ userNameLabel }}" formControlName="userName"
+            (keydown.enter)="login($event)" id="userName" autofocus="autofocus" autocomplete="off"
+            (ngModelChange)='watchName()' />
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label></lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+          <input lv-input lvSize="large" type="password" placeholder="{{ passwordLabel }}" formControlName="password"
+            autocomplete="new-password" (keydown.enter)="login()" (focus)="setPasswordValidator()"
+            (ngModelChange)='resetErrorMessage()' />
+        </lv-form-control>
+      </lv-form-item>
+
+      <!-- 邮箱动态口令 -->
+      <lv-form-item *ngIf="isOceanProtect && needDynamicCode">
+        <lv-form-label></lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+          <lv-input-group [lvSuffix]="suffixTpl" class="email-code-input" lvSize="large">
+            <input lv-input formControlName="dynamicCode" autocomplete="new-password" (keydown.enter)="login()"
+              placeholder="{{'common_email_password_label' | i18n}}" (ngModelChange)='resetErrorMessage()' />
+          </lv-input-group>
+        </lv-form-control>
+      </lv-form-item>
+      <ng-template #suffixTpl>
+        <span class="aui-link send-code-btn" (click)="sendDynamicCode()" *ngIf="showSendDynamicCodeBtn">
+          {{'common_send_email_code_label' | i18n}}
+        </span>
+        <span class="send-code-btn left-second" *ngIf="!showSendDynamicCodeBtn">
+          {{'common_countdown_label' | i18n:[nextSendDynamicCodeTime]}}
+        </span>
+      </ng-template>
+
+      <lv-form-item *ngIf="hasVerificationCode">
+        <lv-form-label></lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+          <div class="verify-code">
+            <input lv-input lvSize="large" type="text" maxlength="4" placeholder="{{ verifyCodeLabel }}"
+              formControlName="verifyCode" (keydown.enter)="login()" (focus)="setVerifyCodeValidator()"
+              (ngModelChange)='resetErrorMessage()' />
+            <img id="verifyCodeImg" class="verify-code-img" src="/console/rest/v1/captcha"
+              title="{{ verifyCodeRefreshLabel }}" (click)="changeVerifyCode()" />
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form>
+    <button lv-button lvSize="large" lvType="primary" class="operation-btn" (click)="login()">
+      <span>{{ isLogging ? loggingLabel : loginLabel }}</span>
+    </button>
+    <div
+      *ngIf="!_includes([dataMap.loginUserType.ldap.value, dataMap.loginUserType.ldapGroup.value],loginFormGroup.value.userType) && !isCloudBackup"
+      class="reset-pwd-container">
+      <button lv-button lvType="link" class="reset-pwd-btn" lvSize="small" (click)="restPassword()">
+        {{ 'system_reset_password_label' | i18n }}
+      </button>
+    </div>
+    <div *ngIf="isOceanProtect">
+      <div class="line-box">
+        <div class="solid-line left-line"></div>
+        <p>{{'common_or_label' | i18n}}</p>
+        <div class="solid-line right-line"></div>
+      </div>
+
+      <button lv-button lvSize="large" class="operation-btn" (click)="adfsLogin()">
+        <span>{{isAdfsLogging ? adfsLoginingLabel : adfsLoginLabel}}</span>
+      </button>
+    </div>
+  </div>
+  <div class="login-content" *ngIf="isModifyPasswd">
+    <h1 class="login_product_text">{{productName}}</h1>
+    <ng-container *ngTemplateOutlet="errorTpl"></ng-container>
+    <lv-form [formGroup]="passwdFormGroup" class="formGroup" [lvLabelColon]="false">
+      <lv-form-item>
+        <lv-form-label></lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+          <input lv-input lvSize="large" type="text" placeholder="{{ userNameLabel }}" formControlName="userName"
+            (keydown.enter)="modify($event)" autofocus="autofocus" />
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item *ngIf="!isResetPassword">
+        <lv-form-label></lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.pwdErrorTip">
+          <input lv-input lvSize="large" type="password" autocomplete="new-password"
+            placeholder="{{ originalPasswordLabel }}" formControlName="originalPassword"
+            (keydown.enter)="modify($event)" (focus)="setOriginalPasswordValidator()"
+            (ngModelChange)='resetErrorMessage()' id="originalPassword" />
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label></lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.pwdErrorTip">
+          <input [lv-tooltip]="pwdComplexTipTpl" lvTooltipTheme="light" lvTooltipPosition="topLeft" lv-input
+            lvSize="large" type="password" autocomplete="new-password" placeholder="{{ newPasswordLabel }}"
+            formControlName="newPassword" (keydown.enter)="modify($event)" (focus)="setNewPasswordValidator()"
+            (ngModelChange)='resetErrorMessage()' />
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label></lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.pwdErrorTip">
+          <input lv-input lvSize="large" type="password" autocomplete="new-password"
+            placeholder="{{ confirmPasswordLabel }}" formControlName="confirmPassword" (keydown.enter)="modify($event)"
+            (focus)="setConfirmPasswordValidator()" (ngModelChange)='resetErrorMessage()' />
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form>
+
+    <div class="modify-pwd-desc">
+      <span>
+        <i lv-icon="lv-icon-status-info" [lvColorState]="true"></i>
+      </span>
+      <span class="aui-text-help-sm">
+        {{ passwordDescLabel }}
+      </span>
+    </div>
+
+    <lv-group lvGutter='8px' class="modfi-btn-container">
+      <button lv-button lvSize="large" lvType="primary" (click)="modify()">
+        <span>{{ isLogging ? loggingLabel : modifyLabel }}</span>
+      </button>
+      <button lv-button lvSize="large" (click)="cancel()">
+        <span>{{ cancelLabel }}</span>
+      </button>
+    </lv-group>
+  </div>
+
+  <div class="main_footer">{{ copyRightLabel }}</div>
+</div>
+
+<ng-template #pwdComplexTipTpl>
+  <span [innerHTML]="pwdErrorTip"></span>
+</ng-template>
+
+<ng-template #errorTpl>
+  <!-- 内嵌错误提示框 -->
+  <div class="error-alert-container" *ngIf="!!loginErrorMsg">
+    <lv-alert lvType="error" lvClosable="false">
+      <span [innerHtml]=loginErrorMsg></span>
+    </lv-alert>
+  </div>
+</ng-template>

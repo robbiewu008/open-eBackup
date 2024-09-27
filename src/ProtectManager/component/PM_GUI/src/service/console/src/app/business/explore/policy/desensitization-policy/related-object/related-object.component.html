@@ -1,0 +1,34 @@
+<lv-datatable [lvData]='dbData' lvSize="small" #lvTable lvAsync>
+    <thead>
+        <tr>
+            <th lvCellKey='db_name'>{{'common_name_label' | i18n}}</th>
+            <th lvCellKey='db_type'>{{'common_type_label' | i18n}}</th>
+            <th lvCellKey='ip_address'>{{'common_ip_address_label' | i18n}}</th>
+            <th lvCellKey='port'>{{'common_port_label' | i18n}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor='let item of lvTable.renderData'>
+            <tr>
+                <td>
+                    <span lv-overflow>{{item.db_name}}</span>
+                </td>
+                <td>
+                    <span lv-overflow>
+                        {{item.db_type}}
+                    </span>
+                </td>
+                <td>
+                    <span lv-overflow>
+                        {{item.ip_address}}
+                    </span>
+                </td>
+                <td>
+                    {{item.port}}
+                </td>
+            </tr>
+        </ng-container>
+    </tbody>
+</lv-datatable>
+<lv-paginator lvMode="simple" [lvShowPageSizeOptions]="false" [lvPageSize]='pageSize' [lvTotal]='total'
+    [lvPageIndex]='pageIndex' (lvPageChange)='pageChange($event)' [hidden]="!total"></lv-paginator>

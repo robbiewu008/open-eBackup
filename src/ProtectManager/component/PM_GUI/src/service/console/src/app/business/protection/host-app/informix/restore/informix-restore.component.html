@@ -1,0 +1,55 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item *ngIf="!isDrill">
+    <lv-form-label lvRequired>
+      {{ 'protection_restore_to_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="restoreLocation">
+        <lv-group [lvGutter]="'24px'">
+          <lv-radio
+            [lvValue]="restoreLocationType.ORIGIN"
+            [lvDisabled]="rowCopy?.resource_status === 'NOT_EXIST'"
+          >
+            {{ 'common_restore_to_origin_location_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="restoreLocationType.NEW">
+            {{ 'common_restore_to_new_location_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container
+    *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN"
+  >
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'common_location_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <input lv-input type="text" formControlName="originLocation" />
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <ng-container
+    *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW"
+  >
+  <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'target'"></aui-select-tag>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'protection_target_instance_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+        <lv-select
+          lvShowFilter
+          lvFilterKey="label"
+          lvFilterMode="contains"
+          formControlName="target"
+          [lvOptions]="targetOptions"
+          lvValueKey="value"
+        >
+        </lv-select>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>

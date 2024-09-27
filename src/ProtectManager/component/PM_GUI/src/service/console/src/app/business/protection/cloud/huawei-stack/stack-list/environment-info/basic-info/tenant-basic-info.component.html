@@ -1,0 +1,23 @@
+<lv-group class='aui-gutter-column-xxl' lvGutter='16px'>
+    <i *ngIf="online" lv-icon='aui-sla-cloud-host-online' class="base-info-icon"></i>
+    <i *ngIf="!online" lv-icon='aui-sla-cloud-host-offline' class="base-info-icon"></i>
+    <lv-group class="info" lvGutter='16px'>
+        <span class="name-width">{{'common_name_label' | i18n}}</span>
+        <span lv-overflow>{{data?.name}}</span>
+    </lv-group>
+    <lv-group class="info" lvGutter='16px'>
+        <span>{{'common_domain_label' | i18n}}</span>
+        <span lv-overflow>{{data?.endpoint}}</span>
+    </lv-group>
+    <lv-group class="info" lvGutter='16px'>
+        <span>{{'common_username_label' | i18n}}</span>
+        <span lv-overflow>{{data?.auth?.authKey}}</span>
+    </lv-group>
+   
+</lv-group>
+
+<div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{'protection_proxy_host_label' | i18n}}</h2>
+</div>
+<lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+

@@ -1,0 +1,23 @@
+<div class="performance">
+  <div class="num">
+    {{ performanceTimeChart.readAvg }}
+    <span class="text">{{ performanceTimeChart.unit }} {{ 'common_home_average_total_bandwidth_label' | i18n }}</span>
+  </div>
+
+  <div class="chart-tooltip" *ngIf="!performanceTimeChart.isNoData">
+    <div class="max">
+      <div class="icon"></div>
+      <div class="text">{{ 'common_home_max_label' | i18n }}</div>
+    </div>
+    <div class="average">
+      <div class="icon"></div>
+      <div class="text">{{ 'common_home_avg_label' | i18n }}</div>
+    </div>
+  </div>
+  <div class="container">
+    <performance-time-chart
+      #performanceTimeChart
+      [cardInfo]="cardInfo"
+    ></performance-time-chart>
+  </div>
+</div>

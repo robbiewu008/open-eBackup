@@ -1,0 +1,128 @@
+<lv-form>
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{ 'common_basic_info_label' | i18n }}</h2>
+  </div>
+  <div class="aui-gutter-column-xl">
+    <lv-form-column lvWidth="50%">
+      <lv-form-item>
+        <lv-form-label>
+          {{ 'common_name_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <div lv-overflow>
+            {{ data.name | nil }}
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+
+      <lv-form-item>
+        <lv-form-label>
+          {{ 'system_fail_overtime_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <div lv-overflow>
+            {{ data.timeoutPeriod | nil }} {{ 'common_minutes_label' | i18n}}
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+
+      <lv-form-item>
+        <lv-form-label>
+          {{ 'common_desc_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <div lv-overflow>
+            {{ data.description | nil }}
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form-column>
+
+    <lv-form-column lvWidth="50%">
+      <lv-form-item *ngIf="isDecouple || isDistributed">
+        <lv-form-label>
+          {{'common_equipment_type_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+          <div lv-overflow>
+            {{data.deviceType | textMap: 'poolStorageDeviceType'}}
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+    
+      <lv-form-item>
+        <lv-form-label>
+          {{ 'system_parallel_data_storage_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <div lv-overflow *ngIf="data.hasEnableParallelStorage">
+            {{'common_open_label' | i18n}}
+          </div>
+          <div lv-overflow *ngIf="!data.hasEnableParallelStorage">
+            {{'common_disabled_label' | i18n}}
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+    
+      <lv-form-item>
+        <lv-form-label>
+          {{ 'system_storage_policy_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <div lv-overflow>
+            {{ data.storageStrategyType | textMap: 'newBackupPolicy' }}
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form-column>
+
+  </div>
+
+  <div class="aui-block aui-paginator-container">
+    <div class="aui-operation">
+      <lv-tabs class="aui-tab">
+        <lv-tab lvTitle="{{'system_backup_storage_unit_label' | i18n}}" lvId="storageUnit">
+          <ng-template lv-tab-lazy>
+            <lv-pro-table
+                    #dataTable
+                    [config]="tableConfig"
+                    [data]="tableData"
+            ></lv-pro-table>
+          </ng-template>
+        </lv-tab>
+
+      <lv-tab lvTitle="{{'common_user_authorization_label' | i18n}}" lvId="userAuth">
+        <ng-template lv-tab-lazy>
+          <aui-user-auth [storageId]="data.uuid" [authType]="2"></aui-user-auth>
+        </ng-template>
+      </lv-tab>
+
+      </lv-tabs>
+    </div>
+  </div>
+
+<ng-template #capacity let-item>
+  <lv-progress
+    [lvValue]="Math.round (item.usedCapacity / item.totalCapacity * 10000) / 100"
+    [lvSize]="'small'"
+    [lvColors]="progressBarColor"
+    lvDecimals="3"
+  ></lv-progress>
+  <div class="size-percent">
+    {{
+      item.usedCapacity | capacityCalculateLabel: '1.1-3':unitconst.KB:true
+    }}/{{ item.totalCapacity | capacityCalculateLabel: '1.1-3':unitconst.KB:true }}
+  </div>
+</ng-template>
+
+<ng-template #progressLabelTpl let-data>
+  {{ data < 0.001 ? (data == 0 ? 0 : lessThanLabel + '0.001') : data }}%
+</ng-template>
+
+<ng-template #progressExtraTpl>
+  <div class="alarm-threashold"></div>
+</ng-template>
+
+<ng-template #thresholdTpl let-item>
+  {{ item.threshold + '%' }}
+</ng-template>

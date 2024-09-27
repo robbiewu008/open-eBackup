@@ -1,0 +1,99 @@
+<lv-form class="info-form">
+    <h2 class="aui-gutter-column-md">{{ 'common_basic_info_label' | i18n }}</h2>
+    <lv-form-column lvWidth="25%">
+        <lv-form-item *ngFor="let item of leftItems1">
+            <lv-form-label>
+                {{ item.label}}
+            </lv-form-label>
+            <ng-container [ngSwitch]="item.key">
+                <ng-container *ngSwitchCase="'status'">
+                    <lv-form-control>
+                        <aui-status [value]="item.value" type="Media_Tape_Status"></aui-status>
+                    </lv-form-control>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                    <lv-form-control>
+                        {{item.value | nil}}
+                    </lv-form-control>
+                </ng-container>
+            </ng-container>
+        </lv-form-item>
+    </lv-form-column>
+    <lv-form-column lvWidth="25%">
+        <lv-form-item *ngFor="let item of leftItems2">
+            <lv-form-label>
+                {{ item.label}}
+            </lv-form-label>
+            <lv-form-control>
+                {{item.value | nil}}
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form-column>
+    <lv-form-column lvWidth="25%">
+        <lv-form-item *ngFor="let item of rightItems1">
+            <lv-form-label>
+                {{ item.label}}
+            </lv-form-label>
+            <lv-form-control>
+                {{item.value | nil}}
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form-column>
+    <lv-form-column lvWidth="25%">
+        <lv-form-item *ngFor="let item of rightItems2">
+            <lv-form-label>
+                {{ item.label}}
+            </lv-form-label>
+            <lv-form-control>
+                {{item.value | nil}}
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form-column>
+</lv-form>
+<lv-tabs [lvType]="'card'" [(lvActiveIndex)]="activeIndex">
+    <lv-tab lvTitle="{{'system_archive_drive_label'|i18n}}" [lvId]="'drive'" *ngIf="showArchiveDrive">
+        <div class="aui-operation">
+            <lv-group></lv-group>
+            <lv-group lvGutter="8px">
+                <lv-group lvGutter="8px">
+                    <button class="aui-button-icon" lv-button lvSize="auto" (click)="driveTable.fetchData()">
+                        <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                    </button>
+                </lv-group>
+            </lv-group>
+        </div>
+        <lv-pro-table #driveTable [config]="driveTableConfig" [data]="driveTableData"></lv-pro-table>
+    </lv-tab>
+    <lv-tab lvTitle="{{'system_archive_tape_label'|i18n}}" [lvId]="'tape'">
+        <div class="aui-operation">
+          <lv-group>
+            <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData">
+            </lv-pro-button-group>
+          </lv-group>
+            <lv-group lvGutter="8px">
+                <lv-group lvGutter="8px">
+                    <button class="aui-button-icon" lv-button lvSize="auto" (click)="tapeTable.fetchData()">
+                        <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                    </button>
+                </lv-group>
+            </lv-group>
+        </div>
+        <lv-pro-table #tapeTable [config]="tapeTableConfig" [data]="tapeTableData"></lv-pro-table>
+    </lv-tab>
+</lv-tabs>
+
+<ng-template #noDataTpl>
+    <div class="library-no-data">
+        <i lv-icon="lv-icon-no-data"></i>
+        <div class="no-data-label">
+            {{'common_no_data_label'|i18n}}
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #capacityTpl let-item>
+    {{item.usedCapacity ? (item.usedCapacity | capacityCalculateLabel:'1.1-3':unitconst.MB: true) : '--'}}
+</ng-template>
+<ng-template #blockSizeTpl let-item>
+    {{item.blockSize ? (item.blockSize | capacityCalculateLabel:'1.1-3':unitconst.KB: true) : '--'}}
+</ng-template>

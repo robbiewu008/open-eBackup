@@ -1,0 +1,38 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>{{'common_server_address_label' | i18n}}</lv-form-label>
+    <lv-form-control [lvErrorTip]="ipErrorTip">
+      <input lv-input formControlName="ip">
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>{{'common_port_label'|i18n}}</lv-form-label>
+    <lv-form-control [lvErrorTip]="portErrorTip">
+      <input lv-input formControlName="port">
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>{{'common_protocol_label'|i18n}}</lv-form-label>
+    <lv-form-control>
+      <lv-select [lvOptions]="protocolTypes" formControlName="protocol" lvValueKey="value"></lv-select>
+      <lv-group *ngIf="!certRequired" class="info-group" [lvColumns]='["16px", "auto"]' lvGutter="4px">
+        <i lv-icon="aui-icon-job-log-warning" lvColorState='true'></i>
+        <span class="aui-text-label info-label" innerHTML="{{protocolTipsLabel}}"></span>
+      </lv-group>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="certRequired">
+    <lv-form-label [lvRequired]="certRequired"> {{'operation_target_certificate_label'|i18n}}</lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        [lvOptions]="certificationOptions"
+        formControlName="cert"
+        lvValueKey="value"
+        lvShowFilter
+        lvFilterMode="contains"
+        lvFilterKey="label"
+        lvShowClear>
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>

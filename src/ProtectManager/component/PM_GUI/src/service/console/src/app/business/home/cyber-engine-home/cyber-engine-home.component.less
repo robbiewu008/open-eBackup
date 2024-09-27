@@ -1,0 +1,56 @@
+@smaller-spacing: 16px;
+@bigger-spacing: 32px;
+.cyber-engine-home-container {
+  background-color: #1c1f24;
+  height: 100%;
+  display: flex;
+  padding: @bigger-spacing @smaller-spacing;
+  color: white;
+  .col {
+    margin-left: @smaller-spacing;
+    display: flex;
+    flex-direction: column;
+  }
+  .sub-col {
+    width: 17%;
+    min-width: 350px;
+    .alarms-count-container {
+      height: 260px;
+    }
+    .file-interception-container {
+      flex: auto;
+      margin-top: @smaller-spacing;
+    }
+  }
+  .main-col {
+    width: 850px;
+    flex: auto;
+    margin-right: @smaller-spacing;
+    .exceptions-file-container {
+      height: 260px;
+    }
+    .big-screen-container {
+      height: 800px;
+      flex: auto;
+    }
+  }
+  .last-col {
+    margin-right: @smaller-spacing;
+    .task-count-container {
+      height: 260px;
+    }
+    .license-capacity-container {
+      margin-top: @smaller-spacing;
+      height: 260px;
+    }
+    .air-gap-container {
+      margin-top: @smaller-spacing;
+      flex: auto;
+      height: 540px;
+    }
+  }
+  .box-container {
+    background-color: #22262d;
+    border-radius: 4px;
+  }
+}

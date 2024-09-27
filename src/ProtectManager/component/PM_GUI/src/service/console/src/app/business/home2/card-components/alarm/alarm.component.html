@@ -1,0 +1,81 @@
+<div class="alarm-num">
+  <div class="total jumpable" (click)="navigate()">
+    <span class="total-num navigator">{{ totalItem }}</span>
+    {{ 'common_home_alarms_count_label' | i18n }}
+  </div>
+  <div class="detail">
+    <div
+      class="detail-item critical jumpable"
+      (click)="navigate({ type: 'critical' })"
+    >
+      <div class="icon"></div>
+      <div class="text">{{ 'common_home_critical_label' | i18n }}</div>
+      <div class="num navigator">{{ criticalItem }}</div>
+    </div>
+    <div
+      class="detail-item major jumpable"
+      (click)="navigate({ type: 'major' })"
+    >
+      <div class="icon"></div>
+      <div class="text">{{ 'common_home_major_label' | i18n }}</div>
+      <div class="num navigator">{{ majorItem }}</div>
+    </div>
+    <div
+      class="detail-item warning jumpable"
+      (click)="navigate({ type: 'warning' })"
+    >
+      <div class="icon"></div>
+      <div class="text">{{ 'common_home_warning_label' | i18n }}</div>
+      <div class="num navigator">{{ warningItem }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="alarm-chart">
+  <ng-container *ngIf="totalItem !== 0">
+    <div class="chart-item critical" [style]="'flex:' + criticalItem"></div>
+    <div class="chart-item major" [style]="'flex:' + majorItem"></div>
+    <div class="chart-item warning" [style]="'flex:' + warningItem"></div>
+  </ng-container>
+  <ng-container *ngIf="totalItem === 0">
+    <div class="chart-item"></div>
+  </ng-container>
+</div>
+
+<div *ngIf="totalItem !== 0" class="alarm-list">
+  <div class="list-item" *ngFor="let alarm of alarmList">
+    <ng-container [ngSwitch]="alarm.severity">
+      <div
+        *ngSwitchCase="alarmSeverityType.critical.value"
+        class="icon critical"
+      ></div>
+      <div
+        *ngSwitchCase="alarmSeverityType.major.value"
+        class="icon major"
+      ></div>
+      <div
+        *ngSwitchCase="alarmSeverityType.warning.value"
+        class="icon warning"
+      ></div>
+    </ng-container>
+
+    <div
+      class="detail"
+      lv-popover
+      [lvPopoverContent]="alarmPopoverContentTpl"
+      [lvPopoverFooter]="alarm.alarmTime * 1000 | date: 'yyyy-MM-dd HH:mm:ss'"
+      (click)="alarmDetailClick(alarm)"
+    >
+        <ng-container *ngTemplateOutlet="alarmPopoverContentTpl"></ng-container>
+    </div>
+    <div class="time">
+      {{ formatTimeAgo(alarm.alarmTime * 1000) }}
+    </div>
+      <ng-template #alarmPopoverContentTpl>
+          <span [innerHTML]="convertToHTML(alarm)"></span>
+      </ng-template>
+  </div>
+</div>
+<div *ngIf="totalItem === 0" class="empty">
+  <lv-empty [lvDescription]="'common_home_no_alarms_label' | i18n"></lv-empty>
+</div>

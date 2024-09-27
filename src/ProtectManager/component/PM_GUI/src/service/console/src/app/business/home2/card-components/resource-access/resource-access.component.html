@@ -1,0 +1,61 @@
+<div class="resource-access">
+  <div class="legend">
+    <div
+      class="legend-header jumpable"
+      (click)="navigate([RouterUrl.ProtectionSummary])"
+    >
+      <div class="num navigator">{{ resourceCount }}</div>
+      <div class="title">{{ 'common_home_total_resources_label' | i18n }}</div>
+    </div>
+    <div class="legend-chart">
+      <div
+        *ngFor="let item of filteredResourceList"
+        [class]="['chart-item', item.clsName]"
+        [style]="'flex:' + item.count + ';'"
+      ></div>
+    </div>
+  </div>
+
+  <div *ngIf="resourceCount !== 0" class="list">
+    <div
+      *ngFor="let item of showResourceList"
+      [class]="['list-item', item.type, 'jumpable']"
+      (click)="navigate(item.navigateParams)"
+    >
+      <div class="list-item-left">
+        <div [class]="['icon', item.clsName]"></div>
+        <div class="name navigator">{{ item.label }}</div>
+      </div>
+      <div class="list-item-right">
+        <div class="num">{{ item.count }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="resourceCount !== 0" class="footer">
+    <div class="pagination">
+      <lv-paginator
+        lvTotal="7"
+        lvPageSize="4"
+        lvMode="simple"
+        lvShowTotal="false"
+        lvShowPageSizeOptions="false"
+        lvPageIndex="curPage"
+        (lvPageChange)="handlePageChange($event)"
+      ></lv-paginator>
+    </div>
+  </div>
+
+  <div *ngIf="resourceCount === 0" class="empty-box">
+    <lv-empty
+      [lvDescription]="'common_home_no_resource_label' | i18n"
+    ></lv-empty>
+    <button
+      lv-button
+      lvType="link"
+      (click)="navigate([RouterUrl.ProtectionSummary])"
+    >
+      {{ 'common_home_add_resource_label' | i18n }}
+    </button>
+  </div>
+</div>

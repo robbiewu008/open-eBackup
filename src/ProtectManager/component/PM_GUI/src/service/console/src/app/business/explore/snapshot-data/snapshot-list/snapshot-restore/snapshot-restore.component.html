@@ -1,0 +1,176 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <ng-container *ngIf="isResource">
+    <lv-form-item>
+      <lv-form-label>
+        {{'explore_snapshot_create_time_label' |i18n}}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-collapse class="custom-title" [lvMultiExpansion]="'false'" lvType="simple">
+          <lv-collapse-panel [lvTitle]="title" [lvExpanded]="true">
+            <span class="warning-message" *ngIf="selectionData[0] && selectionData[0].anti_status === 3">
+              <i lv-icon="aui-icon-job-status-fail" class="lv-icon"></i>
+              {{ 'explore_infected_recovery_label' | i18n}}
+            </span>
+            <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+          </lv-collapse-panel>
+        </lv-collapse>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_restoration_mode_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
+        <lv-group [lvGutter]="'20px'">
+          <lv-radio [lvValue]="snapshotRstore.ORIGIN">
+            {{ 'common_restore_to_origin_location_cyber_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="snapshotRstore.SHAREDPATH" [lvDisabled]="isPacific">
+            {{ 'common_restore_shared_path_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container *ngIf="formGroup.value.restoreTo === snapshotRstore.ORIGIN">
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'common_location_label' | i18n }}
+      </lv-form-label>
+      <input lv-input formControlName="targetPath" />
+    </lv-form-item>
+  </ng-container>
+  <ng-container *ngIf="formGroup.value.restoreTo === snapshotRstore.SHAREDPATH">
+    <lv-form-item>
+      <lv-form-label lvRequired>{{
+        'common_shared_file_system_name_label' | i18n
+        }}</lv-form-label>
+      <lv-form-control [lvErrorTip]="nameErrorTip">
+        <lv-input-group [lvAddBefore]="namePrefix" class="filesystem-name-input">
+          <input lv-input type="text" formControlName="name" />
+        </lv-input-group>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{'common_shared_file_system_time_label' | i18n}}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_share_path_restoration_label' | i18n}}"
+          lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="integerErrorTip">
+        <lv-group lvGutter="8px" [lvColumns]='["auto", "50px"]' lvRowGutter="10px">
+          <input lv-input type="text" formControlName="keep_time" class="input-width"
+            placeholder="{{_isEn ? '1-96' : '1~96'}}" />
+          <span> {{ 'common_hours_label' | i18n }}</span>
+        </lv-group>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>{{
+        'explore_share_protocol_label' | i18n
+        }}</lv-form-label>
+      <lv-form-control>
+        <div class="share-mode-tab">
+          <lv-form-item>
+            <lv-form-label></lv-form-label>
+            <lv-form-control>
+              <label lv-checkbox formControlName="nfsEnable">NFS</label>
+            </lv-form-control>
+          </lv-form-item>
+        </div>
+        <ng-container *ngIf="formGroup.value.nfsEnable">
+          <div class="share-info">
+            <i lv-icon="lv-icon-status-info" lvColorState="true"></i>
+            <span>
+              {{ 'protection_mount_share_tip_label' | i18n: ['NFS'] }}
+            </span>
+          </div>
+
+          <lv-form-item>
+            <lv-form-label lvRequired>{{
+              'protection_share_path_info_label' | i18n
+              }}</lv-form-label>
+            <lv-form-control>
+              <input lv-input type="text" formControlName="nfsShareName" />
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label lvRequired>
+              <span>{{ 'protection_client_label' | i18n }}</span>
+              <i lv-icon="aui-icon-help" [lv-tooltip]="clientHostTipTpl" lvTooltipPosition="rightTop"
+                lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="clientErrorTip">
+              <input lv-input type="text" formControlName="client" />
+            </lv-form-control>
+          </lv-form-item>
+        </ng-container>
+
+        <div class="share-mode-tab cifs-tab">
+          <lv-form-item>
+            <lv-form-label></lv-form-label>
+            <lv-form-control>
+              <label lv-checkbox formControlName="cifsEnable">CIFS</label>
+            </lv-form-control>
+          </lv-form-item>
+        </div>
+
+        <ng-container *ngIf="formGroup.value.cifsEnable">
+          <div class="share-info">
+            <i lv-icon="lv-icon-status-info" lvColorState="true"></i>
+            <span>
+              {{ 'protection_mount_share_tip_label' | i18n: ['CIFS'] }}
+            </span>
+          </div>
+          <lv-form-item>
+            <lv-form-label lvRequired>{{
+              'explore_share_name_label' | i18n
+              }}</lv-form-label>
+            <lv-form-control [lvErrorTip]="cifsNameErrorTip">
+              <input lv-input type="text" formControlName="cifsShareName" />
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label lvRequired>{{
+              'common_type_label' | i18n
+              }}</lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+              <lv-select [lvOptions]="userTypeOptions" lvValueKey="value" formControlName="userType">
+              </lv-select>
+            </lv-form-control>
+          </lv-form-item>
+          <ng-container
+            *ngIf="formGroup.value.userType && formGroup.value.userType !== dataMap.Cifs_Domain_Client_Type.everyone.value">
+            <lv-form-item>
+              <lv-form-label lvRequired>{{'common_users_label' | i18n}}</lv-form-label>
+              <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                <lv-select [lvOptions]='userOptions' lvValueKey='value' formControlName='userName' lvMode='multiple'
+                  lvShowFilter lvShowCheckAll lvFilterKey='label' lvFilterMode='contains'>
+                </lv-select>
+                <div class="user-info">
+                  <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+                  <span>
+                    {{'protection_file_system_user_tip_label' | i18n}}
+                  </span>
+                </div>
+              </lv-form-control>
+            </lv-form-item>
+          </ng-container>
+        </ng-container>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>
+<ng-template #timeTpl let-item>
+  <span>{{item.display_timestamp |date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+</ng-template>
+
+<ng-template #title>
+  <span>{{'common_selected_label'|i18n}} {{selectionData[0]?.display_timestamp|date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+</ng-template>
+
+<ng-template #clientHostTipTpl>
+  <span [innerHTML]="clientHostTipLabel"></span>
+</ng-template>

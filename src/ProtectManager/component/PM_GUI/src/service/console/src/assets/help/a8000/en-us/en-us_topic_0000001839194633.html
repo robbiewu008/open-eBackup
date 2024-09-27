@@ -1,0 +1,168 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Registering Huawei Cloud Stack">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839274637.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001839194633">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Registering Huawei Cloud Stack</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001839194633"></a><a name="EN-US_TOPIC_0000001839194633"></a>
+
+<h1 class="topictitle1">Step 2: Registering Huawei Cloud Stack</h1>
+<div><p>Before Huawei Cloud Stack backup and restoration, you must register Huawei Cloud Stack with the <span>OceanProtect</span>.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>A reverse proxy has been configured for the agent host or the agentless mode has been configured for the built-in agent host.</li><li>You have obtained the password of operation administrator <strong>bss_admin</strong> for accessing ManageOne Operation Portal, which is used to connect Huawei Cloud Stack to the <span>OceanProtect</span>.<p>You can also create a Huawei Cloud Stack operation administrator of the <strong>System</strong> type. For details about how to create an operation administrator in Huawei Cloud Stack 8.0.3 or an earlier version, see the <em>User Guide</em>. For Huawei Cloud Stack 8.1.0 or a later version, see the <em>Resource Provisioning Guide</em>.</p>
+</li><li>You have created a storage device user whose role is <strong>Administrator</strong> and login mode is <strong>RESTful</strong>, which is used to connect storage resources of Huawei Cloud Stack to the <span>OceanProtect</span>. For details about how to create a user, see the <em>Administrator Guide</em> corresponding to the storage device version. If OceanStor V5 storage is used, set the user level to <strong>Administrator</strong>.</li><li>If iSCSI is used for backup, ensure that an iSCSI port that can be accessed by the backup network plane of the backup software has been configured for the storage device connected to Huawei Cloud Stack. If it is not configured, configure one by referring to the product of the corresponding version on the storage side.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>After registering Huawei Cloud Stack, you can view and protect its projects, resource sets, and ECSs on the management page, and use them as recovery targets.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="EN-US_TOPIC_0000001839194633__li6843163813710"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001839142377_uicontrol23517341412"><b><span id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001839142377_text635183444114"><strong>Protection</strong></span> &gt; Cloud Platforms &gt; Huawei Cloud Stack</b></span>.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register Huawei Cloud Stack.</span><p><div class="p"><a href="#EN-US_TOPIC_0000001839194633__table613227155112">Table 1</a> describes Huawei Cloud Stack registration information.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839194633__table613227155112"></a><a name="table613227155112"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839194633__table613227155112" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Huawei Cloud Stack registration information</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.4.2.2.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.4.2.2.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>User-defined name of Huawei Cloud Stack.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>IP Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Floating IP address of API Gateway. To obtain the IP address:</p>
+<p>On the <strong id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001356308068_b814981519142">Tool_generated_IP_Params</strong> sheet of the <em id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001356308068_i184717348150">xxx_export_all_EN</em> file exported by the Huawei Cloud Stack deployment tool, search for <strong id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001356308068_b14911688169">AGW-LB-Float-IP</strong> to obtain the corresponding parameter value.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Domain Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Access domain name of Huawei Cloud Stack. To obtain the domain name:</p>
+<p>On the <strong id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001356308068_b119621009179">Basic_Parameters</strong> sheet of the <em id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001356308068_i650482219174">xxx_export_all_EN</em> file exported by Huawei Cloud Stack deployment tool, search for <strong id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001356308068_b95561418151817">external_global_domain_name</strong> to obtain the corresponding parameter value.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Username and password of an operation administrator for accessing ManageOne Operation Portal.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Password</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Select an agent host that can be used for Huawei Cloud Stack backup.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Certificate Verification</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>This function is enabled by default. The certificate of Huawei Cloud Stack will be verified during registration to ensure security of interactions between the <span>OceanProtect</span> and external devices. After this function is disabled, security risks may exist in the communication between the system and the cloud platform. Exercise caution when performing this operation.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><strong>Cinder Certificate</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Import the Cinder certificate obtained in <a href="en-us_topic_0000001839194665.html">Step 1: Obtaining the Certificate</a>. After the certificate is imported, the validity of the certificate will be verified during backup job execution.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li id="EN-US_TOPIC_0000001839194633__li89549137399"><a name="EN-US_TOPIC_0000001839194633__li89549137399"></a><a name="li89549137399"></a><span>In the <strong><span><strong>Storage Resources</strong></span></strong> area, click <strong><span><strong>Add</strong></span></strong>. <a href="#EN-US_TOPIC_0000001839194633__table5692101024117">Table 2</a> describes storage resource parameters.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li><span>If the backend storage of Huawei Cloud Stack is Huawei scale-out block storage and an external agent is used, you do not need to add storage resources. In other scenarios, you need to add storage resources. Otherwise, the backup job will fail.</span></li><li>If Huawei Cloud Stack backend storage has multiple sets of storage resources, you need to add all the storage resources where the objects to be protected reside to the <span>OceanProtect</span>.</li></ul>
+</div></div>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839194633__table5692101024117"></a><a name="table5692101024117"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839194633__table5692101024117" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Storage resource parameters</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.4.2.3.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.4.2.3.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>Type of a storage resource. The value can be <strong><span><strong>Huawei SAN storage</strong></span></strong> or <strong><span><strong>Huawei scale-out block storage</strong></span></strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Management IP Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><ul><li id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_li1797751513310">To obtain the management IP address of Huawei SAN storage, search for <strong id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_b207661154171314">business_rest_url</strong> on the <strong id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_b148857351416">1.2 Basic_Parameters</strong> sheet of <em id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_i615189131412">xxx</em><strong id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_b19763171471417">_export_all_EN</strong> exported by Huawei Cloud Stack deployment tool to obtain the IP address in the corresponding parameter.</li><li id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_li1951120142324">To obtain the management IP address of Huawei scale-out block storage, search for <strong id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_b471116101515">Huawei Distributed Block Storage Business</strong> on the <strong id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_b27111169153">2.3 Portal</strong> sheet of <em id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_i47111162159">xxx</em><strong id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_b19711116101514">_export_all_EN</strong> exported by Huawei Cloud Stack deployment tool to obtain the IP address in the corresponding parameter.<div class="note" id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_note871485915219"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_p10714859182111">If the storage information of the VM to be backed up is not in the summary file, contact the Huawei Cloud Stack environment administrator to obtain the information and add it to the Huawei Cloud Stack registration information.</p>
+</div></div>
+</li></ul>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000001839194633__en-us_topic_0000001792395560_p10714859182111_1">If the storage information of the VM to be backed up is not in the summary file, contact the Huawei Cloud Stack environment administrator to obtain the information and add it to the Huawei Cloud Stack registration information.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>Port for accessing storage resources. Port 8088 is used by default.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>Username and password for accessing storage resources.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Password</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Certificate Verification</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>This function is enabled by default. The storage resource certificate will be verified during Huawei Cloud Stack registration to ensure security of interactions between the <span>OceanProtect</span> and external devices. After this function is disabled, security risks may exist in the communication between the system and the storage device. Exercise caution when performing this operation.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Certificate</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>Import the CA certificate of the storage resource obtained in <a href="en-us_topic_0000001839194665.html">Step 1: Obtaining the Certificate</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p><span><strong>Revocation List</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>The CRL is issued by the certificate authority. After the CRL is imported, the system checks whether the client certificate has been revoked. If the certificate has been revoked, storage device registration fails.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p>VBS Node Login Information</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>This parameter is available only when <span><strong>Type</strong></span> is set to <span><strong>Huawei scale-out block storage</strong></span> in 1.6.0 and later versions.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p>Enable this function and perform the following operations if you need to use the built-in agent to perform incremental backup for volumes of Huawei scale-out block storage (version 8.1.3 or later).</p>
+<ol type="a"><li id="EN-US_TOPIC_0000001839194633__li867914501416"><a name="EN-US_TOPIC_0000001839194633__li867914501416"></a><a name="li867914501416"></a>On the current page, configure the username, IP address, port number, and password of the VBS node.<ul><li><strong>Node Username</strong>: Enter the username that has the permission to log in to the VBS node, for example, <strong>fsp</strong>.</li><li><strong>Node IP Address</strong>: Enter the IP address of the VBS node.</li><li><strong>Node Port</strong>: specifies the SSH service port. The default value is <strong>22</strong>.</li><li><strong>Node Password</strong>: Enter the user password.</li></ul>
+</li><li>Check whether the configured node user has the permission to run the VBS command.<ol><li>Use PuTTY to log in to the configured VBS node as the configured node user.</li><li>Run the following command to check whether the user has the permission to run the VBS command:<p><strong>sudo</strong> <strong>/bin/vbs_cli</strong></p>
+<p><strong>sudo</strong> <strong>/opt/dsware/vbs/script/vbs/vbs_cmd.sh</strong></p>
+<p><strong>sudo /bin/sh</strong></p>
+<p>If the preceding command can be successfully executed without entering the password, the user has the permission to run the VBS command. No further action is required. Otherwise, go to <a href="#EN-US_TOPIC_0000001839194633__li849205913223">3</a>.</p>
+</li></ol>
+</li><li id="EN-US_TOPIC_0000001839194633__li849205913223"><a name="EN-US_TOPIC_0000001839194633__li849205913223"></a><a name="li849205913223"></a>Perform the following operations to configure the permission to run the VBS command for the user:<ol><li>Run the <strong>su - root</strong> command and enter the password of user <strong>root</strong> to switch to user <strong>root</strong>.</li><li>Run the <strong>vi /etc/sudoers</strong> command to open the configuration file and add the following content to the file:<pre class="screen"><em>fsp</em> ALL=(root) NOPASSWD:/bin/vbs_cli
+<em>fsp</em> ALL=(root) NOPASSWD:/opt/dsware/vbs/script/vbs/vbs_cmd.sh
+<em>fsp</em> ALL=(root) NOPASSWD:/bin/sh</pre>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p><em>fsp</em> added to the configuration file is the node username configured in <a href="#EN-US_TOPIC_0000001839194633__li867914501416">1</a>. Replace it with the actual username.</p>
+</div></div>
+</li></ol>
+</li></ol>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span><p><p>After registration is successful, Huawei Cloud Stack information is displayed on the left of the page. You can view its tenants, regions, projects, resource sets, and ECSs.</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001839274637.html">Backing Up an ECS or EVS Disk</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

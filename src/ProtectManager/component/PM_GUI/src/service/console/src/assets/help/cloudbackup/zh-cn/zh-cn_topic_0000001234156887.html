@@ -1,0 +1,94 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="查看文件系统信息">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001234355447.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20220315">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001234156887">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>查看文件系统信息</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001234156887"></a><a name="ZH-CN_TOPIC_0000001234156887"></a>
+
+<h1 class="topictitle1">查看文件系统信息</h1>
+<div id="body0000001234156887"><div class="section" id="ZH-CN_TOPIC_0000001234156887__section1982217410176"><h4 class="sectiontitle">前提条件</h4><p id="ZH-CN_TOPIC_0000001234156887__li148253510533p0">已在ProtectManager上发现了存储系统上的文件系统资源。</p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000001234156887__section11419617160"><h4 class="sectiontitle">背景信息</h4><p id="ZH-CN_TOPIC_0000001234156887__p17899911618">用户在存储系统上创建的文件系统，可以被自动发现到ProtectManager上，并展示在“<span id="ZH-CN_TOPIC_0000001234156887__text6541201517375">本地文件系统</span>”页面。</p>
+<div class="note" id="ZH-CN_TOPIC_0000001234156887__note1732033612574"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000001234156887__ul16637140165717"><li id="ZH-CN_TOPIC_0000001234156887__li13637540145712">存储系统上新创建的文件系统，在ProtectManger进行扫描时，可能需要等待一定时间才能被ProtectManager发现。</li><li id="ZH-CN_TOPIC_0000001234156887__li0637540185715">当前ProtectManager上只会发现System_vStore租户下的文件系统。</li><li id="ZH-CN_TOPIC_0000001234156887__li1463704055716">在ProtectManager上发现的文件系统不支持在ProtectManager删除。</li><li id="ZH-CN_TOPIC_0000001234156887__li166371040155715">在ProtectManager上不展示WORM/CLONE/非UNIX安全模式文件系统。</li><li id="ZH-CN_TOPIC_0000001234156887__li582415447231">在ProtectManager上不展示名称以“pvc_”开头的文件系统。</li></ul>
+</div></div>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000001234156887__section5883172172911"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000001234156887__ol17970103211298"><li id="ZH-CN_TOPIC_0000001234156887__li0198134611381"><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001234156887__uicontrol9143133018394">“<span id="ZH-CN_TOPIC_0000001234156887__text63901566195">保护</span> &gt; <span id="ZH-CN_TOPIC_0000001234156887__text1160133103814">存储</span> &gt; <span id="ZH-CN_TOPIC_0000001234156887__text412720238387">本地文件系统</span>”</span>。</span></li><li id="ZH-CN_TOPIC_0000001234156887__li1867513367305"><span>在本地文件系统列表，浏览文件系统的信息。</span><p><ol type="a" id="ZH-CN_TOPIC_0000001234156887__ol19931153443112"><li id="ZH-CN_TOPIC_0000001234156887__li793143415311">文件系统的详细信息如<a href="#ZH-CN_TOPIC_0000001234156887__table157333333311">表1</a>所示。
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000001234156887__table157333333311"></a><a name="table157333333311"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001234156887__table157333333311" frame="border" border="1" rules="all"><caption><b>表1 </b>文件系统详细信息</caption><colgroup><col style="width:27.41%"><col style="width:72.59%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000001234156887__row16573333113311"><th align="left" class="cellrowborder" valign="top" width="27.41%" id="mcps1.3.3.2.2.2.1.1.2.2.3.1.1"><p id="ZH-CN_TOPIC_0000001234156887__p2057393312339">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="72.59%" id="mcps1.3.3.2.2.2.1.1.2.2.3.1.2"><p id="ZH-CN_TOPIC_0000001234156887__p19573113353314">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000001234156887__row1220715315418"><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001234156887__p15207185310415">资源ID</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001234156887__p102072532416">本地文件系统的ID。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001234156887__row4573173323316"><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001234156887__p10573103383314"><span id="ZH-CN_TOPIC_0000001234156887__text1015805073810">名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001234156887__p1457393313314">本地文件系统名称。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001234156887__row257311331337"><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001234156887__p1657319338336"><span id="ZH-CN_TOPIC_0000001234156887__text179731137800">存储设备</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001234156887__p1657313393310">设备名称。默认值为<span class="uicontrol" id="ZH-CN_TOPIC_0000001234156887__uicontrol41341743142716">“CloudBackupStorage”</span>。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001234156887__row1657318338334"><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001234156887__p3573153319338"><span id="ZH-CN_TOPIC_0000001234156887__text538917953917">租户</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001234156887__p7573133363313">文件系统所属租户。默认值为<span class="uicontrol" id="ZH-CN_TOPIC_0000001234156887__uicontrol265154184811">“System_vStore”</span>。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001234156887__row1457373323310"><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001234156887__p1857313316331"><span id="ZH-CN_TOPIC_0000001234156887__text146720173918">SLA</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001234156887__p25731633203314">当本地文件系统已关联SLA时，则显示SLA名称，否则显示<span class="uicontrol" id="ZH-CN_TOPIC_0000001234156887__uicontrol1564931173819">“--”</span>。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001234156887__row8573123313314"><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001234156887__p16573163316333"><span id="ZH-CN_TOPIC_0000001234156887__text1495662593911">SLA遵从度</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001234156887__p7573833123315"><span style="color:#282B33;">SLA遵从度指某次备份任务是否按设定的备份频率或备份窗口成功完成备份。例如，某次备份任务（首次全量备份除外）的备份时间满足备份窗口或备份频率要求，且备份成功，则表示SLA遵从。某次备份任务SLA设定的备份频率为每半小时执行一次，如果备份时间超过半小时，则表示SLA不遵从。</span></p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001234156887__row13984946173412"><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001234156887__p10984134615347"><span id="ZH-CN_TOPIC_0000001234156887__text3563742203920">保护状态</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001234156887__p1342013613915">本地文件系统当前是否被保护。</p>
+<ul id="ZH-CN_TOPIC_0000001234156887__ul1028421665815"><li id="ZH-CN_TOPIC_0000001234156887__li98751231172211"><span id="ZH-CN_TOPIC_0000001234156887__text5875193102219">未保护</span>：本地文件系统未关联SLA，或本地文件系统已关联SLA但已禁用保护。</li><li id="ZH-CN_TOPIC_0000001234156887__li1302101715820"><span id="ZH-CN_TOPIC_0000001234156887__text1364995212584">已保护</span>：本地文件系统已关联SLA，且已激活保护。</li><li id="ZH-CN_TOPIC_0000001234156887__zh-cn_topic_0000001505960361_li2088261163715"><span id="ZH-CN_TOPIC_0000001234156887__zh-cn_topic_0000001505960361_text12602914182118"><span id="ZH-CN_TOPIC_0000001234156887__text1647214201728">创建中</span></span>：本地文件系统已关联SLA，正在创建保护。</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li id="ZH-CN_TOPIC_0000001234156887__li12828195373715">单击本地文件系统名称，浏览本地文件系统总览信息、副本信息以及相关任务。<ul id="ZH-CN_TOPIC_0000001234156887__ul1840814207381"><li id="ZH-CN_TOPIC_0000001234156887__li114086205389">本地文件系统总览信息<p id="ZH-CN_TOPIC_0000001234156887__p1965218597381"><a name="ZH-CN_TOPIC_0000001234156887__li114086205389"></a><a name="li114086205389"></a>显示本地文件系统的名称、SLA信息、任务执行时间、副本总数等。</p>
+</li><li id="ZH-CN_TOPIC_0000001234156887__li1459173393817">本地文件系统副本数据<p id="ZH-CN_TOPIC_0000001234156887__p565454392218"><a name="ZH-CN_TOPIC_0000001234156887__li1459173393817"></a><a name="li1459173393817"></a>您可以依次按照年、月、天查找相应时间的副本。</p>
+<p id="ZH-CN_TOPIC_0000001234156887__p6521122942916">时间下方显示<span><img id="ZH-CN_TOPIC_0000001234156887__image99531319193912" src="zh-cn_image_0000001583083162.png"></span>，表示该时间存在副本。</p>
+</li><li id="ZH-CN_TOPIC_0000001234156887__li11424174712387">本地文件系统相关任务<p id="ZH-CN_TOPIC_0000001234156887__p1826125610465"><a name="ZH-CN_TOPIC_0000001234156887__li11424174712387"></a><a name="li11424174712387"></a>本地文件系统相关的所有任务展示，包括备份、恢复等任务。您可以单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001234156887__uicontrol1195314141632">“<span id="ZH-CN_TOPIC_0000001234156887__text132080331933">下载</span>”</span>，下载任务。</p>
+</li></ul>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001234355447.html">文件系统</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

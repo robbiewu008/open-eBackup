@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Configuring the DNS Service">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001923246549">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Configuring the DNS Service</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001923246549"></a><a name="EN-US_TOPIC_0000001923246549"></a>
+  <h1 class="topictitle1">Configuring the DNS Service</h1>
+  <div>
+   <p id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_p184331146490">After connecting the <span id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_text103741358111512">product</span> to the DNS server, external domain names can be resolved and accessed.</p>
+   <div class="section" id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_section84408074710">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_ul127106719472">
+     <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li1591453144615">The DNS server has been configured and is running properly.</li>
+     <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li1171018715475">TCP/UDP port 53 between the <span id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_text11398161191611">product</span> and DNS server is enabled.</li>
+    </ul>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_section14363102215470">
+    <h4 class="sectiontitle">Context</h4>
+    <ul id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_ul11598536467">
+     <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li1059953174610">A DNS server is used to resolve and access external domain names.</li>
+     <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li14591853134619">If you want to configure a standby DNS server, keep the domain names of the active and standby servers consistent.</li>
+    </ul>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_section177292329470">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_ol69744384913">
+     <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li9544194974714"><span>Choose <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b8664115914915">Settings</strong> &gt; <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b1566525918493">Basic Information</strong> &gt; <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b466565913491">DNS Service</strong>.</span></li>
+     <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li1154414984718"><span>Click <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b1680451297104927">Modify</strong> in the upper right corner of the <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b1421787493104927">Management DNS</strong> area to configure the DNS service for the management plane.</span></li>
+     <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li1197583174919"><span>Set <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b252114027104927">Active DNS IP Address</strong>.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_ol097514364916">
+       <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li1260165320466">(Optional) Set <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b1660165344615">Standby DNS IP Address 1</strong>.</li>
+       <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li897518364913">(Optional) Set <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b159751632497">Standby DNS IP Address 2</strong>. Set <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b1698817341104927">Standby DNS IP Address 1</strong> first and then <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b1218119624104927">Standby DNS IP Address 2</strong>.</li>
+       <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li196055344615">(Optional) Test the connectivity between the DNS server and the storage system.
+        <ul id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_ul11601253144617">
+         <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li860185312461">You can click <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b444506045104927">Test</strong> next to a DNS IP address to test its availability.</li>
+         <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li760253124620">You can click <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b98240482304">Test All</strong> to test the connectivity between the DNS server and storage system.</li>
+        </ul></li>
+       <li id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_li1460253164610">Click <strong id="EN-US_TOPIC_0000001923246549__en-us_topic_0000001839159813_b161585913104927">Save</strong>.</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

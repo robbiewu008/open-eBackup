@@ -1,0 +1,415 @@
+.configuration-header {
+  margin: 40px 0 20px 0;
+}
+
+.straight-line {
+  height: 45px;
+  display: block;
+  margin: 0 5px;
+}
+
+.down-curved-img {
+  -moz-transform: scaleY(-1);
+  -webkit-transform: scaleY(-1);
+  -o-transform: scaleY(-1);
+  transform: scaleY(-1);
+  position: relative;
+  top: -24px;
+}
+.up-curved-img {
+  position: relative;
+  top: -10px;
+}
+
+.line-container {
+  width: 192px;
+  top: 7px;
+}
+
+.add-archival-icon {
+  cursor: pointer;
+  position: absolute;
+  top: -12px;
+  left: 131px;
+  margin-bottom: 0 !important;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  z-index: 2;
+  justify-content: center;
+  span {
+    color: #fff;
+    font-size: 14px;
+  }
+}
+.stepFont {
+  font-weight: bolder;
+  margin-right: 3px;
+}
+
+.add-archival-icon2 {
+  cursor: pointer;
+  position: absolute;
+  top: 172px;
+  left: 517px;
+  margin-bottom: 0 !important;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  z-index: 2;
+  justify-content: center;
+  span {
+    color: #fff;
+    font-size: 14px;
+  }
+}
+
+.add-replication-icon {
+  cursor: pointer;
+  position: absolute;
+  bottom: 20px;
+  left: 132px;
+  margin-bottom: 0 !important;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  z-index: 4;
+  justify-content: center;
+  span {
+    color: #fff;
+    font-size: 14px;
+  }
+}
+
+.application-checked-general-container {
+  position: absolute;
+  top: 250px;
+  left: 30px;
+
+  .all-resource {
+    width: 120px;
+    height: 50px;
+    border: 2px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .general-checked {
+    border-color: #6c92fa;
+    background: #eef7fd;
+  }
+}
+
+.application-checked-specified-container {
+  position: absolute;
+  top: 255px;
+  left: 24px;
+
+  img.specified-checked {
+    box-shadow: 0 0 8px #6c92fa;
+  }
+}
+
+.backup-checked-general-container {
+  position: absolute;
+  top: 259px;
+  left: 410px;
+  width: 188px;
+  text-align: center;
+  p {
+    line-height: 25px;
+  }
+}
+
+.archival-checked-general-container {
+  line-height: 24px;
+  position: absolute;
+  top: 86px;
+  left: 20px;
+  width: 210px;
+  font-size: 14px;
+  margin-bottom: 0px !important;
+  text-align: center;
+
+  .text {
+    width: 188px;
+    span {
+      cursor: pointer;
+    }
+    span:hover,
+    span:active {
+      color: #5b7ede;
+      cursor: pointer;
+    }
+  }
+
+  .delete {
+    display: inline-block;
+    vertical-align: top;
+    cursor: pointer;
+  }
+}
+
+.archival-checked-general-container2 {
+  line-height: 24px;
+  position: absolute;
+  top: 270px;
+  width: 210px;
+  font-size: 14px;
+  text-align: center;
+  left: 411px;
+
+  .text {
+    width: 188px;
+    span {
+      cursor: pointer;
+    }
+    span:hover,
+    span:active {
+      color: #5b7ede;
+      cursor: pointer;
+    }
+  }
+
+  .delete {
+    display: inline-block;
+    vertical-align: top;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+}
+.mt {
+  margin-top: 25px;
+}
+
+.replication-checked-general-container {
+  line-height: 24px;
+  position: absolute;
+  top: 341px;
+  width: 210px;
+  left: 20px;
+  font-size: 14px;
+  margin-bottom: 0px !important;
+  text-align: center;
+  .text {
+    width: 188px;
+    span {
+      cursor: pointer;
+    }
+    span:hover,
+    span:active {
+      color: #5b7ede;
+      cursor: pointer;
+    }
+  }
+
+  .delete {
+    display: inline-block;
+    vertical-align: top;
+    cursor: pointer;
+  }
+}
+
+.application-flickers {
+  cursor: pointer;
+}
+
+.application-enable {
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.backup-disabled {
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.backup-not-flickers {
+  margin-bottom: 10px;
+}
+
+.backup-flickers {
+  cursor: pointer !important;
+}
+
+.tooltip-custom-step {
+  font-weight: 600;
+  &.required::before {
+    content: '*';
+    display: inline;
+    color: red;
+  }
+}
+.tooltip-custom-content.required {
+  padding-left: 10px;
+}
+
+.policy-config-container {
+  display: flex;
+  align-items: center;
+  height: 406px;
+}
+
+.card {
+  padding: 4px;
+  width: 155px;
+  height: 50px;
+  position: relative;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card h2 {
+  color: #282b33;
+  font-size: 14px;
+}
+
+.card .resource-type-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.application-text-container {
+  position: absolute;
+  width: 188px;
+  text-align: center;
+  top: 230px;
+  color: #6c7280;
+  left: 0px;
+  z-index: 2;
+}
+
+.backup-text-container {
+  top: 230px;
+  left: 405px;
+  width: 188px;
+  text-align: center;
+  position: absolute;
+  color: #6c7280;
+  z-index: 2;
+}
+
+.backup-text-container2 {
+  top: 237px;
+  left: 405px;
+  width: 188px;
+  text-align: center;
+  position: absolute;
+  color: #6c7280;
+  z-index: 2;
+}
+
+.archival-circled-container {
+  left: 16px;
+  z-index: 10;
+}
+
+.archival-policy-container {
+  top: -40px;
+  left: 18px;
+}
+
+.archival-text-container {
+  width: 188px;
+  text-align: center;
+  top: -62px;
+  left: 18px;
+  color: #6c7280;
+  z-index: 2;
+}
+
+.replication-circled-container {
+  top: 104px;
+  left: 16px;
+  z-index: 10;
+}
+
+.replication-policy-container {
+  top: 70px;
+  left: 18px;
+}
+
+.replication-text-container {
+  width: 188px;
+  top: 52px;
+  text-align: center;
+  left: 18px;
+  color: #6c7280;
+  z-index: 2;
+}
+.tooltip-pl {
+  padding-left: 5px;
+  display: inline-block;
+}
+.application-circled-container {
+  top: -16px;
+  left: -16px;
+  z-index: 2;
+}
+.application-line-container {
+  position: relative;
+  left: -12px;
+  top: -12px;
+}
+.backupPolicy-circled-container {
+  top: -16px;
+}
+.application-required {
+  display: inline-block;
+}
+.sla-required-container {
+  justify-content: center;
+}
+.distributed-archival-circled-container {
+  position: relative;
+  right: 6px;
+  top: 38px;
+}
+
+.no-archival-replication-circled-container {
+  top: 52px;
+  left: 16px;
+  z-index: 10;
+}
+.no-archival-replication-policy-container {
+  top: 10px;
+  left: 18px;
+}
+.no-archival-replication-text-container {
+  width: 188px;
+  top: -12px;
+  text-align: center;
+  left: 18px;
+  color: #6c7280;
+  z-index: 2;
+}
+.no-archival-replication-checked-general-container {
+  line-height: 24px;
+  position: absolute;
+  top: 138px;
+  width: 210px;
+  left: 20px;
+  font-size: 14px;
+  margin-bottom: 0px !important;
+  text-align: center;
+  .text {
+    width: 188px;
+    span {
+      cursor: pointer;
+    }
+    span:hover,
+    span:active {
+      color: #5b7ede;
+      cursor: pointer;
+    }
+  }
+
+  .delete {
+    display: inline-block;
+    vertical-align: top;
+    cursor: pointer;
+  }
+}

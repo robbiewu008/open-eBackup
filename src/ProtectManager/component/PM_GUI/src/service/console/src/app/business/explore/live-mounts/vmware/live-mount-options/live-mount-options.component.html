@@ -1,0 +1,407 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'protection_mount_to_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="target_location">
+                <lv-group [lvGutter]="'30px'">
+                    <lv-radio [lvValue]="mountTargetLocation.Original" [lvDisabled]="restoreToNewLocationOnly">
+                        {{'common_restore_to_origin_location_label' |
+                        i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="mountTargetLocation.Others">{{'common_restore_to_new_location_label' |
+                        i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+
+    <ng-container *ngIf="formGroup.value.target_location === mountTargetLocation.Original">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_computer_location_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_origin_mount_location_help_label' | i18n}}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control>
+                <div style="width: 600px;" lv-overflow>
+                    {{originLocation | nil}}
+                </div>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'protection_new_vm_name_label' | i18n}}</lv-form-label>
+            <lv-form-control [lvErrorTip]="nameErrorTip">
+                <input lv-input type="text" formControlName="name" />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <ng-container *ngIf="formGroup.value.target_location === mountTargetLocation.Others">
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'protection_new_vm_name_label' | i18n}}</lv-form-label>
+            <lv-form-control [lvErrorTip]="nameErrorTip">
+                <input lv-input type="text" formControlName="name" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_computer_location_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_mount_computer_location_help_label' | i18n}}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control>
+                <div style="width: 600px;" [ngClass]="{'vm-location-placeHolder':!formGroup.value.location}"
+                    lv-overflow>
+                    {{formGroup.value.location
+                    || ('protection_computer_location_vm_tip_label' | i18n)}}
+                </div>
+                <aui-computer-location [vmRestoreOptionType]="vmRestoreOptionType.VM"
+                    [copyData]="componentData.selectionCopy" type="mount" (changeLocation)='changeLocation($event)'>
+                </aui-computer-location>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_vm_storage_location_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_vm_profile_help_label' | i18n}}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="targetStorageLocation" [lvOptions]='targetStorageLocationOptions'
+                    lvValueKey="key"
+                    [lvPlaceholder]="(datastoreNoData?'protection_restore_new_datastore_placeholder_label' :'common_select_label') | i18n"
+                    lvShowFilter lvFilterKey="label" lvFilterMode="contains">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="networkTableData.length > 0">
+            <lv-form-label lvRequired>{{'common_network_location_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-datatable lvSize="small" [lvData]="networkTableData" #networkTable>
+                    <thead>
+                        <tr>
+                            <th>{{'common_network_adapter_label' | i18n}}</th>
+                            <th>{{'common_network_name_label' | i18n}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let item of networkTable.renderData'>
+                            <td>{{item.name}}</td>
+                            <td>
+                                <lv-select [lvOptions]='item.options' [ngModelOptions]="{standalone: true}"
+                                    [(ngModel)]='item.selection' lvValueKey="key"
+                                    (ngModelChange)='changeTargetNetwork($event, item.uuid)'
+                                    [lvPlaceholder]="(networkNoData?'protection_restore_new_network_placeholder_label' :'common_select_label') | i18n"
+                                    lvShowFilter lvFilterKey="label" lvFilterMode="contains">
+                                </lv-select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </lv-datatable>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <lv-form-item>
+        <lv-form-label>{{'common_target_cpu_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="targetCPU">
+                <lv-group [lvGutter]="'30px'">
+                    <lv-radio [lvValue]="targetCPU.OriginalConfig">
+                        {{'common_original_configuration_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="targetCPU.SpecifyConfig">
+                        {{'common_specify_configuration_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.targetCPU === targetCPU.SpecifyConfig">
+        <lv-form-item>
+            <lv-form-label></lv-form-label>
+            <lv-form-control>
+                <lv-group>
+                    <lv-form-label lvRequired [ngClass]="{'cpu-number-label':true}">
+                        {{'explore_virtual_sockets_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="virtualSocketsErrorTip">
+                        <input lv-input type="text" formControlName="num_virtual_sockets" placeholder='1~128' />
+                    </lv-form-control>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label></lv-form-label>
+            <lv-form-control>
+                <lv-group>
+                    <lv-form-label lvRequired>
+                        {{'explore_cores_per_virtual_label' | i18n}}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_number_cores_help_label' | i18n}}"
+                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                            lvColorState='true'></i>
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="coresPerErrorTip">
+                        <input lv-input type="text" formControlName="num_cores_per_virtual" />
+                    </lv-form-control>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <lv-form-item>
+        <lv-form-label>{{'explore_target_memory_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="targetMemory">
+                <lv-group [lvGutter]="'30px'">
+                    <lv-radio [lvValue]="targetMemory.OriginalConfig">
+                        {{'common_original_configuration_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="targetMemory.SpecifyConfig">
+                        {{'common_specify_configuration_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.targetMemory === targetMemory.SpecifyConfig">
+        <lv-form-item>
+            <lv-form-label></lv-form-label>
+            <lv-form-control>
+                <lv-group>
+                    <lv-form-label lvRequired
+                        [ngClass]="{'size-label':formGroup.value.targetCPU === targetCPU.SpecifyConfig}">
+                        {{'common_size_label'|i18n}}(MB)
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="memorysErrorTip">
+                        <input lv-input type="text" formControlName="memory_size" />
+                    </lv-form-control>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <lv-form-item class="auto-power-switch-item">
+        <lv-form-label>
+            <div [ngClass]="{'auto-power-switch-en-us': isEn, 'auto-power-switch-zh-cn': !isEn}" lv-overflow>
+                {{'protection_startup_network_adaptor_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_startup_network_adaptor_mount_desc_label' | i18n}}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState='true'></i>
+            </div>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="startup_network_adaptor"></lv-switch>
+            <span class="configform-constraint" *ngIf="formGroup.value.startup_network_adaptor">
+                <div class="startup-network-adaptor-warn" lv-overflow>
+                    {{'protection_startup_network_adaptor_mount_warn_label' | i18n}}
+                </div>
+            </span>
+        </lv-form-control>
+    </lv-form-item>
+
+    <lv-form-item class="auto-power-switch-item">
+        <lv-form-label>
+            <div class="auto-power-switch" lv-overflow>
+                {{'protection_mount_auto_power_on_label' | i18n}}
+            </div>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="power_on"></lv-switch>
+        </lv-form-control>
+    </lv-form-item>
+  <ng-container *ngIf="formGroup.value.target_location === mountTargetLocation.Original">
+    <lv-form-item>
+      <lv-form-label>{{'protection_delete_origin_vm_label' | i18n}}</lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName="deleteOriginalVM"
+                   [lvDisabled]="restoreToNewLocationOnly"></lv-switch>
+        <span *ngIf="formGroup.value.deleteOriginalVM" class="delete-vm-mgl">
+              <i lv-icon="lv-icon-status-warning-info" lvColorState='true' class="type-icon"></i>
+              <span>
+                  {{'protection_delete_origin_vm_warn_after_mount_label' | i18n}}
+              </span>
+          </span>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+    <div class="aui-gutter-column-xxl"></div>
+    <lv-collapse [lvMultiExpansion]="'false'" lvType="simple" class="live-mount-advanced-container">
+        <lv-collapse-panel lvTitle="{{'common_advanced_label'|i18n}}" [lvExpanded]="false">
+            <lv-form-item>
+                <lv-form-label [lvRequired]="formGroup.value.bindWidthStatus">
+                    {{ 'common_bindwidth_label' | i18n }}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-group lvDirection='vertical' lvGutter='8px'>
+                        <lv-switch formControlName='bindWidthStatus' class="mount-bindWidth"></lv-switch>
+                        <lv-group lvGutter='8px' *ngIf="formGroup.value.bindWidthStatus" class="lv-group-flex-start">
+                            <lv-group lvDirection='vertical'>
+                                <lv-form-label>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_min_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='minBandwidthErrorTip'>
+                                    <input lv-input type="text" formControlName="min_bandwidth"
+                                        class="advanced-input-container" placeholder="1~999999999" />
+                                </lv-form-control>
+                            </lv-group>
+                            <lv-group lvDirection='vertical'>
+                                <lv-form-label>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_max_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='maxBandwidthErrorTip'>
+                                    <input lv-input type="text" formControlName="max_bandwidth"
+                                        class="advanced-input-container" placeholder="1~999999999" />
+                                </lv-form-control>
+                            </lv-group>
+                            <lv-group lvDirection='vertical'
+                                *ngIf="formGroup.value.max_bandwidth && formGroup.get('max_bandwidth').valid">
+                                <lv-form-label>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_burst_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='burstBandwidthErrorTip'>
+                                    <input lv-input type="text" formControlName="burst_bandwidth"
+                                        class="advanced-input-container" placeholder="1~999999999" />
+                                </lv-form-control>
+                            </lv-group>
+                            <lv-group lvDirection='vertical'>
+                                <lv-form-label></lv-form-label>
+                                MB/s
+                            </lv-group>
+                        </lv-group>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label [lvRequired]="formGroup.value.iopsStatus">
+                    {{ 'protection_nor_iops_label' | i18n }}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-group lvDirection='vertical' lvGutter='8px'>
+                        <lv-group lvGutter='8px'>
+                            <lv-switch formControlName='iopsStatus'></lv-switch>
+                            <span class="aui-link" lv-popover [lvPopoverTrigger]="'hover'"
+                                [lvPopoverContent]="iopsContentTpl">
+                                {{'common_more_label'|i18n}}
+                            </span>
+                        </lv-group>
+                        <lv-group lvGutter='8px' *ngIf="formGroup.value.iopsStatus" class="lv-group-flex-start">
+                            <lv-group lvDirection='vertical'>
+                                <lv-form-label>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_min_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='minIopsErrorTip'>
+                                    <input lv-input type="text" formControlName="min_iops"
+                                        class="advanced-input-container" placeholder="100~999999999" />
+                                </lv-form-control>
+                            </lv-group>
+                            <lv-group lvDirection='vertical'>
+                                <lv-form-label>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_max_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='maxIopsErrorTip'>
+                                    <input lv-input type="text" formControlName="max_iops"
+                                        class="advanced-input-container" placeholder="100~999999999" />
+                                </lv-form-control>
+                            </lv-group>
+                            <lv-group lvDirection='vertical'
+                                *ngIf="formGroup.value.max_iops && formGroup.get('max_iops').valid">
+                                <lv-form-label>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_burst_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='burstIopsErrorTip'>
+                                    <input lv-input type="text" formControlName="burst_iops"
+                                        class="advanced-input-container" placeholder="100~999999999" />
+                                </lv-form-control>
+                            </lv-group>
+                        </lv-group>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container
+                *ngIf="(formGroup.value.iopsStatus && formGroup.value.burst_iops) || (formGroup.value.bindWidthStatus && formGroup.value.burst_bandwidth)">
+                <lv-form-item>
+                    <lv-form-label lvRequired> {{'explore_max_burst_label' | i18n}}</lv-form-label>
+                    <lv-form-control [lvErrorTip]='burstTimeErrorTip'>
+                        <input lv-input type="text" formControlName="burst_time" class="advanced-input-container"
+                            placeholder="1~999999999" />
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_max_burst_desc_label' | i18n}}"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <lv-form-item>
+                <lv-form-label> {{'protection_nor_latency_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <lv-group lvDirection='vertical' lvGutter='8px'>
+                        <lv-group lvGutter='8px'>
+                            <lv-switch formControlName='latencyStatus'></lv-switch>
+                            <span class="aui-link" lv-popover [lvPopoverTrigger]="'hover'"
+                                [lvPopoverContent]="latencyContentTpl">
+                                {{'common_more_label'|i18n}}
+                            </span>
+                        </lv-group>
+                        <lv-group lvGutter='8px' *ngIf="formGroup.value.latencyStatus">
+                            <lv-group lvDirection='vertical'>
+                                <lv-form-label lvRequired>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_max_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                                    <lv-select formControlName="latency" [lvOptions]='latencyOptions' lvValueKey='value'
+                                        class="advanced-input-container" lvShowClear>
+                                    </lv-select>
+                                </lv-form-control>
+                            </lv-group>
+                        </lv-group>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-collapse-panel>
+    </lv-collapse>
+</lv-form>
+
+<ng-template #iopsContentTpl>
+    <lv-group lvGutter='32px'>
+        <lv-group lvDirection='vertical' lvGutter='16px'>
+            <span class="aui-text-desc">{{'explore_io_size_label' | i18n}}</span>
+            <span class="aui-text-desc">Min</span>
+            <span class="aui-text-desc">Max</span>
+            <span class="aui-text-desc">Burst</span>
+        </lv-group>
+        <lv-group *ngFor="let item of iopsItems" lvDirection='vertical' lvGutter='16px'>
+            <span>{{item.header}}</span>
+            <span>{{item.min | nil}}</span>
+            <span>{{item.max | nil}}</span>
+            <span>{{item.burst | nil}}</span>
+        </lv-group>
+    </lv-group>
+</ng-template>
+
+<ng-template #latencyContentTpl>
+    <lv-group lvGutter='32px'>
+        <lv-group lvDirection='vertical' lvGutter='16px'>
+            <span class="aui-text-desc">{{'explore_io_size_label' | i18n}}</span>
+            <span class="aui-text-desc">Max</span>
+        </lv-group>
+        <lv-group *ngFor="let item of latencyItems" lvDirection='vertical' lvGutter='16px'>
+            <span>{{item.header}}</span>
+            <span>{{item.max | nil}}</span>
+        </lv-group>
+    </lv-group>
+</ng-template>

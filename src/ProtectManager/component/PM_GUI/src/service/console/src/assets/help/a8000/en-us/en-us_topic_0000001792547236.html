@@ -1,0 +1,94 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Performing Periodic Backup">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839186561.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001792547236">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Performing Periodic Backup</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001792547236"></a><a name="EN-US_TOPIC_0000001792547236"></a>
+
+<h1 class="topictitle1">Performing Periodic Backup</h1>
+<div><p>After the VMs to be protected are associated with a specified SLA, the system periodically backs up the VMs based on the SLA.</p>
+<div class="section" id="EN-US_TOPIC_0000001792547236__section176701740714"><h4 class="sectiontitle">Prerequisites</h4><ul id="EN-US_TOPIC_0000001792547236__ul596411210418"><li id="EN-US_TOPIC_0000001792547236__li18282112344115">If you want to back up data when the VM is started, ensure that Tools has been configured for the VM. Otherwise, backup cannot be performed. For details about how to install the tool, see the <em id="EN-US_TOPIC_0000001792547236__i194246473379"><span id="EN-US_TOPIC_0000001792547236__text1577512329371">FusionCompute Online Help</span></em>.</li><li id="EN-US_TOPIC_0000001792547236__li159641216413">For FusionCompute 8.7.0 and later versions, if you want to use an independent backup network plane for LAN-based backup and restoration, configure an independent backup network plane through FusionCompute first. For details, see <a href="en-us_topic_0000001840260694.html">Configuring the Backup Network Plane (Applicable to FusionCompute 8.7.0 and Later Versions)</a> (applicable to only 1.6.0 and later versions).</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001839142377_uicontrol138292612376"><b><span id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001839142377_text1838292612372"><strong>Protection</strong></span> &gt; Virtualization &gt; FusionCompute</b></span>.</span></li><li><span>On the left of the page, select the VM that you want to protect.</span><p><ul><li>When you select a cluster on the <span><strong>Cluster</strong></span> tab page, the system protects all VMs in the cluster.</li><li>When you select a host on the <span><strong>Hosts</strong></span> tab page, the system protects all VMs on the host.</li><li>When you select a VM on the <span><strong>VMs</strong></span> tab page, the system protects the VM.</li><li>When you select a VM group on the <strong>VM Groups</strong> tab page, the system protects all VMs in the VM group.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li><strong>VM Groups</strong> is available only in 1.6.0 and later versions.</li><li>A maximum of 100 FusionCompute VMs can be protected in a batch.</li></ul>
+</div></div>
+</li></ul>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>Protect</strong></span></b></span>.</span></li><li><span>When you select a VM for protection on the <span><strong>VMs</strong></span> tab page, determine whether to enable automatic disk protection. In other scenarios, skip this step.</span><p><div class="p">Automatic disk protection is enabled by default. After this function is enabled, all disks of the VM, including newly detected disks, are protected. After automatic disk protection is disabled, you need to manually select disks to be protected.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>If the system disk is deselected, the generated copy can only be used for disk restoration.</p>
+</div></div>
+</div>
+</p></li><li><span>Select an SLA. You can select a preset SLA or click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> to create an SLA.</span></li><li><span>Set the following parameters in <span class="uicontrol"><b><span><strong>Advanced</strong></span></b></span>.</span><p>
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Advanced parameters</caption><colgroup><col style="width:20.48%"><col style="width:79.52%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20.48%" id="mcps1.3.3.2.6.2.1.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.52%" id="mcps1.3.3.2.6.2.1.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><strong>Consistency Snapshot</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 "><p>If this function is enabled, the cache data that is not saved on a VM is saved before a consistency snapshot is created. If the VM does not support consistency snapshots, the job is automatically executed using common snapshots.</p>
+<p>Whether the VM supports consistency snapshots needs to be confirmed on the FusionCompute platform.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><span><strong>Snapshot Deletion Rate (MB/s)</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 "><p>After the backup is complete, the system deletes the snapshots generated during the backup. Snapshot deletion occupies storage resources. You can configure this parameter to specify the snapshot deletion speed. The default value is 30 MB/s.</p>
+<p><span><strong>Storage resources are occupied. A higher rate has greater impact on performance of VMs running on the storage system. The snapshot deletion rate is invalid when Huawei scale-out block storage is used as the datastore.</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 "><p>Select the agent host for data protection.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><span><strong>SLA Overwrite Policy</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 "><div class="p">When you select a cluster or host for protection, you can choose whether to overwrite the existing VM SLAs.<div class="note" id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_note1032172155715"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_p332227572">If you select <span class="uicontrol" id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_uicontrol011093871013"><b><span id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_text11103387103"><strong>Do not overwrite existing VM SLAs</strong></span></b></span> when modifying the SLA associated with the cluster or host, the VM SLAs are still overwritten when they are the same as the SLA of the cluster or host before the modification.</p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><span><strong>SLA Application Policy</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 "><div class="p">When you select a cluster or host for protection, you can choose the application scope of the SLA policy as follows:<ul id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_ul192722515111"><li id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_li1592717251115">Applying the cluster or host SLA policy to all VMs that are not associated with any SLA</li><li id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_li10927625419">Applying the cluster or host SLA policy to newly created VMs<p id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_p39279251213"><a name="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_li10927625419"></a><a name="en-us_topic_0000001792547708_li10927625419"></a>After the virtualization environment is scanned, the newly discovered VMs are associated with the same SLA as the cluster or host.</p>
+</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><span><strong>VM Filter</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 "><div class="p">If you want to specify the VMs to be excluded or included in the protection plan when selecting a cluster or host for protection, enable this function and perform the following operations:<ol type="a" id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_ol92741652870"><li id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_li2066616282811">Select a filtering mode.</li><li id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_li42741252878">Enter a VM name or keyword in the text box to filter VMs based on the selected filtering mode.<ul id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_ul12669913111111"><li id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_li180521811113">Use commas (,) to separate multiple names or keywords.</li><li id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792547708_li10669613121112">Exact match and fuzzy match of VM names are supported. Fuzzy match rules include prefix match (for example, abc*), suffix match (for example, *abc), and middle match (for example, *abc*).</li></ul>
+</li></ol>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792503842_uicontrol196538515235"><b>OK</b></span>. </span><p><p id="EN-US_TOPIC_0000001792547236__en-us_topic_0000001792503842_p25041111535">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001839186561.html">Step 7: Performing Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

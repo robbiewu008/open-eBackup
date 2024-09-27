@@ -1,0 +1,8 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{dataplaneIpLabel}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+            <input lv-input type="text" formControlName="dataplaneIp" />
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

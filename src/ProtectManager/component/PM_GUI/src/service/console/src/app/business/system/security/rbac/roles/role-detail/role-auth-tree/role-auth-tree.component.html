@@ -1,0 +1,23 @@
+<lv-treetable [lvData]="tableData" #lvTable>
+  <thead>
+  <tr>
+    <th lvCellKey="permission">{{'system_permissions_label' | i18n}}</th>
+  </tr>
+  </thead>
+  <tbody>
+  <ng-container *ngTemplateOutlet="bodyContentTpl; context: { $implicit: lvTable.renderData }"></ng-container>
+
+  <ng-template #bodyContentTpl let-data>
+    <ng-container *ngFor="let item of data">
+      <tr>
+        <td [lvShowExpanded]="item.children?.length" [(lvExpanded)]="item.expanded">
+          {{ item.label | i18n }}
+        </td>
+      </tr>
+      <ng-container *ngIf="item.expanded && item.children?.length">
+        <ng-container *ngTemplateOutlet="bodyContentTpl; context: { $implicit: item.children}"></ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-template>
+  </tbody>
+</lv-treetable>

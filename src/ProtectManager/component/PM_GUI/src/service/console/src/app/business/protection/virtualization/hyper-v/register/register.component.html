@@ -1,0 +1,51 @@
+<lv-form [lvLabelColon]="false" [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{ 'common_type_label' | i18n }}</lv-form-label>
+        <lv-form-control>
+            <lv-select [lvOptions]="typeOptions" formControlName="type" lvValueKey="value" [lvDisabled]="!!item">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{ 'common_name_label' | i18n }}</lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input type="text" formControlName="name" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ 'protection_proxy_host_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select [lvOptions]="proxyOptions" formControlName="agents" lvValueKey="value" lvShowFilter
+                lvShowCheckAll lvFilterKey="label" lvFilterMode="contains" [lvContentTemplate]='contentTpl'>
+            </lv-select>
+            <ng-template #contentTpl let-item>
+                <lv-group lvGutter='4px'>
+                    <i lv-icon="{{ item.linkStatus === '1' ? 'aui-host-online' : 'aui-host-offline'}}"></i>
+                    <span>{{item.label}}</span>
+                </lv-group>
+            </ng-template>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="!hideUserInfo">
+      <lv-form-item>
+        <lv-form-label lvRequired>
+          {{ 'common_username_label' | i18n }}
+          <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_register_hyperv_username_label' | i18n}}">
+            lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="userNameErrorTip">
+          <input lv-input type="text" formControlName="username" autocomplete="new-password" />
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label lvRequired>
+          {{'common_password_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="passwordErrorTip">
+          <aui-inupt-with-eye formControlName="password"></aui-inupt-with-eye>
+        </lv-form-control>
+      </lv-form-item>
+    </ng-container>
+</lv-form>

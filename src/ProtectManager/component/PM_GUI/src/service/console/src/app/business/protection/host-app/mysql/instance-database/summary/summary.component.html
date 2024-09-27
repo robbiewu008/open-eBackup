@@ -1,0 +1,13 @@
+<div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{'common_basic_info_label' | i18n}}</h2>
+</div>
+<div class="aui-gutter-column-lg">
+    <resoure-base-info [source]="source" [sourceType]="subType"></resoure-base-info>
+</div>
+
+<ng-container *ngIf="source.subType !== resourceType.MySQLDatabase.value">
+    <div class="aui-header-2 aui-gutter-column-md">
+        <h2>{{'system_servers_label' | i18n}}</h2>
+    </div>
+    <aui-proxy-host [data]='source' [isInstance]="true"></aui-proxy-host>
+</ng-container>

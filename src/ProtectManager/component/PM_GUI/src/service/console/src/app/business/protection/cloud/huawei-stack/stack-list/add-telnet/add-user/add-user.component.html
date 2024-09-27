@@ -1,0 +1,43 @@
+<lv-form [lvLabelColon]="false" [formGroup]="formGroup" class="formGroup">
+  <span class="add-user-tips-container" *ngIf="treeSelection.type !== resourceType.OpenStack">
+    <div>
+      <i lv-icon="lv-icon-status-info" lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+    </div>
+    <div class="add-user-tips">
+      {{ 'protection_hcs_add_user_tips_label' | i18n }}
+    </div>
+  </span>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_username_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="username" autocomplete="new-password" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_password_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="pwdErrorTip">
+      <aui-inupt-with-eye formControlName="password"></aui-inupt-with-eye>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+
+<ng-template #footerTpl>
+  <div class="lv-modal-btns">
+    <lv-group lvGutter="8px">
+      <button lv-button (click)="test()" [disabled]="formGroup.invalid" [lvLoading]="testLoading">
+        {{ 'common_test_label' | i18n }}
+      </button>
+      <button lv-button lvType="primary" (click)="ok()" [disabled]="!(formGroup.valid && isTest)"
+        [lvLoading]="okLoading">
+        {{ 'common_ok_label' | i18n }}
+      </button>
+      <button lv-button (click)="modal.close()">
+        {{ 'common_cancel_label' | i18n }}
+      </button>
+    </lv-group>
+  </div>
+</ng-template>

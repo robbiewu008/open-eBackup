@@ -1,0 +1,472 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+    <lv-tabs formArrayName="archiveTeams" [lvTabBarExtraContent]="extraTpl" [(lvActiveIndex)]="activeIndex"
+        [lvType]="'underline'" [lvClosable]="true" (lvTabRemove)="removeArchiveTeam($event)"
+        (lvActiveIndexChange)="policyIndexChange($event)">
+        <lv-tab *ngFor="let item of formGroup.get('archiveTeams')?.controls; let teamIndex = index"
+            [formGroupName]="teamIndex" [lvTitle]="title" [lvId]="teamIndex">
+            <ng-template #title>
+                <div style="width: 60px;" lvOverflow>
+                    {{item.get('name').value}}
+                </div>
+            </ng-template>
+            <lv-form-item>
+                <lv-form-label lvRequired>
+                    {{'common_name_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="baseUtilService.nameErrorTip">
+                    <input lv-input formControlName="name" type="text" />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired>
+                    {{'protection_archive_storage_type_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                    <lv-select [lvOptions]="protocolOptions" formControlName="protocol" lvValueKey="value">
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item *ngIf="item.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value">
+                <lv-form-label lvRequired>
+                    {{'protection_archive_storage_name_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                    <lv-group [lvColumns]='["auto", "100px"]' lvRowGutter="12px">
+                        <lv-select [lvOptions]="s3StorageNames" lvShowFilter lvFilterKey='label' lvFilterMode='contains'
+                            lvVirtualScroll formControlName="storage_id" lvValueKey='value'>
+                        </lv-select>
+                        <button lv-button (click)="addStorage(item.get('protocol').value)"
+                            class="backup-time-unit-text">
+                            {{'common_add_label'|i18n}}
+                        </button>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+
+            <lv-form-item *ngIf="item.get('protocol').value === dataMap.Archival_Protocol.tapeLibrary.value">
+                <lv-form-label lvRequired>
+                    {{'protection_archive_storage_name_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                    <lv-group lvGutter="8px">
+                        <lv-select [lvOptions]="clusterNodeNames" lvShowFilter lvFilterKey='label'
+                            lvFilterMode='contains' lvVirtualScroll formControlName="node_id" lvValueKey='value'>
+                        </lv-select>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+
+            <lv-form-item *ngIf="item.get('protocol').value === dataMap.Archival_Protocol.tapeLibrary.value">
+                <lv-form-label lvRequired>
+                    {{'system_archive_storage_pool_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                    <lv-group [lvColumns]='["auto", "100px"]' lvRowGutter="12px">
+                        <lv-select [lvOptions]="mediaSetOptions[item.get('node_id').value]" formControlName="mediaSet"
+                            lvValueKey='value' [lvContentTemplate]="tapeTpl">
+                        </lv-select>
+                        <ng-template #tapeTpl let-item>
+                            <lv-group lvGutter="4px" lvDirection="vertical">
+                                <span>{{item.label}}</span>
+                                <span class="aui-text-help-sm desc-text">{{item.retentionType | textMap:
+                                    'Tape_Retention_Type'}}</span>
+                            </lv-group>
+                        </ng-template>
+
+                        <button lv-button (click)="addStorage(item.get('protocol').value,null)"
+                            class="backup-time-unit-text" [disabled]="!item.get('node_id').value">
+                            {{'common_add_label'|i18n}}
+                        </button>
+                    </lv-group>
+                    <div *ngIf="!!item.value.mediaSet" class="retentionTip">
+                        <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                        <span>
+                            {{getMediaRetentionTip(mediaSetOptions[item.get('node_id').value],item.value.mediaSet)}}
+                        </span>
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'protection_archive_time_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <div class="archive-time-container">
+                        <lv-radio-group formControlName="trigger" [lvGroupName]="'archiveTimeGroup'">
+                            <lv-group [lvGutter]="'16px'" lvDirection='vertical'>
+                                <lv-radio [lvValue]="dataMap.Archive_Trigger.periodArchive.value">
+                                    {{dataMap.Archive_Trigger.periodArchive.label | i18n}}
+                                </lv-radio>
+                                <lv-radio [lvValue]="dataMap.Archive_Trigger.immediatelyBackup.value">
+                                    {{ application === applicationType.Replica ?
+                                    ('protection_replica_success_label' | i18n) :
+                                    ('protection_backup_success_label' | i18n)}}
+                                </lv-radio>
+                                <lv-radio [lvValue]="dataMap.Archive_Trigger.archiveSpecifiedTime.value">
+                                    {{dataMap.Archive_Trigger.archiveSpecifiedTime.label | i18n}}
+                                </lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 周期性归档 -->
+            <ng-container *ngIf="item.get('trigger').value === dataMap.Archive_Trigger.periodArchive.value">
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'protection_frequency_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="intervalErrorTip">
+                        <lv-group lvGutter='4px'>
+                            <span>{{'protection_every_label' | i18n}}</span>
+                            <lv-input-group [lvAddAfter]="archiveUnitTpl"
+                                class="input-group-select-right archive-frequency-input">
+                                <input lv-input formControlName="interval"
+                                    placeholder="{{item.get('interval_unit').value == 'm'?'1~59':item.get('interval_unit').value=='h'?'1~23':item.get('interval_unit').value=='d'?'1~7':item.get('interval_unit').value=='w'?'1~4':item.get('interval_unit').value=='MO'?'1~12':'1~5'}}" />
+                            </lv-input-group>
+                            <ng-template #archiveUnitTpl>
+                                <lv-select [lvOptions]="intervalUnit" formControlName="interval_unit"
+                                    class="unit-inner-select" lvValueKey="value"
+                                    (ngModelChange)="changeTimeUnits(item, $event, 'interval')"></lv-select>
+                            </ng-template>
+                            <span>{{'protection_archive_one_label' | i18n}}</span>
+                        </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'protection_last_time_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="startTimeErrorTip">
+                        <lv-date-picker lvShowTime="true" formControlName="start_time"
+                            lvPlaceholder="{{'protection_device_start_time_label' | i18n}}"
+                            [lvFooterExtra]="datePickerFooterTpl" lvShowNowButton="false">
+                        </lv-date-picker>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <!-- 副本生成后的指定时间归档 -->
+            <ng-container *ngIf="item.get('trigger').value === dataMap.Archive_Trigger.archiveSpecifiedTime.value">
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'common_time_label' | i18n}}</lv-form-label>
+                    <lv-form-control [lvErrorTip]="backupGenerationErrorTip">
+                        <lv-group lvGutter='4px'>
+                            <span>{{'protection_archive_after_copy_label' | i18n}}</span>
+                            <input lv-input formControlName="backup_generation" type="text"
+                                class="backup-generation-input" placeholder="1~365" />
+                            <span>{{'protection_archive_after_days_label' | i18n}}</span>
+                        </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <lv-form-item>
+                <lv-form-label lvRequired>{{item.get('protocol').value === 2 ?
+                    ('protection_archive_rule_retention_policy_label' | i18n) : ('protection_archive_rule_label' |
+                    i18n)}}</lv-form-label>
+                <lv-form-control>
+                    <div class="archive-time-container">
+                        <lv-radio-group formControlName="archive_target_type" [lvGroupName]="'archiveTargetTypeGroup'">
+                            <lv-group [lvGutter]="'16px'" lvDirection='vertical'>
+                                <lv-radio [lvValue]="archiveTargetType.archiveAllCopies.value">
+                                    {{archiveTargetType.archiveAllCopies.label | i18n}}
+                                </lv-radio>
+                                <lv-radio [lvValue]="archiveTargetType.specifiedDate.value">
+                                    {{archiveTargetType.specifiedDate.label | i18n}}
+                                </lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 指定副本归档 -->
+            <ng-container *ngIf="item.get('archive_target_type')?.value === archiveTargetType.archiveAllCopies.value">
+                <lv-form-item>
+                    <lv-form-label lvRequired>
+                        {{'protection_archival_policy_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                        <lv-select [lvOptions]="archivingScopeOptions" formControlName="archiving_scope"
+                            lvValueKey="value">
+                        </lv-select>
+                    </lv-form-control>
+                </lv-form-item>
+                <ng-container *ngIf="item.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value">
+                    <lv-form-item>
+                        <lv-form-label lvRequired>
+                            {{'common_retention_label' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control [lvErrorTip]="retentionDurationErrorTip" class="groupInControl">
+                            <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right">
+                                <input lv-input formControlName="retention_duration"
+                                    placeholder="{{item.get('duration_unit').value=='d'?'1~25550':item.get('duration_unit').value=='w'?'1~3650':item.get('duration_unit').value=='MO'?'1~840': item.get('duration_unit').value=='p'?'':'1~70'}}" />
+                            </lv-input-group>
+                            <ng-template #unitTpl>
+                                <lv-select [lvOptions]="retentionDurationUnit" formControlName="duration_unit"
+                                    class="unit-inner-select" lvValueKey="value"
+                                    (ngModelChange)="changeTimeUnits(item, $event, 'retention_duration')"></lv-select>
+                            </ng-template>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+            </ng-container>
+            <!-- 指定日期归档 -->
+            <ng-container *ngIf="item.get('archive_target_type')?.value === archiveTargetType.specifiedDate.value">
+                <lv-form-item>
+                    <lv-form-label></lv-form-label>
+                    <lv-form-control>
+                        <lv-group lvDirection='vertical' lvGutter="16px">
+                            <lv-group lvGutter="8px">
+                                <lv-group>
+                                    <label lv-checkbox formControlName="copy_type_year"
+                                        [lvDisabled]="!item.get('copy_type_month').value && !item.get('copy_type_week').value"
+                                        lv-tooltip="{{!item.get('copy_type_month').value && !item.get('copy_type_week').value ? ('common_at_least_select_label' | i18n) : ''}}"
+                                        lvTooltipPosition="topLeft">
+                                        {{'protection_choose_every_year_label' | i18n}}
+                                    </label>
+                                </lv-group>
+                                <lv-group>
+                                    <lv-select [lvOptions]="yearTimeRangeOptions"
+                                        formControlName="generate_time_range_year" lvValueKey="value"
+                                        class="backup-time-unit-text">
+                                    </lv-select>
+                                </lv-group>
+                                <ng-container
+                                    *ngIf="item.get('protocol')?.value === dataMap.Archival_Protocol.tapeLibrary.value">
+                                    <lv-group>
+                                        <span>
+                                            {{'protection_copy_archiving_label'|i18n}}
+                                        </span>
+                                    </lv-group>
+                                </ng-container>
+                                <ng-container
+                                    *ngIf="item.get('protocol')?.value !== dataMap.Archival_Protocol.tapeLibrary.value">
+                                    <lv-group>
+                                        <span>
+                                            {{'protection_copy_archiving_retention_label'|i18n}}
+                                        </span>
+                                    </lv-group>
+                                    <lv-group>
+                                        <lv-form-control [lvErrorTip]="retentionDurationYearErrorTip">
+                                            <input lv-input formControlName="retention_duration_year" type="text"
+                                                placeholder="1~70" class="backup-time-unit-text" />
+                                        </lv-form-control>
+                                    </lv-group>
+                                    <lv-group>
+                                        <span>{{'common_year_label' | i18n}}</span>
+                                    </lv-group>
+                                </ng-container>
+                            </lv-group>
+                            <lv-group lvGutter="8px">
+                                <lv-group>
+                                    <label lv-checkbox formControlName="copy_type_month"
+                                        [lvDisabled]="!item.get('copy_type_year').value && !item.get('copy_type_week').value"
+                                        lv-tooltip="{{!item.get('copy_type_year').value && !item.get('copy_type_week').value ? ('common_at_least_select_label' | i18n) : ''}}"
+                                        lvTooltipPosition="topLeft">
+                                        {{'protection_choose_every_month_label' | i18n}}
+                                    </label>
+                                </lv-group>
+                                <lv-group>
+                                    <lv-select [lvOptions]="monthTimeRangeOptions"
+                                        formControlName="generate_time_range_month" lvValueKey="value"
+                                        class="backup-time-unit-text">
+                                    </lv-select>
+                                </lv-group>
+                                <ng-container
+                                    *ngIf="item.get('protocol')?.value === dataMap.Archival_Protocol.tapeLibrary.value">
+                                    <lv-group>
+                                        <span>
+                                            {{'protection_copy_archiving_label'|i18n}}
+                                        </span>
+                                    </lv-group>
+                                </ng-container>
+                                <ng-container
+                                    *ngIf="item.get('protocol')?.value !== dataMap.Archival_Protocol.tapeLibrary.value">
+                                    <lv-group>
+                                        <span>
+                                            {{'protection_copy_archiving_retention_label'|i18n}}
+                                        </span>
+                                    </lv-group>
+                                    <lv-group>
+                                        <lv-form-control [lvErrorTip]="retentionDurationMonthErrorTip">
+                                            <input lv-input formControlName="retention_duration_month" type="text"
+                                                placeholder="1~840" class="backup-time-unit-text" />
+                                        </lv-form-control>
+                                    </lv-group>
+                                    <lv-group>
+                                        <span>{{'common_month_label' | i18n}}</span>
+                                    </lv-group>
+                                </ng-container>
+                            </lv-group>
+                            <lv-group lvGutter="8px">
+                                <lv-group>
+                                    <label lv-checkbox formControlName="copy_type_week"
+                                        [lvDisabled]="!item.get('copy_type_year').value && !item.get('copy_type_month').value"
+                                        lv-tooltip="{{!item.get('copy_type_year').value && !item.get('copy_type_month').value ? ('common_at_least_select_label' | i18n) : ''}}"
+                                        lvTooltipPosition="topLeft">
+                                        {{'protection_choose_every_week_label' | i18n}}
+                                    </label>
+                                </lv-group>
+                                <lv-group>
+                                    <lv-select [lvOptions]="weekTimeRangeOptions"
+                                        formControlName="generate_time_range_week" lvValueKey="value"
+                                        class="backup-time-unit-text">
+                                    </lv-select>
+                                </lv-group>
+                                <ng-container
+                                    *ngIf="item.get('protocol')?.value === dataMap.Archival_Protocol.tapeLibrary.value">
+                                    <lv-group>
+                                        <span>
+                                            {{'protection_copy_archiving_label'|i18n}}
+                                        </span>
+                                    </lv-group>
+                                </ng-container>
+                                <ng-container
+                                    *ngIf="item.get('protocol')?.value !== dataMap.Archival_Protocol.tapeLibrary.value">
+                                    <lv-group>
+                                        <span>
+                                            {{'protection_copy_archiving_retention_label'|i18n}}
+                                        </span>
+                                    </lv-group>
+                                    <lv-group>
+                                        <lv-form-control [lvErrorTip]="retentionDurationWeekErrorTip">
+                                            <input lv-input formControlName="retention_duration_week" type="text"
+                                                placeholder="1~3650" class="backup-time-unit-text" />
+                                        </lv-form-control>
+                                    </lv-group>
+                                    <lv-group>
+                                        <span>{{'common_weeks_label' | i18n}}</span>
+                                    </lv-group>
+                                </ng-container>
+                            </lv-group>
+                        </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <ng-container
+                *ngIf="item.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value && ![applicationType.CommonShare].includes(application)">
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'common_limit_rate_policy_single_label' | i18n}}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'common_limit_rate_policy_tip_label' | i18n}}"
+                            lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
+                            lvColorState='true'></i>
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-select [lvOptions]="qosNames" formControlName="qos_id" lvValueKey="uuid" lvShowClear>
+                        </lv-select>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <!-- 驱动数量 -->
+            <lv-form-item *ngIf="item.get('protocol').value === dataMap.Archival_Protocol.tapeLibrary.value">
+                <lv-form-label lvRequired>
+                    {{'protection_archive_drive_num_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="driverCountErrorTip">
+                    <input lv-input formControlName="driverCount" type="text" />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item
+                *ngIf="(autoIndexForObs && item.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value)
+                || (autoIndexForTape && item.get('protocol').value === dataMap.Archival_Protocol.tapeLibrary.value)">
+                <lv-form-label>
+                    {{'protection_auto_indexing_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_auto_index_archive_tip_label' | i18n}}"
+                        lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="auto_index"
+                        [lvDisabled]="checkAutoIndexDisabled(item.get('uuid').value)">
+                    </lv-switch>
+                    <div *ngIf="item.get('auto_index').value">
+                        <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                        <span>
+                            {{'protection_sla_index_enable_label' | i18n}}
+                        </span>
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item *ngIf="item.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value">
+                <lv-form-label lvRequired>
+                    {{'protection_network_access_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_network_access_label_help_label' | i18n}}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="network_access">
+                    </lv-switch>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_job_failed_alarm_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_alarm_after_failure_help_label' | i18n}}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="alarm_after_failure"></lv-switch>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>{{'protection_auto_retry_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="auto_retry"></lv-switch>
+                    <ng-container *ngIf="item.get('auto_retry').value">
+                        <div class="aui-gutter-column-md"></div>
+                        <lv-form-label lvRequired>
+                            {{'common_retry_times_label' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control [lvErrorTip]="retryTimesErrorTip" class="groupInControl">
+                            <lv-group lvGutter='8px' class="lv-group-flex-start">
+                                <lv-group>
+                                    <input lv-input formControlName="auto_retry_times" type="text" placeholder="1~3"
+                                        class="backup-for-text" />
+                                </lv-group>
+                                <lv-group>
+                                    <span class="configform-constraint">{{'common_times_label' | i18n}}</span>
+                                </lv-group>
+                            </lv-group>
+                        </lv-form-control>
+                        <div class="aui-gutter-column-md"></div>
+                        <lv-form-label lvRequired>
+                            {{'common_waiting_time_label' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control [lvErrorTip]="waitTimesErrorTip" class="groupInControl">
+                            <lv-group lvGutter='8px' class="lv-group-flex-start">
+                                <lv-group>
+                                    <input lv-input formControlName="auto_retry_wait_minutes" type="text"
+                                        placeholder="1~30" class="backup-for-text" />
+                                </lv-group>
+                                <lv-group>
+                                    <span class="configform-constraint">{{'common_minutes_label' | i18n}}</span>
+                                </lv-group>
+                            </lv-group>
+                        </lv-form-control>
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="application === applicationType.ImportCopy">
+                <lv-form-item>
+                    <lv-form-label>{{'protection_delete_original_import_copy_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="delete_import_copy"></lv-switch>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+        </lv-tab>
+    </lv-tabs>
+</lv-form>
+
+<ng-template #extraTpl>
+    <span
+        [ngClass]="{'aui-link': formGroup.get('archiveTeams')?.controls?.length !== 4, 'aui-link-disabled': formGroup.get('archiveTeams')?.controls?.length === 4}"
+        (click)="addArchiveTeam()">
+        <i lv-icon='aui-icon-create'></i>
+        {{'common_add_label' | i18n}}
+    </span>
+</ng-template>
+
+
+<ng-template #datePickerFooterTpl>
+    <div class="lv-date-picker-cell lv-date-picker-footer">
+        <aui-current-system-time></aui-current-system-time>
+    </div>
+</ng-template>

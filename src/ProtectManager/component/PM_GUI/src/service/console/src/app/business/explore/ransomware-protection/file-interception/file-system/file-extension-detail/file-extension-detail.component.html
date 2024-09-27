@@ -1,0 +1,6 @@
+<div class="aui-gutter-column-md" *ngIf="updateOperation">
+    {{'common_selected_num_label' | i18n:[selectionData?.length || 0]}}
+</div>
+<div class="file-interception-win-table restore-lv-paginator-simple">
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>

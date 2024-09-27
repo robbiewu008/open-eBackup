@@ -1,0 +1,452 @@
+<lv-radio-group
+  class="radio-group"
+  [(ngModel)]="restoreLocation"
+  (ngModelChange)="changeLocation($event)"
+>
+  <lv-group>
+    <lv-radio
+      [lvViewType]="'button'"
+      [lvValue]="restoreLocationType.ORIGIN"
+      [lvDisabled]="disabledOrigin"
+      [lv-tooltip]="
+        disabledOrigin
+          ? ('protection_cloud_origin_restore_disabled_label' | i18n)
+          : ''
+      "
+    >
+      {{ 'protection_restore_to_label' | i18n }}{{ i18n.isEn ? ' ' : ''
+      }}{{ 'common_restore_to_origin_location_label' | i18n }}
+    </lv-radio>
+    <lv-radio
+      [lvViewType]="'button'"
+      [lvValue]="restoreLocationType.NEW"
+      [lvDisabled]="
+        rowCopy?.backup_type === dataMap.CopyData_Backup_Type.log.value
+      "
+    >
+      {{ 'protection_restore_to_label' | i18n }}{{ i18n.isEn ? ' ' : ''
+      }}{{ 'common_restore_to_new_location_label' | i18n }}
+    </lv-radio>
+  </lv-group>
+</lv-radio-group>
+<div class="aui-gutter-column-lg"></div>
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item
+    *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN"
+  >
+    <lv-form-label>
+      {{ 'common_location_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <input lv-input type="text" formControlName="originLocation" />
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+<ng-container
+  *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW"
+>
+  <lv-wizard
+    [lvMode]="'icon'"
+    [lvSize]="'small'"
+    [lvStatus]="'process'"
+    [lvActiveIndex]="activeIndex"
+    (lvClick)="clickWizard($event)"
+    class="aui-gutter-column-lg"
+  >
+    <lv-wizard-step>{{ 'common_basic_info_label' | i18n }}</lv-wizard-step>
+    <lv-wizard-step>{{ 'common_cloud_info_label' | i18n }}</lv-wizard-step>
+    <lv-wizard-step>{{ 'common_database_info_label' | i18n }}</lv-wizard-step>
+  </lv-wizard>
+  <div class="tips-container aui-gutter-column-lg">
+    <i lv-icon="lv-icon-status-info" lvColorState="true" class="tips-icon"></i>
+    <span
+      innerHTML="{{ 'explore_gaussdb_restore_to_new_tips_label' | i18n }}"
+      class="tips-text"
+    >
+    </span>
+  </div>
+  <!-- 基本信息 -->
+  <lv-form
+    *ngIf="activeIndex === 0"
+    [formGroup]="basicFormGroup"
+    class="formGroup"
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'commom_owned_project_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="basicErrorTip">
+        <lv-select
+          formControlName="targetEnv"
+          [lvOptions]="projectOptions"
+          lvValueKey="value"
+        >
+        </lv-select>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'protection_instance_name_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="nameErrorTip">
+        <input lv-input type="text" formControlName="name" />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'explore_available_id_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{ '' | i18n }}"
+          lvTooltipPosition="rightTop"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control>
+        <div formArrayName="availableIds">
+          <div
+            *ngFor="let item of availableIds; let i = index"
+            [formGroupName]="i"
+            style="margin-bottom: 20px;"
+          >
+            <lv-group
+              lvGutter="16px"
+              [lvColumns]="['auto', '20px']"
+              class="lv-group-flex-start"
+            >
+              <lv-form-control [lvErrorTip]="basicErrorTip">
+                <input type="text" formControlName="availableId" lv-input />
+              </lv-form-control>
+              <lv-form-control>
+                <span (click)="removeRow(i)" *ngIf="availableIds.length > 1">
+                  <i
+                    lv-icon="aui-icon-remove"
+                    class="remove-target-host-container"
+                  ></i>
+                </span>
+              </lv-form-control>
+            </lv-group>
+          </div>
+        </div>
+        <button
+          class="add-style"
+          lv-button
+          lvType="link"
+          (click)="addRow()"
+          [disabled]="availableIds.length > 2"
+        >
+          <i lv-icon="lv-icon-create"></i>
+          <span>{{ 'common_new_add_label' | i18n }}</span>
+        </button>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'explore_encode_methods_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="basicErrorTip">
+        <input
+          lv-input
+          type="text"
+          formControlName="encode"
+          placeholder="{{ 'explore_encode_methods_tips_label' | i18n }}"
+        />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'explore_disk_type_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{ '' | i18n }}"
+          lvTooltipPosition="rightTop"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control>
+        <lv-radio-group
+          formControlName="diskType"
+          [lvGroupName]="'diskTypeGroup'"
+        >
+          <lv-group [lvGutter]="'24px'">
+            <lv-radio lvValue="LOCALSSD">LOCALSSD</lv-radio>
+            <lv-radio lvValue="ULTRAHIGH">ULTRAHIGH</lv-radio>
+          </lv-group>
+        </lv-radio-group>
+        <div class="tips-container">
+          <i
+            lv-icon="lv-icon-status-info"
+            lvColorState="true"
+            class="tips-icon"
+          ></i>
+          <span
+            innerHTML="{{ 'explore_disk_type_tips_label' | i18n }}"
+            class="tips-text"
+          >
+          </span>
+        </div>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'protection_fc_disk_capacity_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{ '' | i18n }}"
+          lvTooltipPosition="rightTop"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="numberErrorTip">
+        <lv-input-group
+          style="width: 100%;"
+          [lvSuffix]="'GB'"
+          [lvDisabled]="disabled"
+        >
+          <input lv-input type="text" formControlName="diskCapacity" />
+        </lv-input-group>
+      </lv-form-control>
+    </lv-form-item>
+    <div class="aui-gutter-column-xl"></div>
+    <div class="advanced-container">
+      <lv-collapse [lvType]="'simple'">
+        <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+          <lv-form-item>
+            <lv-form-label>
+              {{ 'explore_main_available_id_label' | i18n }}
+              <i
+                lv-icon="aui-icon-help"
+                lv-tooltip="{{ '' | i18n }}"
+                lvTooltipPosition="rightTop"
+                lvTooltipTheme="light"
+                class="configform-constraint"
+                lvColorState="true"
+              ></i>
+            </lv-form-label>
+            <lv-form-control>
+              <lv-select
+                formControlName="mainAvailableId"
+                [lvOptions]="availableIdOptions"
+                lvValueKey="value"
+              >
+              </lv-select>
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>
+              {{ 'explore_arbitrament_available_id_label' | i18n }}
+              <i
+                lv-icon="aui-icon-help"
+                lv-tooltip="{{ '' | i18n }}"
+                lvTooltipPosition="rightTop"
+                lvTooltipTheme="light"
+                class="configform-constraint"
+                lvColorState="true"
+              ></i>
+            </lv-form-label>
+            <lv-form-control>
+              <lv-select
+                formControlName="arbitramentAvailableId"
+                [lvOptions]="availableIdOptions"
+                lvValueKey="value"
+              >
+              </lv-select>
+            </lv-form-control>
+          </lv-form-item>
+        </lv-collapse-panel>
+      </lv-collapse>
+    </div>
+    <ng-template #titleTpl>
+      <lv-group lvGutter="8px">
+        <span class="custom-collapse-title-text">{{
+          'common_advanced_label' | i18n
+        }}</span>
+      </lv-group>
+    </ng-template>
+  </lv-form>
+  <!-- 私有云信息 -->
+  <lv-form
+    *ngIf="activeIndex === 1"
+    [formGroup]="cloudFormGroup"
+    class="formGroup"
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'explore_virtual_cloud_id_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{ '' | i18n }}"
+          lvTooltipPosition="rightTop"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="basicErrorTip">
+        <input lv-input type="text" formControlName="virtualCloudId" />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'explore_subnet_id_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{ '' | i18n }}"
+          lvTooltipPosition="rightTop"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="basicErrorTip">
+        <input lv-input type="text" formControlName="subnetId" />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'explore_security_group_id_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{ '' | i18n }}"
+          lvTooltipPosition="rightTop"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="basicErrorTip">
+        <input lv-input type="text" formControlName="securityGroupId" />
+      </lv-form-control>
+    </lv-form-item>
+  </lv-form>
+  <!-- 数据库信息 -->
+  <lv-form
+    *ngIf="activeIndex === 2"
+    [formGroup]="databaseFormGroup"
+    class="formGroup"
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_database_password_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="dbPwdErrorTip">
+        <aui-inupt-with-eye
+          formControlName="databasePwd"
+          [lvPasteAllowed]="false"
+        ></aui-inupt-with-eye>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'common_port_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="portErrorTip">
+        <input lv-input type="text" formControlName="port" />
+      </lv-form-control>
+    </lv-form-item>
+    <div class="aui-gutter-column-xl"></div>
+    <div class="advanced-container">
+      <lv-collapse [lvType]="'simple'">
+        <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+          <lv-form-item>
+            <lv-form-label>
+              {{ 'explore_params_group_id_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+              <input lv-input type="text" formControlName="paramsGroupId" />
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>
+              {{ 'explore_payment_label' | i18n }}
+              <i
+                lv-icon="aui-icon-help"
+                lv-tooltip="{{ '' | i18n }}"
+                lvTooltipPosition="rightTop"
+                lvTooltipTheme="light"
+                class="configform-constraint"
+                lvColorState="true"
+              ></i>
+            </lv-form-label>
+            <lv-form-control>
+              <lv-select
+                formControlName="payment"
+                [lvOptions]="paymentOptions"
+                lvValueKey="value"
+              >
+              </lv-select>
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>
+              {{ 'explore_auto_backup_policy_label' | i18n }}
+              <i
+                lv-icon="aui-icon-help"
+                lv-tooltip="{{ '' | i18n }}"
+                lvTooltipPosition="rightTop"
+                lvTooltipTheme="light"
+                class="configform-constraint"
+                lvColorState="true"
+              ></i>
+            </lv-form-label>
+            <lv-group lvGutter="8px">
+              <lv-form-control>
+                <lv-time-picker
+                  formControlName="backupStart"
+                  [lvDisabledMinute]="disabledMinute"
+                  lvPlaceholder="HH:mm"
+                  [lvFormat]="'HH:mm'"
+                  lvReadonly
+                ></lv-time-picker>
+              </lv-form-control>
+              <span>-</span>
+              <lv-form-control>
+                <lv-time-picker
+                  formControlName="backupEnd"
+                  [lvDisabledMinute]="disabledMinute"
+                  lvPlaceholder="HH:mm"
+                  [lvFormat]="'HH:mm'"
+                  lvReadonly
+                ></lv-time-picker>
+              </lv-form-control>
+            </lv-group>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>
+              {{ 'explort_utc_timezone_label' | i18n }}
+              <i
+                lv-icon="aui-icon-help"
+                lv-tooltip="{{ '' | i18n }}"
+                lvTooltipPosition="rightTop"
+                lvTooltipTheme="light"
+                class="configform-constraint"
+                lvColorState="true"
+              ></i>
+            </lv-form-label>
+            <lv-form-control>
+              <lv-select
+                formControlName="utc"
+                [lvOptions]="utcOptions"
+                lvValueKey="value"
+              >
+              </lv-select>
+            </lv-form-control>
+          </lv-form-item>
+        </lv-collapse-panel>
+      </lv-collapse>
+    </div>
+    <ng-template #titleTpl>
+      <lv-group lvGutter="8px">
+        <span class="custom-collapse-title-text">{{
+          'common_advanced_label' | i18n
+        }}</span>
+      </lv-group>
+    </ng-template>
+  </lv-form>
+</ng-container>

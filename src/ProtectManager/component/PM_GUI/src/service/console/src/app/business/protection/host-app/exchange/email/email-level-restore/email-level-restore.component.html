@@ -1,0 +1,156 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+<!-- 基础配置 -->
+  <div style="margin:16px 0">
+    <h2>{{'protection_basic_config_label'|i18n}}</h2>
+  </div>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_restore_to_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      {{ 'common_restore_to_origin_location_label' | i18n }}
+    </lv-form-control>
+  </lv-form-item>
+
+<!-- 覆盖规则 -->
+  <lv-form-item>
+    <lv-form-label>{{
+      'protection_over_write_rule_label' | i18n
+      }}</lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="overwriteType">
+        <lv-group [lvGutter]="'20px'" lvDirection="vertical" class="mgt-8">
+          <lv-radio [lvValue]="fileReplaceStrategy.Replace"
+          >{{ 'protection_replace_existed_email_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="fileReplaceStrategy.Ignore">
+            {{ 'protection_ignore_existed_email_label' | i18n }}</lv-radio
+          >
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+
+<!-- 选择需要恢复的邮件 (邮箱副本普通恢复时不需要选择具体的邮件) -->
+  <ng-container *ngIf="restoreType === restoreV2Type.FileRestore">
+    <div style="margin: 16px 0">
+      <h2>{{'protection_exchange_email_level_restore_select_email_label'|i18n}}</h2>
+    </div>
+    <lv-treetable
+      [lvData]="treeData"
+      #lvTreeTable
+      lvVirtualScroll
+      [lvSelection]="selectionData"
+      lvSelectionMode="multiple"
+      (lvSelectionChange)="selectionChange($event)"
+      [lvScroll]="{y:'50vh'}"
+      lvVirtualMinBuffer="96px"
+      [lvVirtualTrackBy]="trackByIndex"
+      lvResize
+      class="exchange-email-tree-table"
+      [lvSelectionAssociate]="lvSelectionMode"
+    >
+    <thead>
+      <tr>
+        <th lvShowCheckbox lvCellKey="data.name" lvShowCustom>
+          {{'common_name_label'|i18n}}
+          <div lvCustom>
+            <i
+              #namePopover="lvPopover"
+              lv-icon="lv-icon-search"
+              [lvColorState]="true"
+              [ngClass]="{ active: !checkNameIsEmpty(searchName) }"
+              lv-popover
+              [lvPopoverContent]="searchNameTpl"
+              lvPopoverTheme="light"
+              lvPopoverPosition="bottom"
+              lvPopoverTrigger="click"
+            ></i>
+          </div>
+        </th>
+        <th lvCellKey="data.date" width="200px" lvShowCustom>
+          {{'protection_date_label'|i18n}}
+          <div lvCustom class="hover">
+            <i
+              lv-icon="lv-icon-filter-fill"
+              [ngClass]="{ active: !checkDateIsNull() }"
+              #datePopover="lvPopover"
+              lv-popover
+              lvPopoverPosition="bottom"
+              [lvPopoverContent]="dateFilterTpl"
+              lvPopoverTheme="light"
+              lvPopoverTrigger="click"
+              [lvPopoverOuterClosable]="false"
+              [lvPopoverScrollToClose]="false"
+            ></i>
+          </div>
+        </th>
+        <th lvCellKey="data.size" width="120px">{{'common_size_label'|i18n}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngTemplateOutlet='bodyContentTpl; context: { $implicit: lvTreeTable.renderData}'>
+      </ng-container>
+      <ng-template #bodyContentTpl let-data>
+        <ng-container *ngFor="let item of data">
+          <ng-template lv-virtual-scroll let-virtualItem>
+            <tr>
+              <td
+                [lvRowData]="virtualItem"
+                [lvShowExpanded]="!virtualItem.isLeaf"
+                [(lvExpanded)]='virtualItem.expanded'
+                lvShowCheckbox
+                [lvPaddingLeft]="virtualItem._lv_level*32 + 'px'"
+                (lvExpandedChange)="expandChange($event,virtualItem,data)"
+              >
+                <lv-group lvGutter="4px">
+                  <i [lv-icon]="virtualItem.data.icon" class="icon"></i>
+                  <span lv-overflow class="text-middle">
+                  {{virtualItem.data.name}}
+                </span>
+                </lv-group>
+              </td>
+              <td width="200px">
+                <span lv-overflow *ngIf="virtualItem.data.type === 'Email'">
+                  {{virtualItem.data.date}}
+                </span>
+              </td>
+              <td width="120px">
+                <span lv-overflow *ngIf="virtualItem.data.type === 'Email'">
+                  {{virtualItem.data.size|capacityCalculateLabel: '1.1-3':unionist.BYTE:true}}
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+        </ng-container>
+      </ng-template>
+    </tbody>
+    </lv-treetable>
+  </ng-container>
+</lv-form>
+
+<ng-template #dateFilterTpl>
+  <lv-date-range-picker
+    [(ngModel)]="rangeDate"
+    lvInline="true"
+    [lvFormat]="'yyyy-MM-dd HH:mm:ss'"
+    [lvFooterExtra]="footerTpl"
+    lvShowTime="true"
+    (ngModelChange)="dateChange($event)"
+  ></lv-date-range-picker>
+  <ng-template #footerTpl>
+    <lv-group lvGutter="8px" style="justify-content: center; padding: 8px 20px;">
+      <button lv-button lvType="primary" (click)="selectDate()" [disabled]="disableDate">{{'common_ok_label'|i18n}}</button>
+      <button lv-button (click)="cancelDate()">{{'common_cancel_label'|i18n}}</button>
+    </lv-group>
+  </ng-template>
+</ng-template>
+
+<ng-template #searchNameTpl>
+  <lv-search
+    [(ngModel)]="searchName"
+    (lvSearch)="searchByName($event)"
+    [lvFocus]="true"
+    class="search-width"
+  ></lv-search>
+</ng-template>

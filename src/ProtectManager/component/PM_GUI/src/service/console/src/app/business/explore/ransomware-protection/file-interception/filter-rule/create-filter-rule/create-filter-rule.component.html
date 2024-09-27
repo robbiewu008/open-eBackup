@@ -1,0 +1,13 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'explore_blocking_file_extension_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="extensionErrorTip">
+            <lv-input-lint>
+                <textarea formControlName="extension" maxlength="127" rows='3' lv-input style="resize: vertical;"
+                    placeholder="{{'explore_file_extension_help_label' | i18n}}"></textarea>
+            </lv-input-lint>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

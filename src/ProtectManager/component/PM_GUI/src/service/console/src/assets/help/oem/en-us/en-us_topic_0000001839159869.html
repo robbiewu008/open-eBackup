@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Periodically Executing Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792360682.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001839159869">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Periodically Executing Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001839159869"></a><a name="EN-US_TOPIC_0000001839159869"></a>
+  <h1 class="topictitle1">Periodically Executing Backup</h1>
+  <div>
+   <p>Associate the NAS share to be protected with a specified SLA. The system backs up these resources periodically based on the SLA.</p>
+   <div class="section" id="EN-US_TOPIC_0000001839159869__section126131299814">
+    <h4 class="sectiontitle">Precautions</h4>
+    <ul id="EN-US_TOPIC_0000001839159869__ul4258175217589">
+     <li id="EN-US_TOPIC_0000001839159869__li4259195214589">For a NAS share discovered through device registration, if the NAS share has authentication information, complete the configuration by referring to <a href="en-us_topic_0000001792520466.html">Step 3: Configuring NAS Share Information</a>. Otherwise, the backup fails.</li>
+     <li id="EN-US_TOPIC_0000001839159869__li13259752185815">For an NFS share, ensure that the current device has the read and write permissions on the NFS share directory and the <strong id="EN-US_TOPIC_0000001839159869__b576222612114">no_root_squash</strong> option is enabled. For details about how to configure NFS share access permissions, see <a href="en-us_topic_0000001839239777.html">Step 5: Configuring Access Permissions</a>.</li>
+     <li id="EN-US_TOPIC_0000001839159869__li14971124445917">For a CIFS share, ensure that the current device has the read and write permissions on the CIFS share directory. You are advised to use a username in the Administrator group for backup. Otherwise, only files and directories that have granted the read and write permissions to the device can be backed up. For details about how to configure CIFS share access permissions, see <a href="en-us_topic_0000001839239777.html">Step 5: Configuring Access Permissions</a>.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839159869__en-us_topic_0000001839142377_uicontrol79081114124111"><b><span id="EN-US_TOPIC_0000001839159869__en-us_topic_0000001839142377_text99081414144119"><strong>Protection</strong></span> &gt; File Systems &gt; NAS Shares</b></span>.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000001839159869__en-us_topic_0000001839142377_note397892312184">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000001839159869__en-us_topic_0000001839142377_p5978112341818">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000001839159869__en-us_topic_0000001839142377_uicontrol129783237180"><b><span id="EN-US_TOPIC_0000001839159869__en-us_topic_0000001839142377_text10978172391818"><strong>Protection</strong></span> &gt; File Services &gt; NAS Shares</b></span>.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>In the row where a NAS share to be protected resides, click <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Protect</strong></span> </b></span>.</span></li>
+     <li><span>Select the created SLA.</span><p></p><p>You can also click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> to create an SLA.</p> <p></p></li>
+     <li><span>Set advanced parameters.</span><p></p>
+      <ul>
+       <li><span><strong>Channels</strong></span><p>The more the channels, the better the backup performance. However, more memory of the production host will be occupied. Each channel occupies about 200 MB memory.</p></li>
+       <li><span><strong>Small File Aggregation</strong></span><p>After this function is enabled, the system aggregates multiple small files in the same directory into a large file to improve backup efficiency. If incremental backup is contained but forever incremental (synthetic full) backup is not configured in the SLA, small file aggregation cannot be disabled. If forever incremental (synthetic full) backup is configured in the SLA, small file aggregation cannot be enabled.</p> <p>You need to set the following two parameters:</p>
+        <ul>
+         <li><span><strong>File Size After Aggregation</strong></span>: size of the aggregated file. The value can be 128 KB, 256 KB, 1024 KB, or 4096 KB.</li>
+         <li><span><strong>Maximum Aggregated File Size</strong></span>: maximum size of the file to be aggregated. The value can be 128 KB, 256 KB, 1024 KB, or 4096 KB.</li>
+        </ul> <p><span><strong>For small file aggregation, the file size after aggregation must be larger than or equal to the size of the largest file aggregated.</strong></span></p></li>
+       <li><span><strong>SMB Hard Link Protection</strong></span><p id="EN-US_TOPIC_0000001839159869__p114516211462">This option is enabled by default. If too many files exist in the same directory of the NAS share dataset to be protected, the backup job may fail. It is recommended that this option be disabled in this scenario.</p></li>
+       <li><span><strong>SMB ACL Protection</strong></span><p>This option is enabled by default. If too many files exist in the same directory of the NAS share dataset to be protected, the backup job may fail. It is recommended that this option be disabled in this scenario.</p></li>
+       <li><strong>Hot Data Backup</strong><p>After this function is enabled, the system backs up only the files whose modification time is within the specified time range before backup execution. For example, if the function is enabled and set to 60 days, the system backs up the files whose modification time is within 60 days before backup execution.</p></li>
+      </ul> <p></p></li>
+     <li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001839159869__en-us_topic_0000001792503842_uicontrol196538515235"><b>OK</b></span>. </span><p></p><p id="EN-US_TOPIC_0000001839159869__en-us_topic_0000001792503842_p25041111535">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001792360682.html">Step 9: Executing Backup</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

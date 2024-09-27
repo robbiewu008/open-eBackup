@@ -1,0 +1,144 @@
+.big-screen-outer {
+  position: relative;
+  height: 100%;
+
+  .big-screen {
+    height: 96%;
+    overflow: scroll hidden;
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(#fff, 0.1);
+    }
+  }
+
+  .counts-line {
+    color: white;
+    position: absolute;
+    bottom: 62px;
+    left: 8px;
+    display: flex;
+    align-items: center;
+
+    .pair {
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+
+      .pair-title {
+        color: #9ca3b4;
+        padding-right: 10px;
+      }
+    }
+
+    .status-flag {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      display: inline-block;
+    }
+
+    .status-normal-flag {
+      background-color: #3d80e1;
+    }
+
+    .status-exception-flag {
+      background-color: #e94949;
+    }
+
+    .status-offline-flag {
+      background-color: #8495b3;
+    }
+  }
+}
+
+.big-screen-box {
+  background-image: url('assets/img/cyberengine_background.svg');
+  background-size: 100% 100%;
+  position: relative;
+  bottom: 13%;
+  height: 125%;
+  width: calc(87vh * 1.43 - 256px);
+
+  .big-screen-node {
+    width: 12.8%;
+    height: 18.4%;
+    background-image: url('assets/img/cyberengine_home_node_null.png');
+    background-size: 100% 100%;
+
+    position: relative;
+
+    .big-screen-node-title {
+      color: #5e76a8;
+      transform: rotate(30deg) skew(-32deg);
+      display: inline-block;
+      position: relative;
+      top: 92%;
+      right: 19%;
+      width: 80%;
+    }
+
+    .error-tips {
+      position: absolute;
+      top: -50%;
+      left: -40%;
+      border: #e94949 solid 1px;
+      border-radius: 4px;
+      padding: 10px 20px;
+
+      .error-tips-title {
+        width: 100%;
+        border-bottom: solid 1px #2d313a;
+        padding-bottom: 5px;
+      }
+
+      .error-tips-info {
+        display: flex;
+        justify-content: space-between;
+
+        .error-tips-info-title {
+          color: #969eb0;
+          padding-right: 20px;
+        }
+        .error-tips-info-number {
+          max-width: 80px;
+        }
+      }
+    }
+  }
+
+  .node-0 {
+    left: 25%;
+    top: 39.6%;
+  }
+  .node-1 {
+    left: 6%;
+    top: 1.5%;
+  }
+  .node-2 {
+    left: 5.9%;
+    top: 29%;
+  }
+  .node-3 {
+    left: 45%;
+    top: -35.4%;
+  }
+  .node-4 {
+    left: 45%;
+    top: -8.9%;
+  }
+  .node-5 {
+    left: 65%;
+    top: -50.4%;
+  }
+  .node-6 {
+    left: 84%;
+    top: -90.6%;
+  }
+  .node-7 {
+    left: 84%;
+    top: -63.2%;
+  }
+}
+
+.link-block {
+  cursor: pointer;
+}

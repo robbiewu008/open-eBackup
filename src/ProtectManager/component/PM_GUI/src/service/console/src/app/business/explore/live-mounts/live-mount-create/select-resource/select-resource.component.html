@@ -1,0 +1,93 @@
+<div class="aui-gutter-column-lg">
+    <lv-search [lvFocus]="true" (lvSearch)="search($event)" class="search"
+        lvPlaceHolder="{{'common_search_type_label'|i18n:['']}}" [lvMaxLength]="64">
+    </lv-search>
+</div>
+<div class="aui-paginator-container">
+    <div class="list-container">
+        <lv-datatable [lvData]="tableData" [lvPaginator]="page" lvSize="small" #lvTable lvAsync>
+            <thead>
+                <tr>
+                    <th width="40px"></th>
+                    <th *ngFor="let col of columns" [lvShowFilter]="col.filter" (lvFilterChange)="filterChange($event)"
+                        [(lvFilters)]="col.filterMap" lvCellKey="{{ col.key }}" lvShowCustom lvFilterCheckAll>
+                        {{ col.label}}
+                        <div lvCustom *ngIf="col.key === 'resource_name'">
+                            <i lv-icon="lv-icon-search" [lvColorState]="true" [ngClass]="{ active: !!resource_name }"
+                                lv-popover [lvPopoverContent]="resourceNameFilterTpl" lvPopoverTheme="light"
+                                lvPopoverPosition="bottom" lvPopoverTrigger="click" #namePopover="lvPopover"></i>
+                        </div>
+                        <div lvCustom *ngIf="col.key === 'resource_environment_ip'">
+                            <i lv-icon="lv-icon-search" [lvColorState]="true"
+                                [ngClass]="{ active: !!resource_environment_ip }" lv-popover
+                                [lvPopoverContent]="resourceEvironmentIpFilterTpl" lvPopoverTheme="light"
+                                lvPopoverPosition="bottom" lvPopoverTrigger="click" #ipPopover="lvPopover"></i>
+                        </div>
+                        <div lvCustom *ngIf="col.key === 'resource_environment_name'">
+                            <i lv-icon="lv-icon-search" [lvColorState]="true"
+                                [ngClass]="{ active: !!resource_environment_name }" lv-popover
+                                [lvPopoverContent]="resourceEnvironmentNameFilterTpl" lvPopoverTheme="light"
+                                lvPopoverPosition="bottom" lvPopoverTrigger="click"
+                                #environmentNamePopover="lvPopover"></i>
+                        </div>
+                        <div lvCustom *ngIf="col.key === 'resource_location'">
+                            <i lv-icon="lv-icon-search" [lvColorState]="true"
+                                [ngClass]="{ active: !!resource_location }" lv-popover
+                                [lvPopoverContent]="resourceLocationFilterTpl" lvPopoverTheme="light"
+                                lvPopoverPosition="bottom" lvPopoverTrigger="click" #locationPopover="lvPopover"></i>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let item of lvTable.renderData">
+                    <tr [ngClass]='{"lv-table-row-highlight": lvTable.isSelected(item)}'>
+                        <td width="40px" (click)='selectionRow(item)' [ngClass]="{'disable-click':item?.disabled}">
+                            <div class="td-radio-container">
+                                <label lv-radio [ngModel]='lvTable.isSelected(item)' [lvDisabled]="item?.disabled"></label>
+                            </div>
+                        </td>
+                        <ng-container *ngFor="let col of columns">
+                            <td>
+                                <ng-container [ngSwitch]="col.key">
+                                    <ng-container *ngSwitchCase="'resource_type'">
+                                        {{ item[col.key] | textMap: 'Resource_Type' }}
+                                    </ng-container>
+                                    <ng-container *ngSwitchDefault>
+                                        <span lv-overflow>
+                                            {{ item[col.key] | nil }}
+                                        </span>
+                                    </ng-container>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </lv-datatable>
+    </div>
+    <div class="aui-paginator-wrap" style="bottom: 0;">
+        <lv-paginator #page [lvShowPageSizeOptions]="false" [lvPageSize]="pageSize" [lvTotal]="total"
+            [lvPageIndex]="pageIndex" (lvPageChange)="pageChange($event)" [hidden]="!total" lvMode='simple'>
+        </lv-paginator>
+    </div>
+</div>
+
+
+<ng-template #resourceNameFilterTpl>
+    <lv-search [(ngModel)]="resource_name" (lvSearch)="searchByName($event)" [lvFocus]="true"></lv-search>
+</ng-template>
+
+<ng-template #resourceEvironmentIpFilterTpl>
+    <lv-search [(ngModel)]="resource_environment_ip" (lvSearch)="searchByIp($event)" [lvFocus]="true"></lv-search>
+</ng-template>
+
+<ng-template #resourceEnvironmentNameFilterTpl>
+    <lv-search [(ngModel)]="resource_environment_name" (lvSearch)="searchByEnvironmentName($event)" [lvFocus]="true">
+    </lv-search>
+</ng-template>
+
+<ng-template #resourceLocationFilterTpl>
+    <lv-search [(ngModel)]="resource_location" (lvSearch)="searchByLocation($event)" [lvFocus]="true">
+    </lv-search>
+</ng-template>

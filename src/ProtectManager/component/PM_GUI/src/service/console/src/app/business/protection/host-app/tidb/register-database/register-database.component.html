@@ -1,0 +1,28 @@
+<lv-form class="formGroup" [formGroup]="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_name_label'| i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input type="text" formControlName="name">
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_cluster_label'| i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select formControlName="cluster" [lvOptions]="clusterOptions" lvValueKey="value" [lvDisabled]="rowData"
+                lvFilterKey="label" lvFilterMode="contains" lvShowFilter></lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_database_label'| i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select formControlName="database" [lvOptions]="databaseOptions" lvValueKey="value"
+                [lvDisabled]="rowData" lvFilterKey="label" lvFilterMode="contains" lvShowFilter></lv-select>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

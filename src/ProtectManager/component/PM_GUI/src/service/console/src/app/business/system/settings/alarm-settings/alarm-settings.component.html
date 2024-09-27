@@ -1,0 +1,21 @@
+<div class="aui-fullpage">
+  <div class="aui-header-1">
+    <lv-group lvGutter="8px">
+      <h1>{{ 'system_alarm_settings_label' | i18n }}</h1>
+      <aui-multi-cluster-switch
+      ></aui-multi-cluster-switch>
+    </lv-group>
+  </div>
+  <div class="aui-block">
+    <div class="aui-header-2">
+      <h2>{{ 'system_alarm_settings_label' | i18n }}</h2>
+    </div>
+    <div class="dashed-line"></div>
+    <p
+      class="aui-text-help-sm"
+      [innerHTML]="desc"
+      pmpermission
+      pmOperation="ModifySystemTime"
+    ></p>
+  </div>
+</div>

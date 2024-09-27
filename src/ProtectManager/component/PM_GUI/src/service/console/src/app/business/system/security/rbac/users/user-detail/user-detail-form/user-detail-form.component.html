@@ -1,0 +1,64 @@
+<lv-form class="formGroup aui-formGroup-v3">
+  <div class="aui-gutter-column-xl">
+    <div class="formGroup-h1">{{'system_auth_info_label' | i18n}}</div>
+    <lv-form-item *ngIf="isOceanProtect">
+      <lv-form-label>
+        {{'common_user_type_label' | i18n}}
+      </lv-form-label>
+      <lv-form-control>
+        {{data.userType | textMap:'loginUserType'}}
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'common_name_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        {{data.userName}}
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="data.userType === dataMap.loginUserType.local.value">
+      <lv-form-label>
+        {{ 'common_login_method_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        {{data.loginType | textMap:'loginMethod'}}
+      </lv-form-control>
+    </lv-form-item>
+  </div>
+  <div class="aui-gutter-column-xl">
+    <div class="formGroup-h1">{{'system_other_information_label' | i18n}}</div>
+    <lv-form-item *ngIf="data.loginType === dataMap.loginMethod.email.value">
+      <lv-form-label>
+        {{'system_recipient_email_address_label' | i18n}}
+      </lv-form-label>
+      <lv-form-control>
+        {{data.dynamicCodeEmail}}
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'system_user_maxconnections_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        {{data.sessionLimit | nil}}
+      </lv-form-control>
+    </lv-form-item>
+  </div>
+  <div class="formGroup-h1">{{'system_associated_role_and_resource_label' | i18n}}</div>
+  <div class="formGroup-h2">{{'common_role_label' | i18n}}</div>
+  <!--角色下展表及树表-->
+  <lv-pro-table #roleDataTable [config]="roleTableConfig" [data]="roleData.tableData"></lv-pro-table>
+  <ng-template #treeTableTpl let-item>
+    <aui-role-auth-tree [data]="item"></aui-role-auth-tree>
+  </ng-template>
+  <div class="formGroup-h2">{{'common_resource_set_label' | i18n}}</div>
+  <lv-pro-table #resourceDataTable [config]="resourceTableConfig" [data]="resourceData.tableData"></lv-pro-table>
+</lv-form>
+
+<ng-template #roleNameTpl let-item>
+  <lv-group lvGutter="6px">
+    <span lv-overflow>{{item?.roleName}}</span>
+    <lv-tag *ngIf="data.roleId === item?.roleId" [ngModel]="[{label: i18n.get('system_default_role_label')}]"></lv-tag>
+  </lv-group>
+</ng-template>

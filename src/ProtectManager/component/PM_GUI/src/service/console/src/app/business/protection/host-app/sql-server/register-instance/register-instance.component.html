@@ -1,0 +1,139 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="type" [lvGroupName]="'typeGroup'">
+        <lv-group [lvGutter]="'24px'">
+          <lv-radio [lvValue]="dataMap.Instance_Type.single.value" [lvDisabled]="!!rowData">
+            {{ 'protection_single_instance_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="dataMap.Instance_Type.cluster.value" [lvDisabled]="!!rowData">
+            {{ 'protection_cluster_instance_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_sql_server_service_name_label' | i18n }}
+      <i lv-icon="aui-icon-help" [lv-tooltip]="nameTooltipTpl" lvTooltipClassName="sql-server-name-tooltip"
+        lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+      <ng-template #nameTooltipTpl>
+        <div innerHTML="{{'protection_sqlserver_service_name_tips_label'|i18n}}" class="name-tooltip"></div>
+      </ng-template>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="networkName" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_sql_server_instance_name_label' | i18n }}
+      <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_sqlserver_instance_name_tips_label' | i18n }}"
+        lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container *ngIf="isSingle; else multiple">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_host_label' | i18n }}
+        <aui-agent-jumper-tips [type]="i18n.get('protection_database_instance_label')"></aui-agent-jumper-tips>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+        <lv-select [lvOptions]="agentOptions" formControlName="agent" lvValueKey="value" lvMode="single" lvShowFilter
+          lvShowCheckAll lvFilterKey="label" lvFilterMode="contains" [lvContentTemplate]="contentTpl"
+          [lvDisabled]="rowData && rowData.subType === dataMap.Resource_Type.SQLServerInstance.value">
+        </lv-select>
+        <ng-template #contentTpl let-item>
+          <lv-group lvGutter="4px">
+            <span lv-overflow>{{ item.label }}</span>
+            <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
+              {{'protection_guide_new_resource_label' | i18n}}
+            </span>
+          </lv-group>
+        </ng-template>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <ng-template #multiple>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_cluster_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+        <lv-select formControlName="cluster" [lvOptions]="clusterOptions" lvValueKey="value" lvShowFilter
+          lvFilterKey="label" lvFilterMode="contains" [lvContentTemplate]="clusterContentTpl"
+          [lvDisabled]="rowData && rowData.subType === dataMap.Resource_Type.SQLServerClusterInstance.value">
+        </lv-select>
+        <ng-template #clusterContentTpl let-item>
+          <lv-group lvGutter="4px">
+            <span lv-overflow>{{ item.label }}</span>
+            <span class="guide-recommend-label" *ngIf="showClusterGuideNew(item)">
+              {{'protection_guide_new_resource_label' | i18n}}
+            </span>
+          </lv-group>
+        </ng-template>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'system_servers_label' | i18n }}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_sqlserver_cluster_instance_limit_label' | i18n }}"
+          lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+        <lv-select [lvOptions]="nodeOptions" formControlName="node" lvValueKey="value" lvMode="multiple" lvShowFilter
+          lvFilterKey="label" lvFilterMode="contains"
+          [lvDisabled]="rowData && rowData.subType === dataMap.Resource_Type.SQLServerClusterInstance.value">
+        </lv-select>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-template>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_auth_method_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select formControlName="authMode" [lvOptions]="authOptions" lvValueKey="value">
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container *ngIf="isDBAuthMode">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_database_user_name_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="nameErrorTip">
+        <input lv-input type="text" formControlName="dbUserName" />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_database_password_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="nameErrorTip">
+        <aui-inupt-with-eye formControlName="dbPassword"></aui-inupt-with-eye>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>
+
+<ng-template #footerTpl>
+  <div class="lv-modal-btns">
+    <lv-group lvGutter="8px">
+      <button lv-button lvType="primary" (click)="onOK()" [disabled]="!(formGroup.valid && isTest)"
+        [lvLoading]="okLoading">
+        {{ 'common_ok_label' | i18n }}
+      </button>
+      <button lv-button (click)="modal.close()">
+        {{ 'common_cancel_label' | i18n }}
+      </button>
+    </lv-group>
+  </div>
+</ng-template>

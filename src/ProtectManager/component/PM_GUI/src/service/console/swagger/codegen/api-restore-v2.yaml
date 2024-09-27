@@ -1,0 +1,181 @@
+swagger: "2.0"
+info:
+  description: "GroupDesc"
+  version: "v1"
+  title: "恢复接口（V2）"
+host: "localhost.com"
+basePath: "/"
+tags:
+- name: "restore-api-v2"
+  description: "V2版本恢复API"
+schemes:
+- "https"
+paths: {}
+definitions:
+  RestoreRequest:
+    required:
+    - "copyId"
+    - "restoreType"
+    - "targetEnv"
+    - "targetLocation"
+    - "targetObject"
+    properties:
+      copyId:
+        type: "string"
+        description: "副本ID"
+        minLength: 32
+        maxLength: 64
+        x-public-api: "Y"
+        x-auth-required: "Y"
+        x-access-port: 25081
+      restoreType:
+        type: "string"
+        description: |-
+          恢复方式
+          CR：普通恢复
+          IR：即时恢复
+          FLR：细粒度恢复（文件级恢复）
+        enum:
+        - "CR"
+        - "IR"
+        - "FLR"
+        x-public-api: "Y"
+        x-dp-admin-role: "Y"
+        x-impact-subsystem: "不影响"
+        x-auth-required: "Y"
+        x-sysadmin-role: "Y"
+        x-access-port: 25081
+      targetLocation:
+        type: "string"
+        description: "恢复的目标位置，original - 原位置，new - 新位置, native-恢复到A8000本机"
+        enum:
+        - "original"
+        - "new"
+        - "native"
+        x-public-api: "Y"
+        x-auth-required: "Y"
+        x-access-port: 25081
+      subObjects:
+        type: "array"
+        description: |-
+          恢复子对象列表，细粒度恢复时指定要具体恢复的子对象，如
+          恢复子对象列表，细粒度恢复时指定要具体恢复的子对象，如：
+          1、文件系统恢复时可以指定只恢复哪些目录
+          2、虚拟机恢复时指定恢复哪些磁盘
+          3、数据库实例恢复时指定恢复实例下的某个数据库
+        items:
+          type: "string"
+      targetEnv:
+        type: "string"
+        description: "恢复的目标环境的ID"
+        minLength: 32
+        maxLength: 64
+        x-public-api: "Y"
+        x-auth-required: "Y"
+        x-access-port: 25081
+      targetObject:
+        type: "string"
+        description: |-
+          恢复的目标对象ID，如：
+          1、虚拟机恢复时可以目标主机或集群的ID，或虚拟机ID
+          2、文件系统恢复时，为目标的目录地址
+          3、数据库恢复时为目标实例ID
+        minLength: 2
+        maxLength: 256
+        x-public-api: "Y"
+        x-auth-required: "Y"
+        x-access-port: 25081
+      agents:
+        type: "array"
+        description: "恢复时保护代理的ID列表"
+        items:
+          type: "string"
+      extendInfo:
+        type: "object"
+        description: |-
+          恢复参数，以key/value键值对存放
+
+          | key定义 | value类型 | 说明 |
+          |--|--|--|
+          | copyVerify | boolean | 是否开启副本校验。true:恢复任务需要开启副本校验；false:恢复任务不需要开启副本校验 |
+        properties: {}
+      filters:
+        type: "array"
+        description: |-
+          恢复时对某些要恢复的对象进行过滤，比如：
+          比如根据一定的过滤规则只恢复某些类型文件或目录
+        items:
+          $ref: "#/definitions/Filter"
+    description: "恢复请求体"
+  Filter:
+    required:
+    - "filterBy"
+    - "filterType"
+    - "mode"
+    - "rule"
+    - "values"
+    properties:
+      filterBy:
+        type: "string"
+        description: "根据什么进行过滤，取值：Name-名称；ID-标识；Format-文件的格式；ModifyTime-修改时间；CreateTime-创建时间，AccessTime 访问时间"
+        enum:
+        - "Name"
+        - "ID"
+        - "Format"
+        - "ModifyTime"
+        - "CreateTime"
+        - "AccessTime"
+        x-public-api: "Y"
+        x-impact-subsystem: "不影响"
+        x-auth-required: "Y"
+        x-access-port: 25081
+      filterType:
+        type: "string"
+        description: "过滤的资源类型，取值：VM-虚拟机；Disk-磁盘；File-文件；Dir-目录"
+        enum:
+        - "Disk"
+        - "File"
+        - "Dir"
+        - "VM"
+        x-public-api: "Y"
+        x-impact-subsystem: "不影响"
+        x-auth-required: "Y"
+        x-access-port: 25081
+      rule:
+        type: "string"
+        description: "过滤规则：如模糊匹配、全匹配、正则表达式等。Fuzzy-模糊匹配；Exact-精确匹配；Regex-正则表达式"
+        enum:
+        - "Fuzzy"
+        - "Exact"
+        - "Regex"
+        x-public-api: "Y"
+        x-auth-required: "Y"
+        x-access-port: 25081
+      mode:
+        type: "string"
+        description: "过滤类型：INCLUDE-包含；EXCLUDE-排除"
+        enum:
+        - "INCLUDE"
+        - "EXCLUDE"
+        x-public-api: "Y"
+        x-impact-subsystem: "不影响"
+        x-auth-required: "Y"
+        x-access-port: 25081
+      values:
+        type: "array"
+        description: "过滤的具体内容"
+        items:
+          type: "string"
+  UuidObject:
+    required:
+    - "uuid"
+    properties:
+      uuid:
+        type: "string"
+        description: "恢复job的id"
+        minLength: 32
+        maxLength: 64
+        x-public-api: "Y"
+        x-impact-subsystem: "不影响"
+        x-auth-required: "Y"
+        x-access-port: 25081

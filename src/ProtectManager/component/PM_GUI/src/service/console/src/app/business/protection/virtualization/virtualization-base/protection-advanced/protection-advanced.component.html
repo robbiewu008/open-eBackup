@@ -1,0 +1,78 @@
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
+    <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+        <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+            <lv-form-item *ngIf="!hiddenProxy">
+                <lv-form-label>
+                    {{'protection_proxy_host_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select [lvOptions]="proxyOptions" formControlName="proxyHost" lvValueKey='value' lvShowFilter
+                        lvShowCheckAll lvFilterKey='label' lvFilterMode='contains' lvMode="multiple"
+                        [lvContentTemplate]="contentTpl"
+                        lvPlaceholder="{{'protection_agent_placeholder_label' | i18n}}">
+                    </lv-select>
+                    <ng-template #contentTpl let-item>
+                        <lv-group lvGutter="4px">
+                            <i lv-icon="{{
+                                  item.linkStatus === dataMap.resource_LinkStatus_Special.normal.value ? 'aui-host-online' : 'aui-host-offline'
+                                }}"></i>
+                            <span>{{ item.label }}</span>
+                        </lv-group>
+                    </ng-template>
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="vmFilterShow">
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_overwrite_policy_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-radio-group formControlName="slaOverwrite">
+                            <lv-group [lvGutter]="'8px'" lvDirection='vertical' class="mgt-8">
+                                <lv-radio [lvValue]="true" [lvDisabled]="resourceData.protectedObject?.slaId">
+                                    {{overwriteSlaLable}}
+                                </lv-radio>
+                                <lv-radio [lvValue]="false" [lvDisabled]="resourceData.protectedObject?.slaId">
+                                    {{notOverwriteSlaLable}}
+                                </lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_apply_policy_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-checkbox-group formControlName="slaPolicy">
+                            <lv-group [lvGutter]="'8px'" lvDirection='vertical' class="mgt-8">
+                                <lv-checkbox lvValue="APPLY_TO_ALL">
+                                    {{applySlaLabel}}
+                                </lv-checkbox>
+                                <lv-checkbox lvValue="APPLY_TO_NEW">
+                                    {{applySlaNewLabel}}
+                                </lv-checkbox>
+                            </lv-group>
+                        </lv-checkbox-group>
+                    </lv-form-control>
+                </lv-form-item>
+                <aui-protect-filter [formGroup]="formGroup" [valid$]="valid$" [resType]="resourceType">
+                </aui-protect-filter>
+            </ng-container>
+        </lv-form>
+        <!-- 防勒索副本设置参数 -->
+        <ng-container *ngIf="!vmFilterShow">
+            <aui-copy-limit-advanced-parameter [formGroup]="formGroup"
+                [data]="resourceData"></aui-copy-limit-advanced-parameter>
+        </ng-container>
+        <ng-container *ngIf="!vmFilterShow">
+            <aui-update-index [formGroup]="formGroup" [extParams]="extParams"></aui-update-index>
+        </ng-container>
+    </lv-collapse-panel>
+</lv-collapse>
+
+<ng-template #titleTpl>
+    <lv-group lvGutter='8px'>
+        <span class="aui-h3">{{'common_advanced_label'|i18n}}</span>
+    </lv-group>
+</ng-template>

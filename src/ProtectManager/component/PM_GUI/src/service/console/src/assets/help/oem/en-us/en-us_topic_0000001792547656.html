@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 8: (Optional) Enabling Backup Link Encryption">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839266973.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792547656">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 8: (Optional) Enabling Backup Link Encryption</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792547656"></a><a name="EN-US_TOPIC_0000001792547656"></a>
+  <h1 class="topictitle1">Step 8: (Optional) Enabling Backup Link Encryption</h1>
+  <div>
+   <p>You need to enable backup link encryption if required.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143225_p13640951351">Ensure that the NFS Kerberos service has been configured for the storage system. Otherwise, backup jobs may fail after backup link encryption is enabled. For details about how to configure the NFS Kerberos service, see "(Optional) Configuring the NFS Kerberos Service" in the installation guide. When you add a user to the AD domain, the username is <strong id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143225_b6745240192312">rdadmin</strong>. If the user already exists in the AD domain, you do not need to add it.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143225_p1854315715349">After backup link encryption is enabled, the ticket between the agent host and the KDC domain server has a validity period. If the ticket expires, backup jobs may fail. You are advised to prolong the validity period of the ticket in the Kerberos policy on the KDC domain server or configure the ticket to never expire. If the permanent validity period is not configured, you must run the <strong id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143225_b1364583712529">kinit</strong> command on the agent host to re-obtain tickets for users added to the AD domain before the tickets are about to expire. For details, see "Configuring the Client" in the installation guide.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Creating a Local UNIX Authentication User Group</h4>
+    <p id="EN-US_TOPIC_0000001792547656__p11559638142518">Before enabling backup link encryption, if the current environment is not added to any domain environment, you need to add the user group to the local authentication user group.</p>
+    <ol>
+     <li><span>Log in to DeviceManager.</span><p></p>
+      <ol type="a">
+       <li>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143213_en-us_topic_0000001311295305_en-us_topic_0000001149078659_uicontrol1098185683619"><b><span id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143213_text157651936143415"><strong>System</strong></span> &gt; <span id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143213_text49601653123416"><strong>Infrastructure</strong></span> &gt; <span id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143213_text112401684352"><strong>Cluster Management</strong></span></b></span>.</li>
+       <li>In the <span class="uicontrol" id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143213_uicontrol1050641575312"><b><span id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143213_text133861121163513"><strong>Local Cluster Nodes</strong></span></b></span> area of the <span class="uicontrol" id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143213_uicontrol13691645105219"><b><span id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143213_text1763193125313"><strong>Backup Cluster</strong></span></b></span> tab page, click the node name.</li>
+       <li>In the <span class="uicontrol" id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143213_uicontrol1144724616332"><b><span id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143213_text51761646203516"><strong>Node detail</strong></span></b></span> dialog box that is displayed, click <span class="uicontrol" id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143213_uicontrol1544714611335"><b><span id="EN-US_TOPIC_0000001792547656__en-us_topic_0000001839143213_text1624910583612"><strong>Open the device management platform</strong></span></b></span> to go to DeviceManager.</li>
+      </ol> <p></p></li>
+     <li><span>Choose <span class="uicontrol"><b>Services &gt; File Service &gt; Authentication Users</b></span>.</span></li>
+     <li><span>On the <span class="uicontrol"><b>UNIX Users</b></span> tab page, select <span class="uicontrol"><b>Local Authentication User Group</b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b>Create</b></span>.</span></li>
+     <li><span>Configure the parameters of the local UNIX authentication user group.</span><p></p>
+      <ul>
+       <li><strong>Name</strong>: Set this parameter to <strong>dataenableengine</strong>.</li>
+       <li><strong>ID</strong>: Run the <strong>cat /etc/group</strong> command on the agent host to view the ID of the <strong>dataenableengine</strong> group to which the user belongs.</li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Enabling Backup Link Encryption</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol"><b><span><span><strong>System</strong></span></span> &gt; <span><span><strong>Security</strong></span></span> &gt; <span><strong>Data Security</strong></span></b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Modify</strong></span></b></span> on the right of the <strong>Encryption Settings</strong> area and enable <span class="uicontrol"><b><span><strong>Backup Link Encryption</strong></span></b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Save</strong></span></b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001839266973.html">Backing Up a VMware VM</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

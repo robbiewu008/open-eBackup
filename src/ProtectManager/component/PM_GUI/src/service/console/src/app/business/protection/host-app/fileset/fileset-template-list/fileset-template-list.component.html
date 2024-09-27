@@ -1,0 +1,16 @@
+<div class="aui-fullpage">
+    <div class="aui-block aui-paginator-container">
+        <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+            <lv-tab lvTitle="{{'common_fileset_label' | i18n}}" lvId="fileset">
+                <ng-template lv-tab-lazy>
+                    <aui-fileset></aui-fileset>
+                </ng-template>
+            </lv-tab>
+            <lv-tab lvTitle="{{'common_template_label' | i18n}}" lvId="template">
+                <ng-template lv-tab-lazy>
+                    <aui-template-list></aui-template-list>
+                </ng-template>
+            </lv-tab>
+        </lv-tabs>
+    </div>
+</div>

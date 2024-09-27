@@ -1,0 +1,121 @@
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import {
+  extendSlaInfo,
+  GenConditionsService,
+  I18NService,
+  ProtectedResourceApiService
+} from 'app/shared';
+import { assign, each, get, isArray, isEmpty, size } from 'lodash';
+import { map } from 'rxjs/operators';
+
+@Component({
+  selector: 'aui-select-backup-set-list',
+  templateUrl: './select-backup-set-list.component.html',
+  styleUrls: ['./select-backup-set-list.component.less']
+})
+export class SelectBackupSetListComponent implements OnInit {
+  resourceData = [];
+  selectionData = [];
+  valid$ = new Subject<boolean>();
+  allTableData = {};
+  subType;
+  columns = [
+    {
+      key: 'name',
+      name: this.i18n.get('common_name_label'),
+      filter: {
+        type: 'search',
+        filterMode: 'contains'
+      }
+    },
+    {
+      key: 'cluster_name',
+      name: this.i18n.get('protection_cluster_label'),
+      filter: {
+        type: 'search',
+        filterMode: 'contains'
+      }
+    },
+    {
+      key: 'sla_name',
+      name: this.i18n.get('common_sla_label'),
+      filter: {
+        type: 'search',
+        filterMode: 'contains'
+      }
+    }
+  ];
+
+  title = this.i18n.get('common_selected_info_label', [
+    'protection_backup_set_label'
+  ]);
+
+  constructor(
+    private i18n: I18NService,
+    private protectedResourceApiService: ProtectedResourceApiService,
+    private genConditionsService: GenConditionsService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {}
+
+  updateTable(filters) {
+    const params = {
+      pageNo: filters.paginator.pageIndex,
+      pageSize: filters.paginator.pageSize
+    };
+    const defaultConditions = {};
+    assign(
+      defaultConditions,
+      this.genConditionsService.getConditions(this.subType)
+    );
+
+    if (!isEmpty(filters.conditions_v2)) {
+      assign(defaultConditions, JSON.parse(filters.conditions_v2));
+    }
+
+    assign(params, { conditions: JSON.stringify(defaultConditions) });
+
+    if (!!size(filters.sort)) {
+      assign(params, { orders: filters.orders });
+    }
+
+    this.protectedResourceApiService
+      .ListResources(params)
+      .pipe(
+        map(res => {
+          each(res.records, item => {
+            extendSlaInfo(item);
+            assign(item, {
+              sub_type: item.subType,
+              disabled: !!get(item, 'sla_id')
+            });
+          });
+          return res;
+        })
+      )
+      .subscribe(res => {
+        this.allTableData = {
+          total: res.totalCount,
+          data: res.records
+        };
+        this.cdr.detectChanges();
+      });
+  }
+
+  dataChange(selection) {
+    this.selectionData = selection;
+    this.valid$.next(!!size(this.selectionData));
+  }
+
+  initData(data: any, resourceType: string) {
+    this.resourceData = data;
+    this.selectionData = data;
+    this.subType = isArray(data) ? data[0].subType : data.subType;
+  }
+
+  onOK() {
+    return { selectedList: this.selectionData };
+  }
+}

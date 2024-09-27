@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Oracle数据脱敏">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839144517.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001792397140">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Oracle数据脱敏</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001792397140"></a><a name="ZH-CN_TOPIC_0000001792397140"></a>
+  <h1 class="topictitle1">Oracle数据脱敏</h1>
+  <div>
+   <p>本节介绍如何使用数据脱敏特性对恢复或挂载生成的数据库进行脱敏。</p>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>已确认待脱敏的数据库的管理IP地址和名称。</li>
+     <li>已获取待脱敏的数据库表空间所属的用户信息（用户名和密码），并确保该用户具有远程访问权限。</li>
+     <li>已获取待脱敏的数据库的业务IP地址、端口。</li>
+     <li>已配置数据库侦听功能。配置数据库侦听的具体操作，请参见《数据备份特性指南(适用于Oracle)》中的<span class="parmvalue">“配置Oracle数据库侦听参数”</span>。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <ul>
+     <li>请勿对生产数据库进行脱敏操作。</li>
+     <li>识别过程中和脱敏过程中，请勿操作数据库。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">识别敏感数据</h4>
+    <ol>
+     <li><span>在上方导航栏选择“<span>数据利用</span> &gt; <span>数据脱敏</span>”，在左侧导航栏单击“<span>Oracle</span>”。</span></li>
+     <li><span>在右侧“<span>Oracle</span>”页面，根据数据库管理IP地址和名称搜索，查找待脱敏的数据库。</span></li>
+     <li><span>在待脱敏的数据库的“<span>操作</span>”列，单击“<span>更多</span> &gt; <span>识别敏感数据</span>”。</span></li>
+     <li><span>在“<span>识别敏感数据</span>”窗口中，选择脱敏策略，单击“<span>确定</span>”。</span><p></p><p>如果脱敏策略过多，您可以输入脱敏策略名称搜索，支持模糊搜索。单击右侧的<span><img src="zh-cn_image_0000001792397164.png"></span>，可以切换脱敏策略的显示样式为缩略图显示或列表显示。</p> <p>如果系统中已有的脱敏策略不满足要求，您可以单击“创建”，添加新的脱敏策略。脱敏策略的参数说明，请参见<a href="zh-cn_topic_0000001792556876.html#ZH-CN_TOPIC_0000001792556876__table988710276918">表1</a>。</p> <p></p></li>
+     <li id="ZH-CN_TOPIC_0000001792397140__li188477531581"><span>在“<span id="ZH-CN_TOPIC_0000001792397140__text1484805312814">认证</span>”窗口中，填写Oracle数据库认证信息，单击“<span id="ZH-CN_TOPIC_0000001792397140__text58481535815">确定</span>”。</span><p></p><p id="ZH-CN_TOPIC_0000001792397140__p168881111597">请根据前提条件中获取的数据库表空间所属的用户信息（用户名和密码）、业务IP地址和端口填写。Oracle端口默认为1521。</p> <p></p></li>
+     <li><span>阅读提示信息后，单击“确定”开始识别。</span><p></p>
+      <div class="notice">
+       <span class="noticetitle"><img src="public_sys-resources/notice_3.0-zh-cn.png"> </span>
+       <div class="noticebody">
+        <p>敏感数据识别操作可能占用较长时间，当数据库状态为“<span>正在识别</span>”时，请勿操作数据库。</p>
+       </div>
+      </div> <p>当数据库的“<span>识别状态</span>”为“<span>识别成功</span>”时，表示识别操作成功完成。</p> <p>当数据库的“<span>识别状态</span>”为“<span>识别失败</span>”时，可以单击数据库名称，单击“<span>任务</span>”，单击“<span>历史任务</span>”页签，查看失败原因，并根据修复建议进行处理。</p> <p></p></li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">脱敏数据</h4>
+    <ol>
+     <li><span>在待进行数据脱敏的数据库的“<span>操作</span>”列，单击“<span>更多</span> &gt; <span>脱敏</span>”。</span></li>
+     <li><span>在“<span>脱敏</span>”窗口中，单击数据库表空间和数据库表，查看识别结果。</span><p></p><p>如果数据库表的列名称右侧带有(xxx)信息，表示该列中存在敏感数据。xxx为识别规则名称。</p> <p>您可以对识别结果执行验证或修改操作。</p>
+      <ul>
+       <li>验证<p>校验识别结果是否正确。</p> <p>选择单个数据库表中的一列或最多三列识别结果，单击“<span>验证</span>”，输入数据库用户名、密码、业务IP地址、端口、起始位置、限制行数，单击“确定”。在弹出“<span>验证结果</span>”窗口，您可以查看识别结果是否正确。如果不正确，可以修改识别结果。</p></li>
+       <li>修改<p>如果您觉得识别结果不正确或不满足要求，可以修改识别结果或脱敏规则。</p> <p>单击列名称右侧的<span><img src="zh-cn_image_0000001839276217.png"></span>，在“<span>修改</span>”窗口中，打开或关闭“<span>是否敏感</span>”的开关。打开开关后，还需要设置“<span>敏感数据名称</span>”，并选择新的脱敏规则。单击“<span>确定</span>”完成修改。</p>
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>如果选择的脱敏规则为Partial-Mask，还需要输入敏感数据在这列数据中的起始位置和结束位置。</p>
+         </div>
+        </div></li>
+      </ul> <p></p></li>
+     <li><span>单击“确定”。</span></li>
+     <li><span>在“<span id="ZH-CN_TOPIC_0000001792397140__zh-cn_topic_0000001792397140_text1484805312814">认证</span>”窗口中，填写Oracle数据库认证信息，单击“<span id="ZH-CN_TOPIC_0000001792397140__zh-cn_topic_0000001792397140_text58481535815">确定</span>”。</span><p></p><p id="ZH-CN_TOPIC_0000001792397140__zh-cn_topic_0000001792397140_p168881111597">请根据前提条件中获取的数据库表空间所属的用户信息（用户名和密码）、业务IP地址和端口填写。Oracle端口默认为1521。</p> <p></p></li>
+     <li><span>阅读“<span>危险</span>”提示信息后，勾选“<span>我已阅读上述信息，了解执行此操作带来的后果</span>”，单击“确定”开始脱敏。</span><p></p>
+      <div class="caution">
+       <span class="cautiontitle"><img src="public_sys-resources/caution_3.0-zh-cn.png"> </span>
+       <div class="cautionbody">
+        <p>脱敏后的数据会被写入数据库，请确认选择脱敏的数据库非生产数据库。</p>
+        <p>脱敏过程中，请勿操作数据库。</p>
+       </div>
+      </div> <p>当数据库的“<span>脱敏状态</span>”为“<span>脱敏成功</span>”时，表示脱敏操作成功完成。</p> <p>当数据库的“<span>脱敏状态</span>”为“<span>脱敏失败</span>”时，可以单击数据库名称，单击“<span>任务</span>”，单击“<span>历史任务</span>”页签，查看失败原因，并根据修复建议进行处理。</p> <p></p></li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">查看脱敏报告</h4>
+    <ol>
+     <li><span>在已完成数据脱敏的数据库的“<span>操作</span>”列，单击“<span>更多</span> &gt; <span>查看脱敏报告</span>”。</span><p></p><p>在“<span>脱敏报告</span>”窗口中，查看脱敏结果。如果数据库表的列名称右侧带有(xxx)信息，表示该列中存在敏感数据。xxx为敏感数据名称。</p> <p></p></li>
+     <li><span>您也可以单击“<span>下载报告</span>”保存脱敏报告。</span><p></p><p>脱敏报告的文件格式为csv，包含ID、数据库ID、数据库名称、数据库表空间、数据库表名、列名、识别规则名称和脱敏规则类型。</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001839144517.html">数据脱敏</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤5：创建备份SLA">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839162949.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839242877">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤5：创建备份SLA</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001839242877"></a><a name="ZH-CN_TOPIC_0000001839242877"></a>
+  <h1 class="topictitle1">步骤5：创建备份SLA</h1>
+  <div>
+   <p>请根据自身需求自定义SLA以对资源进行保护。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <p>关于自定义SLA的详细说明可参考<a href="zh-cn_topic_0000001792523538.html">关于SLA</a>。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839142377_uicontrol8111821122820">“<span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839142377_text71111921162814">保护</span> &gt; 保护策略 &gt; SLA”</span>。</span></li>
+     <li><span>单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_uicontrol12389192016473">“<span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text1214017349462">创建</span>”</span>。</span></li>
+     <li><span>自定义SLA的名称。当使用系统默认名称时，系统默认名称为：SLA_当前时间戳。</span></li>
+     <li><span>选择需要创建SLA的应用类型。</span><p></p>
+      <ol type="a" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_ol71011061385">
+       <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li874192611325">单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_uicontrol16364345183319">“<span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text1149753619468">应用</span>”</span>图标，选择要创建SLA的应用。
+        <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_ul157501053341">
+         <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li3750135143412"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text10801323154310">通用SLA</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p144377559348">通用SLA可以应用到除文件集、SQL Server、PostgreSQL、Kingbase、Redis、ClickHouse、MongoDB、NAS共享、NAS文件系统、华为云Stack GaussDB、TDSQL、Kubernetes CSI、TiDB、卷、通用共享、GaussDB T 单机、对象存储以外的资源。</p></li>
+         <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li1512516103413"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text1431211194314">指定应用</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p1889316245358">选择需要创建SLA的一种应用类型，本节以创建<span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text52802054182812">指定应用</span>为例进行说明。</p></li>
+        </ul></li>
+       <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li7586156123316">单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_uicontrol206968467360">“确定”</span>。</li>
+      </ol> <p></p></li>
+     <li><span>配置备份策略。</span><p></p>
+      <ol type="a">
+       <li>单击<span class="uicontrol">“<span><span>备份策略</span></span>”</span>图标。</li>
+       <li>配置备份策略基础参数。<p>相关参数说明如<a href="#ZH-CN_TOPIC_0000001839242877__table2663151516335">表1</a>所示。</p>
+        <div class="p">
+         请根据业务情况合理设置备份频率、副本保留时长和备份时间窗口，建议如下：
+         <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839188313_zh-cn_topic_0000001839143189_ul188491594283">
+          <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839188313_zh-cn_topic_0000001142022930_li14385102192911">备份频率至少大于备份时长。</li>
+          <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839188313_zh-cn_topic_0000001839143189_li19397172762917">全量副本的保留时长大于增量备份（或永久增量（合成全量）备份）副本的保留时长。</li>
+          <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839188313_li249619119012">副本保留时长必须大于备份频率。</li>
+         </ul>
+         <div class="note" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839188313_zh-cn_topic_0000001839143189_note71621858195515">
+          <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839188313_zh-cn_topic_0000001839143189_ul192116591633">
+            <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839188313_zh-cn_topic_0000001839143189_li921115591430">至少需要创建1个备份策略，如需添加其他备份策略，请单击界面右侧的<span><img id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839188313_zh-cn_topic_0000001839143189_image178791955235" src="zh-cn_image_0000001914096218.png"></span>。</li>
+            <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839188313_zh-cn_topic_0000001839143189_li621119590319">日志备份仅支持添加1个备份策略，其他备份类型最多支持添加4个备份策略。</li>
+           </ul>
+          </div>
+         </div>
+        </div>
+        <div class="tablenoborder">
+         <a name="ZH-CN_TOPIC_0000001839242877__table2663151516335"></a><a name="table2663151516335"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001839242877__table2663151516335" frame="border" border="1" rules="all">
+          <caption>
+           <b>表1 </b>备份策略基础参数说明
+          </caption>
+          <colgroup>
+           <col style="width:11.899999999999999%">
+           <col style="width:15.25%">
+           <col style="width:72.85000000000001%">
+          </colgroup>
+          <thead align="left">
+           <tr id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_row666215155334">
+            <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.5.2.1.2.3.2.4.1.1"><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p4662171516333">参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.5.2.1.2.3.2.4.1.2"><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p166621215123312">说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_row1186112273215">
+            <td class="cellrowborder" rowspan="2" valign="top" width="11.899999999999999%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p14662115153320"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text189091138183019">全量备份</span></p></td>
+            <td class="cellrowborder" valign="top" width="15.25%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p10862922113217"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text1451193120338">名称</span></p></td>
+            <td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.2 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p486272220321">设置备份策略名称。</p></td>
+           </tr>
+           <tr id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_row117822001416">
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p46161395235">-</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 ">
+             <div class="p" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p1432741045617">
+              配置全量备份的执行时间、备份频率、副本保留时长以及备份时间窗口。
+              <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_ul06281446133611">
+               <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li5628184619364">配置全量备份的备份频率以及副本的保留时长。
+                <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_ul3912541183319">
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li1491311419338"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text881714512382">按年</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p7913141173316">设置每年xx月xx日执行一次，副本保留xx天/周/月/年或永久保留。</p> <p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p52204181864">如果当年不存在该日期，则不产生副本。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li18913134153311"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text9120524389">按月</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p19131141133318">设置每月xx日（可选择多日）或最后一天执行一次，副本保留xx天/周/月/年或永久保留。</p> <p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p131866516465">如果设置为每月xx日执行一次备份，当月不存在该日期时，则不产生副本。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li79137410332"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text107501579380">按周</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p091313410338">设置每周一/二/三/四/五/六/日执行一次（可多选），副本保留xx天/周/月/年或永久保留。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li18498191724615"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text199032391683">按天</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p46219385469">设置从xx年xx月xx日开始，每xx天执行一次备份，副本保留xx天/周/月/年或永久保留。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li426962116468"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text14231841203315">按小时</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p6350614134914">设置从xx年xx月xx日开始，每xx小时执行一次备份，副本保留xx天/周/月/年或永久保留。</p></li>
+                </ul></li>
+               <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li1881682412376">设置允许执行全量备份的时间段，该时间范围以外的时间不会进行全量备份任务调度。
+                <div class="note" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_note3335182113214">
+                 <span class="notetitle"> 说明： </span>
+                 <div class="notebody">
+                  <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_ul64461851101420">
+                   <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li037445621410">如果结束时间小于或等于开始时间，则结束时间实际为跨日的结束时间。</li>
+                   <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li4446145117142">如果备份任务在指定的时间窗口内未执行完成，系统不会中止本次备份任务，但会上报事件。</li>
+                   <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li4684315367">一旦副本超过设定的保留时长，系统将自动删除过期的副本。</li>
+                  </ul>
+                 </div>
+                </div></li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_row13246917173820">
+            <td class="cellrowborder" rowspan="2" valign="top" width="11.899999999999999%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p4761906401"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text459620167408">增量备份</span></p></td>
+            <td class="cellrowborder" valign="top" width="15.25%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p1483592733814"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text48351227113813">名称</span></p></td>
+            <td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.2 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p15835182717387">设置备份策略名称。</p></td>
+           </tr>
+           <tr id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_row6447154618391">
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p1577502402">-</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 ">
+             <div class="p" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p157911675147">
+              配置增量备份的首次执行时间、备份频率、副本保留时长以及备份时间窗口。
+              <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_ul167919791414">
+               <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li1079119781413">配置增量备份的备份频率以及副本的保留时长。
+                <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_ul1679113751412">
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li177910751413"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text9791187121410">按年</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p7791117131413">设置每年xx月xx日执行一次，副本保留xx天/周/月/年或永久保留。</p> <p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p62586191379">如果当年不存在该日期，则不产生副本。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li1279112715144"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text979110717147">按月</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p179113721413">设置每月xx日（可选择多日）或最后一天执行一次，副本保留xx天/周/月/年或永久保留。</p> <p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p125877114419">如果设置为每月xx日执行一次备份，当月不存在该日期时，则不产生副本。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li879112716144"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text27913720144">按周</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p1079111741416">设置每周一/二/三/四/五/六/日执行一次（可多选），副本保留xx天/周/月/年或永久保留。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li251355615915"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text0935195916812">按天</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p175137561491">设置从xx年xx月xx日开始，每xx天执行一次备份，副本保留xx天/周/月/年或永久保留。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li17513125616918"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text11653155316339">按小时</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p451312561795">设置从xx年xx月xx日开始，每xx小时执行一次备份，副本保留xx天/周/月/年或永久保留。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li108498361016"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text4119140183416">按分钟</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p178491339103">设置从xx年xx月xx日开始，每xx分钟执行一次备份，副本保留xx天/周/月/年或永久保留。</p></li>
+                </ul></li>
+               <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li1679107171411">设置允许执行增量备份的时间段，该时间范围以外的时间不会进行增量备份任务调度。
+                <div class="note" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_note77917711419">
+                 <span class="notetitle"> 说明： </span>
+                 <div class="notebody">
+                  <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143189_ul64461851101420">
+                   <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143189_li037445621410">如果结束时间小于或等于开始时间，则结束时间实际为跨日的结束时间。</li>
+                   <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143189_li4446145117142">如果备份任务在指定的时间窗口内未执行完成，系统不会中止本次备份任务，但会上报事件。</li>
+                   <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143189_li4684315367">一旦副本超过设定的保留时长，系统将自动删除过期的副本。</li>
+                  </ul>
+                 </div>
+                </div></li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_row7570181021313">
+            <td class="cellrowborder" rowspan="2" valign="top" width="11.899999999999999%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p109951957455"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text13286155114306">差异备份</span></p></td>
+            <td class="cellrowborder" valign="top" width="15.25%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p665632115137"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text6656122119138">名称</span></p></td>
+            <td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.2 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p065615211136">设置备份策略名称。</p></td>
+           </tr>
+           <tr id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_row329194814612">
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p158757169456">-</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 ">
+             <div class="p" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p841755810479">
+              配置差异备份的备份频率、副本保留时长以及备份时间窗口。差异备份和增量备份不能同时存在。
+              <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_ul167919791414">
+               <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_li1079119781413">配置差异备份的备份频率以及副本的保留时长。
+                <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_ul1679113751412">
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_li177910751413"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_text9791187121410">按年</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_p7791117131413">设置每年xx月xx日执行一次，副本保留xx天/周/月/年或永久保留。</p> <p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p1644311552076">如果当年不存在该日期，则不产生副本。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_li1279112715144"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_text979110717147">按月</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_p179113721413">设置每月xx日（可选择多日）或最后一天执行一次，副本保留xx天/周/月/年或永久保留。</p> <p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_p125877114419">如果设置为每月xx日执行一次备份，当月不存在该日期时，则不产生副本。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_li879112716144"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_text27913720144">按周</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_p1079111741416">设置每周一/二/三/四/五/六/日执行一次（可多选），副本保留xx天/周/月/年或永久保留。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li1357019205199"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text165091219911">按天</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p14570162091916">设置从xx年xx月xx日开始，每xx天执行一次备份，副本保留xx天/周/月/年或永久保留。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li49631811181219"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text199622111346">按小时</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p7963911121219">设置从xx年xx月xx日开始，每xx小时执行一次备份，副本保留xx天/周/月/年或永久保留。</p></li>
+                 <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li796311191217"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text3628152811345">按分钟</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p19963121121214">设置从xx年xx月xx日开始，每xx分钟执行一次备份，副本保留xx天/周/月/年或永久保留。</p></li>
+                </ul></li>
+               <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001142022930_li1679107171411">设置允许执行差异备份的时间段，该时间范围以外的时间不会进行差异备份任务调度。
+                <div class="note" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_note153637599371">
+                 <span class="notetitle"> 说明： </span>
+                 <div class="notebody">
+                  <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143189_ul64461851101420_1">
+                   <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143189_li037445621410_1">如果结束时间小于或等于开始时间，则结束时间实际为跨日的结束时间。</li>
+                   <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143189_li4446145117142_1">如果备份任务在指定的时间窗口内未执行完成，系统不会中止本次备份任务，但会上报事件。</li>
+                   <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143189_li4684315367_1">一旦副本超过设定的保留时长，系统将自动删除过期的副本。</li>
+                  </ul>
+                 </div>
+                </div></li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_row59415442711">
+            <td class="cellrowborder" rowspan="2" valign="top" width="11.899999999999999%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p159990425152"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text16694132312">日志备份</span></p></td>
+            <td class="cellrowborder" valign="top" width="15.25%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p2203644151511"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text1820320448156">名称</span></p></td>
+            <td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.2 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p82031244191515">设置备份策略名称。</p></td>
+           </tr>
+           <tr id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_row1915013813277">
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p2533254182118">-</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 ">
+             <div class="p" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p388052513187">
+              配置日志备份的开始时间、备份频率、副本保留时长。
+              <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_ul17373131873818">
+               <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li2514102132014"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text10232154917911">按天</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p185142219203">设置从xx年xx月xx日开始，每xx天执行一次备份，副本保留xx天/周/月/年或永久保留。</p></li>
+               <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li11514525202"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text9177753173410">按小时</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p18514722206">设置从xx年xx月xx日开始，每xx小时执行一次备份，副本保留xx天/周/月/年或永久保留。</p></li>
+               <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li15514102132011"><span id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_text1930617408347">按分钟</span><p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p20514424208">设置从xx年xx月xx日开始，每xx分钟执行一次备份，副本保留xx天/周/月/年或永久保留。</p></li>
+              </ul>
+              <div class="note" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_note1659022719511">
+               <span class="notetitle"> 说明： </span>
+               <div class="notebody">
+                <p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_p12590152719514">不支持单独配置日志备份策略。</p>
+               </div>
+              </div>
+             </div></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ol>
+      <ol type="a" start="3">
+       <li>配置备份策略高级参数。
+        <div class="p">
+         相关参数说明如<a href="#ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001142022930_table1970194542811">表2</a>所示。 
+         <div class="tablenoborder">
+          <a name="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001142022930_table1970194542811"></a><a name="zh-cn_topic_0000001142022930_table1970194542811"></a>
+          <table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001142022930_table1970194542811" frame="border" border="1" rules="all">
+           <caption>
+            <b>表2 </b>备份策略高级参数说明
+           </caption>
+           <colgroup>
+            <col style="width:30.06%">
+            <col style="width:69.94%">
+           </colgroup>
+           <thead align="left">
+            <tr>
+             <th align="left" class="cellrowborder" valign="top" width="30.06%" id="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1"><p>参数</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="69.94%" id="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2"><p>说明</p></th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 "><p>指定目标位置</p></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 ">
+              <div class="p">
+               如果您部署了集群高可用特性，请指定备份副本的目标存储位置。<span style="color:#282B33;">如不指定，则系统通过智能均衡自动选择备份目标存储单元。</span>
+               <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_ul3832679403">
+                <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li178323718400">备份存储单元：对应于备份集群节点。选择备份存储单元后，副本将存储至该存储单元。存储单元容量不足时，备份任务将会失败。</li>
+                <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li31700914016">备份存储单元组：是备份存储单元的集合。选择备份存储单元组后，系统根据存储单元组的存储策略自动选择备份目标存储单元。</li>
+               </ul>
+              </div></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 "><p><span>限速策略</span></p></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 "><p>备份任务平均每秒最大传输的数据量。</p> <p>选择<a href="zh-cn_topic_0000001839242893.html">已创建的限速策略</a>。</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 "><p><span>并发数</span></p></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 "><p>备份任务执行时使用的线程个数。</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 "><p><span>副本校验</span></p></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 "><p>开启后，备份完成，系统将自动执行一次副本校验，检验副本的完整性；您也可以手动执行副本校验。副本校验操作将影响备份恢复性能。</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 "><p><span>任务失败告警</span></p></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 "><p>开启后，任务失败会发送告警，下一次任务成功后告警自动清除。默认关闭。</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 "><p><span>源端重删</span></p></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 ">
+              <div class="p">
+               开启后，可以减少传输的数据量，但会增加客户端的资源占用。
+               <div class="note" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_note8885112682911">
+                <span class="notetitle"> 说明： </span>
+                <div class="notebody">
+                 <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_ul5885426132914">
+                  <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li10885172616299">由于同一个代理主机只能和一个存储单元建链，如果开启源端重删，<span class="parmname" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_parmname1288482662917">“指定目标位置”</span>请选择<span class="parmvalue" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_parmvalue118843260299">“备份存储单元”</span>。否则，由于智能均衡可能会选择到未建链的存储单元，导致源端重删启用失败。如果不同受保护对象关联了不同SLA，且SLA中指定不同的备份存储单元，请为受保护对象选择不同代理主机，否则将会导致部分备份任务源端重删启用失败。</li>
+                  <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li9885182662911">如果代理主机已经与一个存储单元建链，当该代理主机未执行源端重删备份任务时，可以在代理主机上执行<strong id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_b9845163710167">dataturbo delete storage_object storage_name=</strong><em id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_i19447038131614">?</em>命令（命令中的<strong id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_b1050314315162">storage_name=</strong><em id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_i1237554410161">?</em>可以通过<strong id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_b11885726112912">dataturbo show storage_object</strong>命令查询），删除与存储单元的源端重删链接。再选择该代理主机执行源端重删备份任务，则可以成功与新的存储单元建链。</li>
+                  <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li11885142615297">请参考<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">兼容性查询工具</a>查看主机的操作系统类型是否支持源端重删，若不支持，配置源端重删后将不会生效。</li>
+                  <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li7883549153219">若使用内置代理进行备份，配置源端重删后将不会生效。</li>
+                 </ul>
+                </div>
+               </div>
+              </div></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 ">
+              <div class="p">
+               任务超过时间窗告警
+               <div class="note" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_note379352823112">
+                <span class="notetitle"> 说明： </span>
+                <div class="notebody">
+                 <p id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143213_p8320153562113">仅1.6.0及后续版本支持设置该参数。</p>
+                </div>
+               </div>
+              </div></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 "><p>开启后任务执行超过时间窗将发送告警，告警需手动清除。</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 "><p><span>失败后自动重试</span></p></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 "><p>开启后，周期性备份任务失败后系统自动重试。</p>
+              <div class="p">
+               支持重试次数为1~5次，等待时长为1~30分钟。如设置为重试3次，等待5分钟，即每5分钟后重试一次，总共重试3次。
+               <div class="note" id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_note139701345152818">
+                <span class="notetitle"> 说明： </span>
+                <div class="notebody">
+                 <ul id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_ul264071314279">
+                  <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li1864001332715">自动重试时系统会创建一个新的备份任务，如果该备份任务不在设定的时间窗内则不会执行，此次备份失败。</li>
+                  <li id="ZH-CN_TOPIC_0000001839242877__zh-cn_topic_0000001839143189_li116401113172713">该功能仅在周期性备份时生效。手动发起备份任务，任务失败无法自动重试。</li>
+                 </ul>
+                </div>
+               </div>
+              </div></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.1 "><p><span>归档日志删除</span></p></td>
+             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.5.2.2.1.1.2.2.3.1.2 "><p>开启后，将会删除备份成功的历史归档记录。</p></td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div></li>
+       <li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li>
+      </ol> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001839162949.html">备份DB2数据库/DB2表空间集</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

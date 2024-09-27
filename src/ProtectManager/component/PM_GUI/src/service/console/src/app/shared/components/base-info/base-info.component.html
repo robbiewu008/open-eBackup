@@ -1,0 +1,410 @@
+<lv-form [lvLabelColon]="false" class="resource-summary">
+  <lv-form-column style="height:160px" *ngFor="let column of formItems; index as i" [ngClass]="{
+      'sunmary-container-time': i === 2 && ![resourceType.tidbDatabase.value,resourceType.vmGroup.value].includes(sourceType),
+      'sunmary-container-time-tidb': i === 2 && isTidbDatabase,
+      'sunmary-container': (i === 0 || i === 1) && !isTidbDatabase,
+      'sunmary-container-tidb': [0,1,2].includes(i) && isTidbDatabase,
+      'sunmary-container-time-vmgroup': i === 2 && [resourceType.vmGroup.value].includes(sourceType),
+      'sunmary-container-copy': i === 3,
+      'base-padding': i === 0, 'other-padding':i !== 0
+    }">
+    <lv-group class="sunmary-icon" lvGutter='32px' [ngClass]="{'sunmary-group-content': i !== 0}">
+      <div style="width: 48px;height: 48px;">
+        <ng-container *ngIf="i===0 && resourceType.ExchangeGroup.value === sourceType">
+          <i lv-icon="aui-sla-cluster-online"
+            *ngIf="source.linkStatus === dataMap.resource_LinkStatus_Special.normal.value"></i>
+          <i lv-icon="aui-sla-cluster-offline"
+            *ngIf="source.linkStatus === dataMap.resource_LinkStatus_Special.offline.value"></i>
+        </ng-container>
+        <i lv-icon="aui-icon-email" *ngIf="
+            i === 0 && resourceType.ExchangeEmail.value === sourceType
+          "></i>
+        <i lv-icon="aui-icon-summary-table" *ngIf="
+            i === 0 && resourceType.DWS_Table.value === sourceType
+          "></i>
+        <i lv-icon="aui-icon-hcs-project" *ngIf="
+          i === 0 && resourceType.Project.value === sourceType
+        "></i>
+        <i lv-icon="aui-icon-summary-host" *ngIf="
+            i === 0 && [resourceType.CloudHost.value, resourceType.ApsaraStack.value,
+              resourceType.Project.value,resourceType.openStackCloudServer.value,resourceType.ExchangeSingle.value].includes(sourceType)
+          "></i>
+        <i lv-icon="aui-icon-summary-cluster-offline" *ngIf="
+            i === 0 &&
+            [
+              resourceType.DWS_Cluster.value,
+              resourceType.OceanBaseCluster.value
+            ].includes(sourceType)
+          "></i>
+        <i lv-icon="aui-user-OceanBase-tenant" *ngIf="
+            i === 0 &&
+            [
+              resourceType.OceanBaseTenant.value
+            ].includes(sourceType)
+          "></i>
+        <i lv-icon="aui-icon-directory" *ngIf="
+            i === 0 &&
+            [
+              resourceType.fileset.value,
+              resourceType.KubernetesCommon.value,
+              resourceType.ObjectSet.value
+            ].includes(sourceType)
+          "></i>
+        <i lv-icon="aui-icon-volume-detail" *ngIf="
+            i === 0 &&
+            [
+              resourceType.volume.value
+            ].includes(sourceType)
+        "></i>
+        <i lv-icon="aui-icon-summary-fileset" *ngIf="
+          i === 0 &&
+          [resourceType.HDFSFileset.value].includes(sourceType)
+        "></i>
+        <i lv-icon="aui-icon-summary-backupset" *ngIf="
+          i === 0 &&
+          [resourceType.HiveBackupSet.value,resourceType.HBaseBackupSet.value,resourceType.ElasticsearchBackupSet.value].includes(sourceType)
+        "></i>
+        <i lv-icon="aui-icon-database" *ngIf="
+            i === 0 &&
+            [
+              resourceType.oracle.value,
+              resourceType.MySQL.value,
+              resourceType.MySQLDatabase.value,
+              resourceType.DB2.value,
+              resourceType.SQLServer.value,
+              resourceType.ImportCopy.value,
+              resourceType.LocalFileSystem.value,
+              resourceType.GaussDB_T.value,
+              resourceType.gaussdbTSingle.value,
+              resourceType.Redis.value,
+              resourceType.ClickHouseDatabase.value,
+              resourceType.ClickHouseTableset.value,
+              resourceType.DWS_Database.value,
+              resourceType.SQLServerDatabase.value,
+              resourceType.dbTwoDatabase.value,
+              resourceType.DWS_Database.value,
+              resourceType.OpenGauss_database.value,
+              resourceType.generalDatabase.value,
+              resourceType.tidbDatabase.value,
+              resourceType.ExchangeDataBase.value,
+              resourceType.ExchangeDataBase.value
+            ].includes(sourceType)
+          "></i>
+        <i lv-icon="aui-icon-tableset" *ngIf="
+            i === 0 &&
+            [
+              resourceType.ClickHouseTableset.value
+            ].includes(sourceType)
+        "></i>
+        <i lv-icon="aui-icon-tablespace" *ngIf="
+            i === 0 &&
+            [
+              resourceType.dbTwoTableSet.value,
+              resourceType.tidbTable.value
+            ].includes(sourceType)
+        "></i>
+        <i lv-icon="aui-icon-instance" *ngIf="
+            i ===0 &&
+            [
+              resourceType.tdsqlDistributedInstance.value,
+              resourceType.ActiveDirectory.value,
+              resourceType.tdsqlInstance.value,
+              resourceType.Dameng.value,
+              resourceType.OpenGauss_instance.value,
+              resourceType.SQLServerInstance.value,
+              resourceType.MySQLClusterInstance.value,
+              resourceType.MySQLInstance.value,
+              resourceType.goldendbInstance.value,
+              resourceType.PostgreSQLInstance.value,
+              resourceType.PostgreSQLClusterInstance.value,
+              resourceType.KingBaseInstance.value,
+              resourceType.KingBaseClusterInstance.value,
+              resourceType.gaussdbForOpengauss.value,
+              resourceType.lightCloudGaussdbInstance.value,
+              resourceType.MongoDB.value,
+              resourceType.informixInstance.value,
+              resourceType.informixClusterInstance.value,
+              resourceType.gbaseInstance.value,
+              resourceType.gbaseClusterInstance.value
+            ].includes(sourceType)
+        "></i>
+        <i lv-icon="aui-icon-always-on" *ngIf="
+            i === 0 &&
+            [
+              resourceType.SQLServerGroup.value
+            ].includes(sourceType)
+          "></i>
+        <i lv-icon="aui-sla-vm" *ngIf="
+            i === 0 && [resourceType.virtualMachine.value,
+             resourceType.fusionComputeVirtualMachine.value,
+             resourceType.cNwareVm.value,
+             resourceType.hyperVVm.value
+             ].includes(sourceType)
+          "></i>
+        <i lv-icon="aui-hyperv" *ngIf="
+            i === 0 && resourceType.msVirtualMachine.value === sourceType
+          "></i>
+        <i lv-icon="aui-sla-nas" *ngIf="
+            i === 0 &&
+            [
+              resourceType.NASFileSystem.value,
+              resourceType.ndmp.value
+            ].includes(sourceType)
+          "></i>
+        <i lv-icon="aui-icon-summary-nasshare" *ngIf="
+            i === 0 &&
+            [
+              resourceType.NASShare.value
+            ].includes(sourceType)
+          "></i>
+        <i lv-icon="aui-icon-summary-commonshare" *ngIf="
+            i === 0 &&
+            [
+              resourceType.commonShare.value
+            ].includes(sourceType)
+          "></i>
+        <i lv-icon="aui-icon-vm-group" *ngIf="
+          i === 0 &&
+          [
+            resourceType.vmGroup.value
+          ].includes(sourceType)
+        "></i>
+        <i lv-icon="aui-icon-summary-namespace"
+          *ngIf="i === 0 && [resourceType.KubernetesNamespace.value, resourceType.kubernetesNamespaceCommon.value].includes(sourceType)"></i>
+        <i lv-icon="aui-icon-summary-statefulset"
+          *ngIf="i === 0 && [resourceType.KubernetesStatefulset.value, resourceType.kubernetesDatasetCommon.value].includes(sourceType)"></i>
+        <i lv-icon="aui-icon-summary-schema" *ngIf="i === 0 && resourceType.DWS_Schema.value === sourceType"></i>
+        <i lv-icon="aui-icon-summary-sla" *ngIf="i === 1"></i>
+        <i lv-icon="aui-icon-summary-protection" *ngIf="i === 2"></i>
+        <i lv-icon="aui-icon-summary-copydata" *ngIf="i === 3"></i>
+      </div>
+      <div class="sunmary-info">
+        <lv-form-item *ngFor="let item of column">
+          <lv-form-label>{{item.label}}</lv-form-label>
+          <lv-form-control>
+            <span lv-overflow lvTooltipTheme="light" class="name-overflow" *ngIf="
+                'link_status' !== item.key &&
+                'sla_policy' !== item.key &&
+                'sla_compliance' !== item.key &&
+                'protect_activation' !== item.key &&
+                'type' !== item.key &&
+                'last_time' !== item.key &&
+                'earliest_time' !== item.key &&
+                'next_time' !== item.key
+              ">
+              {{ item.content | nil }}
+            </span>
+            <span lv-overflow lvTooltipTheme="light" class="time-overflow" *ngIf="
+                'last_time' === item.key ||
+                'earliest_time' === item.key ||
+                'next_time' === item.key
+              ">
+              {{ item.content | nil }}
+            </span>
+            <span lv-overflow lvTooltipTheme="light" class="name-overflow" *ngIf="
+              item.key === 'type' &&
+              ![
+              resourceType.lightCloudGaussdbInstance.value,
+                resourceType.gaussdbForOpengauss.value,
+                resourceType.goldendbInstance.value,
+                resourceType.DWS_Cluster.value,
+                resourceType.commonShare.value
+              ].includes(sourceType)">
+              {{ item.content | nil }}
+            </span>
+            <span *ngIf="
+              'link_status' === item.key &&
+              ![
+                resourceType.SQLServerDatabase.value,
+                resourceType.DWS_Schema.value,
+                resourceType.DWS_Table.value,
+                resourceType.dbTwoDatabase.value,
+                resourceType.dbTwoTableSet.value,
+                resourceType.SQLServerGroup.value,
+                resourceType.SQLServerInstance.value,
+                resourceType.MySQLDatabase.value
+              ].includes(sourceType)">
+              <ng-container *ngIf="
+                  [
+                    resourceType.oracle.value,
+                    resourceType.DB2.value,
+                    resourceType.SQLServer.value,
+                    resourceType.ClickHouseDatabase.value,
+                    resourceType.ClickHouseTableset.value,
+                    resourceType.PostgreSQLClusterInstance.value,
+                    resourceType.PostgreSQLInstance.value,
+                    resourceType.KingBaseClusterInstance.value,
+                    resourceType.KingBaseInstance.value,
+                    resourceType.tidbDatabase.value,
+                    resourceType.tidbTable.value
+                  ].includes(sourceType)
+                ">
+                <aui-status [value]="item.content" type="Database_Resource_LinkStatus"></aui-status>
+              </ng-container>
+              <ng-container
+                *ngIf="[resourceType.GaussDB_T.value, resourceType.gaussdbTSingle.value].includes(sourceType)">
+                <aui-status [value]="item.content" type="gaussDBT_Resource_LinkStatus"></aui-status>
+              </ng-container>
+              <ng-container *ngIf="[resourceType.virtualMachine.value].includes(sourceType)">
+                <aui-status [value]="item.content" type="vm_LinkStatus"></aui-status>
+              </ng-container>
+              <ng-container *ngIf="[resourceType.hyperVVm.value].includes(sourceType)">
+                <aui-status [value]="item.content" type="hypervStatus"></aui-status>
+              </ng-container>
+
+              <ng-container *ngIf="
+                [
+                  resourceType.tdsqlDistributedInstance.value,
+                  resourceType.tdsqlInstance.value,
+                  resourceType.generalDatabase.value,
+                  resourceType.MySQLInstance.value,
+                  resourceType.MySQLClusterInstance.value,
+                  resourceType.MongoDB.value,
+                  resourceType.informixInstance.value,
+                  resourceType.informixClusterInstance.value,
+                  resourceType.gbaseInstance.value,
+                  resourceType.gbaseClusterInstance.value,
+                  resourceType.OceanBaseCluster.value,
+                  resourceType.ActiveDirectory.value,
+                  resourceType.ExchangeSingle.value,
+                  resourceType.ExchangeGroup.value,
+                  resourceType.saphanaDatabase.value
+                ].includes(sourceType)">
+                <aui-status [value]="item.content" type="resource_LinkStatus_Special"></aui-status>
+              </ng-container>
+              <ng-container *ngIf="resourceType.cNwareVm.value === sourceType">
+                <aui-status [value]="item.content" type="cnwareLinkStatus"></aui-status>
+              </ng-container>
+              <ng-container
+                *ngIf="[resourceType.gaussdbForOpengauss.value, resourceType.lightCloudGaussdbInstance.value].includes(sourceType)">
+                <aui-status [value]="item.content" type="gaussDBInstance"></aui-status>
+              </ng-container>
+              <ng-container *ngIf="resourceType.goldendbInstance.value === sourceType">
+                <aui-status [value]="item.content" type="clickHouse_cluster_status"></aui-status>
+              </ng-container>
+              <ng-container *ngIf="resourceType.fusionComputeVirtualMachine.value === sourceType">
+                <aui-status [value]="item.content" type="fcVMLinkStatus"></aui-status>
+              </ng-container>
+              <ng-container *ngIf="resourceType.Redis.value === sourceType">
+                <aui-status [value]="item.content" type="RedisNodeStatus"></aui-status>
+              </ng-container>
+              <ng-container *ngIf="resourceType.CloudHost.value === sourceType">
+                <aui-status [value]="item.content" type="HCS_Host_LinkStatus"></aui-status>
+              </ng-container>
+              <ng-container *ngIf="resourceType.openStackCloudServer.value === sourceType">
+                <aui-status [value]="item.content" type="HCS_Host_LinkStatus"></aui-status>
+              </ng-container>
+              <ng-container *ngIf="
+                  ![
+                    resourceType.lightCloudGaussdbInstance.value,
+                    resourceType.tdsqlDistributedInstance.value,
+                    resourceType.ActiveDirectory.value,
+                    resourceType.lightCloudGaussdbInstance.value,
+                    resourceType.tdsqlInstance.value,
+                    resourceType.oracle.value,
+                    resourceType.MySQLInstance.value,
+                    resourceType.MySQLClusterInstance.value,
+                    resourceType.generalDatabase.value,
+                    resourceType.DB2.value,
+                    resourceType.SQLServer.value,
+                    resourceType.gaussdbForOpengauss.value,
+                    resourceType.ClickHouseDatabase.value,
+                    resourceType.ClickHouseTableset.value,
+                    resourceType.Redis.value,
+                    resourceType.CloudHost.value,
+                    resourceType.PostgreSQLClusterInstance.value,
+                    resourceType.PostgreSQLInstance.value,
+                    resourceType.KingBaseClusterInstance.value,
+                    resourceType.KingBaseInstance.value,
+                    resourceType.fusionComputeVirtualMachine.value,
+                    resourceType.DWS_Database.value,
+                    resourceType.GaussDB_T.value,
+                    resourceType.gaussdbTSingle.value,
+                    resourceType.goldendbInstance.value,
+                    resourceType.openStackCloudServer.value,
+                    resourceType.virtualMachine.value,
+                    resourceType.MongoDB.value,
+                    resourceType.informixInstance.value,
+                    resourceType.informixClusterInstance.value,
+                    resourceType.gbaseInstance.value,
+                    resourceType.gbaseClusterInstance.value,
+                    resourceType.OceanBaseCluster.value,
+                    resourceType.tidbDatabase.value,
+                    resourceType.tidbTable.value,
+                    resourceType.commonShare.value,
+                    resourceType.cNwareVm.value,
+                    resourceType.ApsaraStack.value,
+                    resourceType.ExchangeGroup.value,
+                    resourceType.ExchangeSingle.value,
+                    resourceType.hyperVVm.value,
+                    resourceType.saphanaDatabase.value
+                  ].includes(sourceType)
+                ">
+                <ng-container [ngSwitch]="sourceType">
+                  <ng-container *ngSwitchCase="resourceType.NASFileSystem.value || resourceType.ndmp.value">
+                    <aui-status [value]="item.content" type="File_System_LinkStatus">
+                    </aui-status>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="resourceType.LocalFileSystem.value">
+                    <aui-status [value]="item.content" type="File_System_LinkStatus">
+                    </aui-status>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="resourceType.NASShare.value">
+                    <aui-status [value]="item.content" type="Nas_Share_LinkStatus"></aui-status>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="resourceType.DWS_Cluster.value">
+                    <aui-status [value]="item.content" type="gaussDBDWS_Resource_LinkStatus"></aui-status>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="resourceType.OceanBaseTenant.value">
+                    <aui-status [value]="item.content" type="resourceLinkStatusTenantSet"></aui-status>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="resourceType.fileset.value">
+                    {{ item.content }}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="resourceType.volume.value">
+                    {{ item.content }}
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <ng-container *ngIf="source?.type === 'Host'">
+                      <aui-status [value]="item.content" type="resource_Host_LinkStatus">
+                      </aui-status>
+                    </ng-container>
+                    <ng-container *ngIf="source?.type !== 'Host'">
+                      <aui-status [value]="item.content" type="resource_LinkStatus"></aui-status>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="resourceType.LocalFileSystem.value || resourceType.LocalLun.value">
+                      <aui-status [value]="item.content" type="File_System_LinkStatus">
+                      </aui-status>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </span>
+            <span *ngIf="'protect_activation' === item.key">
+              <aui-status [value]="item.content" type="Protection_Status"></aui-status>
+            </span>
+            <span *ngIf="'sla_policy' === item.key">
+              <ng-container *ngIf="item.content; else slaTemplate">
+                <span lv-overflow lvTooltipTheme="light" class="sla-overflow">
+                  <sla-type [name]="item.content"></sla-type>
+                </span>
+              </ng-container>
+              <ng-template #slaTemplate>
+                --
+              </ng-template>
+            </span>
+            <span *ngIf="'sla_compliance' === item.key">
+              <ng-container *ngIf="item.content || item.content === false; else emptyTpl">
+                <aui-status [value]="item.content" type="Sla_Compliance"></aui-status>
+              </ng-container>
+            </span>
+          </lv-form-control>
+        </lv-form-item>
+      </div>
+    </lv-group>
+  </lv-form-column>
+</lv-form>
+
+<ng-template #emptyTpl>
+  --
+</ng-template>
