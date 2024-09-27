@@ -1,0 +1,26 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: delete-pm-conf
+  namespace: dpa
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": "hook-succeeded"
+spec:
+  template:
+    spec:
+      serviceAccountName: pm-delete-sa
+      containers:
+        - name: delete-pm-conf
+          image: pm-system-base:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - /app/delete_pm_conf.sh
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+      restartPolicy: OnFailure

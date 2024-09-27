@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pm-delete-sa-role
+  namespace: dpa
+rules:
+  - apiGroups: [ "*" ]
+    resources: [ "secrets" ]
+    resourceNames:
+      - secret-pm-tls
+      - secret-pm-mtls
+      - secret-pm-ha
+    verbs: [ "get", "delete" ]
