@@ -1,0 +1,1 @@
+{"fileVersion":"1","name":"AppPlugins_NAS","serviceId":"efed850c1dbc4829a7b9a19cd117c002","description":"","version":"1.1.0","type":"microService","processes":{"DME_Databases":{"subscribes":[]}}}

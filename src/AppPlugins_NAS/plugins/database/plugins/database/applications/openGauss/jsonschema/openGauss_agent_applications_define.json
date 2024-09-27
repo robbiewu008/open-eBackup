@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "menus": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "applications": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "appDesc": {
+                  "type": "string",
+                  "description": "该参数应用未使用，使用黑名单校验",
+                  "pattern": "^[^|;&$><`'!+\\n]*$"
+                },
+                "appLabel": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z_0-9- ./()]{0,254}$"
+                },
+                "appValue": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z_0-9-.,]{0,254}$"
+                },
+                "isChosen": {
+                  "type": "boolean"
+                },
+                "pluginName": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z_0-9-.,]{0,254}$"
+                }
+              }
+            }
+          },
+          "isChosen": {
+            "type": "boolean"
+          },
+          "menuDesc": {
+            "type": "string",
+            "description": "该参数应用未使用，使用黑名单校验",
+            "pattern": "^[^|;&$><`'!+\\n]*$"
+          },
+          "menuLabel": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_0-9- ./()]{0,254}$"
+          },
+          "menuValue": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_0-9- .,]{0,254}$"
+          }
+        }
+      }
+    },
+    "pluginNames": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-.,]{0,254}$"
+      }
+    }
+  },
+  "additionalProperties": false
+}

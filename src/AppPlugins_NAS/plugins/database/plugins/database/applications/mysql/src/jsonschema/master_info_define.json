@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "host": {
+        "type": "string",
+        "anyOf": [
+          {
+            "format": "ipv4"
+          },
+          {
+            "format": "ipv6"
+          },
+          {
+            "pattern": "^$"
+          }
+        ]
+      },
+      "port": {
+        "type": "string",
+        "pattern": "^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$"
+      }
+    },
+    "additionalProperties": false
+  }
+}

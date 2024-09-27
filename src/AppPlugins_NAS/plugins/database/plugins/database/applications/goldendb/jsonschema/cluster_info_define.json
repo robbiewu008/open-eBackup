@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-zA-Z_0-9-.]{0,255}$"
+    },
+    "group": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/group_def"
+      }
+    },
+    "gtm": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/gtm_def"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "group_def": {
+      "type": "object",
+      "properties": {
+        "databaseNum": {
+          "type": "string",
+          "pattern": "^[0-9]{0,2}$"
+        },
+        "groupId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "mysqlNodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/gtm_def"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "gtm_def": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.]{0,255}$"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "ip": {
+          "type": "string",
+          "anyOf": [
+            {
+              "format": "ipv4"
+            },
+            {
+              "format": "ipv6"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "linkStatus": {
+          "type": "string",
+          "pattern": "^[0-9]{0,2}$"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.]{0,255}$"
+        },
+        "nodeType": {
+          "type": "string",
+          "enum": [
+            "managerNode",
+            "gtmNode",
+            "dataNode"
+          ]
+        },
+        "osUser": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "parent": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_0-9-. ()]{0,64}$"
+        },
+        "parentName": {
+          "type": "string",
+          "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_0-9-. ()]{0,64}$"
+        },
+        "parentUuid": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "port": {
+          "type": "string",
+          "pattern": "^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$"
+        },
+        "role": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9- ]{0,64}$"
+        },
+        "gtmId": {
+          "type": "string",
+          "pattern": "^[0-9]{0,9}$"
+        },
+        "gtmIp": {
+          "type": "string",
+          "anyOf": [
+            {
+              "format": "ipv4"
+            },
+            {
+              "format": "ipv6"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "masterFlag": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

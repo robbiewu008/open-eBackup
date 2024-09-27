@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "dataPath": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$"
+      },
+      "role": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[0-9]*$"
+      },
+      "voteRight": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$",
+        "description": "未使用，使用黑名单校验"
+      },
+      "priority": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$",
+        "description": "未使用，使用黑名单校验"
+      },
+      "configPath": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$"
+      },
+      "hostUrl": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[0-9A-Za-z.:%/]*$"
+      },
+      "agentHost": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[0-9A-Za-z.:%/]*$"
+      },
+      "nodeStatus": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[0-9]*$"
+      },
+      "shardClusterType": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "stateStr": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$",
+        "description": "未使用，使用黑名单校验"
+      },
+      "argv": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$"
+      },
+      "parsed": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$"
+      },
+      "clusterInstanceName": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$",
+        "description": "未使用，使用黑名单校验"
+      },
+      "shardInstanceName": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$",
+        "description": "未使用，使用黑名单校验"
+      },
+      "shardIndex": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$",
+        "description": "未使用，使用黑名单校验"
+      },
+      "instanceNameInfos": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$",
+        "description": "未使用，使用黑名单校验"
+      },
+      "instanceId": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$",
+        "description": "未使用，使用黑名单校验"
+      }
+    },
+    "additionalProperties": false
+  }
+}

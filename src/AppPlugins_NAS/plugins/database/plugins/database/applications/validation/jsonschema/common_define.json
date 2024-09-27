@@ -1,0 +1,969 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/common_define.json",
+  "type": "object",
+  "properties": {
+    "requestId": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+    },
+    "backupJobResult": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "restoreJobResult": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    },
+    "BackupLimit": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "appEnv": {
+      "$ref": "#/definitions/appEnv"
+    },
+    "application": {
+      "$ref": "#/definitions/application"
+    },
+    "applications": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/application"
+      }
+    },
+    "job": {
+      "$ref": "#/definitions/job"
+    },
+    "subJob": {
+      "$ref": "#/definitions/subJob"
+    },
+    "condition": {
+      "$ref": "#/definitions/condition"
+    },
+    "parentResource": {
+      "$ref": "#/definitions/application"
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "auth": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "authType": {
+          "type": "integer",
+          "description": "认证类型",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "extendInfo": {
+          "$ref": "http://example.com/custom_jsonschema.json#auth_extendInfo"
+        }
+      },
+      "additionalProperties": false
+    },
+    "copy": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "extendInfo": {
+          "$ref": "http://example.com/custom_jsonschema.json#copy_extendInfo"
+        },
+        "format": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.]{0,512}$"
+        },
+        "protectEnv": {
+          "$ref": "#/definitions/appEnv"
+        },
+        "protectObject": {
+          "$ref": "#/definitions/application"
+        },
+        "protectSubObjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/application"
+          }
+        },
+        "repositories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/repository"
+          }
+        },
+        "snapshots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/snapshot"
+          }
+        },
+        "timestamp": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9999999999999
+        },
+        "transactionNo": {
+          "type": "integer"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9]{0,64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "repository": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "auth": {
+          "$ref": "#/definitions/auth"
+        },
+        "endpoint": {
+          "$ref": "#/definitions/endpoint_obj"
+        },
+        "extendAuth": {
+          "$ref": "#/definitions/auth"
+        },
+        "cifsAuth": {
+          "$ref": "#/definitions/auth"
+        },
+        "extendInfo": {
+          "$ref": "#/definitions/repository_extendInfo"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-=]{0,64}$"
+        },
+        "isLocal": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "true",
+                "false",
+                "0",
+                "1"
+              ]
+            }
+          ]
+        },
+        "path": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "anyOf": [
+              {
+                "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+              },
+              {
+                "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+              },
+              {
+                "pattern": "^$"
+              }
+            ]
+          }
+        },
+        "protocol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "remoteHost": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/repository_remoteHost"
+          }
+        },
+        "remoteName": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.]{0,255}$"
+        },
+        "remotePath": {
+          "type": "string",
+          "anyOf": [
+            {
+              "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+            },
+            {
+              "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "repositoryType": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "role": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "additionalProperties": false
+    },
+    "snapshot": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.@]{0,254}$"
+        },
+        "parentName": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.@]{0,254}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "node": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "auth": {
+          "$ref": "#/definitions/auth"
+        },
+        "endpoint": {
+          "type": "string",
+          "anyOf": [
+            {
+              "format": "ipv4"
+            },
+            {
+              "format": "ipv6"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "extendInfo": {
+          "$ref": "http://example.com/custom_jsonschema.json#appEnv_extendInfo"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.]{0,255}$"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "subType": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "appEnv": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "auth": {
+          "$ref": "#/definitions/auth"
+        },
+        "extendInfo": {
+          "$ref": "http://example.com/custom_jsonschema.json#appEnv_extendInfo"
+        },
+        "endpoint": {
+          "type": "string",
+          "description": "mongodb这里放的是资源名称",
+          "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_0-9-. ()/:%,;]{0,64}$"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_0-9-. ()/]{0,64}$"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/node"
+          }
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "subType": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "application": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "auth": {
+          "$ref": "#/definitions/auth"
+        },
+        "extendInfo": {
+          "$ref": "http://example.com/custom_jsonschema.json#appEnv_extendInfo"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_0-9-. (){}\":,/]{0,64}$"
+        },
+        "parentId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "parentName": {
+          "type": "string",
+          "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_0-9-. ()/]{0,64}$"
+        },
+        "subType": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "job": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "copies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/copy"
+          }
+        },
+        "copy": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/copy"
+          }
+        },
+        "extendInfo": {
+          "$ref": "http://example.com/custom_jsonschema.json#job_extendInfo"
+        },
+        "indexEnv": {
+          "$ref": "#/definitions/appEnv"
+        },
+        "indexProtectObject": {
+          "$ref": "#/definitions/application"
+        },
+        "indexProtectSubObject": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/application"
+          }
+        },
+        "jobId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "jobParam": {
+          "$ref": "#/definitions/job_jobParam"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "targetEnv": {
+          "$ref": "#/definitions/appEnv"
+        },
+        "targetObject": {
+          "$ref": "#/definitions/application"
+        },
+        "restoreSubObjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/application"
+          }
+        },
+        "protectEnv": {
+          "$ref": "#/definitions/appEnv"
+        },
+        "protectObject": {
+          "$ref": "#/definitions/application"
+        },
+        "protectSubObject": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/application"
+          }
+        },
+        "repositories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/repository"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "subJob": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "ignoreFailed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "true",
+                "false",
+                "0",
+                "1"
+              ]
+            }
+          ]
+        },
+        "jobId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "jobInfo": {
+          "$ref": "http://example.com/custom_jsonschema.json#subJob_jobInfo"
+        },
+        "jobName": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "jobPriority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "jobType": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "policy": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "subJobId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "execNodeId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "endpoint_obj": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "ip": {
+          "type": "string",
+          "pattern": "^[0-9A-Za-z.:%/,]*$"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "supportProtocol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      },
+      "additionalProperties": false
+    },
+    "repository_extendInfo": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "enable_ssl": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "true",
+                "false",
+                "0",
+                "1"
+              ]
+            }
+          ]
+        },
+        "isCloneFileSystem": {
+          "type": "boolean"
+        },
+        "service_info": {
+          "type": [
+            "null",
+            "array"
+          ],
+          "items": {
+            "$ref": "#/definitions/repository_extendInfo_serviceInfo"
+          }
+        },
+        "esn": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-zA-Z_0-9-=]{0,254}$"
+        },
+        "fsId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+        },
+        "copy_format": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "logBackup": {
+          "$ref": "#/definitions/repository_extendInfo_logBackup"
+        },
+        "persistentMount": {
+          "type": "boolean"
+        },
+        "storageLogicalIps": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "anyOf": [
+              {
+                "format": "ipv4"
+              },
+              {
+                "format": "ipv6"
+              },
+              {
+                "pattern": "^$"
+              }
+            ]
+          }
+        },
+        "fileSystemShareInfo": {
+          "type": "object",
+          "properties": {
+            "accessPermission": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "fileSystemName": {
+              "type": "string",
+              "pattern": "^[a-zA-Z_0-9-.]{0,512}$"
+            },
+            "type": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "advanceParams": {
+              "type": "object",
+              "properties": {
+                "clientName": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z_0-9-.*]{0,512}$"
+                },
+                "clientType": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "portSecure": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "rootSquash": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "squash": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "manualMount": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false",
+            "0",
+            "1"
+          ]
+        },
+        "capacityAvailable": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "storage_info": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "storage_device": {
+              "type": "string",
+              "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+            },
+            "storage_pool": {
+              "type": "string",
+              "pattern": "^[0-9]*$"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "repository_extendInfo_logBackup": {
+      "type": [
+        "null",
+        "object"
+      ],
+      "properties": {
+        "latestDataCopyId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "latestLogCopyName": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "repository_extendInfo_serviceInfo": {
+      "type": "object",
+      "properties": {
+        "ip": {
+          "type": "string",
+          "anyOf": [
+            {
+              "format": "ipv4"
+            },
+            {
+              "format": "ipv6"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "port": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$"
+            },
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535
+            }
+          ]
+        },
+        "agent_os": {
+          "type": "null"
+        },
+        "extend_info": {
+          "type": "null"
+        },
+        "id": {
+          "type": "null"
+        },
+        "iqns": {
+          "type": "null"
+        },
+        "port_type": {
+          "type": "null"
+        },
+        "san_clients": {
+          "type": "null"
+        },
+        "status": {
+          "type": "null"
+        },
+        "support_protocol": {
+          "type": "null"
+        },
+        "wwpns": {
+          "type": "null"
+        }
+      },
+      "additionalProperties": false
+    },
+    "repository_remoteHost": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "ip": {
+          "type": "string",
+          "anyOf": [
+            {
+              "format": "ipv4"
+            },
+            {
+              "format": "ipv6"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "supportProtocol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      },
+      "additionalProperties": false
+    },
+    "job_jobParam": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "advanceParams": {
+          "$ref": "http://example.com/custom_jsonschema.json#jobParam_advanceParams"
+        },
+        "backupType": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "dataLayout": {
+          "$ref": "#/definitions/job_jobParam_dataLayout"
+        },
+        "qos": {
+          "$ref": "#/definitions/job_jobParam_qos"
+        },
+        "restoreType": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "scripts": {
+          "$ref": "#/definitions/job_jobParam_scripts"
+        }
+      },
+      "additionalProperties": false
+    },
+    "job_jobParam_dataLayout": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "compression": {
+          "type": "boolean"
+        },
+        "deduption": {
+          "type": "boolean"
+        },
+        "encryption": {
+          "type": "boolean"
+        },
+        "extendInfo": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "srcDeduption": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "nativeData": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "job_jobParam_qos": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "backupIops": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bandwidth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "protectIops": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "job_jobParam_scripts": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "failPostScript": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^(.+)[.](sh|bat)$|^$"
+            },
+            {
+              "pattern": "^[^|;&$<>`\\\\!]*$"
+            }
+          ]
+        },
+        "postScript": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^(.+)[.](sh|bat)$|^$"
+            },
+            {
+              "pattern": "^[^|;&$<>`\\\\!]*$"
+            }
+          ]
+        },
+        "preScript": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^(.+)[.](sh|bat)$|^$"
+            },
+            {
+              "pattern": "^[^|;&$<>`\\\\!]*$"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "condition": {
+      "type": [
+        "null",
+        "object"
+      ],
+      "properties": {
+        "conditions": {
+          "$ref": "http://example.com/custom_jsonschema.json#condition_conditions"
+        },
+        "pageNo": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pageSize": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "orders": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

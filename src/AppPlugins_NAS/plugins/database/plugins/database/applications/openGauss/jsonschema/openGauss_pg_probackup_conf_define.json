@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "anyOf": [
+    {
+      "type": "null"
+    },
+    {
+      "type": "string",
+      "pattern": "^[^|;&$><`'!\\n]*$"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "pgdata": {
+          "type": "string",
+          "anyOf": [
+            {
+              "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+            },
+            {
+              "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "pgdatabase": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.]{0,255}$"
+        },
+        "pgport": {
+          "type": "string",
+          "pattern": "^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$"
+        },
+        "system-identifier": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.]{0,255}$"
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}

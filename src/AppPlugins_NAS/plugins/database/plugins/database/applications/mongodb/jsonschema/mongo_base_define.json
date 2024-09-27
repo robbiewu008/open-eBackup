@@ -1,0 +1,245 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/custom_jsonschema.json",
+  "description": "基于custom_jsonschema_template补充的mongodb参数",
+  "auth_extendInfo": {
+    "type": [
+      "object",
+      "null"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "configModel": {
+        "type": "string",
+        "enum": [
+          "keytab_model",
+          "password_model"
+        ]
+      },
+      "kerberosId": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9]{0,64}$"
+      },
+      "krb5Conf": {
+        "type": "string",
+        "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$",
+        "description": "base64"
+      },
+      "principal": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9- ]{0,64}$",
+        "description": "数字 字母 下划线 横杠 空格"
+      }
+    }
+  },
+  "appEnv_extendInfo": {
+    "type": [
+      "object",
+      "null"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "clusterType": {
+        "type": "string",
+        "description": "集群类型:  0-主从, 1-副本, 2-分片, 3-单机",
+        "enum": [
+          "0",
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "cluster_type": {
+        "$ref": "#/appEnv_extendInfo/properties/clusterType"
+      },
+      "isTopInstance": {
+        "type": "string",
+        "enum": [
+          "0",
+          "1"
+        ]
+      },
+      "clusterNodes": {
+        "type": "string",
+        "pattern": "^[^|;&$><`'!+\\n]*$",
+        "description": "单独校验"
+      },
+      "serviceIp": {
+        "type": "string",
+        "description": "实例IP",
+        "anyOf": [
+          {
+            "format": "ipv4"
+          },
+          {
+            "format": "ipv6"
+          },
+          {
+            "pattern": "^$"
+          }
+        ]
+      },
+      "servicePort": {
+        "type": "string",
+        "description": "实例端口",
+        "pattern": "^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$"
+      },
+      "binPath": {
+        "type": "string",
+        "description": "mongo/mongos/mongod的bin目录",
+        "anyOf": [
+          {
+            "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+          },
+          {
+            "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+          },
+          {
+            "pattern": "^$"
+          }
+        ]
+      },
+      "mongodumpBinPath": {
+        "type": "string",
+        "description": "mongodump/mongorestore的目录",
+        "anyOf": [
+          {
+            "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+          },
+          {
+            "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+          },
+          {
+            "pattern": "^$"
+          }
+        ]
+      },
+      "version": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-.]{0,64}$"
+      },
+      "agentUuid": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "endpointList": {
+        "type": "string",
+        "pattern": "^[^|;&$><`'!+\\n]*$"
+      }
+    }
+  },
+  "subJob_jobInfo": {
+    "type": [
+      "string",
+      "null"
+    ],
+    "pattern": "^[a-zA-Z_0-9- .]{0,254}$"
+  },
+  "copy_extendInfo": {
+    "type": [
+      "null",
+      "object"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "firstLsn": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "patternProperties": {
+          "^[0-9]*$": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 9999999999999
+            }
+          }
+        }
+      },
+      "lastLsn": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "patternProperties": {
+          "^[0-9]*$": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 9999999999999
+            }
+          }
+        }
+      }
+    }
+  },
+  "job_extendInfo": {
+    "type": [
+      "object",
+      "null"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "vpc_info": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[^|;&$><`'!+\\n]*$",
+        "description": "单独校验"
+      }
+    }
+  },
+  "definitions": {
+    "job_extendInfo_agent": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "advanceParams": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "subNetFixedIp": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "anyOf": [
+                {
+                  "format": "ipv4"
+                },
+                {
+                  "format": "ipv6"
+                },
+                {
+                  "pattern": "^$"
+                }
+              ],
+              "description": "单ip"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

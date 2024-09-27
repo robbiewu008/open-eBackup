@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/custom_jsonschema.json",
+  "description": "应用jsonschema模板，应用在此基础上进行新增",
+  "auth_extendInfo": {
+    "type": [
+      "object",
+      "null"
+    ],
+    "additionalProperties": false,
+    "properties": {
+    }
+  },
+  "appEnv_extendInfo": {
+    "type": [
+      "object",
+      "null"
+    ],
+    "additionalProperties": false,
+    "properties": {
+    }
+  },
+  "jobParam_advanceParams": {
+    "anyOf": [
+      {
+        "type": "null"
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+        }
+      },
+      {
+        "type": "string",
+        "pattern": "^[^|;&$><`'!\\n]*$"
+      }
+    ]
+  },
+  "subJob_jobInfo": {
+    "type": [
+      "string",
+      "null"
+    ],
+    "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+  },
+  "condition_conditions": {
+    "oneOf": [
+      {
+        "type": "null"
+      },
+      {
+        "type": "object",
+        "properties": {
+        },
+        "additionalProperties": false
+      }
+    ]
+  },
+  "job_extendInfo": {
+    "type": [
+      "object",
+      "null"
+    ],
+    "additionalProperties": false,
+    "properties": {
+    }
+  },
+  "copy_extendInfo": {
+    "type": [
+      "null",
+      "object"
+    ],
+    "additionalProperties": false,
+    "properties": {
+    }
+  },
+  "definitions": {
+  }
+}

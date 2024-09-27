@@ -1,0 +1,1144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/custom_jsonschema.json",
+  "description": "应用jsonschema模板，应用在此基础上进行新增或修改",
+  "auth_extendInfo": {
+    "type": [
+      "null",
+      "object"
+    ],
+    "properties": {
+      "instancePort": {
+        "type": "string",
+        "pattern": "^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$"
+      }
+    },
+    "additionalProperties": false
+  },
+  "appEnv_extendInfo": {
+    "type": [
+      "null",
+      "object"
+    ],
+    "additionalProperties": false,
+    "patternProperties": {
+      "^\\$": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "^agent_last_update_time_": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      }
+    },
+    "properties": {
+      "agentId": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "agentIpList": {
+        "type": "string",
+        "pattern": "^[0-9A-Za-z.:%/,]*$"
+      },
+      "agentUpgradeable": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "agentUpgradeableVersion": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-.]{0,64}$"
+      },
+      "agent_applications": {
+        "type": "string",
+        "description": "json转义字符串，应用未使用，使用黑名单校验",
+        "pattern": "^[^|;&$><`'!+\\n]*$"
+      },
+      "agent_connected_ip": {
+        "type": "string",
+        "description": "json转义字符串，应用未使用，使用黑名单校验",
+        "pattern": "^[^|;&$><`'!+\\n]*$"
+      },
+      "agent_domain_available_ip": {
+        "type": "string",
+        "description": "json转义字符串，应用未使用，使用黑名单校验",
+        "pattern": "^[^|;&$><`'!+\\n]*$"
+      },
+      "availableZone": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-.]{0,64}$"
+      },
+      "connection_result": {
+        "type": "string",
+        "description": "json转义字符串，应用未使用，使用黑名单校验",
+        "pattern": "^[^|;&$><`'!+\\n]*$"
+      },
+      "install_path": {
+        "type": "string",
+        "anyOf": [
+          {
+            "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+          },
+          {
+            "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+          },
+          {
+            "pattern": "^$"
+          }
+        ]
+      },
+      "internal_agent_esn": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "pushRegister": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "register_user_id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "scenario": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "src_deduption": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "trustworthiness": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "linkStatus": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "next_backup_change_cause": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "next_backup_type": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "deployType": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "agentNginxPort": {
+        "type": "string",
+        "pattern": "^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$"
+      },
+      "mountJobId": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "clusterType": {
+        "type": "string",
+        "enum": [
+          "AP",
+          "EAPP",
+          "PXC"
+        ]
+      },
+      "dataDir": {
+        "type": "string",
+        "anyOf": [
+          {
+            "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+          },
+          {
+            "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+          },
+          {
+            "pattern": "^[a-zA-z0-9/=+]*$"
+          }
+        ]
+      },
+      "deployOperatingSystem": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9- .]{0,254}$"
+      },
+      "hostId": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "instanceIp": {
+        "type": [
+          "null",
+          "string"
+        ],
+        "anyOf": [
+          {
+            "format": "ipv4"
+          },
+          {
+            "format": "ipv6"
+          },
+          {
+            "pattern": "^$"
+          }
+        ]
+      },
+      "instancePort": {
+        "type": "string",
+        "pattern": "^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$"
+      },
+      "charset": {
+        "type": [
+          "null",
+          "string"
+        ],
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "myCnfPath": {
+        "type": [
+          "null",
+          "string"
+        ],
+        "anyOf": [
+          {
+            "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+          },
+          {
+            "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+          },
+          {
+            "pattern": "^$"
+          }
+        ]
+      },
+      "isTopInstance": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "logBinIndexPath": {
+        "type": "string",
+        "anyOf": [
+          {
+            "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+          },
+          {
+            "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+          },
+          {
+            "pattern": "^[a-zA-z0-9/=+]*$"
+          }
+        ]
+      },
+      "master_info": {
+        "type": "string",
+        "description": "json转义字符串，单独校验",
+        "pattern": "^[^|;&$><`'!\\n]*$"
+      },
+      "role": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "serviceName": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-.@/]{0,255}$"
+      },
+      "systemServiceType": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-.]{0,255}$"
+      },
+      "version": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-.]{0,255}$"
+      },
+      "tag": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_0-9-]{0,256}$"
+      },
+      "agent_last_update_time": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      }
+    }
+  },
+  "jobParam_advanceParams": {
+    "anyOf": [
+      {
+        "type": "null"
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+        },
+        "description": "没有高级参数"
+      },
+      {
+        "type": "string",
+        "description": "没有高级参数，使用黑名单校验",
+        "pattern": "^[^|;&$><`'!\\n]*$"
+      }
+    ]
+  },
+  "subJob_jobInfo": {
+    "type": [
+      "string",
+      "null"
+    ],
+    "pattern": "^[a-zA-Z_0-9-. {}\":,]{0,254}$"
+  },
+  "condition_conditions": {
+    "oneOf": [
+      {
+        "type": "null"
+      },
+      {
+        "type": "object",
+        "properties": {
+        },
+        "additionalProperties": false
+      }
+    ]
+  },
+  "job_extendInfo": {
+    "type": [
+      "object",
+      "null"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "agents": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/job_extendInfo_agent"
+        }
+      },
+      "alarm_after_failure": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "backupToolType": {
+        "type": [
+          "null",
+          "string"
+        ],
+        "pattern": "^[0-9]{0,2}$"
+      },
+      "backupTask_sla": {
+        "type": "string",
+        "pattern": "^[^|;&$><`'!\\n]*$",
+        "description": "json转义字符串，应用未使用，使用黑名单校验"
+      },
+      "channel_number": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "customParams": {
+        "type": [
+          "null",
+          "string"
+        ],
+        "pattern": "^[^|;&$><`'!\\n]*$",
+        "description": "应用未使用，使用黑名单校验"
+      },
+      "create_lvm_percent": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "data_after_reduction_before_backup": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "data_before_reduction_before_backup": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "esn": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-=]{0,254}$"
+      },
+      "failedAgents": {
+        "type": [
+          "null",
+          "array"
+        ],
+        "items": {
+          "$ref": "#/definitions/job_extendInfo_agent"
+        }
+      },
+      "forceRecovery": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "forbidWormFileSystem": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "metadataPath": {
+        "type": "string",
+        "anyOf": [
+          {
+            "pattern": "^(?!.*\\.\\.)([A-z]:(\\\\([^\\\\/:*?\"<>|\\n]{1,2048}))+$)$|([A-z]:\\\\$)"
+          },
+          {
+            "pattern": "^(?!.*\\.\\.)(^(/[^/|;&$><`\\\\!+ \\[\\]]{1,2048})+$)$|^/$"
+          },
+          {
+            "pattern": "^$"
+          }
+        ]
+      },
+      "multiFileSystem": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "multiPostJob": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "string",
+            "enum": [
+              "true",
+              "false",
+              "0",
+              "1"
+            ]
+          }
+        ]
+      },
+      "next_cause_param": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "restoreCopyId": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "restoreTimestamp": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "sanclientInvolved": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "copyProtectObjectVersion": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-.]{0,64}$"
+      },
+      "speedStatistics": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "slave_node_first": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "start_instance_user": {
+        "type": "string",
+        "enum": [
+          ""
+        ]
+      },
+      "targetLocation": {
+        "type": "string",
+        "enum": [
+          "original",
+          "native",
+          "new"
+        ]
+      },
+      "restoreMode": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "restoreType": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "resourceSubType": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "is_consistent": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "isEnableChangeEnv": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "originBackupId": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "restoreOption": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "config": {
+        "$ref": "#/definitions/job_extendInfo_config"
+      },
+      "fileSystemShareInfo": {
+        "$ref": "#/definitions/job_extendInfo_fileSystemShareInfo"
+      },
+      "mount_target_host": {
+        "type": "string",
+        "description": "应用未使用，使用黑名单校验",
+        "pattern": "^[^|;&$><`'!\\n]*$"
+      },
+      "performance": {
+        "$ref": "#/definitions/job_extendInfo_performance"
+      },
+      "preScript": {
+        "type": "string",
+        "allOf": [
+          {
+            "pattern": "^(.+)[.](sh|bat)$|^$"
+          },
+          {
+            "pattern": "^[^|;&$<>`\\\\!]*$"
+          }
+        ]
+      },
+      "postScript": {
+        "type": "string",
+        "allOf": [
+          {
+            "pattern": "^(.+)[.](sh|bat)$|^$"
+          },
+          {
+            "pattern": "^[^|;&$<>`\\\\!]*$"
+          }
+        ]
+      },
+      "failPostScript": {
+        "type": "string",
+        "allOf": [
+          {
+            "pattern": "^(.+)[.](sh|bat)$|^$"
+          },
+          {
+            "pattern": "^[^|;&$<>`\\\\!]*$"
+          }
+        ]
+      },
+      "mysqlInstanceUuid": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "failed_node_esn": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "first_backup_esn": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "first_backup_target": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "last_backup_esn": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "last_backup_target": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "priority_backup_esn": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "priority_backup_target": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "storage_id": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "storage_type": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "storage_unit",
+          "storage_unit_group"
+        ]
+      },
+      "force_delete": {
+       "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "string",
+            "enum": [
+              "true",
+              "false",
+              "0",
+              "1"
+            ]
+          }
+        ]
+      },
+      "reserve_copy": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "string",
+            "enum": [
+              "true",
+              "false",
+              "0",
+              "1"
+            ]
+          }
+        ]
+      },
+      "newDatabaseName": {
+        "type": [
+          "null",
+          "string"
+        ],
+        "pattern": "^[a-zA-Z_0-9-.@]{0,254}$"
+      }
+    }
+  },
+  "copy_extendInfo": {
+    "type": [
+      "null",
+      "object"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "associatedCopies": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        }
+      },
+      "backupHostSN": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "beginSCN": {
+        "type": "null"
+      },
+      "cluster_id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "endSCN": {
+        "type": "null"
+      },
+      "backupTime": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 9999999999999
+      },
+      "beginTime": {
+        "type": [
+          "null",
+          "number"
+        ],
+        "minimum": 0,
+        "maximum": 9999999999999
+      },
+      "endTime": {
+        "type": [
+          "null",
+          "number"
+        ],
+        "minimum": 0,
+        "maximum": 9999999999999
+      },
+      "copy_id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "copyId": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "copyIdList": {
+        "type": [
+          "null",
+          "array"
+        ],
+        "items": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        }
+      },
+      "cycle": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "dataAfterReduction": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "dataBeforeReduction": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "extendInfo": {
+        "$ref": "#/copy_extendInfo"
+      },
+      "firstFullBackupTime": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9999999999999
+      },
+      "logDirName": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      },
+      "level": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "firstLsn": {
+        "type": "object",
+        "description": "待定"
+      },
+      "lastLsn": {
+        "type": "object",
+        "description": "待定"
+      },
+      "fsRelations": {
+        "$ref": "#/definitions/copy_extendInfo_fsRelations"
+      },
+      "isSanClient": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "metaPath": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "metaPathFSID": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
+      "multiFileSystem": {
+        "type": "string",
+        "enum": [
+          "true",
+          "false",
+          "0",
+          "1"
+        ]
+      },
+      "nodes": {
+        "type": "array",
+        "items": {
+          "$ref": "http://example.com/common_define.json#definitions/node"
+        }
+      },
+      "point": {
+        "type": "string",
+        "pattern": "^[0-9]*$"
+      },
+      "pre_log_index": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9999999999999
+      },
+      "config": {
+        "$ref": "#/definitions/job_extendInfo_config"
+      },
+      "fileSystemShareInfo": {
+        "$ref": "#/definitions/job_extendInfo_fileSystemShareInfo"
+      },
+      "mount_target_host": {
+        "type": "string",
+        "description": "应用未使用，使用黑名单校验",
+        "pattern": "^[^|;&$><`'!\\n]*$"
+      },
+      "performance": {
+        "$ref": "#/definitions/job_extendInfo_performance"
+      },
+      "preScript": {
+        "type": "string",
+        "allOf": [
+          {
+            "pattern": "^(.+)[.](sh|bat)$|^$"
+          },
+          {
+            "pattern": "^[^|;&$<>`\\\\!]*$"
+          }
+        ]
+      },
+      "postScript": {
+        "type": "string",
+        "allOf": [
+          {
+            "pattern": "^(.+)[.](sh|bat)$|^$"
+          },
+          {
+            "pattern": "^[^|;&$<>`\\\\!]*$"
+          }
+        ]
+      },
+      "failPostScript": {
+        "type": "string",
+        "allOf": [
+          {
+            "pattern": "^(.+)[.](sh|bat)$|^$"
+          },
+          {
+            "pattern": "^[^|;&$<>`\\\\!]*$"
+          }
+        ]
+      },
+      "time_info": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-.]{0,255}$"
+        }
+      },
+      "originCopyTimeStamp": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9999999999999
+      },
+      "storage_id": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+      }
+    }
+  },
+  "definitions": {
+    "job_extendInfo_agent": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "advanceParams": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "agentConnectedIps": {
+              "type": "string",
+              "pattern": "^[^|;&$><`'!\\n]*$",
+              "description": "该参数未使用，使用黑单校验"
+            }
+          },
+          "additionalProperties": false
+        },
+        "agentOS": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]{0,64}$"
+        },
+        "ip": {
+          "type": "string",
+          "anyOf": [
+            {
+              "format": "ipv4"
+            },
+            {
+              "format": "ipv6"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
+        },
+        "iqns": {
+          "type": "null"
+        },
+        "port": {
+          "type": "integer",
+          "description": "端口",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "portType": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "pattern": "^[0-9]*$"
+        },
+        "sanClients": {
+          "type": "null"
+        },
+        "status": {
+          "type": [
+            "null",
+            "integer"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "supportProtocol": {
+          "type": [
+            "null",
+            "integer"
+          ],
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "wwpns": {
+          "type": "null"
+        }
+      },
+      "additionalProperties": false
+    },
+    "copy_extendInfo_fsRelations": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "newEsn": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+              },
+              "newFsId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+              },
+              "newFsName": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+              },
+              "oldEsn": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+              },
+              "oldFsId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+              },
+              "oldFsName": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+              },
+              "role": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "job_extendInfo_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "power_on": {
+          "type": "boolean"
+        }
+      }
+    },
+    "job_extendInfo_fileSystemShareInfo": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "accessPermission": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "fileSystemName": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_0-9-.]{0,512}$"
+          },
+          "type": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "advanceParams": {
+            "type": "object",
+            "properties": {
+              "clientName": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_0-9-.*]{0,512}$"
+              },
+              "clientType": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "portSecure": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "rootSquash": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "squash": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "job_extendInfo_performance": {
+      "type": [
+        "null",
+        "object"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "min_bandwidth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999999999
+        },
+        "max_bandwidth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999999999
+        },
+        "burst_bandwidth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999999999
+        },
+        "min_iops": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 999999999
+        },
+        "max_iops": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 999999999
+        },
+        "burst_iops": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 999999999
+        },
+        "burst_time": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999999999
+        }
+      }
+    }
+  }
+}
