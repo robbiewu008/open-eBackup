@@ -1,9 +1,3 @@
-"""
-$file: check_boilerplate_tags.py
-$author: Protect Manager
-
-check PLACEHOLDER service tags (e.g. SERVICENAME, IMAGENAME etc)
-"""
 import os
 import re
 

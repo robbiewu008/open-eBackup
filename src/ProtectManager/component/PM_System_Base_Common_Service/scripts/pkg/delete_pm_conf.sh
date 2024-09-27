@@ -1,15 +1,5 @@
 #!/bin/bash
 
-#########################################
-# Copyright (c) 2020-2021 Huawei .
-# All rights reserved.
-#
-# Please send feedback to http://www.huawei.com
-#
-# Function 容器的健康检查
-# revise note
-########################################
-
 PMTLSSecretKeyName=secret-pm-tls
 PMMTLSSecretKeyName=secret-pm-mtls
 PMHASSecretKeyName=secret-pm-ha

@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
- */
-
 package openbackup.data.access.framework.protection.service.job;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;

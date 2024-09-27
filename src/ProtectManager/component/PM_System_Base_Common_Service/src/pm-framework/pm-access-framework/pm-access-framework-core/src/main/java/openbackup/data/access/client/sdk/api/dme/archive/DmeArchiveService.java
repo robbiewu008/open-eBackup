@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
- */
-
 package openbackup.data.access.client.sdk.api.dme.archive;
 
 import openbackup.data.access.client.sdk.api.config.achive.DmeArchiveFeignConfiguration;

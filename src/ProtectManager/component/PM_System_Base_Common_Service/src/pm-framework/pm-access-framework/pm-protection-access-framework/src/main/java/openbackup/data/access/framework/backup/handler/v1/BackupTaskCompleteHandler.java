@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- */
-
 package openbackup.data.access.framework.backup.handler.v1;
 
 import openbackup.data.access.framework.backup.service.impl.JobBackupPostProcessService;

@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- */
-
 package openbackup.access.framework.resource.persistence.dao;
 
 import static openbackup.system.base.common.validator.constants.RegexpConstants.UUID_N0_SEPARATOR;

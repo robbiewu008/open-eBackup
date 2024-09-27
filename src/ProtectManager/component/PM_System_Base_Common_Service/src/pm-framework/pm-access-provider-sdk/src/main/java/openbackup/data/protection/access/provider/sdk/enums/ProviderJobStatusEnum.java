@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
- */
-
 package openbackup.data.protection.access.provider.sdk.enums;
 
 import java.util.Arrays;

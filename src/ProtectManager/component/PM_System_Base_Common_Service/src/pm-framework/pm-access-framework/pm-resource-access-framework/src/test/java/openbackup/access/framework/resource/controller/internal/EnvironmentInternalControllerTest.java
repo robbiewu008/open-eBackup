@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
- */
-
 package openbackup.access.framework.resource.controller.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;

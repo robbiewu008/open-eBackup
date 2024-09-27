@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
- */
-
 package openbackup.access.framework.resource.service.provider;
 
 import openbackup.access.framework.resource.util.EnvironmentParamCheckUtil;

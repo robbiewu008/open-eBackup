@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- */
-
 package openbackup.data.access.framework.backup.service.impl;
 
 import com.huawei.oceanprotect.base.cluster.sdk.dto.StorageUnitQueryParam;

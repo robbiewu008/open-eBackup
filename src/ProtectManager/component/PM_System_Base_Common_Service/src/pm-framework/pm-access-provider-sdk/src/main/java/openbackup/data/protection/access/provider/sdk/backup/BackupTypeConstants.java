@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- */
-
 package openbackup.data.protection.access.provider.sdk.backup;
 
 import openbackup.system.base.util.EnumUtil;

@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
- */
-
 package openbackup.data.access.framework.core.dao;
 
 import openbackup.data.access.framework.core.dao.beans.InitConfigInfo;

@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- */
-
 package openbackup.data.access.framework.copy.index.listener.v1;
 
 import openbackup.data.access.framework.core.common.constants.ContextConstants;

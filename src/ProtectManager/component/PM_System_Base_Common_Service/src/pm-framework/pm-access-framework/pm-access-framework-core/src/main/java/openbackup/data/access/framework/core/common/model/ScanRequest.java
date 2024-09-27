@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2023. All rights reserved.
- */
-
 package openbackup.data.access.framework.core.common.model;
 
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;

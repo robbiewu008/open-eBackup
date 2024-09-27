@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
- */
-
 package openbackup.data.access.framework.core.agent.mock;
 
 import openbackup.data.access.client.sdk.api.framework.agent.dto.HostDto;

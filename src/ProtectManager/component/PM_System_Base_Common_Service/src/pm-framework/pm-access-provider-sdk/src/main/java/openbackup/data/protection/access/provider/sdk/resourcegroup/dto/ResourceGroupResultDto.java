@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- */
-
 package openbackup.data.protection.access.provider.sdk.resourcegroup.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

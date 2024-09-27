@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- */
-
 package openbackup.data.access.framework.restore.handler.v1;
 
 import openbackup.data.access.client.sdk.api.base.RestClient;

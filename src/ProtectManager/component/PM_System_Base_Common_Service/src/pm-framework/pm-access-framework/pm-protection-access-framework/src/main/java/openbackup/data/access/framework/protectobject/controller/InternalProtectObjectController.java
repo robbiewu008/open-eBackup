@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
- */
-
 package openbackup.data.access.framework.protectobject.controller;
 
 import openbackup.data.access.framework.protectobject.model.ProtectionExecuteCheckReq;
