@@ -1,6 +1,0 @@
-apiVersion: v2
-appVersion: ${NewAppVersion}
-description: A Helm chart for Kubernetes
-name: protect-manager
-type: application
-version: ${NewAppVersion}
