@@ -1,7 +1,0 @@
-<div class="list-container">
-  <ng-container *ngIf="isOffline">
-    <lv-alert lvType="info">{{'protection_host_status_innormal_tips_label' | i18n}}</lv-alert>
-  </ng-container>
-  
-  <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
-</div>

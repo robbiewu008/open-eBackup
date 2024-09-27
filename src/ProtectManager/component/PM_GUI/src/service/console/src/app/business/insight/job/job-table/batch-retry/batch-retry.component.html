@@ -1,7 +1,0 @@
-<lv-alert lvType="info">{{'common_batch_retry_tip_label' | i18n}}</lv-alert>
-<aui-job-table [activeIndex]="jobOriginType.HANDLED" (selectionChange)="updateSelections($event)"></aui-job-table>
-
-<ng-template #warningWindowTpl>
-  <div>{{'common_batch_retry_restore_tip_label' | i18n}}</div>
-  <lv-pro-table [config]="tableConfig" [data]="tableData"></lv-pro-table>
-</ng-template>

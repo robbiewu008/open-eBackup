@@ -1,9 +1,0 @@
-<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
-    <lv-form-item>
-        <lv-form-label lvRequired>{{qosPolicyLabel}}</lv-form-label>
-        <lv-form-control [lvErrorTip]="requiredErrorTip">
-            <lv-select formControlName="qosPolicyType" [lvOptions]='qosPolicyOptions' lvValueKey="key">
-            </lv-select>
-        </lv-form-control>
-    </lv-form-item>
-</lv-form>

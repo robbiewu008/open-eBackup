@@ -1,7 +1,0 @@
-{
-  "/console": {
-    "target": "http://localhost:8001",
-    "secure": false,
-    "logLevel": "debug"
-  }
-}
