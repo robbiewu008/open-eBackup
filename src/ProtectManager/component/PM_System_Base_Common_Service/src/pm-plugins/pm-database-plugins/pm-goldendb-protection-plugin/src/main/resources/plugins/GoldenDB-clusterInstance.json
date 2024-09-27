@@ -1,0 +1,16 @@
+{
+  "type": "Database",
+  "subType": "GoldenDB-clusterInstance",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "environment": "agents"
+        }
+      ]
+    },
+    "scan": {
+      "auto-scan": false
+    }
+  }
+}

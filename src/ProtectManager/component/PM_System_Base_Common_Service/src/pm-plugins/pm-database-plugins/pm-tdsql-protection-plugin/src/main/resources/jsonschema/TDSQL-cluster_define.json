@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "title",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "集群实例uuid"
+    },
+    "name": {
+      "type": "string",
+      "description": "集群实例名称",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型"
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型"
+    },
+    "auth": {
+      "$ref": "classpath:jsonschema/TDSQL-base.json#/auth"
+    },
+    "linkStatus": {
+      "type": "string",
+      "description": "1-在线,0-离线",
+      "enum": [
+        "0",
+        "1"
+      ]
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "clusterInfo": {
+          "type": "string",
+          "description": "TDSQL OSS节点信息和SCHEDULER节点信息"
+        }
+      },
+      "required": [
+        "clusterInfo"
+      ]
+    },
+    "dependencies": {
+      "$ref": "classpath:jsonschema/TDSQL-base.json#/agentDependencies"
+    }
+  },
+  "required": [
+    "subType",
+    "type",
+    "name",
+    "dependencies",
+    "auth",
+    "extendInfo"
+  ]
+}

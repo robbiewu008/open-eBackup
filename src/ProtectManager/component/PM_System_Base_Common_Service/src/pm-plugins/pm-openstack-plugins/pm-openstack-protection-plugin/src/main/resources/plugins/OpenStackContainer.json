@@ -1,0 +1,34 @@
+{
+  "type": "OpenStack",
+  "subType": "OpenStackContainer",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "environment": "agents"
+        }
+      ]
+    },
+    "scan": {
+      "auto-scan": true
+    },
+    "environments": {
+      "useUnifiedProvider": false,
+      "specification": 256
+    }
+  },
+  "children": [
+    {
+      "type": "StackProject",
+      "subType": "OpenStackProject",
+      "visible": true,
+      "children": [
+        {
+          "type": "CloudServer",
+          "subType": "OpenStackCloudServer",
+          "visible": true
+        }
+      ]
+    }
+  ]
+}

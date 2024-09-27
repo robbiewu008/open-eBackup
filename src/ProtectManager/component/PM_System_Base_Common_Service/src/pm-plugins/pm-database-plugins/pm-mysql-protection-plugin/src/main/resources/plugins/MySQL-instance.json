@@ -1,0 +1,17 @@
+{
+  "type": "Database",
+  "subType": "MySQL-instance",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "resource": "",
+          "environment": "agents"
+        }
+      ]
+    },
+    "scan": {
+      "auto-scan": true
+    }
+  }
+}

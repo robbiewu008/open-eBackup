@@ -1,0 +1,136 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+package openbackup.exchange.protection.access.sla;
+
+import com.huawei.oceanprotect.sla.sdk.dto.PolicyDto;
+import com.huawei.oceanprotect.sla.sdk.dto.UpdateSlaCommand;
+import com.huawei.oceanprotect.sla.sdk.enums.PolicyAction;
+import com.huawei.oceanprotect.sla.sdk.enums.PolicyType;
+import com.huawei.oceanprotect.sla.sdk.validator.SlaValidateConfig;
+
+import openbackup.exchange.protection.access.sla.ExchangeSlaValidator;
+import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.sdk.copy.model.BasePage;
+import openbackup.system.base.sdk.resource.ProtectObjectRestApi;
+import openbackup.system.base.sdk.resource.model.ProtectedObjectInfo;
+import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import org.junit.Assert;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * ExchangeSlaValidatorTest
+ *
+ * @author x00635457
+ * @since 2024/2/18
+ */
+public class ExchangeSlaValidatorTest {
+    private final ProtectObjectRestApi protectObjectRestApi = Mockito.mock(ProtectObjectRestApi.class);
+
+    /**
+     * 用例场景： sla校验器对于exchange-database类型适用
+     * 前置条件：无
+     * 检查点：结果正确
+     */
+    @Test
+    public void test_applicable_when_exchange_database_return_true() {
+        ExchangeSlaValidator exchangeSlaValidator = new ExchangeSlaValidator(protectObjectRestApi);
+        Assert.assertTrue(exchangeSlaValidator.applicable("Exchange-database"));
+    }
+
+    /**
+     * 用例场景： sla校验器对于支持全量 增量  永久增量 日志 备份四种 + 归档 + 复制
+     * 前置条件：无
+     * 检查点：结果正确
+     */
+    @Test
+    public void test_policy_config_when_exchange_return_true() {
+        ExchangeSlaValidator exchangeSlaValidator = new ExchangeSlaValidator(protectObjectRestApi);
+        SlaValidateConfig config = exchangeSlaValidator.getConfig();
+        Assert.assertEquals(6, config.getSpecificationConfig().getPoliciesConfig().size());
+    }
+
+    /**
+     * 用例场景：通用数据库sla校验
+     * 前置条件：无
+     * 检查点：有全量策略
+     */
+    @Test
+    public void success_check_config() {
+        ExchangeSlaValidator exchangeSlaValidator = new ExchangeSlaValidator(protectObjectRestApi);
+        Assert.assertTrue(exchangeSlaValidator.applicable(ResourceSubTypeEnum.EXCHANGE_DATABASE.getType()));
+        SlaValidateConfig.SpecificationConfig specificationConfig = exchangeSlaValidator.getConfig()
+            .getSpecificationConfig();
+        boolean hasFull = specificationConfig.getPoliciesConfig()
+            .stream()
+            .anyMatch(e -> Objects.equals(e.getAction(), PolicyAction.FULL));
+        Assert.assertTrue(hasFull);
+    }
+
+    /**
+     * 用例名称：sla所绑定的资源部支持sla修改的备份策略<br/>
+     * 前置条件：<br/>
+     * check点：不合法的参数成功校验<br/>
+     */
+    @Test
+    public void should_throw_LegoCheckedException_when_resource_not_support_sla() {
+        ExchangeSlaValidator exchangeSlaValidator = new ExchangeSlaValidator(protectObjectRestApi);
+        PowerMockito.when(
+                protectObjectRestApi.pageQueryProtectObject(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+            .thenReturn(prepareBasePages());
+        Assert.assertThrows(LegoCheckedException.class,
+            () -> exchangeSlaValidator.validateSLA(prepareUpdateSlaCommand()));
+    }
+
+    private BasePage<ProtectedObjectInfo> prepareBasePages() {
+        ProtectedObjectInfo protectedObjectInfo1 = new ProtectedObjectInfo();
+        protectedObjectInfo1.setSubType(ResourceSubTypeEnum.EXCHANGE_DATABASE.getType());
+        protectedObjectInfo1.setResourceId("123");
+        ProtectedObjectInfo protectedObjectInfo2 = new ProtectedObjectInfo();
+        protectedObjectInfo2.setSubType(ResourceSubTypeEnum.EXCHANGE_MAILBOX.getType());
+        protectedObjectInfo2.setResourceId("456");
+        List<ProtectedObjectInfo> items = new ArrayList<>();
+        items.add(protectedObjectInfo1);
+        items.add(protectedObjectInfo2);
+        BasePage<ProtectedObjectInfo> basePages = new BasePage<>();
+        basePages.setItems(items);
+        return basePages;
+    }
+
+    private List<PolicyDto> preparePolicyList() {
+        PolicyDto policyDto1 = new PolicyDto();
+        policyDto1.setType(PolicyType.BACKUP);
+        policyDto1.setAction(PolicyAction.FULL);
+        policyDto1.setSlaId("789");
+        PolicyDto policyDto2 = new PolicyDto();
+        policyDto2.setType(PolicyType.BACKUP);
+        policyDto2.setAction(PolicyAction.LOG);
+        policyDto2.setSlaId("789");
+        List<PolicyDto> policyDtoList = new ArrayList<>();
+        policyDtoList.add(policyDto1);
+        policyDtoList.add(policyDto2);
+        return policyDtoList;
+    }
+
+    private UpdateSlaCommand prepareUpdateSlaCommand() {
+        UpdateSlaCommand updateSlaCommand = new UpdateSlaCommand();
+        updateSlaCommand.setPolicyList(preparePolicyList());
+        updateSlaCommand.setUuid("123456");
+        return updateSlaCommand;
+    }
+}

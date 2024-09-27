@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.huawei.oceanprotect</groupId>
+        <artifactId>pm-plugins</artifactId>
+        <version>0.0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>pm-database-base-plugin</module>
+        <module>pm-gaussdbt-protection-plugin</module>
+        <module>pm-mysql-protection-plugin</module>
+        <module>pm-redis-protection-plugin</module>
+        <module>pm-opengauss-protection-plugin</module>
+        <module>pm-dameng-protection-plugin</module>
+        <module>pm-postgre-protection-plugin</module>
+        <module>pm-gaussdbdws-protection-plugin</module>
+        <module>pm-sqlserver-protection-plugin</module>
+        <module>pm-clickhouse-protection-plugin</module>
+        <module>pm-db2-protection-plugin</module>
+        <module>pm-kingbase-protection-plugin</module>
+        <module>pm-generaldb-protection-plugin</module>
+        <module>pm-oracle-protection-plugin</module>
+        <module>pm-gaussdb-protection-plugin</module>
+        <module>pm-ndmp-protection-plugin</module>
+        <module>pm-gaussdbtpops-protection-plugin</module>
+        <module>pm-goldendb-protection-plugin</module>
+        <module>pm-mongodb-protection-plugin</module>
+        <module>pm-informix-protection-plugin</module>
+        <module>pm-oceanbase-protection-plugin</module>
+        <module>pm-tdsql-protection-plugin</module>
+        <module>pm-tidb-protection-plugin</module>
+        <module>pm-exchange-protection-plugin</module>
+        <module>pm-saphana-protection-plugin</module>
+    </modules>
+
+    <artifactId>pm-database-plugins</artifactId>
+    <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
+    <description>${project.artifactId}-${project.version}.${project.packaging}</description>
+
+</project>

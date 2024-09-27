@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "DB2单实例创建或修改请求体",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "实例uuid",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "name": {
+      "type": "string",
+      "description": "实例名称",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型",
+      "enum": ["Database"]
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型",
+      "enum": ["DB2-instance"]
+    },
+    "parentUuid": {
+      "type": "string",
+      "description": "实例所在主机uuid",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "hostId": {
+          "type": "string",
+          "description": "主机id",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "isTopInstance": {
+          "type": "string",
+          "description": "是否是顶层实例，0：否，1：是",
+          "enum": ["0", "1"]
+        }
+      },
+      "required": [
+        "hostId",
+        "isTopInstance"
+      ]
+    },
+    "dependencies": {"$ref": "classpath:jsonschema/DB2-base.json#/agentDependencies"},
+    "auth": {"$ref": "classpath:jsonschema/DB2-base.json#/auth"}
+  },
+  "required": [
+    "name",
+    "type",
+    "subType",
+    "parentUuid",
+    "extendInfo",
+    "dependencies",
+    "auth"
+  ]
+}

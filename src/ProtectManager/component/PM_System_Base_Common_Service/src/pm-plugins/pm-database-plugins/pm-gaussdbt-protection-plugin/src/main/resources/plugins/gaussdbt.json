@@ -1,0 +1,13 @@
+{
+  "type": "Database",
+  "subType": "GaussDBT",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "environment": "agents"
+        }
+      ]
+    }
+  }
+}

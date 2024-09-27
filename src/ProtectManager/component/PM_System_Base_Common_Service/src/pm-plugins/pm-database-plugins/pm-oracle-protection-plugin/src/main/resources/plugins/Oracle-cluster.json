@@ -1,0 +1,9 @@
+{
+  "type": "Database",
+  "subType": "Oracle-cluster",
+  "functions": {
+    "scan": {
+      "auto-scan": false
+    }
+  }
+}

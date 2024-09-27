@@ -1,0 +1,15 @@
+{
+  "type": "Cluster",
+  "subType": "ClickHouse",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "resource": "children",
+          "environment": "agents"
+        }
+      ]
+    },
+    "auto-scan": true
+  }
+}

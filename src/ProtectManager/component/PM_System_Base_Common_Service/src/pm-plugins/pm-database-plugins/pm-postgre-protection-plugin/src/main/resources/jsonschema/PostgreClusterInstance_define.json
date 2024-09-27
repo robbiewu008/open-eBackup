@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "PostgreSQL集群实例创建或修改请求体",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "集群实例UUID",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "name": {
+      "type": ["string"],
+      "description": "集群实例名称",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_]{1}[\\u4e00-\\u9fa5a-zA-Z_0-9-]{0,63}$"
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型",
+      "enum": ["Database"]
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型",
+      "enum": ["PostgreClusterInstance"]
+    },
+    "parentUuid": {
+      "type": "string",
+      "description": "实例所在集群的UUID",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "instancePort": {
+          "type": "string",
+          "description": "实例端口",
+          "minLength": 1,
+          "maxLength": 5
+        },
+        "isTopInstance": {
+          "type": "string",
+          "description": "是否是顶层实例，0：否，1：是",
+          "enum": ["1"]
+        },
+        "osUsername": {
+          "type": "string",
+          "description": "操作系统用户名",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "isTopInstance",
+        "osUsername"
+      ]
+    },
+    "dependencies": {
+      "type": "object",
+      "properties": {
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "classpath:jsonschema/PostgreInstance_define.json"
+          }
+        }
+      },
+      "required": [
+        "children"
+      ]
+    },
+    "auth": {"$ref": "classpath:jsonschema/Postgre-base.json#/auth"}
+  },
+  "required": [
+    "name",
+    "type",
+    "subType",
+    "parentUuid",
+    "extendInfo",
+    "dependencies",
+    "auth"
+  ]
+}

@@ -1,0 +1,37 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+package openbackup.openstack.protection.access.keystone.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * keystone主机信息
+ *
+ * @author c30016231
+ * @version [OceanProtect DataBackup 1.3.0]
+ * @since 2023-02-15
+ */
+@Getter
+@Setter
+public class KeystoneHostDto {
+    /**
+     * 注册到keystone的请求url，域名部分会被转化为ip
+     */
+    private String keystoneUrl;
+
+    /**
+     * 注册到keystone的请求头参数，转化url的域名部分
+     */
+    private String host;
+}

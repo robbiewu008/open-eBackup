@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "title",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "集群实例uuid"
+    },
+    "name": {
+      "type": "string",
+      "description": "集群实例名称",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_]{1}[\\u4e00-\\u9fa5a-zA-Z_0-9-]{0,63}$"
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型"
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型"
+    },
+    "parentUuid": {
+      "type": "string",
+      "description": "实例所在集群uuid"
+    },
+    "rootUuid": {
+      "type": "string",
+      "description": "实例根uuid"
+    },
+    "extendInfo": {"$ref": "classpath:jsonschema/MySQL-base.json#/clusterTypeExtendInfo"},
+    "dependencies": {
+      "type": "object",
+      "properties": {
+        "children": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uuid": {
+                "type": "string",
+                "description": "子实例uuid"
+              },
+              "name": {
+                "type": ["null", "string"],
+                "description": "实例名称"
+              },
+              "parentUuid": {
+                "type": "string",
+                "description": "子实例所在主机uuid"
+              },
+              "extendInfo": {
+                "type": "object",
+                "properties": {
+                  "hostId": {
+                    "type": "string",
+                    "description": "主机id"
+                  },
+                  "instancePort": {
+                    "type": "string"
+                  },
+                  "isTopInstance": {
+                    "type": "string"
+                  },
+                  "charset":{
+                    "type": "string",
+                    "description": "字符集编码"
+                  },
+                  "myCnfPath": {
+                    "type": "string",
+                    "description": "自定义my.cnf文件路径"
+                  }
+                },
+                "description": "扩展参数",
+                "required": [
+                  "hostId",
+                  "instancePort",
+                  "isTopInstance"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "description": "子实例资源类型"
+              },
+              "subType": {
+                "type": "string",
+                "description": "子实例资源子类型"
+              },
+              "dependencies": {"$ref": "classpath:jsonschema/MySQL-base.json#/agentDependencies"},
+              "auth": {"$ref": "classpath:jsonschema/MySQL-base.json#/auth"}
+            },
+            "required": [
+              "name",
+              "parentUuid",
+              "type",
+              "auth",
+              "subType",
+              "dependencies",
+              "extendInfo"
+            ]
+          }
+        }
+      },
+      "required": [
+        "children"
+      ]
+    }
+  },
+  "required": [
+    "subType",
+    "type",
+    "name",
+    "parentUuid",
+    "rootUuid",
+    "extendInfo",
+    "dependencies"
+  ]
+}

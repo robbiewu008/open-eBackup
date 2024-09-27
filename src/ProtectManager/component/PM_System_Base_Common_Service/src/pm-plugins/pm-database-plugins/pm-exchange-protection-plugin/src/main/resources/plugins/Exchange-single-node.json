@@ -1,0 +1,13 @@
+{
+  "type": "Database",
+  "subType": "Exchange-single-node",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "environment": "agents"
+        }
+      ]
+    }
+  }
+}
