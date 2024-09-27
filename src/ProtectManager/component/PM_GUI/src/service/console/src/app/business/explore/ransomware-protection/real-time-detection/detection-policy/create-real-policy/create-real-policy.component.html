@@ -1,0 +1,116 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.nameErrorTip">
+            <input lv-input type="text" formControlName="name" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            <h3>
+                {{'explore_snapshot_lock_policy_label' | i18n}}
+            </h3>
+        </lv-form-label>
+    </lv-form-item>
+    <div class="aui-text-label aui-gutter-column-md lock-policy-tip">
+        <span>{{'explore_snapshot_lock_policy_tip_label' | i18n}}</span>
+    </div>
+    <lv-form-item>
+        <lv-form-label>
+            {{ 'explore_snapshot_lock_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="retentionErrorTip">
+            <lv-group [lvGutter]="'14px'">
+                <input lv-input formControlName="retention_duration" type="text" placeholder="{{'1~14'}}"
+                    class="duration-input" />
+                <span>{{'common_days_label' | i18n}}</span>
+            </lv-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            <h3>
+                {{ 'explore_alarm_analysis_label' | i18n }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_enable_real_time_ransomware_tips_label' | i18n}}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
+            </h3>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="alarm_analysis"></lv-switch>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            <h3>
+                {{'explore_decoy_detection_label' | i18n}}
+            </h3>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="decoy_detection"></lv-switch>
+        </lv-form-control>
+    </lv-form-item>
+    <div>
+        <div class="decoy-detection-tip aui-gutter-column-md">
+            <lv-group lvGutter='14px' class="tip-header">
+                <img src="assets/img/decoy-detection.svg">
+                <span class="aui-text-label">
+                    {{'explore_decoy_detection_tips_label' | i18n}}
+                </span>
+                <i lv-icon="{{isOpen ? 'aui-icon-widget-fold' : 'aui-icon-widget-unfold'}}" [lvColorState]="true"
+                    (click)="openTips()"></i>
+            </lv-group>
+            <lv-group *ngIf="isOpen">
+                <div innerHTML="{{'explore_decoy_detection_open_tips_label' | i18n}}" class="open-tip aui-text-label">
+                </div>
+            </lv-group>
+        </div>
+        <ng-container *ngIf="formGroup.value.decoy_detection">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'explore_honeypot_update_frequency_label' | i18n}}
+                </lv-form-label>
+            </lv-form-item>
+            <div class="update-frequency">
+                <lv-radio-group formControlName="update_type" [lvGroupName]="'group'" class="frequency-radio-group">
+                    <lv-group [lvGutter]="'32px'">
+                        <lv-radio [lvValue]="enableUpdate">
+                            {{'explore_honeypot_update_on_schedule_label' | i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="disableUpdate">
+                            {{'explore_honeypot_not_update_file_label' | i18n}}
+                        </lv-radio>
+                    </lv-group>
+                </lv-radio-group>
+                <div class="frequency-container" *ngIf="formGroup.value.update_type === enableUpdate">
+                    <lv-form-control [lvErrorTip]="frequencyErrorTip">
+                        <lv-group lvGutter='8px'>
+                            <span>{{'common_every_label' | i18n}}</span>
+                            <input type="text" formControlName="frequency" lv-input placeholder="1~30"
+                                class="frequency-input">
+                            <span>{{'explore_days_update_label' | i18n}}</span>
+                        </lv-group>
+                    </lv-form-control>
+                </div>
+            </div>
+            <div class="aui-text-label update-info">
+                {{(formGroup.value.update_type === enableUpdate ? 'explore_honeypot_update_info_label' :
+                'explore_honeypot_no_update_info_label' ) | i18n}}
+            </div>
+        </ng-container>
+    </div>
+</lv-form>

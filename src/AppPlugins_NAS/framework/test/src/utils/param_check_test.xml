@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ This file is a part of the open-eBackup project.
+ This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one at
+ http://mozilla.org/MPL/2.0/.
+
+ Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+
+ THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+-->
+<rest_define>
+    <struct_define>
+        <struct id="COMMON_VALUE_UINT64_TEST">
+            <param>
+                <name>unint64Test</name>
+                <usetype>COMMON_VALUE_UINT64</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="COMMON_VALUE_10000_TEST">
+            <param>
+                <name>uintLg10000Test</name>
+                <usetype>COMMON_VALUE_10000</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="COMMON_BOOL_VALUE_TEST">
+            <param>
+                <name>bollTest</name>
+                <usetype>COMMON_BOOL_VALUE</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="JOB_NAME_TEST">
+            <param>
+                <name>jobNameTest</name>
+                <usetype>JOB_NAME</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="COMMON_PATH_TEST">
+            <param>
+                <name>commonPathTest</name>
+                <usetype>COMMON_PATH</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="PAGE_SIZE_TEST">
+            <param>
+                <name>pageSizeTest</name>
+                <usetype>PAGE_SIZE</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="SCRIPT_PATH_TEST">
+            <param>
+                <name>scritPathTest</name>
+                <usetype>SCRIPT_PATH</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="RESOURCE_FILTER_MODE_TEST">
+            <param>
+                <name>resouceFilterModeTest</name>
+                <usetype>RESOURCE_FILTER_MODE</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="RESTORE_MODE_TEST">
+            <param>
+                <name>restoreModeTest</name>
+                <usetype>RESTORE_MODE</usetype>
+            </param>
+        </struct>
+    </struct_define>
+</rest_define>

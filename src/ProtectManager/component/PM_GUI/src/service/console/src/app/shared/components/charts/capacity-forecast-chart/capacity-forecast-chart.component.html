@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="forecast-container">
+  <div class="forecast-title">
+    <h1 class="tittle">{{ 'common_capacity_forecast_label' | i18n }}</h1>
+    <div class="forecast-subtitle" *ngIf="!(reachTo80 < 0 && reachTo100 < 0) && !isNoData">
+      <p lvTooltipTheme="light" lvTooltipPosition="bottomLeft"
+        lv-tooltip="{{!forecastData.length ? ('common_capacity_trend_view_label' | i18n) : reachTo80Tip}}">
+        <ng-container *ngIf="!forecastData.length">
+          <span class="forecast-subtitle-symbol">
+            --
+          </span>
+        </ng-container>
+        <ng-container *ngIf="forecastData.length">
+          <span class="forecast-subtitle-symbol">{{reachTo80Symbol}}</span>
+          <span class="forecast-subtitle-number">{{reachTo80}}</span>
+          <span class="forecast-subtitle-day">{{'common_days_label' | i18n}}</span>
+        </ng-container>
+        <span class="forecast-subtitle-tip-base forecast-subtitle-tip-color">
+          {{'common_reach_to_label'|i18n}}{{spaceLabel}}80%
+        </span>
+      </p>
+      <p lvTooltipTheme="light" lvTooltipPosition="bottomLeft"
+        lv-tooltip="{{!forecastData.length ? ('common_capacity_trend_view_label' | i18n) : reachTo100Tip}}">
+        <ng-container *ngIf="!forecastData.length">
+          <span class="forecast-subtitle-symbol">
+            --
+          </span>
+        </ng-container>
+        <ng-container *ngIf="forecastData.length">
+          <span class="forecast-subtitle-symbol">{{reachTo100Symbol}}</span>
+          <span class="forecast-subtitle-number error">{{reachTo100}}</span>
+          <span class="forecast-subtitle-day">{{'common_days_label' | i18n}}</span>
+        </ng-container>
+        <span class="forecast-subtitle-tip-base forecast-subtitle-tip-color">
+          {{'common_reach_to_label'|i18n}}{{spaceLabel}}100%
+        </span>
+      </p>
+    </div>
+  </div>
+  <div class="forecast-chart-container" *ngIf="!isNoData">
+    <div id="forecast-chart"></div>
+  </div>
+  <div class="forecast-chart-no-data" *ngIf="isNoData">
+    <i lv-icon="aui-icon-no-data"></i>
+    <div class="no-data-label">
+      {{'common_no_data_label' | i18n}}
+    </div>
+  </div>
+</div>

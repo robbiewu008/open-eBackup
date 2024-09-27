@@ -1,0 +1,228 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label>{{
+      'explore_volume_chosen_copy_label' | i18n
+      }}</lv-form-label>
+    <lv-form-control>
+      <span class="old-group">{{
+        rowCopy.generated_time | date: 'yyyy-MM-dd HH:mm:ss'
+        }}</span>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'explore_volume_bare_metal_restore_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="enable_bare_metal_restore" class="old-group">
+        <lv-group lvGutter="16px">
+          <lv-radio [lvValue]="true" [lvDisabled]="!isSystemBackup">{{ 'common_open_label' | i18n }}</lv-radio>
+          <lv-radio [lvValue]="false">{{
+            'common_close_label' | i18n
+            }}</lv-radio>
+        </lv-group>
+      </lv-radio-group>
+      <lv-group [lvColumns]="['16px', 'auto']" lvRowGutter="4px" *ngIf="formGroup.value.enable_bare_metal_restore"
+        class="info-tip">
+        <i lv-icon="lv-icon-status-info" lvColorState="true" class="type-icon"></i>
+        <span>{{ 'explore_volume_bare_metal_tip_label' | i18n }}</span>
+      </lv-group>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container *ngIf="formGroup.value.enable_bare_metal_restore">
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'explore_volume_non_system_restore_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName="restore_non_system_volume"></lv-switch>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'explore_volume_reboot_system_after_restore_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName="reboot_system_after_restore"></lv-switch>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+
+  <div class="content">
+    <h2 style="margin-bottom:20px">{{ 'explore_choose_volume_label' | i18n }}</h2>
+    <lv-search [lvFocus]="true" (lvSearch)="search($event)" lvPlaceHolder="{{ 'explore_search_volume_label' | i18n }}"
+      class="search" *ngIf="!formGroup.value.enable_bare_metal_restore">
+    </lv-search>
+    <lv-pro-table #volumeTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+  </div>
+</lv-form>
+
+<div>
+  <h2 class="header">{{ 'explore_volume_restore_config_label' | i18n }}</h2>
+  <lv-alert lvType="info" *ngIf="hasSystemVolume">{{'explore_volume_system_tip_label' | i18n}}</lv-alert>
+  <lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'protection_restore_to_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-group lvGutter="8px" lvDirection="vertical" class="radio-content">
+          <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
+            <lv-group [lvGutter]="'20px'">
+              <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="disableOriginLocation || hasSystemVolume" [lv-tooltip]="
+                disableOriginLocation && !formGroup.value.enable_bare_metal_restore
+                  ? ('protection_cloud_origin_restore_disabled_label' | i18n)
+                  : ''
+              ">
+                {{ 'common_restore_to_origin_location_label' | i18n }}
+              </lv-radio>
+              <lv-radio [lvValue]="restoreLocationType.NEW">
+                {{ 'common_restore_to_new_location_label' | i18n }}
+              </lv-radio>
+            </lv-group>
+          </lv-radio-group>
+          <div *ngIf="formGroup.value.enable_bare_metal_restore">
+            <i lv-icon="lv-icon-status-info" lvColorState="true" class="type-icon" style="margin-right:4px"></i>
+            <span class="text-middle">{{ 'explore_volume_bare_metal_location_tip_label' | i18n }}</span>
+          </div>
+        </lv-group>
+      </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.ORIGIN">
+      <lv-form-item>
+        <lv-form-label>
+          {{ location }}
+        </lv-form-label>
+        <lv-form-control>
+          {{ resourceData.environment_name }}
+        </lv-form-control>
+      </lv-form-item>
+      <ng-container *ngTemplateOutlet="targetTable"></ng-container>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+      <lv-form-item>
+        <lv-form-label lvRequired>
+          {{ location }}
+        </lv-form-label>
+        <lv-select formControlName="host" [lvOptions]="options" lvValueKey="key" lvShowFilter lvFilterKey="label"
+          lvFilterMode="contains" [lvDisabled]="
+            formGroup.value.restoreTo === restoreLocationType.ORIGIN
+          ">
+        </lv-select>
+      </lv-form-item>
+      <ng-container *ngTemplateOutlet="targetTable"></ng-container>
+    </ng-container>
+    <div class="advanced-container">
+      <lv-collapse [lvType]="'simple'">
+        <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+          <lv-form-item>
+            <lv-form-label>
+              {{ 'protection_restore_pre_script_label' | i18n }}
+              <i lv-icon="aui-icon-help" lvTooltipTheme="light" lv-tooltip="{{
+                  'common_script_oracle_linux_help_label' | i18n
+                }}" class="configform-constraint" lvColorState="true">
+              </i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="scriptErrorTip">
+              <input formControlName="preScript" lv-input placeholder="{{
+                  'common_script_linux_placeholder_label' | i18n
+                }}" />
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>
+              {{ 'protection_restore_post_script_label' | i18n }}
+              <i lv-icon="aui-icon-help" lvTooltipTheme="light" lv-tooltip="{{
+                  'common_script_oracle_linux_help_label' | i18n
+                }}" class="configform-constraint" lvColorState="true">
+              </i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="scriptErrorTip">
+              <input formControlName="postScript" lv-input placeholder="{{
+                  'common_script_linux_placeholder_label' | i18n
+                }}" />
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>
+              {{ 'protection_restore_fail_script_label' | i18n }}
+              <i lv-icon="aui-icon-help" lvTooltipTheme="light" lv-tooltip="{{
+                  'common_script_oracle_linux_help_label' | i18n
+                }}" class="configform-constraint" lvColorState="true">
+              </i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="scriptErrorTip">
+              <input formControlName="executeScript" lv-input placeholder="{{
+                  'common_script_linux_placeholder_label' | i18n
+                }}" />
+            </lv-form-control>
+          </lv-form-item>
+        </lv-collapse-panel>
+      </lv-collapse>
+    </div>
+  </lv-form>
+</div>
+
+<ng-template #titleTpl>
+  <lv-group lvGutter="8px">
+    <span class="custom-collapse-title-text">{{
+      'common_advanced_label' | i18n
+      }}</span>
+    <i lv-icon="aui-icon-help" lvTooltipTheme="light" lv-tooltip="{{
+        'protection_fileset_restore_advance_params_label' | i18n
+      }}" lvColorState="true">
+    </i>
+  </lv-group>
+</ng-template>
+<ng-template #targetTable>
+  <div class="targetTable" *ngIf="!formGroup.value.enable_bare_metal_restore">
+    <lv-datatable [lvData]="targetData" #lvTargetTable lvResize lvFake>
+      <thead>
+        <tr>
+          <th>{{ 'explore_volume_restore_label' | i18n }}</th>
+          <th style="width:100px">{{ 'common_size_label' | i18n }}</th>
+          <th>{{ 'protection_recovery_target_pvc_label' | i18n }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of lvTargetTable.renderData">
+          <td>
+            <span lv-overflow>{{ item.name | nil }}</span>
+          </td>
+          <td style="width:100px">
+            {{
+            item.size | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true
+            }}
+          </td>
+          <td *ngIf="formGroup.value.restoreTo === newLocation">
+            <lv-select [lvOptions]="item.volumeOptions" lvValueKey="key" lvFilterKey="label" lvFilterMode="contains"
+              lvShowFilter lvShowClear [lvDisabled]="!formGroup.value.host" [(ngModel)]="item.volume"
+              (ngModelChange)="volumeChange($event)">
+            </lv-select>
+          </td>
+          <td *ngIf="formGroup.value.restoreTo === originalLocation">
+            {{ item.path }}
+          </td>
+        </tr>
+      </tbody>
+    </lv-datatable>
+  </div>
+</ng-template>
+<ng-template #capacityTpl let-item="$implicit">
+  <span>{{
+    item.size | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true
+    }}</span>
+</ng-template>

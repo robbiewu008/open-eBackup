@@ -1,0 +1,130 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <h1>{{'iBMC' | i18n}}</h1>
+    </div>
+    <div class="aui-block">
+        <div class="aui-header-2">
+            <lv-group lvGutter='10px' lvDirection='vertical'>
+                <h2>{{'system_ibmc_config_label' | i18n}}</h2>
+                <span class="aui-text-desc tip-size">
+                    {{'system_ibmc_config_tip_label' | i18n}}
+                </span>
+            </lv-group>
+            <lv-group lvGutter='8px' *ngIf="hasLoad">
+                <a class="aui-link" (click)='modify()' *ngIf="!isModify">
+                    {{'common_modify_label' | i18n}}
+                </a>
+                <a class="aui-link" (click)="save()" *ngIf="isModify"
+                    [ngClass]="{'aui-link': formGroup.valid, 'aui-link-disabled': !formGroup.valid}">
+                    {{'common_save_label' | i18n}}
+                </a>
+                <a class="aui-link" (click)="cancel()" *ngIf="isModify && username">
+                    {{'common_cancel_label' | i18n}}
+                </a>
+            </lv-group>
+        </div>
+        <div class="dashed-line aui-gutter-column-md mgt"></div>
+        <ng-container *ngIf="hasLoad">
+            <ng-container *ngIf="!isModify">
+                <lv-form [lvLabelColon]="false">
+                    <lv-form-item>
+                        <lv-form-label>
+                            {{ 'common_username_label' | i18n }}
+                        </lv-form-label>
+                        <lv-form-control>
+                            {{username | nil}}
+                        </lv-form-control>
+                    </lv-form-item>
+                    <lv-form-item>
+                        <lv-form-label>
+                            {{'common_originalpwd_label' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control>
+                            {{password | nil}}
+                        </lv-form-control>
+                    </lv-form-item>
+                </lv-form>
+            </ng-container>
+            <ng-container *ngIf="isModify">
+                <lv-form [formGroup]="formGroup" [lvLabelColon]="false" lvKeepRequiredWidth>
+                    <lv-form-item>
+                        <lv-form-label>
+                            {{'system_ibmc_config_type_label' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control>
+                            <lv-radio-group formControlName="type">
+                                <lv-group [lvGutter]="'24px'">
+                                    <lv-radio [lvValue]="configType.sync">
+                                        {{ 'system_ibmc_config_sync_label' | i18n }}
+                                    </lv-radio>
+                                    <lv-radio [lvValue]="configType.local">
+                                        {{ 'system_ibmc_config_local_label' | i18n }}
+                                    </lv-radio>
+                                </lv-group>
+                            </lv-radio-group>
+                            <div class="aui-text-desc tip-size">
+                                {{ (formGroup.value.type === configType.sync ? 'system_ibmc_config_sync_tip_label' :
+                                'system_ibmc_config_local_tip_label') | i18n}}
+                            </div>
+                        </lv-form-control>
+                    </lv-form-item>
+                    <lv-form-item>
+                        <lv-form-label lvRequired>
+                            {{'common_username_label' | i18n}}
+                            <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_ibmc_config_username_tip_label' | i18n }}"
+                                lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+                        </lv-form-label>
+                        <lv-form-control [lvErrorTip]="userNameErrorTip">
+                            <input lv-input type="text" formControlName="username" autocomplete="new-password" />
+                        </lv-form-control>
+                    </lv-form-item>
+                    <lv-form-item>
+                        <lv-form-label lvRequired>
+                            {{ (formGroup.value.type === configType.sync ? 'common_originalpwd_label' :
+                            'common_password_label') | i18n }}
+                        </lv-form-label>
+                        <lv-form-control [lvErrorTip]="passwordErrorTip">
+                            <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false">
+                            </aui-inupt-with-eye>
+                        </lv-form-control>
+                    </lv-form-item>
+                    <ng-container *ngIf="formGroup.value.type === configType.sync">
+                        <lv-form-item>
+                            <lv-form-label lvRequired>{{'common_newpwd_label' | i18n}}</lv-form-label>
+                            <lv-form-control [lvErrorTip]='passwordErrorTip'>
+                                <aui-inupt-with-eye formControlName="newPassword" [lvPasteAllowed]="false"
+                                    [lv-tooltip]="pwdComplexTipTpl" lvTooltipTrigger="focus" lvTooltipPosition="topLeft"
+                                    lvTooltipTheme="light">
+                                </aui-inupt-with-eye>
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label lvRequired>{{'common_confirmpwd_label' | i18n}}</lv-form-label>
+                            <lv-form-control [lvErrorTip]="passwordErrorTip">
+                                <aui-inupt-with-eye formControlName="confirmPassword" [lvPasteAllowed]="false">
+                                </aui-inupt-with-eye>
+                            </lv-form-control>
+                        </lv-form-item>
+                    </ng-container>
+                </lv-form>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>
+
+<ng-template #pwdComplexTipTpl>
+    <span [innerHTML]="pwdComplexTipLabel"></span>
+</ng-template>

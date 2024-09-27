@@ -1,0 +1,193 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label>
+            {{ 'protection_restore_to_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
+                <lv-group [lvGutter]="'20px'">
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="restoreToNewLocationOnly"
+                        [lv-tooltip]="restoreToNewLocationOnly ? ('protection_cloud_origin_restore_disabled_label' | i18n) : ''">
+                        {{ 'common_restore_to_origin_location_label' | i18n }}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreLocationType.NEW">
+                        {{ 'common_restore_to_new_location_label' | i18n }}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.value.restoreTo === restoreLocationType.ORIGIN">
+        <lv-form-label>{{'common_location_label' | i18n}}</lv-form-label>
+        <lv-form-control>{{resourceLocation | nil}}</lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+        <lv-form-label lvRequired>{{'common_location_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-tree-select [lvTreeData]="serverTreeData" lvTreeSelectionMode="single" formControlName="targetServer"
+                lvShowClear [lvVirtualScroll]="serverTreeData.length > 10" lvTreeShowLine
+                (lvExpandedChange)="expandedChange($event)">
+                <lv-treeselect-trigger>
+                    <span>{{ formGroup.value.targetServer[0]?.path | nil }}</span>
+                </lv-treeselect-trigger>
+            </lv-tree-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_az_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-select formControlName="az" [lvOptions]="azOptions" lvValueKey="value" lvShowFilter lvFilterKey="label"
+                lvFilterMode="contains">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'protection_cloud_server_type_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-select formControlName="vmType" [lvOptions]="vmTypeOptions" lvValueKey="value" lvShowFilter
+                lvFilterKey="label" lvFilterMode="contains">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{'protection_original_ip_label'|i18n}}
+    </lv-form-label>
+    <lv-form-control>
+      <span>{{originalIP|nil}}</span>
+    </lv-form-control>
+  </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'protection_network_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-group lvDirection="vertical" lvGutter="10px">
+              <lv-select formControlName="network" [lvOptions]="networkOptions" lvValueKey="value" lvShowCheckAll
+                         lvShowFilter lvFilterKey="label" lvFilterMode="contains" lvMode="multiple">
+              </lv-select>
+              <lv-checkbox [lvValue]="'true'" formControlName="specifyIP">
+                <lv-group lvGutter="4px" lvDirection="vertical">
+                  {{'protection_specify_network_ip_label'|i18n}}
+                  <span class="ip-empty">{{'protection_specify_network_ip_placeholder_label'|i18n}}</span>
+                </lv-group>
+              </lv-checkbox>
+              <div *ngIf="formGroup.get('specifyIP').value && !!networkAndIPControlArr?.length">
+                <lv-datatable
+                  [lvData]="networkOptions"
+                  lvFake="true"
+                  lvSize="small"
+                  lvResize
+                  lvCompareWith="value"
+                  formArrayName="networkAndIPArr"
+                >
+                  <thead>
+                    <tr>
+                      <th width="120px">
+                        {{'protection_network_card_sequence_label'|i18n}}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_network_card_sequence_tips_label' | i18n}}"
+                           lvTooltipPosition="topRight" lvTooltipTheme="light" class="configform-constraint"
+                           lvColorState='true'></i>
+                      </th>
+                      <th>{{'common_network_label'|i18n}}</th>
+                      <th>{{'IP'}}</th>
+                    </tr>
+                  </thead>
+                  <tbody cdkDropList (cdkDropListDropped)='drop($event)'>
+                  <ng-container *ngFor="let item of networkAndIPControlArr.controls;let i = index;">
+                    <tr [formGroupName]="i" cdkDrag  class="network-card">
+                      <td colspan="3" class='app-custom-placeholder' *cdkDragPlaceholder></td>
+                      <td cdkDragHandle>{{i+1}}</td>
+                      <td cdkDragHandle>{{item.get('name').value|nil}}</td>
+                      <td>
+                        <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip" class="migrate-host-container">
+                          <input lv-input formControlName="specifiedIp" placeholder="{{'protection_specify_network_ip_placeholder_label'|i18n}}">
+                        </lv-form-control>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  </tbody>
+                </lv-datatable>
+              </div>
+            </lv-group>
+            <lv-group [lvColumns]='["16px", "auto"]' lvRowGutter="4px" class="disk-type-warn"
+                *ngIf="diskTableData?.data?.length >= 20">
+                <i lv-icon="lv-icon-status-warning-info"></i>
+                <span class="aui-text-label">
+                    {{ 'protection_openstack_network_warn_label' | i18n }}
+                </span>
+            </lv-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'explore_disk_type_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-group lvGutter='4px' class="disk-type-warn" *ngIf="showTypeWarn()">
+                <i lv-icon="lv-icon-status-warning-info"></i>
+                <span class="aui-text-label">
+                    {{ 'protection_openstack_disk_type_diff_label' | i18n }}
+                </span>
+            </lv-group>
+            <div class="disk-conatiner">
+                <lv-pro-table [data]="diskTableData" [config]="diskTableConfig"></lv-pro-table>
+            </div>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'protection_new_vm_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input type="text" formControlName="vmName" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.value.restoreTo === restoreLocationType.ORIGIN">
+        <lv-form-label>
+            {{'protection_rewrite_origin_vm_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="rewriteVm"></lv-switch>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_proxy_host_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select [lvOptions]="proxyOptions" formControlName="proxyHost" lvValueKey='value' lvShowCheckAll
+                lvShowFilter lvFilterKey="label" lvFilterMode="contains" lvMode="multiple"
+                lvPlaceholder="{{'protection_agent_placeholder_label' | i18n}}">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>{{'common_restore_before_copy_verify_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protect_hcs_restore_before_copy_verify_label' | i18n}}"
+                lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="copyVerify"
+                [lv-tooltip]="verifyStatus === copyDataVerifyStatus.noGenerate.value ? copyVerifyDisableLabel : ''"
+                [lvDisabled]="verifyStatus === copyDataVerifyStatus.noGenerate.value">
+            </lv-switch>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+
+<ng-template #diskTypeTpl let-item>
+    <lv-select class="disk-type-select" [lvOptions]="diskTypeOptions" [(ngModel)]="item.diskType" lvValueKey='value'
+        (ngModelChange)="diskTypeChange()">
+    </lv-select>
+</ng-template>

@@ -1,0 +1,118 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label>
+            {{ 'protection_restore_to_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
+                <lv-group [lvGutter]="'20px'">
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="isReplicated">
+                        {{ 'common_restore_to_origin_location_label' | i18n }}
+                    </lv-radio>
+                    <ng-container *ngIf="false">
+                         <lv-radio [lvValue]="restoreLocationType.NEW">
+                        {{ 'common_restore_to_new_location_label' | i18n }}
+                    </lv-radio>
+                    </ng-container>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'common_location_label' | i18n }}
+            </lv-form-label>
+            <input lv-input formControlName="cluster" />
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_target_host_label' | i18n }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_restore_version_help_label' | i18n }}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState="true"></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="usernameErrorTip">
+                <lv-select formControlName="targetCuster" [lvOptions]="clusterOptions" lvValueKey="value">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_destination_path_label' | i18n }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_restore_path_help_label' | i18n }}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState="true"></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="pathErrorTip">
+                <input lv-input formControlName="dbPath" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'protection_databasename_label' | i18n }}
+                <i lv-icon="aui-icon-help" [lv-tooltip]="dataBaseTip" lvTooltipPosition="rightTop"
+                    lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="nameErrorTip">
+                <input lv-input formControlName="dbName" />
+                <ng-container *ngIf="formGroup.value.dbName">
+                    <i lv-icon="lv-icon-status-info" lvColorState="true" class="type-icon"></i>
+                    <span>{{
+                        'protection_dameng_restore_rename_tip2_label' | i18n
+                        }}</span>
+                </ng-container>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+     <ng-container *ngIf="false">
+          <lv-form-item>
+        <lv-form-label>
+            {{ 'common_databsae_rename_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="replaceDatabase"></lv-switch>
+            <ng-container *ngIf="formGroup.value.replaceDatabase">
+                <lv-form-item>
+                    <lv-form-label lvRequired>
+                        {{ 'protection_new_name_label' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="dataBaseErrorTip">
+                        <input lv-input formControlName="newName" />
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_new_name_label'| i18n}}
+        </lv-form-label>
+        <lv-switch formControlName="autoUnload"></lv-switch>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_new_name_label'| i18n}}
+        </lv-form-label>
+        <lv-switch formControlName="autoReload"></lv-switch>
+    </lv-form-item>
+     </ng-container>
+</lv-form>
+<ng-template #dataBaseTip>
+    <span [innerHTML]="'protection_dameng_restore_rename_tip_label' | i18n"></span>
+</ng-template>

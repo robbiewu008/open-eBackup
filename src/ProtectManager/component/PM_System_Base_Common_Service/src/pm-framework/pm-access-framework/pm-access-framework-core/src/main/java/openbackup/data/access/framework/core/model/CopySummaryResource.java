@@ -1,0 +1,64 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+package openbackup.data.access.framework.core.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * 副本聚合
+ *
+ * @author h30027154
+ * @version [OceanProtect DataBackup 1.3.0]
+ * @since 2023-03-01
+ */
+@Setter
+@Getter
+public class CopySummaryResource {
+    private Integer copyCount;
+
+    private String properties;
+
+    private String protectedObjectUuid;
+
+    private String protectedResourceId;
+
+    private String protectedSlaId;
+
+    private String protectedSlaName;
+
+    @JsonProperty("protectedStatus")
+    private Boolean isProtected;
+
+    private String resourceEnvironmentIp;
+
+    private String resourceEnvironmentName;
+
+    private String resourceId;
+
+    private String resourceLocation;
+
+    private String resourceName;
+
+    private String resourceProperties;
+
+    private String resourceStatus;
+
+    private String resourceSubType;
+
+    private String resourceType;
+
+    private String slaName;
+}

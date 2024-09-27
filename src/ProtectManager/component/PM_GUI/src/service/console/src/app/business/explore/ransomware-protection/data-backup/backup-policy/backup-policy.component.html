@@ -1,0 +1,98 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation">
+    <lv-group lvGutter='8px'>
+        <button lv-button lvType="primary" (click)="create()" pmpermission pmOperation='CreateSLA'>
+            {{'common_create_label' | i18n}}
+        </button>
+        <button lv-button (click)="delete(selectionData)" [disabled]="!selectionData.length" pmpermission pmOperation='DeleteSLA'>
+            {{'common_delete_label' | i18n}}
+        </button>
+    </lv-group>
+    <lv-group lvGutter="8px">
+        <lv-group lvGutter="8px">
+            <button class="aui-button-icon" lv-button lvSize="auto" (click)="dataTable.fetchData()">
+                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+            </button>
+        </lv-group>
+    </lv-group>
+</div>
+<div class="list-container double-row-height">
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>
+
+<ng-template #slaTpl let-item>
+    <span class="aui-link" id='outerClosable' (click)="getPolicyDetail(item)" lv-overflow>
+        {{item.name}}
+    </span>
+</ng-template>
+
+<ng-template #countTpl let-item>
+    <ng-container *ngIf="item.resource_count > 0; else elseCountTemplate">
+        <span class="aui-link" id='outerClosable' (click)="getPolicyDetail(item,true)" lv-overflow>
+            {{item.resource_count}}
+        </span>
+    </ng-container>
+    <ng-template #elseCountTemplate>
+        {{item.resource_count}}
+    </ng-template>
+</ng-template>
+
+<ng-template #polic1yTpl let-item>
+    <ng-container *ngIf="item.policy1; else elseTemplate">
+        <div lv-overflow>
+            {{'explore_detecte_mode_label' | i18n:[]:true}}{{item.policy1.ext_parameters?.need_detect | textMap:
+            'detectionMethod'}}
+        </div>
+        <div lv-overflow>
+            {{'explore_ransomware_detection_snapshot_label' | i18n:[]:true}}{{getDetectionPolicy(item.policy1)}}
+        </div>
+    </ng-container>
+</ng-template>
+<ng-template #polic2yTpl let-item>
+    <ng-container *ngIf="item.policy2; else elseTemplate">
+        <div lv-overflow>
+            {{'explore_detecte_mode_label' | i18n:[]:true}}{{item.policy2.ext_parameters?.need_detect | textMap:
+            'detectionMethod'}}
+        </div>
+        <div lv-overflow>
+            {{'explore_ransomware_detection_snapshot_label' | i18n:[]:true}}{{getDetectionPolicy(item.policy2)}}
+        </div>
+    </ng-container>
+</ng-template>
+<ng-template #polic3yTpl let-item>
+    <ng-container *ngIf="item.policy3; else elseTemplate">
+        <div lv-overflow>
+            {{'explore_detecte_mode_label' | i18n:[]:true}}{{item.policy3.ext_parameters?.need_detect | textMap:
+            'detectionMethod'}}
+        </div>
+        <div lv-overflow>
+            {{'explore_ransomware_detection_snapshot_label' | i18n:[]:true}}{{getDetectionPolicy(item.policy3)}}
+        </div>
+    </ng-container>
+</ng-template>
+<ng-template #polic4yTpl let-item>
+    <ng-container *ngIf="item.policy4; else elseTemplate">
+        <div lv-overflow>
+            {{'explore_detecte_mode_label' | i18n:[]:true}}{{item.policy4.ext_parameters?.need_detect | textMap:
+            'detectionMethod'}}
+        </div>
+        <div lv-overflow>
+            {{'explore_ransomware_detection_snapshot_label' | i18n:[]:true}}{{getDetectionPolicy(item.policy4)}}
+        </div>
+    </ng-container>
+</ng-template>
+<ng-template #elseTemplate>
+    --
+</ng-template>

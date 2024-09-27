@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤3：添加租户并授权资源">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839274637.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001792555308">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤3：添加租户并授权资源</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001792555308"></a><a name="ZH-CN_TOPIC_0000001792555308"></a>
+  <h1 class="topictitle1">步骤3：添加租户并授权资源</h1>
+  <div>
+   <p>注册华为云Stack后，需要将待保护的项目/资源集所在的租户添加到<span>本产品</span>，才能对项目/资源集或云硬盘进行保护。添加租户后，建议将租户下的项目/资源集授权给指定的数据保护管理员，后续该数据保护管理员才能进行数据保护操作。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <p><span>本产品</span>的系统管理员具有所有资源的操作权限。建议按项目/资源集维度将资源授权给指定的数据保护管理员进行管理。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001792555308__zh-cn_topic_0000001839142377_uicontrol23517341412">“<span id="ZH-CN_TOPIC_0000001792555308__zh-cn_topic_0000001839142377_text635183444114">保护</span> &gt; 云平台 &gt; 华为云Stack”</span>。</span></li>
+     <li><span>单击待保护资源所在的华为云Stack，单击右侧的“<span>租户</span>”页签，单击“<span>添加</span>”。</span></li>
+     <li><span>选择待保护资源所在的云平台租户。</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>如果显示的租户信息不全，请单击<span class="uicontrol">“<span>更新租户信息</span>”</span>获取所有租户信息。</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>在“<span>VDC管理员</span>”区域，单击“<span>新增</span>”，填写待保护项目/资源集或云硬盘所在VDC的管理员用户名和密码。</span><p></p><p>添加成功后，系统将自动发现该租户下的项目/资源集和弹性云服务器，分别展示在“<span>项目/资源集</span>”页签和“<span>云服务器</span>”页签。</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>如果待新增的VDC管理员不是一级VDC管理员，且您需要对该VDC的下级VDC资源进行保护，您需要在ManageOne运营面对该VDC管理员添加下级VDC的业务管理权限，才能发现下级VDC的资源。</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>单击租户右侧的“<span>更多</span> &gt; <span>资源授权</span>”。</span></li>
+     <li><span>选择待授权的项目/资源集。</span></li>
+     <li><span>选择一个数据保护管理员。</span></li>
+     <li><span>单击“<span>确定</span>”。</span><p></p><p>授权成功后，在“<span>项目/资源集</span>”页面，显示项目/资源集的所属用户为数据保护管理员。</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001839274637.html">备份弹性云服务器/云硬盘</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

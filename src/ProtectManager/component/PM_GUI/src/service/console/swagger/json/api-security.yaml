@@ -1,0 +1,88 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: ${cluster-security-api}
+paths:
+  /v1/security/component-password/member:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${cluster-security-api}
+      summary: 多集群更新成员节点内部组件密码
+      operationId: updateComponentPasswordMember
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: clusterComponentPwdInfo
+          in: body
+          required: true
+          description: 内部组件key和password值
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ClusterComponentPwdInfo'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+      x-order: 1
+  /v1/security/component-password:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ${cluster-security-api}
+      summary: 多集群更新内部组件密码
+      operationId: updateComponentPassword
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+      x-order: 0
+definitions:
+  ClusterComponentPwdInfo:
+    type: object
+    properties:
+      passwordField:
+        type: string
+        description: 更新OM密码的Key值
+      passwordValue:
+        type: string
+        description: 更新OM密码的Value值

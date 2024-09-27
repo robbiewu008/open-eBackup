@@ -1,0 +1,97 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup">
+    <div class="aui-gutter-column-md">
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'explore_update_method_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-radio-group formControlName="mode" [lvGroupName]="'modeGroup'">
+                    <lv-group [lvGutter]="'24px'">
+                        <lv-radio [lvValue]="liveMountUpdateModal.Latest">
+                            {{'explore_update_latest_copydata_label'|i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="liveMountUpdateModal.Specified">
+                            {{'explore_update_specified_copydata_label'|i18n}}
+                        </lv-radio>
+                    </lv-group>
+                </lv-radio-group>
+            </lv-form-control>
+        </lv-form-item>
+    </div>
+</lv-form>
+
+<ng-container *ngIf="formGroup.value.mode === liveMountUpdateModal.Specified">
+    <div class="aui-gutter-column-sm">
+        {{'explore_select_mount_update_policy_label' | i18n}}
+    </div>
+    <lv-datatable [lvData]='tableData' (lvSortChange)="sortChange($event)" [lvPaginator]="page" lvSort #lvTable lvAsync
+        [(lvActiveSort)]='activeSort' lvSize="small">
+        <thead>
+            <tr>
+                <th width="64px"></th>
+                <ng-container *ngFor="let col of columns">
+                    <th *ngIf="col.show" [lvShowFilter]="col.filter" (lvFilterChange)="filterChange($event)"
+                        [attr.class]="col.class" [attr.width]="col.width" [(lvFilters)]="col.filterMap"
+                        lvCellKey="{{ col.key }}" [lvShowSort]="col.showSort" lvShowCustom lvFilterCheckAll>
+                        {{col.label}}
+                        <div lvCustom *ngIf="col.key === 'location'">
+                            <i #locationPopover="lvPopover" lv-icon="lv-icon-search" [lvColorState]="true"
+                                [ngClass]="{ active: !!location }" lv-popover [lvPopoverContent]="locationFilterTpl"
+                                lvPopoverTheme="light" lvPopoverPosition="bottom" lvPopoverTrigger="click"></i>
+                        </div>
+                </ng-container>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor='let item of lvTable.renderData'>
+                <tr [ngClass]='{"lv-table-row-highlight": lvTable.isSelected(item)}'>
+                    <td width="64px" (click)='selectionRow(item)'>
+                        <div class="td-radio-container">
+                            <label lv-radio [ngModel]='lvTable.isSelected(item)' [lvDisabled]="!!item.disabled"></label>
+                        </div>
+                    </td>
+                    <ng-container *ngFor="let col of columns">
+                        <td>
+                            <ng-container [ngSwitch]="col.key">
+                                <ng-container *ngSwitchCase="'display_timestamp'">
+                                    {{item.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss'}}
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'status'">
+                                    <aui-status [value]="item.status" type="copydata_validStatus">
+                                    </aui-status>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'generated_by'">
+                                    {{item.generated_by | textMap: 'CopyData_generatedType'}}
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'generation'">
+                                    {{item.generation | textMap: 'CopyData_Generation'}}
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    {{item[col.key] | nil}}
+                                </ng-container>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+    <lv-paginator [lvPageSize]="pageSize" [lvTotal]="total" [lvPageIndex]="pageIndex" #page
+        [lvShowPageSizeOptions]="false" (lvPageChange)="pageChange($event)" lvMode='simple' [hidden]="!total">
+    </lv-paginator>
+</ng-container>
+
+<ng-template #locationFilterTpl>
+    <lv-search [(ngModel)]="location" (lvSearch)="searchByLocation($event)" [lvFocus]="true"></lv-search>
+</ng-template>

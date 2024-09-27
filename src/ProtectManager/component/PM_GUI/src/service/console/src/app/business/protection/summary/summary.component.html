@@ -1,0 +1,120 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage protection-summary-container">
+    <div class="aui-header-summary aui-gutter-column-sm">
+        <lv-group lvGutter='8px'>
+            <h1>{{'common_summary_label' | i18n}}</h1>
+            <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+        </lv-group>
+    </div>
+    <lv-tabs [(lvActiveIndex)]="activeIndex">
+        <ng-container *ngFor="let type of resourceType">
+            <lv-tab [lvTitle]="title" [lvId]="type.id">
+                <ng-container *ngTemplateOutlet="contentTpl; context: { $implicit: type.subType }">
+                </ng-container>
+            </lv-tab>
+            <ng-template #title>
+                <lv-group lvGutter='8px' [lv-tooltip]="tipTpl" lvTooltipClassName="sla-create"
+                    lvTooltipPosition="bottom">
+                    <i *ngIf="type.icon" lv-icon="{{type.icon}}" class="tab-icon"></i>
+                    <span>{{type.label}}</span>
+                    <span>{{type.protected_count}}/{{type.count}}</span>
+                </lv-group>
+                <ng-template #tipTpl>
+                    <div class="aui-gutter-column-sm">{{type.label}}</div>
+                    <lv-group lvGutter='14px'>
+                        <span class="text">{{'common_all_resource_label' | i18n}}</span>
+                        <span>{{type.count}}</span>
+                    </lv-group>
+                    <lv-group lvGutter='14px'>
+                        <span class="text">{{'common_protected_label' | i18n}}</span>
+                        <span>{{type.protected_count}}</span>
+                    </lv-group>
+                </ng-template>
+            </ng-template>
+        </ng-container>
+    </lv-tabs>
+</div>
+
+<ng-template #contentTpl let-item>
+    <div class="register" *ngIf="updateRegisterItems(item)?.length">
+        <ng-container *ngFor="let i of registerItems">
+            <ng-container *ngTemplateOutlet="cardTpl; context: { $implicit: i }"></ng-container>
+        </ng-container>
+    </div>
+    <div class="unregister" *ngIf="updateUnRegisterItems(item)?.length">
+        <h2 class="unregistered-title">
+            {{'common_unregistered_label' | i18n}}
+        </h2>
+        <ng-container *ngFor="let i of unRegisterItems">
+            <ng-container *ngTemplateOutlet="emptyCardTpl; context: { $implicit: i }"></ng-container>
+        </ng-container>
+    </div>
+</ng-template>
+
+<ng-template #cardTpl let-item>
+    <div class="card-container" (click)="gotoResource(item)"
+         (mouseenter)="hoveredItem = item" (mouseleave)="hoveredItem = null">
+        <div class="empty-card-flex-container">
+            <lv-group lvGutter='16px'>
+                <div class="app-logo-container" [style.backgroundColor]="item.color">
+                    {{item.prefix}}
+                </div>
+                <lv-group lvGutter='4px' lvDirection='vertical'>
+                <span class="card-desc-text">
+                    {{item.parentLabel}}
+                </span>
+                    <span>{{item.label}}</span>
+                </lv-group>
+            </lv-group>
+            <i [lv-icon]="backToTopIcon(item)" class="backToTopIcon"
+               [lv-tooltip]="toTopIconToolTip(item)"
+               (click)="iconBackToTopClicked($event, item)"></i>
+        </div>
+        <h2 class="mgt-10">{{item.count}}</h2>
+        <span class="card-desc-text">
+            {{'explore_resource_number_label' | i18n}}
+        </span>
+        <lv-group lvDirection='vertical' class="progress-group">
+            <span class="progress-text">
+                {{item.protected_count}}/{{item.count}}&nbsp;{{'common_protected_label' | i18n}}
+            </span>
+            <lv-progress lvValue="{{item.protected_count/item.count*100}}" [lvWidth]="310" [lvStatus]="'normal'"
+                [lvColors]="colors" lvShowLabel="false" lvInnerLabel="false">
+            </lv-progress>
+        </lv-group>
+    </div>
+</ng-template>
+
+<ng-template #emptyCardTpl let-item>
+    <div class="empty-card-container" (click)="gotoResource(item)"
+         (mouseenter)="hoveredItem = item" (mouseleave)="hoveredItem = null">
+        <div class="empty-card-flex-container">
+            <lv-group lvGutter='16px'>
+                <div class="app-logo-container" [style.backgroundColor]="item.color">
+                    {{item.prefix}}
+                </div>
+                <lv-group lvGutter='4px' lvDirection='vertical'>
+                <span class="card-desc-text">
+                    {{item.parentLabel}}
+                </span>
+                    <span>{{item.label}}</span>
+                </lv-group>
+            </lv-group>
+            <i [lv-icon]="backToTopIcon(item)" class="backToTopIcon"
+               [lv-tooltip]="toTopIconToolTip(item)"
+               (click)="iconBackToTopClicked($event, item)"></i>
+        </div>
+    </div>
+</ng-template>

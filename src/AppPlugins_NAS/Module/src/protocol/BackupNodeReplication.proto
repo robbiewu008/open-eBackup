@@ -1,0 +1,252 @@
+syntax = "proto2";
+import public "BasicCommands.proto";
+import public "BasicTypes.proto";
+import public "Tasks.proto";
+import public "ChainEngine.proto";
+//range of commands for replication: 1500-1599
+
+enum ReplicateSnapMDStatus
+{
+    ReplicateGetSnapMDSuccess = 1;
+    ReplicateGetSnapMDFailed = 2;
+    ReplicateOpenSourceSnapMDFailed = 3;
+}
+
+message ReplicateGetSnapMD
+{
+    extend BasicCommand
+    {
+        optional ReplicateGetSnapMD cmd = 1500;
+    }
+    repeated string source_snap_guid = 1;
+    repeated ChainID source_chain_id = 2;
+}
+
+message ReplicateSnapMD
+{
+    optional  uint64 source_session_id = 1;
+    optional  string vm_moref             = 2;  //OVF
+    repeated  string disk_moref            = 3;  //disk OVF
+    optional  uint64 snap_size             = 4;  //.snap size
+    optional  string source_snap_id  = 5; 
+    optional uint32 crc_vm_moref = 6;   //CRC of ovf
+    optional uint32 crc_disk_moref  = 7; //CRC of disk ovf
+    optional uint32 crc_snap   = 8; //CRC of .snap
+	optional uint32 block_crc = 9;	//flag of block crc
+    optional  ReplicateSnapMDStatus replicate_snap_md_status = 10;   
+}
+
+
+message ReplicateGetSnapMDReply
+{
+    extend GenericReply
+    {
+        optional ReplicateGetSnapMDReply reply = 1501;
+    }
+    optional ReplicateSnapMDStatus replicate_snap_md_status = 1;
+    repeated ReplicateSnapMD replicate_snap_md= 2;
+}
+
+message ReplicateGetSnapMap
+{
+    extend BasicCommand
+    {
+        optional ReplicateGetSnapMap cmd = 1502;
+    }
+    optional  string source_snap_guid  = 1;
+    optional  ChainID source_chain_id = 2;
+    optional uint64 source_seesion_id  = 3;
+    optional  uint64 offset = 4;      
+    optional uint64 require_size = 5;
+    
+}
+
+enum ReplicateSnapMapStatus
+{
+    ReplicateSnapMapContinue  = 1;
+    ReplicateSnapMapFailed      = 2;
+    ReplicateSnapMapEnd         = 3;
+}
+
+message ReplicateGetSnapMapReply
+{
+    extend GenericReply
+    {
+        optional ReplicateGetSnapMapReply reply = 1503;
+    }
+    optional ReplicateSnapMapStatus replicate_snap_map_status = 1;
+	optional  uint64 offset = 2;
+    optional uint32 real_size = 3;
+	repeated bytes  map_data = 4;
+}
+enum ReplicateStatus
+{
+    ReplicateContinue  = 1;
+    ReplicateFailed      = 2;
+	ReplicateSuccess         = 3;
+	ReplicateSnapDoesNotExist = 4;
+}
+message ReplicateChainDBRecord
+{
+    extend BasicCommand
+    {
+        optional ReplicateChainDBRecord cmd = 1504;
+    }
+    optional string source_snap_guid = 1;
+    optional ChainID source_chain_id = 2;
+}
+message ReplicateChainDBRecordReply
+{
+    extend GenericReply
+    {
+        optional ReplicateChainDBRecordReply reply = 1505;
+    }
+    optional ReplicateStatus replicate_chain_record_status = 1;
+    //SnapMetaData.SerializeToString(&ChainDBStr)
+    repeated bytes chain_db_str = 2;
+    repeated uint32 sequence = 3;
+    repeated uint32 current_index = 4;
+}
+
+message SourceInformation 
+{
+
+    extend BasicCommand
+    {
+        optional SourceInformation cmd = 1598;
+    }
+    
+  repeated string target_task_guid = 1;
+  repeated string connectID = 2;
+  
+}
+
+
+message ReplicateGetBlockData
+{
+    extend BasicCommand
+    {
+        optional ReplicateGetBlockData cmd = 1600;
+    }
+	repeated ChainID source_chain_id = 1;
+	//full block name 
+	optional string disk_id = 2;
+	optional string snap_id = 3;
+	optional uint64 block_id = 4;
+	//If 4M has performance problem, below information will be invoked
+	optional uint64 source_seesion_id  = 5;
+	optional uint64 pervious_session_id = 6;  //previous buffer can be removed
+	optional uint32 offset = 7;
+	optional uint32 require_size =8;
+	repeated string source_snap_guid = 9;
+}
+
+enum ReplicateBlockStatus
+{
+    ReplicateBlockSuccess  = 1;
+    ReplicateBlockErr    = 2;
+}
+
+message ReplicateGetBlockDataReply
+{
+    extend GenericReply
+    {
+        optional ReplicateGetBlockDataReply reply = 1603;
+    }
+    
+	optional ReplicateBlockStatus replicate_block_data_status = 1;
+	optional bool ifEmptyBlock = 2; //indicate whether the block is empty block
+	//If 4M has performance problem, below information will be invoked
+	optional uint64 source_seesion_id  = 3;
+	optional uint32 offset = 4;
+	optional uint32 real_size = 5;
+        optional uint64 block_data = 6;
+        optional bool use_vpp = 7;
+        optional uint64 duration = 8;
+}
+
+message ReplicateGetBlockMetadata
+{
+    extend BasicCommand
+    {
+        optional ReplicateGetBlockMetadata  cmd = 1506;
+    }
+    repeated string source_snap_guid = 1;
+	repeated ChainID source_chain_id = 2;
+	// GetBlockName(cur_snap,disk_id,block_id,blockname)
+	optional string disk_id = 3;
+	optional string cur_snap = 4;	//it may be previous snap
+	optional uint64 block_id = 5;
+}
+
+message ReplicateGetBlockMetadataReply
+{
+    extend GenericReply
+    {
+        optional ReplicateGetBlockMetadataReply reply = 1507;
+    }
+	optional ReplicateStatus replicate_block_MD_status = 1;
+	repeated bytes  block_Metadata = 2;
+	optional uint32 block_MD_size = 3;
+	//this session is relative with all operation
+	optional uint64 source_seesion_id  = 4;
+ }
+
+message ReplicateGetMissingData
+{
+    extend BasicCommand
+    {
+        optional ReplicateGetMissingData cmd = 1508;
+    }
+    repeated string source_snap_guid = 1;
+	repeated ChainID source_chain_id = 2;
+	// GetBlockName(cur_snap,disk_id,block_id,blockname)
+	optional string disk_id = 3;
+	optional string cur_snap = 4;	//it may be previous snap
+	optional uint64 block_id = 5;
+	repeated bytes  block_Metadata =6;
+	optional uint32 block_MD_size = 7;
+	repeated bytes  missingHashes = 8;  
+	optional uint32 missingHashes_length = 9;
+	//If 4M has performance problem, below information will be invoked
+	optional uint64 source_seesion_id  = 10;
+	repeated uint64 pervious_session_id = 11;	//previous buffer can be removed
+	repeated uint64 offset = 12;
+	repeated uint32 require_size =13;
+	
+}
+
+message ReplicateGetMissingDataReply
+{
+    extend GenericReply
+    {
+        optional ReplicateGetMissingDataReply reply = 1509;
+    }
+	optional ReplicateStatus replicate_miss_data_status = 1;
+	repeated bytes  containerData = 2;
+	optional uint32  containerData_length = 3;
+	//If 4M has performance problem, below information will be invoked
+	optional uint64 source_seesion_id  = 4;
+    repeated uint64 offset = 5;
+    repeated uint32 real_size = 6 ;
+}
+
+message ReplicateUpdateConnection
+{
+    extend BasicCommand
+    {
+        optional ReplicateUpdateConnection cmd = 1510;
+    }	
+	repeated string emptyMsg=1;
+}
+
+message ReplicateUpdateConnectionReply
+{
+    extend GenericReply
+    {
+        optional ReplicateUpdateConnectionReply reply = 1511;
+    }	
+	optional uint64 source_seesion_id  = 1;
+}
+
+

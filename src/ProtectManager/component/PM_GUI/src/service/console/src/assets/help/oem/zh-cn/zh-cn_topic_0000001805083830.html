@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="管理即时挂载">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001805083830">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>管理即时挂载</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001805083830"></a><a name="ZH-CN_TOPIC_0000001805083830"></a>
+  <h1 class="topictitle1">管理即时挂载</h1>
+  <div>
+   <p>您可以在管理界面上对虚拟机副本即时挂载执行相关管理操作。</p>
+   <p>您需要登录管理界面，选择<span class="uicontrol">“<span id="ZH-CN_TOPIC_0000001805083830__zh-cn_topic_0000001851882581_zh-cn_topic_0000001839142377_text6884144212611">数据利用</span> &gt; <span id="ZH-CN_TOPIC_0000001805083830__zh-cn_topic_0000001851882581_zh-cn_topic_0000001839142377_text8885114214618">即时挂载</span> &gt; CNware”</span>。</p>
+   <p>具体操作任务如<a href="#ZH-CN_TOPIC_0000001805083830__zh-cn_topic_0000001123208137_zh-cn_topic_0000001090712911_table51069596392">表1</a>所示。</p>
+   <div class="tablenoborder">
+    <a name="ZH-CN_TOPIC_0000001805083830__zh-cn_topic_0000001123208137_zh-cn_topic_0000001090712911_table51069596392"></a><a name="zh-cn_topic_0000001123208137_zh-cn_topic_0000001090712911_table51069596392"></a>
+    <table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001805083830__zh-cn_topic_0000001123208137_zh-cn_topic_0000001090712911_table51069596392" frame="border" border="1" rules="all">
+     <caption>
+      <b>表1 </b>即时挂载相关操作
+     </caption>
+     <colgroup>
+      <col style="width:16.63%">
+      <col style="width:47.43%">
+      <col style="width:35.94%">
+     </colgroup>
+     <thead align="left">
+      <tr>
+       <th align="left" class="cellrowborder" valign="top" width="16.63%" id="mcps1.3.4.2.4.1.1"><p>任务</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="47.43%" id="mcps1.3.4.2.4.1.2"><p>任务描述</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="35.94%" id="mcps1.3.4.2.4.1.3"><p>界面入口</p></th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td class="cellrowborder" valign="top" width="16.63%" headers="mcps1.3.4.2.4.1.1 "><p>修改挂载信息</p></td>
+       <td class="cellrowborder" valign="top" width="47.43%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>如果创建即时挂载时，未配置挂载副本的带宽、IOPS、挂载更新策略等参数，可以通过该操作配置，或通过该操作修改已配置的参数。</p></td>
+       <td class="cellrowborder" valign="top" width="35.94%" headers="mcps1.3.4.2.4.1.3 "><p>在挂载信息所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>修改</span>”</span>。</p> <p></p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="16.63%" headers="mcps1.3.4.2.4.1.1 "><p>销毁挂载</p></td>
+       <td class="cellrowborder" valign="top" width="47.43%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>如果您需要将已挂载的副本从虚拟机卸载，可以通过该操作销毁挂载。</p> <p><strong>注意事项</strong></p>
+        <ul>
+         <li>销毁时需要选择是否保留即时挂载生成的副本。如果选择保留，则按照<a href="zh-cn_topic_0000001805243630.html">挂载更新策略</a>中设置的保留时长保留挂载副本或永久保留（未设置挂载更新策略），否则直接删除挂载副本。</li>
+         <li>销毁后，已挂载的虚拟机将被删除。</li>
+        </ul></td>
+       <td class="cellrowborder" valign="top" width="35.94%" headers="mcps1.3.4.2.4.1.3 "><p>在挂载信息所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>销毁</span>”</span>。</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="16.63%" headers="mcps1.3.4.2.4.1.1 "><p>更新挂载副本</p></td>
+       <td class="cellrowborder" valign="top" width="47.43%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>如果需要立即对虚拟机更新一次挂载副本，可以通过该操作实现。</p> <p><strong>注意事项</strong></p> <p>即时挂载的状态为<span class="uicontrol">“<span>可用</span>”</span>或<span class="uicontrol">“<span>挂载失败</span>”</span>才允许更新挂载副本。</p></td>
+       <td class="cellrowborder" valign="top" width="35.94%" headers="mcps1.3.4.2.4.1.3 ">
+        <ol>
+         <li>在挂载信息所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>更新</span>”</span>。</li>
+         <li>选择<span class="uicontrol">“<span>更新到最新副本数据</span>”</span>或<span class="uicontrol">“<span>更新到指定副本数据</span>”</span>。</li>
+        </ol></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="16.63%" headers="mcps1.3.4.2.4.1.1 "><p>迁移数据至虚拟机</p></td>
+       <td class="cellrowborder" valign="top" width="47.43%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>即时挂载后，如果您需要将数据迁移至目标虚拟机，可以通过该操作实现。</p> <p><strong>注意事项</strong></p> <p>执行迁移时，要求即时挂载的状态必须为<span class="uicontrol">“<span>可用</span>”</span>。</p></td>
+       <td class="cellrowborder" valign="top" width="35.94%" headers="mcps1.3.4.2.4.1.3 ">
+        <ol>
+         <li>在挂载信息所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>迁移</span>”</span>。</li>
+         <li>选择VM配置文件和虚拟磁盘存储位置。
+          <ul>
+           <li><span>不同数据存储</span>：依次选择VM配置文件和虚拟磁盘数据的存储位置</li>
+           <li><span>相同数据存储</span>：选择<span>VM配置文件</span>，即VM配置文件与虚拟磁盘数据存放在相同的数据存储。</li>
+          </ul></li>
+         <li>单击<span class="uicontrol">“确定”</span>。</li>
+        </ol></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="16.63%" headers="mcps1.3.4.2.4.1.1 "><p>禁用更新挂载</p></td>
+       <td class="cellrowborder" valign="top" width="47.43%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>如果不再需要按照更新策略更新挂载副本、不允许手动更新挂载副本或不允许修改即时挂载参数，可以通过该操作实现。</p></td>
+       <td class="cellrowborder" valign="top" width="35.94%" headers="mcps1.3.4.2.4.1.3 "><p>在挂载信息所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>禁用</span>”</span>。</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="16.63%" headers="mcps1.3.4.2.4.1.1 "><p>激活更新挂载</p></td>
+       <td class="cellrowborder" valign="top" width="47.43%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>即时挂载被禁用后，可以被重新激活，激活后将按照更新策略更新挂载副本。</p></td>
+       <td class="cellrowborder" valign="top" width="35.94%" headers="mcps1.3.4.2.4.1.3 "><p>在挂载信息所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>激活</span>”</span>。</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="16.63%" headers="mcps1.3.4.2.4.1.1 "><p>查看挂载详细信息</p></td>
+       <td class="cellrowborder" valign="top" width="47.43%" headers="mcps1.3.4.2.4.1.2 "><p><strong>操作背景</strong></p> <p>如果需要查看即时挂载的详细信息，可以通过该操作实现。</p></td>
+       <td class="cellrowborder" valign="top" width="35.94%" headers="mcps1.3.4.2.4.1.3 "><p>在挂载信息所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>查看</span>”</span>。</p> <p>查看资源、副本数据、挂载更新策略的详细信息。</p></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+ </body>
+</html>

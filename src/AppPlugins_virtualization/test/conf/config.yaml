@@ -1,0 +1,37 @@
+---
+version: 1.0.0
+
+project:
+  name: "virtualization_plugin_test"
+  desc: "mockcpp template project"
+  prod: null
+  team: null
+
+pipeline:
+  build:
+    - task: "cmake_test"
+  run:
+    - task: "virt_common_test"
+      exec: ../build/virt_common_test
+    - task: "virt_job_controller_test"
+      exec: ../build/virt_job_controller_test
+    - task: "virt_handlers_test"
+      exec: ../build/virt_handlers_test
+    - task: "virt_kubernetes_test"
+      exec: ../build/virt_kubernetes_test
+    - task: "virt_hcs_openstack_test"
+      exec: ../build/virt_hcs_openstack_test
+  report:
+    - task: "gcovr_report"
+  clean:
+    - task: "clean"
+
+components:
+  - type: "hdt_cmc_c_cpp"
+    repo: null
+    dest: null
+    manifest:
+      gtest: null
+      mockcpp: null
+      gcov: null
+      asan: null

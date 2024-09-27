@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>
+    <artifact>
+        <versionType>Component</versionType>
+        <repoType>Generic</repoType>
+        <id>
+            <offering>OceanProtect A8000</offering>
+            <componentName>Infrastructure</componentName>
+            <componentVersion>${componentVersion}</componentVersion>
+        </id>
+        <isClear>N</isClear>
+        <copies>
+            <copy>
+                <source>compileLib/*</source>
+                <dest>${PRODUCT}/${CODE_BRANCH}/${COMPONENT_TYPE}/${ARCH}</dest>
+            </copy>
+        </copies>
+    </artifact>
+	<dependencies>
+        <dependency>
+            <versionType>BVersion</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>GaussDB Kernel</offering>
+                <version>GaussDB Kernel 505.0.0.SPC1500.B002</version>
+            </id>
+            <copies>
+                <copy>
+                    <source>Lite/Euler2.11_arm_64/GaussDB-Kernel_505.0.0.SPC1500.B002_Server_ARM_Lite.tar.gz</source>
+                    <dest></dest>
+                </copy>
+            </copies>
+        </dependency>
+        <dependency>
+            <versionType>BVersion</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>Gauss100 OLTP</offering>
+                <version>Gauss100 OLTP 1.9.0.B058</version>
+            </id>
+            <copies>
+                <copy>
+                    <source>Release/OSS/EULER20SP10_ARM/GaussDB_T_1.9.0-DATASYNC.tar.gz</source>
+                    <dest></dest>
+                </copy>
+            </copies>
+        </dependency>
+	</dependencies>
+</project>

@@ -1,0 +1,140 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup create-fileset">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_name_label' | i18n}}</lv-form-label>
+        <lv-form-control class="select" [lvErrorTip]="filesetNameErrorTip">
+            <input lv-input formControlName='name' class="fileset-control" />
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="!rowItem && sub_type === dataMap.Resource_Type.fileset.value">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_selecting_host_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control class="select">
+                <lv-select class="fileset-control" [lvOptions]='hostOptions' lvValueKey='value'
+                    formControlName='selectedHost' (ngModelChange)='hostChange($event)' lvShowFilter lvFilterKey='label'
+                    lvFilterMode='contains' [lvContentTemplate]="contentTpl">
+                </lv-select>
+                <ng-template #contentTpl let-item>
+                    <lv-group lvGutter="4px">
+                        <span lv-overflow>{{ item.label }}</span>
+                        <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
+                            {{'protection_guide_new_resource_label' | i18n}}
+                        </span>
+                    </lv-group>
+                </ng-template>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="sub_type === 'HDFS'">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_cluster_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control class="select">
+                <lv-select class="fileset-control" [lvOptions]='hostOptions' lvValueKey='value'
+                    formControlName='selectedHost' (ngModelChange)='hostChange($event)' lvShowFilter lvFilterKey='label'
+                    lvFilterMode='contains' [lvDisabled]="rowItem">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'protection_select_file_label' | i18n}}</lv-form-label>
+        <lv-form-control class="control-container">
+            <lv-group lvGutter='4px'>
+                <div class="tree-container">
+                    <div class="custom-table-header">
+                        {{'protection_selectable_files_label' | i18n}}
+                    </div>
+                    <div class="custom-table-header">
+                        {{'common_name_label' | i18n}}
+                        <i lv-icon="lv-icon-search" [lvColorState]="true" class="tree-search-icon"
+                            [ngClass]="{ 'tree-search-active': !!treeLabel }" lv-popover
+                            [lvPopoverContent]="searchTreeTpl" lvPopoverPosition="right" lvPopoverTrigger="click"
+                            #namePopover="lvPopover"></i>
+                    </div>
+                    <lv-tree [lvData]='filesData' #tree [lvShowCheckbox]="lvShowCheckbox" lvSelectedByCheckbox
+                        lvSelectionMode='multiple' [(lvSelection)]='fileSelection'
+                        (lvSelectionChange)="selectionChange()" (lvExpandedChange)="expandedChange($event)"
+                        (lvCheck)="nodeCheck($event)" lvShowContentIcon lvShowLine lvVirtualScroll
+                        [lvNodeTemplate]='nodeTpl' [lvSelectionAssociate]="false" [lvScroll]='{y: "540px"}'>
+                    </lv-tree>
+                    <ng-template #nodeTpl let-item>
+                        <div style="width: 300px;" lv-overflow>
+                            <span *ngIf="!item.isMoreBtn">
+                                <i lv-icon="{{item.contentToggleIcon}}"></i>
+                                {{item.label}}
+                            </span>
+                        </div>
+                        <span class="aui-link" *ngIf="item.isMoreBtn"
+                            (click)="sub_type === 'HDFS' ? getHDFSResource(item?.parent,item.startPage):getFilesetResource(item?.parent,item.startPage)">{{item.label}}</span>
+                    </ng-template>
+                </div>
+                <div class="arrow-container">
+                    <i lv-icon="aui-select-arrow"></i>
+                </div>
+                <div class="selected-table">
+                    <div class="custom-table-header table-title">
+                        <span>{{'protection_selected_files_label' | i18n}}</span>
+                        <button lv-button (click)="resetSelection()" lvType="link">{{'protection_clear_all_label' |
+                            i18n}}</button>
+                    </div>
+                    <lv-datatable #lvTable [lvData]="selectionPath" [lvPaginator]="page" lvSize="small"
+                        [lvScroll]='{y: "480px"}'>
+                        <thead>
+                            <tr>
+                                <th lvCellKey="path" lvShowCustom>
+                                    {{'common_file_path_label' | i18n}}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let item of lvTable.renderData">
+                                <tr>
+                                    <td>
+                                        <lv-group class="select-path-group">
+                                            <span lv-overflow class="path-overflow">{{item.path}}</span>
+                                            <i lv-icon="lv-icon-close" lv-tooltip="{{'common_remove_label' | i18n}}"
+                                                lvTooltipTheme="light" lvColorState='true'
+                                                (click)="removePathFormTable(item)"></i>
+                                        </lv-group>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </lv-datatable>
+                    <div class="aui-paginator-wrap create-fileset-page">
+                        <lv-paginator *ngIf="selectionPath.length > 10" [lvTotal]="selectionPath.length" #page
+                            lvMode="simple" [lvPageSize]="pageSize" [lvShowPageSizeOptions]='false'
+                            [lvPageSizeOptions]="pageSizeOptions">
+                        </lv-paginator>
+                    </div>
+                </div>
+            </lv-group>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+
+<div class="filter-container">
+    <aui-resource-filter [rowItem]="rowItem" [osType]="osType" [subType]="sub_type" [filterParams]="filterParams"
+        #resourceFilter>
+    </aui-resource-filter>
+</div>
+
+<ng-template #searchTreeTpl>
+    <lv-search (lvSearch)='treeSearch($event)' [(ngModel)]="treeLabel" [lvFocus]="true" class="tree-search"></lv-search>
+</ng-template>

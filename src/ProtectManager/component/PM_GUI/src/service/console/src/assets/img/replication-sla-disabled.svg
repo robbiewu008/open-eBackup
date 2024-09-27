@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="94px" height="77px" viewBox="0 0 94 77" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-quality-service备份 8</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="94" height="77"></rect>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.5">
+        <g id="画板" transform="translate(-92.000000, -38.000000)">
+            <g id="icon-quality-service备份-8" transform="translate(92.000000, 38.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="蒙版"></g>
+                <g id="icon-quality-service备份" mask="url(#mask-2)" fill="#E6EBF5" fill-rule="nonzero">
+                    <g transform="translate(2.000000, 0.000000)">
+                        <polygon id="路径" points="35.8 54.6 19 42.6 39.4 42 46 22.2 53.2 42 73.6 42 57.4 54.6 63.4 74.4 46.6 62.4 29.8 74.4"></polygon>
+                        <path d="M64.6,7.8 L71.8,0 L20.8,0 L28,7.8 C11.8,15 0.4,31.2 0.4,49.8 C0.4,75 20.8,95.4 46,95.4 C71.2,95.4 91.6,75 91.6,49.8 C92.2,31.2 80.8,15 64.6,7.8 Z M46.6,84 C28,84 12.4,68.4 12.4,49.8 C12.4,31.2 27.4,16.2 46,16.2 C64.6,16.2 79.6,31.2 79.6,49.8 C80.2,68.4 65.2,84 46.6,84 Z" id="形状"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

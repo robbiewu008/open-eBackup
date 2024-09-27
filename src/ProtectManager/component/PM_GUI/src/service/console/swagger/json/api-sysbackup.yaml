@@ -1,0 +1,804 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 系统管理数据备份
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: sysbackup-api
+    description: 系统管理数据备份
+paths:
+  /v1/sysbackup/images:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sysbackup-api
+      summary: 备份记录列表
+      operationId: listUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: backupType
+          in: query
+          description: 备份类型(MANUAL(0),AUTO(1))
+          required: false
+          type: array
+          items:
+            type: integer
+            format: int64
+          collectionFormat: multi
+        - name: orderBy
+          in: query
+          description: 排序字段
+          required: false
+          type: string
+        - name: orderType
+          in: query
+          description: 排序类型
+          required: false
+          type: string
+          x-example: asc
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          maximum: 200.0
+          minimum: 0.0
+          format: int32
+          x-example: 10
+        - name: startPage
+          in: query
+          description: 分页起始页面
+          required: false
+          type: integer
+          minimum: 0.0
+          format: int32
+          x-example: 0
+        - name: status
+          in: query
+          description: >-
+            备份记录状态(CREATING(1),AVAILABLE(2),INVALID(3),RESTORING(4),BACKUP_FAILED(5),RESTORE_FAILED(6))
+          required: false
+          type: array
+          items:
+            type: integer
+            format: int32
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse«SystemBackupResponseBody»'
+            originalRef: PageListResponse«SystemBackupResponseBody»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sysbackup-api
+      summary: 导入备份
+      operationId: uploadBackupUsingPOST
+      consumes:
+        - multipart/form-data
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: file
+          in: formData
+          description: 系统管理备份文件
+          required: false
+          type: file
+        - name: needSignVerify
+          in: query
+          required: false
+          description: 是否验签
+          type: boolean
+          default: true
+        - name: password
+          in: formData
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ResponseEntity'
+            originalRef: ResponseEntity
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/sysbackup/images/{imagesId}:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sysbackup-api
+      summary: 获取备份详情
+      operationId: getBackupUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: imagesId
+          in: path
+          description: 备份记录ID
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SystemBackup'
+            originalRef: SystemBackup
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sysbackup-api
+      summary: 删除备份
+      operationId: deleteBackupUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: imagesId
+          in: path
+          description: 备份记录ID
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SystemBackupCommonResponseBody'
+            originalRef: SystemBackupCommonResponseBody
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+  /v1/sysbackup/images/{imagesId}/action/download:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sysbackup-api
+      summary: 下载备份
+      operationId: downloadBackupUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: imagesId
+          in: path
+          description: 备份记录ID
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/sysbackup/images/{imagesId}/action/recovery:
+    post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sysbackup-api
+      summary: 执行系统备份恢复
+      operationId: recoveryUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: imagesId
+          in: path
+          description: 备份记录ID
+          required: true
+          type: string
+        - in: body
+          name: rsq
+          description: 执行恢复请求信息
+          required: false
+          schema:
+            $ref: '#/definitions/SystemBackupRecoveryRequest'
+            originalRef: SystemBackupRecoveryRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SystemBackupCommonResponseBody'
+            originalRef: SystemBackupCommonResponseBody
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/sysbackup/policy:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sysbackup-api
+      summary: 获取备份策略
+      operationId: getPolicyUsingGET_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SystemBackupPolicyResponseBody'
+            originalRef: SystemBackupPolicyResponseBody
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sysbackup-api
+      summary: 增加或修改备份策略
+      operationId: modifyPolicyUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: systemBackupPolicyRequest
+          description: 增加或修改备份策略请求信息
+          required: false
+          schema:
+            $ref: '#/definitions/SystemBackupPolicyRequest'
+            originalRef: SystemBackupPolicyRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SystemBackupCommonResponseBody'
+            originalRef: SystemBackupCommonResponseBody
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/sysbackup/policy/action/run:
+    post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sysbackup-api
+      summary: 执行系统备份
+      operationId: backupUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: rsq
+          description: 手动备份请求信息
+          required: false
+          schema:
+            $ref: '#/definitions/SystemBackupRequest'
+            originalRef: SystemBackupRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SystemBackupCommonResponseBody'
+            originalRef: SystemBackupCommonResponseBody
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/sysbackup/sftp/connection:
+    post:
+      tags:
+        - sysbackup-api
+      summary: 测试SFTP服务器连通性
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 检测sftp服务器连通性
+      operationId: testSftpConnection
+      parameters:
+        - name: request
+          in: body
+          required: false
+          description: 校验sftp服务器连通性
+          schema:
+            $ref: '#/definitions/SftpConnectionTestRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SystemBackupCommonResponseBody'
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  PageListResponse«SystemBackupResponseBody»:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 分页查询结果列表
+        items:
+          $ref: '#/definitions/SystemBackupResponseBody'
+          originalRef: SystemBackupResponseBody
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数
+    title: PageListResponse«SystemBackupResponseBody»
+  ResponseEntity:
+    type: object
+    properties:
+      body:
+        type: object
+      statusCode:
+        type: string
+        enum:
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 425 TOO_EARLY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
+      statusCodeValue:
+        type: integer
+        format: int32
+    title: ResponseEntity
+  SystemBackup:
+    type: object
+    properties:
+      backupDesc:
+        type: string
+      backupErrorcode:
+        type: string
+      backupPath:
+        type: string
+      backupSize:
+        type: integer
+        format: int64
+      backupTime:
+        $ref: '#/definitions/Timestamp'
+        originalRef: Timestamp
+      backupType:
+        type: integer
+        format: int32
+      id:
+        type: integer
+        format: int64
+      status:
+        type: integer
+        format: int32
+    title: SystemBackup
+  SystemBackupCommonResponseBody:
+    type: object
+    properties:
+      code:
+        type: string
+        description: 备份结果错误码
+      message:
+        type: string
+        description: 备份结果信息
+      success:
+        type: boolean
+        description: 备份结果（true or false）
+    title: SystemBackupCommonResponseBody
+  SystemBackupPolicyRequest:
+    type: object
+    properties:
+      backupPwd:
+        type: string
+        description: 策略备份密码
+      backupTime:
+        type: string
+        description: 策略备份时间点
+        pattern: ^([0]?\d{1}|[2][0-3]{1}|[1]\d{1})\:[0-5]?[0-9]{1}$
+      destIp:
+        type: string
+        description: 策略备份目标机IP
+        pattern: >-
+          ([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}|^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){6,6}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,1}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,4}):((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|:((:[0-9a-fA-F]{1,4}){1,5}):((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|:((:[0-9a-fA-F]{1,4}){1,7}|:)|[Ff][Ee]08:(:[0-9a-fA-F]{1,4}){2,2}%[0-9a-zA-Z]{1,}|(0{1,4}:){6,6}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,4}:(0{1,4}:)((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,3}:(0{1,4}:){1,2}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,2}:(0{1,4}:){1,3}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:):(0{1,4}:){1,4}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|::(0{1,4}:){1,5}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){5,5}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,4}:[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,3}:(0{1,4}:)[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:){1,2}:(0{1,4}:){1,2}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|(0{1,4}:):(0{1,4}:){1,3}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|::(0{1,4}:){1,4}[Ff]{4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)|::([Ff]{4}:){0,1}((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d))$
+      destPath:
+        type: string
+        description: 策略备份目标机路径
+      destPort:
+        type: string
+        description: 策略备份目标机端口
+      destPwd:
+        type: string
+        description: 策略备份目标机密码
+      destType:
+        type: integer
+        format: int32
+        description: 策略备份类型(1：SFTP,2：FTPs,3：S3）
+      destUsername:
+        type: string
+        description: 策略备份目标机名称
+      id:
+        type: integer
+        format: int64
+        description: 策略备份ID
+      keepCount:
+        type: integer
+        format: int32
+        description: 策略备份保持数量
+        minimum: 3.0
+        maximum: 20.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+    title: SystemBackupPolicyRequest
+  SystemBackupPolicyResponseBody:
+    type: object
+    properties:
+      backupTime:
+        type: string
+        description: 策略备份时间点
+      defaultPolicy:
+        type: integer
+        format: int32
+        description: 默认策略标识（1：默认策略，0：非默认）
+      destIp:
+        type: string
+        description: 策略备份目标机IP
+      destPath:
+        type: string
+        description: 策略备份目标机路径
+      destPort:
+        type: string
+        description: 策略备份目标机端口
+      destType:
+        type: integer
+        format: int32
+        description: 策略备份类型(1：SFTP,2：FTPs,3：S3）
+      destUsername:
+        type: string
+        description: 策略备份目标机名称
+      id:
+        type: integer
+        format: int64
+        description: 策略备份ID
+      keepCount:
+        type: integer
+        format: int32
+        description: 策略备份保持数量
+    title: SystemBackupPolicyResponseBody
+  SystemBackupRecoveryRequest:
+    type: object
+    properties:
+      password:
+        type: string
+        description: 备份密码
+    title: SystemBackupRecoveryRequest
+  SystemBackupRequest:
+    type: object
+    properties:
+      desc:
+        type: string
+        description: 备份记录描述信息
+    title: SystemBackupRequest
+  SystemBackupResponseBody:
+    type: object
+    properties:
+      backupDesc:
+        type: string
+        description: 备份记录描述信息
+      backupErrorcode:
+        type: string
+        description: 备份记录错误码
+      backupPath:
+        type: string
+        description: 备份路径
+      backupSize:
+        type: integer
+        format: int64
+        description: 备份记录大小
+      backupTime:
+        description: 备份创建时间点
+        $ref: '#/definitions/Timestamp'
+        originalRef: Timestamp
+      backupType:
+        type: integer
+        format: int32
+        description: 备份类型(MANUAL(0),AUTO(1))
+      id:
+        type: integer
+        format: int64
+        description: 备份记录ID
+      status:
+        type: integer
+        format: int32
+        description: >-
+          备份记录状态(CREATING(1),AVAILABLE(2),INVALID(3),RESTORING(4),BACKUP_FAILED(5),RESTORE_FAILED(6))
+    title: SystemBackupResponseBody
+  Timestamp:
+    type: object
+    properties:
+      date:
+        type: integer
+        format: int32
+      day:
+        type: integer
+        format: int32
+      hours:
+        type: integer
+        format: int32
+      minutes:
+        type: integer
+        format: int32
+      month:
+        type: integer
+        format: int32
+      nanos:
+        type: integer
+        format: int32
+      seconds:
+        type: integer
+        format: int32
+      time:
+        type: integer
+        format: int64
+      timezoneOffset:
+        type: integer
+        format: int32
+      year:
+        type: integer
+        format: int32
+    title: Timestamp
+  SftpConnectionTestRequest:
+    type: object
+    description: ftp连通性
+    properties:
+      ip:
+        type: string
+        description: sftp 服务器IP
+      username:
+        type: string
+        description: sftp 服务器用户名
+      password:
+        type: string
+        description: sftp 服务器密码
+      port:
+        type: string
+        description: sftp 服务器端口

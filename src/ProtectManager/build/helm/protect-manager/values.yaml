@@ -1,0 +1,58 @@
+# Default values for Infrastructure.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+imageVersion: ${NewAppVersion}
+
+local:
+  environment: Dorado
+  replicas: 1
+
+pmGui:
+  cpu: "0.5"
+  memory: "2Gi"
+
+pmSystemBase:
+  cpu: "2.0"
+  memory: "4.5Gi"
+
+pmAccessPoint:
+  cpu: "1.0"
+  memory: "2Gi"
+
+pmProtectionService:
+  cpu: "1.5"
+  memory: "2.5Gi"
+
+pmCopiesCatalog:
+  cpu: "0.5"
+  memory: "2Gi"
+
+pmResourceManager:
+  cpu: "1.0"
+  memory: "2Gi"
+
+pmResourceLockManager:
+  cpu: "0.2"
+  memory: "2Gi"
+
+pmLiveMount:
+  memory: "2Gi"
+  cpu: "0.5"
+
+pmAgentManager:
+  memory: "2Gi"
+  cpu: "0.5"
+
+pmScheduler:
+  memory: "2Gi"
+  cpu: "1.5"
+
+pmNginx:
+  cpu: "0.5"
+  memory: "200Mi"
+
+# pm config port
+pm_config_port: 30175

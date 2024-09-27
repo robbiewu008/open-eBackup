@@ -1,0 +1,161 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="hostFormGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_ip_address_segment_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="ipsErrorTip">
+            <input type="text" formControlName="ip" lv-input />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{includes([dataMap.OS_Type.Linux.value,dataMap.OS_Type.Unix.value,dataMap.OS_Type.solaris.value],formGroup.value.osType)
+            ? ('protection_agent_ssh_port_label' | i18n)
+            : ('common_port_label' | i18n) }}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_register_agent_ports_label' | i18n}}"
+                class="configform-constraint" lvTooltipPosition="rightTop" lvTooltipTheme="light"
+                lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="portErrorTip">
+            <input type="text" formControlName="port" lv-input placeholder={{portTips}} />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="isHcsEnvir || isHcsUser">
+        <lv-form-label>
+            {{'common_az_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select [lvOptions]="azOptions" formControlName="az" lvValueKey="value" lvShowClear></lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item
+        *ngIf="includes([dataMap.OS_Type.Linux.value,dataMap.OS_Type.Unix.value,dataMap.OS_Type.solaris.value],formGroup.value.osType)">
+        <lv-form-label lvRequired>
+            {{'protection_agent_sftp_port_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="portErrorTip">
+            <input type="text" formControlName='sftpPort' lv-input>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.value.osType === dataMap.OS_Type.Windows.value">
+        <lv-form-label lvRequired>
+            {{'common_isbusiness_ip_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'common_isbusiness_ip_tips_label' | i18n}}"
+                class="configform-constraint" lvTooltipPosition="rightTop" lvTooltipTheme="light"
+                lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select [lvOptions]="isBusinessOptions" formControlName="businessIpFlags" lvValueKey="value"></lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="includes([dataMap.OS_Type.Linux.value, dataMap.OS_Type.Unix.value], formGroup.value.osType)">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_user_type_label' | i18n}}
+                <i lv-icon="aui-icon-help" class="configform-constraint"
+                    lv-tooltip="{{'common_user_type_help_label' | i18n}}" lvTooltipPosition="rightTop"
+                    lvTooltipTheme="light" lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select [lvOptions]='userTypeOptions' lvValueKey='value' formControlName='userType'>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="hostFormGroup.value.userType === dataMap.userType.common.value">
+            <lv-form-label lvRequired>
+                {{'common_sudo_no_pwd_label' | i18n}}
+                <i lv-icon="aui-icon-help" class="configform-constraint"
+                    lv-tooltip="{{'common_sudo_no_pwd_tip_label' | i18n}}" lvTooltipPosition="rightTop"
+                    lvTooltipTheme="light" lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select [lvOptions]="passwordTypeOptions" lvValueKey='value'
+                    formControlName='passwordType'></lv-select>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_username_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="usernameErrorTip">
+            <input type="text" formControlName="username" lv-input />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_password_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="passwordErrorTip">
+            <aui-inupt-with-eye formControlName="password"></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item
+        *ngIf="includes([dataMap.OS_Type.Linux.value, dataMap.OS_Type.Unix.value], formGroup.value.osType) && hostFormGroup.value.userType === dataMap.userType.common.value && !hostFormGroup.value.passwordType">
+        <lv-form-label lvRequired>
+            {{'common_sudo_password_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="passwordErrorTip">
+            <aui-inupt-with-eye formControlName="sudoPassword"></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="isDistributed">
+        <div class="dpc-node-checkbox warning-checkbox">
+            <label lv-checkbox formControlName="isDpcNode">
+                {{'protection_dpc_compute_node_label' | i18n}}
+            </label>
+        </div>
+        <ng-container *ngIf="hostFormGroup.value.isDpcNode">
+            <p class="aui-text-label network-title aui-gutter-column-md">
+                {{'protection_front_storage_info_label' | i18n}}
+            </p>
+            <div formArrayName="networkInfo">
+                <ng-container *ngFor="let item of networkInfo; let i=index">
+                    <div class="network-container" [formGroupName]="i">
+                        <lv-group class="delete-info-group">
+                            <lv-group></lv-group>
+                            <span *ngIf="networkInfo.length > 1" class="aui-link" (click)="deleteNetworkInfo(i)">
+                                {{'common_delete_label' | i18n}}
+                            </span>
+                        </lv-group>
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{ 'protection_front_storage_ip_label' | i18n }}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="ipsErrorTip">
+                                <input type="text" formControlName="storageIp" lv-input />
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label>
+                                {{ 'common_gateway_label' | i18n }}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="ipsErrorTip">
+                                <input type="text" formControlName="storageGateway" lv-input />
+                            </lv-form-control>
+                        </lv-form-item>
+                    </div>
+                </ng-container>
+            </div>
+            <lv-group lvGutter='8px' class="add-info-group"
+                [ngClass]="{'aui-link': networkInfo.length < 4, 'aui-link-disabled': networkInfo.length >= 4}"
+                (click)="addNetworkInfo()">
+                <i lv-icon="{{networkInfo.length < 4 ? 'aui-icon-add-enable' : 'lv-icon-create'}}"></i>
+                <span class="text-middle">{{'common_add_label' | i18n}}</span>
+            </lv-group>
+        </ng-container>
+    </ng-container>
+</lv-form>

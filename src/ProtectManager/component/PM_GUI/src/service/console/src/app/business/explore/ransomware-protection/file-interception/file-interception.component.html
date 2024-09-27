@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="overview-tag">
+        <lv-group lvGutter="24px" class="title-group">
+            <img src="assets/img/file_interception_brand.svg" class="logo">
+            <lv-group lvGutter="8px" lvDirection='vertical'>
+                <h1>{{'explore_file_block_label' | i18n}}</h1>
+                <span class="aui-text-label desc-font">
+                    {{'explore_file_interception_help_label' | i18n}}
+                </span>
+            </lv-group>
+        </lv-group>
+        <lv-group lvGutter="56px" class="statistic-group">
+            <lv-group lvGutter="8px" lvDirection='vertical'>
+                <h1 class="summary-count">
+                    {{protectedFileSystem}}<span class="total-count-summay">/{{totalFileSystem}}</span>
+                </h1>
+                <span class="aui-text-label desc-font">
+                    {{'explore_protected_filesystem_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_cyber_engine_detection_tip_label' | i18n}}"></i>
+                </span>
+            </lv-group>
+            <lv-group lvGutter="8px" lvDirection='vertical'>
+                <h1 class="summary-count">{{totalRule}}</h1>
+                <span class="aui-text-label desc-font">
+                    {{'explore_blocking_files_rules_label' | i18n}}
+                </span>
+            </lv-group>
+        </lv-group>
+    </div>
+    <div class="aui-block aui-paginator-container">
+        <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+            <lv-tab [lvTitle]="'common_file_systems_label' | i18n" [lvId]="'fileSystem'">
+                <ng-template lv-tab-lazy>
+                    <aui-interception-file-system
+                        (refreshFileSystem)="refreshFileSystem()"></aui-interception-file-system>
+                </ng-template>
+            </lv-tab>
+            <lv-tab [lvTitle]="'explore_blocking_files_rules_label' | i18n" [lvId]="'filterRule'">
+                <ng-template lv-tab-lazy>
+                    <aui-interception-filter-rule (refreshRule)="refreshRule()"></aui-interception-filter-rule>
+                </ng-template>
+            </lv-tab>
+        </lv-tabs>
+    </div>
+</div>

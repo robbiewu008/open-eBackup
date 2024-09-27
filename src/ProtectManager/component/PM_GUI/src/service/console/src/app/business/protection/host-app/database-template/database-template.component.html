@@ -1,0 +1,87 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation">
+  <lv-group>
+    <lv-pro-button-group
+      [config]="optsConfig"
+      [bindData]="selectionData"
+      [maxDisplayItems]="maxItems"
+    >
+    </lv-pro-button-group>
+  </lv-group>
+  <lv-group [lvGutter]="groupCommon.middleRowGutter">
+    <lv-search
+      [lvFocus]="true"
+      [(ngModel)]="name"
+      (lvSearch)="search()"
+      [lvPlaceHolder]="placeholder"
+    >
+    </lv-search>
+    <button
+      class="aui-button-icon"
+      lv-button
+      lvSize="auto"
+      (click)="dataTable.fetchData()"
+    >
+      <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+    </button>
+  </lv-group>
+</div>
+<div class="list-container">
+  <lv-pro-table
+    #dataTable
+    [config]="tableConfig"
+    [data]="tableData"
+  ></lv-pro-table>
+</div>
+
+<ng-template #slaComplianceExtraTpl>
+  <div class="custom-icon">
+  <aui-sla-compliance-tooltip></aui-sla-compliance-tooltip>
+  </div>
+</ng-template>
+
+<ng-template #typeTpl let-item>
+  <span lv-overflow>{{ item.clusterType | textMap:'dbTwoType' }}</span>
+</ng-template>
+
+<ng-template #enableLogBackupTpl let-item>
+  <span lv-overflow>{{ item.enableLogBackup | textMap:'saphanaSwitchStatus' }}</span>
+</ng-template>
+
+<ng-template #databaseTypeTpl let-item>
+  <span lv-overflow>{{ item.sapHanaDbType | textMap:'saphanaDatabaseType' }}</span>
+</ng-template>
+
+<ng-template #logBackupTpl let-item>
+  <span lv-overflow>{{ item.logBackup | textMap:'logBackupStatus' }}</span>
+</ng-template>
+
+<ng-template #sapHanaDbDeployType let-item>
+  <span lv-overflow> {{item.sapHanaDbDeployType | textMap:'saphanaDatabaseDeployType'}}</span>
+</ng-template>
+
+<ng-template #resourceTagTpl let-item>
+  <ng-container *ngIf="item?.labelList?.length; else emptyTpl">
+    <lv-tag [ngModel]="item?.showLabelList" [lv-tooltip]="TagTpl"></lv-tag>
+    <ng-template #TagTpl>
+      <lv-tag [ngModel]="item?.hoverLabelList"></lv-tag>
+    </ng-template>
+  </ng-container>
+</ng-template>
+
+<ng-template #emptyTpl>
+  --
+</ng-template>
+

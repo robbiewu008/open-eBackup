@@ -1,0 +1,89 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+  <div class="overview-tag">
+    <lv-group [lvColumns]="['122px', 'auto']" lvRowGutter="24px" class="group-mgr">
+      <div class="report-brand"></div>
+      <lv-group lvGutter="8px" lvDirection="vertical">
+        <h1>{{ 'explore_desensitization_reports_label' | i18n }}</h1>
+        <span class="aui-text-label desc-font">
+          {{ 'explore_detection_report_help_label' | i18n }}
+        </span>
+      </lv-group>
+    </lv-group>
+    <lv-group lvGutter="56px" class="statistic-group">
+      <lv-group lvGutter="8px" lvDirection="vertical">
+        <h1 class="summary-count">
+          {{ totalInfected }}
+        </h1>
+        <span class="aui-text-label desc-font">
+          {{ 'explore_infected_report_label' | i18n }}
+        </span>
+      </lv-group>
+      <lv-group lvGutter="8px" lvDirection="vertical">
+        <h1 class="summary-count">{{ totalUnInfected }}</h1>
+        <span class="aui-text-label desc-font">
+          {{ 'explore_not_infected_report_label' | i18n }}
+        </span>
+      </lv-group>
+      <div class="group-line"></div>
+      <lv-group lvGutter="8px" lvDirection="vertical">
+        <h1 class="summary-count">{{ totalReport }}</h1>
+        <span class="aui-text-label desc-font">
+          {{ 'explore_all_report_label' | i18n }}
+        </span>
+      </lv-group>
+    </lv-group>
+  </div>
+  <div class="aui-block aui-paginator-container">
+    <div class="aui-operation">
+      <lv-group lvGutter="8px">
+        <button lv-button lvType="primary" (click)="addReported()" pmpermission pmOperation="AddReport">
+          {{ 'common_add_label' | i18n }}
+        </button>
+        <button lv-button [disabled]="selection.length === 0" (click)="remove(selection)" pmpermission
+          pmOperation="DeleteReport">
+          {{ 'common_delete_label' | i18n }}
+        </button>
+      </lv-group>
+      <lv-group lvGutter="8px">
+        <lv-group lvGutter="8px">
+          <lv-search #searchCmpt [lvFocus]="true" (lvSearch)="search($event)"
+            lvPlaceHolder="{{ 'common_file_system_report_label' | i18n }}">
+          </lv-search>
+          <button class="aui-button-icon" lv-button lvSize="auto" (click)="loadData(true)">
+            <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+          </button>
+        </lv-group>
+      </lv-group>
+    </div>
+    <div class="list-container">
+      <report-list-item *ngFor="let item of listData" class="list-item" [item]="item" [showProgress]="item.showProgress"
+        [progressValue]="item.progressValue" (selectedChange)="selectChange($event)" (remove)="remove([item])"
+        (view)="getDetail(item)"></report-list-item>
+    </div>
+    <ng-container *ngIf="total > 0; else elseTemplate">
+      <lv-paginator #paginator [lvPageSize]="pageSize" [lvTotal]="total" [lvPageIndex]="page - 1"
+        (lvPageChange)="pageChange($event)"></lv-paginator>
+    </ng-container>
+    <ng-template #elseTemplate>
+      <div class="no-data">
+        <i lv-icon="lv-icon-no-data"></i>
+        <div class="no-data-label">
+          {{'common_no_data_label'|i18n}}
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>

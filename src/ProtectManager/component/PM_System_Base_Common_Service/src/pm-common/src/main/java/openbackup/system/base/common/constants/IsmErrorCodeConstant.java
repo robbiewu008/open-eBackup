@@ -1,0 +1,34 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+package openbackup.system.base.common.constants;
+
+/**
+ * 错误码
+ *
+ * @author l90003110
+ * @version [RD V100R002C10, 2010-11-29]
+ * @since 2019-10-30
+ */
+public class IsmErrorCodeConstant {
+    /**
+     * 系统异常
+     */
+    public static final long SYSTEM_EXCEPTION = 2099465L;
+
+    /**
+     * 参数错误（20140109从RD错误码定义中提升为公共错误码）
+     */
+    public static final long ERR_PARAM = 1677929220L;
+
+    private IsmErrorCodeConstant() {}
+}

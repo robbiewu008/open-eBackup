@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring Files in a NAS File System">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792360730.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792360722">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring Files in a NAS File System</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792360722"></a><a name="EN-US_TOPIC_0000001792360722"></a>
+  <h1 class="topictitle1">Restoring Files in a NAS File System</h1>
+  <div>
+   <p>This section describes how to restore specified files in a NAS file system that has been backed up to their original location, new locations, or local locations.</p>
+   <div class="section" id="EN-US_TOPIC_0000001792360722__section14342462311">
+    <h4 class="sectiontitle">Context</h4>
+    <ul id="EN-US_TOPIC_0000001792360722__ul1684123102616">
+     <li id="EN-US_TOPIC_0000001792360722__li15684153110268">The <span id="EN-US_TOPIC_0000001792360722__text19278102815148">product</span> supports file-level restoration using backup copies.</li>
+    </ul>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000001792360722__section867133810186">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p id="EN-US_TOPIC_0000001792360722__p15863642111819">If a folder or file name contains garbled characters, file-level restoration is not supported. Do not select folders or files of this type. Otherwise, file-level restoration fails.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>File-level restoration is supported only when the index status of the copy is <span class="uicontrol" id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792387972_uicontrol97339520371"><b><span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792387972_text2731115273712"><strong>Indexed</strong></span></b></span>.</li>
+     <li>To restore a NAS file system to a new location, a storage device residing at the new location needs to be added to the <span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_text1511818204144">product</span>. For details about how to add a storage device, see <a href="en-us_topic_0000001792360666.html">Step 2: Adding a Storage Device</a>. The following lists the supported storage device types.
+      <ul id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_ul1094984711471">
+       <li id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001253534369_li984654311123">OceanStor Dorado 6.x</li>
+       <li id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001253534369_li374214321505">OceanStor 6.x</li>
+       <li id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001253534369_li177631111101216">OceanStor V5</li>
+       <li id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001253534369_li3357311117">OceanStor Pacific</li>
+       <li id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001253534369_li157481128412">NetApp ONTAP</li>
+       <li id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_li72988389413">OceanProtect 1.3.0 and later versions</li>
+      </ul></li>
+     <li>If a NAS file system is restored to a new location, create a target NAS file system on the storage device where the new location resides and configure a NAS share that uses the same share protocol as the copy to be restored. This is because the NAS file system is restored to a new location through NAS share. Therefore, you need to configure NAS share.</li>
+     <li>If you want to restore a NAS file system to a new location, you need to configure the access permission for the <span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_text17718172011416">product</span> on the new storage device. For details, see <a href="en-us_topic_0000001839239777.html">Step 5: Configuring Access Permissions</a>. During the operation, configure a client or add a user for the target NAS share.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001839142377_uicontrol097351016491"><b><span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001839142377_text79731210144915"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001839142377_text797381084918"><strong>Copy Data</strong></span> &gt; File Systems &gt; <span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001839142377_text75601138121416"><strong>NAS File Systems</strong></span></b></span>.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001839142377_note414014816184">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001839142377_p15140194811813">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001839142377_uicontrol117221257171816"><b><span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001839142377_text1772265701816"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001839142377_text1272245713186"><strong>Copy Data</strong></span> &gt; File Services &gt; <span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001839142377_text2072255721815"><strong>NAS File Systems</strong></span></b></span>.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Copies can be searched by NAS file system resource or copy. This section uses the NAS file system resource as an example.</span><p></p><p id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_p142551140161511">On the <span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_text6827103218214"><strong>Resources</strong></span> tab page, locate the NAS file system to be recovered by file system name and click the name.</p> <p></p></li>
+     <li><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_uicontrol1812414562220"><b><span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_text18993182162710"><strong>Copy Data</strong></span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p></p><p id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_p9918150182310">If <span><img id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_image886000161711" src="en-us_image_0000001792520510.png"></span> is displayed below a month or day, a copy is generated in the month or day.</p> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792360722__li7995952193812"><span>Locate the copy for restoration and click <span class="uicontrol" id="EN-US_TOPIC_0000001792360722__uicontrol144673212457"><b><span id="EN-US_TOPIC_0000001792360722__text16241181213589"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000001792360722__text6433142318586"><strong>File-level Restoration</strong></span></b></span> on the right of the row where the copy is located.</span></li>
+     <li><span>Select the object to be restored and the restoration target location.</span><p></p><p>The restoration target location can be <span><strong>Original location</strong></span>, <span><strong>New location</strong></span>, or <span><strong>Local Host Location</strong></span>.</p>
+      <ul>
+       <li><span><strong>Original location</strong></span>: Restores data to the original file system.</li>
+       <li><span><strong>New location</strong></span>: Restores data to the file system of another device.</li>
+       <li><span><strong>Local Host Location</strong></span>: Restores data to the <span>product</span>.</li>
+      </ul> <p>For details about the parameters of the original location, see <a href="#EN-US_TOPIC_0000001792360722__table15751633235">Table 1</a>. For details about the parameters of a new location, see <a href="en-us_topic_0000001792520482.html#EN-US_TOPIC_0000001792520482__table429861453516">Table 2</a> and <a href="en-us_topic_0000001792520482.html#EN-US_TOPIC_0000001792520482__table1248313820599">Table 3</a>. <a href="#EN-US_TOPIC_0000001792360722__table165841851143">Table 2</a> describes the local location parameters.</p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000001792360722__table15751633235"></a><a name="table15751633235"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792360722__table15751633235" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Parameters for restoring data to the original location
+        </caption>
+        <colgroup>
+         <col style="width:10.56%">
+         <col style="width:89.44%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="10.56%" id="mcps1.3.5.2.5.2.4.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="89.44%" id="mcps1.3.5.2.5.2.4.2.3.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="10.56%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p><span><strong>Location</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="89.44%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p>Location of a file system, which cannot be modified.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="10.56%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p><span><strong>Share Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="89.44%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p>Select the name of the share that accesses a file system.</p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <ul id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_ul1132413149512">
+              <li id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_li232417146518">For an NFS share, ensure that the current device has the read and write permissions on the NFS share directory and the <strong id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_en-us_topic_0000001839159869_b576222612114">no_root_squash</strong> option is enabled. For details about how to configure NFS share access permissions, see <a href="en-us_topic_0000001839239777.html">Step 5: Configuring Access Permissions</a>.</li>
+              <li id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001792520482_li77121156195115">For a CIFS share, ensure that the current device has the read and write permissions on the CIFS share directory. You are advised to use a username in the Administrator group for backup. Otherwise, only files and directories that have granted the read and write permissions to the device can be backed up. For details about how to configure CIFS share access permissions, see <a href="en-us_topic_0000001839239777.html">Step 5: Configuring Access Permissions</a>.</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="10.56%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p><span><strong>FQDN/IP</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="89.44%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p>FQDN name or service IP address for accessing a NAS share.</p> <p>The FQDN format is <em id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001839239733_i49311011216">Name of the storage device where a NAS share resides</em><strong id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001839239733_b204885331765">.</strong><em id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001839239733_i958914467218">Name of the domain to which the storage device is added</em>. For example, if the name of the storage device where a NAS share resides is <em id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001839239733_i204212020122214">Huawei.Storage</em> and the name of the domain to which the storage device is added is <em id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001839239733_i1753954152210">huawei.com</em>, the name of the FQDN is <em id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001839239733_i10270135592211">Huawei.Storage.huawei.com</em>.</p>
+           <div class="note">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001839239733_p53320310365">If the FQDN name is required, configure the DNS service on the device management page of the <span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001839239733_text45421758151311">product</span> so that the <span id="EN-US_TOPIC_0000001792360722__en-us_topic_0000001839239733_text4110125920135">product</span> can access external domain names. For details about how to configure the DNS service, see <a href="en-us_topic_0000001839159813.html">Configuring the DNS Service</a>.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="10.56%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p><span><strong>Authentication Method</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="89.44%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p>Authentication mode of a file system. This parameter is available when the share protocol of a backup copy is CIFS. For details about this parameter, see <a href="en-us_topic_0000001839239733.html#EN-US_TOPIC_0000001839239733__table1929515516558">Table 1</a>.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="10.56%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p><span><strong>Overwrite Rule</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="89.44%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p>If a file with the same name exists in the restoration path, you can select replacing or skipping the existing file.</p>
+           <ul>
+            <li><span><strong>Replace existing files</strong></span></li>
+            <li><span><strong>Skip existing files</strong></span></li>
+            <li><span><strong>Only replace the files older than the restoration file</strong></span></li>
+           </ul></td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000001792360722__table165841851143"></a><a name="table165841851143"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792360722__table165841851143" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 2 </b>Parameters for restoring data to the local location
+        </caption>
+        <colgroup>
+         <col style="width:10.54%">
+         <col style="width:89.46%">
+        </colgroup>
+        <thead align="left">
+         <tr id="EN-US_TOPIC_0000001792360722__row6585115119414">
+          <th align="left" class="cellrowborder" valign="top" width="10.54%" id="mcps1.3.5.2.5.2.5.2.3.1.1"><p id="EN-US_TOPIC_0000001792360722__p1658575112415">Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="89.46%" id="mcps1.3.5.2.5.2.5.2.3.1.2"><p id="EN-US_TOPIC_0000001792360722__p175851451349">Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="EN-US_TOPIC_0000001792360722__row1158517518417">
+          <td class="cellrowborder" valign="top" width="10.54%" headers="mcps1.3.5.2.5.2.5.2.3.1.1 "><p id="EN-US_TOPIC_0000001792360722__p158517511048"><span id="EN-US_TOPIC_0000001792360722__text191084227520"><strong>File Systems</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="89.46%" headers="mcps1.3.5.2.5.2.5.2.3.1.2 "><p id="EN-US_TOPIC_0000001792360722__p15851451646">Select the file system to be restored to the local device. When restoring data to the local location for the first time, you can click <span class="uicontrol" id="EN-US_TOPIC_0000001792360722__uicontrol124218413611"><b><span id="EN-US_TOPIC_0000001792360722__text128775231364"><strong>Create</strong></span></b></span> to create a file system. For details about how to create a file system, see <a href="en-us_topic_0000001792360710.html">Creating a File System</a>.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001792360722__row1358516511642">
+          <td class="cellrowborder" valign="top" width="10.54%" headers="mcps1.3.5.2.5.2.5.2.3.1.1 "><p id="EN-US_TOPIC_0000001792360722__p1725084223716"><span id="EN-US_TOPIC_0000001792360722__text132479819312"><strong>Overwrite Rule</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="89.46%" headers="mcps1.3.5.2.5.2.5.2.3.1.2 "><p id="EN-US_TOPIC_0000001792360722__p172501042153719">If a file with the same name exists in the restoration path, you can select replacing or skipping the existing file.</p>
+           <ul id="EN-US_TOPIC_0000001792360722__ul15250642173717">
+            <li id="EN-US_TOPIC_0000001792360722__li52501642173711"><span id="EN-US_TOPIC_0000001792360722__text14250042193711"><strong>Replace existing files</strong></span></li>
+            <li id="EN-US_TOPIC_0000001792360722__li15250154283711"><span id="EN-US_TOPIC_0000001792360722__text52507424377"><strong>Skip existing files</strong></span></li>
+            <li id="EN-US_TOPIC_0000001792360722__li22501342183719"><span id="EN-US_TOPIC_0000001792360722__text32501742143716"><strong>Only replace the files older than the restoration file</strong></span></li>
+           </ul></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001792360730.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

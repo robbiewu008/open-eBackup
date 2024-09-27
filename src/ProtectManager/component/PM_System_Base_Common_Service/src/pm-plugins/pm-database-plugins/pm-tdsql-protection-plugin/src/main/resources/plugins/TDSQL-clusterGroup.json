@@ -1,0 +1,16 @@
+{
+  "type": "Database",
+  "subType": "TDSQL-clusterGroup",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "environment": "agents"
+        }
+      ]
+    },
+    "scan": {
+      "auto-scan": false
+    }
+  }
+}

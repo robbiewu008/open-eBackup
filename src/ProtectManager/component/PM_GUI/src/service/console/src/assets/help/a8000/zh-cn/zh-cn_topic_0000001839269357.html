@@ -1,0 +1,103 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="将代理主机加入华为分布式存储OceanStor Pacific（适用于FusionCompute）">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839269357">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>将代理主机加入华为分布式存储OceanStor Pacific（适用于FusionCompute）</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001839269357"></a><a name="ZH-CN_TOPIC_0000001839269357"></a>
+
+<h1 class="topictitle1">将代理主机加入华为分布式存储OceanStor Pacific（适用于FusionCompute）</h1>
+<div><p>当受保护环境FusionCompute的生产存储为华为分布式块存储集群时，需将代理主机加入华为分布式块存储集群，以便对FusionCompute进行备份。本节为华为分布式块存储为OceanStor Pacific 8.1.x为例说明。</p>
+<div class="section"><h4 class="sectiontitle">安装VBS</h4><p id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549972_p04301219055">安装VBS服务的详细操作，请参见存储设备对应版本的《产品文档》中的“分配存储空间（SCSI协议-Linux）&gt; 在计算节点上创建VBS”章节。计算节点，即为代理主机。其中部分配置参数说明如下，其余参数请按文档要求填写。</p>
+<ul id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549972_ul996111581773"><li id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549972_li1096110589719">管理IP地址：代理主机管理IP地址</li><li id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549972_li149611258279">机柜：代理主机所在机柜【任意值】</li><li id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549972_li49619581879">节点角色：计算</li><li id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549972_li119612582075">安装模式：常规安装</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">替换OceanStor Pacific证书</h4><ol><li><span>登录技术支持网站，获取华为云Stack使用的OceanStor Pacific的API包。</span><p><div class="p" id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_p560372712219">API包获取路径如下：<ul id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_ul46031271529"><li id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_li2060382719212">企业网：<a href="https://support.huawei.com/enterprise/zh/distributed-storage/oceanstor-pacific-9520-pid-251711061/software" target="_blank" rel="noopener noreferrer">点此进入</a></li><li id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_li5603102711218">运营商网站：<a href="https://support.huawei.com/carrier/productNewOffering?col=product&amp;path=PBI1-21430725/PBI1-251363742/PBI1-21431663/PBI1-251366323/PBI1-251711061&amp;resTab=SW" target="_blank" rel="noopener noreferrer">点此进入</a></li></ul>
+</div>
+<p id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_p142401833143418">API包名称为“OceanStor-Pacific_<em id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_i850443125714">xxx</em>_API.tar.gz”，如OceanStor-Pacific_8.1.2_API.tar.gz。</p>
+<div class="p" id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_p5603927626"><em id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_i2815510563">xxx</em>表示产品版本号。不同版本的软件包名称中的API大小写略有差异。<div class="note" id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_note15603527525"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_zh-cn_topic_0000001792549972_p1456922318392">为了防止软件包在传递过程或存储期间被恶意篡改，下载软件包时需下载对应的数字签名文件用于完整性验证。</p>
+<p id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_zh-cn_topic_0000001792549972_p156932333915">在软件包下载之后，请参考《OpenPGP签名验证指南》，对从Support网站下载的软件包进行PGP数字签名校验。如果校验失败，请不要使用该软件包，先联系华为技术支持工程师解决。</p>
+<p id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_zh-cn_topic_0000001792549972_p4569152323915">使用软件包安装/升级之前，也需要按上述过程先验证软件包的数字签名，确保软件包未被篡改。</p>
+<p id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_zh-cn_topic_0000001792549972_p145691623163911">运营商客户请访问：<a href="https://support.huawei.com/carrier/digitalSignatureAction" target="_blank" rel="noopener noreferrer">https://support.huawei.com/carrier/digitalSignatureAction</a></p>
+<p id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_zh-cn_topic_0000001792549972_p1256922316392">企业客户请访问：<a href="https://support.huawei.com/enterprise/zh/tool/pgp-verify-TL1000000054" target="_blank" rel="noopener noreferrer">https://support.huawei.com/enterprise/zh/tool/pgp-verify-TL1000000054</a></p>
+</div></div>
+</div>
+</p></li><li><span>备份代理主机的<span class="filepath">“/vbstool”</span>目录至<span class="filepath">“/opt”</span>。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>以下操作均以ProtectAgent安装在<span class="filepath">“/opt”</span>目录下为例进行说明，实际操作请根据真实安装目录替换<em>。</em></p>
+</div></div>
+<p>示例：执行以下命令备份<span class="filepath">“/vbstool”</span>目录至<span class="filepath">“/opt”</span>目录：</p>
+<pre class="screen">cp -r /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/ /opt/</pre>
+</p></li><li><span>登录分布式存储管理节点获取证书。</span><p><ol type="a"><li><span style="color:#494949;">使用PuTTY，以</span><strong style="color:#494949;">fsadmin</strong><span style="color:#494949;">账户通过浮动IP登录分布式存储管理节点。</span><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>如果回显CLI Portal信息，则表示已进入CLI界面，如未进入CLI界面，请执行<strong>su - root</strong>命令进入CLI界面。</p>
+</div></div>
+</li><li>执行以下命令，输入<strong>admin</strong>账户的密码后登录CLI。<pre class="screen">ismcli -u admin</pre>
+</li><li id="ZH-CN_TOPIC_0000001839269357__li2257105253815"><a name="ZH-CN_TOPIC_0000001839269357__li2257105253815"></a><a name="li2257105253815"></a>执行以下操作，获取FSM的证书和密钥文件。<p><a name="ZH-CN_TOPIC_0000001839269357__li2257105253815"></a><a name="li2257105253815"></a>请执行<strong>export fsm certificate</strong>命令导出证书和密钥文件。</p>
+<p>导出过程中需要设置密码，该密码用于对导出文件进行加密。</p>
+<div class="p">回显类似如下：<pre class="screen">admin:/&gt;export fsm certificate 
+Export password:****** 
+Reenter password:******      
+fsm certificate path : /home/dsware/fsm_cert/fsm-server.pem    
+fsm key path         : /home/dsware/fsm_cert/fsm-server.key    
+ca certificate path  : /home/dsware/fsm_cert/ca.pem </pre>
+</div>
+</li></ol>
+</p></li><li><span>使用WinSCP工具，通过管理IP地址，以<strong id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_b311984945710">fsadmin</strong>账号登录分布式块存储管理节点，将FSM的证书和密钥文件<span style="color:#252B3A;">（</span>fsm-server.pem、fsm-server.key、ca.pem<span style="color:#252B3A;">）</span>下载到本地。</span><p><div class="note" id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_note1111311043017"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_p41131804301">如果<strong id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_b1275618774713">fsadmin</strong>用户无FSM的证书和密钥文件<span style="color:#252B3A;">（</span>fsm-server.pem、fsm-server.key、ca.pem<span style="color:#252B3A;">）</span>读写权限，则需先使用<strong id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_b185617487471">root</strong>用户修改FSM的证书和密钥文件的权限为<strong id="ZH-CN_TOPIC_0000001839269357__zh-cn_topic_0000001792549932_b59281511184819">fsadmin</strong>用户可读写，并拷贝至“/home/fsadmin”目录下，再下载到本地。</p>
+</div></div>
+</p></li><li><span>使用PuTTY，登录代理主机。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>以下所有操作需要依次在所有代理主机执行。</p>
+</div></div>
+<ol type="a"><li>执行以下命令，创建<span class="filepath">“/scripts”</span>目录。<pre class="screen">mkdir -p /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/scripts/</pre>
+</li><li>使用WinSCP，将<a href="#ZH-CN_TOPIC_0000001839269357__li2257105253815">3.c</a>中获取到的证书及密钥文件上传至<span class="filepath">“/opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/scripts”</span>目录。</li><li>执行以下命令，解压jre文件。<pre class="screen">mkdir -p /opt/DataBackup/ProtectClient/Plugins/tmp/javarunenv/</pre>
+<pre class="screen">tar -zmxvf /opt/dsware/agent/jre-*.tar.gz -C /opt/DataBackup/ProtectClient/Plugins/tmp/javarunenv/</pre>
+</li><li>使用WinSCP，上传“OceanStor-Pacific_8.<em>x</em>.<em>x</em>_api.tar.gz”到代理主机相应目录并执行以下命令解压。<pre class="screen">tar -zxvf /home/OceanStor-Pacific_*_api.tar.gz</pre>
+</li><li id="ZH-CN_TOPIC_0000001839269357__li9225121913311"><a name="ZH-CN_TOPIC_0000001839269357__li9225121913311"></a><a name="li9225121913311"></a>在<span class="uicontrol">“/home”</span>目录下依次执行以下命令，拷贝相应文件。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>命令中的<em>xxx</em>表示API包解压后的目录，请根据实际替换。例如API包为OceanStor-Pacific_8.1.2_API.tar.gz，解压后的目录为OceanStor-Pacific_8.1.2_API。</p>
+</div></div>
+<ul><li>对于OceanStor Pacific 8.1.2及之前版本，请执行以下命令：<pre class="screen">cd<strong> </strong><em>xxx</em></pre>
+<pre class="screen">rm -rf lib/log4j-*</pre>
+<pre class="screen">/bin/cp client_self.keystore client_trust.keystore dsware-api.properties fsa_server.key manager-ssl.properties primary_ks.key standby_ks.key /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/conf/</pre>
+<pre class="screen">/bin/cp dr_cli.xml readme.txt version zk-client.jks /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool</pre>
+<pre class="screen">/bin/cp dsware-api-*.jar /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/</pre>
+<pre class="screen">/bin/cp primary_ks.key standby_ks.key /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/</pre>
+<pre class="screen">/bin/cp -r scripts/* /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/scripts/</pre>
+<pre class="screen">/bin/cp -r lib/* /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/</pre>
+</li><li>对于OceanStor Pacific 8.1.3及后续版本，请执行以下命令：<pre class="screen">cd<strong> </strong><em>xxx</em></pre>
+<pre class="screen">rm -rf lib/log4j-*</pre>
+<pre class="screen">/bin/cp client_self.keystore client_trust.keystore dsware-api.properties manager-ssl.properties primary_ks.key standby_ks.key /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/conf/</pre>
+<pre class="screen">/bin/cp dr_cli.xml readme.txt version zk-client.jks /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool</pre>
+<pre class="screen">/bin/cp dsware-api-*.jar /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/</pre>
+<pre class="screen">/bin/cp primary_ks.key standby_ks.key /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/</pre>
+<pre class="screen">/bin/cp -r scripts/* /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/scripts/</pre>
+<pre class="screen">/bin/cp -r lib/* /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>如果命令执行过程中提示<strong>client_self.keystore</strong>、<strong>client_trust.keystore</strong>或<strong>zk-client.jks</strong>文件不存在，请先忽略。</p>
+</div></div>
+</li></ul>
+</li><li>执行以下命令，创建storage_port.ini文件。<pre class="screen">touch /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/storage_port.ini</pre>
+</li><li>执行以下命令，拷贝so文件。<ul><li>代理主机为x86架构：<pre class="screen">/bin/cp -r /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/linux-x86-64/* /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/</pre>
+</li><li>代理主机为ARM架构：<pre class="screen">/bin/cp -r /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/linux-aarch64/* /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/</pre>
+</li></ul>
+</li><li id="ZH-CN_TOPIC_0000001839269357__li1122591916320"><a name="ZH-CN_TOPIC_0000001839269357__li1122591916320"></a><a name="li1122591916320"></a>执行以下命令，导入环境变量。<ul><li>代理主机为x86架构：<pre class="screen">export LD_LIBRARY_PATH=/usr/lib64:/opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/linux-x86-64</pre>
+</li><li>代理主机为ARM架构：<pre class="screen">export LD_LIBRARY_PATH=/usr/lib64:/opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/linux-aarch64</pre>
+</li></ul>
+</li><li>依次执行以下命令，设置代理主机的环境变量，避免与证书环境变量冲突。<pre class="screen">VBSTOOL_PATH=/opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib</pre>
+<pre class="screen">sed -i "s#export LD_LIBRARY_PATH=.*#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$VBSTOOL_PATH#g" /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vrmVBSTool.sh</pre>
+</li><li id="ZH-CN_TOPIC_0000001839269357__li112265193319"><a name="ZH-CN_TOPIC_0000001839269357__li112265193319"></a><a name="li112265193319"></a>依次执行以下命令，替换证书。<pre class="screen">JAVA_HOME=$(find /opt/DataBackup/ProtectClient/Plugins/tmp/javarunenv/ -mindepth 1 -maxdepth 1 -type d)</pre>
+<pre class="screen">sh /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/scripts/replace_cert.sh -s /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/scripts/fsm-server.pem -c /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/scripts/ca.pem -k /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/lib/scripts/fsm-server.key -f <em>输入FSM浮动IP</em> -j $JAVA_HOME</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>替换过程中需要输入证书的密码，为<a href="#ZH-CN_TOPIC_0000001839269357__li2257105253815">3.c</a>中设置的密码。</p>
+</div></div>
+<ul><li>对于OceanStor Pacific 8.1.2及之前版本，当“/opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/conf/cert/<em>FSM浮动IP地址</em>/”目录下存在client_self.keystore、client_trust.keystore以及dsware-api.properties时，表示证书导入成功。</li><li>对于OceanStor Pacific 8.1.3及之后版本，当“/opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/conf/cert/<em>FSM浮动IP地址</em>/”目录下存在dsware-api.properties时，表示证书导入成功。</li></ul>
+</li><li>对于OceanStor Pacific 8.1.3版本，请执行以下命令适配新接口。否则，请跳过本步骤。<pre class="screen">sed -i '/deleteVolume)/{n;s/"$@"/${@:1:9} 0/;}' /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vrmVBSTool.sh</pre>
+</li><li>如果<a href="#ZH-CN_TOPIC_0000001839269357__li9225121913311">5.e</a>中提示<strong>client_self.keystore</strong>和<strong>client_trust.keystore</strong>文件不存在，请执行以下命令拷贝文件。其他场景请跳过本步骤。<pre class="screen">cd /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/conf/cert/<em>FSM浮动IP地址</em>/
+cp client_self.keystore client_trust.keystore /opt/DataBackup/ProtectClient/Plugins/FusionComputePlugin/bin/vbstool/conf/</pre>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

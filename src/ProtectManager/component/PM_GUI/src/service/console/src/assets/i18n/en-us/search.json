@@ -1,0 +1,14 @@
+{
+  "search_searched_object_type_label": "File Object Type",
+  "search_resource_keyword_label": "Enter a resource name.",
+  "search_keyword_label": "Enter a keyword and press Enter.",
+  "search_file_max_num_label": "A maximum of 100,000 records can be displayed in the copy data list. You are advised to add search criteria and search again.",
+  "search_link_desc_label": "The system can only filter links in VMware copies.",
+  "search_no_indexed_copy_label": "Indexes are being created for all copies of the current object. Try again after the index status changes to indexed.",
+  "search_find_about_results_label": "Find about {0} results (takes {1} seconds)",
+  "search_absolute_path_file_label": "Absolute path to file object",
+  "search_absolute_path_label": "Absolute Path",
+  "search_resource_location_label": "Resource Location",
+  "search_tip_label": "When entering the search criteria, separate the path and name with spaces, for example, xxx xxx. The search result by fuzzy matching of a search criteria subset is displayed.",
+  "search_label_keyword_label": "Enter a tag name to search for related resources."
+}

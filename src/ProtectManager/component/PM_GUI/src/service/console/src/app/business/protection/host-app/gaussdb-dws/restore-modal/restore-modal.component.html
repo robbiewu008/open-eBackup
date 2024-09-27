@@ -1,0 +1,66 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-group lvDirection="vertical" lvGutter="32px">
+  <lv-group>
+    <div class="tip-container">
+      {{ 'explore_table_restore_tips_label' | i18n }}
+    </div>
+  </lv-group>
+  <lv-group lvDirection="vertical" lvGutter="16px">
+    <h3>{{ 'protection_restore_to_label' | i18n }}</h3>
+    <div>
+      <span class="tip-container" style="margin-right: 16px;">{{
+        'common_location_label' | i18n
+      }}</span
+      >{{ data.resource.name }}
+    </div>
+  </lv-group>
+  <lv-group lvDirection="vertical" lvGutter="16px">
+    <h3>{{ 'explore_table_rename_label' | i18n }}</h3>
+    <lv-datatable [lvData]="tableData" [lvScroll]='{y: "400px"}' #lvTable>
+      <thead>
+        <tr>
+          <th lvCellKey="tableName">{{ 'explore_table_name_label' | i18n }}</th>
+          <th lvCellKey="targetSchema">
+            {{ 'explore_target_schema_label' | i18n }}
+          </th>
+          <th lvCellKey="tableNewName">
+            {{ 'explore_table_new_name_label' | i18n }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of lvTable.renderData">
+          <tr>
+            <td>{{ item.tableName }}</td>
+            <td>{{ item.targetSchema }}</td>
+            <td>
+              <input
+                lv-input
+                style="width: 100%;"
+                [(ngModel)]="item.tableNewName"
+                (ngModelChange)="validNewName(item)"
+                [ngClass]="{ invaild: item.invalid }"
+              />
+              <ng-container *ngIf="!!item?.invalid">
+                <i lv-icon="lv-icon-status-failed"></i>
+                <span class="invaild-color">{{ item?.errorTips }}</span>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </lv-datatable>
+  </lv-group>
+</lv-group>

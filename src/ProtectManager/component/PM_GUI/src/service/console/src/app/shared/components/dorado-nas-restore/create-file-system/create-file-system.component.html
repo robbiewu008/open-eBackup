@@ -1,0 +1,183 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'protection_file_system_name_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <lv-input-group [lvAddBefore]="namePrefix" class="filesystem-name-input"
+                [lvDisabled]="disableFileSystemName">
+                <input lv-input type="text" formControlName="name"/>
+            </lv-input-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'explore_share_protocol_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <div class="share-mode-tab">
+                <lv-form-item>
+                    <lv-form-label></lv-form-label>
+                    <lv-form-control>
+                        <label lv-checkbox formControlName="nfsEnable"
+                            [lvDisabled]="createFileSystem && resourceShareMode === dataMap.Shared_Mode.nfs.value">NFS</label>
+                    </lv-form-control>
+                </lv-form-item>
+            </div>
+            <ng-container *ngIf="formGroup.value.nfsEnable">
+                <div class="share-info">
+                    <ng-container *ngIf="!createFileSystem">
+                        <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+                        <span>
+                            {{'protection_mount_share_tip_label' | i18n : ['NFS']}}
+                        </span>
+                    </ng-container>
+                </div>
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'protection_share_path_info_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <input lv-input type="text" formControlName="nfsShareName" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label lvRequired>
+                        <span>{{'protection_share_client_label' | i18n}}</span>
+                        <i lv-icon="aui-icon-help" [lv-tooltip]="clientHostTipTpl" lvTooltipPosition="rightTop"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                        <input lv-input type="text" formControlName="client" />
+                    </lv-form-control>
+                </lv-form-item>
+                <!-- UNIX权限 -->
+                <lv-form-item>
+                    <lv-form-label lvRequired>
+                        {{'protection_unix_permission_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-select  [lvOptions]='unixPermissionOps' lvValueKey='value' formControlName='unixType'>
+                        </lv-select>
+                    </lv-form-control>
+                </lv-form-item>
+                <!-- root权限控制 -->
+                <lv-form-item>
+                    <lv-form-label lvRequired>
+                        {{'protection_root_permission_label' | i18n}}
+                        <i lv-icon="aui-icon-help" [lv-tooltip]="rootTipTpl" lvTooltipPosition="rightTop"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+                    </lv-form-label> 
+                    <lv-form-control>
+                        <lv-radio-group formControlName="rootType">
+                            <lv-group [lvGutter]="'20px'">
+                                <lv-radio [lvValue]="dataMap.rootPermission.squash.value">
+                                    {{ dataMap.rootPermission.squash.label | i18n }}
+                                </lv-radio>
+                                <lv-radio [lvValue]="dataMap.rootPermission.noSquash.value">
+                                    {{ dataMap.rootPermission.noSquash.label | i18n }}
+                                </lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                    </lv-form-control> 
+                </lv-form-item>
+            </ng-container>
+            <div class="share-mode-tab cifs-tab">
+                <lv-form-item>
+                    <lv-form-label></lv-form-label>
+                    <lv-form-control>
+                        <label lv-checkbox formControlName="cifsEnable"
+                            [lvDisabled]="createFileSystem && resourceShareMode === dataMap.Shared_Mode.cifs.value">CIFS</label>
+                    </lv-form-control>
+                </lv-form-item>
+            </div>
+            <ng-container *ngIf="formGroup.value.cifsEnable">
+                <div class="share-info">
+                    <ng-container *ngIf="!createFileSystem">
+                        <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+                        <span>
+                            {{'protection_mount_share_tip_label' | i18n : ['CIFS']}}
+                        </span>
+                    </ng-container>
+                </div>
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'explore_share_name_label' | i18n}}</lv-form-label>
+                    <lv-form-control [lvErrorTip]="cifsNameErrorTip">
+                        <input lv-input type="text" formControlName="cifsShareName" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'common_type_label' | i18n}}</lv-form-label>
+                    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                        <lv-select [lvOptions]='userTypeOptions' lvValueKey='value' formControlName='userType'>
+                        </lv-select>
+                    </lv-form-control>
+                </lv-form-item>
+                <ng-container
+                    *ngIf="formGroup.value.userType && formGroup.value.userType !== dataMap.Cifs_Domain_Client_Type.everyone.value">
+                    <ng-container *ngIf="createFileSystem">
+                        <lv-form-item>
+                            <lv-form-label lvRequired>{{'common_users_label' | i18n}}</lv-form-label>
+                            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                                <lv-select [lvOptions]='userOptions' lvValueKey='value' formControlName='userName'>
+                                </lv-select>
+                                <div class="user-info">
+                                    <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+                                    <span>
+                                        {{'protection_file_system_user_tip_label' | i18n}}
+                                    </span>
+                                </div>
+                            </lv-form-control>
+                        </lv-form-item>
+                    </ng-container>
+                    <ng-container *ngIf="!createFileSystem">
+                        <lv-form-item>
+                            <lv-form-label lvRequired>{{'common_users_label' | i18n}}</lv-form-label>
+                            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                                <lv-select [lvOptions]='userOptions' lvValueKey='value' formControlName='userName'
+                                    lvMode='multiple' lvShowFilter lvShowCheckAll lvFilterKey='label'
+                                    lvFilterMode='contains'>
+                                </lv-select>
+                                <div class="user-info">
+                                    <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+                                    <span>
+                                        {{'protection_file_system_user_tip_label' | i18n}}
+                                    </span>
+                                </div>
+                            </lv-form-control>
+                        </lv-form-item>
+                    </ng-container>
+                </ng-container>
+                <!-- 权限级别 -->
+                <lv-form-item>
+                    <lv-form-label lvRequired>
+                        {{'protection_permission_level_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-select  [lvOptions]='permissionLevelOps' lvValueKey='value' formControlName='permissionType'>
+                        </lv-select>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+
+<ng-template #clientHostTipTpl>
+    <span [innerHTML]="clientHostTipLabel"></span>
+</ng-template>
+
+<ng-template #rootTipTpl>
+    <span [innerHTML]="rootTiplabel"></span>
+</ng-template>
+
+<ng-template #clientNetworkGroupTipTpl>
+    <span [innerHTML]="clientNetworkGroupTipLabel"></span>
+</ng-template>

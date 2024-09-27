@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>
+    <dependencies>
+        <!-- 3rd-party-->
+        <dependency>-->
+            <artifactType>opensource</artifactType>-->
+            <artifactId>Apache Kafka</artifactId>-->
+            <version>3.5.0</version>-->
+            <package>kafka_2.12-3.5.0.tgz</package>-->
+            <dest></dest>-->
+            <!--pdmCode>05837UBW</pdmCode-->
+        </dependency>-->
+
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>Apache ZooKeeper</artifactId>
+            <version>3.8.1</version>
+            <package>apache-zookeeper-3.8.1.tar.gz</package>
+            <dest></dest>
+            <!--pdmCode>05836YQU</pdmCode-->
+        </dependency>
+
+        <dependency>
+            <artifactType>opensource</artifactType>
+            <artifactId>redis</artifactId>
+            <version>6.2.14</version>
+            <package>redis-6.2.14.tar.gz</package>
+            <dest></dest>
+            <!--pdmCode>0583053455</pdmCode-->
+        </dependency>
+    </dependencies>
+</project>

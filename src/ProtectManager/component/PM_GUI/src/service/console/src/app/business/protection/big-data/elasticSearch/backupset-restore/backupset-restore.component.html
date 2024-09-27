@@ -1,0 +1,66 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_restore_to_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreLocation">
+                <lv-group [lvGutter]="'24px'">
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="restoreToNewLocationOnly"
+                        [lv-tooltip]="restoreToNewLocationOnly ? ('protection_cloud_origin_restore_disabled_label' | i18n) : ''">
+                        {{'common_restore_to_origin_location_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreLocationType.NEW">
+                        {{'common_restore_to_new_location_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_location_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <input lv-input type="text" formControlName="originCluster" />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_target_to_cluster_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="cluster" [lvOptions]='clusterOptions' lvValueKey='value'>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <lv-form-item>
+        <lv-form-label>{{'protection_over_write_rule_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="overwriteType">
+                <lv-group [lvGutter]="'20px'" lvDirection='vertical' class="mgt-8">
+                    <lv-radio [lvValue]="fileReplaceStrategy.Skip">{{'protection_skip_index_label' | i18n}}</lv-radio>
+                    <lv-radio [lvValue]="fileReplaceStrategy.Overwriting">{{'protection_overwrite_index_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

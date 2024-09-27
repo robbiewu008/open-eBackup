@@ -1,0 +1,76 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class='aui-gutter-column-lg'>
+    <div class="aui-gutter-column-md">
+        <h3>{{'protection_group_sub_job_label' | i18n}}</h3>
+    </div>
+    <lv-group style="margin-bottom:24px">
+      <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData">
+      </lv-pro-button-group>
+    </lv-group>
+      <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+    
+</div>
+
+<ng-template #jobIdTpl let-item>
+  <span class="aui-link" id="outerClosable" (click)="getDetail(item)" lv-overflow>
+    {{ item.jobId | nil }}
+  </span>
+</ng-template>
+
+<ng-template #statusTpl let-item>
+    <ng-container *ngIf="
+        ['RUNNING', 'READY', 'ABORTING'].includes(item.status);
+        else elseTemplate
+      ">
+      <ng-container *ngIf="'ABORTING' === item.status; else elseTemplate1">
+        <div class="aborting-progress">
+          <lv-progress [lvValue]="item.progress" [lvWidth]="100" [lvStatus]="'normal'" [lvColors]="abortingColors">
+          </lv-progress>
+        </div>
+      </ng-container>
+      <ng-template #elseTemplate1>
+        <lv-progress [lvValue]="item.progress" [lvWidth]="100" [lvStatus]="'normal'" [lvColors]="colors">
+        </lv-progress>
+        <span *ngIf="item.additionalStatus">
+          {{ item.additionalStatus | textMap: 'Additional_Status' }}
+        </span>
+      </ng-template>
+    </ng-container>
+    <ng-template #elseTemplate>
+      <aui-status [value]="item.status" type="Job_status"></aui-status>
+      <span *ngIf="item.additionalStatus && item.status === 'FAIL'">
+        {{ item.additionalStatus | textMap: 'Additional_Status' }}
+      </span>
+    </ng-template>
+  </ng-template>
+
+<ng-template #sourceNameTpl let-item>
+    <p lv-overflow>{{ item.sourceName | nil }}</p>
+    <p class="aui-text-help-sm" lv-overflow *ngIf="getSourceNameDesc(item)">
+      {{ getSourceNameDesc(item) }}
+    </p>
+  </ng-template>
+  
+  <ng-template #startTimeTpl let-item>
+    <span lv-overflow>{{
+      item.startTime | date: 'yyyy/MM/dd HH:mm:ss':timeZone | nil
+      }}</span>
+  </ng-template>
+
+  <ng-template #dataBeforeReductionTpl let-item>
+    <span lv-overflow>{{
+      item.startTime | date: 'yyyy/MM/dd HH:mm:ss':timeZone | nil
+      }}</span>
+  </ng-template>

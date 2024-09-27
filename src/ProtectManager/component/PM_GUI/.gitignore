@@ -1,0 +1,17 @@
+kind_values.yaml
+htmlcov/
+*.swp
+.coverage
+.idea
+tests/logs.txt
+*.iml
+*/target/*
+.metadata
+.settings
+*.jar
+*.log
+*.class
+*.zip
+*.war
+*.tar.gz
+target/

@@ -1,0 +1,260 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      <h2>{{ 'protection_oss_manage_node_label' | i18n }}</h2>
+    </lv-form-label>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_username_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="username"
+        [placeholder]="i18n.get('protection_tdsql_oss_username_tips_label')"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_password_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="passwordErrorTip">
+      <aui-inupt-with-eye
+        formControlName="password"
+        [placeholder]="i18n.get('protection_tdsql_oss_password_tips_label')"
+      ></aui-inupt-with-eye>
+    </lv-form-control>
+  </lv-form-item>
+  <div
+    class="aui-gutter-column-xl"
+    style="flex-direction: column;align-items: normal;"
+  >
+    <lv-alert lvType="info" lvClosable="false">
+      {{ 'protection_tdsql_oss_node_tips_label' | i18n }}
+    </lv-alert>
+    <lv-datatable [lvData]="[{}]" #lvTable formArrayName="manageNodes">
+      <thead>
+        <tr>
+          <th style="width: 300px;">
+            {{ 'protection_proxy_host_label' | i18n }}
+          </th>
+          <th>
+            <div lv-overflow>
+              <span>{{ 'common_dataplane_ip_label' | i18n }}</span>
+              <div class="resource-sla-help">
+                <i
+                  lv-icon="aui-icon-help"
+                  [lv-tooltip]="ossIpTpl"
+                  lvTooltipTheme="light"
+                  lvTooltipPosition="top"
+                  class="configform-constraint"
+                  lvColorState="true"
+                ></i>
+              </div>
+            </div>
+            <ng-template #ossIpTpl>
+              <span
+                [innerHTML]="
+                  i18n.get('protection_tdsql_oss_node_ip_tips_label')
+                "
+              ></span>
+            </ng-template>
+          </th>
+          <th style="width: 240px;">{{ 'common_port_label' | i18n }}</th>
+          <th style="width: 140px;">{{ 'common_operation_label' | i18n }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of manageNodes; let i = index">
+          <tr [formGroupName]="i">
+            <td>
+              <lv-form-control
+                #lvFormControl
+                class="formControl tdsql-cluster-height"
+              >
+                <lv-select
+                  class="input-position"
+                  [lvOptions]="proxyOptions"
+                  formControlName="proxy"
+                  lvValueKey="value"
+                  lvMode="single"
+                  lvShowFilter
+                  lvShowCheckAll
+                  lvFilterKey="label"
+                  lvFilterMode="contains"
+                  style="width: 260px;"
+                >
+                </lv-select>
+              </lv-form-control>
+            </td>
+            <td>
+              <lv-form-control
+                [lvErrorTip]="ipErrorTip"
+                class="formControl tdsql-cluster-height"
+              >
+                <input
+                  lv-input
+                  type="text"
+                  formControlName="businessIp"
+                  class="input-position"
+                />
+              </lv-form-control>
+            </td>
+            <td>
+              <lv-form-control
+                [lvErrorTip]="portErrorTip"
+                class="formControl tdsql-cluster-height"
+                style="width: 210px;"
+              >
+                <input
+                  lv-input
+                  type="text"
+                  formControlName="port"
+                  class="input-position"
+                />
+              </lv-form-control>
+            </td>
+
+            <td>
+              <button
+                lv-button
+                lvType="link"
+                (click)="deleteManageRow(i)"
+                [disabled]="manageNodes.length === 1"
+              >
+                {{ 'common_delete_label' | i18n }}
+              </button>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody></lv-datatable
+    >
+
+    <button
+      lv-button
+      lvType="link"
+      (click)="addManageRow()"
+      [disabled]="manageNodes.length > 50"
+    >
+      <i lv-icon="lv-icon-create"></i>
+      <span>{{ 'common_new_add_label' | i18n }}</span>
+    </button>
+  </div>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      <h2>{{ 'protection_scheduler_node_label' | i18n }}</h2>
+    </lv-form-label>
+  </lv-form-item>
+  <div class="aui-gutter-column-md aui-text-desc">
+    {{ 'protection_tdsql_scheduler_node_tips_label' | i18n }}
+  </div>
+  <div style="flex-direction: column;align-items: normal; margin-top: 20px;">
+    <lv-datatable [lvData]="[{}]" #lvTable formArrayName="schedulerNodes">
+      <thead>
+        <tr>
+          <th>{{ 'protection_proxy_host_label' | i18n }}</th>
+          <th>
+            <div lv-overflow>
+              <span> {{ 'common_dataplane_ip_label' | i18n }}</span>
+              <div class="resource-sla-help">
+                <i
+                  lv-icon="aui-icon-help"
+                  [lv-tooltip]="schedulerIpTpl"
+                  lvTooltipTheme="light"
+                  lvTooltipPosition="top"
+                  class="configform-constraint"
+                  lvColorState="true"
+                ></i>
+              </div>
+            </div>
+            <ng-template #schedulerIpTpl>
+              <span
+                [innerHTML]="
+                  i18n.get('protection_tdsql_scheduler_node_ip_tips_label')
+                "
+              ></span>
+            </ng-template>
+          </th>
+          <th style="width: 140px;">{{ 'common_operation_label' | i18n }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of schedulerNodes; let i = index">
+          <tr [formGroupName]="i">
+            <td>
+              <lv-form-control #lvFormControl class="formControl">
+                <lv-select
+                  class="input-position"
+                  [lvOptions]="proxyOptions"
+                  formControlName="proxy"
+                  lvValueKey="value"
+                  lvMode="single"
+                  lvShowFilter
+                  lvShowCheckAll
+                  lvFilterKey="label"
+                  lvFilterMode="contains"
+                  style="width: 260px;"
+                >
+                </lv-select>
+              </lv-form-control>
+            </td>
+            <td>
+              <lv-form-control [lvErrorTip]="ipErrorTip" class="formControl">
+                <input
+                  lv-input
+                  type="text"
+                  formControlName="businessIp"
+                  class="input-position"
+                />
+              </lv-form-control>
+            </td>
+            <td>
+              <button
+                lv-button
+                lvType="link"
+                (click)="deleteSchedulerRow(i)"
+                [disabled]="schedulerNodes.length === 1"
+              >
+                {{ 'common_delete_label' | i18n }}
+              </button>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody></lv-datatable
+    >
+
+    <button
+      lv-button
+      lvType="link"
+      (click)="addSchedulerRow()"
+      [disabled]="manageNodes.length > 50"
+    >
+      <i lv-icon="lv-icon-create"></i>
+      <span>{{ 'common_new_add_label' | i18n }}</span>
+    </button>
+  </div>
+</lv-form>

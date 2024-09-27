@@ -1,0 +1,179 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-group class="copy-data tableInLvGroup" lvDirection="vertical" [lvGutter]="groupOptions.columnGutter">
+  <ng-container
+    *ngIf="[resourceResourceType.virtualMachine.value, resourceResourceType.HDFSFileset.value, resourceResourceType.FusionCompute.value, resourceResourceType.HCSCloudHost.value,resourceResourceType.hyperVVm.value].includes(resType) && !isHcsUser">
+    <lv-search (lvSearch)="searchChange($event)" lvPlaceHolder="{{'common_file_directory_keyword_label'|i18n}}">
+    </lv-search>
+  </ng-container>
+  <ng-container
+    *ngIf="[resourceResourceType.NASShare.value, resourceResourceType.NASFileSystem.value, resourceResourceType.LocalFileSystem.value, resourceResourceType.fileset.value, resourceResourceType.ndmp.value].includes(resType) && !isHyperdetect && !isCyberEngine && !isHcsUser">
+    <lv-group lvGutter='14px' class="file-search-group">
+      <lv-search (lvSearch)="searchChange($event)" lvPlaceHolder="{{'common_file_directory_keyword_label'|i18n}}">
+      </lv-search>
+      <button lv-button (click)="clearIndex()">{{'protection_delete_index_label' | i18n}}</button>
+    </lv-group>
+  </ng-container>
+  <ng-container
+    *ngIf="[resourceResourceType.ObjectSet.value].includes(resType) && !isHyperdetect && !isCyberEngine && !isHcsUser">
+    <lv-group lvGutter='14px' class="file-search-group">
+      <lv-search (lvSearch)="searchChange($event)" lvPlaceHolder="{{'common_object_bucket_keyword_label'|i18n}}">
+      </lv-search>
+      <button lv-button (click)="clearIndex()">{{'protection_delete_index_label' | i18n}}</button>
+    </lv-group>
+  </ng-container>
+  <ng-container [ngSwitch]='resType'>
+    <ng-container *ngSwitchCase='resourceResourceType.oracle.value'>
+      <lv-tabs class="copydata-tabs" [lvType]="'card'">
+        <lv-tab lvTitle="{{'protection_time_selector_label' | i18n}}">
+          <ng-template lv-tab-lazy>
+            <ng-container *ngTemplateOutlet='timeSelectorTpl'></ng-container>
+          </ng-template>
+        </lv-tab>
+        <lv-tab lvTitle="{{'protection_scn_label' | i18n}}">
+          <ng-template lv-tab-lazy>
+            <aui-copy-data-scn [rowData]='rowData' [resType]='resType'></aui-copy-data-scn>
+          </ng-template>
+        </lv-tab>
+      </lv-tabs>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <ng-container *ngTemplateOutlet='timeSelectorTpl'></ng-container>
+    </ng-container>
+  </ng-container>
+  <ng-template #timeSelectorTpl>
+    <!-- Year Month -->
+    <div class="yearMonthView-container">
+      <ng-container *ngIf="datePickerMode !== 'simple'">
+        <lv-date-picker [(ngModel)]="dateValue" (lvActiveDateChange)="datePickerChange($event)"
+          [lvPickerMode]="datePickerMode" [lvCalendarCell]="tplCell" [lvCalendarMonthCell]="tplMonthCell"
+          [lvInline]="true" [ngClass]="{ 'datePicker-simple': showDayView}" [lvOnlyShowActiveCell]="true"
+          [lvShowTodayButton]="false" [lvPanelTitleReadonly]="true"></lv-date-picker>
+      </ng-container>
+      <ng-container *ngIf="datePickerMode === 'simple'">
+        <lv-date-picker [(ngModel)]="dateValue" lvInline="true" lvPickerMode="simple"
+          (lvActiveDateChange)="datePickerChange($event)"></lv-date-picker>
+      </ng-container>
+      <ng-template #tplCell let-cell>
+        <span class="lv-date-picker-cell"
+          [ngClass]="{'hasCopyData':getCopyDataInMonthView(cell.value),'hasInfectedCopyData':getInfectedCopyDataInMonthView(cell.value)}"
+          (click)="changeToDayView(cell.value)">
+          {{ cell.content }}
+        </span>
+      </ng-template>
+      <ng-template #tplMonthCell let-cell>
+        <span class="lv-date-picker-month-cell"
+          [ngClass]="{'hasCopyData':getCopyDataInYearView(cell.value), 'hasCopyDataSpecial':getCopyDataInYearView(cell.value),'hasInfectedCopyData':getInfectedCopyDataInYearView(cell.value)}"
+          (click)="changeToMonthView(cell.value)">{{ cell.content }}
+        </span>
+      </ng-template>
+      <div class="today" (click)="changeToTodayView()">
+        <span>{{ 'common_today_label' | i18n }}</span>
+      </div>
+      <div class="date">
+        <lv-tabs [lvType]="'default'" [lvActiveIndex]="datePickerMode" (lvActiveIndexChange)="dateModeChange($event)">
+          <lv-tab lvId="month" [lvTitle]="'common_year_label' | i18n"></lv-tab>
+          <lv-tab lvId="date" [lvTitle]="'common_month_label' | i18n"></lv-tab>
+          <lv-tab lvId="simple" [lvTitle]="'common_day_label' | i18n"></lv-tab>
+        </lv-tabs>
+      </div>
+    </div>
+
+    <!-- Day -->
+    <div *ngIf="showDayView" class="dayView-container">
+      <ng-container
+        *ngIf="(![
+          resourceResourceType.generalDatabase.value,
+          resourceResourceType.oracle.value,
+          resourceResourceType.GaussDB_T.value,
+          resourceResourceType.gaussdbTSingle.value,
+          resourceResourceType.MySQL.value,
+          resourceResourceType.PostgreSQLInstance.value,
+          resourceResourceType.PostgreSQLClusterInstance.value,
+          resourceResourceType.KingBaseInstance.value,
+          resourceResourceType.KingBaseClusterInstance.value,
+          resourceResourceType.Dameng_singleNode.value,
+          resourceResourceType.SQLServerClusterInstance.value,
+          resourceResourceType.SQLServerInstance.value,
+          resourceResourceType.SQLServerGroup.value,
+          resourceResourceType.SQLServerDatabase.value,
+          resourceResourceType.HBaseBackupSet.value,
+          resourceResourceType.dbTwoDatabase.value,
+          resourceResourceType.lightCloudGaussdbInstance.value,
+          resourceResourceType.gaussdbForOpengaussInstance.value,
+          resourceResourceType.informixInstance.value,
+          resourceResourceType.informixClusterInstance.value,
+          resourceResourceType.tdsqlInstance.value,
+          resourceResourceType.tdsqlDistributedInstance.value,
+          resourceResourceType.OceanBaseCluster.value,
+          resourceResourceType.OceanBaseTenant.value,
+          resourceResourceType.tidbCluster.value,
+          resourceResourceType.ExchangeDataBase.value,
+          resourceResourceType.ExchangeSingle.value,
+          resourceResourceType.ExchangeGroup.value,
+          resourceResourceType.goldendbInstance.value,
+          resourceResourceType.saphanaDatabase.value,
+          resourceResourceType.MongodbSingleInstance.value
+          ].includes(resType) || (rowData.subType === resourceResourceType.MySQLClusterInstance.value && rowData.extendInfo?.clusterType === dataMap.Mysql_Cluster_Type.eapp.value))&& !isOpenGaussPanweiDB">
+        <ng-container *ngIf="isCyberEngine; else elseTemplate">
+          <aui-cyber-snapshot-data [id]="id" [rowData]="rowData" [currentDate]="copyDataInDayView">
+          </aui-cyber-snapshot-data>
+        </ng-container>
+        <ng-template #elseTemplate>
+          <aui-copy-data-list [id]="id" [rowData]="rowData" [currentDate]="copyDataInDayView" [resType]="resType">
+          </aui-copy-data-list>
+        </ng-template>
+      </ng-container>
+
+      <ng-container
+        *ngIf="[
+          resourceResourceType.generalDatabase.value,
+          resourceResourceType.oracle.value,
+          resourceResourceType.GaussDB_T.value,
+          resourceResourceType.gaussdbTSingle.value,
+          resourceResourceType.MySQL.value,
+          resourceResourceType.PostgreSQLInstance.value,
+          resourceResourceType.PostgreSQLClusterInstance.value,
+          resourceResourceType.KingBaseInstance.value,
+          resourceResourceType.KingBaseClusterInstance.value,
+          resourceResourceType.SQLServerClusterInstance.value,
+          resourceResourceType.SQLServerInstance.value,
+          resourceResourceType.SQLServerGroup.value,
+          resourceResourceType.SQLServerDatabase.value,
+          resourceResourceType.Dameng_singleNode.value,
+          resourceResourceType.HBaseBackupSet.value,
+          resourceResourceType.dbTwoDatabase.value,
+          resourceResourceType.gaussdbForOpengaussInstance.value,
+          resourceResourceType.lightCloudGaussdbInstance.value,
+          resourceResourceType.informixInstance.value,
+          resourceResourceType.informixClusterInstance.value,
+          resourceResourceType.tdsqlInstance.value,
+          resourceResourceType.tdsqlDistributedInstance.value,
+          resourceResourceType.OceanBaseCluster.value,
+          resourceResourceType.OceanBaseTenant.value,
+          resourceResourceType.tidbCluster.value,
+          resourceResourceType.ExchangeDataBase.value,
+          resourceResourceType.ExchangeSingle.value,
+          resourceResourceType.ExchangeGroup.value,
+          resourceResourceType.goldendbInstance.value,
+          resourceResourceType.saphanaDatabase.value,
+          resourceResourceType.MongodbSingleInstance.value
+          ].includes(resType) && !(rowData.subType === resourceResourceType.MySQLClusterInstance.value && rowData.extendInfo?.clusterType ===  dataMap.Mysql_Cluster_Type.eapp.value) || isOpenGaussPanweiDB">
+        <aui-copy-data-dbtoday [id]="id" [rowData]="rowData" [currentDate]="copyDataInDayView" [resType]="resType">
+        </aui-copy-data-dbtoday>
+      </ng-container>
+    </div>
+  </ng-template>
+
+</lv-group>

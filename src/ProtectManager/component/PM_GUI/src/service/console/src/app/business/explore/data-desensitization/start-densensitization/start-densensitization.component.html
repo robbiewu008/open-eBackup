@@ -1,0 +1,92 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="selected-policy-container">
+    <div class="title-container">
+        <h3>{{'explore_selected_desensitization_policy_label' | i18n}}</h3>
+    </div>
+    <lv-form>
+        <lv-form-item>
+            <lv-form-label class="desensitization-control">{{'common_name_label' | i18n}}</lv-form-label>
+            <lv-form-control class="desensitization-control">
+                {{rowItem.desesitization_policy_name | nil}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label class="desensitization-control">{{'common_desc_label' | i18n}}</lv-form-label>
+            <lv-form-control class="desensitization-control">
+                {{policyDescription | nil}}
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+</div>
+<div class="anonymization-data-container">
+    <div class="aui-operation operation-title">
+        <div class="result-title">
+            <lv-group lvGutter="4px">
+                <h3>{{'explore_data_identification_result_label' | i18n}}</h3>
+                <i lv-icon="aui-icon-notice" lv-tooltip="{{ 'explore_desensitization_verify_label' | i18n }}"
+                    lvTooltipTheme="light" class="configform-constraint" lvColorState="true" lv-overflow></i>
+            </lv-group>
+        </div>
+        <ng-container *ngIf="!rowItem.isCheckResult">
+            <lv-group lvGutter="8px">
+                <lv-tooltip [lvContent]="validateTip">
+                    <button lv-button (click)="validate()" [disabled]="validateDisabled">
+                        {{'common_validation_label' | i18n}}
+                    </button>
+                </lv-tooltip>
+                <button lv-button class='aui-button-icon' lv-tooltip="{{'common_refresh_label' | i18n}}"
+                    (click)='refresh()'><i lv-icon="lv-icon-refresh"></i></button>
+            </lv-group>
+        </ng-container>
+        <ng-container *ngIf="rowItem.isCheckResult">
+            <div class="download-btn">
+                <button lv-button (click)="downloadData()">
+                    {{'explore_download_anonymize_report_label' | i18n}}
+                </button>
+            </div>
+        </ng-container>
+    </div>
+    <div class="data-container">
+        <div class="data-tree-container">
+            <lv-tree [lvData]='resultTree' #tree [lvNodeTemplate]='nodeTpl' (lvExpandedChange)="expandedChange($event)"
+                lvSelectedByCheckbox lvSelectionMode='multiple' [(lvSelection)]='selection'
+                (lvSelectionChange)="selectionChange()" [lvShowCheckbox]="lvShowCheckbox" lvShowLine lvShowContentIcon>
+            </lv-tree>
+            <ng-template #nodeTpl let-item>
+                <span *ngIf="item.icon" class="icon-container">
+                    <i lv-icon="{{item.icon}}" [lvColorState]="true"></i>
+                </span>
+                <span class="value-inner-container">
+                    <span lv-overflow class="pattern-container">{{item.label}}
+                        <span *ngIf="item.pii && item.pii.pattern">({{item.pii.pattern}})</span>
+                        <i lv-icon="lv-icon-status-warning-info" *ngIf="item.is_mask_type_match_column_type === 'False'"
+                            lv-tooltip="{{'explore_data_not_match_label' | i18n}}" lvColorState='true'></i>
+                    </span>
+                    <span class="edit-container" *ngIf="item.type === 'column' && !rowItem.isCheckResult"
+                        (click)="modify(item)">
+                        <i lv-icon="aui-icon-edit" [lvColorState]="true" title="{{'common_modify_label' | i18n}}"></i>
+                    </span>
+                </span>
+            </ng-template>
+        </div>
+    </div>
+</div>
+
+<ng-template #nameSpaceFilterTpl>
+    <lv-search [(ngModel)]="tableNamespace" (lvSearch)="searchByName($event)" [lvFocus]="true"></lv-search>
+</ng-template>
+<ng-template #nameFilterTpl>
+    <lv-search [(ngModel)]="tableName" (lvSearch)="searchByName($event)" [lvFocus]="true"></lv-search>
+</ng-template>

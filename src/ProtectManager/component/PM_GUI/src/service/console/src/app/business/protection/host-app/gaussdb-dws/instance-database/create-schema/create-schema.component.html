@@ -1,0 +1,296 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-lg">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_cluster_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="cluster"
+        [lvOptions]="clusterOptions"
+        lvValueKey="value"
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        lvShowFilter
+        [lvDisabled]="data"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_database_single_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="database"
+        [lvOptions]="databaseOptions"
+        lvValueKey="label"
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        lvShowFilter
+        [lvDisabled]="data"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label [lvColon]="colon" lvRequired>
+      {{ set }}
+    </lv-form-label>
+    <lv-group lvGutter="8px">
+      <div
+        *ngIf="type === dataMap.Resource_Type.DWS_Schema.value"
+        class="hive-all-table"
+      >
+        <div class="table-header">
+          {{ 'protection_selectable_schema_label' | i18n }}
+        </div>
+        <lv-datatable
+          [lvData]="allTableData"
+          #lvTable
+          [lvScroll]="{ y: '660px' }"
+          [lvPaginator]="pageA"
+          lvSize="small"
+          lvMultiGroup
+          lvSelectionMode="multiple"
+          [lvSelection]="selectionSchema"
+          (lvSelectionChange)="selectionChange($event)"
+        >
+          <thead>
+            <tr>
+              <th
+                lvShowCheckbox
+                width="64px"
+                [lvRowsData]="lvTable.renderData"
+              ></th>
+              <th>
+                <span>{{ 'common_name_label' | i18n }}</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of lvTable.renderData">
+              <tr style="height: 48px;">
+                <td
+                  width="64px"
+                  lvShowCheckbox
+                  [lvRowData]="item"
+                  [lvDisabled]="item.extendInfo?.isLocked === 'true'"
+                ></td>
+                <td>
+                  <div lvOverflow>{{ item.name }}</div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </lv-datatable>
+        <ng-container *ngIf="totalTable > 0">
+          <lv-paginator
+            #pageA
+            lvMode="simple"
+            lvShowPageSizeOptions="false"
+            class="table-paginator"
+            [lvPageSize]="pageSize"
+            [lvPageIndex]="pageIndex"
+            [lvTotal]="totalTable"
+            (lvPageChange)="pageChange($event)"
+          >
+          </lv-paginator>
+        </ng-container>
+      </div>
+      <div
+        *ngIf="type === dataMap.Resource_Type.DWS_Table.value"
+        class="hive-all-table"
+      >
+        <lv-datatable lvAsync [lvData]="treeData" [lvPaginator]="pageT">
+          <thead>
+            <tr>
+              <th>
+                <lv-group lvGutter="8px" style="height: 24px;">
+                  <span>{{ 'protection_selectable_table_label' | i18n }}</span>
+                </lv-group>
+              </th>
+            </tr>
+            <tr>
+              <th>
+                <lv-group lvGutter="8px" style="height: 16px;">
+                  <span>{{ 'common_name_label' | i18n }}</span>
+                  <i
+                    lv-icon="lv-icon-search"
+                    [lvColorState]="true"
+                    lv-popover
+                    [lvPopoverContent]="nameFilterTpl"
+                    lvPopoverTheme="light"
+                    lvPopoverPosition="bottom"
+                    lvPopoverTrigger="click"
+                    [ngClass]="{ active: !!queryTableName }"
+                    #namePopover="lvPopover"
+                  ></i>
+                </lv-group>
+              </th>
+            </tr>
+          </thead>
+          <lv-tree
+            *ngIf="!!treeData?.length"
+            style="width: 100%;"
+            [lvData]="treeData"
+            #tree
+            lvShowCheckbox
+            lvSelectedByCheckbox
+            lvVirtualScroll
+            [lvScroll]="{ y: '700px' }"
+            [lvAsync]="true"
+            [(lvSelection)]="selection"
+            lvSelectionMode="multiple"
+            lvCompareWith="name"
+            (lvExpandedChange)="expandedChange($event)"
+            (lvSelect)="singleChange($event)"
+            [lvNodeTemplate]="nodeTpl"
+            [lvSelectionAssociate]="!isSearch"
+          ></lv-tree>
+          <ng-template #nodeTpl let-item>
+            <ng-container *ngIf="item.isMoreBtn">
+              <span
+                class="aui-link"
+                (click)="getNode(item.parent, item.startPage)"
+                >{{ item.label }}</span
+              >
+            </ng-container>
+            <ng-container *ngIf="!item.isMoreBtn">
+              <lv-group lvGutter="8px" style="height: 28px;">
+                <i lv-icon="aui-icon-dws-schema" *ngIf="item.level === 0"></i>
+                <span lv-overflow>{{ item.label }}</span>
+              </lv-group>
+            </ng-container>
+          </ng-template>
+        </lv-datatable>
+        <ng-container
+          *ngIf="
+            totalTable > 0 && type === dataMap.Resource_Type.DWS_Schema.value
+          "
+        >
+          <lv-paginator
+            #pageT
+            lvMode="simple"
+            lvShowPageSizeOptions="false"
+            class="table-paginator"
+            [lvPageSize]="pageSize"
+            [lvPageIndex]="pageIndex"
+            [lvTotal]="totalTable"
+            (lvPageChange)="pageChange($event)"
+          >
+          </lv-paginator>
+        </ng-container>
+      </div>
+      <div class="arrow-container">
+        <i
+          lv-icon="lv-icon-arrow-next"
+          class="auto-protect-help"
+          lvColorState="true"
+        ></i>
+      </div>
+      <div class="hive-selected-table">
+        <lv-datatable
+          [lvData]="selectedTableData"
+          #lvSelectTable
+          [lvScroll]="{ y: '660px' }"
+          [lvPaginator]="pageS"
+          lvSize="small"
+        >
+          <thead>
+            <tr>
+              <th>
+                <lv-group class="th-group" style="height: 24px;">
+                  <lv-group lvGutter="8px">
+                    <span
+                      *ngIf="type === dataMap.Resource_Type.DWS_Table.value"
+                    >
+                      {{ 'protection_selected_table_label' | i18n }}
+                    </span>
+                    <span
+                      *ngIf="type === dataMap.Resource_Type.DWS_Schema.value"
+                    >
+                      {{ 'protection_selected_schema_label' | i18n }}
+                    </span>
+                  </lv-group>
+                  <span class="aui-link" (click)="clearSelected()">{{
+                    'protection_clear_all_label' | i18n
+                  }}</span>
+                </lv-group>
+              </th>
+            </tr>
+            <tr>
+              <th>
+                <lv-group lvGutter="8px" style="height: 16px;">
+                  <span *ngIf="type === dataMap.Resource_Type.DWS_Table.value">
+                    {{ 'protection_table_path_label' | i18n }}
+                  </span>
+                  <span *ngIf="type === dataMap.Resource_Type.DWS_Schema.value">
+                    {{ 'common_name_label' | i18n }}
+                  </span>
+                </lv-group>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of lvSelectTable.renderData">
+              <td>
+                <lv-group class="th-group" style="height: 37px;">
+                  <span>{{ item?.name | nil }}</span>
+                  <i
+                    lv-icon="lv-icon-close"
+                    lvTooltipTheme="light"
+                    lvColorState="true"
+                    (click)="removeSingle(item)"
+                  ></i>
+                </lv-group>
+              </td>
+            </tr>
+          </tbody>
+        </lv-datatable>
+        <ng-container *ngIf="selectedTableData.length > 0">
+          <lv-paginator
+            #pageS
+            lvMode="simple"
+            lvShowPageSizeOptions="false"
+            class="table-paginator"
+            [lvPageSize]="pageSize"
+            [lvPageIndex]="pageIndexS"
+            [lvTotal]="selectedTableData.length"
+            (lvPageChange)="pageChangeS($event)"
+          >
+          </lv-paginator>
+        </ng-container>
+      </div>
+    </lv-group>
+  </lv-form-item>
+</lv-form>
+
+<ng-template #nameFilterTpl>
+  <lv-search
+    [(ngModel)]="queryTableName"
+    (lvSearch)="searchByName($event)"
+    [lvFocus]="true"
+  ></lv-search>
+</ng-template>

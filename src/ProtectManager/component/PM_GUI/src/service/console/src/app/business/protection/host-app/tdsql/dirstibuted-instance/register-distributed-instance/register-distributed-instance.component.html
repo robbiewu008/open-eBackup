@@ -1,0 +1,113 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" placeholder="{{'common_search_type_label'|i18n:['protection_database_instance_label'|i18n]}}"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_cluster_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        [lvOptions]="clusterOptions"
+        formControlName="cluster"
+        lvValueKey="value"
+        lvShowFilter
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        [lvDisabled]="!!rowData"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'GroupID' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <input
+        lv-input
+        type="text"
+        formControlName="groupId"
+        [placeholder]="i18n.get('protection_groupid_placeholder_label')"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <div class="aui-gutter-column-lg">
+      <button
+        lv-button
+        lvType="primary"
+        (click)="scanDataNodes()"
+        [disabled]="!formGroup.get('cluster').value || !formGroup.get('groupId').value"
+      >
+        {{ 'protection_scan_data_node_label' | i18n }}
+      </button>
+    </div>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      <h2>{{'protection_data_node_label'|i18n}}</h2>
+    </lv-form-label>
+  </lv-form-item>
+  <div style="margin-top: 15px;">
+    <lv-datatable [lvData]="dataNodesData" formArrayName="dataNodes" #nodeTable>
+      <thead>
+      <tr>
+        <th style="width: 190px">{{ 'common_host_label' | i18n }}</th>
+        <th>{{ 'protection_proxy_host_label' | i18n }}</th>
+      </tr>
+      </thead>
+      <tbody style="min-height: 200px">
+      <ng-container *ngFor="let item of dataNodes; let i = index">
+        <tr [formGroupName]="i">
+          <td>
+            <lv-form-control class="formControl tdsql-instance-height">
+                <span class="node-info">
+                    {{ dataNodes[i].value.host | nil }}
+                </span>
+            </lv-form-control>
+          </td>
+          <td>
+            <lv-form-control class="formControl tdsql-instance-height">
+              <lv-select class="input-position"
+                         [lvOptions]="proxyOptions"
+                         formControlName="proxy"
+                         lvValueKey="value"
+                         lvShowFilter
+                         lvShowClear
+                         lvFilterKey="label"
+                         lvFilterMode="contains"
+                         style="width: 330px;"
+              >
+              </lv-select>
+            </lv-form-control>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </lv-datatable>
+  </div>
+  <div style="margin-top: 15px">
+    <lv-pro-table #instanceTable [config]="instanceTableConfig" [data]="instanceTableData">
+    </lv-pro-table>
+  </div>
+</lv-form>

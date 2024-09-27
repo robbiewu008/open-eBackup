@@ -1,0 +1,132 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 复制接口
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: 复制接口
+  - name: replication_api
+paths:
+  /v1/replication:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - replication_api
+      operationId: replicationUsingPOST
+      consumes:
+        - application/json
+      summary: 执行反向复制
+      description: 执行反向复制
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: replication_req
+          description: 反向复制请求体
+          required: true
+          schema:
+            $ref: '#/definitions/ReplicationRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+          examples:
+            application/json:
+              errorCode: '1677929515'
+              errorMessage: xxx
+              parameters: []
+        '502':
+          description: Bad Gateway
+          schema:
+            type: string
+definitions:
+  ReplicationRequest:
+    properties:
+      copy_id:
+        type: string
+        description: 副本id
+      external_system_id:
+        type: string
+        description: 外部系统id
+      retention_type:
+        type: integer
+        format: int32
+        description: 保留类型：1-永久保留 2-临时保留
+        enum:
+          - 1
+          - 2
+      duration_unit:
+        type: string
+        description: '保留周期单位[d/w/MO/y]'
+        enum:
+          - d
+          - w
+          - MO
+          - 'y'
+      retention_duration:
+        type: integer
+        format: int32
+        description: 保留时间
+      link_deduplication:
+        type: boolean
+        description: 是否开启复制链路重删
+        default: true
+      link_compression:
+        type: boolean
+        description: 是否开启复制链路压缩
+        default: false
+      storage_type:
+        type: string
+        description: 指定存储类型
+      storage_id:
+        type: string
+        description: 存储单元（组）ID
+      user_id:
+        type: string
+        description: 指定用户id
+      username:
+        type: string
+        description: 用户名
+      password:
+        type: string
+        description: 密码
+    required:
+      - copy_id
+      - external_system_id
+      - retention_type
+    type: object

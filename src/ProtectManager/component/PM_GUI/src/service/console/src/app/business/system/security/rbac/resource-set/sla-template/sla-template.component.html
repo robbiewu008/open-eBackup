@@ -1,0 +1,118 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation" *ngIf="!isDetail">
+  <lv-group>
+    <lv-group lvGutter="8px">
+      <button lv-button (click)="allSelect(true)" [disabled]="!slaData?.length">
+        {{buttonLabel}}
+      </button>
+    </lv-group>
+    <lv-group></lv-group>
+  </lv-group>
+</div>
+
+<div class="list-container">
+  <lv-datatable [lvData]='slaData' #lvTable lvResize [lvScroll]="{x:'100%'}" lvSort (lvSortChange)='sortData($event)'
+    lvSelectionMode='multiple' [(lvSelection)]='selection' (lvSelectionChange)="selectionChange()" lvCompareWith="uuid">
+    <thead>
+      <tr>
+        <th lvShowCheckbox width='3%' [lvRowsData]='lvTable.renderData' *ngIf="!isDetail" [lvDisabled]="isAllSelect">
+        </th>
+        <th lvShowSort lvCellKey='name' width="15%">
+          {{'common_name_label'|i18n}}
+          <i lv-icon="lv-icon-search" [ngClass]="{ active: !!name }" [lvColorState]="true" lv-popover
+            [lvPopoverContent]="nameFilterTpl" lvPopoverTheme="light" lvPopoverPosition="bottom"
+            lvPopoverTrigger="click" #namePopover="lvPopover"></i>
+        </th>
+        <th *ngIf="!isHyperdetect" width="12%" lvCellKey='appliation' lvShowFilter [(lvFilters)]='applicationFilterMap'
+          (lvFilterChange)='appliationFilterChange($event)' lvFilterCheckAll lvFilterSearch>
+          {{'common_application_type_label'|i18n}}
+        </th>
+        <th *ngIf="!isHyperdetect" width="21%" lvCellKey='actions' lvShowFilter [(lvFilters)]='actionsFilterMap'
+          (lvFilterChange)='actionFilterChange($event)' lvFilterCheckAll lvFilterSearch>
+          {{'protection_backup_mode_label'|i18n}}
+        </th>
+        <th *ngIf="isHyperdetect" width="12%" lvCellKey='appliation'>
+          {{'common_application_type_label'|i18n}}
+        </th>
+        <th *ngIf="isHyperdetect" width="21%" lvCellKey='actions'>
+          {{'protection_backup_mode_label'|i18n}}
+        </th>
+        <ng-container *ngIf="appUtilsService.isDistributed">
+          <th width="8%" lvCellKey='appliation' lvShowFilter [(lvFilters)]='slaStatusMap'
+            (lvFilterChange)='slaStatusFilterChange($event)' lvFilterCheckAll lvFilterSearch>
+            {{'protection_sla_status_label' | i18n}}</th>
+        </ng-container>
+        <th width="9%" lvShowSort lvCellKey='resource_count'>
+          <span lv-overflow>{{'common_associated_resource_label'|i18n}}</span>
+        </th>
+        <th *ngIf="!isHyperdetect && !isHcsUser" width="9%" lvCellKey='archival_count'>
+          <span lv-overflow>{{(!cookieService.isCloudBackup ? 'protection_archival_target_counts_label':
+            'protection_backup_target_label')|i18n}}</span>
+        </th>
+        <th width="9%" lvCellKey='replication_count' *ngIf="!cookieService.isCloudBackup && !isHcsUser">
+          <span lv-overflow>{{'protection_replication_target_counts_label'|i18n}}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor='let item of lvTable.renderData'>
+        <tr>
+          <td lvShowCheckbox [lvRowData]='item' *ngIf="!isDetail" [lvDisabled]="item.disabled">
+          </td>
+          <td>
+            <span lv-overflow>
+              <sla-type [name]="item.name"></sla-type>
+            </span>
+          </td>
+          <td>
+            <span lv-overflow>
+              {{item.application | textMap: 'Application_Type'}}
+            </span>
+          </td>
+          <td>
+            <span lv-overflow>
+              {{item.backup_mode}}
+            </span>
+          </td>
+          <ng-container *ngIf="appUtilsService.isDistributed">
+            <td>{{item.enabled | textMap: 'slaStatus'}}</td>
+          </ng-container>
+          <td>
+            <ng-container *ngIf="!!item.resource_count">
+              <span>{{item.resource_count}}</span>
+            </ng-container>
+            <ng-container *ngIf="!item.resource_count">
+              {{item.resource_count | nil}}
+            </ng-container>
+          </td>
+          <td *ngIf="!isHyperdetect && !isHcsUser">
+            {{item.archival_count | nil}}
+          </td>
+          <td *ngIf="!cookieService.isCloudBackup && !isHcsUser">
+            {{item.replication_count | nil}}
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </lv-datatable>
+  <div class="aui-paginator-wrap">
+    <lv-paginator [lvPageSize]="pageSize" [lvTotal]="total" [lvPageIndex]="pageNo" (lvPageChange)="pageChange($event)"
+      [lvPageSizeOptions]="sizeOptions" [hidden]="!total"></lv-paginator>
+  </div>
+</div>
+
+<ng-template #nameFilterTpl>
+  <lv-search [(ngModel)]="name" (lvSearch)="searchByName($event)" [lvFocus]="true"></lv-search>
+</ng-template>

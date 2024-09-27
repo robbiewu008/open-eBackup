@@ -1,0 +1,47 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<ng-container *ngIf="!isDetail">
+    <p class="aui-text-desc aui-gutter-column-md">
+        {{(isDisassociated ? 'explore_disassociate_white_list_select_label' :
+        'explore_associate_white_list_select_label') | i18n}}
+    </p>
+    <div class="aui-gutter-column-md">
+        {{'common_selected_num_label' | i18n:[selectionData?.length || 0]}}
+    </div>
+</ng-container>
+
+<div class="file-system-container">
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>
+
+<ng-template #retentionTol let-item>
+    <span lv-overflow>
+        {{'explore_days_label' | i18n:[item.retentionDuration]}}
+    </span>
+</ng-template>
+
+<ng-template #periodTpl let-item>
+    <ng-container *ngIf="item.isHoneypotDetectEnable; else elseTemplate">
+        <ng-container *ngIf="item.period > 0; else elseNoPeriodTemplate">
+            <span lv-overflow>{{'explore_decoy_update_label' | i18n:[item.period]}}</span>
+        </ng-container>
+        <ng-template #elseNoPeriodTemplate>
+            {{'explore_honeypot_not_update_label' | i18n}}
+        </ng-template>
+    </ng-container>
+</ng-template>
+
+<ng-template #elseTemplate>
+    --
+</ng-template>

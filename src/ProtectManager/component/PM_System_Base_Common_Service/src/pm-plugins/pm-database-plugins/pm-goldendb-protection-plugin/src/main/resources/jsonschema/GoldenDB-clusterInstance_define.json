@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "title",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "实例uuid"
+    },
+    "name": {
+      "type": "string",
+      "description": "实例名称",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型"
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型"
+    },
+    "dependencies": {
+      "$ref": "classpath:jsonschema/GoldenDB-base.json#/agentDependencies"
+    },
+    "auth": {
+      "$ref": "classpath:jsonschema/GoldenDB-base.json#/auth"
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "linkStatus": {
+          "type": "string",
+          "description": "1-在线,0-离线,8-部分在线",
+          "enum": [
+            "0",
+            "1",
+            "8"
+          ]
+        },
+        "clusterInfo": {
+          "type": "string",
+          "description": "GoldenDb实例拓展信息"
+        }
+      },
+      "required": [
+        "clusterInfo"
+      ]
+    }
+  },
+  "required": [
+    "subType",
+    "type",
+    "name",
+    "dependencies",
+    "auth",
+    "extendInfo"
+  ]
+}

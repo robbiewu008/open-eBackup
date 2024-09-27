@@ -1,0 +1,54 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_username_label' | i18n}}</lv-form-label>
+        <lv-form-control class="control-container" [lvErrorTip]="nameErrorTip">
+            <input lv-input formControlName='name' class="control-container" autocomplete="new-password" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
+        <lv-form-control class="control-container" [lvErrorTip]="passwordErrorTip">
+            <aui-inupt-with-eye formControlName='password' [lvPasteAllowed]="false" autocomplete="new-password"
+                class="control-container"></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_dataplane_ip_label' | i18n}}</lv-form-label>
+        <lv-form-control class="control-container" [lvErrorTip]="baseUtilService.ipErrorTip">
+            <input lv-input formControlName='ip' class="control-container" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_port_label' | i18n}}</lv-form-label>
+        <lv-form-control class="control-container" [lvErrorTip]="portErrorTip">
+            <input lv-input formControlName='port' class="control-container" />
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="rowItem.isVerificationPost">
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'explore_start_column_label' | i18n}}</lv-form-label>
+            <lv-form-control class="control-container" [lvErrorTip]="startErrorTip">
+                <input lv-input formControlName='start_row' class="control-container" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'explore_limit_column_label' | i18n}}</lv-form-label>
+            <lv-form-control class="control-container" [lvErrorTip]="limitErrorTip">
+                <input lv-input formControlName='limit' class="control-container" placeholder="1~10" />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>

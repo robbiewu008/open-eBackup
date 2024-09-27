@@ -1,0 +1,30 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="About Restoration">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001839159877">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>About Restoration</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001839159877"></a><a name="EN-US_TOPIC_0000001839159877"></a>
+
+<h1 class="topictitle1">About Restoration</h1>
+<div><p>Restoration can be used if data of a NAS file system or NAS share is lost or you need to restore data of a copy to another NAS file system or NAS share.</p>
+<div class="section"><h4 class="sectiontitle">Restoration Service Process</h4><ul><li>Restoring a file system to its original location<div class="fignone"><span class="figcap"><b>Figure 1 </b>Restoration service flow (restoring a file system to its original location)</span><br><span><img class="eddx" src="en-us_image_0000001839159897.png"></span></div>
+<ol><li>OceanProtect is used to deliver and schedule a NAS file backup copy restoration job and send the job to the data protection engine.</li><li>The ProtectAgent locates the target copy in the file system and restores the copy data to the file system.</li><li>The ProtectAgent uses remote replication to synchronize data in the file system to the original location for data restoration.</li></ol>
+</li><li id="EN-US_TOPIC_0000001839159877__li129049379340"><a name="EN-US_TOPIC_0000001839159877__li129049379340"></a><a name="li129049379340"></a>Other restoration modes<div class="fignone"><span class="figcap"><b>Figure 2 </b>Restoration service flow (other restoration modes)</span><br><span><img class="eddx" src="en-us_image_0000001792360778.png"></span></div>
+<ol><li>OceanProtect is used to deliver and schedule a NAS file backup copy restoration job and send the job to the data protection engine.</li><li>The data protection engine creates a clone file system based on the restoration target copy.</li><li>The protection engine mounts the clone file system in the <span>OceanProtect</span> OS and reads the files to be restored using the NFS or CIFS protocol.</li><li>The protection engine mounts the file system to be restored using the NFS or CIFS protocol, writes data to the target file system to be restored, and deletes the clone file system.</li></ol>
+</li></ul>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

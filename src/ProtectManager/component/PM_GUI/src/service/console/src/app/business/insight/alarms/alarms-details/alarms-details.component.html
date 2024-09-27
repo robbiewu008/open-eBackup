@@ -1,0 +1,51 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [lvLabelColon]="false">
+  <lv-form-item>
+    <lv-form-label>{{ severityLabel }}</lv-form-label>
+    <lv-form-control>
+      <alarm-level [type]="severity"></alarm-level>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngFor="let item of formItems">
+    <lv-form-label>{{ item.label | i18n }}</lv-form-label>
+    <lv-form-control>
+      <span *ngIf="item.key === 'suggestions'" [innerHTML]="item.value"></span>
+      <div *ngIf="
+          item.key !== 'suggestions' &&
+          !(
+            item.key === 'desc' &&
+            ['0x5F025D0004','0x5F025A0004'].includes(data.alarmId)
+          )
+        " class="detail-inner-value" [innerHTML]="item.value">
+      </div>
+      <div *ngIf="
+          item.key === 'desc' &&
+          data.alarmId === '0x5F025D0004'
+        ">
+        <p [innerHTML]="item.value"></p>
+        <span class="aui-link" (click)="downloadReport()" *ngIf="isAlarm">
+          {{ 'insight_view_report_label' | i18n }}
+        </span>
+      </div>
+      <div *ngIf="isCyberEngine && item.key === 'desc' && data.alarmId === '0x5F025A0004'">
+        <p [innerHTML]="item.value"></p>
+        
+        <span *ngIf="data.detectType !== '2'" class="aui-link" (click)="viewDetectReport()">
+          {{ 'common_view_detection_report_label' | i18n }}
+        </span>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>

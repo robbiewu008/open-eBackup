@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "title",
+  "properties": {
+    "parentUuid": {
+      "type": "string",
+      "description": "数据库uuid",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "name": {
+      "type": "string",
+      "description": "数据库自定义名称",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型"
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型"
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "clusterName": {
+          "type": "string",
+          "description": "集群名字",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "databaseName": {
+          "type": "string",
+          "description": "数据库名字",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "tableName": {
+          "type": "string",
+          "description": "实际表名字",
+          "minLength": 1,
+          "maxLength": 25600
+        }
+      },
+      "required": [
+        "clusterName",
+        "databaseName",
+        "tableName"
+      ]
+    }
+  },
+  "required": [
+    "parentUuid",
+    "subType",
+    "type",
+    "name",
+    "extendInfo"
+  ]
+}

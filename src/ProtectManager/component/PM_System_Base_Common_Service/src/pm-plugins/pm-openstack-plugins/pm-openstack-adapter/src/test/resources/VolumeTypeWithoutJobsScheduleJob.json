@@ -1,0 +1,8 @@
+{
+  "name": "backup1",
+  "description": "Backup VM1 weekly",
+  "type": "volume",
+  "instance_id": "VM1 uuid",
+  "auto_retry_times": 3,
+  "auto_retry_wait_minutes": 5
+}

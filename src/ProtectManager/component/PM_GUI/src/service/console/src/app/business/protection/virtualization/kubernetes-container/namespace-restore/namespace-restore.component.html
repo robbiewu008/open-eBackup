@@ -1,0 +1,277 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label>
+            {{ 'protection_restore_to_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
+                <lv-group [lvGutter]="'20px'">
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="restoreToNewLocationOnly"
+                        [lv-tooltip]="restoreToNewLocationOnly ? ('protection_cloud_origin_restore_disabled_label' | i18n) : ''">
+                        {{ 'common_restore_to_origin_location_label' | i18n }}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreLocationType.NEW">
+                        {{ 'common_restore_to_new_location_label' | i18n }}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'common_target_to_cluster_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="originalCluster" [lvOptions]="originalClusterOptions" lvValueKey="value"
+                    lvDisabled>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'protection_name_space_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="originalNamespace" [lvOptions]="originalNamespaceOptions" lvValueKey="value"
+                    lvDisabled>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_target_to_cluster_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="targetClusterErrorTip">
+                <lv-select formControlName="targetCluster" [lvOptions]="clusterOptions" lvValueKey="value" lvShowFilter
+                    lvFilterKey="label" lvFilterMode="contains">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'protection_name_space_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="targetNamespace" [lvOptions]="namespaceOptions" lvValueKey="value"
+                    lvShowFilter lvFilterKey="label" lvFilterMode="contains">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_over_write_rule_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_pvc_overwrite_label' | i18n}}" lvTooltipTheme="light"
+                class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="overwriteType">
+                <lv-group [lvGutter]="'20px'" lvDirection='vertical' class="mgt-8">
+                    <lv-radio [lvValue]="fileReplaceStrategy.Replace">
+                        {{'protection_overwrite_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="fileReplaceStrategy.Ignore">
+                        {{'protection_skip_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <div class="advanced">
+        <lv-collapse [lvType]="'simple'">
+            <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="true">
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'protetion_modify_env_config_label' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control style="padding-bottom: 8px;">
+                        <lv-switch formControlName="changeEnv"></lv-switch>
+                    </lv-form-control>
+                </lv-form-item>
+                <div formArrayName="envConfigs" class="aui-gutter-column-md" *ngIf="formGroup.value.changeEnv">
+                    <ng-container *ngFor="let item of envConfigs; let i=index">
+                        <div class="env-config-container" [formGroupName]="i">
+                            <lv-group class="delete-config-group">
+                                <h3>{{'common_modify_label'| i18n}}-{{i+1}}</h3>
+                                <span
+                                    [ngClass]="{'aui-link': envConfigs.length > 1, 'aui-link-disabled': envConfigs.length === 1 }"
+                                    (click)="deleteConfig(i)">
+                                    {{'common_delete_label' | i18n}}
+                                </span>
+                            </lv-group>
+                            <lv-form-item>
+                                <lv-form-label lvRequired>
+                                    {{ 'protetion_workload_type_label' | i18n }}
+                                </lv-form-label>
+                                <lv-form-control>
+                                    <lv-select formControlName="workLoadType" [lvOptions]="workLoadTypeOptions"
+                                        lvValueKey="value" lvShowFilter lvFilterKey="label" lvFilterMode="contains">
+                                    </lv-select>
+                                </lv-form-control>
+                            </lv-form-item>
+                            <lv-form-item>
+                                <lv-form-label lvRequired>
+                                    {{ 'protetion_workload_name_label' | i18n }}
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='nameErrorTip'>
+                                    <input type="text" formControlName="workLoadName" lv-input />
+                                </lv-form-control>
+                            </lv-form-item>
+                            <lv-form-item>
+                                <lv-form-label lvRequired>
+                                    {{ 'protetion_cotainer_name_label' | i18n }}
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='nameErrorTip'>
+                                    <input type="text" formControlName="containerName" lv-input />
+                                </lv-form-control>
+                            </lv-form-item>
+                            <lv-form-item>
+                                <lv-form-label lvRequired>
+                                    {{'protetion_env_variable_label' | i18n}}
+                                </lv-form-label>
+                                <lv-form-control>
+                                    <div formArrayName="envVariables">
+                                        <ng-container
+                                            *ngFor="let variable of item.get('envVariables').controls; let j=index; last as isLast">
+                                            <lv-group lvGutter='8px' class="label-group"
+                                                [ngClass]="{'mgb': !isLast, 'mgb-min': isLast}"
+                                                [lvColumns]='["auto", "auto", "20px"]' [formGroupName]="j">
+                                                <lv-form-control [lvErrorTip]='envValueErrorTip'>
+                                                    <input lv-input formControlName="envKey"
+                                                        placeholder="{{'common_enter_key_label' | i18n}}" />
+                                                </lv-form-control>
+                                                <lv-form-control [lvErrorTip]='envValueErrorTip'>
+                                                    <input lv-input formControlName="envValue"
+                                                        placeholder="{{'common_enter_value_label' | i18n}}" />
+                                                </lv-form-control>
+                                                <ng-container
+                                                    *ngIf="item.get('envVariables').controls.length === 1; else elseTemplate">
+                                                    <i lv-icon="lv-icon-remove" class="aui-link-disabled"></i>
+                                                </ng-container>
+                                                <ng-template #elseTemplate>
+                                                    <i lv-icon="aui-icon-remove" (click)="deleteEnvVariable(i,j)"
+                                                        lvColorState='true'></i>
+                                                </ng-template>
+                                            </lv-group>
+                                        </ng-container>
+                                    </div>
+                                    <lv-group lvGutter='8px' class="add-group"
+                                        [ngClass]="{'aui-link': item.get('envVariables').controls.length < 10, 'aui-link-disabled': item.get('envVariables').controls.length >= 10}"
+                                        (click)="addEnvVariable(i)">
+                                        <i
+                                            lv-icon="{{item.get('envVariables').controls.length < 10 ? 'aui-icon-add-enable' : 'lv-icon-create'}}"></i>
+                                        <span class="text-middle">{{'common_add_label' | i18n}}</span>
+                                    </lv-group>
+                                </lv-form-control>
+                            </lv-form-item>
+                        </div>
+                    </ng-container>
+                    <lv-group lvGutter='8px' class="add-config-group"
+                        [ngClass]="{'aui-link': envConfigs.length < 10, 'aui-link-disabled': envConfigs.length >= 10}"
+                        (click)="addConfig()">
+                        <i lv-icon="{{envConfigs.length < 10 ? 'aui-icon-add-enable' : 'lv-icon-create'}}"></i>
+                        <span class="text-middle">{{'protetion_add_modify_label' | i18n}}</span>
+                    </lv-group>
+                </div>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'explore_k8s_modify_storage_class_label' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="changeSc"></lv-switch>
+                    </lv-form-control>
+                </lv-form-item>
+                <div formArrayName="scConfigs" *ngIf="formGroup.value.changeSc">
+                    <ng-container *ngFor="let item of scConfigs; let i=index">
+                        <div class="env-config-container" [formGroupName]="i">
+                            <lv-group class="delete-config-group">
+                                <h3>{{'common_modify_label'| i18n}}-{{i+1}}</h3>
+                                <span
+                                    [ngClass]="{'aui-link': scConfigs.length > 1, 'aui-link-disabled': scConfigs.length === 1 }"
+                                    (click)="deleteScConfig(i)">
+                                    {{'common_delete_label' | i18n}}
+                                </span>
+                            </lv-group>
+                            <lv-form-item>
+                                <lv-form-label lvRequired>
+                                    {{'explore_k8s_storage_class_name_label' | i18n}}
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='nameErrorTip'>
+                                    <input lv-input type="text" formControlName="scName">
+                                </lv-form-control>
+                            </lv-form-item>
+                            <lv-form-item>
+                                <lv-form-label lvRequired>
+                                    {{'explore_k8s_storage_parameter_label' | i18n}}
+                                </lv-form-label>
+                                <lv-form-control>
+                                    <div formArrayName="scParameterMap">
+                                        <ng-container
+                                            *ngFor="let variable of item.get('scParameterMap').controls; let j=index; last as isLast">
+                                            <lv-group lvGutter='8px' class="label-group"
+                                                [ngClass]="{'mgb': !isLast, 'mgb-min': isLast}"
+                                                [lvColumns]='["auto", "auto", "20px"]' [formGroupName]="j">
+                                                <lv-form-control [lvErrorTip]='envValueErrorTip'>
+                                                    <input lv-input formControlName="envKey"
+                                                        placeholder="{{'common_enter_key_label' | i18n}}" />
+                                                </lv-form-control>
+                                                <lv-form-control [lvErrorTip]='envValueErrorTip'>
+                                                    <input lv-input formControlName="envValue"
+                                                        placeholder="{{'common_enter_value_label' | i18n}}" />
+                                                </lv-form-control>
+                                                <ng-container
+                                                    *ngIf="item.get('scParameterMap').controls.length === 1; else elseTemplate">
+                                                    <i lv-icon="lv-icon-remove" class="aui-link-disabled"></i>
+                                                </ng-container>
+                                                <ng-template #elseTemplate>
+                                                    <i lv-icon="aui-icon-remove" (click)="deleteScParams(i,j)"
+                                                        lvColorState='true'></i>
+                                                </ng-template>
+                                            </lv-group>
+                                        </ng-container>
+                                    </div>
+                                    <lv-group lvGutter='8px' class="add-group"
+                                        [ngClass]="{'aui-link': item.get('scParameterMap').controls.length < 10, 'aui-link-disabled': item.get('scParameterMap').controls.length >= 10}"
+                                        (click)="addScParams(i)">
+                                        <i
+                                            lv-icon="{{item.get('scParameterMap').controls.length < 10 ? 'aui-icon-add-enable' : 'lv-icon-create'}}"></i>
+                                        <span class="text-middle">{{'common_add_label' | i18n}}</span>
+                                    </lv-group>
+                                </lv-form-control>
+                            </lv-form-item>
+                        </div>
+                    </ng-container>
+                    <lv-group lvGutter='8px' class="add-config-group"
+                        [ngClass]="{'aui-link': scConfigs.length < 10, 'aui-link-disabled': scConfigs.length >= 10}"
+                        (click)="addScConfig()">
+                        <i lv-icon="{{envConfigs.length < 10 ? 'aui-icon-add-enable' : 'lv-icon-create'}}"></i>
+                        <span class="text-middle">{{'protetion_add_modify_label' | i18n}}</span>
+                    </lv-group>
+                </div>
+            </lv-collapse-panel>
+        </lv-collapse>
+    </div>
+</lv-form>
+<ng-template #titleTpl>
+    <lv-group lvGutter="8px">
+        <span class="aui-h3">
+            {{ 'common_advanced_label' | i18n }}
+        </span>
+    </lv-group>
+</ng-template>

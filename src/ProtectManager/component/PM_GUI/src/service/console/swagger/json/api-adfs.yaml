@@ -1,0 +1,356 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: ADFS配置管理
+  - name: ADFS登录跳转
+paths:
+  /v1/adfs/config/close:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ADFS配置管理
+      operationId: closeADFSConfig
+      summary: 关闭adfs配置
+      description: 调用此接口关闭adfs配置会清除原因adfs记录
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+  /v1/adfs/config:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ADFS配置管理
+      operationId: setADFSConfig
+      consumes:
+        - multipart/form-data
+      summary: 保存ADFS配置（创建和修改同一个接口）
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: configName
+          in: formData
+          required: true
+          description: 名称
+          type: string
+          pattern: ^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-\.]*$
+          minLength: 1
+          maxLength: 255
+        - name: providerUrl
+          in: formData
+          required: true
+          description: ADFS地址
+          type: string
+          minLength: 1
+          maxLength: 1024
+          pattern: ^([hH]{1}[tT]{2}[pP]{1}[sS]?):\/\/[\s\S]*$
+        - name: clientId
+          in: formData
+          required: true
+          description: 客户端id
+          type: string
+          minLength: 1
+          maxLength: 255
+        - name: clientPwd
+          in: formData
+          required: true
+          description: 客户端秘钥
+          type: string
+          minLength: 1
+          maxLength: 1024
+        - name: caFile
+          in: formData
+          required: false
+          description: CA证书
+          type: file
+      responses:
+        '200':
+          description: ''
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+    get:
+      tags:
+        - ADFS配置管理
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: getADFSConfig
+      summary: 查询ADFS配置
+      description: 查询ADFS配置
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Demo Information
+          schema:
+            $ref: '#/definitions/ADFSConfigDto'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+  /v1/adfs/config/check:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ADFS配置管理
+      summary: 测试ADFS配置
+      description: 测试ADFS配置
+      operationId: checkADFSConfig
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: configName
+          in: formData
+          required: true
+          description: 名称
+          type: string
+        - name: providerUrl
+          in: formData
+          required: true
+          description: ADFS地址
+          type: string
+        - name: clientId
+          in: formData
+          required: true
+          description: 客户端id
+          type: string
+        - name: clientPwd
+          in: formData
+          required: true
+          description: 客户端秘钥
+          type: string
+        - name: caFile
+          in: formData
+          required: false
+          description: CA证书
+          type: file
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v1/adfs/config/callback-url:
+    get:
+      tags:
+        - ADFS配置管理
+      summary: 获取回调URL
+      description: 获取回调URL
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: getCallBackUrl
+      responses:
+        '200':
+          description: callBackUrl
+          schema:
+            $ref: '#/definitions/ADFSForwardDto'
+  /v1/auth/adfs/forward:
+    get:
+      tags:
+        - ADFS登录跳转
+      summary: adfs跳转登录
+      x-dr-role: 'Y'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: adfsLoginForward
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ADFSFowardDto'
+definitions:
+  DemoInfo:
+    description: This is a demo
+    required:
+      - name
+    properties:
+      id:
+        type: string
+        description: 唯一标识ID
+        minLength: 32
+        maxLength: 36
+        readOnly: true
+        example: 28f61af50fc9452aa0ed5ea25c3cc3d3
+      name:
+        type: string
+        description: 名称
+        minLength: 2
+        maxLength: 64
+        example: MyDemo
+      description:
+        type: string
+        description: 描述
+        minLength: 2
+        maxLength: 512
+        example: this is a demo
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512
+  ADFSConfigDto:
+    type: object
+    required:
+      - uuid
+      - configName
+      - protocolName
+      - providerUrl
+      - clientId
+      - clientPwd
+    properties:
+      uuid:
+        type: string
+        description: uuid
+      configName:
+        type: string
+        description: 配置名称
+      protocolName:
+        type: string
+        description: 协议名称
+      providerUrl:
+        type: string
+        description: ADFS地址
+      clientId:
+        type: string
+        description: 客户端id
+      clientPwd:
+        type: string
+        description: 客户端秘钥
+  ADFSForwardDto:
+    type: object
+    properties:
+      callbackUrl:
+        type: string
+        description: 回调地址
+      providerUrl:
+        type: string
+      clientId:
+        type: string
+  ADFSFowardDto:
+    type: object
+    properties:
+      callbackUrl:
+        type: string
+        example: https://7.220.53.252:25080/console/rest/v1/auth/adfs/login
+      providerUrl:
+        type: string
+        example: https://adfs.mixazure.com/adfs/ls/IdPInitiatedSignonPage.htm
+      clientId:
+        type: string
+        example: ad2e2ecb-87db-433d-982f-0a9541e14cb4
+      forwardUrl:
+        type: string
+        example: https://adfs.mixazure.com/adfs/oauth2/authorize/?response_type=code&client_id=ad2e2ecb-87db-433d-982f-0a9541e14cb4&redirect_uri=https://7.220.53.252:25080/console/rest/v1/auth/adfs/login
+        description: 跳转URL
+      logoutForwardUrl:
+        type: string
+        description: 登录url

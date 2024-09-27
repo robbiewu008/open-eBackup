@@ -1,0 +1,54 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="list-container">
+  <div class="left-bar">
+    <div class="head-title">
+      {{'common_roles_label' | i18n}}
+    </div>
+    <lv-radio-group [(ngModel)]="selected" (ngModelChange)="resetSelection()">
+      <lv-group lvGutter="8px" lvDirection="vertical">
+        <ng-container *ngFor="let item of roleList">
+          <lv-radio lvViewType="custom" [lvValue]="item.roleId">
+            <lv-card
+              class="ui-card role-card"
+              lvType="border"
+              [lvChecked]="selected === item.roleId"
+            >
+              <lv-group class="card-content" lvGutter="12px">
+                <div class="role-icon-box">
+                  <i lv-icon="aui-icon-role" class="role-icon"></i>
+                  <div *ngIf="item.roleId === defaultRoleId" class="role-tag">
+                    {{'system_default_label' | i18n}}
+                  </div>
+                </div>
+                <p class="card-content-word" lv-overflow>{{ item.roleName }}</p>
+              </lv-group>
+            </lv-card>
+          </lv-radio>
+        </ng-container>
+      </lv-group>
+    </lv-radio-group>
+  </div>
+  <div class="vertical-line"></div>
+  <div>
+    <div class="head-title">
+      {{resourceSetTip}}
+    </div>
+    <lv-alert lvType="info">{{'system_default_role_resourceset_tip_label' | i18n}}</lv-alert>
+    <div class="aui-operation">
+      <lv-pro-button-group [config]="optsConfig"></lv-pro-button-group>
+    </div>
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+  </div>
+</div>

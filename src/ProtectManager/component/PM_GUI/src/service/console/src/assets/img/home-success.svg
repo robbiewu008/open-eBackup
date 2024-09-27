@@ -1,0 +1,27 @@
+<svg width="40.000000" height="40.000000" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<desc>
+			Created with Pixso.
+	</desc>
+	<defs>
+		<linearGradient x1="20.000002" y1="35.815712" x2="20.000002" y2="2.949379" id="paint_linear_241_78100_0" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#40ACFF"/>
+			<stop offset="1.000000" stop-color="#3737B7"/>
+		</linearGradient>
+		<linearGradient x1="28.041679" y1="5.000000" x2="28.041679" y2="35.000000" id="paint_linear_241_78103_0" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#6AE0B9"/>
+			<stop offset="1.000000" stop-color="#40ACFF"/>
+		</linearGradient>
+	</defs>
+	<rect id="矩形" width="40.000000" height="40.000000" fill="#D8D8D8" fill-opacity="0"/>
+	<rect id="矩形" x="0.500000" y="0.500000" width="39.000000" height="39.000000" stroke="#979797" stroke-opacity="0" stroke-width="1.000000"/>
+	<mask id="mask_241_78100" fill="white">
+		<path id="形状结合" d="M20 5C11.7158 5 5 11.7158 5 20C5 28.2842 11.7158 35 20 35C28.2842 35 35 28.2842 35 20C35 11.7158 28.2842 5 20 5ZM18.5669 25.6001L26.6392 16.2666C27.1865 15.7334 27.0493 14.9331 26.6392 14.3999C26.2285 13.8667 25.4077 13.8667 24.8604 14.3999L17.6094 22.7998L14.189 19.2002C13.7788 18.6665 12.9575 18.6665 12.4106 19.2002C11.8633 19.7334 11.8633 20.5332 12.4106 21.0669L16.7886 25.6001C17.1987 26.1333 18.02 26.1333 18.5669 25.6001Z" clip-rule="evenodd" fill="" fill-opacity="1.000000" fill-rule="evenodd"/>
+	</mask>
+	<path id="形状结合" d="M20 5C11.7158 5 5 11.7158 5 20C5 28.2842 11.7158 35 20 35C28.2842 35 35 28.2842 35 20C35 11.7158 28.2842 5 20 5ZM18.5669 25.6001L26.6392 16.2666C27.1865 15.7334 27.0493 14.9331 26.6392 14.3999C26.2285 13.8667 25.4077 13.8667 24.8604 14.3999L17.6094 22.7998L14.189 19.2002C13.7788 18.6665 12.9575 18.6665 12.4106 19.2002C11.8633 19.7334 11.8633 20.5332 12.4106 21.0669L16.7886 25.6001C17.1987 26.1333 18.02 26.1333 18.5669 25.6001Z" clip-rule="evenodd" fill="url(#paint_linear_241_78100_0)" fill-opacity="1.000000" fill-rule="evenodd" mask="url(#mask_241_78100)"/>
+	<path id="形状结合" d="" clip-rule="evenodd" fill="#979797" fill-opacity="0.000000" fill-rule="evenodd"/>
+	<mask id="mask_241_78103" fill="white">
+		<path id="形状结合" d="M20 35C28.2842 35 35 28.2842 35 20C35 11.7158 28.2842 5 20 5L20 20.0308L24.8604 14.3999C25.4077 13.8667 26.2285 13.8667 26.6392 14.3999C27.0493 14.9331 27.1865 15.7334 26.6392 16.2666L20 23.9434L20 35Z" clip-rule="evenodd" fill="" fill-opacity="1.000000" fill-rule="evenodd"/>
+	</mask>
+	<path id="形状结合" d="M20 35C28.2842 35 35 28.2842 35 20C35 11.7158 28.2842 5 20 5L20 20.0308L24.8604 14.3999C25.4077 13.8667 26.2285 13.8667 26.6392 14.3999C27.0493 14.9331 27.1865 15.7334 26.6392 16.2666L20 23.9434L20 35Z" clip-rule="evenodd" fill="url(#paint_linear_241_78103_0)" fill-opacity="1.000000" fill-rule="evenodd" mask="url(#mask_241_78103)"/>
+	<path id="形状结合" d="" clip-rule="evenodd" fill="#979797" fill-opacity="0.000000" fill-rule="evenodd"/>
+</svg>

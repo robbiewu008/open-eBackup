@@ -1,0 +1,219 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation">
+    <lv-group [lvGutter]="groupCommon.middleRowGutter">
+        <ng-container *ngIf="tab.id !== ResourceType.TENANT;else tenantTemp">
+            <lv-tooltip [lvContent]="disableProtectionTip">
+                <button lv-button lvType="primary" (click)="protect(selection)" [disabled]="protectBtnDisabled"
+                    pmpermission pmOperation='ProtectTENANT'>
+                    {{'common_protect_label' | i18n}}
+                </button>
+            </lv-tooltip>
+            <button lv-button lv-dropdown [lvDropdownMenus]="moreMenus" [disabled]="!selection.length"
+                *ngIf="moreMenus | find: 'hidden': false">
+                <span>{{'common_more_label' | i18n}}</span>
+                <i #lvDropdownTrigger lv-icon="lv-icon-triangle-down"></i>
+            </button>
+        </ng-container>
+
+    </lv-group>
+    <lv-group [lvGutter]="groupCommon.middleRowGutter">
+        <lv-search [lvFocus]="true" [(ngModel)]="queryName"
+            lvPlaceHolder="{{'common_search_type_label'|i18n:[tab.label]}}" (lvSearch)=searchByName($event)>
+        </lv-search>
+        <button lv-button lvSize="auto" (click)="refresh()" class="aui-button-icon">
+            <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+        </button>
+    </lv-group>
+</div>
+<div class="list-container">
+    <lv-datatable #lvTable lvSort lvAsync lvResize [lvData]="tab.tableData" (lvSortChange)='sortChange($event)'
+        [lvPaginator]="page" lvSelectionMode="multiple" (lvSelectionChange)="selectionChange($event)"
+        [lvSelection]="selection" lvCompareWith="uuid" [(lvActiveSort)]='activeSort' lvResizeMode="expand"
+        [lvScroll]="{ x: '100%' }">
+        <thead>
+            <tr>
+                <th lvShowCheckbox width="40px" [lvRowsData]="lvTable.renderData"></th>
+                <ng-container *ngFor="let col of columns">
+                    <th *ngIf="!col.hidden && col.isShow" [lvShowFilter]="col.showFilter"
+                        (lvFilterChange)="filterChange($event)" [(lvFilters)]="col.filterMap" [lvCellKey]="col.key"
+                        [lvAlign]="col.align" [lvShowSort]="col.showSort" [width]="col.width" lvShowCustom
+                        lvFilterCheckAll>
+                        <div lv-overflow>
+                            {{col.label}}
+                            <div lvCustom *ngIf="col.key === 'sla_compliance'" class="resource-sla-help">
+                                <aui-sla-compliance-tooltip margin="true"></aui-sla-compliance-tooltip>
+                            </div>
+                            <div lvCustom *ngIf="col.key === 'projectCount'" class="resource-sla-help">
+                                <i *ngIf="tab.resType === ResourceType.TENANT" lv-icon="aui-icon-help"
+                                    lv-tooltip="{{(tab.id === ResourceType.HOST ?'protection_cluster_vms_help_label':'protection_host_vms_help_label' )| i18n}}"
+                                    lvTooltipPosition="rightTop" class="configform-constraint" lvColorState='true'></i>
+                            </div>
+                            <div lvCustom *ngIf="col.key === 'resourceGroupName'" class="resource-sla-help">
+                                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_cloud_group_tip_label' | i18n}}"
+                                    lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+                            </div>
+                        </div>
+                        <div lvCustom *ngIf="col.key === 'uuid'">
+                            <aui-custom-table-search (search)="searchByUuid($event)"
+                                [filterTitle]="col.label"></aui-custom-table-search>
+                        </div>
+                        <div lvCustom *ngIf="col.key === 'name'">
+                            <aui-custom-table-search (search)="searchByName($event)"
+                                [filterTitle]="col.label"></aui-custom-table-search>
+                        </div>
+                        <div lvCustom *ngIf="col.key === 'authorizedUser'">
+                            <aui-custom-table-search (search)="searchByOwnUser($event)"
+                                [filterTitle]="col.label"></aui-custom-table-search>
+                        </div>
+                        <div lvCustom *ngIf="col.key === 'path'">
+                            <aui-custom-table-search (search)="searchByPath($event)"
+                                [filterTitle]="col.label"></aui-custom-table-search>
+                        </div>
+                        <div lvCustom *ngIf="col.key === 'sla_name'">
+                            <aui-custom-table-search (search)="searchBySlaName($event)"
+                                [filterTitle]="col.label"></aui-custom-table-search>
+                        </div>
+                        <div lvCustom *ngIf="col.key === 'labelList'">
+                            <aui-custom-table-search (search)="searchByLabel($event)"
+                                [filterTitle]="col.label"></aui-custom-table-search>
+                        </div>
+                    </th>
+                </ng-container>
+                <th width='144px'>
+                    {{'common_operation_label' | i18n}}
+                </th>
+                <th width='16px' style="padding: 0;" lvResizable="false">
+                    <i lv-icon='lv-icon-col-setting' #colPopover='lvPopover' lv-popover lvPopoverPosition='bottomRight'
+                        [lvPopoverContent]='colSelectTp' lvPopoverTheme='light' lvPopoverTrigger='click'
+                        style="cursor: pointer;">
+                    </i>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of lvTable.renderData;trackBy:trackByUuid">
+                <tr [ngClass]="{ 'lv-table-row-highlight': isActive(item) }">
+                    <td lvShowCheckbox [lvRowData]="item" width="40px"></td>
+                    <ng-container *ngFor="let col of columns">
+                        <td *ngIf="!col.hidden && col.isShow" [lvAlign]="col.align">
+                            <ng-container [ngSwitch]="col.key">
+                                <ng-container *ngSwitchCase="'name'">
+                                    <span class="aui-link" (click)="viewDetail(item)" id="outerClosable" lv-overflow>
+                                        {{item.name}}
+                                    </span>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'status'">
+                                    <ng-container *ngIf="tab.id === ResourceType.CLOUD_HOST">
+                                        <span lv-overflow>
+                                            <aui-status [value]="item.status" type="HCS_Host_LinkStatus">
+                                            </aui-status>
+                                        </span>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'sla_name'">
+                                    <ng-container *ngIf="item.sla_id; else emptyTpl">
+                                        <span class="aui-link" lv-overflow id='outerClosable'
+                                            (click)="getSlaDetail(item)">
+                                            <sla-type [name]="item.sla_name"></sla-type>
+                                        </span>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'sla_compliance'">
+                                    <span lv-overflow>
+                                        <aui-status [value]="item.sla_compliance" type="Sla_Compliance">
+                                        </aui-status>
+                                    </span>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'sla_status'">
+                                    <span lv-overflow>
+                                        <aui-status [value]="item.sla_status" type="Sla_Status">
+                                        </aui-status>
+                                    </span>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'protection_status'">
+                                    <span lv-overflow>
+                                        <aui-status [value]="item.protection_status" type="Protection_Status">
+                                        </aui-status>
+                                    </span>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'children'">
+                                    <span class="aui-link" (click)="viewDetail(item)">
+                                        {{item.children}}
+                                    </span>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'tags'">
+                                    <span lv-overflow>
+                                        {{item.tags | nil}}
+                                    </span>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'labelList'">
+                                    <ng-container *ngIf="item?.labelList?.length; else emptyTpl">
+                                        <lv-tag [ngModel]="item?.showLabelList" [lv-tooltip]="TagTpl"></lv-tag>
+                                        <ng-template #TagTpl>
+                                            <lv-tag [ngModel]="item?.hoverLabelList"></lv-tag>
+                                        </ng-template>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    <span lv-overflow>
+                                        {{item[col.key] | nil}}
+                                    </span>
+                                </ng-container>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                    <td width='144px'>
+                        <lv-operation-menu [lvData]="item" [lvItemsFn]="optsCallback">
+                        </lv-operation-menu>
+                    </td>
+                    <td></td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+</div>
+<div class="aui-paginator-wrap">
+    <lv-paginator [lvPageSize]="pageSize" [lvTotal]="tab.total" [lvPageIndex]="pageIndex" #page
+        [lvPageSizeOptions]="sizeOptions" [hidden]="!tab.total" (lvPageChange)="pageChange($event)">
+    </lv-paginator>
+</div>
+
+<ng-template #tenantTemp>
+    <lv-tooltip [lvContent]="disableaddTip">
+        <button lv-button lvType="primary" (click)="addTelnet()" pmpermission pmOperation='ProtectTENANT'
+            [disabled]="treeDataDisabled">
+            {{'common_add_label' | i18n}}
+        </button>
+    </lv-tooltip>
+    <lv-tooltip [lvContent]="disableProtectionTip">
+        <button lv-button (click)="deleteTelnet(selection)" pmpermission [disabled]="protectBtnDisabled"
+            pmOperation='ProtectTENANT'>
+            {{'common_delete_label' | i18n}}
+        </button>
+    </lv-tooltip>
+    <button lv-button lv-dropdown [lvDropdownMenus]="tenantMenus" [disabled]="!selection.length"
+        *ngIf="tenantMenus | find: 'hidden': false">
+        <span>{{'common_more_label' | i18n}}</span>
+        <i #lvDropdownTrigger lv-icon="lv-icon-triangle-down"></i>
+    </button>
+</ng-template>
+
+<ng-template #emptyTpl>
+    --
+</ng-template>
+
+<ng-template #colSelectTp>
+    <column-filter-tpl [tableKey]="tableColumnKey" [columns]="columns"></column-filter-tpl>
+</ng-template>

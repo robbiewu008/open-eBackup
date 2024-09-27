@@ -1,0 +1,75 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[\\u4e00-\\u9fa5a-zA-Z_]{1}[\\u4e00-\\u9fa5a-zA-Z_0-9-]{0,63}$",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "parentUuid": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "ObjectStorage"
+      ]
+    },
+    "subType": {
+      "type": "string",
+      "enum": [
+        "ObjectSet"
+      ]
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "bucketList": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "next_backup_type": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "下次备份类型"
+        },
+        "next_backup_change_cause": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "下次备份类型改变的原因"
+        },
+        "connection_result": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "多集群场景下Agent与节点的连通状态"
+        },
+        "storageType": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "description": "对象存储类型"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "name",
+    "subType",
+    "type",
+    "extendInfo",
+    "parentUuid"
+  ]
+}

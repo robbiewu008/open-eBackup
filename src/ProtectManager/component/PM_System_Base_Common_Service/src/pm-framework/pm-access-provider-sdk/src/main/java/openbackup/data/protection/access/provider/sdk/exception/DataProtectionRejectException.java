@@ -1,0 +1,53 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+package openbackup.data.protection.access.provider.sdk.exception;
+
+/**
+ * Data Protection Reject Exception
+ *
+ * @author l00272247
+ * @since 2021-12-11
+ */
+public class DataProtectionRejectException extends DataProtectionAccessException {
+    /**
+     * constructor
+     *
+     * @param errorCode error code
+     * @param parameters parameters
+     */
+    public DataProtectionRejectException(long errorCode, String[] parameters) {
+        super(errorCode, parameters);
+    }
+
+    /**
+     * constructor
+     *
+     * @param errorCode error code
+     * @param parameters parameters
+     * @param cause cause
+     */
+    public DataProtectionRejectException(long errorCode, String[] parameters, Throwable cause) {
+        super(errorCode, parameters, cause);
+    }
+
+    /**
+     * constructor
+     *
+     * @param errorCode error code
+     * @param parameters parameters
+     * @param message message
+     */
+    public DataProtectionRejectException(long errorCode, String[] parameters, String message) {
+        super(errorCode, parameters, message);
+    }
+}

@@ -1,0 +1,11 @@
+BasicCommands.proto: range for basic commands 1-100 and range for generic replies: 100-199
+ChainEngine.proto: range of commands for Chain Engine: 200-299
+EnvironmentProxy.proto: range of commands for Environment Proxy: 300-399
+BackupNodeManager.proto: range of commands for BackupNode Manager: 400-499
+Tasks.proto: range for Task-related commands: 500-599
+
+ManageBricksConnectivity.proto: range of commands for ManageBricksConnectivity command and reply: 800-899
+HearthBeatCommand.proto: range of commands for HeartBeatCommand : 900-999
+EventCommand.proto: range of commands for HeartBeatCommand : 1000-1099
+StatisticCommand.proto: range of commands for StatisticSS: 1100-1199
+SecurityManagerCommand.proto: range of commands for security management: 1200-1299

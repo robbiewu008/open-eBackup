@@ -1,0 +1,38 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="sla-complicance-container">
+    <h1 class="sla-complicance-title">
+        {{ 'common_sla_compliance_label' | i18n }}
+        <aui-sla-compliance-tooltip lvTooltipPosition="rightTop"></aui-sla-compliance-tooltip>
+    </h1>
+    <div class="sla-complicance-chart-container">
+        <div id="sla-complicance-chart"></div>
+        <div>
+            <div class="capacity-nowrap margin-left-max margin-bottom-max">
+                <div class="status-circle-display-satisfied"></div>
+                <span class="status-number-display">
+                    {{satisfiedItems}}
+                </span>
+                <div class="status-label-display">{{'common_sla_compliance_y_label' | i18n}}</div>
+            </div>
+            <div class="capacity-nowrap margin-left-max ">
+                <div class="status-circle-display-unsatisfied"></div>
+                <span class="status-number-display">
+                    {{unsatisfiedItems}}
+                </span>
+                <div class="status-label-display">{{'common_sla_compliance_n_label' | i18n}}</div>
+            </div>
+        </div>
+    </div>
+</div>

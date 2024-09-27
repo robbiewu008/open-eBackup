@@ -1,0 +1,1256 @@
+syntax = "proto2";
+import public "BasicCommands.proto";
+import public "BasicTypes.proto";
+import public "Tasks.proto";
+import public "ManageBricksConnectivity.proto";
+
+// enum of close engine status
+enum CloseEngineStatus
+{
+        CloseEngineSuccess = 1;
+        CloseEngineDoesNotExist = 2;
+}
+
+// range of commands for Chain Engine: 200-299
+
+message OpenEngine
+{ 
+    extend BasicCommand
+    {
+        optional OpenEngine cmd = 200;
+    }
+     
+    repeated ChainID chain_id = 1;
+    repeated BackendType backend_type = 2;
+}
+
+message CloseEngine
+{
+    extend BasicCommand
+    {
+        optional CloseEngine cmd = 201;
+    }
+    
+    repeated ChainID chain_id = 1;
+}
+
+message ListEngines
+{
+    extend BasicCommand
+    {
+        optional ListEngines cmd = 202;
+    }
+}
+
+message BackupVolumeParas
+{
+        repeated string volume_name = 1;
+        repeated string volume_id = 2;
+        repeated string snapshot_url = 3; // for backup
+        repeated string parentsnapshot_url = 4;// for backup
+        repeated uint64 volume_size = 5;
+        repeated Storage_Type storage_type = 6;
+        repeated int32  volume_offset_size = 7;
+}
+
+message BackupOSVMParas
+{
+        repeated string vm_name = 1;
+        repeated string vm_id = 2;
+        repeated string disk_id = 3; // a list of the disk of this VM, not used
+        repeated EnvironmentPath env_path = 4;//a list of the protected environment
+        repeated string system_volume_id = 5;
+        repeated string data_volume_ids = 6; // a list of the data disks of this VM
+}
+
+message OSDataEncParas
+{
+		repeated string region = 1;
+		repeated bool dataenc_isnull = 2;
+        repeated string cmkid = 3;
+        repeated string vk = 4;
+        repeated string dek = 5; 
+}
+message BackupNativeSanParas
+{
+        repeated int32 naitve_obj_id = 1;
+        repeated EnvObjType naitve_obj_type = 2;
+        repeated int32 naitve_lun_id = 3;
+}
+
+message restorOriginDataInfo
+{
+	repeated uint64 data_layout = 1;
+	repeated uint64 storage_type = 2;
+	repeated string ak = 3;
+	repeated string sk = 4;
+	repeated string region_ip = 5;
+	repeated uint64 region_port = 6;
+	repeated string tenant_id = 7;
+	repeated string domain_id = 8;
+	repeated string storage_unit_path = 9;
+	repeated string image_path = 10;
+	repeated string iam_user = 11;
+	repeated string iam_password = 12;
+	repeated uint64 protocol = 13;
+}
+
+message BackupMachine
+{
+    extend BasicCommand
+    {
+        optional BackupMachine cmd = 203;
+    }
+        repeated TaskID task_id = 1;
+        repeated MachinePath machine_path = 2;
+        repeated EnvironmentPath env_path = 3;
+        repeated SnapType snap_type = 4;
+        repeated string disk_id = 5;
+        repeated bool do_crc = 6;
+        repeated string vm_tree_location =7;
+        /*Begin:support HWS openstack backup */
+        repeated BackupVolumeParas backupVolumeParas = 8;
+        repeated OSDataEncParas backupDataEncParas = 9;
+        /* End:support HWS openstack backup */
+        repeated BackupOSVMParas backupOSVMParas = 10;
+        repeated bool vppAllow = 11;
+        repeated BackupNativeSanParas backup_native_san_paras = 12;
+        //add by zxy for httpproxy
+        repeated string brick_path = 13;
+        repeated BrickData brick_data = 14;//
+	// add for virtual backup
+	repeated string systemDisk_id= 15;
+        repeated string dpaBackupBody = 16;
+}
+
+message CleanBackupLeftovers
+{
+    extend BasicCommand
+    {
+        optional CleanBackupLeftovers cmd = 204;
+    }
+
+        repeated TaskID task_id = 1;
+        repeated MachinePath machine_path = 2;
+        repeated EnvironmentPath env_path = 3;
+        repeated TaskID backup_task_id = 4;
+        optional bool sendAlertWhenFailed = 5[default = false];
+        optional TaskStatus backup_task_status = 6;
+        /*Begin:support V2R1C10 MicroSeervice */
+        repeated BackupVolumeParas backupVolumeParas = 7;
+		repeated SnapType snap_type = 8;
+        /* End:support V2R1C10 MicroSeervice */
+        repeated bool CleanMountPoint = 9;  /*true：仅仅清理挂载点，不清理数据,false:保持原逻辑*/
+        repeated OSDataEncParas backupDataEncParas = 10;
+        repeated BackupOSVMParas backupOSVMParas = 11;
+        repeated BackupNativeSanParas backup_native_san_paras = 12;
+        //add by zxy for httpproxy
+        repeated string brick_path = 13;
+        repeated BrickData brick_data = 14;//
+}
+
+message RestoreMachine
+{
+    extend BasicCommand
+    {
+        optional RestoreMachine cmd = 205;
+    }
+        repeated CommonRestoreParams param = 1;
+        repeated bool   replace = 2;
+        repeated bool   powerOnAfterRestore = 3;
+        repeated string newVirtualMachineName = 4;
+        repeated NewVMLocation newVMParam = 5;
+ }
+
+message CleanRestoreMachineLeftovers
+{
+    extend BasicCommand
+    {
+        optional CleanRestoreMachineLeftovers cmd = 206;
+    }
+
+        repeated TaskID task_id = 1;
+        repeated EnvironmentPath env_path = 2;
+        repeated TaskID restore_machine_task_id = 3;
+        optional bool sendAlertWhenFailed = 4[default = false];
+}
+
+message DiskDataStore
+{
+        repeated string disk_id=1;//the disk id need to be recovered
+        repeated string datastore_ref=2; //the datastore where the disk need to be recovered located in
+        repeated string datastore_name=3; //the datastore where the disk need to be recovered located in
+        repeated string datacenter_of_storage=4; //DataCenter of the target datastore
+        /* BEGIN: Added by zhenming 254911, 2015/3/10   PN:for support openStack solution */
+        repeated string targetDiskuuid = 5;     //when support open stack solution ,HCP will restore disk data into the disk indicated by this uuid
+        /* END:   Added by zhenming 254911, 2015/3/10 */
+}
+
+message RestoreRawVolumeParas
+{
+        repeated string volume_name = 1;
+        repeated string volume_id = 2;
+        repeated string latestsnapshot_url = 3; // for restore
+        repeated string volume_url = 4; // for restore
+        repeated uint64 volume_size = 5;
+        repeated Storage_Type storage_type = 6;
+        repeated int32 	volume_offset_size = 7;
+}
+
+message RestoreOSVMTargetParas
+{
+        repeated string restore_vm_id = 1;
+        repeated string restore_vm_name = 2;
+        repeated string srcvolume_id = 3; // a list of the OriginalVolumeID
+        repeated string destvolume_id = 4; // a list of the TargetVolumeID
+        repeated string system_volume_id = 5;
+        repeated string data_volume_ids = 6; // a list of the data disks of this VM
+}
+
+message RestoreOSVMParas
+{
+        repeated string backup_vm_id = 1;
+        repeated RestoreOSVMTargetParas target = 2; // targetLocation of OSVM
+        repeated EnvironmentPath env_path = 3;//a list of the protected environment
+}
+
+message RestoreNativeTargetParas
+{
+        repeated string target_obj_id = 1; 
+        repeated string target_obj_wwn = 2; 
+        repeated string src_lun_id = 3;  //used for restore consistency group
+        repeated string src_lun_wwn = 4; //used for restore consistency group
+        repeated string tgt_lun_id = 5;  //used for restore consistency group
+        repeated string tgt_lun_wwn = 6; //used for restore consistency group
+}
+
+message RestoreNativeParas
+{
+        repeated int32 restore_type = 1; //4:restore lun; 5:restore consistency group
+        repeated bool restore_to_new = 2; //true:restore to new; false:restore to original
+        repeated RestoreNativeTargetParas target = 3; //targetLocation of Native
+}
+
+message RestoreDisk
+{
+    extend BasicCommand
+    {
+        optional RestoreDisk cmd = 207;
+    }
+        repeated CommonRestoreParams param = 1;
+        repeated bool   powerOnAfterRestore = 2;
+        repeated string disk_id = 3;
+        repeated NewVMLocation newVMParam = 4;//this parameter will be valid when user want to do Disk restore to a new location
+        repeated DiskDataStore disk_datastore_list=5; //this parameter is only valid when the user do disk restore to new location
+        repeated virtualGroupType vgroup = 6 ; //indicate whether support open stack solution 
+        repeated RestoreRawVolumeParas restoreRawVolumeParas = 7; //new added for support OpenStack scenario
+        repeated OSDataEncParas restoreDataEncParas = 8;
+        repeated RestoreOSVMParas restoreOSVMParas = 9;
+        repeated bool vppAllow = 10;
+        repeated RestoreNativeParas restoreNativeParas = 11;
+        //add by zxy for httpproxy
+        repeated string brick_path = 12;
+        repeated BrickData brick_data = 13;//
+}
+
+message CommonRestoreParams
+{
+        repeated TaskID task_id = 1;
+        repeated MachinePath machine_path = 2;
+        repeated EnvironmentPath env_path = 3;
+        repeated string backedupSnapVersion = 4;
+        repeated string original_machine_name = 5;
+}
+
+message storage_info
+{
+        repeated string name = 1;   //DataStore name
+        repeated string moref = 2;  //DataStore moref
+ }
+
+message disk_info
+{
+        repeated string disk_id = 1;
+        repeated string disk_name = 2;
+        repeated string datastore_name = 3;
+        repeated string datastore_moref = 4;
+        repeated string disk_size = 5;
+        repeated string disk_FileName = 6;
+        repeated string disk_key = 7;
+        repeated string datacenter_of_storage=8; //DataCenter of the target datastore
+}
+
+        
+message Compute_info
+{
+        repeated string host_moref = 1; // VMware: HostSystem moref, Fusion Sphere: Cluster moref 
+        repeated string resource_pool_moref = 2; // VMware: default resource pool moref, Fusion Sphere: CNA moref 
+        repeated EnvObjType resource_pool_type = 3; //resourcepool type such as vApp
+        repeated bool respool_under_vapp = 4; // Indecates of the resource pool is under a vApp 
+}
+
+message NewVMLocation
+{
+        repeated storage_info StorageResource = 1; //Storage info
+        repeated Compute_info ComputingResource = 2;  // compute resource info
+        repeated disk_info disks = 3; //disk info and the related data stores.
+        repeated string VMFolderLocation = 4;   // vm folder moref
+        repeated EnvironmentPath env_path = 5;
+        repeated MachinePath machine_path=6;
+ }
+
+ // enum that defines the mode of the file-level restore
+enum FileLevelRestoreMode
+{
+        Read_Only   = 0;
+        Read_Write  = 1;
+}
+
+enum FileLevelRestoreAttachMode
+{
+        Attach_Manual   = 0;
+        Attach_SemiAuto  = 1;
+        Attach_Auto = 2;
+}
+
+enum FileLevelRestoreChapAuthType
+{
+        CHAP_NO_AUTH   = 0;
+        CHAP_ONE_WAY  = 1;
+        CHAP_MUTUAL = 2;
+}
+
+message FileLevelRestore
+{
+    extend BasicCommand
+    {
+        optional FileLevelRestore cmd = 208;
+    }
+    repeated CommonRestoreParams param = 1;
+    repeated string iSCSIInitiatorProperties = 2;
+    repeated string iSCStargetAccessSetting = 3;
+    repeated string disks = 4; // the disks that will be exposed by the file-level restore
+    repeated FileLevelRestoreMode mode = 5;  // the mode of file-level restore read mode
+    repeated FileLevelRestoreAttachMode  attach_mode = 6;//the mode of file-level restore attach mode
+    repeated Compute_info target_computeResource = 7;  //the target ESXi or CNA or Cluster computing resource should be connected when do semi-auto mode FLR
+    repeated MachinePath target_machine_path = 8;//the target machine which the restored volumes will be attached to
+    repeated EnvironmentPath target_env_path = 9;// the target Hypervisor which will host the target machine which the restored volumes will be attached to 
+    repeated FileLevelRestoreChapAuthType chap_auth_type = 10; // the CHAP authentication type of manual FLR
+    repeated string target_chap_name = 11; // the target CHAP user name
+    repeated string target_chap_password = 12; //the target CHAP secret
+    repeated string initiator_chap_name = 13; //the initiator CHAP user name
+    repeated string initiator_chap_password = 14; //the initiator CHAP secret
+        
+}
+
+ message CleanFileLevelRestoreLeftovers
+{
+    extend BasicCommand
+    {
+        optional CleanFileLevelRestoreLeftovers cmd = 209;
+    }
+
+    repeated TaskID task_id = 1;
+    repeated TaskID restore_flr_task_id = 2;
+    repeated EnvironmentPath target_env_path = 3;//the target environment path where the target machine will exist, or the target hypervisor type when do manual mode FLR
+    repeated MachinePath target_machine_path = 4;//the target machine path where the restored disks will be attached
+    repeated Compute_info target_computeResource = 5;  //the target ESXi or CNA or Cluster computing resource should be connected when do semi-auto mode FLR
+    repeated FileLevelRestoreAttachMode  attach_mode = 6; //the mode of file-level restore attach mode
+    repeated CommonRestoreParams FLR_param = 7; // FLR CommonRestoreParams
+    optional bool sendAlertWhenFailed = 8[default = false];
+}
+    
+message DeleteSnap
+{
+    extend BasicCommand
+    {
+        optional DeleteSnap cmd = 210;
+    }
+    
+    repeated TaskID task_id = 1;
+    repeated string snap_id = 2;
+    repeated MachinePath machine_path = 3;
+    repeated EnvironmentPath env_path = 4;
+    repeated OSDataEncParas snapDataEncParas = 5;
+    //add by zxy for httpproxy
+    repeated string brick_path = 6;
+    repeated BrickData brick_data = 7;//
+    
+    optional bool delete_import_snap = 8[default = false];
+    repeated uint64 plantype = 9;
+    repeated string dpa_delete_body = 10;
+}    
+
+message CleanDeleteSnapLeftovers
+{
+    extend BasicCommand
+    {
+        optional CleanDeleteSnapLeftovers cmd = 211;
+    }
+    
+    repeated TaskID task_id = 1;
+    repeated TaskID delete_snap_task_id = 2;
+    repeated MachinePath machine_path = 3;
+    repeated EnvironmentPath env_path = 4;
+    optional bool sendAlertWhenFailed = 5[default = false];
+    repeated string snap_id = 6;
+    repeated OSDataEncParas snapDataEncParas = 7;
+    //add by zxy for httpproxy
+    repeated string brick_path = 8;
+    repeated BrickData brick_data = 9;//
+    
+    optional bool delete_import_snap = 10[default = false];
+}
+
+message VerifySnap
+{
+    extend BasicCommand
+    {
+        optional VerifySnap cmd = 212;
+    }
+
+    repeated TaskID task_id = 1;
+    repeated string snap_id = 2;
+    repeated VerifySnapMode verify_mode = 3;
+    repeated uint64 snap_source = 4;
+    repeated TaskID source_task_id = 5;
+    repeated string source_snap_id = 6;
+    //add by zxy for httpproxy
+    repeated string brick_path = 7;
+    repeated BrickData brick_data = 8;
+    //add by shenbing/swx294355, 2019/04/23 PN:for surport enc volume verify
+    repeated Cipher cipher = 9;
+}
+
+message CloseEngineReply
+{
+    extend GenericReply
+    {
+        optional CloseEngineReply reply = 213;
+    }
+    
+    repeated CloseEngineStatus close_engine_status = 1;
+}
+
+message DiskSnapType
+{
+    repeated string disk_guid = 1;
+    repeated SnapType snap_type = 2;
+}
+
+// represents the information of a disk-snap pair
+message DiskSnapInfo
+{
+    repeated string disk_uuid                   = 1; // UUID of the disk
+    repeated uint64 disk_snap_size              = 2; // size of the snap only for a disk
+        repeated string disk_moref                      = 3; // MO reference (or Device Key) of the disk
+        repeated uint64 last_update_time        = 4; // time of the last update on this snap
+}
+
+message BackupMachineReply
+{
+    extend GetTaskStateReply
+    {
+                optional BackupMachineReply reply = 214;
+    }
+    
+    repeated string backup_id = 1;
+    repeated string machine_name = 2;
+    repeated uint64 snap_create_time = 3;
+    repeated uint64 snap_size = 4;
+        repeated string vm_location = 5;
+    repeated string disks = 6;
+        repeated string computing_resource = 7;
+        repeated string storage_resource = 8;
+        repeated EnvObjType resource_pool_type = 9;
+    repeated string host_system = 10;
+    repeated DiskSnapType disk_snap_type = 11;
+        repeated bool respool_under_vapp = 12;
+    repeated VerifySnapStatus verify_snap_result = 13;
+        repeated string prev_snap_id_verified = 14;
+    repeated uint64 chainsize = 15;
+    repeated DiskSnapInfo disksnaps = 16; // a list of the disk-snap pairs of this VM
+    repeated uint64 task_size = 17;     
+        repeated uint64 snapshot_size = 18; 
+    repeated uint64 totalSize = 19;
+    repeated uint64 version = 20;
+    repeated string snaprefsizemap = 21;    
+    repeated string filespacesnaprefsizemap = 22;
+    repeated uint64 filespacetotalsize = 23;
+    repeated uint64 taskfilespacereduction = 24;
+    repeated uint64 taskfilespacesize = 25;
+}
+
+message BackupAppReply
+{
+    extend GetTaskStateReply
+    {
+        optional BackupAppReply reply = 270;
+    }
+    repeated uint64 snapshotid = 1;
+    repeated string snapshotwwn = 2;
+    repeated string snapshotname = 3;
+    repeated uint64 logbackmintime = 4;
+    repeated uint64 logbackmaxtime = 5;
+    repeated uint64 logminscn = 6;
+    repeated uint64 logmaxscn = 7;
+    repeated uint64 extralogvolumesize = 8;
+    repeated uint64 extradatavolumesize = 9;
+    repeated uint64 logvolumeusage = 10;
+    repeated uint64 datavolumeusage = 11;
+    repeated uint64 snapcreatetime = 12;
+    repeated string backupid = 13;
+    repeated uint64 timepoint = 14;
+    repeated uint64 scnnumber = 15;
+}
+
+
+
+// enum of verify snap status
+enum VerifySnapStatus
+{
+        Not_Verified = 0;
+    Quick_NoErrorsFoundOnSnap = 1;
+    Quick_BlocksMissingInSnap = 2;
+    Quick_MetadataCorruptInSnap = 3;
+    Full_NoErrorsFoundOnSnap = 4;
+    Full_BlocksMissingInSnap = 5;
+    Full_MetadataCorruptInSnap = 6;
+        Temporary_Media_No_Access = 7;
+    InternalError = 8;
+    SNAP_FILE_NOT_EXIST = 9;
+    Quick_BlocksCorruptInSnap = 10;
+    Be_Verifying = 11;
+}
+
+enum VerifySnapProgressStatus
+{
+    Quick_Verify = 1;
+    Full_Verify = 2;
+}
+
+message VerifySnapReply
+{
+    extend GetTaskStateReply
+    {
+                optional VerifySnapReply cmd = 215;
+    }
+    
+    repeated VerifySnapStatus verify_snap_result = 1;
+    repeated VerifySnapProgressStatus verify_snap_progress = 2;
+}
+
+message ListEnginesReply
+{
+    extend GenericReply
+    {
+        optional ListEnginesReply reply = 216;
+    }
+    
+    repeated ChainID chain_id = 1;
+        repeated TaskID task_id=2; // return the serialized task information to adminnode, added by yangxingwei,20160301
+}
+
+enum RestoreMachineFailureDetails
+{
+    GeneralFailure = 1;
+    MachineNameAlreadyExists = 2;
+}
+
+message RestoreMachineReply
+{
+    extend GetTaskStateReply
+    {
+        optional RestoreMachineReply reply = 217;
+    }
+    
+    repeated RestoreMachineFailureDetails failure_details = 1;
+    repeated string                       new_machine_name = 2;
+    repeated VerifySnapStatus                     verify_snap_result = 3;
+    repeated string                       new_machine_guid = 4;
+    repeated string                       original_machine_guid = 5;
+        repeated string                       new_machine_moref = 6;
+}
+
+enum FileLevelRestoreExtendedStatus
+{
+    NotReadyForAccess= 1;
+    ReadyForAccess = 2;
+    AbortedByUser = 3;
+    Failed = 4;
+}
+
+message FileLevelRestoreReply
+{
+    extend GetTaskStateReply
+    {
+        optional FileLevelRestoreReply reply = 218;
+    }
+    
+    repeated string initiator_iqn = 1;
+    repeated FileLevelRestoreExtendedStatus extended_status = 2;
+    repeated VerifySnapStatus verify_snap_result = 3;
+}
+
+enum OpenEngineStatus
+{
+        OpenEngineSuccess = 1;
+        OpenEngineFailed = 2;
+}
+message OpenEngineReply
+{
+    extend GenericReply
+    {
+        optional OpenEngineReply reply = 219;
+    }
+    
+    repeated OpenEngineStatus open_engine_status = 1;
+}
+
+message CleanRestoreDiskLeftovers
+{
+    extend BasicCommand
+    {
+        optional CleanRestoreDiskLeftovers cmd = 220;
+    }
+
+        repeated TaskID task_id = 1;
+        repeated EnvironmentPath env_path = 2;
+        repeated TaskID restore_disk_task_id = 3;
+        repeated MachinePath machine_path = 4;
+        optional bool sendAlertWhenFailed = 5[default = false];
+        repeated RestoreRawVolumeParas restoreRawVolumeParas = 6;//new added for support OpenStack scenario
+        repeated bool CleanMountPoint = 7;  /*true：仅仅清理挂载点，不清理数据,false:保持原逻辑*/
+        repeated OSDataEncParas restoreDataEncParas = 8;
+        repeated RestoreOSVMParas restoreOSVMParas = 9;
+        repeated RestoreNativeParas restoreNativeParas = 10;
+        //add by zxy for httpproxy
+        repeated string brick_path = 11;
+        repeated BrickData brick_data = 12;//
+}
+
+message DeleteDomain
+{
+    extend BasicCommand
+    {
+        optional DeleteDomain cmd = 290;
+    }
+    
+    repeated TaskID task_id = 1;
+    repeated string path = 2;
+    repeated EnvironmentPath env_path = 3;
+    repeated string namespace_id = 4;   // GUID of the namespace
+    repeated string domain_id = 5;      // GUID of the domain
+    repeated MachinePath machine_path = 6; // a list of machines, but with no machine name
+    repeated BrickData brick_data = 7;//newed added for S3
+        optional bool domain_type = 8[default = false];//false:domain  true:copyPlan
+}
+
+message DeleteDomainLeftovers
+{
+    extend BasicCommand
+    {
+        optional DeleteDomainLeftovers cmd = 291;
+    }
+    
+    repeated TaskID task_id = 1;
+    repeated string path = 2;
+    repeated EnvironmentPath env_path = 3;
+    repeated string namespace_id = 4;   // GUID of the namespace
+    repeated string domain_id = 5;      // GUID of the domain
+    repeated MachinePath machine_path = 6; // a list of machines, but with no machine name
+    optional bool sendAlertWhenFailed = 7[default = false];
+    repeated BrickData brick_data = 8;//newed added for S3
+    optional bool domain_type = 9[default = false];//false:domain  true:copyPlan
+    optional bool delete_chainDB = 10[default = false];//false:do not delete ChainDB  true:should delete ChainDB
+    optional bool first_delete = 11[default = true];//false:not first delete ChainDB  true:first delete ChainDB
+    repeated TaskID delete_domain_task_id = 12;
+}
+
+enum EDeleteDomainStatus
+{
+        kDelDomainSnapsFail = 0;
+        kDelDomainSnapshotsFail = 1;
+}
+
+message DeleteDomainReply
+{
+    extend GenericReply
+    {
+        optional DeleteDomainReply reply = 292;
+    }
+    
+    repeated EDeleteDomainStatus status = 1;
+}
+
+message disk_snap_record
+{            
+    repeated string disk_guid = 1;
+    repeated uint64 newsize = 2;
+}
+
+message disk_snap_list
+{         
+    repeated disk_snap_record  record=1;        
+} 
+
+message DeleteSnapReply
+{
+    extend GetTaskStateReply
+    {
+        optional DeleteSnapReply reply = 221;
+    }
+    
+    repeated uint64 chainsize = 1;
+    repeated string nextsnapid = 2;
+    repeated disk_snap_list next_disk_snap_list = 3; // multiple records of disk snap list
+    optional bool runwithbackupjob=4 [default = false];
+}
+
+
+message CleanDeleteSnapLeftoversReply
+{
+    extend GetTaskStateReply
+    {
+        optional CleanDeleteSnapLeftoversReply reply = 222;
+    }
+    
+    repeated uint64 chainsize = 1;
+    repeated string nextsnapid = 2;
+    repeated disk_snap_list next_disk_snap_list = 3; // multiple records of disk snap list
+}
+
+message RecoverBrickMetaData
+{
+    extend BasicCommand
+    {
+        optional RecoverBrickMetaData cmd = 223;
+    }
+
+        repeated TaskID task_id = 1;
+        repeated string brick_path = 2; 
+        repeated BrickData brick_data = 3;//newed added for S3
+}
+
+message SnapMetaData
+{
+    repeated string snap_id = 1;
+    repeated string snapshot_moref = 2;
+    repeated string machine_name = 3;
+    repeated uint64 create_time = 4;
+    repeated string machine_id = 5;
+    repeated string domain_id = 6;
+    repeated string namespace_id = 7;
+    repeated string machine_path = 8;
+    repeated string vm_location = 9;
+    repeated string host_system = 10;
+    repeated string storage_resource = 11;
+    repeated string disks = 12;
+    repeated string disks_info = 13;
+    repeated string fields_for_recovery = 14;
+    repeated uint64 copysnap_status = 15;
+    repeated string source_snap_id_for_copysnap = 16;
+}
+
+message ChainInfoForRecover
+{
+    repeated string domain_guid = 1;
+    repeated string namespace_guid = 2;
+    repeated string machine_guid = 3;
+    repeated uint64 chain_size = 4;
+    repeated uint64 plan_type = 5;
+    repeated string copy_planid = 6;
+}
+
+message RecoverBrickMetaDataReply
+{
+    extend GetTaskStateReply
+    {
+                optional RecoverBrickMetaDataReply reply = 224;
+    }
+    
+    repeated uint64 total_snaps_of_brick = 1;
+    repeated SnapMetaData snap_meta_data = 2;
+    repeated ChainInfoForRecover chain_info = 3;
+    repeated uint64 total_chain_of_brick = 4;
+}
+
+message CleanRecoverBrickMetaDataLeftovers
+{
+    extend BasicCommand
+    {
+        optional CleanRecoverBrickMetaDataLeftovers cmd = 225;
+    }
+
+        repeated TaskID task_id = 1;
+        repeated string brick_path = 2;
+        repeated BrickData brick_data = 3;//newed added for S3
+}
+
+message RestoreDiskReply
+{
+    extend GetTaskStateReply
+    {
+        optional RestoreDiskReply reply = 226;
+    }
+    
+    repeated VerifySnapStatus verify_snap_result = 1;
+    repeated DiskSnapType disk_snap_type = 2;
+}
+
+message CopySnaps
+{
+    extend BasicCommand
+    {
+        optional CopySnaps cmd = 235;
+    }
+    
+    repeated TaskID task_id = 1;
+    repeated string snap_guids = 2;
+    repeated ChainID source_chain_id = 3;
+    repeated BackendType source_backend_type = 4;
+    repeated BackendType target_backend_type = 5;
+    repeated bool vppAllow = 6;
+    repeated string copy_plan_guid = 7;
+    repeated string copysnap_id = 8;
+}
+message SnapMapMD
+{
+    repeated string src_snap_guid = 1;
+    repeated string target_snap_guid = 2;
+    repeated SnapMetaData target_snap_md = 3;
+}
+
+message CopySnapsReply
+{
+    extend GetTaskStateReply
+    {
+        optional CopySnapsReply reply = 236;
+    }
+    
+    repeated uint64 total_num_copy_snaps = 1;
+    repeated SnapMapMD copy_snaps = 2;
+    repeated uint64 chain_size = 3;
+    repeated uint64 totalSize = 4;
+    repeated uint64 snap_index = 5;
+    repeated string snapref_size_map = 6;
+    repeated bool if_generate_replication_clo_task = 7;
+    repeated uint64 replication_tcp_size = 8;
+    repeated uint64 replication_vpp_size = 9;
+    repeated uint64 snap_version=10;
+    repeated string filespacesnaprefsizemap = 11;
+    repeated uint64 filespacetotalsize = 12;
+    repeated uint64 taskfilespacereduction = 13;
+    repeated uint64 uncompressedchainsize = 14;
+}
+
+message CleanCopySnapsLeftovers
+{
+        extend BasicCommand
+        {
+                optional CleanCopySnapsLeftovers cmd = 237;
+        }
+        repeated TaskID task_id = 1;
+        repeated string source_snap_guids = 2;
+        optional bool sendAlertWhenFailed = 3[default = false];
+        repeated TaskID copy_task_id = 4;
+}
+
+message ChainPath
+{
+    optional string namespace_guid = 1;
+    optional string domain_guid = 2;
+    optional string machine_guid = 3;
+}
+
+message RetrieveBackupImageChainInfo
+{
+    optional BrickData brick_data = 1;
+    repeated ChainPath chain_path = 2;
+}
+
+message RetrieveBackupImageCommand
+{
+    extend BasicCommand
+    {
+        optional RetrieveBackupImageCommand cmd = 227;
+    }
+    
+    repeated TaskID task_id = 1;
+    repeated RetrieveBackupImageChainInfo chain_info = 2;
+    optional string protected_obj_id = 3; //machine GUID, volumn UUID, lun GUID
+}
+
+message RetrieveBackupImageInfo
+{
+    optional SnapMetaData snap_meta_data = 1;
+    optional uint64 chain_size = 2; //unit: B
+}
+
+message RetrieveBackupImageReply
+{
+    extend GetTaskStateReply
+    {
+        optional RetrieveBackupImageReply reply = 228;
+    }
+    
+    repeated RetrieveBackupImageInfo snap_info = 1;
+}
+
+
+message DeleteV3MapInfo
+{
+    extend BasicCommand
+    {
+        optional DeleteV3MapInfo cmd = 240;
+    }
+
+    repeated TaskID   task_id = 1;    
+    repeated V3MapInfo v3_map_info = 2;
+    repeated EnvironmentPath env_path = 3;
+}    
+
+// enum of delete V3 map status
+enum DeleteV3MapStatus
+{
+        DeleteV3MapSuccess = 1;
+        DeleteV3MapVerifyErr = 2;       
+        DeleteV3MapFailed = 3;
+}
+
+message DeleteV3MapInfoReply
+{
+    extend GetTaskStateReply
+    {
+        optional DeleteV3MapInfoReply reply = 241;
+    }
+
+    repeated DeleteV3MapStatus delete_v3_map_result = 1;
+    repeated V3MapInfo v3_map_info = 2;
+}
+
+message CleanDeleteV3MapLeftovers
+{
+    extend BasicCommand
+    {
+        optional CleanDeleteV3MapLeftovers cmd = 242;
+    }
+    
+    repeated TaskID task_id = 1;
+    repeated V3MapInfo v3_map_info = 2;
+    repeated EnvironmentPath env_path = 3;
+    optional bool sendAlertWhenFailed = 4[default = false];
+}
+
+message CleanDeleteV3MapLeftoversReply
+{
+    extend GetTaskStateReply
+    {
+        optional CleanDeleteV3MapLeftoversReply reply = 243;
+    }
+    
+    repeated DeleteV3MapStatus delete_v3_map_result = 1;
+    repeated V3MapInfo v3_map_info = 2;
+}
+
+/*BEGIN: Added by hebo/hwx344953, 2018/5/16  PN:for remote replication*/
+message ReplicationSnaps
+{
+    extend BasicCommand
+    {
+        optional ReplicationSnaps cmd = 244;
+    }
+    
+    repeated TaskID task_id = 1;
+    repeated ReplicationInfo replication_info = 2;
+    repeated string copy_plan_guid = 3;
+}
+
+message CleanReplicationSnapsLeftovers
+{
+        extend BasicCommand
+        {
+                optional CleanReplicationSnapsLeftovers cmd = 245;
+        }
+        repeated TaskID task_id = 1;
+        optional bool sendAlertWhenFailed = 2[default = false];
+        repeated TaskID origin_task_id = 3;
+		repeated ReplicationInfo replication_info = 4;
+}
+
+message CrossRegionRestore
+{
+	extend BasicCommand
+	{
+	optional CrossRegionRestore cmd = 246;
+	}
+
+	repeated bool   power_on = 1;
+	repeated bool   replace = 2;
+	repeated uint64 vpp_allow = 3;
+	repeated uint64 storage_type = 4;
+	repeated uint64 volume_size = 5;
+	repeated uint64 volume_offset_size = 6;
+	repeated string image_id = 7;
+	repeated string volume_id = 8;
+	repeated string volume_name = 9;
+	repeated string volume_url = 10;
+	repeated OSDataEncParas restore_data_enc = 11;
+	repeated restorOriginDataInfo origin_data_info =12;
+	repeated TaskID task_id = 13;
+        repeated string origin_task_id = 14;
+	repeated bool   is_alram = 15;
+	repeated string origin_node = 16;
+	repeated EnvironmentPath env_path = 17;
+	repeated uint64 domain_type = 18;
+	repeated uint64 restore_type = 19;
+}
+
+message CrossRegionRestoreReply
+{
+	extend GetTaskStateReply
+	{
+		optional CrossRegionRestoreReply reply = 248;
+	}
+
+	repeated VerifySnapStatus verify_snap_result = 1;
+	repeated DiskSnapType disk_snap_type = 2;
+}
+
+/*END*/
+
+message ScanSnapFromBrick
+{
+    extend BasicCommand
+    {
+        optional ScanSnapFromBrick cmd = 914;
+    }
+
+    optional TaskID task_id = 1;
+    repeated uint64 storage_unit_type = 2;
+    repeated string storage_unit_path = 3;
+    repeated string user_name = 4;
+    repeated string pass_word = 5;
+    repeated uint64 protocol = 6;
+}
+
+message ScanSnapInfo
+{
+    repeated string scan_snap_id = 1;
+	repeated uint64 create_time = 2;
+	repeated uint64 snap_version = 3;
+	repeated uint64 snap_increment = 4;
+	repeated uint64 support_lazyloading = 5; 
+}
+
+message ScanProtectedInfo
+{ 
+	repeated string protected_object_id = 1;
+	repeated string protected_object_info = 6;
+	repeated string protected_object_name = 2;
+	repeated string backup_storage_path = 3;
+	repeated uint64 data_layout = 4;
+	repeated ScanSnapInfo snap_list = 5;
+}
+
+message ScanSnapReply
+{
+    extend GetTaskStateReply
+    {
+        optional ScanSnapReply reply = 915;
+    }
+   
+    repeated ScanProtectedInfo protected_list = 5;
+}
+
+message ImportScanSnap
+{
+    extend BasicCommand
+    {
+        optional ImportScanSnap cmd = 963;
+    }
+
+    optional TaskID task_id = 1;
+    repeated string user_name = 2;
+	repeated string pass_word = 3;
+	repeated uint64 storage_unit_type = 4;
+    repeated string storage_unit_path = 5;
+    repeated uint64 protocol = 6;
+	repeated uint64 date_layout =7;
+	repeated string snap_list = 8;
+}
+
+message ClearLeftOverImportScanSnap
+{
+    extend BasicCommand
+    {
+        optional ClearLeftOverImportScanSnap cmd = 964;
+    }
+
+    optional TaskID task_id = 1;
+    repeated string user_name = 2;
+	repeated string pass_word = 3;
+	repeated uint64 storage_unit_type = 4;
+    repeated string storage_unit_path = 5;
+    repeated uint64 protocol = 6;
+	repeated uint64 date_layout =7;
+	repeated string snap_list = 8;
+	
+    optional bool sendAlertWhenFailed = 9[default = false];
+    repeated TaskID origin_task_id = 10;
+}
+
+message ImportDiskInfo
+{
+    repeated string disk_id = 1;
+	repeated string disk_size = 2;
+	repeated string disk_name = 3;
+	repeated string disk_snap_id = 4;
+	repeated string disk_path = 5;
+	repeated uint64 snap_version = 6;
+	repeated uint64 snap_type = 7;
+}
+
+message ImportSnapInfo
+{
+    repeated string snap_id = 1;
+    repeated string snap_info = 5;
+    repeated uint64 storage_type = 2;
+    repeated uint64 data_layout = 3;
+    repeated ImportDiskInfo import_disk_list = 4;
+    repeated string disk_info = 6;
+}
+
+message ImportScanSnapReply
+{
+    extend GetTaskStateReply
+    {
+        optional ImportScanSnapReply reply = 991;
+    }
+   
+    repeated ImportSnapInfo import_snap_list = 1;
+    repeated bool if_generate_clearleftover_task = 2;
+}
+
+
+message ApiGatewayInfo
+{
+    extend BasicCommand
+    {
+        optional BackupsSync cmd = 965;
+    }
+
+    repeated string host = 1;
+    repeated string project_id = 2;
+    repeated string ak = 3;
+    repeated string sk = 4;
+    repeated string region_id = 5;
+}
+
+message BackupsSync
+{
+    extend BasicCommand
+    {
+        optional BackupsSync cmd = 966;
+    }
+
+    repeated ApiGatewayInfo api_info = 1;
+    //repeated TaskID task_id = 1;
+    //repeated BrickData brick_data = 2;
+
+    repeated string backup_id = 2;
+    repeated string bucket_name = 3;
+    repeated string image_path = 4;
+    repeated string resource_id = 5;
+    repeated string resource_name = 6;
+    repeated string resource_type = 7;
+    repeated uint64 created_at = 8;
+    repeated string backup_name = 9;
+}
+
+message SyncReply
+{
+    repeated string operation_log_id = 1;
+    repeated string vault_id = 2;
+    repeated string backup_id = 3;
+}
+
+message BackupsSyncReply
+{
+    extend GenericReply 
+    {
+        optional BackupsSyncReply reply = 992;
+    }
+
+    repeated SyncReply sync = 1;
+}
+
+message GetOperationLog
+{
+    extend BasicCommand
+    {
+        optional GetOperationLog cmd = 967;
+    }
+
+    repeated ApiGatewayInfo api_info = 1;
+    repeated string operation_log_id = 2;
+}
+
+message ErrorInfo
+{
+    repeated uint64 code = 1;
+    repeated string message = 2;
+}
+
+message Sync
+{
+    repeated uint64 sync_backup_num = 1;
+    repeated uint64 delete_backup_num = 2;
+    repeated uint64 err_sync_backup_num = 3;
+}
+
+message Common
+{
+    repeated uint32 progress = 1;
+    repeated string request_id = 2;
+}
+
+message ExtraInfo
+{
+    repeated Sync sync = 1;
+    repeated Common common = 2;
+}
+
+message OperationLog
+{
+    repeated string checkpoint_id = 1;
+    repeated string created_at = 2;
+    repeated string ended_at = 3;
+    repeated ErrorInfo error_info = 4;
+    repeated ExtraInfo extra_info = 5;
+    repeated string id = 6;
+    repeated string operation_type = 7;
+    repeated string policy_id = 8;
+    repeated string progress = 9;
+    repeated string project_id = 10;
+    repeated string started_at = 11;
+    repeated string status = 12;
+    repeated string updated_at = 13;
+    repeated string vault_id = 14;
+    repeated string vault_name = 15;
+}
+
+message GetOperationLogReply
+{
+    extend GenericReply 
+    {
+        optional GetOperationLogReply reply = 993;
+    }
+
+    repeated TaskStatus task_status = 1;
+
+    repeated OperationLog operation_log = 2;
+}
+
+
+

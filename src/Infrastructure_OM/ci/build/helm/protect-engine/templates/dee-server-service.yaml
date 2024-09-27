@@ -1,0 +1,74 @@
+{{/*
+Get running environment
+*/}}
+{{- $environment:= "" }}
+{{- if .Values.global }}
+{{- $environment = .Values.global.environment }}
+{{- else }}
+{{- $environment = .Values.local.environment }}
+{{- end }}
+
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d3") (eq $deploytype "d4") (eq $deploytype "d5")
+ (eq $deploytype "d6") (eq $deploytype "d7") (eq $deploytype "d8") }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: dataenableengine-server
+  namespace: dpa
+  labels:
+    app: protectengine
+spec:
+  ports:
+    {{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d3") (eq $deploytype "d4")
+     (eq $deploytype "d6") (eq $deploytype "d7") (eq $deploytype "d8") }}
+    - port: {{ .Values.base_parser_port }}
+      name: base-parser
+    - port: {{ .Values.dee_nginx_port}}
+      name: dee-nginx
+      targetPort: 18089
+    {{- end }}
+    - port: {{ .Values.anti_ransomware_port}}
+      name: anti-ransomware
+      targetPort: 8092
+  selector:
+    app: protectengine
+---
+{{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d3") (eq $deploytype "d4") (eq $deploytype "d6")
+(eq $deploytype "d7") (eq $deploytype "d8") }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: dme-archive
+  namespace: dpa
+  labels:
+    app: dataenableengine-server
+spec:
+  ports:
+    - port: {{ .Values.dee_nginx_port}}
+      name: dee-nginx
+      targetPort: 18089
+  selector:
+    app: protectengine
+  {{- end }}
+---
+{{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d3") (eq $deploytype "d4") (eq $deploytype "d6")
+(eq $deploytype "d7") (eq $deploytype "d8") }}
+{{- if ne $environment "Dorado" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: archive-node-srv
+  namespace: dpa
+spec:
+  selector:
+    app: protectengine
+  type: NodePort
+  ports:
+    - port: 30066
+      name: dme-archive
+      targetPort: 30066
+      nodePort: 30066
+{{- end }}
+{{- end }}
+{{- end }}

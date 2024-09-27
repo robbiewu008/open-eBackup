@@ -1,0 +1,25 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_path_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="pathErrorTip">
+            <lv-input-lint class="user-desc">
+                <textarea rows="5" formControlName="paths" lv-input style="resize: vertical;"
+                    placeholder="{{'protection_path_placeholder_label' | i18n}}"
+                    [lvAutosize]="{ minRows: 4, maxRows: 8 }"></textarea>
+            </lv-input-lint>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

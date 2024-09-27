@@ -1,0 +1,48 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="手动执行备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839268309.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001792548956">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>手动执行备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001792548956"></a><a name="ZH-CN_TOPIC_0000001792548956"></a>
+
+<h1 class="topictitle1">手动执行备份</h1>
+<div><p>当您需要立即执行一次备份任务时，可以通过手动备份实现。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><ul><li>手动备份时，SLA中定义的参数（<span class="uicontrol">“<span>失败后自动重试</span>”</span>除外），如<span class="uicontrol">“<span>通道数</span>”</span>、<span class="uicontrol">“<span>限速策略</span>”</span>、<span class="uicontrol">“<span>传输和存储加密</span>”</span>会应用到手动备份任务中。</li><li>手动备份产生的副本保留时长按照SLA中的定义进行保留。</li><li>如果SLA中定义了复制策略或归档策略，则执行手动备份时，系统会按照SLA的定义执行一次复制或归档。</li><li>如果SLA中未定义日志备份，则无法手动执行日志备份。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><p id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001792503842_p5298101017162"><span id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001792503842_ph259092114816">全量备份失败后，如果下一次备份是日志备份，由于日志备份依赖上一次成功的全量备份副本，该日志备份任务将失败。此时，请手动执行一次全量备份。</span></p>
+</div>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001792389308_ul512180103212"><li id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001792389308_li712119013220">建议禁用数据库的KRB trace，否则备份过程中会产生大量KRB trace文件，而占用主机存储空间。禁用KRB trace的具体操作可参考<a href="zh-cn_topic_0000001839268305.html">如何禁用Oracle数据库的krb trace</a>。</li><li id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001792389308_li168585418321">对于1.6.0及后续版本，ASM场景下如需执行存储层快照备份，请联系技术支持工程师在生产环境完成Udev配置，具体操作请参考<a href="zh-cn_topic_0000001864661961.html">配置Udev（适用于存储层快照备份）</a>章节。</li><li id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001792389308_li584882135013">对于1.6.0及后续版本，非ASM场景下如需执行存储层快照备份，请确保Oracle数据库的数据文件、控制文件、日志文件、pfile和spfile参数文件所在目录已挂载至OceanStor Dorado。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001839142377_uicontrol49641842919">“<span id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001839142377_text63901566195">保护</span> &gt; 数据库 &gt; Oracle”</span>。</span></li><li><span>选择<span class="uicontrol">“<span>数据库</span>”</span>页签。</span></li><li><span>在需要备份的数据库所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001792503838_p870125314544">支持选择多个资源批量进行手动备份。勾选多个资源，在页面左上角选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001792503838_uicontrol14182155715711">“<span id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001792503838_text662114113158">更多</span> &gt; <span id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001792503838_text1068159191519">手动备份</span>”</span>。</p>
+</div></div>
+</p></li><li><span>设置手动备份产生的副本名称。</span><p><p>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
+</p></li><li><span>选择保护策略：<span>全量备份</span>、<span>增量备份</span>、<span>差异备份</span>或<span>日志备份</span>。</span></li><li><span>单击<span class="uicontrol">“确定”</span>。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p><span>执行日志备份时，<span>当</span><span id="ZH-CN_TOPIC_0000001792548956__zh-cn_topic_0000001792389308_text22246311345">OceanProtect</span>检测到数据文件发生变化时，日志备份任务会自动转为全量备份。如果日志备份任务正在自动转为全量备份（任务详情可在“监控 &gt; 任务”界面，选择对应的备份任务查看），此时下发其他备份任务均会加锁失败，从而导致其他备份任务执行失败。</span></p>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001839268309.html">步骤9：执行备份</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

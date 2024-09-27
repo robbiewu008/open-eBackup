@@ -1,0 +1,139 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth
+    [ngClass]="{'register-nas-en': isEn, 'register-nas-zh': !isEn}">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'protection_fqdn_ip_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_fqdn_ip_desc_label' | i18n}}"
+                class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="ipNameErrorTip">
+            <input lv-input type="text" formControlName="ip" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="!(item && item.uuid) && !items.length">
+        <lv-form-label lvRequired>
+            {{'explore_share_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nasNameErrorTip">
+            <input lv-input type="text" formControlName="nas_name" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="item && item.uuid && !items.length">
+        <lv-form-label lvRequired>
+            {{'explore_share_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nasNameErrorTip">
+            <input lv-input type="text" formControlName="nas_name" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'explore_share_protocol_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select formControlName="share_mode" [lvOptions]='sharedModeOptions' lvValueKey='value'
+                [lvDisabled]="item && item.uuid">
+            </lv-select>
+            <ng-container *ngIf="formGroup.value.share_mode === dataMap.Shared_Mode.cifs.value">
+                <lv-form-control class="cifs-encryption">
+                    <label lv-checkbox formControlName="encryption">{{'protection_connect_mode_label' | i18n}}</label>
+                </lv-form-control>
+            </ng-container>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.value.share_mode === dataMap.Shared_Mode.cifs.value">
+        <lv-form-label lvRequired>
+            {{'protection_auth_mode_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select formControlName="auth_mode" [lvOptions]='authOptions' lvValueKey='value'>
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+
+    <ng-container *ngIf="formGroup.value.auth_mode === dataMap.Nas_Share_Auth_Mode.kerberos.value">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                Kerberos
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                <lv-group lvGutter="8px">
+                    <lv-select formControlName="kerberos" [lvOptions]='kerberosOptions' lvValueKey='kerberosId'
+                        lvShowFilter lvFilterKey='label' lvFilterMode='contains'>
+                    </lv-select>
+                    <button lv-button (click)="createKerberos()" pmpermission pmOperation='CreateKerberos'>
+                        {{ 'common_create_label' | i18n }}
+                    </button>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <ng-container *ngIf="formGroup.value.auth_mode === dataMap.Nas_Share_Auth_Mode.password.value">
+        <lv-form-item>
+            <lv-form-label>{{'common_domain_label' | i18n}}</lv-form-label>
+            <lv-form-control [lvErrorTip]="domainNameErrorTip">
+                <input lv-input formControlName="domain_name" type="text" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_username_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="usernameErrorTip">
+                <input lv-input type="text" formControlName="username" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_password_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="passwordErrorTip">
+                <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="exterAgent">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_proxy_host_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <aui-agent-select [lvOptions]="hostOptions" formControlName="proxyHost" lvValueKey="value" lvMode="multiple">
+                </aui-agent-select>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="!!items.length">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_modify_file_filter_rule_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-switch formControlName="modifyFilter">
+                </lv-switch>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>
+
+<ng-container *ngIf="formGroup.value.modifyFilter || !items.length">
+    <div class="filter-container" [ngClass]="{'register-nas-en': isEn, 'register-nas-zh': !isEn}">
+        <aui-resource-filter #resourceFilter [rowItem]="!items.length? item : {} " [osType]="osType"
+            [subType]="item.sub_type" [filterParams]="filterParams">
+        </aui-resource-filter>
+    </div>
+</ng-container>

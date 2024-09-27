@@ -1,0 +1,20 @@
+{{- if eq .Values.global.environment "Dorado" }}
+
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d2") (eq $deploytype "d3") (eq $deploytype "d4")
+ (eq $deploytype "d6") }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "db-block"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: oceanstor-protect-san
+  resources:
+    requests:
+      storage: 100Gi
+{{- end }}
+
+{{- end }}

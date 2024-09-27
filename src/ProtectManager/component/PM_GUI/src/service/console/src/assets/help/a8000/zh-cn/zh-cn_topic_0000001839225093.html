@@ -1,0 +1,114 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤5：注册GaussDB项目">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839145161.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839225093">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤5：注册GaussDB项目</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001839225093"></a><a name="ZH-CN_TOPIC_0000001839225093"></a>
+
+<h1 class="topictitle1">步骤5：注册GaussDB项目</h1>
+<div><p>执行GaussDB备份恢复前，需要将GaussDB注册至<span>OceanProtect</span>。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>生产环境已安装TPOPS，并将数据库实例纳管到TPOPS平台。</li><li>TPOPS平台和<span>OceanProtect</span>网络互通。</li><li>如果需要开启<span>XBSA SSL 证书管理</span>，需确保安装ProtectAgent时已获取SSL证书，详细操作请参见<span>《OceanProtect <span id="ZH-CN_TOPIC_0000001839225093__zh-cn_topic_0000001792502994_ph19170214112011">备份一体机 1.5.0-1.6.0</span> ProtectAgent安装指南》</span>中的“配置SSL双向认证证书文件”章节。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="ZH-CN_TOPIC_0000001839225093__li6843163813710"><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839225093__zh-cn_topic_0000001839142377_uicontrol932712545121">“<span id="ZH-CN_TOPIC_0000001839225093__zh-cn_topic_0000001839142377_text49391010171710">保护</span> &gt; 数据库 &gt; GaussDB”</span>。</span><p><div class="note" id="ZH-CN_TOPIC_0000001839225093__zh-cn_topic_0000001839142377_note62461853660"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001839225093__zh-cn_topic_0000001839142377_p141794599612">对于1.5.0版本，请选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839225093__zh-cn_topic_0000001839142377_uicontrol1294410117713">“<span id="ZH-CN_TOPIC_0000001839225093__zh-cn_topic_0000001839142377_text1894431114714">保护</span> &gt; 云平台 &gt; GaussDB”</span>。</p>
+</div></div>
+</p></li><li><span>在<span class="uicontrol">“<span>项目</span>”</span>页签下，单击<span class="uicontrol">“<span>注册</span>”</span>，注册GaussDB信息。</span><p><div class="p">GaussDB注册信息如<a href="#ZH-CN_TOPIC_0000001839225093__table613227155112">表1</a>所示。
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000001839225093__table613227155112"></a><a name="table613227155112"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001839225093__table613227155112" frame="border" border="1" rules="all"><caption><b>表1 </b>GaussDB注册信息</caption><colgroup><col style="width:25.590000000000003%"><col style="width:74.41%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.590000000000003%" id="mcps1.3.3.2.2.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.41%" id="mcps1.3.3.2.2.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>用户自定义GaussDB项目名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>管理面地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>TPOPS对外提供服务的地址。如果TPOPS为HA形态部署，可使用单个或多个管理面地址进行注册，多个地址以英文逗号分隔。</p>
+<p>地址输入示例：<em>192.168.0.0</em>,<em>192.168.0.1</em>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p>管理面端口</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>TPOPS对外提供服务的端口。</p>
+<p>端口输入示例：<em> 7070</em>或<em>8002</em>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>用户名</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>用户在TPOPS中创建的用户名。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>用户在TPOPS中创建的用户密码。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>代理主机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>已注册到<span>OceanProtect</span>的数据保护代理。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>XBSA配置路径</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p><span style="color:#282B33;">用户配置文件xbsa.conf在代理主机中的绝对路径。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>XBSA SSL 证书管理</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>默认开启。开启后，注册GaussDB时会对其证书进行校验，确保<span>OceanProtect</span>与外部设备交互的安全性。关闭后，系统与云平台通信可能存在安全风险，请谨慎操作。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>根证书</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>后缀为“.pem”的根证书文件，获取方式参见<a href="zh-cn_topic_0000001839145153.html#ZH-CN_TOPIC_0000001839145153__zh-cn_topic_0000001514140621_table10744125193920">表1</a>中的准备项“证书”。当选择<span class="uicontrol">“<span>XBSA SSL 证书管理</span>”</span>时，需要配置该参数。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>用户证书</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>后缀为“.crt”的客户端用户证书文件，获取方式参见<a href="zh-cn_topic_0000001839145153.html#ZH-CN_TOPIC_0000001839145153__zh-cn_topic_0000001514140621_table10744125193920">表1</a>中的准备项“证书”。当选择<span class="uicontrol">“<span>XBSA SSL 证书管理</span>”</span>时，需要配置该参数。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>用户私钥</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>后缀为“.key”的客户端用户私钥文件，获取方式参见<a href="zh-cn_topic_0000001839145153.html#ZH-CN_TOPIC_0000001839145153__zh-cn_topic_0000001514140621_table10744125193920">表1</a>中的准备项“证书”。当选择<span class="uicontrol">“<span>XBSA SSL 证书管理</span>”</span>时，需要配置该参数。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>私钥密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>创建证书文件时设置的客户端私钥密码字符串。当选择<span class="uicontrol">“<span>XBSA SSL 证书管理</span>”</span>时，需要配置该参数。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001839145161.html">备份GaussDB实例</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

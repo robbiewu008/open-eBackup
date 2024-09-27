@@ -1,0 +1,86 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Anonymization Rule Types">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839144517.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001792397156">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Anonymization Rule Types</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001792397156"></a><a name="EN-US_TOPIC_0000001792397156"></a>
+
+<h1 class="topictitle1">Anonymization Rule Types</h1>
+<div><p>This section describes anonymization rule types supported by the <span>OceanProtect</span>.</p>
+<p><a href="#EN-US_TOPIC_0000001792397156__table29452017144310">Table 1</a> describes the preset anonymization rule types.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001792397156__table29452017144310"></a><a name="table29452017144310"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792397156__table29452017144310" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Preset anonymization rule types</caption><colgroup><col style="width:29.03%"><col style="width:70.97%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.03%" id="mcps1.3.3.2.3.1.1"><p>Anonymization Rule Type</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70.97%" id="mcps1.3.3.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Shuffling</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span><strong>Mixes up source data lines. This rule applies to any type of data.</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Format-Preserving</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span><strong>Uses the format-preserving encryption algorithm to encrypt a character string. The range of ciphertext is specified by related parameters. This rule applies only to character data.</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Full-Mask</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span><strong>Masks all sensitive information. The mask characters and mask length are specified by related parameters. This rule applies only to character data.</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Partial-Mask</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span><strong>Partially masks sensitive information. The mask characters, locations of start and end characters, and mask length are specified by related parameters. This rule applies only to character data.</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>PII-Type</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span><strong>Replaces sensitive data with identified sensitive data name. This rule applies only to character data.</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Numeric-Range</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span><strong>Replaces source data with a number randomly selected from a specific number range. The number range is specified by related parameters. This rule applies only to numeric data.</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Fixed-Number</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span><strong>Replaces source data with a fixed number. The fixed number is specified by related parameters. This rule applies only to numeric data.</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Noise-Adding</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span><strong>Adds or subtracts a random number to the source data. This rule applies only to numeric data.</strong></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001839144517.html">Data Anonymization</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

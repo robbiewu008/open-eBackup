@@ -1,0 +1,246 @@
+.report-container {
+  width: 1400px;
+  height: 100%;
+  background-color: #e2e8f1;
+  margin: 0 auto;
+
+  .header {
+    background-image: url('assets/img/report-detail-bk.svg');
+    background-size: cover;
+    padding: 45px;
+    width: 100%;
+    height: 388px;
+    box-sizing: border-box;
+
+    .report-title {
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    .report-create-time {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    .other-header-info {
+      margin-top: 56px;
+      font-size: 20px;
+      width: 72%;
+    }
+  }
+
+  .protect-object-header {
+    background-image: url('assets/img/report-po-bk.svg');
+  }
+
+  .report-content {
+    padding: 24px;
+
+    .report-base-info {
+      background-color: white;
+      width: 100%;
+      margin-bottom: 16px;
+
+      .base-info-content {
+        display: flex;
+        align-items: center;
+        background-color: white;
+        flex-flow: row;
+        justify-content: space-between;
+        padding: 24px;
+        padding-top: 0px;
+
+        .base-info-label {
+          color: #9b9fa9;
+        }
+
+        .base-info-value {
+          width: 300px;
+        }
+
+        .file-system-info {
+          display: flex;
+          align-items: center;
+        }
+
+        .file-system-icon {
+          width: 48px;
+          height: 48px;
+          margin-right: 30px;
+          margin-left: 10px;
+          background: url('assets/img/report-file-system.svg');
+        }
+
+        .report-protection-icon {
+          width: 48px;
+          height: 48px;
+          margin-right: 30px;
+          margin-left: 10px;
+          background: url('assets/img/report-protection.svg');
+        }
+      }
+    }
+
+    .report-history-info {
+      background-color: white;
+      width: 100%;
+      min-height: 500px;
+      padding: 24px 0;
+
+      .history-info-block {
+        padding: 0 24px;
+      }
+
+      .history-table-tips {
+        color: #848995;
+        padding-left: 10px;
+      }
+
+      .chart-container {
+        margin-top: 32px;
+        width: 100%;
+        height: 300px;
+
+        #report-chart {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .history-table-container {
+        margin-top: 20px;
+      }
+    }
+  }
+}
+
+.info-card-title {
+  font-size: 20px;
+  padding: 32px;
+  font-weight: 600;
+}
+
+.info-card-sub-title {
+  font-size: 17px;
+  font-weight: 600;
+  border-left: solid 3px #6c92fa;
+  padding: 0 10px;
+}
+
+.flg-tag {
+  background-color: #f0f3fa;
+  color: #cbd1dc;
+  padding: 3px 5px;
+  border-radius: 10px;
+}
+
+.sub-title {
+  font-size: 16px;
+  font-weight: 600;
+  border-left: solid 3px #6c92fa;
+  padding: 0 8px;
+}
+
+.latest-card-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.latest-report {
+  background: white;
+  padding: 32px;
+  margin-bottom: 32px;
+}
+
+#statistics-chart {
+  width: 600px;
+  height: 280px;
+  position: relative;
+  right: 76px;
+}
+
+#file-capacity-chart {
+  width: 400px;
+  height: 280px;
+}
+
+.latest-po-report {
+  background: white;
+  padding: 32px;
+}
+
+.po-base-info-value {
+  width: 200px;
+}
+
+.content-container {
+  background-color: white;
+  padding: 24px;
+}
+
+.status-circle-display-normal {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  background-color: #7adfa0;
+  display: inline-block;
+}
+
+.status-circle-display-infected {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  display: inline-block;
+  background: #f67d7e;
+}
+
+.status-number-display {
+  font-size: 18px;
+  color: #282b33;
+  font-weight: bolder;
+  margin-left: 8px;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.status-label-display {
+  font-size: 12px;
+  color: #b8becc;
+  margin-left: 18px;
+  white-space: nowrap;
+}
+
+.alert-warn-title {
+  font-weight: 600;
+}
+
+.no-data {
+  text-align: center;
+}
+
+.no-data-label {
+  text-align: center;
+  font-size: 0.14rem;
+}
+
+.no-data i {
+  margin-top: 60px;
+  width: 72px;
+  height: 72px;
+}
+
+.trend-chart-container {
+  margin-top: 20px;
+}
+
+.th-icon {
+  width: 0.16rem;
+  height: 0.16rem;
+  margin-top: -2px;
+}
+
+.operation-help-icon {
+  width: 16px;
+  height: 16px;
+  margin-left: 4px;
+}

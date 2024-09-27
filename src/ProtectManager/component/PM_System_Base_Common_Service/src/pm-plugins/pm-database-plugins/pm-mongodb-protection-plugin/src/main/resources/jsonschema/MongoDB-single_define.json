@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "MongoDB单实例创建或修改请求体",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "实例名称",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型",
+      "enum": ["Database"]
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型",
+      "enum": ["MongoDB-single"]
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "serviceIp": {
+          "type": "string",
+          "description": "实例IP",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "servicePort": {
+          "type": "string",
+          "description": "实例端口",
+          "minLength": 1,
+          "maxLength": 5
+        },
+        "next_backup_type": {
+          "type": ["null", "string"],
+          "description": "下次备份类型"
+        },
+        "next_backup_change_cause": {
+          "type": ["null", "string"],
+          "description": "下次备份类型改变的原因"
+        },
+        "connection_result": {
+          "type": ["null", "string"],
+          "description": "多集群场景下Agent与节点的连通状态"
+        },
+        "binPath": {
+          "type": "string",
+          "description": "mongo/mongos/mongod的bin目录"
+        },
+        "mongodumpBinPath": {
+          "type": "string",
+          "description": "mongodump/mongorestore的目录"
+        }
+      },
+      "required": [
+        "serviceIp",
+        "servicePort"
+      ]
+    },
+    "dependencies": {"$ref": "classpath:jsonschema/MongoDB-base.json#/agentDependencies"},
+    "auth": {"$ref": "classpath:jsonschema/MongoDB-base.json#/auth"}
+  },
+  "required": [
+    "name",
+    "type",
+    "subType",
+    "extendInfo",
+    "dependencies",
+    "auth"
+  ]
+}

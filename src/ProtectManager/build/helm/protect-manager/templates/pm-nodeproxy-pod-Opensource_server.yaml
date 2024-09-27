@@ -1,0 +1,281 @@
+{{/*
+  Get running environment instand of using values.yaml
+  */}}
+  {{- $environment:= "" }}
+  {{- if .Values.global }}
+  {{- $environment = .Values.global.environment }}
+  {{- else }}
+  {{- $environment = .Values.local.environment }}
+  {{- end }}
+
+  {{- $storageip:= "" }}
+  {{- if eq $environment "Dorado" }}
+  {{- $storageip = "127.0.0.1" }}
+  {{- else }}
+  {{- $storageip = .Values.global.storageip }}
+  {{- end }}
+
+  {{- $storageuser:= "" }}
+  {{- if .Values.global }}
+  {{- $storageuser = .Values.global.storageuser }}
+  {{- else }}
+  {{- $storageuser = "admin"}}
+  {{- end }}
+
+  {{- $storagepwd:= "" }}
+  {{- if .Values.global }}
+  {{- $storagepwd = .Values.global.storagepwd }}
+  {{- else }}
+  {{- $storagepwd = ""}}
+  {{- end }}
+
+  {{- $hostIp:= "" }}
+  {{- if .Values.global }}
+  {{- $hostIp = .Values.global.hostIp }}
+  {{- else }}
+  {{- $hostIp = "0.0.0.0"}}
+  {{- end }}
+
+  {{- $realreplicas:= "" }}
+  {{- if .Values.global }}
+  {{- $realreplicas = .Values.global.replicas }}
+  {{- else }}
+  {{- $realreplicas = .Values.local.replicas }}
+  {{- end }}
+
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if eq $deploytype "d10" }}
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pm-nodeproxy
+  labels:
+    app: pm-nodeproxy
+  namespace: dpa
+spec:
+  replicas: {{$realreplicas}}
+  selector:
+    matchLabels:
+      app: pm-nodeproxy
+  template:
+    metadata:
+      labels:
+        app: pm-nodeproxy
+    spec:
+      initContainers:
+        - name: node-proxy-init
+          image: pm-database-version-migration:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c", "if [! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME} && chmod 750 /opt/OceanProtect/logs/${NODE_NAME} && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/dme_openstorageapi' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/dme_openstorageapi;fi && chown 18245:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/dme_openstorageapi && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/dme_openstorageapi && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/pm_config' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/pm_config;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/pm_config && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/pm_config"]
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN"]
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: nas-path
+              mountPath: /opt/OceanProtect
+      {{- if eq $environment "Dorado" }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      serviceAccountName: pm-proxy-sa
+      securityContext:
+        fsGroup: 99
+        {{- if eq $environment "Dorado" }}
+        seccompProfile:
+          type: RuntimeDefault
+        {{- end }}
+      containers:
+        - name: pm-config
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: MICRO_SERVICE_NAME
+              value: pm_config
+            - name: SUB_SYSTEM_NAME
+              value: protectmanager
+            - name: DEPLOY_TYPE
+              value: {{ $deploytype }}
+            - name: DEPLOY_ENV
+              value: k8s_cluster
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+          image: pm-config:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          resources:
+            requests:
+              cpu: "0.5"
+              memory: "0.5G"
+            limits:
+              cpu: "7"
+              memory: "16G"
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.pm_config_port}}
+            initialDelaySeconds: 100
+            periodSeconds: 10
+            failureThreshold: 20
+            timeoutSeconds: 10
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - NET_ADMIN
+              drop:
+                - SETFCAP
+                - KILL
+                - MKNOD
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/OceanProtect
+              name: nas-path
+            - mountPath: /opt/common-conf
+              name: common-conf
+              readOnly: true
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+      volumes:
+        - name: dee-conf
+          configMap:
+            name: dee-common-conf
+            defaultMode: 0640
+        - name: kmc-conf
+          configMap:
+            name: kmc-store-conf
+            defaultMode: 0640
+        - name: agent-tmp
+          emptyDir: {}
+        - name: dee-tmp
+          emptyDir: {}
+        - name: dee-mnt
+          emptyDir: {}
+        - name: ubc-tmp
+          emptyDir: {}
+        - name: dee-report-tmp
+          emptyDir: {}
+        - name: dorado-config-dir
+          hostPath:
+            path: /OSM/conf/
+        - name: date-config
+          hostPath:
+            path: /etc/localtime
+        - name: cache-volume
+          emptyDir: {}
+        - name: cache-filesystem
+          emptyDir:
+            sizeLimit: 64Mi
+        - name: protectengine-e-conf
+          configMap:
+            name: protectengine-e-conf
+        - name: common-conf
+          configMap:
+            name: common-conf
+        - name: network-conf
+          configMap:
+            name: network-conf
+        - name: cluster-conf
+          configMap:
+            name: cluster-conf
+        - name: ubc-secret
+          secret:
+            secretName: common-secret
+            items:
+              - key: cifs_backup.password
+                path: cifs_backup.password
+              - key: data_turbo.password
+                path: data_turbo.password
+        - name: vmware-secret
+          secret:
+            secretName: common-secret
+            items:
+              - key: vm_data_turbo.password
+                path: vm_data_turbo.password
+        - name: oracle-secret
+          secret:
+            secretName: common-secret
+            items:
+              - key: oracle_data_turbo.password
+                path: oracle_data_turbo.password
+        - name: dee-root
+          emptyDir: {}
+        - name: archive-mnt
+          emptyDir: {}
+        - name: dee-var
+          emptyDir: {}
+        - name: dee-base-parser-tmp
+          emptyDir: {}
+        - name: dee-anti-ransomware-tmp
+          emptyDir: {}
+        - name: dee-base-parser-mnt
+          emptyDir: {}
+        - name: dee-anti-ransomware-mnt
+          emptyDir: {}
+        - name: modules
+          hostPath:
+            path: /lib/modules
+        {{- if eq $environment "Dorado" }}
+        - name: share-path
+          persistentVolumeClaim:
+            claimName: "dee-nas"
+        - name: agent-volume
+          persistentVolumeClaim:
+            claimName: "agent-nas"
+        - name: nas-path
+          persistentVolumeClaim:
+            claimName: "comm-nas"
+        - name: index-dir
+          persistentVolumeClaim:
+            claimName: "dee-nas"
+        - name: pm-path
+          persistentVolumeClaim:
+            claimName: "pm-nas2"
+        - name: pm-path2
+          persistentVolumeClaim:
+            claimName: "pm-nas"
+        {{- if eq $deploytype "d0" }}
+        - name: pm-agent-log
+          persistentVolumeClaim:
+            claimName: "pm-nas3"
+        - name: data-nas
+          persistentVolumeClaim:
+            claimName: "data-nas"
+        {{- end }}
+        {{- if eq $deploytype "d0" }}
+        - name: report-path
+          persistentVolumeClaim:
+            claimName: "pm-report"
+        {{- end }}
+        {{- else }}
+        - name: nas-path
+          hostPath:
+            path: /opt/OceanProtect
+        - name: share-path
+          hostPath:
+            path: /tmp/share
+        - name: agent-volume
+          hostPath:
+            path: /opt/protectagent
+        - name: pm-path
+          hostPath:
+            path: /opt/ProtectManager
+        {{- end }}
+        - name: common-volume
+          configMap:
+            name: common-conf
+  {{- end }}

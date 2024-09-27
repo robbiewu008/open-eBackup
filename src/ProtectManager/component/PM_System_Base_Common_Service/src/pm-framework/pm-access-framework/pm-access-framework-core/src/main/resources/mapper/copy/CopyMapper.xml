@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="openbackup.data.access.framework.core.dao.CopyMapper">
+    <resultMap id="BaseResultMap"
+               type="openbackup.data.access.framework.core.model.CopySummaryResource">
+        <result column="copy_count" property="copyCount" jdbcType="INTEGER"/>
+        <result column="properties" property="properties" jdbcType="VARCHAR"/>
+        <result column="protected_object_uuid" property="protectedObjectUuid" jdbcType="VARCHAR"/>
+        <result column="protected_resource_id" property="protectedResourceId" jdbcType="VARCHAR"/>
+        <result column="protected_sla_id" property="protectedSlaId" jdbcType="INTEGER"/>
+        <result column="protected_sla_name" property="protectedSlaName" jdbcType="VARCHAR"/>
+        <result column="protected_status" property="isProtected" jdbcType="BOOLEAN"/>
+        <result column="resource_environment_ip" property="resourceEnvironmentIp" jdbcType="VARCHAR"/>
+        <result column="resource_environment_name" property="resourceEnvironmentName" jdbcType="VARCHAR"/>
+        <result column="resource_id" property="resourceId" jdbcType="VARCHAR"/>
+        <result column="resource_location" property="resourceLocation" jdbcType="VARCHAR"/>
+        <result column="resource_name" property="resourceName" jdbcType="VARCHAR"/>
+        <result column="resource_properties" property="resourceProperties" jdbcType="VARCHAR"/>
+        <result column="resource_status" property="resourceStatus" jdbcType="VARCHAR"/>
+        <result column="resource_sub_type" property="resourceSubType" jdbcType="VARCHAR"/>
+        <result column="resource_type" property="resourceType" jdbcType="VARCHAR"/>
+        <result column="sla_name" property="slaName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="CopyCountResultMap"
+               type="openbackup.data.access.framework.core.model.CopySummaryCount">
+        <result column="resource_sub_type" property="resourceSubType" jdbcType="VARCHAR"/>
+        <result column="resource_type" property="resourceType" jdbcType="VARCHAR"/>
+        <result column="copy_count" property="copyCount" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="SelectCopySummaryResourceBase">
+        SELECT COPIES.resource_id AS resource_id,
+               (
+                   array_agg(
+                           COPIES.resource_name ORDER BY COPIES.display_timestamp DESC
+                       )
+                   ) [1] AS resource_name,
+            (
+                array_agg(
+                    COPIES.resource_type
+                    ORDER BY COPIES.display_timestamp DESC
+                )
+            ) [1] AS resource_type,
+            (
+                array_agg(
+                    COPIES.resource_sub_type
+                    ORDER BY COPIES.display_timestamp DESC
+                )
+            ) [1] AS resource_sub_type,
+            (
+                array_agg(
+                    COPIES.resource_location
+                    ORDER BY COPIES.display_timestamp DESC
+                )
+            ) [1] AS resource_location,
+            (
+                array_agg(
+                    COPIES.resource_status
+                    ORDER BY COPIES.display_timestamp DESC
+                )
+            ) [1] AS resource_status,
+            (
+                array_agg(
+                    COPIES.properties
+                    ORDER BY COPIES.display_timestamp DESC
+                )
+            ) [1] AS properties,
+            (
+                array_agg(
+                    COPIES.resource_properties
+                    ORDER BY COPIES.display_timestamp DESC
+                )
+            ) [1] AS resource_properties,
+            (
+                array_agg(
+                    COPIES.resource_environment_name
+                    ORDER BY COPIES.display_timestamp DESC
+                )
+            ) [1] AS resource_environment_name,
+            (
+                array_agg(
+                    COPIES.resource_environment_ip
+                    ORDER BY COPIES.display_timestamp DESC
+                )
+            ) [1] AS resource_environment_ip,
+            (
+                array_agg(
+                    COPIES.sla_name
+                    ORDER BY COPIES.display_timestamp DESC
+                )
+            ) [1] AS sla_name,
+            COPIES_PROTECTION.protected_resource_id,
+            COPIES_PROTECTION.protected_object_uuid,
+            COPIES_PROTECTION.protected_sla_id,
+            COPIES_PROTECTION.protected_sla_name,
+            COPIES_PROTECTION.protected_status,
+            count(COPIES.uuid) AS copy_count
+        FROM COPIES
+            LEFT OUTER JOIN COPIES_PROTECTION
+        ON COPIES_PROTECTION.protected_resource_id = COPIES.resource_id
+    </sql>
+
+    <sql id="SelectCopySummaryResourceCountBase">
+        SELECT COUNT(DISTINCT resource_id)
+        FROM COPIES
+            LEFT OUTER JOIN COPIES_PROTECTION
+        ON COPIES_PROTECTION.protected_resource_id = COPIES.resource_id
+    </sql>
+
+    <sql id="SelectCopySummaryResourceCondition">
+        WHERE COPIES.deleted = false
+        <if test="query.condition != null">
+            <if test="query.condition.resourceLocation != null and query.condition.resourceLocation.length() > 0">
+                AND lower(resource_location) like CONCAT('%',lower(#{query.condition.resourceLocation}),'%')
+            </if>
+            <if test="query.condition.resourceName != null and query.condition.resourceName.length() > 0">
+                AND lower(resource_name) like CONCAT('%',lower(#{query.condition.resourceName}),'%')
+            </if>
+            <if test="query.condition.protectedSlaName != null and query.condition.protectedSlaName.length() > 0">
+                AND lower(protected_sla_name) like CONCAT('%',lower(#{query.condition.protectedSlaName}),'%')
+            </if>
+            <if test="query.condition.resourceSubType != null and query.condition.resourceSubType.size() > 0">
+                AND resource_sub_type IN
+                <foreach collection="query.condition.resourceSubType" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="query.condition.resourceStatus != null and query.condition.resourceStatus.size() > 0">
+                AND resource_status IN
+                <foreach collection="query.condition.resourceStatus" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="query.condition.protectedStatus != null and query.condition.protectedStatus.size() > 0">
+                AND protected_status IN
+                <foreach collection="query.condition.protectedStatus" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="query.condition.userId != null and query.condition.userId.length()>0">
+                AND COPIES.user_id = #{query.condition.userId}
+            </if>
+        </if>
+    </sql>
+
+    <sql id="SelectCopySummaryResourceGroupBy">
+        GROUP BY COPIES.resource_id
+    </sql>
+
+    <sql id="SelectCopySummaryResourceOrderBy">
+        ORDER BY
+        <choose>
+            <when test="query.orders != null and query.orders.size() > 0">
+                <foreach collection="query.orders" item="item" separator="," open="" close="">
+                    <if test="item.startsWith('-')">
+                        <bind name="elem" value="item.substring(1)"/>
+                        ${elem} DESC
+                    </if>
+                    <if test="item.startsWith('+')">
+                        <bind name="elem" value="item.substring(1)"/>
+                        ${elem} ASC
+                    </if>
+                </foreach>
+            </when>
+            <otherwise>
+                display_timestamp DESC
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="SelectCopySummaryResourceLimit">
+        LIMIT #{query.pageSize} OFFSET #{query.pageNo} * #{query.pageSize}
+    </sql>
+
+    <update id="updateCopyStatus">
+        UPDATE COPIES SET STATUS=#{status} where UUID IN
+        <foreach collection="copy_id_list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>;
+    </update>
+
+    <select id="selectCopySummaryResourceList" resultMap="BaseResultMap" parameterType="map">
+        <include refid="SelectCopySummaryResourceBase"/>
+        <include refid="SelectCopySummaryResourceCondition"/>
+        <include refid="SelectCopySummaryResourceGroupBy"/>
+        <include refid="SelectCopySummaryResourceOrderBy"/>
+        <include refid="SelectCopySummaryResourceLimit"/>
+    </select>
+
+    <select id="selectCopySummaryResourceCount" resultType="java.lang.Integer">
+        <include refid="SelectCopySummaryResourceCountBase"/>
+        <include refid="SelectCopySummaryResourceCondition"/>
+    </select>
+
+    <select id="selectCopyDeviceEsnByResourceId" resultType="java.lang.String">
+        SELECT device_esn
+        FROM COPIES
+        WHERE resource_id = #{resource_id} group by device_esn
+    </select>
+
+    <select id="queryCopyCount"
+            resultMap="CopyCountResultMap">
+        SELECT resource_sub_type, resource_type, count(1) as copy_count
+        FROM COPIES
+        WHERE deleted = false
+--         此处适配rbac 要根据domainId来过滤列表 如果domainId不存在则查全部
+        <if test="domain_id != null and domain_id != ''">
+            AND (uuid in (select resource_object_id from  T_DOMAIN_R_RESOURCE_OBJECT where domain_id = #{domain_id}))
+        </if>
+        group by resource_type, resource_sub_type
+    </select>
+</mapper>

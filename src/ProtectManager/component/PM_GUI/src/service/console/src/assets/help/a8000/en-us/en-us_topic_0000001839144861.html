@@ -1,0 +1,223 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Overview of Common Management Software">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001839144861">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Overview of Common Management Software</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001839144861"></a><a name="EN-US_TOPIC_0000001839144861"></a>
+
+<h1 class="topictitle1">Overview of Common Management Software</h1>
+<div><p class="MsoNormal">The software provided by the <span>OceanProtect Appliance</span> includes the storage system software, maintenance terminal software, and application software, which work together to implement various backup services intelligently, efficiently, and economically. For details about the software architecture of the storage system, see section "Functional Architecture" in the <i><cite>OceanProtect X6000, X8000 1.3.0 Product Description</cite></i>.</p>
+<p class="MsoNormal">This document focuses on common management software. You can use OceanProtect and DeviceManager to query, configure, manage, and maintain the storage system. You can use serviceability tools, such as SmartKit and DME IQ, to improve the maintenance efficiency.</p>
+<p class="MsoNormal"><a href="#EN-US_TOPIC_0000001839144861__en-us_topic_0223232574_table58545749">Table 1</a> describes software commonly used to manage the storage system.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839144861__en-us_topic_0223232574_table58545749"></a><a name="en-us_topic_0223232574_table58545749"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839144861__en-us_topic_0223232574_table58545749" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Common management software</caption><colgroup><col style="width:21.36%"><col style="width:78.64%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="21.36%" id="mcps1.3.4.2.3.1.1"><p>Management Software</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="78.64%" id="mcps1.3.4.2.3.1.2"><p>Function</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="21.36%" headers="mcps1.3.4.2.3.1.1 "><p>OceanProtect</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.64%" headers="mcps1.3.4.2.3.1.2 "><p>Data protection service management: storage resource allocation, user management, data protection feature management, device performance monitoring, and alarm management.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.36%" headers="mcps1.3.4.2.3.1.1 "><p>DeviceManager</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.64%" headers="mcps1.3.4.2.3.1.2 "><p>Data protection device management: device management, system time management, and IP address management.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.36%" headers="mcps1.3.4.2.3.1.1 "><p>SmartKit</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.64%" headers="mcps1.3.4.2.3.1.2 "><p>Data protection software and hardware maintenance: routine maintenance, upgrade/patching, troubleshooting, capacity expansion, and parts replacement.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.36%" headers="mcps1.3.4.2.3.1.1 "><p>DME IQ</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.64%" headers="mcps1.3.4.2.3.1.2 "><p>Data protection cloud-based O&amp;M: alarm reporting, file upload, and remote access.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="EN-US_TOPIC_0000001839144861__section28201358103714"><a name="EN-US_TOPIC_0000001839144861__section28201358103714"></a><a name="section28201358103714"></a><h4 class="sectiontitle">Introduction to OceanProtect</h4><p class="MsoNormal">OceanProtect is the service management software of the <span>OceanProtect Appliance</span> used to configure and manage services easily and conveniently.</p>
+<p class="MsoNormal"><a href="#EN-US_TOPIC_0000001839144861__fig11507141114589">Figure 1</a> shows the OceanProtect home page.</p>
+<div class="fignone" id="EN-US_TOPIC_0000001839144861__fig11507141114589"><a name="EN-US_TOPIC_0000001839144861__fig11507141114589"></a><a name="fig11507141114589"></a><span class="figcap"><b>Figure 1 </b>OceanProtect home page</span><br><span><img src="en-us_image_0000001839225021.png"></span></div>
+<p></p>
+<p></p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>The GUI may vary slightly depending on the product version and model. The actual GUI prevails.</li><li>To learn details about each step and operation, click <span><img src="en-us_image_0000001792505698.png"></span> to view online help.</li><li>You can click the username in the upper right corner of the page and select <strong>Log Out</strong> to log out of OceanProtect.</li></ul>
+</div></div>
+<p class="MsoNormal"><a href="#EN-US_TOPIC_0000001839144861__en-us_topic_0223232574_table26609769">Table 2</a> describes elements of ProtectManager.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839144861__en-us_topic_0223232574_table26609769"></a><a name="en-us_topic_0223232574_table26609769"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839144861__en-us_topic_0223232574_table26609769" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Elements of OceanProtect</caption><colgroup><col style="width:8.690000000000001%"><col style="width:20.27%"><col style="width:71.04%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="8.690000000000001%" id="mcps1.3.5.9.2.4.1.1"><p>No.</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="20.27%" id="mcps1.3.5.9.2.4.1.2"><p>Name</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="71.04%" id="mcps1.3.5.9.2.4.1.3"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="8.690000000000001%" headers="mcps1.3.5.9.2.4.1.1 "><p>1</p>
+</td>
+<td class="cellrowborder" valign="top" width="20.27%" headers="mcps1.3.5.9.2.4.1.2 "><p>Cluster switchover area</p>
+</td>
+<td class="cellrowborder" valign="top" width="71.04%" headers="mcps1.3.5.9.2.4.1.3 "><p><span>OceanProtect Appliance</span> supports unified management of multiple clusters. In the cluster switchover area, you can select all clusters, a management cluster, or a managed cluster.</p>
+<ul><li>If you select all clusters, the statistics information of all clusters is displayed. By default, other pages show the local cluster information. You can switch to any management cluster or managed cluster.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>By default, the global search area supports searching for copy data and resources of the local cluster. You can switch to a specified management cluster or managed cluster. Switching to all clusters is not supported.</p>
+</div></div>
+</li><li>If you select a management cluster, information about the management cluster is displayed on all pages.</li><li>If you select a managed cluster, information about the managed cluster is displayed on all pages.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="8.690000000000001%" headers="mcps1.3.5.9.2.4.1.1 "><p>2</p>
+</td>
+<td class="cellrowborder" valign="top" width="20.27%" headers="mcps1.3.5.9.2.4.1.2 "><p>Navigation bar</p>
+</td>
+<td class="cellrowborder" valign="top" width="71.04%" headers="mcps1.3.5.9.2.4.1.3 "><p>Shows functional modules of the <span>OceanProtect Appliance</span>. </p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="8.690000000000001%" headers="mcps1.3.5.9.2.4.1.1 "><p>3</p>
+</td>
+<td class="cellrowborder" valign="top" width="20.27%" headers="mcps1.3.5.9.2.4.1.2 "><p>Global search area</p>
+</td>
+<td class="cellrowborder" valign="top" width="71.04%" headers="mcps1.3.5.9.2.4.1.3 "><p>Displays the search scope and content supported by the <span>OceanProtect Appliance</span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="8.690000000000001%" headers="mcps1.3.5.9.2.4.1.1 "><p>4</p>
+</td>
+<td class="cellrowborder" valign="top" width="20.27%" headers="mcps1.3.5.9.2.4.1.2 "><p>Alarm and job statistics area</p>
+</td>
+<td class="cellrowborder" valign="top" width="71.04%" headers="mcps1.3.5.9.2.4.1.3 "><p>The alarm statistics area displays the number of alarms by severity and helps you learn about the running status of the system.</p>
+<p>The job statistics area displays all executed jobs and helps you learn whether the jobs are executed successfully.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="8.690000000000001%" headers="mcps1.3.5.9.2.4.1.1 "><p>5</p>
+</td>
+<td class="cellrowborder" valign="top" width="20.27%" headers="mcps1.3.5.9.2.4.1.2 "><p>Language selection area</p>
+</td>
+<td class="cellrowborder" valign="top" width="71.04%" headers="mcps1.3.5.9.2.4.1.3 "><p>A window is displayed for you to set the required operation language (Chinese or English).</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="8.690000000000001%" headers="mcps1.3.5.9.2.4.1.1 "><p>6</p>
+</td>
+<td class="cellrowborder" valign="top" width="20.27%" headers="mcps1.3.5.9.2.4.1.2 "><p>Logout area</p>
+</td>
+<td class="cellrowborder" valign="top" width="71.04%" headers="mcps1.3.5.9.2.4.1.3 "><p>Provides the logout button and the button for changing the password. </p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="8.690000000000001%" headers="mcps1.3.5.9.2.4.1.1 "><p>7</p>
+</td>
+<td class="cellrowborder" valign="top" width="20.27%" headers="mcps1.3.5.9.2.4.1.2 "><p>Help and technical support</p>
+</td>
+<td class="cellrowborder" valign="top" width="71.04%" headers="mcps1.3.5.9.2.4.1.3 "><p>Provides links to the online help and technical support websites.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="8.690000000000001%" headers="mcps1.3.5.9.2.4.1.1 "><p>8</p>
+</td>
+<td class="cellrowborder" valign="top" width="20.27%" headers="mcps1.3.5.9.2.4.1.2 "><p>Function pane</p>
+</td>
+<td class="cellrowborder" valign="top" width="71.04%" headers="mcps1.3.5.9.2.4.1.3 "><p>Displays the window for the current operation.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section"><h4 class="sectiontitle">Introduction to SmartKit</h4><p class="MsoNormal">SmartKit is a desktop management platform on which all IT tools can be managed in a unified manner. It provides various tools for deployment, maintenance, and upgrade of IT devices. SmartKit is mainly used for routine maintenance of the <span>OceanProtect Appliance</span>. <a href="#EN-US_TOPIC_0000001839144861__en-us_topic_0223232574_f8dd6dddb3d1940179a93c6f4420fa0b9">Figure 2</a> shows the SmartKit home page.</p>
+<div class="fignone" id="EN-US_TOPIC_0000001839144861__en-us_topic_0223232574_f8dd6dddb3d1940179a93c6f4420fa0b9"><a name="EN-US_TOPIC_0000001839144861__en-us_topic_0223232574_f8dd6dddb3d1940179a93c6f4420fa0b9"></a><a name="en-us_topic_0223232574_f8dd6dddb3d1940179a93c6f4420fa0b9"></a><span class="figcap"><b>Figure 2 </b>SmartKit home page</span><br><span><img src="en-us_image_0000001792505694.png"></span></div>
+<p class="MsoNormal"><a href="#EN-US_TOPIC_0000001839144861__en-us_topic_0223232574_t1bacd4a88fbc419bb30a73c698294c08">Table 3</a> describes the components of the SmartKit home page.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839144861__en-us_topic_0223232574_t1bacd4a88fbc419bb30a73c698294c08"></a><a name="en-us_topic_0223232574_t1bacd4a88fbc419bb30a73c698294c08"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839144861__en-us_topic_0223232574_t1bacd4a88fbc419bb30a73c698294c08" frame="border" border="1" rules="all"><caption><b>Table 3 </b>Description of functional areas in SmartKit</caption><colgroup><col style="width:27%"><col style="width:73%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="27%" id="mcps1.3.6.5.2.3.1.1"><p>No.</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="73%" id="mcps1.3.6.5.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="27%" headers="mcps1.3.6.5.2.3.1.1 "><p>1</p>
+</td>
+<td class="cellrowborder" valign="top" width="73%" headers="mcps1.3.6.5.2.3.1.2 "><p>Navigation tree for functions: enables you to select functions.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27%" headers="mcps1.3.6.5.2.3.1.1 "><p>2</p>
+</td>
+<td class="cellrowborder" valign="top" width="73%" headers="mcps1.3.6.5.2.3.1.2 "><p>Scheduled job and system setting buttons</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27%" headers="mcps1.3.6.5.2.3.1.1 "><p>3</p>
+</td>
+<td class="cellrowborder" valign="top" width="73%" headers="mcps1.3.6.5.2.3.1.2 "><p>Buttons for obtaining online help and more information as well as selecting a language</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27%" headers="mcps1.3.6.5.2.3.1.1 "><p>4</p>
+</td>
+<td class="cellrowborder" valign="top" width="73%" headers="mcps1.3.6.5.2.3.1.2 "><p>SmartKit login account area: displays the account having the maximum permission.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27%" headers="mcps1.3.6.5.2.3.1.1 "><p>5</p>
+</td>
+<td class="cellrowborder" valign="top" width="73%" headers="mcps1.3.6.5.2.3.1.2 "><p><strong>Authentication Now</strong> button: enables you to authenticate your identity to obtain more functions and supports.</p>
+<p><strong>Exit</strong> button: enables you to exit the current login account.</p>
+<p>You can check whether the enterprise network or carrier network service is obtained.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27%" headers="mcps1.3.6.5.2.3.1.1 "><p>6</p>
+</td>
+<td class="cellrowborder" valign="top" width="73%" headers="mcps1.3.6.5.2.3.1.2 "><p>Field switching bar: enables you to switch between the storage, server, cloud computing, and intelligent vision fields.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27%" headers="mcps1.3.6.5.2.3.1.1 "><p>7</p>
+</td>
+<td class="cellrowborder" valign="top" width="73%" headers="mcps1.3.6.5.2.3.1.2 "><p><strong>Function Management</strong> button: displays all the functions integrated in SmartKit. You can download, install, upgrade, or uninstall one or more functions on this page.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27%" headers="mcps1.3.6.5.2.3.1.1 "><p>8</p>
+</td>
+<td class="cellrowborder" valign="top" width="73%" headers="mcps1.3.6.5.2.3.1.2 "><p><span><img src="en-us_image_0000001839145077.png"></span>: enables you to upgrade all the upgradable functions in the current scenario-based job.</p>
+<p><span><img src="en-us_image_0000001792345970.png"></span>: enables you to install functions that have not been installed in the current scenario-based job.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27%" headers="mcps1.3.6.5.2.3.1.1 "><p>9</p>
+</td>
+<td class="cellrowborder" valign="top" width="73%" headers="mcps1.3.6.5.2.3.1.2 "><p><strong>More</strong>: enables you to view all the functions of a product field to which the current scenario-based job belongs.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27%" headers="mcps1.3.6.5.2.3.1.1 "><p>10</p>
+</td>
+<td class="cellrowborder" valign="top" width="73%" headers="mcps1.3.6.5.2.3.1.2 "><p>Scenario-based function entry: enables you to use the corresponding scenario-based function.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27%" headers="mcps1.3.6.5.2.3.1.1 "><p>11</p>
+</td>
+<td class="cellrowborder" valign="top" width="73%" headers="mcps1.3.6.5.2.3.1.2 "><p><strong>Links</strong> (for enterprise users): Hyperlinks to Bulletins, iKnow, Support-E, as well as InfoKit and Knowledge Base (online documentation lists and cases for fields including storage, server, and cloud computing).</p>
+<p><strong>Links</strong> (for carrier users): Hyperlinks to Support, EOX Bulletins, Software Bulletins, as well as InfoKit and Knowledge Base (online documentation lists and cases for fields including storage, server, and cloud computing).</p>
+<p>NOTE:</p>
+<p>These links are not displayed on the home page if the role of the login user is <strong>Customer</strong> or <strong>Visitor</strong>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section"><h4 class="sectiontitle">Introduction to DME IQ</h4><p>As a large number of Huawei IT products such as storage devices, servers, and cloud computing products are put into use, users have increasingly high requirements on the troubleshooting efficiency. In traditional service support mode, technical support personnel provide local services manually. Faults may not be detected in a timely manner and information may not be delivered correctly.</p>
+<p class="MsoNormal">The DME IQ intelligent cloud O&amp;M platform (DME IQ for short) integrates cloud management, remote maintenance, automatic service request (SR) creation, and proactive prediction and prevention functions to improve customer O&amp;M capabilities and enable planned maintenance actions against potential risks.</p>
+<p class="MsoNormal">Being authorized by customers, DME IQ monitors device alarms in 24/7 mode. Whenever an alarm is detected, the DME IQ cloud system is automatically notified, and SRs are created. Huawei service engineers will then help solve problems in a timely manner.</p>
+<p>The eService Client works with the DME IQ cloud system.</p>
+<ul><li>The Client is deployed on the customer side.<p>It collects customer device alarms and sends them to the Huawei cloud system in a timely manner to implement remote maintenance functions, including remote inspection and remote log collection.</p>
+</li><li>The cloud system is deployed on the DME IQ cloud system.<p>It receives device alarms from the Client in 24/7 mode, automatically notifies Huawei technical support personnel to handle these alarms in a timely manner, and supports remote inspection and log collection for devices on the customer side.</p>
+</li></ul>
+<div class="p">Intelligent O&amp;M has the following advantages:<ul><li>The self-service intelligent O&amp;M system provides precise and customized information services for customers.</li><li>Based on Huawei Cloud, the DME IQ cloud system drives IT O&amp;M activities through big data analysis and AI technologies to identify faults in advance, reduce O&amp;M difficulties, and improve O&amp;M efficiency.</li><li>Data is encrypted for secure transmission. DME IQ can access a customer's system only after being authorized by the customer.</li><li>SRs are automatically created. Services are provided in 24/7 mode. Proactive O&amp;M is secure and reliable.</li><li>Customers can use any PC to access DME IQ at any time and place to check device information.</li></ul>
+</div>
+<p>For details, see the <em>DME IQ Intelligent Cloud O&amp;M Platform User Guide</em>.</p>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

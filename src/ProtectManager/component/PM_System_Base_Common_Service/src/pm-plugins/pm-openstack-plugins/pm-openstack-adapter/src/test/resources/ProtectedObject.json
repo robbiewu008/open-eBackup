@@ -1,0 +1,12 @@
+{
+  "sla_id": "test sla id",
+  "sla_name": "test sla name",
+  "resource_id": "test resource id",
+  "status": 1,
+  "ext_parameters": {
+    "backup_name": "backup name",
+    "description": "description",
+    "backup_type": "server",
+    "instance_id": "instance id"
+  }
+}

@@ -1,0 +1,256 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-group lvGutter="8px" class="aui-gutter-column-sm">
+    <h2>{{ 'protection_lanfree_label' | i18n }}</h2>
+    <lv-switch [(ngModel)]="enableLanFree" (ngModelChange)="ngModelChange()"></lv-switch>
+</lv-group>
+
+<lv-form [formGroup]="formGroup" class="formGroup" *ngIf="enableLanFree">
+    <lv-form-item *ngIf="data.osType !== dataMap.Os_Type.aix.value">
+        <lv-form-label lvRequired>
+           {{'protection_selected_node_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select [lvOptions]="nodeOptions" formControlName="esn" lvValueKey="value" lvMode="single" (ngModelChange)="nodeChange($event)"></lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <div *ngIf="data.osType === dataMap.Os_Type.aix.value">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'protection_data_protocol_label' | i18n }}
+            </lv-form-label>
+            <lv-radio-group formControlName="protocol" class="protocol">
+                <lv-group [lvGutter]="'48px'">
+                    <lv-radio [lvValue]="value3">{{ 'protection_fc_label' | i18n }}</lv-radio>
+                    <lv-radio [lvValue]="value4">{{ 'protection_iscsi_label' | i18n }}</lv-radio>
+                </lv-group>
+                <lv-group *ngIf="formGroup.value.protocol === value4">
+                    <i lv-icon="lv-icon-status-info"></i>
+                    <span class="info">{{'protection_iscsi_info_label' | i18n}}</span>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'protection_sanclient_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="sanclientTip">
+                <lv-select [lvOptions]="proxyOptions" lvValueKey="value" lvMode="multiple" formControlName="sanclient">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="formGroup.value.protocol === value3">
+            <lv-form-label lvRequired>
+                {{ 'protection_client_wwpn_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="inputTip">
+                <lv-select [lvOptions]="clientWwpnOptions" lvValueKey="value" lvMode="multiple"
+                    formControlName="clientWwpn" [lvContentTemplate]="content">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="formGroup.value.protocol === value4">
+            <lv-form-label lvRequired>
+                {{ 'protection_client_iqn_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="iqnTip">
+                <aui-inupt-with-eye formControlName="clientIqn" [isLanfree]="true" (focus)="onFocus()"
+                    ></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </div>
+    <div *ngIf="data.subType === dataMap.Resource_Type.SBackupAgent.value">
+        <h2 class="header">
+            {{ 'protectoin_sanclient_produce_connection_link_label' | i18n }}
+        </h2>
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'protection_sanclient_wwpn_label' | i18n}}</lv-form-label>
+            <lv-form-control [lvErrorTip]="inputTip">
+                <lv-select [lvOptions]="sanclientWwpnOptions" lvValueKey="value" lvMode="multiple"
+                    formControlName="sanclientWwpn" [lvContentTemplate]="content">
+                </lv-select>
+                <span [ngClass]="{'visible aui-link': addSanclientW, hidden: !addSanclientW || !sanclientWwpnaddble}" (click)="addSanclientWwpn()">
+                    <i lv-icon="aui-icon-add-enable"></i>
+                    {{ 'common_add_label' | i18n }}
+                </span>
+                <span *ngIf="!addSanclientW">
+                    <input lv-input type="text" formControlName="sanclientWwpnInput" style="width:350px" />
+                    <span [ngClass]="{ visible: !addSanclientW, hidden: addSanclientW }">
+                        <span class="error-text" *ngIf="!isWwpnValid">
+                            <i lv-icon="aui-icon-job-status-fail"></i>
+                            {{ wwpnValidLable }}
+                        </span>
+                        <span class="aui-link" (click)="deleteSanclientWwpn()">
+                            <i lv-icon="aui-icon-delete-enable"></i>
+                            {{ 'common_delete_label' | i18n }}
+                        </span>
+                    </span>
+                </span>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>{{'protection_sanclient_iqn_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <span>
+                    <aui-inupt-with-eye formControlName="sanclientIqn" [isLanfree]="true" (focus)="onFocus()"
+                        ></aui-inupt-with-eye>
+                    <button lv-button (click)="getIqn()">
+                        {{ 'protection_scan_iqn_label' | i18n }}
+                    </button>
+                </span>
+            </lv-form-control>
+        </lv-form-item>
+    </div>
+</lv-form>
+<div *ngIf="
+    data.subType === dataMap.Resource_Type.SBackupAgent.value &&
+    enableLanFree
+  ">
+    <h2 class="header">
+        {{ 'protection_fc_store_connection_link_label' | i18n }}
+        <lv-switch [(ngModel)]="fcEnable" (ngModelChange)="fcChange($event)"></lv-switch>
+    </h2>
+    <lv-form [formGroup]="formGroup" class="formGroup">
+        <lv-form-item *ngIf="fcEnable">
+            <lv-form-label lvRequired>
+                {{ 'protection_fc_port_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="fcportTip">
+                <lv-select lv-overflow [lvOptions]="fcportOptions" lvValueKey="value" lvMode="multiple"
+                    formControlName="fcport" [lvContentTemplate]="fcContent">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="fcEnable">
+            <lv-form-label lvRequired>
+                {{ 'protection_sanclient_wwpn_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="inputTip">
+                <lv-select [lvOptions]="wwpnOptions" lvValueKey="value" lvMode="multiple"
+                    formControlName="sanclientwwpn" [lvContentTemplate]="content">
+                </lv-select>
+                <span [ngClass]="{'visible aui-link': addSanclientw, hidden: !addSanclientw || !wwpnaddble}" (click)="addSanclientwwpn()">
+                    <i lv-icon="aui-icon-add-enable"></i>
+                    {{ 'common_add_label' | i18n }}
+                </span>
+                <span *ngIf="!addSanclientw">
+                    <input lv-input type="text" formControlName="sanclientwwpnInput" style="width:350px" />
+                    <span [ngClass]="{ visible: !addSanclientw, hidden: addSanclientw }">
+                        <span class="error-text" *ngIf="!iswwpnValid">
+                            <i lv-icon="aui-icon-job-status-fail"></i>
+                            {{ WwpnValidLable }}
+                        </span>
+                        <span class="aui-link" (click)="deleteSanclientwwpn()">
+                            <i lv-icon="aui-icon-delete-enable"></i>
+                            {{ 'common_delete_label' | i18n }}
+                        </span>
+                    </span>
+                </span>
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+</div>
+<ng-template #content let-item>
+    <span>{{ item.label }}</span>
+    <span class="status">
+        <aui-status [value]="item.runningStatus" type="clickHouse_node_status"></aui-status>
+    </span>
+</ng-template>
+<ng-template #fcContent let-item>
+    <span>{{ item.label }}</span>
+    <span class="status">
+        <aui-status [value]="item.runningStatus" type="lanFreeRunningStatus"></aui-status>
+    </span>
+</ng-template>
+
+<div class="lv-form-label-required wwpn-div" *ngIf="
+    enableLanFree &&
+    data.osType === 'linux' &&
+    data.subType !== dataMap.Resource_Type.SBackupAgent.value
+  ">
+    <h3 class="aui-gutter-column-sm lv-form-label-box">{{'protection_client_wwpn_label' | i18n}}</h3>
+    <div class="aui-gutter-column-md">{{'common_selected_label' | i18n}}: {{selectionWwpn.length}}</div>
+    <div class="aui-gutter-column-xl">
+        <lv-datatable [lvData]="wwpnData" lvSelectionMode="multiple" [(lvSelection)]="selectionWwpn"
+            (lvSelectionChange)="selectionChange()" lvSort #lvTable>
+            <thead>
+                <tr>
+                    <th lvShowCheckbox width="64px" [lvRowsData]="lvTable.renderData | selecLanfreeTable"></th>
+                    <th lvCellKey="wwpn" width='240px'>{{'WWPN' | i18n}}</th>
+                    <th lvCellKey="status">{{'protection_running_status_label' | i18n}}</th>
+                    <th width='200px'>{{'common_operation_label'|i18n }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let item of lvTable.renderData">
+                    <tr>
+                        <td width='64px' lvShowCheckbox [lvRowData]='item' [lvDisabled]="item.isEidt">
+                        </td>
+                        <td>
+                            <ng-container *ngIf="item.isEidt; else elseWwpnTemplate">
+                                <input type="text" [(ngModel)]="item.wwpn" lv-input class="wwpn-input"
+                                    [ngClass]="{'error-wwpn-input': !isWwpnValid}"
+                                    (ngModelChange)='wwpnChange($event)' />
+                                <ng-container *ngIf="!isWwpnValid">
+                                    <lv-group lvGutter='4px' class="wwpn-error">
+                                        <i lv-icon="lv-icon-status-failed"></i>
+                                        <span class="error-text">{{wwpnValidLable}}</span>
+                                    </lv-group>
+                                </ng-container>
+                            </ng-container>
+                            <ng-template #elseWwpnTemplate>
+                                {{item.wwpn}}
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="!(item.manualAdd && item.isEidt)">
+                                <aui-status [value]="item.runningStatus" type="lanFreeRunningStatus"></aui-status>
+                            </ng-container>
+                        </td>
+                        <td width='200px'>
+                            <lv-group lvGutter='24px'>
+                                <span
+                                    [ngClass]="{'aui-link': item.manualAdd && !isWwpnChecked(item),'aui-link-disabled':!item.manualAdd || isWwpnChecked(item)}"
+                                    *ngIf="!item.isEidt" (click)="modifyWwpn(item)">
+                                    {{'common_edits_label' | i18n}}
+                                </span>
+                                <span
+                                    [ngClass]="{'aui-link': isWwpnValid && item.wwpn,'aui-link-disabled': !isWwpnValid || !item.wwpn}"
+                                    *ngIf="item.isEidt" (click)="saveWwpn(item)">
+                                    {{'common_save_label' | i18n}}
+                                </span>
+                                <span
+                                    [ngClass]="{'aui-link': item.manualAdd && !isWwpnChecked(item),'aui-link-disabled':!item.manualAdd || isWwpnChecked(item)}"
+                                    (click)="deleteWwpn(item)">
+                                    {{'common_delete_label' | i18n}}
+                                </span>
+                            </lv-group>
+                        </td>
+                    </tr>
+                </ng-container>
+                <tr *ngIf="!_find(wwpnData, {manualAdd:true})">
+                    <td colspan="4">
+                        <lv-group lvGutter='8px' class="add-wwpn-group" (click)="addWwpn()">
+                            <i lv-icon="aui-icon-add-enable"></i>
+                            <span class="aui-link">{{'common_add_label' | i18n}}</span>
+                        </lv-group>
+                    </td>
+                </tr>
+            </tbody>
+        </lv-datatable>
+    </div>
+    <h3 class="aui-gutter-column-sm lv-form-label-box">{{'protection_fc_port_label' | i18n}}</h3>
+    <div class="aui-gutter-column-md">{{'common_selected_label' | i18n}}: {{selectionPort.length}}</div>
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>

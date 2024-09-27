@@ -1,0 +1,86 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+    <lv-alert *ngIf="internalFlag" lvType="info" lvClosable="false" >
+        {{ 'system_certificate_push_update_label' | i18n }}
+      </lv-alert>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{caCertificateFileLabel}}</lv-form-label>
+        <lv-form-control>
+            <lv-upload lvAccept=".pem" lvShowUpload="false" (lvChange)="uploadCaChange($event)" [lvFilters]='filters1'>
+            </lv-upload>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="internalFlag || communicationComponentFlag || redisComponentFlag">
+        <lv-form-label lvRequired>{{certificateFileLabel}}</lv-form-label>
+        <lv-form-control>
+            <lv-upload lvAccept=".pem" lvShowUpload="false" (lvChange)="uploadChange($event)" [lvFilters]='filters3'>
+            </lv-upload>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="internalFlag || communicationComponentFlag || redisComponentFlag">
+        <lv-form-item>
+            <lv-form-label [lvRequired]="cookieService.isCloudBackup || isProtectAgent">
+                {{privateKeyFileLabel}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-upload lvAccept=".pem" lvShowUpload="false" [lvFilters]='filters2'
+                    (lvFilesChange)="privateKeyChange($event)"></lv-upload>
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="internalFlag || communicationComponentFlag">
+            <lv-form-item>
+                <lv-form-label [lvRequired]="selectPrivateKeyFile || cookieService.isCloudBackup || isProtectAgent">
+                    {{passwordLabel}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="passwordErrorTip">
+                    <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="internalFlag">
+        <ng-container *ngIf="!cookieService.isCloudBackup && !internalFlag">
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'system_certificate_agent_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <lv-upload lvAccept=".pem" lvShowUpload="false" (lvChange)="uploadClientChange($event)"
+                        [lvFilters]='clientFilters'></lv-upload>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'system_certificate_agent_private_key_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <lv-upload lvAccept=".pem" lvShowUpload="false" (lvChange)="uploadPrivateKeyChange($event)"
+                        [lvFilters]='privateKeyFilters'></lv-upload>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'system_certificate_agent_private_password_label' | i18n}}</lv-form-label>
+                <lv-form-control [lvErrorTip]="passwordErrorTip">
+                    <aui-inupt-with-eye formControlName="agentPassword" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+        <ng-container *ngIf="false">
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'system_dhparam_certificate_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <lv-upload lvAccept=".pem" lvShowUpload="false" (lvChange)="uploadDhparamChange($event)"
+                        [lvFilters]='dhparamFilters'></lv-upload>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </ng-container>
+</lv-form>

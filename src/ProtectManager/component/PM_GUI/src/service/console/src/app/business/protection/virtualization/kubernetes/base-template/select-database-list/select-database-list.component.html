@@ -1,0 +1,78 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-gutter-column-md" *ngIf="!modifyFlag && !singleSelectFlag">
+    <lv-collapse lvType="simple" [lvMultiExpansion]="'false'">
+        <lv-collapse-panel [lvTitle]="title" [lvExpanded]="true">
+            <lv-tabs [(lvActiveIndex)]="activeIndex" [lvSize]="'small'">
+                <lv-tab [lvTitle]="totalTpl" [lvId]="'total'">
+                    <ng-container *ngTemplateOutlet="tableTpl"> </ng-container>
+                </lv-tab>
+                <lv-tab [lvTitle]="selectedTpl" [lvId]="'selected'">
+                    <ng-container *ngTemplateOutlet="selectTableTpl"> </ng-container>
+                </lv-tab>
+            </lv-tabs>
+            <ng-template #totalTpl>
+                <div class="host-register-tabnav">
+                    <span>{{ 'common_total_label' | i18n }}</span>
+                    <span class="host-register-tabnav-num">{{ total }}</span>
+                </div>
+            </ng-template>
+            <ng-template #selectedTpl>
+                <div class="host-register-tabnav">
+                    <span>{{ 'common_selected_label' | i18n }}</span>
+                    <span class="host-register-tabnav-num">{{ selectedDataNum }}</span>
+                </div>
+            </ng-template>
+            <ng-template #tableTpl>
+                <lv-pro-table #dataTable [config]="datasTableConfig" [data]="tableData"></lv-pro-table>
+            </ng-template>
+            <ng-template #selectTableTpl>
+                <lv-pro-table #selectTable [config]="tableConfig" [data]="selectData"></lv-pro-table>
+            </ng-template>
+        </lv-collapse-panel>
+    </lv-collapse>
+</div>
+
+<div *ngIf="modifyFlag || singleSelectFlag" class="aui-gutter-column-md">
+    <ng-container *ngIf="resourceSubType === dataMap.Resource_Type.KubernetesStatefulset.value">
+        <p class="modal-table aui-h3">{{'common_selected_label' | i18n}}</p>
+        <lv-pro-table #selectTable [config]="tableConfig" [data]="selectData"></lv-pro-table>
+    </ng-container>
+    <ng-container *ngIf="resourceSubType !== dataMap.Resource_Type.KubernetesStatefulset.value">
+        <lv-group lvGutter='20px'>
+            <span class="aui-h3">{{'common_selected_label' | i18n}}</span>
+            <span>{{source?.name}}</span>
+        </lv-group>
+    </ng-container>
+</div>
+
+<ng-template #slaTpl let-item>
+    <sla-type [name]="item.sla_name"></sla-type>
+</ng-template>
+
+<ng-template #selectVolTpl let-item>
+    <lv-group lvGutter='8px'>
+        <lv-switch [(ngModel)]="item.enableSelectAll" (ngModelChange)="switchChange()"></lv-switch>
+        <span class="aui-link" (click)="selectPod(item)" *ngIf="!item.enableSelectAll">
+            {{ (!!item.volumes?.length ? 'protection_selected_pvc_number_label' : 'common_select_label') |
+            i18n:[item.volumes?.length]}}
+        </span>
+    </lv-group>
+</ng-template>
+<ng-template #slaComplianceExtraTpl>
+    <div class="custom-icon">
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_k8s_volume_help_label' | i18n}}"
+            lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
+    </div>
+</ng-template>

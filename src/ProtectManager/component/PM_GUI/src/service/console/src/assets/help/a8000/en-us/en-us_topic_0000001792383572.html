@@ -1,0 +1,211 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring Huawei Cloud Stack GaussDB Instances">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839182725.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001792383572">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring Huawei Cloud Stack GaussDB Instances</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001792383572"></a><a name="EN-US_TOPIC_0000001792383572"></a>
+
+<h1 class="topictitle1">Restoring Huawei Cloud Stack GaussDB Instances</h1>
+<div><p>This section describes how to restore Huawei Cloud Stack GaussDB that has been backed up to the original location or a new location.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>Backup copies, reverse replication copies, cascaded replication copies, archive copies and replication copies can be used for restoration. Huawei Cloud Stack GaussDB can be restored to the original location or a new location. Replication copies and their archive copies, cascaded replication copies and their archive copies cannot be used for restoration of the Huawei Cloud Stack GaussDB to the original location.</p>
+<p>If the backup copy and archive copy coexist, use the backup copy first for restoration.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="EN-US_TOPIC_0000001792383572__li0198134611381"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792383572__en-us_topic_0000001792543344_en-us_topic_0000001839142377_uicontrol1179134210549"><b><span id="EN-US_TOPIC_0000001792383572__en-us_topic_0000001792543344_en-us_topic_0000001839142377_text1879110428547"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000001792383572__en-us_topic_0000001792543344_en-us_topic_0000001839142377_text13791144225411"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000001792383572__en-us_topic_0000001792543344_en-us_topic_0000001839142377_text88961121031"><strong>Cloud Platforms</strong></span> &gt; <span id="EN-US_TOPIC_0000001792383572__en-us_topic_0000001792543344_en-us_topic_0000001839142377_text13803615132619"><strong>Huawei Cloud Stack GaussDB</strong></span></b></span>.</span></li><li><span>Search for copies by resource or copy. This section describes how to search for copies by resource.</span><p><p>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> tab page, locate the instance to be restored by instance name and click the instance name.</p>
+</p></li><li><span>O the <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p><p>If <span><img src="en-us_image_0000001792543384.png"></span> is displayed below a month or day, copies exist in the month or on the day.</p>
+</p></li><li><span>Find the copy to be restored and choose <span><strong>More</strong></span> &gt; <span><strong>Restore</strong></span> on the right.</span></li><li><span>Restore data to the original location or a new location.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>When restoring data to a new instance, you are advised to set the parameters to the same values as those of the original instance.</p>
+</div></div>
+<ul><li>Restoration to the original location<p><a href="#EN-US_TOPIC_0000001792383572__table774016874418">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001792383572__table774016874418"></a><a name="table774016874418"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792383572__table774016874418" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for restoring data to the original location</caption><colgroup><col style="width:24.21%"><col style="width:75.79%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="24.21%" id="mcps1.3.4.2.5.2.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="75.79%" id="mcps1.3.4.2.5.2.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="24.21%" headers="mcps1.3.4.2.5.2.2.1.2.2.3.1.1 "><p><span><strong>Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="75.79%" headers="mcps1.3.4.2.5.2.2.1.2.2.3.1.2 "><p>Location of the instance, which cannot be modified by users.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Restoration to a new location<ol type="a"><li>Set <span class="uicontrol"><b>Basic Info</b></span>.<ol class="substepthirdol"><li>Set basic parameters. <a href="#EN-US_TOPIC_0000001792383572__table1799312512502">Table 2</a> describes the parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001792383572__table1799312512502"></a><a name="table1799312512502"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792383572__table1799312512502" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Basic parameters</caption><colgroup><col style="width:30%"><col style="width:70%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="30%" id="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70%" id="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.1 "><p><span><strong>Owning Project</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.2 "><p>Project to which the instance to be restored to a new location belongs.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.1 "><p><span><strong>Instance Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.2 "><p>Name of the instance to be restored to a new location.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.1 "><p><span><strong>AZ ID</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.2 "><p>AZ ID. Deployment in the same AZ or across three different AZs is supported. Separate AZs by commas (,).</p>
+<ul><li>Deployment in the same AZ: enter three identical AZ IDs. For example, enter <strong>cn-north-4a,cn-north-4a,cn-north-4a</strong>.</li><li>Deployment across three different AZs: enter three different AZ IDs.</li></ul>
+<p>Obtain the values from the enterprise administrator.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.1 "><p><span><strong>Specification Code</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.2 "><p>GaussDB specification code. You can log in to the Virtual Private Cloud (VPC) console. On the displayed <span class="uicontrol"><b>Basic information</b></span> page of the original instance, obtain the code from the value of <span class="parmvalue"><b>Instance Specifications</b></span> in <span class="uicontrol"><b>DB Information</b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.1 "><p><span><strong>Disk Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.2 "><p>Two disk types are supported: <span class="uicontrol"><b>LOCALSSD</b></span> and <span class="uicontrol"><b>ULTRAHIGH</b></span>.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>The disk type must be the same as the original instance disk type.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.1 "><p><span><strong>Disk Capacity</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.1.2.2.3.1.2 "><p>Size of the disk space to be allocated to the to-be-restored instance. The value must be greater than or equal to that of the original instance. Set the disk capacity based on the deployment scheme:</p>
+<ul><li>MCS deployment scheme: The value must be a multiple of (Number of shards x 40), ranging from (Number of shards x 40 GB) to (Number of shards x 16 TB).</li><li>BMS deployment scheme: This parameter is automatically calculated based on the selected specification and cannot be specified. Even if this parameter is set, it does not take effect.</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>(Optional) Click <strong>Advanced</strong> and set advanced parameters. <a href="#EN-US_TOPIC_0000001792383572__table280654545413">Table 3</a> describes the parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001792383572__table280654545413"></a><a name="table280654545413"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792383572__table280654545413" frame="border" border="1" rules="all"><caption><b>Table 3 </b>Advanced parameters in basic information</caption><colgroup><col style="width:24.45%"><col style="width:75.55%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="24.45%" id="mcps1.3.4.2.5.2.2.2.1.1.2.2.3.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="75.55%" id="mcps1.3.4.2.5.2.2.2.1.1.2.2.3.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="24.45%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.2.3.2.3.1.1 "><p><span><strong>Primary AZ ID</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="75.55%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.2.3.2.3.1.2 "><p>Select one of the three AZ IDs. This parameter is mandatory only when the original instance has an independent arbitration AZ. This parameter is not required in finance edition (data computing) and other scenarios.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="24.45%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.2.3.2.3.1.1 "><p><span><strong>Arbitration AZ ID</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="75.55%" headers="mcps1.3.4.2.5.2.2.2.1.1.2.2.3.2.3.1.2 "><p>Select one of the three AZ IDs. This parameter is mandatory only when the original instance has an independent arbitration AZ.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ol>
+</li><li>Click <span class="uicontrol"><b>Private Cloud Information</b></span> and set parameters. <a href="#EN-US_TOPIC_0000001792383572__table69702464566">Table 4</a> describes the parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001792383572__table69702464566"></a><a name="table69702464566"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792383572__table69702464566" frame="border" border="1" rules="all"><caption><b>Table 4 </b>Private cloud information parameters</caption><colgroup><col style="width:30%"><col style="width:70%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="30%" id="mcps1.3.4.2.5.2.2.2.1.2.3.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70%" id="mcps1.3.4.2.5.2.2.2.1.2.3.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.5.2.2.2.1.2.3.2.3.1.1 "><p><span><strong>VPC ID</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.5.2.2.2.1.2.3.2.3.1.2 "><p>VPC ID. Method 1 is recommended.</p>
+<ul><li>Method 1: Log in to the VPC console and view the VPC ID in the VPC details.</li><li>Method 2: Call the API used to query VPC IDs. For details, see <a href="https://support.huaweicloud.com/intl/en-us/api-vpc/vpc_api01_0003.html" target="_blank" rel="noopener noreferrer">Querying VPCs</a>.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.5.2.2.2.1.2.3.2.3.1.1 "><p><span><strong>Subnet ID</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.5.2.2.2.1.2.3.2.3.1.2 "><p>Network ID of the subnet. Method 1 is recommended.</p>
+<ul><li>Method 1: Log in to VPC console and click the target subnet on the <strong>Subnets</strong> page. You can view the network ID on the displayed page.</li><li>Method 2: Call the API used to query subnet IDs. For details, see <a href="https://support.huaweicloud.com/intl/en-us/api-vpc/vpc_subnet01_0003.html" target="_blank" rel="noopener noreferrer">Querying Subnets</a>.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.4.2.5.2.2.2.1.2.3.2.3.1.1 "><p><span><strong>Security Group ID</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70%" headers="mcps1.3.4.2.5.2.2.2.1.2.3.2.3.1.2 "><p>Security group to which the instance belongs. Method 1 is recommended. If you do not need to specify a security group, contact customer service to apply for a whitelist.</p>
+<ul><li>Method 1: Log in to the VPC console and view the security group ID in the security group details.</li><li>Method 2: Call the API used to query security group IDs. For details, see <a href="https://support.huaweicloud.com/intl/en-us/api-vpc/vpc_sg01_0003.html" target="_blank" rel="noopener noreferrer">Querying Security Groups</a>.</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Click <span class="uicontrol"><b>Database Information</b></span> and set parameters.<ol class="substepthirdol"><li>Set basic parameters. <a href="#EN-US_TOPIC_0000001792383572__table197418014586">Table 5</a> describes the parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001792383572__table197418014586"></a><a name="table197418014586"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792383572__table197418014586" frame="border" border="1" rules="all"><caption><b>Table 5 </b>Parameters in the database information</caption><colgroup><col style="width:26.25%"><col style="width:73.75%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="26.25%" id="mcps1.3.4.2.5.2.2.2.1.3.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="73.75%" id="mcps1.3.4.2.5.2.2.2.1.3.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="26.25%" headers="mcps1.3.4.2.5.2.2.2.1.3.2.1.2.2.3.1.1 "><p><span><strong>Database Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="73.75%" headers="mcps1.3.4.2.5.2.2.2.1.3.2.1.2.2.3.1.2 "><p>Database password. Enter a strong password to improve resilience, preventing resilience risks such as brute force cracking.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="26.25%" headers="mcps1.3.4.2.5.2.2.2.1.3.2.1.2.2.3.1.1 "><p><span><strong>Port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="73.75%" headers="mcps1.3.4.2.5.2.2.2.1.3.2.1.2.2.3.1.2 "><p>Currently, the default GaussDB port is <strong>8000</strong> and cannot be changed.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>(Optional) Click <strong>Advanced</strong> and set advanced parameters. <a href="#EN-US_TOPIC_0000001792383572__table771193113596">Table 6</a> describes the parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001792383572__table771193113596"></a><a name="table771193113596"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792383572__table771193113596" frame="border" border="1" rules="all"><caption><b>Table 6 </b>Advanced parameters in database information</caption><colgroup><col style="width:27.54%"><col style="width:72.46000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="27.54%" id="mcps1.3.4.2.5.2.2.2.1.3.2.2.3.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="72.46000000000001%" id="mcps1.3.4.2.5.2.2.2.1.3.2.2.3.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="27.54%" headers="mcps1.3.4.2.5.2.2.2.1.3.2.2.3.2.3.1.1 "><p><span><strong>Parameter Group ID</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.46000000000001%" headers="mcps1.3.4.2.5.2.2.2.1.3.2.2.3.2.3.1.2 "><p>Parameter group ID. For details about how to obtain the value, see <a href="https://support.huaweicloud.com/intl/en-us/api-gaussdb/gaussdb_api_049.html" target="_blank" rel="noopener noreferrer">Obtaining Parameter Templates</a>. If this parameter is not specified, the default parameter template is used.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.54%" headers="mcps1.3.4.2.5.2.2.2.1.3.2.2.3.2.3.1.1 "><p><span><strong>Payment Method</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.46000000000001%" headers="mcps1.3.4.2.5.2.2.2.1.3.2.2.3.2.3.1.2 "><p>Payment method of an instance. <span class="uicontrol"><b><span><strong>Unspecified</strong></span></b></span> or <span class="uicontrol"><b><span><strong>pay-on-demand</strong></span></b></span> is supported.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.54%" headers="mcps1.3.4.2.5.2.2.2.1.3.2.2.3.2.3.1.1 "><p><span><strong>Automatic Instance Backup Policy</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.46000000000001%" headers="mcps1.3.4.2.5.2.2.2.1.3.2.2.3.2.3.1.2 "><p>Automatic backup policy for a Huawei Cloud Stack GaussDB instance. When the database backup mode is changed from XBSA backup to automatic backup, this field determines the backup frequency.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.54%" headers="mcps1.3.4.2.5.2.2.2.1.3.2.2.3.2.3.1.1 "><p><span><strong>UTC Time Zone</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.46000000000001%" headers="mcps1.3.4.2.5.2.2.2.1.3.2.2.3.2.3.1.2 "><p>The value ranges from <strong>UTC-11:00</strong> to <strong>UTC+12:00</strong> at the full hour. For example, the parameter can be UTC+08:00 rather than UTC+08:30.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>If this parameter is not specified, the UTC time is used for GaussDB by default.</p>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ol>
+</li></ol>
+</li></ul>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001839182725.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

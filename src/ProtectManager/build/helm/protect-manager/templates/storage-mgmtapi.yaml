@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pm-config
+  labels:
+    app: pm-nodeproxy
+  namespace: dpa
+spec:
+  ports:
+    - name: pm-config-port
+      port: {{ .Values.pm_config_port }}
+      protocol: TCP
+  selector:
+    app: pm-nodeproxy

@@ -1,0 +1,54 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: post-upgrade-job
+  namespace: dpa
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-delete-policy": "hook-succeeded, hook-failed"
+spec:
+  template:
+    spec:
+      serviceAccountName: infra-sa
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - infrastructure
+              topologyKey: "kubernetes.io/hostname"
+      restartPolicy: OnFailure
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: post-upgrade-job
+          image: om:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          command:
+            - python3
+            - /opt/upgrade/post_upgrade_job.py
+          securityContext:
+            runAsUser: 0
+          env:
+            - name: DEPLOY_TYPE
+              value: {{ $deploytype }}
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: common-nas
+              mountPath: /opt/OceanProtect
+            - name: data-nas
+              mountPath: /opt/third_data
+      volumes:
+        - name: common-nas
+          persistentVolumeClaim:
+            claimName: "comm-nas"
+        - name: data-nas
+          persistentVolumeClaim:
+            claimName: "data-nas"

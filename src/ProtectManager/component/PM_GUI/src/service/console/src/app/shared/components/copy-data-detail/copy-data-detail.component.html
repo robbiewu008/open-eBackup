@@ -1,0 +1,490 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-gutter-column-xl">
+  <ng-container *ngTemplateOutlet="basicInfoTpl"></ng-container>
+</div>
+<div
+  class="aui-gutter-column-xl"
+  *ngIf="
+    ![
+      dataMap.Resource_Type.oracle.value,
+      dataMap.Resource_Type.oracleCluster.value,
+      dataMap.Resource_Type.MySQLClusterInstance.value,
+      dataMap.Resource_Type.MySQLInstance.value,
+      dataMap.Resource_Type.MySQLDatabase.value,
+      dataMap.Resource_Type.DB2.value,
+      dataMap.Resource_Type.SQLServer.value,
+      dataMap.Resource_Type.msVirtualMachine.value,
+      dataMap.Resource_Type.ImportCopy.value,
+      dataMap.Resource_Type.NASFileSystem.value,
+      dataMap.Resource_Type.ndmp.value,
+      dataMap.Resource_Type.NASShare.value,
+      dataMap.Resource_Type.LocalFileSystem.value,
+      dataMap.Resource_Type.HDFSFileset.value,
+      dataMap.Resource_Type.HBaseBackupSet.value,
+      dataMap.Resource_Type.HiveBackupSet.value,
+      dataMap.Resource_Type.ElasticsearchBackupSet.value,
+      dataMap.Resource_Type.KubernetesStatefulset.value,
+      dataMap.Resource_Type.goldendbInstance.value,
+      dataMap.Resource_Type.generalDatabase.value,
+      dataMap.Resource_Type.Redis.value,
+      dataMap.Resource_Type.HCSCloudHost.value,
+      dataMap.Resource_Type.FusionCompute.value,
+      dataMap.Resource_Type.fusionOne.value,
+      dataMap.Resource_Type.cNwareVm.value,
+      dataMap.Resource_Type.PostgreSQLInstance.value,
+      dataMap.Resource_Type.PostgreSQLClusterInstance.value,
+      dataMap.Resource_Type.KingBaseInstance.value,
+      dataMap.Resource_Type.KingBaseClusterInstance.value,
+      dataMap.Resource_Type.OpenGauss_instance.value,
+      dataMap.Resource_Type.OpenGauss_database.value,
+      dataMap.Resource_Type.GaussDB_T.value,
+      dataMap.Resource_Type.gaussdbTSingle.value,
+      dataMap.Resource_Type.Dameng_singleNode.value,
+      dataMap.Resource_Type.Dameng_cluster.value,
+      dataMap.Resource_Type.gaussdbForOpengauss.value,
+      dataMap.Resource_Type.lightCloudGaussdbInstance.value,
+      dataMap.Resource_Type.openStackCloudServer.value,
+      dataMap.Resource_Type.MongodbClusterInstance.value,
+      dataMap.Resource_Type.MongodbSingleInstance.value,
+      dataMap.Resource_Type.tdsqlInstance.value,
+      dataMap.Resource_Type.tdsqlDistributedInstance.value,
+      dataMap.Resource_Type.informixInstance.value,
+      dataMap.Resource_Type.informixClusterInstance.value,
+      dataMap.Resource_Type.OceanBaseCluster.value,
+      dataMap.Resource_Type.OceanBaseTenant.value,
+      dataMap.Resource_Type.kubernetesNamespaceCommon.value,
+      dataMap.Resource_Type.kubernetesDatasetCommon.value,
+      dataMap.Resource_Type.tidbCluster.value,
+      dataMap.Resource_Type.tidbDatabase.value,
+      dataMap.Resource_Type.tidbTable.value,
+      dataMap.Resource_Type.ObjectSet.value,
+      dataMap.Resource_Type.ActiveDirectory.value,
+      dataMap.Resource_Type.volume.value,
+      dataMap.Resource_Type.commonShare.value,
+      dataMap.Resource_Type.ExchangeDataBase.value,
+      dataMap.Resource_Type.ExchangeGroup.value,
+      dataMap.Resource_Type.ExchangeSingle.value,
+      dataMap.Resource_Type.ExchangeEmail.value,
+      dataMap.Resource_Type.APSCloudServer.value,
+      dataMap.Resource_Type.APSZone.value,
+      dataMap.Resource_Type.APSResourceSet.value,
+      dataMap.Resource_Type.hyperVVm.value
+    ].includes(data.resource_sub_type)
+  "
+>
+  <lv-tabs
+    [lvSize]="
+      data.resource_sub_type === dataMap.Resource_Type.virtualMachine.value
+        ? 'default'
+        : 'small'
+    "
+    class="detail-tab"
+    [lvAfterChange]="afterTabChange"
+    [(lvActiveIndex)]="activeIndex"
+    (lvActiveIndexChange)="activeIndexChange($event)"
+  >
+    <lv-tab
+      *ngIf="
+        data.resource_sub_type === dataMap.Resource_Type.virtualMachine.value
+      "
+      [lvTitle]="'protection_disks_label' | i18n"
+      lvId="disk"
+    >
+      <ng-template lv-tab-lazy>
+        <ng-container *ngTemplateOutlet="disksTpl"></ng-container>
+      </ng-template>
+    </lv-tab>
+    <lv-tab
+      *ngIf="
+        data.resource_sub_type !== dataMap.Resource_Type.ABBackupClient.value &&
+        ![
+          dataMap.Resource_Type.dbTwoTableSet.value,
+          dataMap.Resource_Type.dbTwoDatabase.value,
+          dataMap.Resource_Type.fileset.value,
+          dataMap.Resource_Type.DWS_Cluster.value,
+          dataMap.Resource_Type.DWS_Database.value,
+          dataMap.Resource_Type.DWS_Schema.value,
+          dataMap.Resource_Type.DWS_Table.value,
+          dataMap.Resource_Type.ClickHouse.value,
+          dataMap.Resource_Type.SQLServerCluster.value,
+          dataMap.Resource_Type.SQLServerClusterInstance.value,
+          dataMap.Resource_Type.SQLServerInstance.value,
+          dataMap.Resource_Type.SQLServerGroup.value,
+          dataMap.Resource_Type.SQLServerDatabase.value
+        ].includes(data.resource_sub_type) &&
+        !isHcsUser &&
+        data.resource_sub_type === dataMap.Resource_Type.virtualMachine.value &&
+        data.generated_by !== copyDataGeneratedType.cloudArchival.value
+      "
+      [lvTitle]="'common_files_label' | i18n"
+      lvId="file"
+    >
+      <ng-template lv-tab-lazy>
+        <ng-container *ngTemplateOutlet="filesTpl"></ng-container>
+      </ng-template>
+    </lv-tab>
+    <lv-tab
+      *ngIf="
+        data.resource_sub_type === dataMap.Resource_Type.ABBackupClient.value
+      "
+      [lvTitle]="'common_protected_object_label' | i18n"
+      lvId="volume"
+    >
+      <ng-container *ngTemplateOutlet="volumeTpl"></ng-container>
+    </lv-tab>
+  </lv-tabs>
+</div>
+<div
+  class="aui-gutter-column-xl"
+  *ngIf="
+    data &&
+    [
+      dataMap.Resource_Type.NASFileSystem.value,
+      dataMap.Resource_Type.NASShare.value
+    ].includes(data.resource_sub_type) &&
+    data.indexed === fileIndex.indexed.value
+  "
+>
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{ 'protection_incremental_statistical_label' | i18n }}</h2>
+  </div>
+  <ng-container *ngIf="incrementalData.length > 0; else emptyTpl">
+    <lv-form [lvLabelColon]="false">
+      <ng-container *ngFor="let item of incrementalData">
+        <lv-form-item>
+          <lv-form-label>{{ item.label }}</lv-form-label>
+          <lv-form-control>{{ item.value | nil }}</lv-form-control>
+        </lv-form-item>
+      </ng-container>
+    </lv-form>
+  </ng-container>
+</div>
+
+<div
+  *ngIf="
+    [
+      dataMap.Resource_Type.HCSCloudHost.value,
+      dataMap.Resource_Type.openStackCloudServer.value,
+      dataMap.Resource_Type.KubernetesStatefulset.value,
+      dataMap.Resource_Type.FusionCompute.value,
+      dataMap.Resource_Type.fusionOne.value,
+      dataMap.Resource_Type.cNwareVm.value,
+      dataMap.Resource_Type.dbTwoDatabase.value,
+      dataMap.Resource_Type.dbTwoTableSet.value
+    ].includes(data.resource_sub_type)
+  "
+>
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{ 'common_copies_verification_label' | i18n }}</h2>
+  </div>
+  <lv-group class="aui-gutter-column-xxl" lvGutter="20px">
+    <lv-form [lvLabelColon]="false" style="width: 100%;">
+      <lv-form-item *ngFor="let item of verifyItems">
+        <ng-container [ngSwitch]="item.key">
+          <ng-container *ngSwitchCase="'time'">
+            <lv-form-control>
+              <lv-form-label>{{ item.label }}</lv-form-label>
+              <lv-form-control>{{
+                item.content | date: 'yyyy/MM/dd HH:mm:ss':timeZone | nil
+              }}</lv-form-control>
+            </lv-form-control>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            <lv-form-control>
+              <lv-form-label>{{ item.label }}</lv-form-label>
+              <lv-form-control>{{ item.content }}</lv-form-control>
+            </lv-form-control>
+          </ng-container>
+        </ng-container>
+      </lv-form-item>
+    </lv-form>
+  </lv-group>
+</div>
+<div
+  *ngIf="[copyDataGeneratedType.tapeArchival.value].includes(data.generated_by)"
+>
+  <h2 class="aui-gutter-column-md">
+    {{ 'protection_view_tape_info_label' | i18n }}
+  </h2>
+  <lv-pro-table
+    #tapeDataTable
+    [config]="tapeTableConfig"
+    [data]="tapeTableData"
+  ></lv-pro-table>
+</div>
+
+<ng-template #emptyTpl>
+  <div class="performance-no-data aui-block">
+    <i lv-icon="aui-icon-no-data"></i>
+    <div class="no-data-label">
+      {{ 'protection_no_incremental_statistical_label' | i18n }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #basicInfoTpl>
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{ 'common_basic_info_label' | i18n }}</h2>
+  </div>
+  <lv-form [lvLabelColon]="false">
+    <lv-form-column *ngFor="let column of formItems" lvWidth="50%">
+      <ng-container *ngFor="let item of column">
+        <lv-form-item *ngIf="!item.hidden">
+          <lv-form-label>{{ item.label }}</lv-form-label>
+          <ng-container [ngSwitch]="item.key">
+            <ng-container *ngSwitchCase="'status'">
+              <lv-form-control>
+                <aui-status
+                  [value]="item.value"
+                  type="copydata_validStatus"
+                ></aui-status>
+              </lv-form-control>
+            </ng-container>
+            <ng-container *ngSwitchCase="'location'">
+              <lv-form-control>
+                {{ item.value | nil }}
+              </lv-form-control>
+            </ng-container>
+            <ng-container *ngSwitchCase="'generated_by'">
+              <lv-form-control>
+                {{ item.value | textMap: 'CopyData_generatedType' }}
+              </lv-form-control>
+            </ng-container>
+            <ng-container *ngSwitchCase="'backup_type'">
+              <lv-form-control>
+                <span
+                  *ngIf="
+                    [
+                      dataMap.Resource_Type.KubernetesStatefulset.value,
+                      dataMap.Resource_Type.ElasticsearchBackupSet.value,
+                      dataMap.Resource_Type.HBaseBackupSet.value,
+                      dataMap.Resource_Type.HDFSFileset.value,
+                      dataMap.Resource_Type.HiveBackupSet.value,
+                      dataMap.Resource_Type.virtualMachine.value,
+                      dataMap.Resource_Type.openStackCloudServer.value,
+                      dataMap.Resource_Type.FusionCompute.value,
+                      dataMap.Resource_Type.fusionOne.value,
+                      dataMap.Resource_Type.HCSCloudHost.value,
+                      dataMap.Resource_Type.tdsqlInstance.value
+                    ].includes(data.resource_sub_type);
+                    else normalType
+                  "
+                  lv-overflow
+                >
+                  {{ item.value | textMap: 'specialBackUpType' }}
+                </span>
+                <ng-template #normalType>
+                  {{ item.value | textMap: 'CopyData_Backup_Type' }}
+                </ng-template>
+              </lv-form-control>
+            </ng-container>
+            <ng-container *ngSwitchCase="'worm_status'">
+              <lv-form-control>
+                <i
+                  [lv-tooltip]="getWormLabel(item.value) | i18n"
+                  [lv-icon]="getWormIcon(item.value)"
+                  [ngClass]="{
+                    'lv-m-rotate': item?.value === 2
+                  }"
+                  style="width:20px;height:20px"
+                ></i>
+              </lv-form-control>
+            </ng-container>
+            <ng-container *ngSwitchCase="'indexed'">
+              <lv-form-control>
+                <ng-container *ngIf="isIndexCreating">
+                  <aui-file-indexed
+                    [indexed]="fileIndex.indexing.value"
+                  ></aui-file-indexed>
+                </ng-container>
+                <ng-container *ngIf="!isIndexCreating">
+                  <aui-file-indexed [indexed]="item.value"></aui-file-indexed>
+                </ng-container>
+              </lv-form-control>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <lv-form-control>
+                {{ item.value | nil }}
+              </lv-form-control>
+            </ng-container>
+          </ng-container>
+        </lv-form-item>
+      </ng-container>
+    </lv-form-column>
+  </lv-form>
+</ng-template>
+
+<ng-template #disksTpl>
+  <div class="aui-operation">
+    <lv-group lvGutter="8px">
+      <button
+        lv-button
+        [disabled]="
+          !tableSelection.length ||
+          data.status !== dataMap.copydata_validStatus.normal.value
+        "
+        (click)="restoreDisk(tableSelection)"
+      >
+        {{ 'common_restore_label' | i18n }}
+      </button>
+    </lv-group>
+  </div>
+  <div class="modal-table">
+    <lv-datatable
+      #lvTable
+      lvSize="small"
+      [lvData]="tableData"
+      [lvPaginator]="page"
+      lvSelectionMode="multiple"
+      [(lvSelection)]="tableSelection"
+    >
+      <thead>
+        <tr>
+          <th
+            lvShowCheckbox
+            width="64px"
+            [lvRowsData]="lvTable.renderData"
+          ></th>
+          <th
+            *ngFor="let col of tableColumns"
+            [lvCellKey]="col.key"
+            [lvAlign]="col.align"
+          >
+            {{ col.label }}
+          </th>
+          <th width="144px">{{ 'common_operation_label' | i18n }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of lvTable.renderData">
+          <tr>
+            <td lvShowCheckbox [lvRowData]="item"></td>
+            <td>
+              <span lv-overflow>
+                {{ item.NAME }}
+              </span>
+            </td>
+            <td>
+              {{ item.BUSNUMBER | nil }}
+            </td>
+            <td lvAlign="right">
+              {{
+                item.SIZE | capacityCalculateLabel: '1.1-3':unitconst.KB:true
+              }}
+            </td>
+            <td>
+              <span lv-overflow>{{ item.DSNAME | nil }}</span>
+            </td>
+            <td width="144px">
+              <lv-operation-menu
+                [lvData]="item"
+                [lvItemsFn]="tableOptsCallback"
+              >
+              </lv-operation-menu>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </lv-datatable>
+  </div>
+  <lv-paginator
+    #page
+    [hidden]="!tableData?.length"
+    lvMode="simple"
+    [lvTotal]="tableData?.length"
+    [lvShowPageSizeOptions]="false"
+  >
+  </lv-paginator>
+</ng-template>
+
+<ng-template #filesTpl>
+  <div class="aui-operation">
+    <lv-group lvGutter="8px">
+      <button
+        lv-button
+        [disabled]="
+          !treeTableSelection.length ||
+          data.status !== dataMap.copydata_validStatus.normal.value
+        "
+        (click)="restoreFile()"
+      >
+        {{ 'protection_restore_file_label' | i18n }}
+      </button>
+      <button
+        lv-button
+        [disabled]="!treeTableSelection.length"
+        (click)="downloadFile(treeTableSelection)"
+      >
+        {{ 'common_export_label' | i18n }}
+      </button>
+    </lv-group>
+  </div>
+  <aui-file-tree
+    [copy]="data"
+    [treeData]="treeTableData"
+    (tableSelectionChange)="tableSelectionChange($event)"
+    (treeExpandedChange)="expandedChange($event)"
+  ></aui-file-tree>
+</ng-template>
+
+<ng-template #volumeTpl>
+  <div class="tree-container host-summary-tree">
+    <div class="tree">
+      <lv-tree [lvData]="volumeTree" lvShowLine #resTree lvShowContentIcon>
+      </lv-tree>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #headerTpl>
+  <aui-custom-modal-operate [item]="data"></aui-custom-modal-operate>
+</ng-template>
+
+<ng-template #fileDownloadCompletedTpl>
+  <div
+    id="file-download-completed"
+    [innerHTML]="fileDownloadCompletedLabel"
+  ></div>
+</ng-template>
+
+<ng-container
+  *ngIf="
+    [dataMap.Resource_Type.goldendbInstance.value].includes(
+      data.resource_sub_type
+    )
+  "
+>
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{ 'protection_cluster_structure_label' | i18n }}</h2>
+  </div>
+  <lv-form>
+    <lv-form-item>
+      <lv-form-label>{{
+        'protection_instance_part_num_label' | i18n
+      }}</lv-form-label>
+      <lv-form-control>
+        {{ data?.groupNum }}
+      </lv-form-control>
+    </lv-form-item>
+  </lv-form>
+  <div class="aui-gutter-column-md"></div>
+  <div class="group-table">
+    <lv-pro-table
+      #groupDataTable
+      [config]="groupTableConfig"
+      [data]="groupTableData"
+    ></lv-pro-table>
+  </div>
+</ng-container>

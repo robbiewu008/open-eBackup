@@ -1,0 +1,111 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-layout lvDirection="row" *ngIf="!isCyberEngine; else cyberEngineHome">
+  <lv-content>
+    <div class="aui-overview">
+      <ul>
+        <li>
+          <aui-job-chart></aui-job-chart>
+        </li>
+        <li>
+          <aui-resource-display-badge></aui-resource-display-badge>
+        </li>
+        <li>
+          <aui-alarm-chart></aui-alarm-chart>
+        </li>
+      </ul>
+    </div>
+    <div class="aui-page">
+      <div
+        class="aui-block aui-stack aui-gutter-column-md"
+        [ngClass]="{ 'home-block-container': !cookieService.isCloudBackup, 'no-performance-container': isSamlAdmin }"
+      >
+        <ng-container *ngIf="!cookieService.isCloudBackup">
+          <div class="system-capacity" *ngIf="isSamlAdmin">
+            <aui-backup-capacity-chart></aui-backup-capacity-chart>
+          </div>
+          <div class="system-capacity" *ngIf="isSamlAdmin">
+            <aui-archive-capacity-chart></aui-archive-capacity-chart>
+          </div>
+          <div class="system-capacity" *ngIf="!isSamlAdmin && !appUtilsService.isDecouple">
+            <aui-system-capacity-chart></aui-system-capacity-chart>
+          </div>
+          <div class="system-capacity" *ngIf="!isSamlAdmin && appUtilsService.isDecouple">
+            <aui-couple-node-chart></aui-couple-node-chart>
+          </div>
+          <div class="sla-compliance">
+            <aui-sla-compliance-chart></aui-sla-compliance-chart>
+          </div>
+          <div class="data-reduction" *ngIf="!isSamlAdmin">
+            <aui-data-reduction [isHomepage]="true"></aui-data-reduction>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="cookieService.isCloudBackup">
+          <ng-container *ngTemplateOutlet="performanceTpl"></ng-container>
+        </ng-container>
+      </div>
+
+      <ng-container *ngIf="!cookieService.isCloudBackup && !isSamlAdmin">
+        <ng-container>
+          <!-- multi-cluster-overview -->
+          <div class="aui-block" style="margin-bottom:16px">
+            <aui-multi-cluster-overview></aui-multi-cluster-overview>
+          </div>
+        </ng-container>
+
+        <div class="aui-block" *ngIf="!appUtilsService.isDecouple">
+          <div class="cluster-node-container">
+            <aui-cluster-node-tab></aui-cluster-node-tab>
+          </div>
+          <ng-container *ngTemplateOutlet="performanceTpl" style="margin-top:24px"></ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </lv-content>
+</lv-layout>
+
+<ng-template #performanceTpl>
+  <ng-container *ngIf="!isHyperdetect; else hyperdetectPerformanceView">
+    <div *ngIf="enableMonitor">
+      <lv-group [lvColumns]="['650px', 'auto']" *ngIf="!appUtilsService.isDistributed">
+        <div class="capacity-forecast" >
+          <aui-capacity-forecast-chart [curNode]="curNode"></aui-capacity-forecast-chart>
+        </div>
+        <div class="system-performance-chart">
+          <aui-performance-chart [curNode]="curNode"></aui-performance-chart>
+        </div>
+      </lv-group>
+      <div class="system-performance-chart" *ngIf="appUtilsService.isDistributed">
+        <aui-performance-chart [curNode]="curNode"></aui-performance-chart>
+      </div>
+    </div>
+    <div class="system-forecast-no-data" *ngIf="!enableMonitor">
+      <i lv-icon="aui-icon-no-data"></i>
+      <div class="no-data-label">
+        <a class="aui-link" [routerLink]="['/insight/performance']">
+          {{ 'common_open_forecast_link_label' | i18n }}
+        </a>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- 防勒索形态下性能展示模块展示内容 -->
+  <ng-template #hyperdetectPerformanceView>
+    <aui-detection-statistics></aui-detection-statistics>
+  </ng-template>
+</ng-template>
+
+<ng-template #cyberEngineHome>
+  <aui-cyber-engine-home></aui-cyber-engine-home>
+</ng-template>

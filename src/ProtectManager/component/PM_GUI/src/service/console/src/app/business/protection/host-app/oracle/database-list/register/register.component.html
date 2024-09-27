@@ -1,0 +1,258 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="type" [lvGroupName]="'typeGroup'">
+        <lv-group [lvGutter]="'24px'">
+          <lv-radio [lvValue]="dataMap.oracleType.single.value" [lvDisabled]="!!rowData">
+            {{ 'protection_deployment_single_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="dataMap.oracleType.cluster.value" [lvDisabled]="!!rowData">
+            {{ 'common_cluster_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name"
+             placeholder="{{'protection_oracle_name_placeholder_label' | i18n}}"/>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container *ngIf="formGroup.value.type === dataMap.oracleType.single.value">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_oracle_host_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-select [lvOptions]="hostOptions" formControlName="host" lvValueKey="value" [lvDisabled]="!!rowData"
+          lvShowFilter lvFilterKey="label" lvFilterMode="contains" [lvContentTemplate]="contentTpl">
+        </lv-select>
+        <ng-template #contentTpl let-item>
+          <lv-group lvGutter="4px">
+            <span lv-overflow>{{ item.label }}</span>
+            <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
+              {{'protection_guide_new_resource_label' | i18n}}
+            </span>
+          </lv-group>
+        </ng-template>
+      </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="singleRunningConfig">
+      <lv-form-item>
+        <lv-form-label lvRequired>
+          {{'common_running_database_username_label'|i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="userErrorTip">
+          <input lv-input formControlName="singleRunningUsername"/>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>
+          {{'common_running_database_password_label'|i18n}}
+        </lv-form-label>
+        <lv-form-control>
+          <aui-inupt-with-eye formControlName="singleRunningPassword"></aui-inupt-with-eye>
+        </lv-form-control>
+      </lv-form-item>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="formGroup.value.type === dataMap.oracleType.cluster.value">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_cluster_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-select [lvOptions]="clusterOptions" formControlName="cluster" lvValueKey="value" lvShowFilter
+          lvFilterKey="label" lvFilterMode="contains" [lvContentTemplate]="contentClusterTpl">
+        </lv-select>
+        <ng-template #contentClusterTpl let-item>
+          <lv-group lvGutter="4px">
+            <span lv-overflow>{{ item.label }}</span>
+            <span class="guide-recommend-label" *ngIf="showGuideClusterNew(item)">
+              {{'protection_guide_new_resource_label' | i18n}}
+            </span>
+          </lv-group>
+        </ng-template>
+        <div class="ips-container" *ngIf="clusterRunningConfig">
+          <lv-datatable [lvData]="[{}]" formArrayName="clusterRunningIps" lvResize>
+            <thead>
+            <tr>
+              <th>{{'protection_node_ip_address_label'|i18n}}</th>
+              <th>
+                <lv-form-label lvRequired>
+                  {{'common_running_database_username_label'|i18n}}
+                </lv-form-label>
+              </th>
+              <th>{{'common_running_database_password_label'|i18n}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let item of clusterRunningIps;let i=index">
+              <tr [formGroupName]="i" style="height: 50px">
+                <td>
+                  <span lv-overflow>{{item.value.ip}}</span>
+                </td>
+                <td>
+                  <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip"
+                                   class="database-config-writeable">
+                    <input lv-input formControlName="lowAuthUser"/>
+                  </lv-form-control>
+                </td>
+                <td>
+                  <aui-inupt-with-eye formControlName="password"></aui-inupt-with-eye>
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </lv-datatable>
+        </div>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_db_auth_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select [lvOptions]="databaseAuthOptions" formControlName="authMethod" lvValueKey="value">
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_db_install_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="userErrorTip">
+      <input lv-input type="text" formControlName="databaseInstallName"/>
+    </lv-form-control>
+  </lv-form-item>
+
+  <ng-container *ngIf="osType === dataMap.Os_Type.linux.value">
+    <lv-form-item>
+      <lv-form-label>
+        {{'protection_oracle_register_oracle_home_label'|i18n}}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_oracle_register_oracle_home_tips_label'|i18n}}"
+           lvTooltipTheme="light" class="configform-constraint"
+           lvColorState='true'></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="pathErrorTip">
+        <input lv-input formControlName="oracleHome">
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>
+        {{'protection_oracle_register_oracle_base_label'|i18n}}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_oracle_register_oracle_base_tips_label'|i18n}}"
+           lvTooltipTheme="light" class="configform-constraint"
+           lvColorState='true'></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="pathErrorTip">
+        <input lv-input formControlName="oracleBase">
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+
+  <ng-container *ngIf="formGroup.value.authMethod === dataMap.Database_Auth_Method.db.value">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_database_user_name_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="userErrorTip">
+        <input lv-input type="text" formControlName="databaseUsername"/>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_database_password_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="userErrorTip">
+        <aui-inupt-with-eye formControlName="databasePassword"></aui-inupt-with-eye>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+
+  <lv-form-item>
+    <lv-form-label>
+      {{'protection_asm_auth_label' | i18n}}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-switch formControlName="enableAsm"></lv-switch>
+    </lv-form-control>
+  </lv-form-item>
+
+  <ng-container *ngIf="formGroup.value.enableAsm">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'protection_auth_method_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-select [lvOptions]="asmAuthOptions" formControlName="asmAuthMethod" lvValueKey="value">
+        </lv-select>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'protection_install_name_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="userErrorTip">
+        <input lv-input type="text" formControlName="asmInstallName"/>
+      </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.asmAuthMethod === dataMap.asmAuthMethod.asm.value">
+      <lv-form-item>
+        <lv-form-label lvRequired>
+          {{ 'protection_asm_user_name_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="userErrorTip">
+          <input lv-input type="text" formControlName="asmUsername"/>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label lvRequired>
+          {{ 'protection_asm_password_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="userErrorTip">
+          <aui-inupt-with-eye formControlName="asmPassword"></aui-inupt-with-eye>
+        </lv-form-control>
+      </lv-form-item>
+    </ng-container>
+  </ng-container>
+</lv-form>
+<ng-container *ngIf="!hiddenStorage">
+  <div class="aui-gutter-column-xl"></div>
+  <h2 class="dataStore-position">
+    <lv-group [lvGutter]="'5px'">
+      {{ 'protection_storage_resource_label' | i18n }}
+      <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_oracle_storage_resource_tips_label'|i18n}}"
+         lvTooltipTheme="light" class="configform-constraint"
+         lvColorState='true'></i>
+    </lv-group>
+  </h2>
+  <div class="aui-operation">
+    <button lvType="primary" lv-button (click)="addStorage()" auiRolePermission
+    [rolePermission]="roleOperationMap.manageResource" [disabled]='tableData?.total === MAX_STORAGE_RESOURCES || !isSupport'>
+      {{'common_add_label' | i18n}}
+    </button>
+  </div>
+  <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</ng-container>

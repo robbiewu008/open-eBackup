@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Viewing GaussDB T Database Copy Information">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792388928.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792548672">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Viewing GaussDB T Database Copy Information</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792548672"></a><a name="EN-US_TOPIC_0000001792548672"></a>
+  <h1 class="topictitle1">Viewing GaussDB T Database Copy Information</h1>
+  <div>
+   <p>This section describes how to view details about GaussDB T database copies.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792548644_en-us_topic_0000001839142377_uicontrol137901542165417"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792548644_en-us_topic_0000001839142377_text4790154220547"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792548644_en-us_topic_0000001839142377_text15790114235419"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792548644_en-us_topic_0000001839142377_text9626515124917"><strong>Databases</strong></span> &gt; <span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792548644_en-us_topic_0000001839142377_text193013119308"><strong>GaussDB T</strong></span></b></span>.</span></li>
+     <li><span>Select a viewing mode to view copy information.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>Replication copies can be viewed only in the target cluster.</p>
+       </div>
+      </div>
+      <ul>
+       <li>Click the <strong><span><strong>Resources</strong></span></strong> tab to view database copy information by database instance. When you need to restore a faulty database, you are advised to search for the copy of the corresponding time point through this entry.<p><a href="#EN-US_TOPIC_0000001792548672__en-us_topic_0000001264096738_table20406195873110">Table 1</a> describes the related parameters.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000001792548672__en-us_topic_0000001264096738_table20406195873110"></a><a name="en-us_topic_0000001264096738_table20406195873110"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001264096738_table20406195873110" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>Copy parameters
+          </caption>
+          <colgroup>
+           <col style="width:7.5200000000000005%">
+           <col style="width:24.87%">
+           <col style="width:67.61%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.2.2.2.1.3.2.4.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.2.2.2.1.3.2.4.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" rowspan="3" valign="top" width="7.5200000000000005%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Resources</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="24.87%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Name</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="67.61%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.2 "><p>Database instance name.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Location</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p>IP address of the host to which the database instance belongs.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Status</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p>Whether the database instance is registered with the current management page.</p>
+             <ul>
+              <li>Yes</li>
+              <li>No</li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" rowspan="3" valign="top" width="7.5200000000000005%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Copy</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="24.87%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Quantity</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="67.61%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.2 "><p>Number of backup copies or replication copies of the database instance in the current cluster.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Replicated Copy SLA</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p>Allows you to specify the target to which the backup copy is replicated, and customize the replication job execution interval and copy retention period.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Replicated Copy Protection Status</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 ">
+             <div class="p">
+              Whether a replication copy is protected. 
+              <ul id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_ul161172118317">
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li11611621173118"><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text16611162123119"><strong>Unprotected</strong></span>: The replication copy is not associated with an SLA, or the replication copy is associated with an SLA but protection is disabled.</li>
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li761111211312"><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text161192116317"><strong>Protected</strong></span>: The replication copy is associated with an SLA and protection is enabled.</li>
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li2088261163715"><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text12602914182118"><strong>Creating</strong></span>: The replication copy is associated with an SLA and protection is being created. The status is available only in 1.5.0 and earlier versions.</li>
+              </ul>
+             </div></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>Click the <strong><span><strong>Copy</strong></span></strong> tab to view copy information by database copy. When you need to restore data by using a specified copy, you are advised to search for the copy through this entry.<p><a href="#EN-US_TOPIC_0000001792548672__en-us_topic_0000001264096738_table1390718405171">Table 2</a> describes the related parameters.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000001792548672__en-us_topic_0000001264096738_table1390718405171"></a><a name="en-us_topic_0000001264096738_table1390718405171"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001264096738_table1390718405171" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 2 </b>Copy parameters
+          </caption>
+          <colgroup>
+           <col style="width:7.359999999999999%">
+           <col style="width:25.66%">
+           <col style="width:66.97999999999999%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.2.2.2.2.3.2.4.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.2.2.2.2.3.2.4.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" rowspan="7" valign="top" width="7.359999999999999%" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Copy</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="25.66%" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Backup Time</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="66.97999999999999%" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.2 "><p>Time when a backup copy is generated.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Copy Time</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p>Time when a copy is generated.</p> <p>You can click <strong>Replication Time</strong> to view information such as the copy expiration time.</p> <p>If the expiration time is <strong>--</strong>, the copy is retained permanently.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Status</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 ">
+             <div class="p">
+              Copy status. 
+              <ul id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_ul465416347216">
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li1171923612110"><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text24696268516"><strong>Normal</strong></span>: The copy is available.</li>
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li6520237152112"><strong id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_b8350164295711">Invalid</strong>: The copy is invalid.</li>
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li15384133802118"><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text187219382512"><strong>Deleting</strong></span>: The copy is being deleted.</li>
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li875512537417"><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text11749005192"><strong>Restoring</strong></span>: The copy is being restored.</li>
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li16555142220324"><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text166661656203220"><strong>Deletion failed</strong></span>: The copy fails to be deleted.</li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Location</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 ">
+             <div class="p">
+              Location of a copy.
+              <ul id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_ul330732781812">
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li18158830181812">For 1.5.0: If <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol62681417105816"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text1836720425583"><strong>Generation Mode</strong></span></b></span> of a copy is <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol1290644910582"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text104141920175915"><strong>Backup</strong></span></b></span>, <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol331112516211"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text138114231936"><strong>Cascaded Replication</strong></span></b></span>, <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol119361459832"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text136013196412"><strong>Reverse Replication</strong></span></b></span>, or <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol18347931195912"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text1347085435917"><strong>Replicate</strong></span></b></span>, the copy is stored in the local cluster. In this case, <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol2015813303185"><b>Local</b></span> is displayed.</li>
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li123471448182018">For 1.6.0 and later versions: If <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol42507122115"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text16256772112"><strong>Generation Mode</strong></span></b></span> of a copy is <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol025178216"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text1925167162117"><strong>Backup</strong></span></b></span>, <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol1226147142113"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text15261078218"><strong>Cascaded Replication</strong></span></b></span>, <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol192607132111"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text226177102110"><strong>Reverse Replication</strong></span></b></span>, or <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol19261571215"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text132697182117"><strong>Replicate</strong></span></b></span>, the copy is stored in the corresponding backup storage unit. In this case, the name of the corresponding backup storage unit is displayed.</li>
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li1473912420172">If <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol20454181902"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text945418114019"><strong>Generation Mode</strong></span></b></span> of a copy is <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol1943016186013"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text2035114288014"><strong>Object Storage Archive</strong></span></b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol123221341402"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text98939521909"><strong>Import</strong></span></b></span>, the copy is stored in an object storage bucket. In this case, the bucket name is displayed.</li>
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li154391755171713">If <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol12512936015"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text651210311015"><strong>Generation Mode</strong></span></b></span> of a copy is <span class="uicontrol" id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_uicontrol58800591007"><b><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text128561869115"><strong>Tape Archive</strong></span></b></span>, the copy is stored in a tape library. In this case, the media set name is displayed.</li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Generation Mode</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p>Mode in which a copy is generated.</p>
+             <ul>
+              <li><span><strong>Replicate</strong></span>: Copies are generated by replication jobs.</li>
+              <li><span><strong>Backup</strong></span>: Copies are generated by backup jobs.</li>
+              <li><span><strong>Object Storage Archive</strong></span>: Copies are generated by an archive job of the object storage.</li>
+              <li><span><strong>Tape Archive</strong></span>: Copies are generated by an archive job of the tape.</li>
+              <li><span><strong>Cascaded Replication</strong></span>: Copies are generated by cascaded replication jobs.</li>
+              <li><span><strong>Reverse Replication</strong></span>: Copies are generated by reverse replication jobs.</li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Copy Type</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p>Backup type of a generated copy.</p> <p>The options are <strong>Full</strong>,<strong> Incremental</strong>, <strong>Differential</strong>, and <strong>Log</strong>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_text68691158124911"><strong>WORM</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 ">
+             <div class="p">
+              Whether a copy has been set as a WORM copy. 
+              <ul id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_ul75853135118">
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li458531175118"><span><img id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_image18812012104311" src="en-us_image_0000001792344150.png"></span>: The copy is not set as a WORM copy, that is, the copy is a common copy.</li>
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li994353785116"><span><img id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_image05089185413" src="en-us_image_0000001792344146.png"></span>: The copy has been set as a WORM copy. The WORM copy cannot be deleted and its retention period cannot be shortened.</li>
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li373211419517"><span><img id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_image155001184515" src="en-us_image_0000001839143265.png"></span>: The copy is being set as a WORM copy. A copy in this state cannot be deleted and the retention period cannot be modified.</li>
+               <li id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_li444514572513"><span><img id="EN-US_TOPIC_0000001792548672__en-us_topic_0000001792503826_image17671746527" src="en-us_image_0000001839223221.png"></span>: The copy fails to be set as a WORM copy. A copy that fails to be set as a WORM copy cannot be deleted and the retention period cannot be shortened.</li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" rowspan="3" valign="top" width="7.359999999999999%" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Resources</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="25.66%" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Name</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="66.97999999999999%" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.2 "><p>Database instance name.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Location</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p>Host where the database instance resides.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p><span><strong>Status</strong></span></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.3.2.4.1.1 "><p>Whether the database instance is registered with the current management page.</p>
+             <ul>
+              <li>Yes</li>
+              <li>No</li>
+             </ul></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001792388928.html">Copies</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

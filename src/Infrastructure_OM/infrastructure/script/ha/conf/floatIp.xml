@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<resources>
+    <resource name="floatIp">
+        <weight value="20"/>
+        <abnormal periods="0" count="0"/>
+        <monitor times="2" interval="21"/>
+        <reboot value="no"/>
+        <type value="active-null"/>
+        <script name="floatIp.sh"/>
+        <actions>
+            <action name="repair" timeout="60"/>
+            <action name="status" timeout="60"/>
+            <action name="start" timeout="60"/>
+            <action name="stop" timeout="60"/>
+            <action name="notify" timeout="60"/>
+            <action name="diagnose" timeout="60"/>
+            <action name="force-stop" timeout="300"/>
+        </actions>
+    </resource>
+</resources>

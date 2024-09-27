@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="492px" height="88px" viewBox="0 0 492 88" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>蒙版备份 18</title>
+    <defs>
+        <rect id="path-1" x="343" y="221" width="492" height="88"></rect>
+    </defs>
+    <g id="报告修改（0802）" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="数据安全_报告-new" transform="translate(-343.000000, -221.000000)">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="蒙版备份-18" fill="#F3F7FF" opacity="0.6" xlink:href="#path-1"></use>
+        </g>
+    </g>
+</svg>

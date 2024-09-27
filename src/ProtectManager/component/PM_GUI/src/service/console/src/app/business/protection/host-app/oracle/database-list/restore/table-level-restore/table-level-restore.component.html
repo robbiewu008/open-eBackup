@@ -1,0 +1,304 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-text-help-sm restore-tip mgb-16">
+  {{ 'protection_oracle_restore_title_label' | i18n:[rowCopy?.resource_name, resourceProperties.version] }}
+</div>
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+
+  <!--恢复位置-->
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_restore_to_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="restoreTo">
+        <lv-group [lvGutter]="'24px'">
+          <lv-radio [lvValue]="restoreV2LocationType.ORIGIN" [lvDisabled]="restoreToNewLocationOnly">
+            {{ 'common_restore_to_origin_location_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="restoreV2LocationType.NEW">
+            {{ 'common_restore_to_new_location_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+
+  <!--原位置-->
+  <ng-container *ngIf="formGroup.get('restoreTo').value === restoreV2LocationType.ORIGIN">
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'common_location_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <input lv-input type="text" formControlName="originLocation"/>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+
+  <!--新位置目标主机-->
+  <ng-container *ngIf="formGroup.get('restoreTo').value === restoreV2LocationType.NEW">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_target_host_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-select formControlName="targetHost" [lvOptions]="targetHostOptions" lvValueKey="key" lvShowFilter
+                   lvFilterKey="label" lvFilterMode="contains">
+        </lv-select>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+
+  <ng-container *ngIf="selectedHostIsCluster">
+    <lv-form-item>
+      <lv-form-item></lv-form-item>
+      <lv-form-control>
+        <lv-select [lvOptions]="singleNodeOpts" lvValueKey="value" formControlName="singleNode" lvShowFilter
+                   lvFilterMode="contains" lvFilterKey="label"></lv-select>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+
+  <h2 class="mg-8">{{ 'protection_select_restore_table_label'|i18n }}</h2>
+  <!--左侧选择表 右侧展示选中的表-->
+  <div class="mg-16">
+    <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+      <lv-tab [lvId]="'select'" [lvTitle]="'protection_selectable_table_label' | i18n">
+        <ng-container *ngTemplateOutlet="selectTable"></ng-container>
+      </lv-tab>
+      <lv-tab [lvId]="'display'" [lvTitle]="'protection_selected_table_label' | i18n">
+        <ng-container *ngTemplateOutlet="displayTable"></ng-container>
+      </lv-tab>
+    </lv-tabs>
+  </div>
+
+  <!--删除重命名表-->
+  <lv-form-item>
+    <lv-form-label></lv-form-label>
+    <lv-form-control>
+      <lv-checkbox [lvValue]="'true'" formControlName="isOverwrite">
+        <lv-group lvDirection="vertical">
+          <span>{{ 'protection_delete_same_name_table_label'|i18n }}</span>
+          <span class="inner-tips">
+            {{ 'protection_delete_same_name_table_tips_label'|i18n }}
+          </span>
+        </lv-group>
+      </lv-checkbox>
+    </lv-form-control>
+  </lv-form-item>
+
+  <div class="collapse-header mgt-24">
+    <lv-collapse [lvMultiExpansion]="false" lvType="simple" class="live-mount-advanced-container">
+      <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+        <lv-form-item>
+          <lv-form-label>{{ 'protection_channel_number_label' | i18n }}</lv-form-label>
+          <lv-form-control>
+            <lv-group lvGutter='8px' class="channel-container">
+              <lv-switch formControlName='numberOfChannelOpen'></lv-switch>
+              <ng-container *ngIf="formGroup.get('numberOfChannelOpen').value">
+                <lv-form-control [lvErrorTip]='numberOfChannelRangeErrorTip'>
+                  <input lv-input formControlName="numberOfChannels" type="text" placeholder="1~254"
+                         class="number-of-channels"/>
+                </lv-form-control>
+              </ng-container>
+            </lv-group>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>
+            {{ 'protection_script_label' | i18n }}
+            <i lv-icon="aui-icon-help" lvTooltipTheme="light" class="mgl-4"
+               lv-tooltip="{{ 'protection_recovery_advance_params_desc2_label' | i18n }}" lvColorState='true'>
+            </i>
+          </lv-form-label>
+          <lv-form-control>
+            <lv-switch formControlName='scriptOpen'></lv-switch>
+            <ng-container *ngIf="formGroup.get('scriptOpen').value">
+              <ng-container *ngFor="let item of scriptArr">
+                <lv-form-item>
+                  <lv-form-label>
+                    {{ item.label }}
+                    <i lv-icon="aui-icon-help"
+                       lv-tooltip="{{isWindows? i18n.get('common_script_agent_windows_position_label') : i18n.get('common_script_agent_position_label')}}"
+                       lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+                  </lv-form-label>
+                  <lv-form-control [lvErrorTip]='scriptErrorTip'>
+                    <lv-group>
+                      <input lv-input type='text' [formControlName]='item.key'
+                             placeholder="{{isWindows ? i18n.get('common_script_windows_placeholder_label') : i18n.get('common_script_linux_placeholder_label')}}"/>
+                    </lv-group>
+                  </lv-form-control>
+                </lv-form-item>
+              </ng-container>
+            </ng-container>
+          </lv-form-control>
+        </lv-form-item>
+        <!--恢复可使用内存资源-->
+        <lv-form-item>
+          <lv-form-label>
+            {{'protection_available_memory_label'|i18n}}
+            <i lv-icon="aui-icon-help" lvTooltipTheme="light" class="mgl-4"
+               lv-tooltip="{{ 'protection_available_memory_tips_label' | i18n }}" lvColorState='true'>
+            </i>
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="recMemoryLimitGbErrorTips">
+            <lv-input-group [lvSuffix]="'GB'" style="width: 2rem">
+              <input lv-input formControlName="recMemoryLimitGb">
+            </lv-input-group>
+          </lv-form-control>
+        </lv-form-item>
+      </lv-collapse-panel>
+    </lv-collapse>
+  </div>
+</lv-form>
+
+<ng-template #selectTable>
+<!-- 细粒度搜索，接口暂时没法使用，暂时隐藏 -->
+<!--  <lv-search [lvPlaceHolder]="'搜索名称'" class="mgb-8" (lvSearch)="searchByName($event)"></lv-search>-->
+  <lv-treetable
+    [lvData]="treeData"
+    #lvTreeTable
+    lvCompareWith="data.name"
+    lvVirtualScroll
+    [lvScroll]="{ y: '400px' }"
+    lvVirtualMinBuffer="96px"
+    [lvVirtualTrackBy]="trackByIndex"
+    lvSort
+    #sort="lvSort"
+    [lvSortDirct]="sort"
+    lvSelectionMode="multiple"
+    [lvSelection]="selectionData"
+    (lvSelectionChange)="selectionChange($event)"
+  >
+    <thead>
+    <tr>
+      <th lvShowCheckbox lvCellKey="data.name">{{ 'common_name_label'|i18n }}</th>
+      <th>{{ 'protection_oracle_restore_belong_user_name_label'|i18n }}</th>
+      <th>{{ 'protection_oracle_restore_belong_table_space_label'|i18n }}</th>
+      <th>{{ 'protection_oracle_restore_table_name_label'|i18n }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container *ngTemplateOutlet="bodyContentTpl; context: { $implicit: lvTreeTable.renderData }"></ng-container>
+    <ng-template #bodyContentTpl let-data>
+      <ng-container>
+        <ng-template lv-virtual-scroll let-virtualItem>
+          <tr>
+            <td
+              [lvRowData]="virtualItem"
+              lvShowCheckbox
+              [lvShowExpanded]="!virtualItem.isLeaf"
+              [lvExpandedToggleIcon]="{ true: 'lv-icon-arrow-down', false: 'lv-icon-arrow-right' }"
+              [(lvExpanded)]="virtualItem.expanded"
+              [lvPaddingLeft]="virtualItem._lv_level * 24 + 'px'"
+              (lvExpandedChange)="expandChange($event, virtualItem, data)"
+              width="250px"
+            >
+              <ng-container *ngTemplateOutlet="nameDisplayTpl;context: {$implicit: virtualItem.data}"></ng-container>
+            </td>
+              <ng-container *ngIf="virtualItem.isLeaf else emptyTDTpl">
+                <ng-container *ngTemplateOutlet="tableItemTpl;context: {$implicit: virtualItem.data}"></ng-container>
+              </ng-container>
+              <ng-template #emptyTDTpl>
+                <td></td>
+                <td></td>
+                <td></td>
+              </ng-template>
+          </tr>
+        </ng-template>
+      </ng-container>
+    </ng-template>
+    </tbody>
+  </lv-treetable>
+</ng-template>
+
+<ng-template #displayTable>
+  <button lv-button (click)="deleteItem(null,true)" class="mgb-8" [disabled]="!displayData.length">{{ 'protection_clear_all_label'|i18n }}</button>
+  <lv-datatable
+    [lvData]="displayData"
+    #lvTable
+  >
+    <thead>
+    <tr>
+      <th lvCellKey="data.name">{{ 'common_name_label'|i18n }}</th>
+      <th>{{ 'protection_oracle_restore_belong_user_name_label'|i18n }}</th>
+      <th>{{ 'protection_oracle_restore_belong_table_space_label'|i18n }}</th>
+      <th>{{ 'protection_oracle_restore_table_name_label'|i18n }}</th>
+      <th width="100px">{{ 'common_operation_label'|i18n }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of lvTable.renderData">
+      <td>
+        <ng-container *ngTemplateOutlet="nameDisplayTpl;context: {$implicit: item}"></ng-container>
+      </td>
+      <ng-container *ngTemplateOutlet="tableItemTpl;context: {$implicit: item}"></ng-container>
+      <td>
+          <span class="aui-link" (click)="deleteItem(item)">
+            {{ 'common_delete_label'|i18n }}
+          </span>
+      </td>
+    </tr>
+    </tbody>
+  </lv-datatable>
+</ng-template>
+
+<ng-template #titleTpl>
+  <lv-group lvGutter='8px'>
+    <span class="aui-h3">{{'common_advanced_label'|i18n}}</span>
+  </lv-group>
+</ng-template>
+
+<ng-template #nameDisplayTpl let-item>
+  <lv-group lvGutter="4px" [lvColumns]="['20%','auto']">
+    <i [lv-icon]="item.icon"></i>
+    <span lv-overflow>{{ item.name|nil }}</span>
+  </lv-group>
+</ng-template>
+
+<ng-template #inputTableNameTpl let-item>
+  <input
+    type="text"
+    lv-input
+    [(ngModel)]="item.target_table_name"
+  />
+</ng-template>
+
+<ng-template #selectUserTpl let-item>
+    <lv-select [lvOptions]="targetUserNames" lvValueKey="value" [(ngModel)]="item.target_user_name"
+               (ngModelChange)="selectChange($event,item)" lvShowClear lvShowFilter lvFilterKey="label" lvFilterMode="contains"></lv-select>
+</ng-template>
+
+<ng-template #selectTableSpaceTpl let-item>
+  <ng-container *ngIf="isCDB else selectTpl">
+    <lv-cascader [lvOptions]="item.tableSpaceOptions" [(ngModel)]="item.target_table_space_info" lvShowClear></lv-cascader>
+  </ng-container>
+  <ng-template #selectTpl>
+    <lv-select [lvOptions]="targetTableSpaces" lvValueKey="value" [(ngModel)]="item.target_table_space" lvShowClear lvShowFilter lvFilterMode="contains" lvFilterKey="label"></lv-select>
+  </ng-template>
+</ng-template>
+
+<ng-template #tableItemTpl let-item>
+  <td>
+    <ng-container *ngTemplateOutlet="selectUserTpl;context: {$implicit: item}"></ng-container>
+  </td>
+  <td>
+    <ng-container *ngTemplateOutlet="selectTableSpaceTpl;context: { $implicit: item }"></ng-container>
+  </td>
+  <td>
+    <ng-container *ngTemplateOutlet="inputTableNameTpl;context: { $implicit: item }"></ng-container>
+  </td>
+</ng-template>

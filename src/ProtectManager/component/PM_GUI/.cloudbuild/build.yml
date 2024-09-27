@@ -1,0 +1,33 @@
+version: '2.0'
+env:
+  label: OceanStor_100P_Euler_ARM_pool
+buildspace:
+  fixed: true
+params:
+  - name: PRODUCT
+    value: dorado
+  - name: System_Base_BRANCH
+    value: ${System_Base_BRANCH}
+steps:
+  PRE_BUILD:
+    - checkout:
+        path: PM_GUI
+    - gitlab: 
+        url: https://gitlab.huawei.com/dpa/protectmanager/PM_System_Base_Common_Service.git
+        branch: ${System_Base_BRANCH}
+        path: PM_System_Base_Common_Service
+  BUILD:
+    - build_execute:
+        command: sh PM_GUI/CI/build.sh
+        accelerate: false
+        check:
+          buildcheck: true
+          dependency:
+            - tool_type: maven
+              project_dir: PM_GUI/src/service/
+            - tool_type: npm
+              project_dir: PM_GUI/src/service/console/
+  POST_BUILD:
+    - upload_cloud_artifact:
+        file_path: 'PM_GUI/pkg/*.tar.gz'
+    - version_set

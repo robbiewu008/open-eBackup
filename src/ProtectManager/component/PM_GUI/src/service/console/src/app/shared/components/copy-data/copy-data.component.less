@@ -1,0 +1,239 @@
+.copy-data .lv-search,
+.file-search-group {
+  width: 100%;
+}
+
+// 日历
+.copy-data {
+  .yearMonthView-container {
+    width: 100%;
+    position: relative;
+    .today {
+      color: #6c92fa;
+      position: absolute;
+      top: 16px;
+      font-size: 16px;
+      z-index: 2;
+      cursor: pointer;
+    }
+    .date {
+      position: absolute;
+      top: 8px;
+      right: 0;
+      z-index: 2;
+    }
+    .lv-date-picker-calendar .lv-date-picker-header {
+      justify-content: center;
+    }
+    .lv-date-picker-calendar .lv-date-picker-body {
+      padding-left: 150px;
+      padding-right: 150px;
+      flex: 0 1 auto;
+      padding-top: 66px;
+    }
+    .lv-date-picker-calendar-body
+      > ul
+      > li.lv-date-picker-today
+      .lv-date-picker-cell {
+      border: none;
+    }
+    // 月视图下每行的间距
+    .lv-date-picker-calendar-body > ul:first-child {
+      margin-top: 32px;
+    }
+    // 取消cell选中态效果
+    .lv-date-picker-month-list
+      > ul
+      > li.lv-date-picker-month-selected-cell
+      .lv-date-picker-month-cell,
+    .lv-date-picker-calendar-body
+      > ul
+      > li.lv-date-picker-selected-day:not(.lv-date-picker-last-month-day):not(.lv-date-picker-next-month-day)
+      .lv-date-picker-cell {
+      background: transparent;
+      color: #6c7280;
+      font-weight: 500;
+      border: none;
+    }
+
+    .lv-date-picker-calendar-body > ul > li .lv-date-picker-cell-hide {
+      width: 52px;
+    }
+
+    .lv-date-picker-calendar-container .lv-icon-host.lv-icon-color-state,
+    .lv-date-picker-month-list li .lv-date-picker-month-cell,
+    .lv-date-picker-calendar-body li .lv-date-picker-cell,
+    .lv-date-picker-calendar .lv-date-picker-header,
+    .lv-date-picker-calendar-header {
+      color: #9ea4b3 !important;
+    }
+
+    .lv-date-picker-calendar-header {
+      margin-top: -38px;
+    }
+
+    .lv-date-picker-calendar-body > ul > li .lv-date-picker-cell {
+      position: relative;
+      border-radius: 0;
+      font-size: 16px;
+      padding: 16px 0px 38px 0px;
+      margin-bottom: 16px;
+      width: 52px;
+      border-radius: 6px;
+      &:not(.hasCopyData, .hasInfectedCopyData) {
+        padding-bottom: 16px;
+        margin-bottom: 38px;
+        &:hover {
+          box-shadow: 0 0 10px rgba(108, 146, 250, 0.3);
+          background: #fff;
+        }
+      }
+    }
+
+    .lv-date-picker-month-list > ul > li .lv-date-picker-month-cell {
+      position: relative;
+      font-size: 16px;
+      margin-top: 26px;
+      padding: 18px 16px 34px 16px;
+      margin-bottom: 20px;
+      background: transparent;
+      border-radius: 6px;
+      white-space: nowrap;
+      width: 52px;
+      &:not(.hasCopyData, .hasInfectedCopyData) {
+        padding-bottom: 18px;
+        margin-bottom: 36px;
+        &:hover {
+          box-shadow: 0 0 10px rgba(108, 146, 250, 0.3);
+          background: #fff;
+        }
+      }
+    }
+
+    .hasCopyData {
+      cursor: pointer;
+      &::after {
+        display: inline-block;
+        content: '';
+        background: #5b7ede;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        position: absolute;
+        top: 30px;
+        margin: auto;
+        right: 0px;
+        left: 0px;
+      }
+      &:active {
+        box-shadow: 0 0 6px rgba(108, 146, 250, 0.8);
+        background: #f9faff !important;
+      }
+      &:hover {
+        box-shadow: 0 0 10px rgba(108, 146, 250, 0.3);
+        background: #fff;
+      }
+    }
+
+    .hasCopyDataSpecial {
+      &::after {
+        margin-top: 10px !important;
+      }
+    }
+
+    .hasInfectedCopyData {
+      cursor: pointer;
+      &::after {
+        display: inline-block;
+        content: '';
+        background: #f45c5e;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        position: absolute;
+        top: 30px;
+        margin: auto;
+        right: 0px;
+        left: 0px;
+      }
+      &:active {
+        box-shadow: 0 0 6px rgba(108, 146, 250, 0.8);
+        background: #f9faff !important;
+      }
+      &:hover {
+        box-shadow: 0 0 10px rgba(108, 146, 250, 0.3);
+        background: #fff;
+      }
+    }
+  }
+  .lv-date-picker {
+    width: 100%;
+  }
+  .lv-date-picker-calendar {
+    padding: 0;
+  }
+  .lv-date-picker-panel-container {
+    border-left: none;
+    border-right: none;
+    border-color: #e6ebf5;
+  }
+
+  // 年视图下容器的高度
+  .lv-date-picker-calendar > .lv-date-picker-calendar-container {
+    height: 4.2rem;
+  }
+
+  .lv-date-picker-calendar.lv-date-picker-simple
+    > .lv-date-picker-calendar-container {
+    height: auto;
+  }
+
+  .lv-date-picker:not(.datePicker-simple) .lv-date-picker-panel-container {
+    border-bottom: none;
+  }
+  .datePicker-simple {
+    [lv-icon='lv-icon-arrow-lg-right'],
+    [lv-icon='lv-icon-arrow-right'] {
+      display: none;
+    }
+  }
+
+  .lv-date-picker-calendar.lv-date-picker-simple .lv-date-picker-header {
+    border-bottom-width: 1px;
+  }
+}
+
+// 滑块
+.copy-data .dayView-container {
+  width: 100%;
+  .point-time {
+    padding: 24px 16px 26px 40px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    .point-time-slider {
+      width: calc(100% - 445px);
+    }
+  }
+  .time-picker {
+    margin-left: 48px;
+    margin-right: 24px;
+  }
+
+  .point-time-operation {
+    font-size: 14px;
+    color: #5b7ede;
+    span {
+      cursor: pointer;
+    }
+    .operation-instantRestore {
+      margin-left: 24px;
+      margin-right: 24px;
+      white-space: nowrap;
+    }
+  }
+}
+
+.copydata-tabs {
+  width: 100%;
+}

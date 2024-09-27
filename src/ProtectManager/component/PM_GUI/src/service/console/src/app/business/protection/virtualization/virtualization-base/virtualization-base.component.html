@@ -1,0 +1,75 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-block vm-container">
+        <lv-group class="group">
+            <lv-group class="left" lvDirection='vertical'>
+                <div class="aui-operation">
+                    <lv-group lvGutter="16px">
+                        <lv-pro-button-group [config]="optsConfig" [bindData]="treeSelection" [maxDisplayItems]="2">
+                        </lv-pro-button-group>
+                        <button lv-button lvSize="auto" (click)="getTreeData()" class="aui-button-icon">
+                            <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                        </button>
+                    </lv-group>
+                </div>
+                <div class="tree-container">
+                    <ng-container *ngIf="treeData.length;else noDataTpl">
+                        <lv-tree lvCompareWith="uuid" [lvData]='treeData' [(lvSelection)]="treeSelection"
+                            lvSelectionMode='single' [lvBeforeSelected]="beforeSelected" (lvCheck)="nodeCheck($event)"
+                            lvShowContentIcon (lvExpandedChange)="expandedChange($event)" [lvNodeTemplate]='nodeTpl'
+                            [lvScroll]='virtualScroll.scrollParamMap["cnware-tree"]' lvVirtualScroll lvShowLine>
+                        </lv-tree>
+                    </ng-container>
+                </div>
+            </lv-group>
+            <div class="slip"></div>
+            <lv-group class="right aui-paginator-container">
+                <lv-tabs [(lvActiveIndex)]="activeIndex" class="right-tab aui-tab">
+                    <ng-container *ngFor="let tab of tabs">
+                        <lv-tab *ngIf="!tab.hidden" lvTitle='{{tab.label}}({{tab.resourceTotal || 0}})' [lvId]="tab.id">
+                            <aui-vir-base-table [subType]="tab.subType" [subUnitType]="tab?.subUnitType"
+                                [treeSelection]="treeSelection[0]" [extParams]="extParams"
+                                (updateTable)="updateProjectTotal($event, tab)">
+                            </aui-vir-base-table>
+                        </lv-tab>
+                    </ng-container>
+                </lv-tabs>
+            </lv-group>
+        </lv-group>
+    </div>
+</div>
+
+<ng-template #noDataTpl>
+    <div class="tree-no-data">
+        <i lv-icon="lv-icon-no-data"></i>
+        <div class="no-data-label">{{'protection_vm_tree_no_data_label'|i18n}}</div>
+    </div>
+</ng-template>
+
+<ng-template #nodeTpl let-item>
+    <lv-group class="tree-resource">
+        <div style="max-width: 200px;" lv-overflow>
+            <span class="aui-gutter-row-sm">
+                <i [lv-icon]="item.contentToggleIcon"></i>
+            </span>
+            <span [ngClass]="{'tree-node-offline': item.rootNodeLinkStatus === 0}">{{item.label}}</span>
+        </div>
+        <lv-group *ngIf="item.subType === resourceType.CNWARE">
+            <img class="base-info-icon" [src]="!!item.userId?
+           'assets/img/vmware_vcenter.svg':'assets/img/vmware_vcenter_offline.svg'
+        " lv-tooltip="{{(!!item.userId ? 'common_assigned_label' : 'common_unassigned_label') | i18n}}" />
+        </lv-group>
+    </lv-group>
+</ng-template>

@@ -1,0 +1,48 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" [ngClass]="{'formGroup': !data?.resourceId}" *ngIf="hasArchive">
+    <lv-form-item>
+        <lv-form-control>
+            <lv-group lvGutter="16px">
+                <p *ngIf="hasArchive">
+                    <label lv-checkbox formControlName="enable_security_archive">{{
+                        'explore_security_replication_archive_label' | i18n }}</label>
+                </p>
+            </lv-group>
+            <span class="aui-text-label">{{securityTip}}</span>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="!!formGroup.get('enable_security_archive').value && needWorm">
+        <lv-form-label lvRequired>
+            {{ 'operation_target_antiransomwarepolicy_label' | i18n }}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_security_archive_worm_tip_label' | i18n}}"
+                lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-group lvGutter="4px" *ngIf="!hasWorm">
+                <i lv-icon="aui-icon-job-status-fail" style="margin-right:4px"></i>
+                <span>{{ 'explore_no_worm_label' | i18n }}</span>
+                <span class="aui-link" (click)="jumpToWorm()">{{
+                    'explore_go_set_label' | i18n
+                    }}</span>
+            </lv-group>
+            <lv-group lvGutter="4px" *ngIf="hasWorm">
+                <span>{{ 'explore_has_worm_label' | i18n }}</span>
+                <span class="aui-link" (click)="jumpToWorm()">{{
+                    wormName
+                    }}</span>
+            </lv-group>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

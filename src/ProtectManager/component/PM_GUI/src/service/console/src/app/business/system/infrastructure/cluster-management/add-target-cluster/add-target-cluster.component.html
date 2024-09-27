@@ -1,0 +1,97 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{nameLabel}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="clusterNameErrorTip">
+            <input lv-input type="text" formControlName="clusterName" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_role_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select [lvOptions]="roleOptions" formControlName="role" lvValueKey="value" lvDisabled>
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="isHcsEnvir">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'system_target_cluster_type_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-radio-group formControlName="replicationClusterType">
+                    <lv-group lvGutter="48px">
+                        <lv-radio [lvValue]="0">
+                            OceanProtect
+                        </lv-radio>
+                        <lv-radio [lvValue]="1">
+                            Huawei Cloud Stack
+                        </lv-radio>
+                    </lv-group>
+                </lv-radio-group>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="formGroup.get('replicationClusterType').value === 1">
+            <lv-form-label lvRequired>
+                {{ 'common_domain_label' | i18n }}
+                <i lv-icon="aui-icon-help" [lv-tooltip]="'protection_hcs_domain_tips_label' | i18n"
+                    lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="domainNameErrorTip">
+                <input lv-input formControlName="domain" type="text"
+                    placeholder="{{'system_add_hcs_cluster_domain_placeholder_label' | i18n}}" />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ipLabel}}
+            <i lv-icon="aui-icon-help" [lv-tooltip]="'protection_hcs_ip_tips_label' | i18n" lvTooltipTheme="light"
+                class="configform-constraint" lvColorState="true"
+                *ngIf="isHcsEnvir && formGroup.get('replicationClusterType')?.value === 1"></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+            <input lv-input type="text" formControlName="ip"
+                [placeholder]="(isHcsEnvir &&
+            formGroup.get('replicationClusterType')?.value === 1?'system_add_hcs_cluster_domain_placeholder_label'  :'') | i18n" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.get('replicationClusterType').value !== 1 || !isHcsEnvir">
+        <lv-form-label lvRequired>
+            {{portLabel}}
+            <i *ngIf="formGroup.value.role === targetClusterRole.replication.value" lv-icon="aui-icon-help"
+                lv-tooltip="{{ 'protection_rep_target_cluster_ip_tips_label' | i18n }}" lvTooltipTheme="light"
+                class="configform-constraint" lvColorState="true"></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="portErrorTip">
+            <input lv-input type="text" formControlName="port" placeholder='1~65535' />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{userNameLabel}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="usernameErrorTip">
+            <input lv-input type="text" formControlName="username" autocomplete="new-password"
+                placeholder="{{getUserNamePlaceHolder()}}" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label [lvRequired]="changedName">{{passwordLabel}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="passwordErrorTip">
+            <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

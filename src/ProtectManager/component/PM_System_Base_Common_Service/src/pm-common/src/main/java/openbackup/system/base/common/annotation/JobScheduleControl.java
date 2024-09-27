@@ -1,0 +1,93 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+package openbackup.system.base.common.annotation;
+
+import openbackup.system.base.sdk.job.model.JobStatusEnum;
+import openbackup.system.base.sdk.job.model.JobTypeEnum;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * Job Schedule Control
+ *
+ * @author l00272247
+ * @since 2021-03-17
+ */
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@Repeatable(JobScheduleControls.class)
+public @interface JobScheduleControl {
+    /**
+     * job type
+     *
+     * @return job type
+     */
+    JobTypeEnum jobType();
+
+    /**
+     * scope
+     *
+     * @return scope
+     */
+    String scope() default "";
+
+    /**
+     * globalJobLimit
+     *
+     * @return globalJobLimit
+     */
+    String globalJobLimit() default "";
+
+    /**
+     * scopeJobLimit
+     *
+     * @return scopeJobLimit
+     */
+    int scopeJobLimit() default 0;
+
+    /**
+     * strict scope
+     *
+     * @return strict scope
+     */
+    boolean strictScope() default true;
+
+    /**
+     * majorPriority
+     *
+     * @return majorPriority
+     */
+    int majorPriority() default 0;
+
+    /**
+     * minorPriorities
+     *
+     * @return minorPriorities
+     */
+    String[] minorPriorities() default {};
+
+    /**
+     * resumeStatus
+     *
+     * @return resumeStatus
+     */
+    JobStatusEnum resumeStatus() default JobStatusEnum.READY;
+}

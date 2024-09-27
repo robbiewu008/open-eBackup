@@ -1,0 +1,802 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+
+/*--------------------------------AUI设计规范--------------------------------*/
+// 主背景色
+@background-color: #f0f2f5;
+
+// 主色
+@color-primary: #6c92fa;
+@color-primary-dark: #5b7ede;
+@color-primary-light: #86a6fc;
+@color-white: #ffffff;
+@color-black: #000000;
+
+@color-brand-blue: #2673e5;
+@color-hover-blue: #1664d9;
+@color-active-blue: #1359bf;
+
+// 状态色
+@color-success: #7adfa0;
+@color-error: #f45c5e;
+@color-warm: #ffd929;
+
+// 告警色
+@alarm-color-critical: #f45c5e;
+@alarm-color-major: #fa8e5a;
+@alarm-color-minor: #fdca5a;
+@alarm-color-clean: #7adfa0;
+@alarm-color-info: #63b6f7;
+
+// 文字
+@text-color-link: @color-primary-dark;
+@text-color-primary: #282b33; //主文本
+@text-color-secondary: #6c7280; //副本文
+@text-color-tertiary: #b8becc; //disable, placeholder和其他辅助文本
+@text-color-error: #f45c5e;
+@text-color-dark-primary: #d4d9e6; // 特殊场景文字
+
+// 边框
+@border-width: 1px;
+@border-radius: 1px;
+@border-color: #b8becc; //线框色
+@border-color-disabled: #e6ebf5; //线框禁用色
+
+// 分割线
+@seprate-line-color: #e6ebf5; //线框色
+
+// 选中
+@selection-color: @color-white;
+@selection-bgcolor: @color-primary;
+
+/*-----------------------------------滚动条--------------------------------------*/
+
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+  width: 0.08rem;
+  height: 0.08rem;
+}
+
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: none;
+  border-radius: 0.04rem;
+  position: absolute;
+  right: -8px;
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  border-radius: 0.04rem;
+  background: #bdbdbd;
+  -webkit-box-shadow: none;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+  background-color: #ccc;
+}
+
+/*-----------------------------------文本----------------------------------------*/
+// 一级标题
+.aui-title-1,
+h1 {
+  font-size: 0.2rem;
+  color: @text-color-primary;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+// 二级标题/L按钮
+.aui-title-2,
+h2 {
+  font-size: 0.16rem;
+  color: @text-color-primary;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+// 三级标题/正文/S按钮
+.aui-title-3,
+h3 {
+  font-size: 0.16rem;
+  color: @text-color-primary;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+// 主文本
+.aui-text,
+p {
+  color: @text-color-primary;
+}
+
+// 副本文
+.aui-text-label {
+  color: @text-color-secondary;
+}
+
+//描述, disable, placeholder和其他辅助文本
+.aui-text-desc,
+.aui-text-help {
+  color: @text-color-tertiary;
+}
+
+.aui-form-label {
+  color: #4d4d4d;
+}
+
+//辅助信息/表头
+.aui-text-help-sm {
+  font-size: 0.14rem;
+  color: @text-color-tertiary;
+}
+
+// 高亮
+.aui-text-active {
+  color: @color-primary-dark;
+}
+
+// 数字规范
+.aui-number-1 {
+  font-size: 0.4rem;
+}
+
+.aui-number-2 {
+  font-size: 0.32rem;
+}
+
+.aui-number-3 {
+  font-size: 0.24rem;
+}
+
+.aui-number-4 {
+  font-size: 0.18rem;
+}
+
+.aui-number-5 {
+  font-size: 0.14rem;
+}
+
+.aui-number-6 {
+  font-size: 0.12rem;
+}
+
+// 链接
+.aui-link,
+a {
+  color: @color-brand-blue;
+  text-decoration: none;
+  outline: none;
+
+  &:hover,
+  &:active {
+    color: @color-hover-blue;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  &:disabled,
+  &[disabled] {
+    color: @text-color-tertiary;
+    text-decoration: none;
+    cursor: not-allowed;
+  }
+}
+
+// 链接不可用
+.aui-link-disabled {
+  color: @text-color-tertiary;
+  text-decoration: none;
+  pointer-events: none;
+  cursor: not-allowed;
+
+  &:hover,
+  &:active {
+    color: @text-color-tertiary;
+    text-decoration: none;
+    cursor: not-allowed;
+  }
+}
+
+// 选中文本
+.aui-text-selection,
+::selection {
+  background: @selection-bgcolor;
+  color: @selection-color;
+}
+
+/*-----------------------------------间距----------------------------------------*/
+//横向间距 xs:4 | sm:8 | md:16 | lg:24 | xl:32
+.aui-gutter-row-xs {
+  margin-right: 4px;
+}
+
+.aui-gutter-row-sm {
+  margin-right: 8px;
+}
+
+.aui-gutter-row-md {
+  margin-right: 16px;
+}
+
+.aui-gutter-row-lg {
+  margin-right: 24px;
+}
+
+.aui-gutter-row-xl {
+  margin-right: 32px;
+}
+
+//@TOBO待梳理 纵向间距 xs:4 | sm:8 | md:16 | lg:24 | xl:32
+.aui-gutter-column-xs {
+  margin-bottom: 4px;
+}
+
+.aui-gutter-column-sm {
+  margin-bottom: 8px;
+}
+
+.aui-gutter-column-md {
+  margin-bottom: 16px;
+}
+
+.aui-gutter-column-lg {
+  margin-bottom: 24px;
+}
+
+.aui-gutter-column-xl {
+  margin-bottom: 32px;
+}
+
+.aui-gutter-column-xxl {
+  margin-bottom: 56px;
+}
+
+/*-----------------------------------容器----------------------------------------*/
+// 容器通用内边距
+.aui-padding {
+  padding: 32px;
+}
+
+// 页面 TODO只处理第一个
+.aui-page {
+  padding: 10px 24px 24px 24px;
+  background: @background-color;
+  width: 100%;
+
+  // top:24, bottom: 20;
+  > .aui-header-1,
+  > h1 {
+    margin-top: -13px;
+    margin-bottom: 8px;
+  }
+
+  // top:24, bottom: 20;
+  > .aui-header-2,
+  > h2 {
+    margin-top: -13px;
+    margin-bottom: 16px;
+  }
+
+  // top:20, bottom: 20;
+  > .aui-nav {
+    margin-top: -16px;
+    margin-bottom: 16px;
+  }
+}
+
+// 高度100%页面
+.aui-fullpage {
+  .aui-page();
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  > .aui-block {
+    flex-grow: 1;
+  }
+}
+
+.collapsed-main .aui-fullpage {
+  padding: 10px 32px 24px 32px;
+}
+
+// 预览区
+.aui-overview {
+  padding: 32px;
+  background: @color-black;
+}
+
+// 容器块
+.aui-block {
+  padding: 24px;
+  background: @color-white;
+  border-radius: 8px;
+
+  // top:32, bottom: 24;
+  > .aui-header-1,
+  > h1 {
+    margin-top: -34px;
+    margin-bottom: 5px;
+  }
+
+  // top:32, bottom: 24;
+  > .aui-header-2,
+  > h2 {
+    margin-top: -4px;
+    margin-bottom: 20px;
+  }
+}
+
+// 一级标题区
+.aui-header-1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+}
+
+// 二级标题区
+.aui-header-2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 24px;
+}
+
+// 导航区
+.aui-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 21px;
+}
+
+// 操作区
+.aui-operation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+// block堆叠overview
+.aui-stack {
+  margin-top: -88px;
+}
+
+// 表格表头分割线
+.aui-table-group .lv-table-thead > tr {
+  & > th.aui-th-deliver .lv-table-th-deliver {
+    display: block;
+  }
+
+  .aui-first-th-padding {
+    padding: 8px;
+  }
+}
+
+.aui-flex-1 {
+  flex: 1;
+}
+
+// icon和文本
+.aui-icon-text {
+  i {
+    min-width: 16px;
+    margin-right: 12px;
+  }
+
+  span {
+    flex: 1;
+  }
+}
+
+/*表单100%平铺自适应*/
+.formGroup .lv-form-control,
+.formGroup
+  .lv-input:not(.lv-group-border-overlap, .lv-paginator-quick-jump .lv-input),
+.formGroup .lv-select,
+.formGroup .lv-input-lint,
+.formGroup .lv-fileupload,
+.formGroup .lv-time-picker,
+.formGroup .eye-input,
+.formGroup .lv-tree-select {
+  width: 100%;
+}
+
+.lv-select-panel {
+  max-width: 100%;
+}
+
+// width: 100%
+.aui-width-block {
+  width: 100%;
+}
+
+// 图标按钮
+.lv-button.aui-button-icon {
+  width: 32px;
+  padding-right: 0;
+  padding-left: 0;
+  min-width: 32px;
+
+  .lv-icon-host {
+    vertical-align: sub;
+  }
+}
+
+// 100%tabs
+.aui-tabs-block {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .lv-tabs-body,
+  .lv-tab-content {
+    height: 100%;
+  }
+}
+
+.aui-block-container {
+  display: flex;
+  height: 100%;
+  justify-content: flex-start;
+
+  .aui-block-content {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    flex: 1;
+  }
+}
+
+.aui-icon {
+  width: 32px;
+  height: 32px;
+  border: solid 1px #b8becc;
+  display: inline-block;
+  text-align: center;
+  padding-top: 4px;
+}
+
+.aui-custom-modal-container {
+  display: flex;
+  margin: 0.32rem 0.32rem 0.2rem;
+  line-height: 0.24rem;
+
+  .icon-title {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+  }
+
+  .aui-custom-modal-title {
+    font-size: 0.18rem;
+    font-weight: 600;
+    color: #282b33;
+  }
+
+  .aui-custom-modal-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+  }
+
+  .aui-custom-modal-operate {
+    flex-direction: row-reverse;
+  }
+}
+
+.custom-title.lv-collapse-panel-simple
+  .lv-collapse-panel
+  > .lv-collapse-header
+  > .lv-collapse-title
+  > i {
+  margin-top: 2px;
+}
+
+.custom-search-title.lv-collapse-panel-simple
+  > .lv-collapase-wrapper
+  > .lv-collapse-panel
+  > .lv-collapse-header {
+  width: 91%;
+  border-bottom: 0.01rem dashed #d4d9e6;
+  padding-bottom: 15px;
+}
+
+.global-search-title.lv-collapse-panel-simple
+  > .lv-collapase-wrapper
+  > .lv-collapse-panel
+  > .lv-collapse-header {
+  width: 91%;
+  padding-bottom: 15px;
+  margin-top: 20px;
+  border-bottom: 0.01rem dashed #d4d9e6;
+}
+
+// 取消i标签的斜体样式
+.lv-icon-host {
+  font-style: normal;
+}
+
+// 解决IE下总览页面基本信息无法展示
+.ie .sunmary-icon .lv-table-td-content {
+  flex: none;
+}
+
+// 解决IE下侧拉窗页面表格宽度过大的问题
+.ie .tableInLvGroup.lv-group-column {
+  align-items: stretch;
+}
+
+// 解决IE下单位下拉框未对齐问题
+.ie .groupInControl {
+  .lv-group:first-child {
+    align-items: flex-end;
+
+    .lv-form-label {
+      vertical-align: middle;
+    }
+  }
+}
+
+// lv-group布局form-control整体未对齐
+.lv-group-flex-start {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.lv-loading {
+  width: 100%;
+}
+
+.timeline-container {
+  .lv-slider-handle-horizontal {
+    top: -160%;
+    margin-left: -10px;
+  }
+
+  .lv-slider-handle {
+    background-image: url('../img/slider_handle.svg');
+    background-position: 0 0;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background-color: transparent;
+  }
+
+  .lv-slider-handle:hover {
+    background-position: -24px 0;
+    border: none;
+  }
+
+  .lv-slider-handle:focus {
+    border: none;
+  }
+
+  .lv-handle-icon {
+    display: none;
+  }
+
+  .lv-slider-handle:hover:not(.lv-slider-handle-disable),
+  .lv-slider-handle.dragging {
+    margin-left: -13px;
+    width: 0.24rem;
+    height: 0.24rem;
+    border-color: #1664d9;
+    cursor: pointer;
+  }
+}
+
+.airgap-time-slider .lv-slider-handle-horizontal {
+  display: none;
+}
+
+.airgap-time-slider .lv-slider-range-lines-horizontal {
+  height: 0.04rem;
+  transform: translate(0, -30%);
+}
+
+.airgap-time-slider .lv-slider-range-points .lv-mark-point-range-select {
+  border-color: #e6e6e6 !important;
+}
+
+.lv-dropdown-panel {
+  max-height: 274px;
+  overflow-y: auto;
+}
+
+.lv-tooltip-inner .sla-tooltip ul li {
+  margin-left: 18px;
+  list-style: disc;
+}
+
+.sla-compliance-tooltip.lv-tooltip .lv-tooltip-inner {
+  width: 504px;
+}
+
+.panel-cluster.lv-collapse-panel-simple
+  > .lv-collapase-wrapper
+  > .lv-collapse-panel {
+  margin-bottom: 40px;
+}
+
+.sql-server-name-tooltip.lv-tooltip .lv-tooltip-inner {
+  width: 504px;
+
+  .name-tooltip ul li {
+    margin-left: 15px;
+    list-style: disc;
+  }
+}
+
+.lvm-warp-en-global {
+  .lv-form-label {
+    white-space: normal;
+  }
+}
+
+.customer-name.lv-tooltip .lv-tooltip-container {
+  max-width: 330px;
+  width: 330px;
+}
+
+.transfer {
+  .lv-transfer-panel-footer .lv-transfer-panel-selected {
+    margin-top: 40px;
+  }
+}
+
+.searchTool.lv-tooltip .lv-tooltip-inner {
+  width: 350px;
+}
+
+.bread-limit > .lv-breadcrumb div > .breadcrumb-item > span {
+  max-width: 80px;
+}
+
+.bread-limit > .lv-breadcrumb div > .breadcrumb-item > span .lv-icon-host {
+  display: none;
+}
+
+.taskTool.lv-tooltip .lv-tooltip-inner {
+  width: 350px;
+  overflow-y: auto;
+  max-height: 24vh;
+}
+
+.cdk-drop-list-dragging tr:not(.cdk-drag-placeholder) {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+.cdk-drag-animating {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+.cdk-drag-placeholder {
+  height: 40px;
+  border: 1px dashed #2673e5;
+  border-radius: 4px;
+}
+.cdk-drag-preview {
+  display: flex;
+  border-radius: 4px;
+  background-color: #f2f2f2;
+}
+.cdk-drag-preview td {
+  flex: 1;
+  padding: 0 8px;
+  line-height: 40px;
+  text-align: left;
+}
+.cdk-drag-preview td:first-child {
+  padding-left: 16px;
+}
+.cdk-drag-preview td:last-child {
+  padding-right: 16px;
+}
+
+.aui-formGroup-v3 {
+  .formGroup-h1 {
+    line-height: 24px;
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .formGroup-h2 {
+    line-height: 22px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    font-weight: bold;
+  }
+
+  lv-form-item:not(.form-item-block) {
+    margin-bottom: 18px;
+    margin-right: 40px;
+    display: inline-block !important;
+
+    .lv-form-control-error-default {
+      position: absolute;
+      white-space: nowrap;
+    }
+  }
+
+  .form-item-s {
+    width: 372px;
+  }
+
+  .form-item-m {
+    width: 572px;
+  }
+}
+
+.bread-limit > .lv-breadcrumb div > .breadcrumb-item > span .lv-icon-host {
+  display: none;
+}
+
+.taskTool.lv-tooltip .lv-tooltip-inner {
+  width: 350px;
+  overflow-y: auto;
+  max-height: 24vh;
+}
+
+.cdk-drop-list-dragging tr:not(.cdk-drag-placeholder) {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+.cdk-drag-animating {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+.cdk-drag-placeholder {
+  height: 40px;
+  border: 1px dashed #2673e5;
+  border-radius: 4px;
+}
+.cdk-drag-preview {
+  display: flex;
+  border-radius: 4px;
+  background-color: #f2f2f2;
+}
+.cdk-drag-preview td {
+  flex: 1;
+  padding: 0 8px;
+  line-height: 40px;
+  text-align: left;
+}
+.cdk-drag-preview td:first-child {
+  padding-left: 16px;
+}
+.cdk-drag-preview td:last-child {
+  padding-right: 16px;
+}
+
+.resourceset-error > .lv-form-control-error-default > span {
+  width: 372px;
+}
+
+.lv-form
+  .lv-form-control
+  .lv-input:not(textarea, .lv-paginator *, .lv-spinner *).lv-input-size-large {
+  height: 0.4rem;
+  line-height: 0.4rem;
+}
+
+.light-loading .lv-loading-text {
+  color: #e6e6e6;
+  font-size: 0.14rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

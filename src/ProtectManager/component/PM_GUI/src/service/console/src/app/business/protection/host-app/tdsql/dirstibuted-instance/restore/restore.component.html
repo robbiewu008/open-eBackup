@@ -1,0 +1,159 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+<lv-form-item *ngIf="!isDrill">
+  <lv-form-label lvRequired>{{'protection_restore_to_label' | i18n}}</lv-form-label>
+  <lv-form-control>
+    <lv-form-control>
+      <lv-radio-group formControlName="restoreLocation">
+        <lv-group [lvGutter]="'20px'">
+          <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="rowCopy?.resource_status === dataMap.Resource_Status.notExist.value">
+            {{ 'common_restore_to_origin_cluster_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="restoreLocationType.NEW">
+            {{ 'common_restore_to_new_cluster_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-control>
+</lv-form-item>
+<ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW">
+  <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'target'"></aui-select-tag>
+  <lv-form-item>
+    <lv-form-label lvRequired>{{'common_target_to_cluster_label' | i18n}}</lv-form-label>
+    <lv-form-control>
+      <lv-select
+        [lvOptions]="clusterOptions"
+        lvShowFilter
+        formControlName="target"
+        lvValueKey="value"
+        lvFilterKey="label"
+        lvFilterMode="contains"
+      ></lv-select>
+    </lv-form-control>
+  </lv-form-item>
+</ng-container>
+<lv-form-item>
+  <lv-form-label lvRequired>{{'protection_disaster_recovery_label' | i18n}}</lv-form-label>
+  <lv-form-control>
+      <lv-select [lvOptions]="nodeOptions" formControlName="drMode" lvValueKey="value"></lv-select>
+  </lv-form-control>
+</lv-form-item>
+<lv-form-item>
+  <lv-form-label>
+    <h2>{{'protection_data_node_label'|i18n}}</h2>
+  </lv-form-label>
+</lv-form-item>
+<div style="margin-top: 15px;">
+  <lv-datatable formArrayName="dataNodes" lvFake="true">
+    <thead>
+    <tr>
+      <th>{{ 'protection_proxy_host_label' | i18n }}</th>
+    </tr>
+    </thead>
+    <tbody style="min-height: 200px">
+<ng-container *ngFor="let item of dataNodes; let i = index">
+      <tr [formGroupName]="i">
+        <td>
+          <lv-form-control class="formControl">
+            <aui-agent-select
+              [lvOptions]="proxyOptions"
+              formControlName="parentUuid"
+              lvValueKey="value"
+              [lvShowClear]="true"
+            >
+            </aui-agent-select>
+          </lv-form-control>
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </lv-datatable>
+</div>
+</lv-form>
+<ng-container *ngIf="showAdvanced[formGroup.value.restoreLocation]">
+<div style="margin-top: 57px">
+<lv-collapse [lvMultiExpansion]="false" lvType="simple">
+  <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+    <lv-form [formGroup]="formGroup" class="formGroup">
+      <div formGroupName="machineInfo">
+      <lv-form-item>
+        <lv-form-label>
+          {{'protection_machine_type_model_label'|i18n}}
+        </lv-form-label>
+        <lv-form-control>
+          <lv-select
+            [lvOptions]="machineOptions"
+            formControlName="machine"
+            lvValueKey="value"
+            lvShowClear
+            lvShowFilter
+            lvFilterMode="contains"
+            lvFilterKey="label"
+          >
+          </lv-select>
+        </lv-form-control>
+      </lv-form-item>
+        <ng-container *ngIf="!!formGroup.value.machineInfo.machine">
+        <lv-form-item>
+          <lv-form-label>
+            {{'protection_cpu_core_number_label'|i18n}}
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="formGroupValidateInfo['cpu'].rangeErrorTips">
+            <input lv-input formControlName="cpu"  [placeholder]="formGroupValidateInfo['cpu'].rangePlaceholder">
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>
+            {{'protection_memory_size_label'|i18n}}
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="formGroupValidateInfo['memory'].rangeErrorTips">
+            <input lv-input formControlName="memory" [placeholder]="formGroupValidateInfo['memory'].rangePlaceholder">
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>
+            {{'protection_data_disk_size_label'|i18n}}
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="formGroupValidateInfo['dataDisk'].rangeErrorTips">
+            <input lv-input formControlName="dataDisk"  [placeholder]="formGroupValidateInfo['dataDisk'].rangePlaceholder">
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>
+            {{'protection_log_disk_size_label'|i18n}}
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="formGroupValidateInfo['logDisk'].rangeErrorTips">
+            <input lv-input formControlName="logDisk"  [placeholder]="formGroupValidateInfo['logDisk'].rangePlaceholder">
+          </lv-form-control>
+        </lv-form-item>
+      </ng-container>
+      </div>
+    </lv-form>
+  </lv-collapse-panel>
+</lv-collapse>
+</div>
+</ng-container>
+<ng-template #titleTpl>
+  <lv-group lvGutter="4px">
+    <span class="custom-collapse-title-text">{{'common_advanced_label'|i18n}}</span>
+    <i lv-icon="aui-icon-help" lvTooltipTheme="light"
+       lv-tooltip="{{ 'protection_tdsql_advanced_tips_label' | i18n }}"
+       lvColorState='true'
+    >
+    </i>
+  </lv-group>
+</ng-template>
+

@@ -1,0 +1,123 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation">
+    <lv-group [lvGutter]="groupCommon.middleRowGutter">
+        <button lv-button lvType="primary" (click)="create()" auiRolePermission
+            [rolePermission]="roleOperationMap.desensitization">
+            {{'common_create_label' | i18n}}
+        </button>
+        <button lv-button (click)="delete(selection)" *ngIf="selectedPolicyView" [disabled]="!selection.length"
+            pmpermission pmOperation='DeleteDesensitizationPolicy'>
+            {{'common_delete_label' | i18n}}
+        </button>
+    </lv-group>
+    <lv-group [lvGutter]="groupCommon.middleRowGutter">
+        <ng-container *ngIf="!selectedPolicyView">
+            <lv-search (lvSearch)="searchPolicy($event)"
+                lvPlaceHolder="{{'common_search_type_label'|i18n:['common_policy_label'|i18n]}}">
+            </lv-search>
+        </ng-container>
+        <lv-radio-group [(ngModel)]="selectedPolicyView" [lvGroupName]="'policyViewGroup'"
+            (ngModelChange)="viewChange($event)">
+            <lv-group>
+                <lv-radio [lvViewType]="'button'" [lvValue]="0" class="sla-view">
+                    <i lv-icon="aui-icon-sla-card-view" [lvColorState]='true'></i>
+                </lv-radio>
+                <lv-radio [lvViewType]="'button'" [lvValue]="1" class="sla-view">
+                    <i lv-icon="aui-icon-sla-list-view" [lvColorState]='true' class="list-view-mgt"></i>
+                </lv-radio>
+            </lv-group>
+        </lv-radio-group>
+    </lv-group>
+</div>
+
+<ng-container *ngIf="!selectedPolicyView">
+    <div class="aui-paginator-container">
+        <lv-radio-group #group [(ngModel)]="selectedPolicy" [lvGroupName]="'policyGroup'">
+            <lv-group class="policy-group">
+                <ng-container *ngFor="let data of policyData">
+                    <lv-radio [lvViewType]="'custom'" [lvValue]="data.id" class="policy-radio">
+                        <div [ngClass]="{'policy-select': group.isChecked(data.id)}" (click)="getDetail(data)">
+                            <aui-desensitization-policy-card [showOptItems]="true" [cardItem]="data"
+                                (onCardChange)="onCardChange($event)">
+                            </aui-desensitization-policy-card>
+                        </div>
+                    </lv-radio>
+                </ng-container>
+            </lv-group>
+        </lv-radio-group>
+    </div>
+    <div class="aui-paginator-wrap">
+        <lv-paginator [lvPageSize]="pageSize" [lvPageIndex]="pageIndex" [lvTotal]="total"
+            (lvPageChange)="pageChange($event)" [lvPageSizeOptions]="sizeOptions" [hidden]="!total">
+        </lv-paginator>
+    </div>
+</ng-container>
+<ng-container *ngIf="selectedPolicyView">
+    <div>
+        <lv-datatable [lvData]='policyData' lvSelectionMode='multiple' [lvSelection]='selection' #lvTable lvResize
+            lvResizeMode="expand" [lvScroll]="{ x: '100%' }">
+            <thead>
+                <tr>
+                    <th lvShowCheckbox width='40px' [lvRowsData]='lvTable.renderData | selectionPipe'></th>
+                    <th lvCellKey="name" lvShowCustom>
+                        {{'common_name_label' | i18n}}
+                        <div lvCustom>
+                            <aui-custom-table-search (search)="searchByName($event)"
+                                filterTitle="{{'common_name_label' | i18n}}"></aui-custom-table-search>
+                        </div>
+                    </th>
+                    <th lvCellKey="create_method" lvShowFilter (lvFilterChange)="filterChange($event)"
+                        [(lvFilters)]="filterMap" lvFilterCheckAll>
+                        {{'explore_anonymization_rule_mode_label' | i18n}}</th>
+                    <th lvCellKey="description">{{'common_desc_label' | i18n}}</th>
+                    <th lvCellKey="ref_num">{{'explore_associated_object_mode_label' | i18n}}</th>
+                    <th width="144px">{{'common_operation_label'|i18n }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let item of lvTable.renderData">
+                    <tr>
+                        <td width='40px' lvShowCheckbox [lvRowData]='item'
+                            [lvDisabled]="item.create_method !== dataMap.Senesitization_Create_Method.customized.value || item.ref_num > 0">
+                        </td>
+                        <td>
+                            <span lv-overflow class="aui-link" id='outerClosable'
+                                (click)="getDetail(item)">{{item.name}}</span>
+                        </td>
+                        <td>
+                            <span lv-overflow>{{item.create_method | textMap: 'Senesitization_Create_Method'}}</span>
+                        </td>
+                        <td>
+                            <span lv-overflow>{{item.description | nil}}</span>
+                        </td>
+                        <td>
+                            <span *ngIf="!item.ref_num">{{item.ref_num}}</span>
+                            <span *ngIf="!!item.ref_num" class="aui-link"
+                                (click)="getRelNum(item)">{{item.ref_num}}</span>
+                        </td>
+                        <td width="144px">
+                            <lv-operation-menu [lvData]="item" [lvItemsFn]="optsCallback"></lv-operation-menu>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </lv-datatable>
+    </div>
+    <div class="aui-paginator-wrap">
+        <lv-paginator [lvPageSize]="pageSize" [lvPageIndex]="pageIndex" [lvTotal]="total"
+            (lvPageChange)="pageChange($event)" [lvPageSizeOptions]="sizeOptions" [hidden]="!total">
+        </lv-paginator>
+    </div>
+</ng-container>

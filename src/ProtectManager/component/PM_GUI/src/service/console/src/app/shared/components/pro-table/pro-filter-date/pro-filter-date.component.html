@@ -1,0 +1,59 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<i lv-icon="lv-icon-filter-fill" [lvColorState]="true" [ngClass]="{active: isActive()}"
+  #popover="lvPopover"
+  lv-popover
+  [lvPopoverContent]="filterTpl"
+  [lvPopoverBeforeOpen]="_beforeOpen"
+  lvPopoverTheme="light"
+  lvPopoverPosition="bottom"
+  lvPopoverTrigger="click"
+></i>
+
+<ng-template #filterTpl>
+  <ng-container *ngIf="!conf.dateRange">
+    <lv-date-picker
+      [(ngModel)]="date"
+      [lvPanelClass]="'lv-pro-filter-date-picker'"
+      [lvInline]="true"
+      [lvShowTime]="conf.showTime"
+      [lvFormat]="conf.format"
+      [lvTimezoneOffset]="conf.timezoneOffset"
+      [lvDisabledDate]="conf.disabledDate"
+      [lvOnlyShowActiveCell]="conf.onlyShowActiveCell"
+      [lvShowTodayButton]="conf.showTodayButton"
+      [lvShowNowButton]="conf.showNowButton"
+      [lvPlaceholder]="conf.placeholder"
+    ></lv-date-picker>
+  </ng-container>
+
+  <ng-container *ngIf="conf.dateRange">
+    <lv-date-range-picker
+      [(ngModel)]="date"
+      [lvInline]="true"
+      [lvShowTime]="conf.showTime"
+      [lvFormat]="conf.format"
+      [lvTimezoneOffset]="conf.timezoneOffset"
+      [lvDisabledDate]="conf.disabledDate"
+      [lvOnlyShowActiveCell]="conf.onlyShowActiveCell"
+      [lvPresetRanges]="conf.presetRanges"
+      [lvPlaceholder]="conf.placeholder"
+    ></lv-date-range-picker>
+  </ng-container>
+
+  <lv-group lvGutter='8px' style="justify-content: center; padding: 16px 0;">
+    <button lv-button lvType='primary'[disabled]="isNull()" (click)='_ok()'>{{ i18n.get('ok') }}</button>
+    <button lv-button (click)='_reset()'>{{ i18n.get('reset') }}</button>
+  </lv-group>
+</ng-template>

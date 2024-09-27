@@ -1,0 +1,346 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false">
+  <ng-container *ngIf="false">
+    <lv-form-item>
+      <lv-form-label [lvRequired]="action === protectResourceAction.Create">
+        <span>{{ 'common_type_label' | i18n }}</span>
+        <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_sla_create_help_label' | i18n }}"
+          lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+      </lv-form-label>
+      <ng-container *ngIf="action !== protectResourceAction.Create">
+        <lv-form-control>
+          {{ sla.type | textMap: 'Sla_Category' }}
+        </lv-form-control>
+      </ng-container>
+      <ng-container *ngIf="action === protectResourceAction.Create">
+        <lv-form-control>
+          <lv-radio-group formControlName="type" [lvGroupName]="'slaTypeGroup'">
+            <lv-group [lvGutter]="'30px'">
+              <lv-radio [lvValue]="slaType.Backup">{{ 'common_backup_label' | i18n }}
+              </lv-radio>
+              <lv-radio [lvValue]="slaType.DisasterRecovery">{{ 'protection_disater_recovery_label' | i18n }}
+              </lv-radio>
+            </lv-group>
+          </lv-radio-group>
+        </lv-form-control>
+      </ng-container>
+    </lv-form-item>
+  </ng-container>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <div class="aui-header-2 configuration-header">
+    <h2>{{ 'common_config_label' | i18n }} SLA</h2>
+  </div>
+  <lv-form-item>
+    <lv-form-label></lv-form-label>
+    <lv-form-control>
+      <div class="policy-config-container">
+        <ng-container *ngTemplateOutlet="backupPolicyTpl"></ng-container>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+
+<ng-template #backupPolicyTpl>
+  <lv-group lvGutter="10px">
+    <lv-group>
+      <img [src]="
+          application.value !== ''
+            ? 'assets/img/application_enable.png'
+            : 'assets/img/application_flickers.gif'
+        " (click)="application.click()" [ngClass]="{
+          'application-enable': application.value !== '',
+          'application-flickers': application.value == ''
+        }" lv-tooltip="{{
+          action === protectResourceAction.Modify || sla
+            ? ('protection_sla_modify_application_disabled_label' | i18n)
+            : null
+        }}" lvTooltipClassName="sla-create" lvTooltipPosition="top" />
+      <img class="application-circled-container" [src]="
+          application.value !== ''
+            ? 'assets/img/link_circled_enable.png'
+            : 'assets/img/link_circled_disabled.png'
+        " />
+      <div class="application-text-container">
+        <lv-group class="sla-required-container">
+          <span class="lv-form-label-required application-required">
+            <div class="lv-form-label-box"></div>
+          </span>
+          <span class="stepFont"> {{'protection_sla_application_step_label'|i18n}}</span>
+          <span>
+
+            {{ 'common_application_label' | i18n }}
+          </span>
+        </lv-group>
+      </div>
+      <div [ngClass]="{
+          'application-checked-general-container':
+            applicationTypeView.General === application.viewType,
+          'application-checked-specified-container':
+            applicationTypeView.Specified === application.viewType
+        }" [ngSwitch]="application.viewType" *ngIf="application.value !== ''">
+        <lv-radio [lvViewType]="'custom'">
+          <ng-container *ngSwitchCase="applicationTypeView.General">
+            <img (click)="application.click()" [src]="
+                i18n.language === 'zh-cn'
+                  ? 'assets/img/all_resource_zh-cn_logo_checked.png'
+                  : 'assets/img/all_resource_en-us_logo_checked.png'
+              " />
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            <lv-radio [lvViewType]="'custom'">
+              <div class="card" (click)="application.click()">
+                <span [ngClass]="{ 'aui-link': !sla }" lv-overflow>{{
+                  application.label | i18n
+                  }}</span>
+              </div>
+            </lv-radio>
+          </ng-container>
+        </lv-radio>
+      </div>
+
+      <ng-container>
+        <div class="straight-line">
+          <img class="application-line-container" [src]="
+              application.value !== ''
+                ? 'assets/img/straight_line_enable.png'
+                : 'assets/img/straight_line_disabled.png'
+            " />
+        </div>
+
+        <ng-container *ngIf="
+            ![applicationType.Replica, applicationType.ImportCopy].includes(
+              application.value
+            )
+          ">
+          <img class="backupPolicy-circled-container" [src]="
+              backupPolicy.newData !== ''
+                ? 'assets/img/link_circled_enable.png'
+                : 'assets/img/link_circled_disabled.png'
+            " />
+          <img [src]="
+              backupPolicy.newData !== ''
+                ? 'assets/img/oceanprotect_enable.png'
+                : backupPolicy.checkedUrl
+            " (click)="selectSpecifiedBackupPolicy()" style="cursor: default;" [ngClass]="{
+              'backup-flickers':
+                (application.value !== '' && backupPolicy.newData === '') ||
+                backupPolicy.newData !== '',
+              'backup-not-flickers': !(
+                application.value !== '' && backupPolicy.newData === ''
+              )
+            }" [lv-tooltip]="backupPolicy.tooltip ? configTipTemplate : null" lvTooltipClassName="sla-create"
+            lvTooltipPosition="top" />
+          <img *ngIf="![applicationType.Common].includes(application.value)" class="backupPolicy-circled-container"
+            [src]="
+              backupPolicy.newData !== ''
+                ? 'assets/img/link_circled_enable.png'
+                : 'assets/img/link_circled_disabled.png'
+            " />
+          <div class="backup-text-container">
+            <lv-group class="sla-required-container">
+              <span class="lv-form-label-required application-required">
+                <div class="lv-form-label-box"></div>
+              </span>
+              <span *ngIf="!isHyperdetect">
+                <span class="stepFont"> {{'protection_sla_backuppolicy_step_label'|i18n}}</span>
+                {{ 'common_backup_policy_label' | i18n }}
+              </span>
+              <span *ngIf="isHyperdetect">
+                {{ 'common_anti_detection_snapshot_policy_label' | i18n }}
+              </span>
+            </lv-group>
+          </div>
+          <div class="backup-checked-general-container" [ngClass]="{ mt: isHyperdetect && isEnglish }"
+            *ngIf="backupPolicy.newData !== ''">
+            <ng-container *ngFor="let item of backupPolicy.policyList; last as isLast">
+              <p class="aui-link" (click)="selectSpecifiedBackupPolicy(item)">
+                {{
+                item.name + '(' + i18n.get(slaBackupName[item.action]) + ')'
+                }}
+              </p>
+            </ng-container>
+          </div>
+        </ng-container>
+      </ng-container>
+    </lv-group>
+
+    <lv-group *ngIf="
+        !cookieService.isCloudBackup
+      ">
+      <ng-container *ngTemplateOutlet="otherPolicyTpl"></ng-container>
+    </lv-group>
+  </lv-group>
+</ng-template>
+
+<ng-template #otherPolicyTpl>
+  <lv-group lvDirection="vertical">
+    <div class="line-container" *ngIf="!isHcsUser">
+      <img class="up-curved-img" [src]="
+          archival.policyList.length > 0
+            ? 'assets/img/up_curved_enable.png'
+            : 'assets/img/up_curved_disabled.png'
+        " />
+      <img [src]="
+          replication.policyList.length > 0
+            ? 'assets/img/up_curved_enable.png'
+            : 'assets/img/up_curved_disabled.png'
+        " class="down-curved-img" />
+    </div>
+    <div class="straight-line" *ngIf="isHcsUser">
+      <img class="application-line-container" [src]="
+              archival.policyList.length > 0 || replication.policyList.length > 0
+                ? 'assets/img/straight_line_enable.png'
+                : 'assets/img/straight_line_disabled.png'
+            " />
+    </div>
+  </lv-group>
+  <lv-group lvDirection="vertical">
+    <ng-container *ngIf="!isHcsUser">
+      <img
+        ngClass="archival-circled-container"
+        [src]="
+          (backupPolicy.newData !== '' && archival.policyList.length > 0) ||
+          ([applicationType.ImportCopy, applicationType.Replica].includes(
+            application.value
+          ) > 0 &&
+            archival.policyList.length > 0)
+            ? 'assets/img/link_circled_enable.png'
+            : 'assets/img/link_circled_disabled.png'
+        " />
+      <img [src]="
+          isDisabled || isHcsUser
+            ? 'assets/img/archival_disabled.svg'
+            : (backupPolicy.newData !== '' && archival.policyList.length > 0) ||
+              ([applicationType.ImportCopy, applicationType.Replica].includes(
+                application.value
+              ) > 0 &&
+                archival.policyList.length > 0)
+            ? archival.policyList.length === 4
+              ? 'assets/img/archival_enable.png'
+              : 'assets/img/archival_enable_add.png'
+            : [applicationType.ImportCopy, applicationType.Replica].includes(
+                application.value
+              ) > 0 ||
+              (backupPolicy.newData !== '' &&
+                ![applicationType.Volume].includes(application.value))
+            ? 'assets/img/archival_disabled.gif'
+            : 'assets/img/archival_disabled.png'
+        " [ngStyle]="{
+          cursor:
+            (backupPolicy.newData !== '' && archival.policyList.length < 4) ||
+            ([applicationType.ImportCopy, applicationType.Replica].includes(
+              application.value
+            ) &&
+              archival.policyList.length < 4)
+              ? 'pointer'
+              : 'default'
+        }" (click)="selectSpecifiedArchivalPolicy()" [lv-tooltip]="
+          isDisabled ? ('protection_unsupport_archival_label' | i18n) : isHcsUser ? ('protection_unsupport_hcs_archival_label' | i18n) : archival.tooltip ? archivalTipTemplate : null
+        " lvTooltipClassName="sla-create" lvTooltipPosition="top"
+        ngClass="archival-policy-container" />
+      <div ngClass="archival-text-container">
+        <span class="stepFont" *ngIf="!isHcsUser"> {{'protection_sla_optional_tooltip_step_label'|i18n}}</span>
+        {{ 'protection_archival_policy_label' | i18n }}
+      </div>
+    </ng-container>
+    <div class="archival-checked-general-container" *ngIf="archival.policyList.length">
+      <ng-container *ngFor="let item of archival.policyList">
+        <div class="text" lv-overflow lvTooltipTheme="light" lvTooltipPosition="left">
+          <span (click)="selectSpecifiedArchivalPolicy(item)" class="aui-link">
+            {{ item.name }}
+          </span>
+        </div>
+      </ng-container>
+    </div>
+    <div
+      [ngClass]="{'no-archival-replication-checked-general-container': isHcsUser, 'replication-checked-general-container': !isHcsUser}"
+      *ngIf="replication.policyList.length">
+      <ng-container *ngFor="let item of replication.policyList">
+        <div class="text" lv-overflow lvTooltipTheme="light" lvTooltipPosition="left">
+          <span (click)="selectSpecifiedReplicationPolicy(item)" class="aui-link">
+            {{ item.name }}
+          </span>
+        </div>
+      </ng-container>
+    </div>
+      <img
+        [ngClass]="{'no-archival-replication-circled-container': isHcsUser, 'replication-circled-container': !isHcsUser}"
+        [src]="
+            (backupPolicy.newData !== '' && replication.policyList.length > 0) ||
+            ([applicationType.ImportCopy, applicationType.Replica].includes(
+              application.value
+            ) > 0 &&
+              replication.policyList.length > 0)
+              ? 'assets/img/link_circled_enable.png'
+              : 'assets/img/link_circled_disabled.png'
+          " />
+      <img [src]="
+            (backupPolicy.newData !== '' && replication.policyList.length > 0) ||
+            ([applicationType.ImportCopy, applicationType.Replica].includes(
+              application.value
+            ) > 0 &&
+              replication.policyList.length > 0)
+              ? replication.policyList.length === 4
+                ? 'assets/img/replication_enable.png'
+                : 'assets/img/replication_enable_add.png'
+              : [applicationType.ImportCopy, applicationType.Replica].includes(
+                  application.value
+                ) > 0 || backupPolicy.newData !== ''
+              ? 'assets/img/replication_disabled.gif'
+              : 'assets/img/replication_disabled.png'
+          " (click)="selectSpecifiedReplicationPolicy()" [ngStyle]="{
+            cursor:
+              (backupPolicy.newData !== '' && replication.policyList.length < 4) ||
+              ([applicationType.ImportCopy, applicationType.Replica].includes(
+                application.value
+              ) > 0 &&
+                replication.policyList.length < 4)
+                ? 'pointer'
+                : 'default'
+          }" [lv-tooltip]="replication.tooltip ? replicationTipTemplate : null" lvTooltipClassName="sla-create"
+        lvTooltipPosition="top"
+        [ngClass]="{'no-archival-replication-policy-container': isHcsUser, 'replication-policy-container': !isHcsUser}" />
+      <div [ngClass]="{'no-archival-replication-text-container': isHcsUser, 'replication-text-container': !isHcsUser}">
+        <span class="stepFont"> {{'protection_sla_optional_tooltip_step_label'|i18n}}</span>
+        {{ 'common_replication_policy_label' | i18n }}
+      </div>
+
+  </lv-group>
+</ng-template>
+
+<ng-template #archivalTipTemplate>
+  <div *ngIf="![applicationType.Volume].includes(application.value)" [ngClass]="{ 'tooltip-custom-step': true }">
+    {{ 'protection_sla_optional_tooltip_step_label' | i18n }}
+  </div>
+  <div [ngClass]="{ 'tooltip-custom-content': true }">
+    <span class="tooltip-pl">{{ archival.tooltip }}</span>
+  </div>
+</ng-template>
+
+<ng-template #replicationTipTemplate>
+  <div [ngClass]="{ 'tooltip-custom-step': true }">
+    {{ 'protection_sla_optional_tooltip_step_label' | i18n }}
+  </div>
+  <div [ngClass]="{ 'tooltip-custom-content': true }">
+    <span class="tooltip-pl">{{ replication.tooltip }}</span>
+  </div>
+</ng-template>

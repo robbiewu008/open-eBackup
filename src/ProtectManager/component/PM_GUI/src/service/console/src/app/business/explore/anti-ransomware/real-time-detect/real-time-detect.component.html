@@ -1,0 +1,34 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <h1>{{'explore_real_time_detection_label' | i18n}}</h1>
+    </div>
+    <div class="aui-block aui-paginator-container">
+        <div class="aui-operation">
+        <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab honeypot-tab">
+            <lv-tab lvTitle="{{'explore_honeypot_detect_label' | i18n}}" lvId="honeypot">
+                <ng-template lv-tab-lazy>
+                    <aui-honey-pot></aui-honey-pot>
+                </ng-template>
+            </lv-tab>
+            <lv-tab lvTitle="{{'explore_real_time_detect_whitelist_label'| i18n}}" lvId="whitelist">
+                <ng-template lv-tab-lazy>
+                    <aui-detection-whitelist></aui-detection-whitelist>
+                </ng-template>
+            </lv-tab>
+        </lv-tabs>
+    </div>
+    </div>
+</div>

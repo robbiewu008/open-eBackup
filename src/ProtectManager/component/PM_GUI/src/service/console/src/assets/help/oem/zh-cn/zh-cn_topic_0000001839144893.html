@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="配置设备时间">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839144893">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>配置设备时间</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001839144893"></a><a name="ZH-CN_TOPIC_0000001839144893"></a>
+  <h1 class="topictitle1">配置设备时间</h1>
+  <div>
+   <p class="msonormal">当系统的时间出现偏差时，需要修改系统时间，以便在出现告警时能根据告警日志准确地定位出设备告警产生的时间。通过该操作，可以同步客户端时间到设备、设置NTP自动同步或手动修改设备时间。配置设备时间后，必须重启<span>本产品</span>所有服务，否则将导致数据保护任务下发失败。</p>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>设置NTP自动同步前，需要完成NTP服务器的配置。NTP服务器的配置方法，请参考NTP服务器的相关配置文档。</li>
+     <li>在有防火墙的环境中使用NTP自动同步时，需要开启123端口。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <ul>
+     <li>NTP（Network Time Protocol）是一种同步计算机系统时间的协议，它可以将计算机的系统时间同步到世界协调时UTC（Universal Time Coordinated）。支持NTP协议的服务器称为NTP服务器。</li>
+     <li>通过同步客户端时间，可以将系统时间调整为和客户端时间一致。</li>
+     <li>通过设置NTP自动同步，可以将NTP服务器作为外部时间源，定期、自动地同步到设备。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p class="msonormal">执行本操作后，设备时间发生变化，可能存在以下影响：</p>
+    <ul>
+     <li>修改后的设备时间超过license有效期，可能会导致license失效。</li>
+     <li>修改后的设备时间若超过证书有效期，会导致证书过期。</li>
+     <li>修改后的设备时间若大于用户配置的密码有效期，可能会导致系统强制要求用户修改登录密码。</li>
+     <li>修改后的设备时间若超过设置的保存历史性能数据的截止时间，会导致系统不再保存历史性能数据。</li>
+     <li>修改设备时间会影响BBU寿命，可能会触发BBU模块寿命到期或老化的告警。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol">“<span>设置</span> &gt; <span>基本信息</span> &gt; <span>设备时间</span>”</span>，设置设备时间。</span><p></p><p class="msonormal">您可以通过以下三种方式设置设备时间：</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p class="text">请设置正确的时区和时间，否则可能导致告警或日志中记录的时间与实际时间不一致，影响后续问题定位。</p>
+       </div>
+      </div>
+      <ul>
+       <li>手动修改
+        <ol type="a">
+         <li>单击“修改”，选择“手动修改”。</li>
+         <li>设置设备的时间和时区。
+          <ul>
+           <li>在时间区域框修改设备的显示时间，单击“确定”。</li>
+           <li>在时区下拉列表框选择设备所在的时区。</li>
+          </ul></li>
+         <li>单击“保存”。<p class="litext">系统弹出高危提示框。</p></li>
+         <li>仔细阅读对话框中的内容，确认后选择“我已阅读上述信息，了解执行此操作带来的后果。”。单击“确定”。</li>
+        </ol></li>
+       <li>同步客户端时间
+        <ol type="a">
+         <li>单击“修改”，选择“同步客户端时间”。</li>
+         <li>如果获取不到具体的时区ID，DeviceManager会显示“请选择时区”。请根据当前客户端所在的时区，在“客户端时区”中选择相应的时区。</li>
+         <li>单击“保存”。<p class="litext">系统弹出高危提示框。</p></li>
+         <li>仔细阅读对话框中的内容，确认后选择“我已阅读上述信息，了解执行此操作带来的后果。”。单击“确定”。</li>
+        </ol></li>
+      </ul>
+      <ul>
+       <li>设置NTP自动同步
+        <ol type="a">
+         <li>单击“修改”，选择“设置NTP自动同步”</li>
+         <li>在“NTP服务器地址”文本框输入NTP服务器的IPv4地址、IPv6地址或域名。
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <ul>
+             <li>最多可以添加2个NTP服务器，当某个NTP服务器时间不能自动同步到设备时，系统将尝试同步另一个NTP服务器时间到设备。</li>
+             <li>确保两个NTP服务器的时间相同。</li>
+            </ul>
+           </div>
+          </div></li>
+         <li><strong>可选: </strong>单击“测试”。</li>
+         <li>在“NTP认证”后勾选“启用”。
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <ul>
+             <li class="text">只有当NTP协议为NTPv4及后续版本时，才支持开启NTP认证，完成NTP服务器身份认证并自动将时间同步至存储设备。</li>
+             <li>开启NTP认证后需要导入CA证书。</li>
+            </ul>
+           </div>
+          </div></li>
+         <li>在“时区”中选择相应的时区。</li>
+         <li>单击“保存”。<p class="litext">系统弹出高危提示框。</p></li>
+         <li>仔细阅读对话框中的内容，确认后选择“我已阅读上述信息，了解执行此操作带来的后果。”。单击“确定”。</li>
+        </ol></li>
+      </ul> <p></p></li>
+     <li><span>重启<span>本产品</span>所有服务。</span><p></p>
+      <ol type="a">
+       <li>使用PuTTY，通过管理IP地址，以<strong>admin</strong>账号登录<span>本产品</span>。<p>admin账号的密码是用户首次使用时自行设置的密码。为了避免由于密码泄露给<span>本产品</span>带来安全风险，请在后续使用中定期修改登录密码。修改登录密码的方法请参见<span>《账号列表》</span>。</p></li>
+       <li>执行以下命令切换到developer模式。<pre class="screen">change user_mode current_mode user_mode=developer</pre> <p>命令回显如下：</p> <pre class="screen">DANGER: You are about to switch to the developer view. Commands in this view must be run under the guidance of R&amp;D engineers. You can choose whether to run this command. If you run this command to switch to the developer view, it means that you know risks of running commands in the developer view.
+Device vendors are not responsible for any loss or damage caused to the user or others by running commands in the developer view.
+1. Running the command in the developer view may cause system reset, restart, offline, service interruption, data loss, and data inconsistency.
+2. Running the command in the developer view may cause the performance to decrease.
+3. Running the command in the developer view to delete or remove configurations may have impact on the service and data.
+4. Running the command in the developer view may cause system alarms.
+Suggestion: Run this command under the guidance of R&amp;D engineers.
+Have you read danger alert message carefully?(y/n)</pre></li>
+       <li>仔细阅读提示信息，输入“y”。<p>命令回显如下：</p> <pre class="screen">Are you sure you really want to perform the operation?(y/n)</pre></li>
+       <li>输入“y”。</li>
+       <li>输入“minisystem”。<p>命令回显如下：</p> <pre class="screen">-----------------System Information-----------------
+| Product Version | 1.1.RC2 |
+| System Version | 7600508195 |
+| Release Time | 20220314221834 |
+----------------------------------------------------</pre></li>
+       <li>执行以下命令重启kube-dns服务。<pre class="screen">container.sh -c kubectl delete pod --selector k8s-app=kube-dns -n kube-system</pre> <p>命令回显如下：</p> <pre class="screen">DANGER: You are going to perform a danger command. Ensure that no container are being used. Otherwise, this behavior causes container service interruption.
+Suggestion: Before you perform this operation, make sure that the operation will not affect working of system.
+Have you read danger alert message carefully?(y/n)</pre></li>
+       <li>仔细阅读提示信息，输入“y”。<p>命令回显如下：</p> <pre class="screen">Enter "I have read and understand the consequences associated with performing this operation." to confirm running this command.</pre></li>
+       <li>根据界面提示，输入如下内容。<pre class="screen">I have read and understand the consequences associated with performing this operation.</pre> <p>命令回显如下所示。当回显提示“exec kubectl success”时，表示重启成功。</p> <pre class="screen">pod "coredns-555f99b786-prmld" deleted
+pod "coredns-555f99b786-2tv2m" deleted
+exec kubectl success</pre></li>
+       <li>执行以下命令重启dev-passthrough服务。<pre class="screen">container.sh -c kubectl delete pod --selector dorado-app=dev-passthrough -n kube-system</pre> <p>命令回显如下：</p> <pre class="screen">DANGER: You are going to perform a danger command. Ensure that no container are being used. Otherwise, this behavior causes container service interruption.
+Suggestion: Before you perform this operation, make sure that the operation will not affect working of system.
+Have you read danger alert message carefully?(y/n)</pre></li>
+       <li>仔细阅读提示信息，输入“y”。<p>命令回显如下：</p> <pre class="screen">Enter "I have read and understand the consequences associated with performing this operation." to confirm running this command.</pre></li>
+       <li>根据界面提示，输入如下内容。<pre class="screen">I have read and understand the consequences associated with performing this operation.</pre> <p>命令回显如下所示。当回显提示“exec kubectl success”时，表示重启成功。</p> <pre class="screen">pod "dev-passthrough-52wj9" deleted
+pod "dev-passthrough-lpp9m" deleted
+exec kubectl success</pre></li>
+       <li>执行以下命令重启<span>本产品</span>中的所有数据备份特性容器。<pre class="screen">container.sh -c kubectl delete --all pods -n dpa</pre> <p>命令回显如下：</p> <pre class="screen">DANGER: You are going to perform a danger command. Ensure that no container are being used. Otherwise, this behavior causes container service interruption.
+Suggestion: Before you perform this operation, make sure that the operation will not affect working of system.
+Have you read danger alert message carefully?(y/n)</pre></li>
+       <li>仔细阅读提示信息，输入“y”。<p>命令回显如下：</p> <pre class="screen">Enter "I have read and understand the consequences associated with performing this operation." to confirm running this command.</pre></li>
+       <li>根据界面提示，输入如下内容。<pre class="screen">I have read and understand the consequences associated with performing this operation.</pre> <p>命令回显如下所示。当回显提示“exec kubectl success”时，表示重启成功。</p> <pre class="screen">pod "dataenableengine-server-0" deleted
+pod "protectengine-e-dma-0" deleted
+pod "infrastructure-0" deleted
+pod "gaussdb-0" deleted
+pod "sftp-0" deleted
+pod "dataenableengine-server-1" deleted
+pod "protectengine-1" deleted
+pod "protectmanager-system-base-0" deleted
+pod "protectmanager-system-base-1" deleted
+pod "protectmanager-biz-service-0" deleted
+pod "protectmanager-biz-service-1" deleted
+pod "protectengine-0" deleted
+exec kubectl success</pre></li>
+       <li>执行以下命令检查所有POD是否启动完成。<pre class="screen">container.sh -c kubectl get pods -n dpa</pre> <p>命令回显如下：</p> <pre class="screen">NAME READY STATUS RESTARTS AGE
+dataenableengine-server-0 4/4 Running 0 49m
+protectengine-e-dma-0 2/2 Running 0 49m
+infrastructure-0 7/7 Running 0 49m
+gaussdb-0 1/1 Running 0 49m
+sftp-0 1/1 Running 0 49m
+dataenableengine-server-1 4/4 Running 0 16m
+protectengine-1 9/9 Running 0 47m
+protectmanager-system-base-1 2/2 Running 0 49m
+protectmanager-system-base-0 2/2 Running 0 44m
+protectmanager-biz-service-0 2/2 Running 0 49m
+protectmanager-biz-service-1 2/2 Running 0 49m
+protectengine-0 9/9 Running 0 49m
+exec kubectl success</pre> <p>如果所有POD均为<span class="parmvalue">“Running”</span>状态，则表示服务重启成功。此过程大约需要5-10分钟，请等待。</p></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

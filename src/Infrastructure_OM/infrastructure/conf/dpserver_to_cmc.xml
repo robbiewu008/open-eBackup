@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <artifact>
+        <versionType>Component</versionType>
+        <repoType>Generic</repoType>
+        <id>
+            <offering>OceanProtect DataBackup</offering>
+            <componentName>DataBackup package</componentName>
+            <componentVersion>${componentVersion}</componentVersion>
+        </id>
+        <isClear>N</isClear>
+        <copies>
+            <copy>
+                <source>*.tar.gz</source>
+                <dest>/${CODE_BRANCH}</dest>
+            </copy>
+        </copies>
+    </artifact>
+	<dependencies>
+		<dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>OceanProtect DataBackup</offering>
+                <componentName>DataBackup package</componentName>
+                <componentVersion>${componentVersion}</componentVersion>
+            </id>
+            <copies>
+                <copy>
+                    <source>/${CODE_BRANCH}</source>
+                    <dest>*.tar.gz</dest>
+                </copy>
+            </copies>
+        </dependency>
+	</dependencies>
+</project>

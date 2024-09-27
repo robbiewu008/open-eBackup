@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Checking and Installing VMware Tools">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839266973.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792387912">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Checking and Installing VMware Tools</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792387912"></a><a name="EN-US_TOPIC_0000001792387912"></a>
+  <h1 class="topictitle1">Step 1: Checking and Installing VMware Tools</h1>
+  <div>
+   <p>Before performing application-consistent backup, you must install VMware Tools on the protected VM or target VM.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>You need to install VMware Tools for VMware VMs in the following scenarios:</p>
+   </div>
+   <ul>
+    <li>If you need to perform application-consistent backup, ensure that VMware Tools has been installed on the protected VMware VMs.</li>
+   </ul>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Log in to the vCenter Server or ESXi host as an administrator.</span></li>
+     <li><span>Expand the navigation tree on the left to view all created VMs.</span></li>
+     <li><span>In the VM list, locate the VM where VMware Tools needs to be installed and click its name.</span></li>
+     <li><span>On the VM details page that is displayed, check whether VMware Tools has been installed. <span>If no, install VMware Tools by referring to <a href="https://docs.vmware.com/en/VMware-Tools/index.html" target="_blank" rel="noopener noreferrer">Installing VMware Tools</a>.</span></span><p></p>
+      <ul>
+       <li>If the vCenter Server is used, check the installation status in the <strong>Guest OS</strong> area.</li>
+       <li>If the ESXi host is used, check the installation status in the <strong>General Information</strong> area.</li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001839266973.html">Backing Up a VMware VM</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

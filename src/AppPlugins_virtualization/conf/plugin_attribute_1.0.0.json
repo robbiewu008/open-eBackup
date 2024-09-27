@@ -1,0 +1,55 @@
+{
+    "application": "Kubernetes,KubernetesNamespace,KubernetesStatefulSet,KubernetesPVC,HCScontainer,HCSCloudHost,HCSProject,HCSTenant,OpenStackContainer,OpenStackProject,OpenStackCloudServer,CNware,CNwareHostPool,CNwareCluster,CNwareHost,CNwareVm,CNwareDisk,ApsaraStack,APS-organization,APS-region,APS-zone,APS-resourceSet,APS-instance,APS-disk,HyperV,Hyper-V,HyperV.SCVMM,HyperV.Cluster,HyperV.Host,HyperV.VM,HyperV.Disk",
+    "name": "VirtualizationPlugin",
+    "application_version": [{
+        "application": "Virtualization",
+        "min_version": "",
+        "max_version": ""
+    },{
+        "application": "HyperV.SCVMM",
+        "min_version": "",
+        "max_version": ""
+    },{
+        "application": "HyperV.Cluster",
+        "min_version": "",
+        "max_version": ""
+    },{
+        "application": "HyperV.Host",
+        "min_version": "",
+        "max_version": ""
+    }],
+    "run_account": "rdadmin",
+    "application_sub_job_cnt_max": {
+        "Kubernetes": 20,
+        "KubernetesNamespace": 20,
+        "KubernetesStatefulSet": 20,
+        "KubernetesPVC": 20,
+        "HCScontainer": 20,
+        "HCSCloudHost": 20,
+        "HCSProject": 20,
+        "HCSTenant": 20,
+        "OpenStackContainer": 20,
+        "OpenStackProject": 20,
+        "OpenStackCloudServer": 20,
+        "CNware": 20,
+        "CNwareHostPool": 20,
+        "CNwareCluster": 20,
+        "CNwareHost": 20,
+        "CNwareVm": 20,
+        "CNwareDisk": 20,
+        "ApsaraStack": 15,
+        "APS-organization": 15,
+        "APS-region": 15,
+        "APS-zone": 15,
+        "APS-resourceSet": 15,
+        "APS-instance": 15,
+        "APS-disk": 15,
+        "HyperV": 20,
+        "Hyper-V": 20,
+        "HyperV.SCVMM": 20,
+        "HyperV.Cluster": 20,
+        "HyperV.Host": 20,
+        "HyperV.VM": 20,
+        "HyperV.Disk": 20
+    }
+}

@@ -1,0 +1,98 @@
+@header-icon-size: 48px;
+
+.report-card-container {
+  border: solid 1px #d4d9e6;
+
+  .report-card-header {
+    background: url('assets/img/report-header-background.svg') no-repeat;
+    height: 90px;
+    padding: 20px;
+    display: flex;
+
+    .report-card-header-icon {
+      width: @header-icon-size;
+      height: @header-icon-size;
+      background: url('assets/img/report-header-card.svg') no-repeat;
+    }
+
+    .report-card-header-icon-abnormal {
+      width: @header-icon-size;
+      height: @header-icon-size;
+      background: url('assets/img/report-header-card-abnormal.svg') no-repeat;
+    }
+
+    .report-card-header-title {
+      padding-left: 16px;
+
+      .report-card-header-first-line {
+        font-size: 20px;
+        font-weight: 600;
+        max-width: 320px;
+      }
+
+      .report-card-header-sub-line {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .progress-container {
+    height: 0px;
+
+    lv-progress {
+      transform: translateY(-8px);
+    }
+  }
+
+  .report-card-content {
+    padding: 24px;
+    padding-top: 0px;
+    font-size: 14px;
+
+    .pair {
+      line-height: 20px;
+      margin-top: 16px;
+
+      .pair-label {
+        display: inline-block;
+        width: 70px;
+        color: #7a7f8c;
+      }
+
+      .pair-value {
+        width: calc(100% - 100px);
+        display: inline-block;
+      }
+
+      .pair-label-en {
+        display: inline-block;
+        width: 120px;
+        color: #7a7f8c;
+      }
+    }
+  }
+
+  .report-card-footer {
+    padding: 12px 20px;
+    border-top: solid 1px #d4d9e6;
+    background-color: #f9fafd;
+    display: flex;
+
+    .checkbox-container {
+      flex: auto;
+
+      label {
+        margin-top: 3px;
+      }
+    }
+
+    .op-container {
+      width: 100px;
+      border-left: solid 1px #d4d9e6;
+
+      .op-icon {
+        margin: 0 16px;
+      }
+    }
+  }
+}

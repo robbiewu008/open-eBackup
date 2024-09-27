@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "base",
+  "agentDependencies": {
+    "type": "object",
+    "properties": {
+      "agents": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "uuid": {
+              "type": "string",
+              "description": "主机uuid"
+            }
+          },
+          "required": [
+            "uuid"
+          ]
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "agents"
+    ]
+  },
+  "auth": {
+    "type": "object",
+    "properties": {
+      "authType": {
+        "type": "integer",
+        "description": "认证类型"
+      },
+      "authKey": {
+        "type": ["null", "string"],
+        "description": "认证用户名"
+      },
+      "authPwd": {
+        "type": ["null", "string"],
+        "description": "认证密码"
+      },
+      "extendInfo": {
+        "type": "object",
+        "properties": {
+        }
+      }
+    },
+    "required": [
+      "authType",
+      "authPwd",
+      "authKey"
+    ]
+  }
+}

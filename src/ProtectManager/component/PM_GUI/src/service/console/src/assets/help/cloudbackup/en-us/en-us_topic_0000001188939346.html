@@ -1,0 +1,122 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Adding a Backup Storage">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001189115024.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20220315">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001188939346">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Adding a Backup Storage</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001188939346"></a><a name="EN-US_TOPIC_0000001188939346"></a>
+
+<h1 class="topictitle1">Step 1: Adding a Backup Storage</h1>
+<div id="body8662426"><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001092505479_p173011029113111">This section describes how to connect a backup storage to the storage system so that a logical connection is established between the backup storage and the storage system for data transmission.</p>
+<div class="section" id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_section095013491921"><h4 class="sectiontitle">Prerequisites</h4><ul id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_ul178191952428"><li id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_li481975212211">The object storage platform for storing backup data is ready.</li><li id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_li1131331410417">You have obtained the access address and AK/SK of the object storage platform.</li><li id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_li77996192310">A bucket for storing backup data has been created on the object storage platform.<p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_p32071347111"><a name="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_li77996192310"></a><a name="en-us_topic_0000001166366216_en-us_topic_0000001091431193_li77996192310"></a>To ensure data security, it is recommended that a dedicated bucket be created for backing up file systems. Otherwise, archived data may be illegally intercepted or tampered with.</p>
+</li><li id="EN-US_TOPIC_0000001188939346__li61153532195">Versioning has been disabled for the data bucket of the object storage.</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_section195311722153316"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_ol283013814525"><li id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_li1570821013536"><span>Choose <span class="menucascade" id="EN-US_TOPIC_0000001188939346__menucascade1325955913116"><b><span class="uicontrol" id="EN-US_TOPIC_0000001188939346__uicontrol172599591012"><span id="EN-US_TOPIC_0000001188939346__text089811247238"><strong>System</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000001188939346__uicontrol243261823"><span id="EN-US_TOPIC_0000001188939346__text14900046122314"><strong>Infrastructure</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000001188939346__uicontrol175571291727"><span id="EN-US_TOPIC_0000001188939346__text1948610151245"><strong>Backup Storage</strong></span></span></b></span>.</span></li><li id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_li12591123311535"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001188939346__uicontrol1937282152717"><b><span id="EN-US_TOPIC_0000001188939346__text7740108132911"><strong>Add Backup Storage</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_li1610184685311"><span>Set backup storage parameters.</span><p><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p12530163195410"><a href="#EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_table882518171549">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_table882518171549"></a><a name="en-us_topic_0000001166366216_en-us_topic_0000001091431193_table882518171549"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_table882518171549" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Backup storage parameters</caption><colgroup><col style="width:19.8%"><col style="width:80.2%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_row6825101755413"><th align="left" class="cellrowborder" valign="top" width="19.8%" id="mcps1.3.3.2.3.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p1882561745418">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="80.2%" id="mcps1.3.3.2.3.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p138251617165410">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_row0825717175418"><td class="cellrowborder" valign="top" width="19.8%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p182501711541"><span id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_text2951450103418"><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.2%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p188251417125412">Name of a backup storage, which can be customized.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_row9825817155415"><td class="cellrowborder" valign="top" width="19.8%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p982514173546"><span id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_text937881123512"><strong>Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.2%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p208259178541">Type of a backup storage. Currently, only OBS complying with the S3 protocol is supported.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_row14825181765414"><td class="cellrowborder" valign="top" width="19.8%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p10825117195414"><span id="EN-US_TOPIC_0000001188939346__text18261937162512"><strong>Object Storage Product</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.2%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p923516500567">OBS product connected to the storage system.</p>
+<p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001089474260_en-us_topic_0000001088806358_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p12825171719548">FusionStorage OBS, OceanStor Pacific, Huawei Cloud OBS, and AWS S3 are supported.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_row198254170544"><td class="cellrowborder" valign="top" width="19.8%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p168252017125411"><span id="EN-US_TOPIC_0000001188939346__text1416924315256"><strong>Endpoint</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.2%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p128251917185412">Access address of a backup storage</p>
+<p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p173071017581">Address format: domain name or service plane IP address of a backup storage.</p>
+<div class="note" id="EN-US_TOPIC_0000001188939346__note61351782366"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000001188939346__p7135118113619">The following is an example of querying the domain name on Huawei Cloud OBS:</p>
+<ol type="a" id="EN-US_TOPIC_0000001188939346__ol32987311441"><li id="EN-US_TOPIC_0000001188939346__li18298163119418">Log in to the Huawei Cloud OBS website (<a href="https://www.huaweicloud.com/intl/en-us/product/obs.html" target="_blank" rel="noopener noreferrer">https://www.huaweicloud.com/intl/en-us/product/obs.html</a>) and click <strong id="EN-US_TOPIC_0000001188939346__b16854154719146">Access Console</strong>.</li><li id="EN-US_TOPIC_0000001188939346__li138517342914">In the OBS bucket list, click the created bucket for storing file system backups. The <span class="wintitle" id="EN-US_TOPIC_0000001188939346__wintitle168799420289"><b>Summary</b></span> information about the bucket is displayed.</li><li id="EN-US_TOPIC_0000001188939346__li195291239141417">In the <span class="wintitle" id="EN-US_TOPIC_0000001188939346__wintitle5100165314290"><b>Basic Information</b></span> area, record the value of <span class="wintitle" id="EN-US_TOPIC_0000001188939346__wintitle18383125823213"><b>Endpoint</b></span>, which is the domain name of the bucket.</li></ol>
+</div></div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_row1382591720548"><td class="cellrowborder" valign="top" width="19.8%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p12825217115410"><span id="EN-US_TOPIC_0000001188939346__text18153205416252"><strong>Protocol</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.2%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p125736161155">Protocol used for data transmission between the storage system and the backup storage.</p>
+<ul id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_ul5259155791216"><li id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_li132592572127">When HTTPS is used, import a valid certificate so that the system can verify the backup storage information. Obtain the certificate from the backup storage administrator in advance.<p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_p7259257161217"><a name="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_li132592572127"></a><a name="en-us_topic_0000001166366216_li132592572127"></a>For details about how to import a certificate, see <a href="en-us_topic_0000001633611569.html">Importing a Certificate</a>.</p>
+</li><li id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_li725917571122">When the protocol is set to <strong id="EN-US_TOPIC_0000001188939346__b126797386820">HTTP</strong>, the system cannot verify the backup storage environment information, which poses security risks. You are advised to select HTTPS for security purposes.</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_row382513179543"><td class="cellrowborder" valign="top" width="19.8%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p158251817175415"><span id="EN-US_TOPIC_0000001188939346__text09917413264"><strong>AK</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.2%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p17825111718547">Access certificate for accessing the object storage</p>
+<div class="note" id="EN-US_TOPIC_0000001188939346__note137481467265"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000001188939346__p892713108276">The following is an example of creating the AK and SK on the Huawei Cloud OBS:</p>
+<ol type="a" id="EN-US_TOPIC_0000001188939346__ol42512152911"><li id="EN-US_TOPIC_0000001188939346__li152181214294">Log in to the Huawei Cloud OBS website (<a href="https://www.huaweicloud.com/intl/en-us/product/obs.html" target="_blank" rel="noopener noreferrer">https://www.huaweicloud.com/intl/en-us/product/obs.html</a>) and click <strong id="EN-US_TOPIC_0000001188939346__b148418448368">Access Console</strong>.</li><li id="EN-US_TOPIC_0000001188939346__li9967134014301">Move the pointer on the username in the upper right corner of the page, and choose <span class="wintitle" id="EN-US_TOPIC_0000001188939346__wintitle138751118142615"><b>My Credential</b></span> from the drop-down list. The <span class="wintitle" id="EN-US_TOPIC_0000001188939346__wintitle164531626162616"><b>My Credential</b></span> page is displayed.</li><li id="EN-US_TOPIC_0000001188939346__li10368181118334">Click <span class="wintitle" id="EN-US_TOPIC_0000001188939346__wintitle536981112333"><b>Access Keys</b></span> in the navigation tree. The <span class="wintitle" id="EN-US_TOPIC_0000001188939346__wintitle23721420194517"><b>Access Keys</b></span> details page is displayed.</li><li id="EN-US_TOPIC_0000001188939346__li5858259163412">Click <span class="wintitle" id="EN-US_TOPIC_0000001188939346__wintitle16861175910347"><b>Add Access Key</b></span>, enter the key description as prompted, and click <strong id="EN-US_TOPIC_0000001188939346__b9371122114615">OK</strong>. A message is displayed, indicating that the key is successfully created.</li><li id="EN-US_TOPIC_0000001188939346__li109991657123020">Click <strong id="EN-US_TOPIC_0000001188939346__b1674132523">Download Now</strong>. The browser automatically generates a key file named <span class="parmname" id="EN-US_TOPIC_0000001188939346__parmname63365672612"><b>credentials.csv</b></span>.</li><li id="EN-US_TOPIC_0000001188939346__li15435020335">Download and open the <span class="parmname" id="EN-US_TOPIC_0000001188939346__parmname1898611114278"><b>credentials.csv</b></span> file to obtain the AK and SK. The key file contains the <span class="parmname" id="EN-US_TOPIC_0000001188939346__parmname15157122202612"><b>User Name</b></span>, <span class="parmname" id="EN-US_TOPIC_0000001188939346__parmname79225718262"><b>Access Key Id</b></span>, and <span class="parmname" id="EN-US_TOPIC_0000001188939346__parmname10500311152613"><b>Secret Access Key</b></span>. <span class="parmname" id="EN-US_TOPIC_0000001188939346__parmname964613191944"><b>Access Key Id</b></span> corresponds to AK, and <span class="parmname" id="EN-US_TOPIC_0000001188939346__parmname67567381649"><b>Secret Access Key</b></span> corresponds to SK.</li></ol>
+</div></div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_row16825317165419"><td class="cellrowborder" valign="top" width="19.8%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p198251217185417"><span id="EN-US_TOPIC_0000001188939346__text913932192618"><strong>SK</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.2%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p28251917125419">Security certificate for accessing the OBS.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_row062236145512"><td class="cellrowborder" valign="top" width="19.8%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p662315615557"><span id="EN-US_TOPIC_0000001188939346__text192311546182617"><strong>Data Bucket</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.2%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p1562320617552">Name of the bucket that stores backup data.</p>
+<div class="note" id="EN-US_TOPIC_0000001188939346__note1279257133617"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000001188939346__p0110152714406">The following is an example of querying a bucket name on the Huawei Cloud OBS:</p>
+<ol type="a" id="EN-US_TOPIC_0000001188939346__ol1111017279405"><li id="EN-US_TOPIC_0000001188939346__li1011082718402">Log in to the Huawei Cloud OBS website (<a href="https://www.huaweicloud.com/intl/en-us/product/obs.html" target="_blank" rel="noopener noreferrer">https://www.huaweicloud.com/intl/en-us/product/obs.html</a>) and click <strong id="EN-US_TOPIC_0000001188939346__b113861549183715">Access Console</strong>.</li><li id="EN-US_TOPIC_0000001188939346__li611042784019">In the OBS bucket list, browse and manually copy the bucket name.</li></ol>
+</div></div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_row18517121212557"><td class="cellrowborder" valign="top" width="19.8%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p1751712122551"><span id="EN-US_TOPIC_0000001188939346__text7314566268"><strong>Index bucket</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.2%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p7231042134010">Name of the bucket that stores index data. The value is the same as the data bucket name and does not need to be set.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_row171331019155511"><td class="cellrowborder" valign="top" width="19.8%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p81331619135516"><span id="EN-US_TOPIC_0000001188939346__text1248412302719"><strong>Use Proxy Server</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.2%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p1613351925514">When the storage system uses a proxy server to access the backup storage, configure the address, user name, and password of the proxy server.</p>
+<div class="note" id="EN-US_TOPIC_0000001188939346__note71103214341"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="EN-US_TOPIC_0000001188939346__ul112901756111910"><li id="EN-US_TOPIC_0000001188939346__li82901856121915">Obtain the proxy information from the network administrator of the enterprise's data center.</li><li id="EN-US_TOPIC_0000001188939346__li996185720192">If <span id="EN-US_TOPIC_0000001188939346__text20217124304715"><strong>Use Proxy Server</strong></span> is enabled, the <span id="EN-US_TOPIC_0000001188939346__text2040205484"><strong>Address</strong></span>, <span id="EN-US_TOPIC_0000001188939346__text1743871310481"><strong>Username</strong></span>, and <span id="EN-US_TOPIC_0000001188939346__text1524014248487"><strong>Password</strong></span> parameters are displayed.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_row178881731125511"><td class="cellrowborder" valign="top" width="19.8%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p588833115555"><span id="EN-US_TOPIC_0000001188939346__text54441310274"><strong>Capacity Alarm Threshold</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.2%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001091431193_p456631810516">Upper threshold of the used capacity of a bucket. When the used capacity reaches the threshold, an alarm is reported.</p>
+<p id="EN-US_TOPIC_0000001188939346__p34781864618">If <span class="uicontrol" id="EN-US_TOPIC_0000001188939346__uicontrol1830165364615"><b><span id="EN-US_TOPIC_0000001188939346__text1580191894711"><strong>Capacity Alarm Threshold</strong></span></b></span> is enabled, the <span class="uicontrol" id="EN-US_TOPIC_0000001188939346__uicontrol1375752818473"><b><span id="EN-US_TOPIC_0000001188939346__text320718343471"><strong>Alarm Threshold</strong></span></b></span>  parameter is displayed.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001092505479_li731119361160"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_en-us_topic_0000001092505479_uicontrol138611845761"><b><span id="EN-US_TOPIC_0000001188939346__en-us_topic_0000001166366216_text167273511413"><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001189115024.html">Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

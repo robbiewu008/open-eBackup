@@ -1,0 +1,1 @@
+{"fileVersion":"1","name":"Infrastructure_CI","serviceId":"8052192dda184f75b0084a5f21dced41","description":"","version":"1.0.0","type":"microService","processes":{"Infrastructure_CI":{"subscribes":[]}}}

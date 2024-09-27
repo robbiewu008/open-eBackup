@@ -1,0 +1,106 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="detailInfo">
+    <lv-form lvLabelWidth="150px">
+        <lv-alert *ngIf="!detailData && isConfig" lvType="info" lvClosable="false" lvShowIcon="false">
+            <i lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
+            {{'explore_commonshare_restore_loading_label' | i18n}}
+        </lv-alert>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_file_system_name_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <span class="textGroup" lv-overflow>{{linkInfo.filesystemName | nil}}</span>
+            </lv-form-control>
+        </lv-form-item>
+
+        <!-- nfs设置 -->
+        <ng-container *ngIf="nfsEnabled">
+            <h2 class="textDiv boxTop">{{'protection_commonshare_nfs_label' | i18n}}</h2>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_share_path_info_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-group lvGutter='4px'>
+                        <div class="textGroup" lv-overflow>{{linkInfo.sharePath | nil}}</div>
+                        <i *ngIf="linkInfo.sharePath" lv-icon="aui-icon-copy" class="copyIcon1"
+                            (click)="copyLink(linkInfo.sharePath)" lv-tooltip="{{'common_replicate_label' | i18n}}"></i>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_share_client_label' | i18n}}
+                    <i style="margin-left:4px" lv-icon="aui-icon-help"
+                        lv-tooltip="{{'protection_commonshare_whitelist_tips_label' | i18n}}" lvTooltipTheme="light"
+                        class="configform-constraint" lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <span class="textGroup" lv-overflow>{{whitelistStr}}</span>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+
+        <!-- cifs设置 -->
+        <ng-container *ngIf="cifsEnabled">
+            <h2 class="textDiv boxTop">{{'protection_commonshare_cifs_label' | i18n}}</h2>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'explore_share_name_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-group lvGutter='4px'>
+                        <div class="textGroup" lv-overflow>{{linkInfo.shareName | nil}}</div>
+                        <i *ngIf="linkInfo.shareName" lv-icon="aui-icon-copy" class="copyIcon1"
+                            (click)="copyLink(linkInfo.shareName)" lv-tooltip="{{'common_replicate_label' | i18n}}"></i>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'common_type_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <span class="textGroup" lv-overflow>{{find(userTypeOptions,{value:linkInfo.userType}) ?
+                    find(userTypeOptions,{value:linkInfo.userType})['label']: '--'}}</span>
+                   
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item
+                *ngIf="linkInfo.userType && linkInfo.userType !== dataMap.Cifs_Domain_Client_Type.everyone.value">
+                <lv-form-label>
+                    {{'common_users_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <span class="textGroup" lv-overflow>{{linkInfo.userNames | nil}}</span>
+                    
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </lv-form>
+</div>
+
+
+<div class="aui-header-2 aui-gutter-column-md boxTop">
+    <h2>{{'protection_shared_ip_label' | i18n}}</h2>
+</div>
+<lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+<ng-template #shareIpTpl let-item>
+    <lv-group lvGutter="2px" class="linkTpl">
+        <span>{{item.shareIp}}</span>
+        <i lv-icon="aui-icon-copy" class="copyIcon2" (click)="copyLink(item.shareIp)" lv-tooltip="{{'common_replicate_label' | i18n}}"></i>
+    </lv-group>
+</ng-template>

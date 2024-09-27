@@ -1,0 +1,135 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if eq $deploytype "d9" }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "pm-nas"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 10Gi
+  selector:
+    matchLabels:
+      pv: pm-nas
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "pm-nas2"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 100Gi
+  selector:
+    matchLabels:
+      pv: pm-nas2
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "pm-nas3"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 50Gi
+  selector:
+    matchLabels:
+      pv: pm-nas3
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "pm-report"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 100Gi
+  selector:
+    matchLabels:
+      pv: pm-report
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: "pm-nas"
+  namespace: dpa
+  labels:
+    type: local
+    pv: pm-nas
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  hostPath:
+    path: "/opt/DataBackup/pm_nas"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: "pm-nas2"
+  namespace: dpa
+  labels:
+    type: local
+    pv: pm-nas2
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  capacity:
+    storage: 100Gi
+  hostPath:
+    path: "/opt/DataBackup/pm_nas2"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: "pm-nas3"
+  namespace: dpa
+  labels:
+    type: local
+    pv: pm-nas3
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  capacity:
+    storage: 50Gi
+  hostPath:
+    path: "/opt/DataBackup/mgt_cfg_data"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: "pm-report"
+  namespace: dpa
+  labels:
+    type: local
+    pv: pm-report
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  capacity:
+    storage: 100Gi
+  hostPath:
+    path: "/opt/DataBackup/pm_report"
+{{- end }}
+

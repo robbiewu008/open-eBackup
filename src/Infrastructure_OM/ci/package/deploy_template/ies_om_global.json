@@ -1,0 +1,153 @@
+{
+    "fileVersion": "1.0",
+    "name": "IES-AdminConsoleHome-Template",
+    "description": "The AdminConsoleHome deploy template.",
+    "parameters": {
+        "regionAlias": {
+            "default": "SZX",
+            "description": "The prefix of the node or environment.",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "allowedPattern": "[A-Z]*",
+            "constraintDescription": "Must be three capital letters."
+        },
+        "CUSTOMER_ID": {
+            "default": "SHA",
+            "description": "Local custom ID.",
+            "type": "string",
+            "allowedValues": [
+                "SHA",
+                "DT",
+                "LGI",
+                "TLF",
+                "HEC"
+            ]
+        }
+    },
+    "resources": {
+        "AdminHomeService/{{regionAlias}}": {
+            "type": "Environment",
+            "dependencies": "",
+            "properties": {
+                "envAlias": "AdminHomeService",
+                "runAs": "ossuser",
+                "deployPath": "/opt/oss",
+                "packages": {
+                    "AdminHomeService": "~1.1.6",
+                    "DatabaseDriver_mysql": "~2.0",
+                    "jre": "~1.3",
+                    "tomcat": "~9.2"
+                },
+                "configures": {
+                    "site": {
+                        "value": "{{CUSTOMER_ID}}",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "AdminHomeService/{{regionAlias}}/{{stageName}}": {
+            "type": "Stage",
+            "dependencies": "AdminHomeService/{{regionAlias}},ServerGroup/OMGlobalPlatform/{{regionAlias}}",
+            "properties": {
+                "serverGroup": {
+                    "{{regionAlias}}-OM-Global-Platform": "2"
+                },
+                "packages": {
+                    "AdminHomeService": "~1.1.6",
+                    "DatabaseDriver_mysql": "~2.0",
+                    "jre": "~1.3",
+                    "tomcat": "~9.2"
+                },
+                "configures": {
+                    "site": {
+                        "value": "{{CUSTOMER_ID}}",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "AdminHomeWebsite/{{regionAlias}}": {
+            "type": "Environment",
+            "dependencies": "",
+            "properties": {
+                "envAlias": "AdminHomeWebsite",
+                "runAs": "ossuser",
+                "deployPath": "/opt/oss",
+                "packages": {
+                    "AdminHomeWebsite": "~1.1.10",
+                    "jre": "~1.3",
+                    "tomcat": "~9.2"
+                },
+                "configures": {
+                    "site": {
+                        "value": "{{CUSTOMER_ID}}",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "AdminHomeWebsite/{{regionAlias}}/{{stageName}}": {
+            "type": "Stage",
+            "dependencies": "AdminHomeWebsite/{{regionAlias}},ServerGroup/OMGlobalPlatform/{{regionAlias}}",
+            "properties": {
+                "serverGroup": {
+                    "{{regionAlias}}-OM-Global-Platform": "2"
+                },
+                "packages": {
+                    "AdminHomeWebsite": "~1.1.10",
+                    "jre": "~1.3",
+                    "tomcat": "~9.2"
+                },
+                "configures": {
+                    "site": {
+                        "value": "{{CUSTOMER_ID}}",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "AdminConsoleWebsite/{{regionAlias}}": {
+            "type": "Environment",
+            "dependencies": "",
+            "properties": {
+                "envAlias": "AdminConsoleWebsite",
+                "runAs": "ossuser",
+                "deployPath": "/opt/oss",
+                "packages": {
+                    "AdminConsoleWebsite": "~1.1.13",
+                    "jre": "~1.3",
+                    "tomcat": "~9.2"
+                },
+                "configures": {
+                    "site": {
+                        "value": "{{CUSTOMER_ID}}",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "AdminConsoleWebsite/{{regionAlias}}/{{stageName}}": {
+            "type": "Stage",
+            "dependencies": "AdminConsoleWebsite/{{regionAlias}},ServerGroup/OMGlobalPlatform/{{regionAlias}}",
+            "properties": {
+                "serverGroup": {
+                    "{{regionAlias}}-OM-Global-Platform": "2"
+                },
+                "packages": {
+                    "AdminConsoleWebsite": "~1.1.13",
+                    "jre": "~1.3",
+                    "tomcat": "~9.2"
+                },
+                "configures": {
+                    "site": {
+                        "value": "{{CUSTOMER_ID}}",
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "outputs": {}
+}

@@ -1,0 +1,236 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 浏览代理资源接口
+  description: 浏览代理资源
+schemes:
+  - https
+basePath: /
+tags:
+  - name: host
+  - name: app
+  - name: task
+paths:
+  /v2/agents/{agentId}/resources:
+    get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - app
+      operationId: ListResourcesDetails
+      summary: 通过指定代理实时查询资源
+      description: 通过指定代理实时查询资源
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          type: string
+          minLength: 1
+          maxLength: 50
+          description: Agent代理UUID
+        - name: envId
+          in: query
+          required: true
+          type: string
+          description: 受保护环境UUID
+        - name: pageNo
+          in: query
+          required: true
+          description: 起始
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          description: 分页大小
+          type: integer
+          format: int32
+        - name: orders
+          in: query
+          required: false
+          description: 排序字段
+          type: string
+        - name: conditions
+          in: query
+          required: false
+          type: string
+          description: 查询条件
+        - name: resourceIds
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+          description: 父资源UUID列表
+        - name: appType
+          in: query
+          required: false
+          description: 资源类型
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ListResourceRsp'
+  /v1/agents/config:
+    get:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - host
+      summary: 查询应用配置信息
+      operationId: QueryAppConfigInfo
+      parameters:
+        - name: subType
+          in: query
+          required: true
+          description: 资源子类型
+          type: string
+        - name: script
+          in: query
+          required: false
+          description: 脚本名称
+          type: string
+        - name: hostUuids
+          in: query
+          required: true
+          description: 主机uuid
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: key-脚本名称，value-配置信息
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+  /v1/agents/task/status:
+    put:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - task
+      summary: 传递任务状态
+      operationId: DeliverTaskStatus
+      parameters:
+        - name: deliverTaskReq
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DeliverTaskReq'
+      responses:
+        '200':
+          description: ''
+definitions:
+  AppResource:
+    description: 应用资源对象
+    properties:
+      type:
+        type: string
+        description: 资源类型
+        minLength: 1
+        maxLength: 32
+      subType:
+        type: string
+        description: 资源子类型
+        minLength: 1
+        maxLength: 32
+      uuid:
+        type: string
+        description: 如果资源有uuid，则返回UUID，否则返回为空
+        minLength: 1
+        maxLength: 64
+      name:
+        type: string
+        description: 资源名称，对应的实例、数据库名称等
+        minLength: 1
+        maxLength: 256
+      parentUuid:
+        type: string
+        description: 资源父Id
+        minLength: 1
+        maxLength: 64
+      parentName:
+        type: string
+        description: 资源父名称
+        minLength: 1
+        maxLength: 256
+      extendInfo:
+        type: string
+        description: 扩展参数，采用json字符串格式，由Agent插件组装，PM插件解析
+    required:
+      - type
+      - subType
+      - name
+  ApplicationBase:
+    description: app ojbect
+    allOf:
+      - $ref: '#/definitions/AppResource'
+  Application:
+    allOf:
+      - $ref: '#/definitions/ApplicationBase'
+  ListResourceRsp:
+    required:
+      - totalCount
+      - records
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总的数据条数
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/AppResource'
+        description: 数据列表
+  AgentDto:
+    type: object
+    required:
+      - endpoint
+    properties:
+      endpoint:
+        type: string
+        description: ip地址
+  DeliverTaskReq:
+    type: object
+    required:
+      - taskId
+      - status
+      - agents
+    properties:
+      taskId:
+        type: string
+        description: 任务ID
+      status:
+        type: string
+        description: 任务状态。SUCCESS, FAIL
+      agents:
+        type: array
+        items:
+          $ref: '#/definitions/AgentDto'
+        description: agent信息

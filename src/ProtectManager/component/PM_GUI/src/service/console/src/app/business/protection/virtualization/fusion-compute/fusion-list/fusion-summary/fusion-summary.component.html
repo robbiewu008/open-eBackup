@@ -1,0 +1,28 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-header-1 aui-gutter-column-md">
+    <h2>{{'common_basic_info_label' | i18n}}</h2>
+</div>
+<div class="aui-gutter-column-lg">
+    <resoure-base-info [source]="source" [sourceType]="source.type"></resoure-base-info>
+</div>
+
+<div class="aui-header-1 aui-gutter-column-md">
+    <h2>{{'common_disk_label' | i18n}}</h2>
+</div>
+<lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+
+<ng-template #capacityTpl let-item>
+    {{item.capacity +'GB'}}
+</ng-template>

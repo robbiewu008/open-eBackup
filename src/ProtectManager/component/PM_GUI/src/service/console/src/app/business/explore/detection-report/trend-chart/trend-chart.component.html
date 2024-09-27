@@ -1,0 +1,35 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-gutter-column-xl">
+    <lv-group lvGutter='8px'>
+        <ng-container *ngFor="let item of types">
+            <div class="tag" [style.background]="item.background">
+                <span>{{item.label}}</span>
+                <span class="num">
+                    {{item.content}}
+                </span>
+            </div>
+        </ng-container>
+    </lv-group>
+</div>
+<div id="trend-chart" [ngClass]="{'large-chart-width': largeSizeChart, 'chart-width': !largeSizeChart}"></div>
+<lv-group lvGutter='12px' class="tag-group">
+    <ng-container *ngFor="let tag of chartTags">
+        <div class="legend-tag">
+            <span [ngClass]="{'count-icon': tag.count, 'snapshot-icon': !tag.count}"
+                [style.background]="tag.background"></span>
+            <span class="mgl">{{tag.label}}</span>
+        </div>
+    </ng-container>
+</lv-group>

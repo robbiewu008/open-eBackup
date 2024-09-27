@@ -1,0 +1,483 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: AnyBackup插件接口
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: Resource provider
+    description: Resource provider rest api
+  - name: any-backup-cluster-open-controller
+    description: Any Backup Cluster Open Controller
+paths:
+  /v1/replication/clusters/clustermgm/force_delete_cluster:
+    delete:
+      tags:
+        - any-backup-cluster-open-controller
+      summary: forceDeleteTargetCluster
+      operationId: forceDeleteTargetClusterUsingDELETE_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/ForceDeleteTargetClusterRequest'
+            originalRef: ForceDeleteTargetClusterRequest
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/replication/clusters/clustermgm/link_clusters:
+    get:
+      tags:
+        - any-backup-cluster-open-controller
+      summary: queryLinkedClusters
+      operationId: queryLinkedClustersUsingGET_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: count
+          in: query
+          description: count
+          required: true
+          type: integer
+          format: int32
+        - name: index
+          in: query
+          description: index
+          required: true
+          type: integer
+          format: int32
+        - name: type
+          in: query
+          description: type
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AnyBackupPageInfo«LinkCluster»'
+            originalRef: AnyBackupPageInfo«LinkCluster»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  '/v1/resources/{env_id}/resources':
+    get:
+      tags:
+        - Resource provider
+      summary: 获取指定环境的资源列表
+      operationId: listResourcesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: env_id
+          in: path
+          description: 受保护环境ID
+          required: true
+          type: string
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          format: int32
+          x-example: 10
+        - name: parentResourceId
+          in: query
+          description: 父资源ID
+          required: false
+          type: string
+          allowEmptyValue: false
+        - name: resourceType
+          in: query
+          description: >-
+            资源类型[取值范围]：Fileset|ABBackupClient|MySQL|DB2|SQLServer|ms.VirtualMachine|ms.HostSystem|GaussDB
+          required: true
+          type: string
+          allowEmptyValue: false
+        - name: startPage
+          in: query
+          description: 开始页
+          required: false
+          type: integer
+          format: int32
+          x-example: 0
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse«Resource»'
+            originalRef: PageListResponse«Resource»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  AnyBackupPageInfo«LinkCluster»:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/LinkCluster'
+          originalRef: LinkCluster
+      totalNum:
+        type: integer
+        format: int32
+    title: AnyBackupPageInfo«LinkCluster»
+  File:
+    type: object
+    properties:
+      absolute:
+        type: boolean
+      absoluteFile:
+        $ref: '#/definitions/File'
+        originalRef: File
+      absolutePath:
+        type: string
+      canonicalFile:
+        $ref: '#/definitions/File'
+        originalRef: File
+      canonicalPath:
+        type: string
+      directory:
+        type: boolean
+      executable:
+        type: boolean
+      file:
+        type: boolean
+      freeSpace:
+        type: integer
+        format: int64
+      hidden:
+        type: boolean
+      lastModified:
+        type: integer
+        format: int64
+      name:
+        type: string
+      parent:
+        type: string
+      parentFile:
+        $ref: '#/definitions/File'
+        originalRef: File
+      path:
+        type: string
+      readable:
+        type: boolean
+      totalSpace:
+        type: integer
+        format: int64
+      usableSpace:
+        type: integer
+        format: int64
+      writable:
+        type: boolean
+    title: File
+  ForceDeleteTargetClusterRequest:
+    type: object
+    properties:
+      Vip:
+        type: string
+      link_type:
+        type: string
+    title: ForceDeleteTargetClusterRequest
+  GetTransactionLogsTimeTimeStamp:
+    type: object
+    properties:
+      fullTime:
+        type: string
+      logTime:
+        type: string
+    title: GetTransactionLogsTimeTimeStamp
+  InitializeResultDesc:
+    type: object
+    properties:
+      code:
+        type: string
+        enum:
+          - '0'
+          - '-1'
+          - '10000'
+          - '10001'
+          - '10002'
+          - '10003'
+          - '10004'
+          - '10005'
+          - '10006'
+      desc:
+        type: string
+    title: InitializeResultDesc
+  LinkCluster:
+    type: object
+    properties:
+      clusterId:
+        type: string
+      customer:
+        type: string
+      id:
+        type: string
+      state:
+        type: string
+      type:
+        type: string
+      vip:
+        type: string
+    title: LinkCluster
+  MountNasInfoResponseData:
+    type: object
+    properties:
+      mountPath:
+        type: string
+    title: MountNasInfoResponseData
+  NodeDataPlane:
+    type: object
+    properties:
+      id:
+        type: string
+      ip:
+        type: string
+    title: NodeDataPlane
+  PageListResponse«Resource»:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 分页查询结果列表
+        items:
+          $ref: '#/definitions/Resource'
+          originalRef: Resource
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数
+    title: PageListResponse«Resource»
+  PlatformGetDataNode:
+    type: object
+    properties:
+      id:
+        type: string
+      ip:
+        type: string
+      name:
+        type: string
+    title: PlatformGetDataNode
+  PlatformGetResponse:
+    type: object
+    properties:
+      assignable:
+        type: string
+      auther:
+        type: string
+      createUser:
+        type: string
+      id:
+        type: string
+      ip:
+        type: string
+      name:
+        type: string
+      nodes:
+        type: array
+        items:
+          $ref: '#/definitions/PlatformGetDataNode'
+          originalRef: PlatformGetDataNode
+      platformConfigCustomer:
+        type: string
+      platformCustomer:
+        type: string
+      port:
+        type: integer
+        format: int32
+      type:
+        type: integer
+        format: int32
+      username:
+        type: string
+      version:
+        type: string
+    title: PlatformGetResponse
+  ProtectedEnvironment:
+    type: object
+    properties:
+      endpoint:
+        type: string
+      link_status:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      os_name:
+        type: string
+      os_type:
+        type: string
+      password:
+        type: string
+      port:
+        type: integer
+        format: int32
+      sub_type:
+        type: string
+      type:
+        type: string
+      user_name:
+        type: string
+      uuid:
+        type: string
+    title: ProtectedEnvironment
+  Resource:
+    type: object
+    properties:
+      environment_endpoint:
+        type: string
+        description: 资源所属环境的IP地址
+      environment_name:
+        type: string
+        description: 资源所属环境名称
+      gns_path:
+        type: string
+        description: 资源的gns路径
+      hasChildren:
+        type: boolean
+        description: 是否有子资源
+      instance_names:
+        type: string
+        description: 实例名称
+      name:
+        type: string
+        description: 资源名称
+      parent_uuid:
+        type: string
+        description: 父资源uuid
+      path:
+        type: string
+        description: 资源路径
+      root_uuid:
+        type: string
+        description: 根资源uuid
+      size:
+        type: string
+        description: 资源大小
+      sub_type:
+        type: string
+        description: >-
+          资源子类[取值范围]：Fileset|ABBackupClient|MySQL|DB2|SQLServer|ms.VirtualMachine|ms.HostSystem|GaussDB
+      type:
+        type: string
+        description: 资源类型
+      uuid:
+        type: string
+        description: 资源uuid
+    title: Resource
+  StoragePool:
+    type: object
+    properties:
+      freeSize:
+        type: integer
+        format: int64
+      id:
+        type: string
+      name:
+        type: string
+      status:
+        type: integer
+        format: int32
+      totalSize:
+        type: integer
+        format: int64
+      usedSize:
+        type: integer
+        format: int64
+    title: StoragePool
+  URLStreamHandler:
+    type: object
+    title: URLStreamHandler
+  Volume:
+    type: object
+    properties:
+      cloudBlockId:
+        type: string
+      desc:
+        type: string
+      freeSize:
+        type: integer
+        format: int64
+      location:
+        type: string
+      nodeId:
+        type: string
+      poolId:
+        type: string
+      size:
+        type: integer
+        format: int64
+      status:
+        type: integer
+        format: int32
+      storageType:
+        type: integer
+        format: int32
+      totalSize:
+        type: integer
+        format: int64
+      usedSize:
+        type: integer
+        format: int64
+      volumeId:
+        type: string
+      volumeName:
+        type: string
+      volumeType:
+        type: integer
+        format: int32
+    title: Volume

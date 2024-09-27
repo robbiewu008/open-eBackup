@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>
+    <artifact>
+        <versionType>Component</versionType>
+        <repoType>Generic</repoType>
+        <id>
+            <offering>DPA</offering>
+            <componentName>OS DEPENDENCY</componentName>
+            <componentVersion>1.3.0</componentVersion>
+        </id>
+        <isClear>Y</isClear>
+        <copies>
+            <copy>
+                <source>*</source>
+                <dest>arm/euler2.11/</dest>
+            </copy>
+        </copies>
+    </artifact>
+	<dependencies>
+		<dependency>
+			<versionType>Component</versionType>
+			<repoType>Generic</repoType>
+			<id>
+				<offering>EulerOS Server</offering>
+				<componentName>EulerOSServerV200R011C00ARM</componentName>
+				<componentVersion>2023.03.20.172211</componentVersion>
+			</id>
+			<copies>
+				<copy>
+					<source>Software/aarch64/${PACKAGE1}</source>
+					<dest></dest>
+				</copy>
+			</copies>
+		</dependency>
+		<dependency>
+			<versionType>Component</versionType>
+			<repoType>Generic</repoType>
+			<id>
+				<offering>EulerOS Server</offering>
+				<componentName>EulerOSServerV200R011C00ARM</componentName>
+				<componentVersion>2023.03.20.172211</componentVersion>
+			</id>
+			<copies>
+				<copy>
+					<source>Software/aarch64/CompileTools/${PACKAGE2}</source>
+					<dest></dest>
+				</copy>
+			</copies>
+		</dependency>
+		<dependency>
+			<versionType>Component</versionType>
+			<repoType>Generic</repoType>
+			<id>
+				<offering>EulerOS Virtual</offering>
+				<componentName>EulerOSVirtualV2R11C00ARM</componentName>
+				<componentVersion>2023.03.20.203711</componentVersion>
+			</id>
+			<copies>
+				<copy>
+					<source>01.InstallationPackage/${PACKAGE5}</source>
+					<dest></dest>
+				</copy>
+			</copies>
+		</dependency>
+		<dependency>
+			<versionType>Component</versionType>
+			<repoType>Generic</repoType>
+			<id>
+				<offering>EulerOS Virtual</offering>
+				<componentName>EulerOSVirtualV2R11C00ARM</componentName>
+				<componentVersion>2023.03.20.203711</componentVersion>
+			</id>
+			<copies>
+				<copy>
+					<source>03.DebugTools/${PACKAGE6}</source>
+					<dest></dest>
+				</copy>
+			</copies>
+		</dependency>
+	</dependencies>
+</project>

@@ -1,0 +1,41 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="开启智能勒索检测">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001336887429.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="防勒索">
+<meta name="DC.Publisher" content="20220629">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001282909078">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>开启智能勒索检测</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001282909078"></a><a name="ZH-CN_TOPIC_0000001282909078"></a>
+
+<h1 class="topictitle1">开启智能勒索检测</h1>
+<div id="body0000001282909078"><p id="ZH-CN_TOPIC_0000001282909078__p8060118">通过对已知勒索软件攻击特征的检测，识别出被勒索软件感染的文件系统。对未识别出勒索感染的文件系统 ，分析对比文件系统快照变化特征，使用机器学习算法，进一步检测文件系统是否被勒索软件感染。请参考本节操作，开启智能勒索检测。</p>
+<div class="section" id="ZH-CN_TOPIC_0000001282909078__section17802133125417"><h4 class="sectiontitle">注意事项</h4><p id="ZH-CN_TOPIC_0000001282909078__p57622222314">在智能勒索检测过程中，如果正在检测的勒索检测快照对应的文件系统快照目录不可见，系统会基于该勒索检测快照创建以“DEE-ANTI-CLONE”开头的克隆文件系统，用于生成快照的元数据特征。检测过程中，请不要删除和重命名以该前缀开头的克隆文件系统。删除或重命名后，可能会导致检测失败。智能勒索检测完成后，系统会自动删除以该前缀开头的克隆文件系统。</p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000001282909078__section1487541317382"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000001282909078__ol13790921131411"><li id="ZH-CN_TOPIC_0000001282909078__zh-cn_topic_0000001166366216_zh-cn_topic_0000001091431193_li1570821013536"><span>在上方导航栏选择“数据利用 &gt; 防勒索 &gt; 勒索检测”。</span></li><li id="ZH-CN_TOPIC_0000001282909078__li5362122616287"><span>在<span class="uicontrol" id="ZH-CN_TOPIC_0000001282909078__uicontrol12890172918">“检测设置”</span>页签，选择需要开启智能勒索检测的租户，单击<span class="menucascade" id="ZH-CN_TOPIC_0000001282909078__menucascade146832554715">“<span class="uicontrol" id="ZH-CN_TOPIC_0000001282909078__uicontrol126822574714">更多</span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000001282909078__uicontrol0572572474">开启智能勒索检测</span>”</span>。开启智能勒索检测后，需要参考<a href="zh-cn_topic_0000001283134340.html">创建勒索检测快照</a>，创建勒索检测快照。快照生成后，系统将立刻对快照进行勒索检测。</span><p><div class="note" id="ZH-CN_TOPIC_0000001282909078__note751754763520"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000001282909078__ul169632023112316"><li id="ZH-CN_TOPIC_0000001282909078__li78251254173914">您也可以勾选多个需要开启智能勒索检测的租户，单击租户列表上方的<span class="menucascade" id="ZH-CN_TOPIC_0000001282909078__menucascade9651115518235">“<span class="uicontrol" id="ZH-CN_TOPIC_0000001282909078__uicontrol10651135519235">更多</span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000001282909078__uicontrol265119550232">开启智能勒索检测</span>”</span>。</li><li id="ZH-CN_TOPIC_0000001282909078__li1963132314231">如果不需要智能勒索检测，请单击<span class="menucascade" id="ZH-CN_TOPIC_0000001282909078__menucascade7354152611471">“<span class="uicontrol" id="ZH-CN_TOPIC_0000001282909078__uicontrol2354112613470">更多</span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000001282909078__uicontrol153545264471">禁用智能勒索检测</span>”</span>。或者勾选多个需要禁用智能勒索检测的租户，单击租户列表上方的<span class="menucascade" id="ZH-CN_TOPIC_0000001282909078__menucascade161948617235">“<span class="uicontrol" id="ZH-CN_TOPIC_0000001282909078__uicontrol019413692319">更多</span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000001282909078__uicontrol171945617239">禁用智能勒索检测</span>”</span>。</li></ul>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001336887429.html">使用智能勒索检测</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

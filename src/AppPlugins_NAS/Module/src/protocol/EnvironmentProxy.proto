@@ -1,0 +1,201 @@
+syntax = "proto2";
+import "BasicCommands.proto";
+import "BasicTypes.proto";
+import "Tasks.proto";
+
+// range of commands for Environment Proxy: 300-399
+
+message VerifyCredentials
+{
+    extend BasicCommand
+    {
+        optional VerifyCredentials cmd = 300;
+    }
+    
+    repeated TaskID          task_id = 1;
+    repeated EnvironmentPath env_path = 2;
+} 
+
+message VerifyCredentialsReply
+{
+    extend GetTaskStateReply
+    {
+        optional VerifyCredentialsReply cmd = 301;
+    }
+    
+    repeated int32 answer_code = 1;		//Need to replace this with TaskStateAbortedReply later.
+    repeated string answer_string = 2;	//Need to replace this with TaskStateAbortedReply later.
+    repeated string extend_data = 3;	//save hypervisor guid
+}
+
+message storage_item
+{
+	optional uint64 Id=1;
+	optional string Name=2;
+	optional string MO_reference=3;
+    optional string object_guid = 4; //unque guid in HCP system
+	optional uint64 Size=5;
+	optional uint64 FreeSpace=6;
+}
+ 
+
+
+message c2s_link
+{
+    optional uint64 computer_resource_id = 1;
+    optional uint64 storage_resource_id = 2;
+}
+
+
+
+message non_vm_record
+{
+    optional  uint64 id = 1;
+    optional  EnvObjType object_type = 2;
+    optional  string mo_reference = 3;
+    optional  string object_guid = 4;      // unique guid in HCP system.
+    optional  string default_mo_reference = 5;  // default folder or default resource pool moref depend on the object_type
+    optional  string ip = 6; // IP of the ESX or the CNA
+    optional  bool cluster_enable =7; //indicate that is DRS is enabled .
+    optional  uint64 cpu_num = 8; //indicate how many CPUs in the CNA/ESX.
+    optional  string arch = 9; // x86 or arm
+}
+
+
+message ScanEnvironment
+{
+    extend BasicCommand
+    {
+        optional ScanEnvironment cmd = 302;
+    }
+
+    repeated TaskID          task_id = 1;
+    repeated EnvironmentPath env_path = 2;
+}
+
+message ScanEnvironmentReply
+{
+    extend GetTaskStateReply
+    {
+        optional ScanEnvironmentReply cmd = 303;
+    }
+
+	repeated tree_record     tree_table=1;	// multiple records of tree table
+	repeated machine_record  machine_table=2;	// multiple records of machine table
+	repeated disk_record     disk_table=3;	// multiple records of disk table
+	repeated uint64        timestamp=4;		// timestamp of creation of this packet at ProxyEnv side
+	repeated storage_item  storage=5;		// multiple records of storage
+	repeated c2s_link links=6;			// list of relationshps between compute resources and storage resources
+	repeated non_vm_record   non_vm_table=7;	// properties of all non-VM objects from tree table
+    repeated string mgmtip = 8; // all the v3 mgmt V4 IPs
+    repeated string productmode = 9;//v3 product mode
+    repeated string productversion = 10; //product version
+}
+
+message tree_record
+{
+	optional uint64		object_id = 1;		// uniquely identifies object within this packet
+	optional EnvObjType	object_type =2;		// enum, can represent vCenter|ESX|cluster|CNA|VRM|etc
+	optional string		object_name =3;		// name of object, can contain Chinese or English characters. // For fusionSphere objects, length: 0~256 bytes.
+	optional uint64		parent_id=4;		// ID of direct or indirect parent of current object
+	optional bool		direct_parent=5;	// Boolean. TRUE if parent_id represent a direct parent
+	optional string     object_guid = 6;       // unique guid in HCP system.
+}
+
+ 
+
+// the CBT state of a Virtual Machine
+enum CbtStateType
+{
+    kCbtOff     = 0;    // CBT is disabled
+    kCbtOn      = 1;    // CBT is enabled
+    kCbtUnknown = 2;    // CBT state is unknown
+}
+
+message machine_record
+{
+	optional uint64 machine_id=1;		// identical to object_id in tree_record message
+	optional string machine_name=2;		// machine name, can contain Chinese characters
+	optional string machine_OS =3;		// operating system, e.g. Microsoft Windows NT SP1
+	optional uint64 number_of_disk=4;	// number of directly attached disks that can be backed up
+	optional uint64 storage_size=5;		// total size of all directly attached storage
+	optional string MO_reference=6;		// a black box string, allow ProxyEnvSS to uniquely access VM
+	optional string machine_des =  7;	// used for store fusionsphere information or other protected environments
+	optional string machine_GUID = 8;	// add item 'GUID' for VM which can be used to distinguish VM uniquely
+	optional CbtStateType cbt_state = 9;    // the CBT state of a Virtual Machine, 0: off,  1: on,  2: unknown
+	optional string object_guid = 10;      // unique guid in HCP system.
+	/* BEGIN: Added by zhenming 254911, 2015/3/9   PN:for support openStack solution */
+	optional virtualGroupType vgroup = 11 ; //indicate which virtual group the vm belongs to ,such as openstact
+	/* END:   Added by zhenming 254911, 2015/3/9 */
+	optional string host_id = 12; //indicate which CNA/ESX the vm running on
+}
+
+
+message disk_record
+{
+	optional uint64 machine_id=1;			// identical to machine_id in vm_record message
+	optional string disk_id=2;			// disk ID. Changed from uint64 to string. Used to store the GUID as-is from the product system.
+	optional EnvMachineDiskType disk_type=3;	// enum, can represent IDE| SCSCI| RDM|etc
+	optional uint64 disk_number=4;				// disk number as returned by hypervisor
+	optional uint64 disk_size=5;				// disk number as returned by hypervisor
+	optional string datastore_MO_Reference=6;   // datastore which the disk located in
+	optional uint64 disk_bus_number=7;
+	optional uint64 disk_slot_number=8;
+	optional string object_guid = 9;           // unique guid in HCP system.
+	optional string disk_name = 10;
+}
+
+
+
+// the property of a virtual object
+message VirtualObjProperty
+{
+    repeated string name = 1;   // the name of the property
+    repeated string value = 2;  // the value of the property
+}
+
+// the data for a command of setting the properties of a Virtual Machine with new values
+message SetVmProperty
+{
+    extend BasicCommand
+    {
+        optional SetVmProperty cmd = 304;
+    }
+
+    repeated TaskID             task_id = 1;
+    repeated EnvironmentPath    env_path = 2;   // represents the hypervisor
+    repeated string             vm_uuid = 3;    // represents the Virtual Machine
+    repeated string             vm_name = 4;    // name of the Virtual Machine
+    repeated string             vm_moref = 5;   // MO Reference of the Virtual Machine
+    repeated VirtualObjProperty properties = 6; // the properties to be updated
+    repeated string   operate_user = 7;   // operate user name with ip
+}
+
+// the error code of the operation of setting the properties of a virtual object
+// Note: If the operation is successful, the status of the task is 'completed',
+// which is enough for the AdminNode to determine the status of the task,
+// so, there is no need here to add a value for the success status of an operation.
+enum ESetVirtualObjStatus
+{
+    kCbtObjNotExist             = 0;    // Set CBT: FusionSphere object does not exist
+    kCbtDbError                 = 1;    // Set CBT: FusionSphere database operation failure
+    kCbtInternalErr             = 2;    // Set CBT: FusionSphere internal error
+    kCbtDatastoreNotSupport     = 3;    // Set CBT: this type of datastore does not support disabling CBT
+    kCbtFailed                  = 4;    // Set CBT: FusionSphere failed to disable CBT
+    kCbtVmTemplateNotSupport    = 5;    // Set CBT: Virtual Machine template does not support disabling CBT
+    kCbtLinkClonedVmNotSupport  = 6;    // Set CBT: this type of Virtual Machine (link-cloned Virtual Machine) does not support disabling CBT
+}
+
+// the reply message of the task for setting the properties of a virtual object
+message SetVmPropertyReply
+{
+    extend GetTaskStateReply
+    {
+        optional SetVmPropertyReply cmd = 305;
+    }
+
+    repeated EnvironmentPath        env_path = 1;           // represents the hypervisor
+    repeated string                 vm_uuid = 2;            // represents the Virtual Machine
+    repeated VirtualObjProperty     uptodate_properties = 3;// the up-to-date properties
+    repeated ESetVirtualObjStatus   status = 4;             // the return status of the operation of setting the properties of a virtual object
+}

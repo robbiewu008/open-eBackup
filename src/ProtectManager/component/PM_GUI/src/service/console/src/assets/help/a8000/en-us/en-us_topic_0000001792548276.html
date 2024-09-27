@@ -1,0 +1,172 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Creating a Fileset">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792388596.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001792548276">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Creating a Fileset</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001792548276"></a><a name="EN-US_TOPIC_0000001792548276"></a>
+
+<h1 class="topictitle1">Step 2: Creating a Fileset</h1>
+<div><p>Before performing fileset protection, you need to create a fileset that contains multiple files or directories on the host. You can create a fileset for a single host or create filesets for multiple hosts in batches using a fileset template.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839142377_uicontrol1535113494115"><b><span id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839142377_text735434144116"><strong>Protection</strong></span> &gt; File Systems &gt; Filesets</b></span>.</span><p><div class="note" id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839142377_note12707194325517"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839142377_p370854395513">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839142377_uicontrol117931445568"><b><span id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839142377_text197938425615"><strong>Protection</strong></span> &gt; Bare Metal &gt; Filesets</b></span>.</p>
+</div></div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span>.</span></li><li><span>Select a fileset creation mode: <span class="uicontrol"><b><span><strong>Custom</strong></span></b></span> or <span class="uicontrol"><b><span><strong>Templates</strong></span></b></span>.</span><p><ul><li>To create a fileset for a single host, set the fileset creation mode to <span class="uicontrol"><b><span><strong>Custom</strong></span></b></span>.<p><a href="#EN-US_TOPIC_0000001792548276__en-us_topic_0000001218047555_table6268122683816">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001792548276__en-us_topic_0000001218047555_table6268122683816"></a><a name="en-us_topic_0000001218047555_table6268122683816"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001218047555_table6268122683816" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for creating a fileset</caption><colgroup><col style="width:11.450000000000001%"><col style="width:10.879999999999999%"><col style="width:77.66999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.3.2.1.1.3.2.4.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.3.2.1.1.3.2.4.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.1.1.3.2.4.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.1.1.3.2.4.1.2 "><p>Customize a fileset name as required.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.1.1.3.2.4.1.1 "><p><span><strong>Select Host</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.1.1.3.2.4.1.2 "><p>Select the host on which a fileset needs to be protected.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.1.1.3.2.4.1.1 "><p><span><strong>File to Select</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.1.1.3.2.4.1.2 "><p>Select the files to be protected.</p>
+<p>A maximum of 64 files or directories can be selected.</p>
+<p>After expanding the data source, you can search for a file name to select the corresponding file.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>The directory where ProtectAgent resides (for example, <strong>C:\DataBackup</strong> in Windows and <strong>/opt/DataBackup</strong> in non-Windows OSs) cannot be backed up.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" rowspan="2" valign="top" width="11.450000000000001%" headers="mcps1.3.2.2.3.2.1.1.3.2.4.1.1 "><p><span><strong>Filtering Rules</strong></span></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="10.879999999999999%" headers="mcps1.3.2.2.3.2.1.1.3.2.4.1.1 "><p><span><strong>File</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.66999999999999%" headers="mcps1.3.2.2.3.2.1.1.3.2.4.1.2 "><p>Select the files to be included or excluded.</p>
+<p>The rules for filtering files are as follows:</p>
+<ul><li>Enter the full path of the file.</li><li>When multiple paths are configured, click <span class="uicontrol"><b><span><strong>Save</strong></span></b></span> before entering a new path.</li><li>The path can contain the wildcard character <strong>*</strong>.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.1.1.3.2.4.1.1 "><p><span><strong>Directory</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.1.1.3.2.4.1.1 "><p>Directories to be included or excluded. Click <span class="uicontrol"><b><span><strong>Save</strong></span></b></span>.</p>
+<p>The rules for filtering directories are as follows:</p>
+<ul><li>Enter the full path of the directory.</li><li>When multiple paths are configured, click <span class="uicontrol"><b><span><strong>Save</strong></span></b></span> before entering a new path.</li><li>The path can contain the wildcard character <strong>*</strong>.</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><div class="p" id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_p1162952215820">When multiple filtering rules are set, you can determine whether the rules take effect based on the following rules:<ul id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_ul86299228580"><li id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_li15526150172217">If only <strong id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_b2069125644912">Contain</strong> conditions exist, the logic relationship between these conditions is <span class="uicontrol" id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_uicontrol37035614912"><b>AND</b></span>. That is, the search result is filtered based on all the selected conditions.</li><li id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_li186794317268">If only <strong id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_b1097493611505">Exclude</strong> conditions exist, the logic relationship between these conditions is <span class="uicontrol" id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_uicontrol12974536135015"><b>AND</b></span>. That is, the search result is filtered based on the union of all the selected conditions.</li><li id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_li1862915229582">If both <strong id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_b1666482675214">Contain</strong> and <strong id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_b96657265528">Exclude</strong> conditions exist, the <strong id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_b366662645212">Exclude</strong> condition is determined only in the <strong id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001839267617_en-us_topic_0000001172683312_b136667269520">Contain</strong> conditions.</li></ul>
+</div>
+</div></div>
+</li><li>To batch create filesets for multiple hosts, set the fileset creation mode to <span class="uicontrol"><b><span><strong>Templates</strong></span></b></span>.<p>For filesets created in batches in <span class="uicontrol"><b><span><strong>Associated Template</strong></span></b></span> mode, their naming convention is <em>Template name_Host IP address_Last four digits of the timestamp</em>, for example, fileset_192_168_10_10_8981.</p>
+<p><a href="#EN-US_TOPIC_0000001792548276__en-us_topic_0000001218047555_table16215174018419">Table 2</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001792548276__en-us_topic_0000001218047555_table16215174018419"></a><a name="en-us_topic_0000001218047555_table16215174018419"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001218047555_table16215174018419" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Creating filesets using a template</caption><colgroup><col style="width:34.27%"><col style="width:65.73%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="34.27%" id="mcps1.3.2.2.3.2.1.2.4.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="65.73%" id="mcps1.3.2.2.3.2.1.2.4.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="34.27%" headers="mcps1.3.2.2.3.2.1.2.4.2.3.1.1 "><p><span><strong>Templates</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65.73%" headers="mcps1.3.2.2.3.2.1.2.4.2.3.1.2 "><p>Select the template created in <a href="en-us_topic_0000001839267617.html">Step 1: Creating a Fileset Template</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="34.27%" headers="mcps1.3.2.2.3.2.1.2.4.2.3.1.1 "><p><span><strong>Hosts</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65.73%" headers="mcps1.3.2.2.3.2.1.2.4.2.3.1.2 "><p>Select the host on which a fileset needs to be protected.</p>
+<p>A maximum of 64 hosts can be selected at a time.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>Ensure that the file path specified in the template exists on the selected host. Otherwise, the files in the path cannot be backed up.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="34.27%" headers="mcps1.3.2.2.3.2.1.2.4.2.3.1.1 "><p><span><strong>Associate SLA</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65.73%" headers="mcps1.3.2.2.3.2.1.2.4.2.3.1.2 "><p>Associate a fileset with an SLA.</p>
+<ul><li>You can associate an SLA with a fileset to be protected. After a fileset is created, the system periodically protects the fileset. For details about advanced fileset protection parameters, see <a href="en-us_topic_0000001792548340.html#EN-US_TOPIC_0000001792548340__li164660725814">4</a>.</li><li>You can also associate an SLA with the fileset again in subsequent operations.</li></ul>
+<p>For details about the parameters for creating an SLA, see <a href="en-us_topic_0000001792388580.html">Step 5: Creating a Backup SLA</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ul>
+</p></li><li><span>Click <span class="uicontrol"><b><span>OK</span></b></span>.</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">File Types That Can Be Filtered</h4><p>When creating a fileset, you can specify the file type to be filtered. <a href="#EN-US_TOPIC_0000001792548276__en-us_topic_0000001218047555_table10110114810196">Table 3</a> lists the file types that can be filtered.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001792548276__en-us_topic_0000001218047555_table10110114810196"></a><a name="en-us_topic_0000001218047555_table10110114810196"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792548276__en-us_topic_0000001218047555_table10110114810196" frame="border" border="1" rules="all"><caption><b>Table 3 </b>File formats that can be filtered</caption><colgroup><col style="width:28.28%"><col style="width:71.72%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="28.28%" id="mcps1.3.3.3.2.3.1.1"><p>File Type</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="71.72%" id="mcps1.3.3.3.2.3.1.2"><p>Supported Format</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="28.28%" headers="mcps1.3.3.3.2.3.1.1 "><p><span><strong>Microsoft Office file</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.72%" headers="mcps1.3.3.3.2.3.1.2 "><p>*.doc, *.docx, *.dot, *.docm, *.dotm, *.dotx, *.odt, *.rtf, *.htm, *.html, *.mht, *.mhtml, *.txt, *.wps, *.xml, *.xps, *.pot, *.potm, *.potx, *.ppa, *.ppam, *.pps, *.ppsm, and *.ppsx</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.28%" headers="mcps1.3.3.3.2.3.1.1 "><p><span><strong>Music and video file</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.72%" headers="mcps1.3.3.3.2.3.1.2 "><p>*.wav, *.pcm, *.tta, *.flac, *.au, *.ape, *.tak, *.mp3, *.wv, *.wma, *.ogg, *.aac, *.flv, *.avi, *.wmv, *.asf, *.wmvhd, *.dat, *.vob, *.mpg, *.mpeg, *.3gp, *.3g2, *.mkv, *.rm, *.rmvb, *.mov, *.qt, *.ogv, *.oga, *.mod, *.asx, *.mp4, and *.m4v</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.28%" headers="mcps1.3.3.3.2.3.1.1 "><p><span><strong>Picture file</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.72%" headers="mcps1.3.3.3.2.3.1.2 "><p>*.png, *.bmp, *.jpg, *.tiff, *.gif, *.pcx, *.tga, *.exif, *.fpx, *.svg, *.psd, *.cdr, *.pcd, *.dxf, *.ufo, *.eps, *.ai, *.raw, and *.tif</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.28%" headers="mcps1.3.3.3.2.3.1.1 "><p><span><strong>PDF file</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.72%" headers="mcps1.3.3.3.2.3.1.2 "><p>*.pdf</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.28%" headers="mcps1.3.3.3.2.3.1.1 "><p><span><strong>Web page file</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.72%" headers="mcps1.3.3.3.2.3.1.2 "><p>*.xml, *.html, *.htm, *.shtml, *.asp, *.pl, *.cgi, *.php, *.mht, and *.mhtml</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.28%" headers="mcps1.3.3.3.2.3.1.1 "><p><span><strong>Compressed file</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.72%" headers="mcps1.3.3.3.2.3.1.2 "><p>*.rar, *.zip, *.gz, *.cab, *.tar, *.bz2, *.jar, *.iso, *.7z, *.tgz, *.z, and *.tar.z</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.28%" headers="mcps1.3.3.3.2.3.1.1 "><p>User-defined file type</p>
+</td>
+<td class="cellrowborder" valign="top" width="71.72%" headers="mcps1.3.3.3.2.3.1.2 "><p>-</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001792388596.html">Backing up a Fileset</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

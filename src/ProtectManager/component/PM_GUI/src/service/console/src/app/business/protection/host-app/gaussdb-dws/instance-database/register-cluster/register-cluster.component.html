@@ -1,0 +1,87 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="name"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_username_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="userName"
+        placeholder="{{ 'protection_register_dws_username_tip_label' | i18n }}"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_env_variate_file_path_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ 'protection_register_dws_env_path_tip_label' | i18n }}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="pathErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="path"
+        [placeholder]="tempPath"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'system_servers_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        [lvOptions]="clusterAgentOptions"
+        formControlName="cluster"
+        lvValueKey="value"
+        lvMode="multiple"
+        lvShowFilter
+        lvShowCheckAll
+        lvFilterKey="label"
+        lvFilterMode="contains"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_proxy_host_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <aui-agent-select [lvOptions]="proxyOptions" formControlName="agents" lvValueKey="value" lvMode="multiple">
+      </aui-agent-select>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>

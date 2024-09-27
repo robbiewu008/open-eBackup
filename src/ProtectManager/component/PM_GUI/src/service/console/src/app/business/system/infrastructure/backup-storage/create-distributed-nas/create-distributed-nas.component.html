@@ -1,0 +1,251 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div [ngClass]="{ visible: activeStep === 1, hidden: activeStep !== 1 }">
+  <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+    <lv-form-item>
+      <lv-form-label lvRequired="true">{{
+        'common_name_label' | i18n
+      }}</lv-form-label>
+      <lv-form-control [lvErrorTip]="nameErrorTip">
+        <input formControlName="name" lv-input />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="isDecouple || isDistributed">
+      <lv-form-label lvRequired>
+        {{'common_equipment_type_label' | i18n}}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-select [lvOptions]='deviceTypeOptions' formControlName="deviceType" lvValueKey="value" [lvDisabled]="!!rowData"></lv-select>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>{{ 'common_desc_label' | i18n }}</lv-form-label>
+      <lv-form-control [lvErrorTip]="descErrorTip">
+        <textarea
+          rows="5"
+          formControlName="desc"
+          lv-input
+          style="resize: vertical;"
+          [lvAutosize]="{ minRows: 4, maxRows: 8 }"
+        ></textarea>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'system_parallel_data_storage_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{'system_parallel_switch_tips_label' | i18n}}"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+          style="margin-left: 4px;width: 16px;"
+        ></i
+      ></lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName="hasEnableParallelStorage"> </lv-switch>
+        <div *ngIf="formGroup.value.hasEnableParallelStorage" class="parallel-tips">
+          <i lv-icon="lv-icon-status-info"></i>
+          <p>
+            {{ 'system_parallel_tips_label' | i18n }}
+          </p>
+          <a href="" target="_blank" style="display:none">{{
+            'system_view_unsupported_applications_label' | i18n
+          }}</a>
+        </div>
+      </lv-form-control>
+    </lv-form-item>
+
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{'system_fail_overtime_label' | i18n}}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-group lvGutter='8px' >
+            <lv-group>
+              <input lv-input type="text" placeholder="1~120" formControlName="timeoutPeriod" class="failover-for-text">
+            </lv-group>
+            <lv-group>
+              <span>{{'common_minutes_label' | i18n}}</span>
+            </lv-group>
+        </lv-group>
+      </lv-form-control>
+    </lv-form-item>
+  </lv-form>
+
+  <div class="file-path-title lv-form-label-box">
+    <lv-group lvGutter="5px">
+      <span class="prefix-span">*</span>
+      <h2 class="unit-title">
+        {{ 'system_backup_storage_unit_label' | i18n }}
+      </h2>
+    </lv-group>
+  </div>
+  <div *ngIf="!formGroup.value.hasEnableParallelStorage && !appUtilsService.isDecouple">
+    <lv-alert lvType="info" lvClosable="false">
+      {{ 'system_non-parallel_info_label' | i18n }}
+    </lv-alert>
+  </div>
+  <div *ngIf="formGroup.value.hasEnableParallelStorage && !appUtilsService.isDecouple">
+    <lv-alert lvType="info" lvClosable="false">
+      {{ 'system_parallel_info_label' | i18n }}
+    </lv-alert>
+  </div>
+
+  <div *ngIf="!formGroup.value.hasEnableParallelStorage || appUtilsService.isDecouple">
+  <lv-transfer
+  [lvSourceData]="sourceData"
+  [lvTargetData]="targetData"
+  [lvRenders]="[render, render]"
+  [lvFooters]="[null, null]"
+></lv-transfer>
+</div>
+
+  <div *ngIf="formGroup.value.hasEnableParallelStorage">
+    <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab" (lvActiveIndexChange)="tabChange($event)">
+      <lv-tab lvTitle="{{'system_local_cluster_label' | i18n}}" lvId="localCluster">
+        <lv-transfer
+        [lvSourceData]="localSourceData"
+        [lvTargetData]="localTargetData"
+        [lvRenders]="[render, render]"
+        [lvFooters]="[null, null]"
+      ></lv-transfer>
+      </lv-tab>
+      <lv-tab lvTitle="{{'system_non_local_cluster_label' | i18n}}" lvId="nonLocalCluster">
+        <lv-transfer
+        [lvSourceData]="nonLocalSourceData"
+        [lvTargetData]="nonLocalTargetData"
+        [lvRenders]="[render, render]"
+        [lvFooters]="[null, null]"
+      ></lv-transfer>
+      </lv-tab>
+    </lv-tabs>
+  </div>
+</div>
+
+<ng-template #render let-data let-belong="belong">
+  <div>
+    <div *ngIf="belong === 'source'" class="table-title">
+      {{ 'system_selectable_cluster_label' | i18n }}
+    </div>
+    <div *ngIf="belong === 'target'" class="target table-title">
+      <lv-group lvGutter="243px" class="target-group">
+        <lv-group>
+          {{ 'system_selected_cluster_label' | i18n }}
+        </lv-group>
+        <lv-group>
+          <button lv-button lvType="link" (click)="removeAll($event)">
+            {{ 'protection_clear_all_label' | i18n }}
+          </button>
+        </lv-group>
+      </lv-group>
+    </div>
+  </div>
+  <lv-datatable
+    #lvTable
+    [lvData]="data"
+    lvCompareWith="id"
+    lvSelectionMode="multiple"
+    [lvSelection]="selection"
+    (lvSelectionChange)="selectionChange($event, belong)"
+    [lvPaginator]="page"
+    [lvScroll]="{ y: '890px' }"
+  >
+    <thead>
+      <tr>
+        <th *ngIf="belong === 'source'" width="60px"></th>
+        <th lvCellKey="clusterName" width="25%">{{ 'common_name_label' | i18n }}</th>
+        <th lvCellKey="healthStatus" width="15%">
+          {{ 'common_health_status_label' | i18n }}
+        </th>
+        <th lvCellKey="runningStatus" width="15%">
+          {{ 'protection_running_status_label' | i18n }}
+        </th>
+        <th *ngIf="belong === 'source'" lvCellKey="capacity">
+          {{ 'common_capacity_label' | i18n }}
+        </th>
+        <th *ngIf="belong === 'target'" lvCellKey="threshold">
+          {{ 'common_alarm_threshold_label' | i18n }}
+        </th>
+        <th *ngIf="belong === 'target'" lvCellKey="remove">
+          {{ 'common_delete_label' | i18n }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of lvTable.renderData">
+        <tr>
+          <td
+            *ngIf="belong === 'source'"
+            lvShowCheckbox
+            [lvRowData]="item"
+            [lvDisabled]="item.disabled"
+            (lvCheckChange)="checkChange($event, item)"
+            style="width:60px"
+          ></td>
+          <td width="25%">{{ item.name }}</td>
+          <td width="15%">
+            <div lv-overflow>
+              <td>
+                <aui-status [value]="item.healthStatus" type="HealthStatus"></aui-status>
+              </td>
+            </div>
+          </td>
+          <td width="15%">
+            <div lv-overflow>
+              <td>
+                <aui-status [value]="item.runningStatus" type="StoragePoolRunningStatus"></aui-status>
+              </td>
+            </div>
+          </td>
+          <td *ngIf="belong === 'source'">
+            <div class='percent-bar'>
+              <lv-progress [lvValue]="Math.round (item.usedCapacity / item.totalCapacity * 10000) / 100" [lvSize]="'small'" [lvColors]='progressBarColor'
+                           [lvLabel]="progressLabelTpl" lvDecimals="3"></lv-progress>
+              <div class='size-percent'>
+                {{item.usedCapacity | capacityCalculateLabel:'1.1-3':unitconst.KB:
+                      true}}/{{item.totalCapacity | capacityCalculateLabel:'1.1-3':unitconst.KB:
+                      true}}
+              </div>
+            </div>
+          </td>
+          <td *ngIf="belong === 'target'">
+            <lv-spinner
+              [(ngModel)]="item.threshold"
+              lvOnlyInput="true"
+              lvMin="0"
+              lvMax="100"
+              style="width: 48px;"
+            ></lv-spinner
+            ><span style="margin-left: 4px;">%</span>
+          </td>
+          <td *ngIf="belong === 'target'">
+            <a (click)="remove(item)" *ngIf="!item.disabled">{{
+              'common_delete_label' | i18n
+            }}</a>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </lv-datatable>
+  <lv-paginator lvMode="simple" style="margin-left: 12px" #page [hidden]="!lvTable.renderData.length"></lv-paginator>
+</ng-template>
+
+<div [ngClass]="{ visible: activeStep === 2, hidden: activeStep !== 2 }">
+  <aui-set-storage-policy [tableData]="targetData" [selectedData]="typeData"></aui-set-storage-policy>
+</div>
+
+<ng-template #progressLabelTpl let-data>
+  {{ data < 0.001 ? (data == 0 ? 0 : lessThanLabel + '0.001') : data }}%
+</ng-template>

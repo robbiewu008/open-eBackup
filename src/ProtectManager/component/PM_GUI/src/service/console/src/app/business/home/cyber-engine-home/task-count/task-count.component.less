@@ -1,0 +1,47 @@
+@import url('../module.style.less');
+
+.tasks-count {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  margin-top: 40px;
+  .count-first-line {
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    height: 19px;
+    line-height: 19px;
+    margin-bottom: 15px;
+  }
+  .count-sub-line {
+    color: #808080;
+    padding-left: 8px;
+  }
+}
+
+.tasks-lines {
+  margin-top: 16px;
+  width: 100%;
+
+  display: flex;
+  justify-content: space-around;
+  .line {
+    height: 4px;
+    border-radius: 3px;
+  }
+  .critical-line {
+    background-color: #e94949;
+  }
+  .major-line {
+    background-color: #fa8241;
+  }
+  .warning-line {
+    background-color: #ebc040;
+  }
+  .empty-line {
+    width: 100%;
+    border: solid 2px #33373d;
+  }
+}

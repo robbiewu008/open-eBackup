@@ -1,0 +1,74 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation">
+    <lv-group>
+        <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData">
+        </lv-pro-button-group>
+    </lv-group>
+    <lv-group lvGutter="8px">
+        <lv-group lvGutter="8px">
+            <lv-search [lvFocus]="true" [(ngModel)]="name" (lvSearch)="search($event)"
+                lvPlaceHolder="{{'common_search_type_label'|i18n:['']}}">
+            </lv-search>
+            <button class="aui-button-icon" lv-button lvSize="auto" (click)="dataTable.fetchData()">
+                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+            </button>
+        </lv-group>
+    </lv-group>
+</div>
+<div class="list-container">
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>
+
+<ng-template #statisticsTpl let-item>
+    <span class="statistics-tag infected-background" *ngIf="item.infected_copy_num"
+        (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.infected.value)">
+        <span class="statistics-label">{{'explore_infected_label' | i18n}}</span>
+        <span class='count-label'>{{item.infected_copy_num}}</span>
+    </span>
+    <span class="statistics-tag abnormal-background" *ngIf="item.abnormal_copy_num"
+        (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.exception.value)">
+        <span class="statistics-label">{{'common_status_exception_label' | i18n}}</span>
+        <span class='count-label'>{{item.abnormal_copy_num}}</span>
+    </span>
+    <span class="statistics-tag uninfected-background" *ngIf="item.uninfected_copy_num"
+        (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.uninfected.value)">
+        <span class="statistics-label">{{'explore_uninfected_label' | i18n}}</span>
+        <span class='count-label'>{{item.uninfected_copy_num}}</span>
+    </span>
+    <span class="statistics-tag ready-background" *ngIf="item.prepare_copy_num"
+        (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.ready.value)">
+        <span class="statistics-label">{{'common_pending_label' | i18n}}</span>
+        <span class='count-label'>{{item.prepare_copy_num}}</span>
+    </span>
+    <span class="statistics-tag detecting-background" *ngIf="item.detecting_copy_num"
+        (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.detecting.value)">
+        <span class="statistics-label">{{'explore_detecting_label' | i18n}}</span>
+        <span class='count-label'>{{item.detecting_copy_num}}</span>
+    </span>
+    <span class="statistics-tag uninspected-background" *ngIf="item.uninspected_copy_num"
+        (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.uninspected.value)">
+        <span class="statistics-label">{{'explore_uninspected_label' | i18n}}</span>
+        <span class='count-label'>{{item.uninspected_copy_num}}</span>
+    </span>
+    <ng-container
+        *ngIf="!item.infected_copy_num&&!item.abnormal_copy_num&&!item.uninfected_copy_num&&!item.detecting_copy_num&&!item.uninspected_copy_num">
+    </ng-container>
+</ng-template>
+<ng-template #repicasTpl let-item>
+    <span [ngClass]="{'aui-link': item.total_copy_num}" id="outerClosable" lv-overflow
+        (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.all.value)">
+        {{item.total_copy_num ? item.total_copy_num : '--'}}
+    </span>
+</ng-template>

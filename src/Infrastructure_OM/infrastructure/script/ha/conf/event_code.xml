@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <eventDefinition>
+		<param event_id="0x6500C80003" severity="3" macro="EVENT_HA_HEARTBEAT_LOST"/>
+		<param event_id="0x6500C80001" severity="3" macro="EVENT_HA_FILE_SYNC_FAILED"/>
+		<param event_id="0x106500C80008" severity="3" macro="EVENT_HA_SWITCH"/>
+        <param event_id="0x6500C80002" severity="3" macro="EVENT_HA_GATEWAY_CANNOT_REACH"/>
+        <param event_id="0x6500C80004" severity="3" macro="EVENT_HA_STATUS_EXCEPTION"/>
+        <param event_id="0x6500C80006" severity="3" macro="EVENT_HA_DEACTIVE_FAIL"/>
+        <param event_id="0x6500C80005" severity="3" macro="EVENT_HA_ACTIVE_FAIL"/>
+        <param event_id="0x6500C80007" severity="3" macro="EVENT_HA_FLOAT_IP_CONFLICT"/>
+    </eventDefinition>
+</root>
+

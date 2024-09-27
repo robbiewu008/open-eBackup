@@ -1,0 +1,62 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <input lv-input type="text" formControlName="clusterName" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_statefulset_node_label' | i18n }}
+    </lv-form-label>
+  </lv-form-item>
+
+  <button
+    lvType="primary"
+    lv-button
+    (click)="showAddPage()"
+    class="aui-gutter-column-md add-btn"
+  >
+    {{ 'common_add_label' | i18n }}
+  </button>
+
+  <lv-pro-table
+    #dataTable
+    [config]="tableConfig"
+    [data]="tableData"
+  ></lv-pro-table>
+</lv-form>
+
+<ng-template #footerTpl>
+  <div class="lv-modal-btns aui-operation">
+    <lv-group lvGutter="8px">
+      <button lv-button (click)="modal.close()">
+        {{ 'common_cancel_label' | i18n }}
+      </button>
+      <button
+        lv-button
+        lvType="primary"
+        (click)="ok()"
+        [disabled]="!(formGroup.valid && tableData?.total)"
+        [lvLoading]="okLoading"
+      >
+        {{ 'common_ok_label' | i18n }}
+      </button>
+    </lv-group>
+  </div>
+</ng-template>

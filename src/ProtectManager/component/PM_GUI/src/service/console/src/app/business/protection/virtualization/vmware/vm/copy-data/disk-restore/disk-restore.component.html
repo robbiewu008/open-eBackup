@@ -1,0 +1,375 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
+    <ng-template #title>
+        <span class="selected-disk-title">{{'protection_select_disks_label' | i18n }}</span>
+        <span> {{isBatch ? selectedDiskDatas.length : selectedDiskDatas[0].NAME}}</span>
+    </ng-template>
+    <lv-collapse-panel [lvTitle]='title' [lvExpanded]="true">
+        <lv-tabs [(lvActiveIndex)]="activeIndex" [lvSize]="'small'">
+            <lv-tab *ngIf="isBatch" [lvTitle]="total" [lvId]="'total'">
+                <ng-template lv-tab-lazy>
+                    <ng-container *ngTemplateOutlet="tableTpl;context: { $implicit: allDiskDatas,async:true}">
+                    </ng-container>
+                </ng-template>
+            </lv-tab>
+            <lv-tab [lvTitle]='selected' [lvId]="'selected'">
+                <ng-template lv-tab-lazy>
+                    <ng-container *ngTemplateOutlet="tableTpl;context: { $implicit: selectedDiskDatas}">
+                    </ng-container>
+                </ng-template>
+            </lv-tab>
+        </lv-tabs>
+        <ng-template #total>
+            <div class="host-register-tabnav">
+                <span>{{'common_total_label' | i18n}}</span>
+                <span class="host-register-tabnav-num">{{allDiskDatas.length}}</span>
+            </div>
+        </ng-template>
+        <ng-template #selected>
+            <div class="host-register-tabnav">
+                <span>{{'common_selected_label' | i18n}}</span>
+                <span class="host-register-tabnav-num">{{selectedDiskDatas.length}}</span>
+            </div>
+        </ng-template>
+        <ng-template #tableTpl let-tabledata let-async="async">
+            <div class="modal-table">
+                <lv-datatable [lvData]="tabledata" #lvTable lvSelectionMode="multiple" [lvPaginator]="page"
+                    lvSize="small" (lvSelectionChange)="selectionChange($event)" [(lvSelection)]="selectedDiskDatas"
+                    lvCompareWith="GUID">
+                    <thead>
+                        <tr>
+                            <th *ngIf="async" lvShowCheckbox width="64px" [lvRowsData]="lvTable.renderData"></th>
+                            <th>{{'common_name_label' | i18n}}</th>
+                            <th>{{'common_slot_label' | i18n}}</th>
+                            <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN">
+                                <th>{{'common_capacity_label' | i18n}}</th>
+                                <th>{{'protection_vmware_restore_disktype_label' | i18n}}</th>
+                                <th>{{'protection_tagert_database_label' | i18n}}</th>
+                                <th width="180px" lvShowCustom>{{'protection_tagert_database_capacity_label' | i18n}}
+                                    <div lvCustom class="resource-sla-help">
+                                        <i lv-icon="aui-icon-help"
+                                            lv-tooltip="{{'protection_tagert_database_capacity_help_label'| i18n}}"
+                                            lvTooltipPosition="rightTop" class="configform-constraint"
+                                            lvColorState='true'></i>
+                                    </div>
+                                </th>
+                            </ng-container>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let item of lvTable.renderData; let i = index">
+                            <tr>
+                                <td *ngIf="async" lvShowCheckbox [lvRowData]="item"></td>
+                                <td>
+                                    <span lv-overflow>{{item.NAME}}</span>
+                                </td>
+                                <td>{{item.BUSNUMBER | nil}}</td>
+                                <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN">
+                                    <td>{{item.SIZE | capacityCalculateLabel:'1.1-3':unitconst.KB: true}}</td>
+                                    <!-- 硬盘类型 -->
+                                    <td>{{(item.DISKTYPE ==='rdm' ? 'protection_vmware_restore_rdm_type_label' :
+                                        'protection_vmware_restore_normal_type_label') | i18n}}</td>
+                                    <td>{{item.DSNAME}}</td>
+                                    <td>{{ item.DSSIZE | capacityCalculateLabel:'1.1-3':unitconst.KB: true }}</td>
+                                </ng-container>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </lv-datatable>
+            </div>
+            <lv-paginator #page [hidden]="!tabledata?.length" lvMode="simple" [lvTotal]="tabledata?.length"
+                [lvShowPageSizeOptions]="false">
+            </lv-paginator>
+        </ng-template>
+    </lv-collapse-panel>
+</lv-collapse>
+
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'protection_restore_to_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreLocation">
+                <lv-group [lvGutter]="'30px'">
+                    <lv-radio
+                        [lv-tooltip]="restoreToNewLocationOnly ?('protection_vm_disk_origin_restore_disabled_label'| i18n):''"
+                        [lvDisabled]="restoreToNewLocationOnly" [lvValue]="restoreLocationType.ORIGIN">
+                        {{'protection_restore_original_vm_label' |
+                        i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreLocationType.NEW">
+                        {{'protection_restore_new_vm_label' | i18n}}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_vm_disk_restore_new_help_label' | i18n}}"
+                            lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'
+                            class="new-help"></i>
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label>{{'protection_computer_location_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <span lv-overflow class="origin-tip">{{resourceProperties?.path | nil}}</span>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW">
+        <lv-form-item>
+            <h2 class="aui-gutter-column-md">{{'common_location_label' | i18n}}</h2>
+        </lv-form-item>
+    </ng-container>
+    <ng-container>
+        <lv-form-item
+            [ngClass]="formGroup.value.restoreLocation === restoreLocationType.NEW?'computer-location-show':'computer-location-hidden'">
+            <lv-form-label lvRequired>{{'protection_computer_location_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <div [ngClass]="{'new-tip':true,'vm-location-placeHolder':!formGroup.value.location}" lv-overflow>
+                    {{formGroup.value.location
+                    || ('protection_computer_location_disk_tip_label' | i18n)}}
+                </div>
+                <aui-computer-location [vmRestoreOptionType]="VmRestoreOptionType.DISK"
+                    (changeVcenter)='changeVcenter($event)' (changeLocation)='changeLocation($event)'
+                    [type]="RestoreType.CommonRestore">
+                </aui-computer-location>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW">
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'protection_storage_location_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-radio-group formControlName="storage">
+                    <lv-group [lvGutter]="'30px'">
+                        <lv-radio [lvValue]="DatastoreType.DIFFERENT">{{'protection_diff_database_label' | i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="DatastoreType.SAME">{{'protection_same_database_label' | i18n}}</lv-radio>
+                    </lv-group>
+                </lv-radio-group>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="formGroup.value.storage === DatastoreType.SAME">
+            <lv-form-label lvRequired>{{'protection_tagert_database_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="targetDatastore" [lvOptions]='targetDatastoreOptions'
+                    [lvContentTemplate]='contentTpl' [lvPlaceholder]="(datastoreNoData?'protection_restore_new_datastore_placeholder_label' :
+                                'common_select_label') | i18n">
+                    <lv-select-trigger>
+                        <span>
+                            <i [lv-tooltip]="formGroup.value.targetDatastore?.errorTip"
+                                *ngIf="formGroup.value.targetDatastore?.errorTip" lv-icon='lv-icon-status-warning-info'
+                                class="icon-warning"></i>
+                            <span class="datastore-label same"
+                                lv-overflow>{{formGroup.value.targetDatastore?.label}}</span></span>
+                    </lv-select-trigger>
+                    <ng-template #contentTpl let-item>
+                        <div>
+                            <i *ngIf="item.errorTip" [lv-tooltip]="item?.errorTip" lv-icon='lv-icon-status-warning-info'
+                                class="icon-warning"></i>
+                            <span class="datastore-label same" lv-overflow> {{item?.label}}</span>
+                        </div>
+                    </ng-template>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <!-- 磁盘类型 -->
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_vm_disk_file_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_vm_disk_file_help_label' | i18n}}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control>
+                <ng-container>
+                    <div class="location-gutter">
+                        <lv-datatable lvSize="small" [lvPaginator]='page' [lvData]="storageDiskTableData"
+                            formArrayName="diskStorage" #storageTable>
+                            <thead>
+                                <tr>
+                                    <th width="115px">{{'common_disk_name_label' | i18n}}</th>
+                                    <th width="85px">{{'common_slot_label' | i18n}}</th>
+                                    <th>{{'protection_disk_data_capacity_label' | i18n}}</th>
+                                    <th>{{'protection_vmware_restore_disktype_label' | i18n}}</th>
+                                    <th width="230px" lvShowCustom>
+                                        {{'protection_tagert_database_label' | i18n}}
+                                        <div lvCustom class="resource-sla-help">
+                                            <i lv-icon="aui-icon-help"
+                                                lv-tooltip="{{'protection_vm_restore_rdm_help_label' | i18n}}"
+                                                lvTooltipPosition="rightTop" lvTooltipTheme="light"
+                                                class="configform-constraint" lvColorState='true'></i>
+                                        </div>
+                                    </th>
+                                    <th width="180px" lvShowCustom>{{'protection_tagert_database_capacity_label' |
+                                        i18n}}
+                                        <div lvCustom class="resource-sla-help">
+                                            <i lv-icon="aui-icon-help"
+                                                lv-tooltip="{{'protection_tagert_database_capacity_help_label'| i18n}}"
+                                                lvTooltipPosition="rightTop" class="configform-constraint"
+                                                lvColorState='true'></i>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let item of storageTable.renderData;">
+                                    <tr [formGroupName]="item.id">
+                                        <td>
+                                            <span lv-overflow>{{item.name}}</span>
+                                        </td>
+                                        <td>{{item.slot}}</td>
+
+                                        <td>{{ formGroup.value.diskStorage[item.id]?.diskCapacity |
+                                            capacityCalculateLabel:'1.1-3':unitconst.KB: true}}
+                                        </td>
+                                        <!-- 硬盘类型 -->
+                                        <ng-container>
+                                            <td *ngIf="item.isRDM">
+                                                <lv-select [lvOptions]='diskTypeOps' formControlName='diskType'
+                                                    lvValueKey='value'></lv-select>
+                                            </td>
+                                            <td *ngIf="!item.isRDM">
+                                                {{'protection_vmware_restore_normal_type_label' | i18n}}
+                                            </td>
+                                        </ng-container>
+                                        <!-- 不同数据存储--目标数据存储 -->
+                                        <td *ngIf="formGroup.value.storage === DatastoreType.DIFFERENT">
+                                            <lv-select lvAsync
+                                                [lvOptions]='formGroup.value.diskStorage[item.id]?.options'
+                                                formControlName="diskDatastore" lvPanelClass="diskstore-panel"
+                                                [lvContentTemplate]='contentTpl' [lvPlaceholder]="(formGroup.value.diskStorage[item.id]?.options?.length === 0 ? 'protection_restore_new_datastore_placeholder_label' :
+                                                'common_select_label') | i18n" lvShowFilter lvFilterKey="label"
+                                                lvFilterMode="contains">
+                                                <lv-select-trigger>
+                                                    <span>
+                                                        <i [lv-tooltip]="formGroup.value.diskStorage[item.id]?.diskDatastore?.errorTip"
+                                                            *ngIf="formGroup.value.diskStorage[item.id]?.diskDatastore?.errorTip"
+                                                            lv-icon='lv-icon-status-warning-info'
+                                                            class="icon-warning"></i>
+                                                        <span class="datastore-label"
+                                                            lv-overflow>{{formGroup.value.diskStorage[item.id]?.diskDatastore?.label}}</span></span>
+                                                </lv-select-trigger>
+                                                <ng-template #contentTpl let-item>
+                                                    <div>
+                                                        <i *ngIf="item.errorTip" [lv-tooltip]="item?.errorTip"
+                                                            lv-icon='lv-icon-status-warning-info'
+                                                            class="icon-warning"></i>
+                                                        <span class="datastore-label" lv-overflow>
+                                                            {{item?.label}} </span>
+                                                    </div>
+                                                </ng-template>
+                                            </lv-select>
+                                        </td>
+                                        <!-- 相同数据存储--目标数据存储 -->
+                                        <ng-container *ngIf="formGroup.value.storage === DatastoreType.SAME">
+                                            <!-- rdm盘 -->
+                                            <td *ngIf="item.isRDM && item.isChange">
+                                                <lv-select [lvOptions]='formGroup.value.diskStorage[item.id]?.options'
+                                                    formControlName="diskDatastore" lvPanelClass="diskstore-panel"
+                                                    [lvContentTemplate]='contentTpl' [lvPlaceholder]="(datastoreNoData?'protection_restore_new_datastore_placeholder_label' :
+                                                                'common_select_label') | i18n">
+                                                    <lv-select-trigger>
+                                                        <span>
+                                                            <i [lv-tooltip]="formGroup.value.diskStorage[item.id]?.diskDatastore?.errorTip"
+                                                                *ngIf="formGroup.value.diskStorage[item.id]?.diskDatastore?.errorTip"
+                                                                lv-icon='lv-icon-status-warning-info'
+                                                                class="icon-warning"></i>
+                                                            <span class="datastore-label"
+                                                                lv-overflow>{{formGroup.value.diskStorage[item.id]?.diskDatastore?.label}}</span></span>
+                                                    </lv-select-trigger>
+                                                    <ng-template #contentTpl let-item>
+                                                        <div>
+                                                            <i *ngIf="item.errorTip" [lv-tooltip]="item?.errorTip"
+                                                                lv-icon='lv-icon-status-warning-info'
+                                                                class="icon-warning"></i>
+                                                            <span class="datastore-label" lv-overflow>
+                                                                {{item?.label}}</span>
+                                                        </div>
+                                                    </ng-template>
+                                                </lv-select>
+                                            </td>
+                                            <!-- 普通盘 -->
+                                            <td *ngIf="!item.isRDM || !item.isChange">{{formGroup.value.targetDatastore
+                                                ?
+                                                formGroup.value.targetDatastore.label
+                                                : '--'}}</td>
+                                        </ng-container>
+                                        <!-- 剩余容量 -->
+                                        <td *ngIf="formGroup.value.storage === DatastoreType.DIFFERENT">
+                                            {{ formGroup.value.diskStorage[item.id]?.diskDatastore ?
+                                            (formGroup.value.diskStorage[item.id]?.diskDatastore?.freeSpace |
+                                            capacityCalculateLabel:'1.1-3':unitconst.KB: true ) :'--'
+                                            }}</td>
+                                        <td
+                                            *ngIf="formGroup.value.storage === DatastoreType.SAME && (!item.isRDM || !item.isChange)">
+                                            {{ sameFreeSpace || sameFreeSpace === 0 ?
+                                            (sameFreeSpace |
+                                            capacityCalculateLabel:'1.1-3':unitconst.KB: true ) :'--'
+                                            }}</td>
+                                        <td
+                                            *ngIf="formGroup.value.storage === DatastoreType.SAME && (item.isRDM && item.isChange)">
+                                            {{ formGroup.value.diskStorage[item.id]?.diskDatastore ?
+                                            (formGroup.value.diskStorage[item.id]?.diskDatastore?.freeSpace |
+                                            capacityCalculateLabel:'1.1-3':unitconst.KB: true ) :'--'
+                                            }}</td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </lv-datatable>
+                        <lv-paginator #page [lvPageSize]="pageSize" [lvPageSizeOptions]='pageSizeOptions'
+                            [hidden]="!storageDiskTableData.length">
+                        </lv-paginator>
+                    </div>
+                </ng-container>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_vm_restore_nbdssl_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_vm_restore_nbdssl_help_label' | i18n}}"
+                lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="isForceNBDSsl"></lv-switch>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_proxy_host_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_proxy_host_help_label' | i18n}}"
+                lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select lvShowClear [lvOptions]='proxyHostOptions' formControlName='proxyHost' lvValueKey='value'
+                lvMode="multiple" lvShowFilter lvShowCheckAll lvFilterKey="label" lvFilterMode="contains"
+                [lvContentTemplate]="contentTpl" lvPlaceholder="{{'protection_agent_placeholder_label' | i18n}}">
+            </lv-select>
+            <ng-template #contentTpl let-item>
+                <lv-group lvGutter="4px">
+                    <i lv-icon="{{
+                      item.link_status === dataMap.resource_LinkStatus.normal.value ? 'aui-host-online' : 'aui-host-offline'
+                    }}"></i>
+                    <span>{{ item.label }}</span>
+                </lv-group>
+            </ng-template>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

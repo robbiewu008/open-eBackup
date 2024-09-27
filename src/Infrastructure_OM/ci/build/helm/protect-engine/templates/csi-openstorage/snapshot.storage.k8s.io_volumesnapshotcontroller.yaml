@@ -1,0 +1,37 @@
+{{/*
+Get running environment
+*/}}
+{{- $environment:= "" }}
+{{- $realreplicas:= "" }}
+{{- if .Values.global }}
+{{- $environment = .Values.global.environment }}
+{{- $realreplicas = .Values.global.replicas }}
+{{- else }}
+{{- $environment = .Values.local.environment }}
+{{- $realreplicas = .Values.local.replicas }}
+{{- end }}
+
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d8" }}
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: snapshot-controller
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: snapshot-controller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: snapshot-controller
+    spec:
+      serviceAccountName: snapshot-controller
+      containers:
+        - name: snapshot-controller
+          image: dme-openstorageapi-snapshot-controller:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+{{- end }}

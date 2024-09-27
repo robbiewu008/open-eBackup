@@ -1,0 +1,30 @@
+# Default values for Infrastructure.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+GaussDBImagePort: gaussdb_port
+
+elasticsearchImagePort: elasticsearch_port
+
+kafkaImagePort: kafka_port
+
+zookeeperImagePort: zookeeper_port
+
+redisImagePort: redis_port
+
+omImagePort: om_port
+
+dmcNginxPort: dmc_nginx_port
+
+logLevel: INFO
+
+pgsslrootcert: /opt/logpath/infrastructure/cert/internal/ca/ca.crt.pem
+
+dorado:
+  mgrip: none
+
+local:
+  environment: Dorado
+  deploy_type: a8000

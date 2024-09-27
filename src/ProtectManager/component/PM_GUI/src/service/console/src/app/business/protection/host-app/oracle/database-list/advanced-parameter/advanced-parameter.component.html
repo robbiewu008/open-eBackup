@@ -1,0 +1,192 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-collapse [lvMultiExpansion]="false" lvType="simple">
+  <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="isDetail">
+    <lv-form [formGroup]='formGroup' class="formGroup" *ngIf="!!formGroup">
+      <lv-form-item>
+        <lv-form-label>
+          {{'protection_oracle_delete_log_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+          <ng-container *ngIf="!isDetail">
+            <lv-switch formControlName="delete_archived_log"></lv-switch>
+          </ng-container>
+          <ng-container *ngIf="isDetail">
+            {{ !!protectedExtparams?.delete_archived_log | textMap: 'Switch_Status'}}
+          </ng-container>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item *ngIf="!hiddenStorage">
+        <lv-form-label>
+          {{'protection_snapshot_backup_label' | i18n}}
+          <i *ngIf="!isDetail" lv-icon="aui-icon-help" [lv-tooltip]="snapshotTipTpl"
+             lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+             lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+          <ng-container *ngIf="!isDetail">
+             <lv-switch formControlName="storage_snapshot_flag" [lvDisabled]="unsupportStorage"></lv-switch>
+            <lv-group *ngIf="unsupportStorage" class="proxy-host-info-group" [lvColumns]='["16px", "auto"]'>
+              <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+              <span class="aui-text-label proxy-host-info-label"
+                    innerHTML="{{unsupportedLabel|i18n}}">
+              </span>
+            </lv-group>
+          </ng-container>
+          <ng-container *ngIf="isDetail">
+            {{ !!protectedExtparams?.storage_snapshot_flag | textMap: 'Switch_Status'}}
+          </ng-container>
+        </lv-form-control>
+      </lv-form-item>
+      <ng-template #snapshotTipTpl let-data>
+        <span
+              innerHTML="{{'protection_storage_snapshot_backup_tips_label' | i18n}}">
+        </span>
+      </ng-template>
+      <ng-container *ngIf="formGroup.value.storage_snapshot_flag || showProxyHost">
+        <lv-form-item>
+          <lv-form-label [lvRequired]="isRequiredProxy && !isDetail">
+            {{'protection_proxy_host_label' | i18n}}
+          </lv-form-label>
+          <lv-form-control>
+            <ng-container *ngIf="!formGroup.value.storage_snapshot_flag && showProxyHost else agentTpl">
+              <ng-container *ngIf="!isDetail">
+                <lv-select [lvOptions]="hostOptions" formControlName="proxyHost" lvValueKey='value' lvMode="multiple" lvShowFilter lvFilterMode="contains" lvFilterKey="label"></lv-select>
+              </ng-container>
+              <ng-container *ngIf="isDetail" [ngTemplateOutlet]="ipTpl">
+              </ng-container>
+            </ng-container>
+            <ng-template #agentTpl>
+              <ng-container *ngIf="!isDetail">
+                <lv-select
+                  [lvOptions]="hostOptions"
+                  formControlName="proxyHost"
+                  lvValueKey="value"
+                  lvMode="multiple"
+                  [lvContentTemplate]="contentTpl"
+                  lvShowFilter
+                  lvFilterMode="contains"
+                  lvFilterKey="label"
+                >
+                </lv-select>
+                <ng-template #contentTpl let-item>
+                  <lv-group lvGutter="4px">
+                    <i
+                      lv-icon="{{ item.linkStatus === dataMap.resource_LinkStatus_Special.normal.value ? 'aui-host-online' : 'aui-host-offline'}}"
+                    ></i>
+                    <span>{{ item.label }}</span>
+                    <span class="aui-text-help-sm">
+                    {{ item.extendInfo.scenario === dataMap.proxyHostType.builtin.value ?
+                      hostBuiltinLabel
+                      : hostExternalLabel
+                      }}
+                  </span
+                  >
+                  </lv-group>
+                </ng-template>
+              </ng-container>
+              <ng-container *ngIf="isDetail" [ngTemplateOutlet]="ipTpl">
+              </ng-container>
+            </ng-template>
+            <lv-group *ngIf="!isDetail" class="proxy-host-info-group" [lvColumns]='["16px", "auto"]'>
+              <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+              <span class="aui-text-label proxy-host-info-label"
+                    innerHTML="{{proxyTipsLabel}}">
+              </span>
+            </lv-group>
+          </lv-form-control>
+        </lv-form-item>
+      </ng-container>
+      <lv-form-item *ngIf="!!formGroup.value.storage_snapshot_flag">
+        <lv-form-label>
+          {{ 'protection_concurrency_number_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="concurrencyErrorTip">
+          <ng-container *ngIf="!isDetail">
+            <input lv-input type="text" formControlName="concurrency" placeholder="1-8"/>
+          </ng-container>
+          <ng-container *ngIf="isDetail">
+            {{ protectedExtparams?.concurrent_requests | nil}}
+          </ng-container>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>
+          {{'protection_protect_pre_script_label' | i18n}}
+          <i *ngIf="!isDetail" lv-icon="aui-icon-help" [lv-tooltip]="scriptTooltip" lvTooltipTheme="light" class="configform-constraint"
+            lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="scriptErrorTip">
+          <ng-container *ngIf="!isDetail">
+            <input lv-input type='text' formControlName='pre_script' [placeholder]="scriptPlaceholder" />
+          </ng-container>
+          <ng-container *ngIf="isDetail">
+            {{protectedExtparams?.pre_script | nil}}
+          </ng-container>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>
+          {{'protection_protect_post_script_label' | i18n}}
+          <i *ngIf="!isDetail" lv-icon="aui-icon-help" [lv-tooltip]="scriptTooltip" lvTooltipTheme="light" class="configform-constraint"
+            lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="scriptErrorTip">
+          <ng-container *ngIf="!isDetail">
+          <input lv-input type='text' formControlName='post_script' [placeholder]="scriptPlaceholder" />
+          </ng-container>
+          <ng-container *ngIf="isDetail">
+            {{protectedExtparams?.post_script | nil}}
+          </ng-container>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>
+          {{'protection_protect_fail_script_label' | i18n}}
+          <i *ngIf="!isDetail" lv-icon="aui-icon-help" [lv-tooltip]="scriptTooltip" lvTooltipTheme="light" class="configform-constraint"
+            lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="scriptErrorTip">
+          <ng-container *ngIf="!isDetail">
+            <input lv-input type='text' formControlName="failed_script" [placeholder]="scriptPlaceholder" />
+          </ng-container>
+          <ng-container *ngIf="isDetail">
+            {{protectedExtparams?.failed_script | nil}}
+          </ng-container>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form>
+  </lv-collapse-panel>
+</lv-collapse>
+
+<ng-template #titleTpl>
+  <lv-group lvGutter='8px'>
+    <span class="aui-h3">{{'common_advanced_label'|i18n}}</span>
+    <i *ngIf="!isDetail" lv-icon="aui-icon-help" lvTooltipTheme="light"
+      lv-tooltip="{{ 'protection_protect_advance_params_desc2_label' | i18n }}" lvColorState='true'>
+    </i>
+  </lv-group>
+</ng-template>
+
+
+<ng-template #ipTpl>
+  <ng-container *ngIf="!_isEmpty(protectedAgentsIpArr); else emptyTpl">
+    <div *ngFor="let item of protectedAgentsIpArr">
+      {{ item |nil}}
+    </div>
+  </ng-container>
+  <ng-template #emptyTpl>
+    --
+  </ng-template>
+</ng-template>

@@ -1,0 +1,47 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Creating a Periodic Backup">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792571208.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001792411448">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Creating a Periodic Backup</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001792411448"></a><a name="EN-US_TOPIC_0000001792411448"></a>
+
+<h1 class="topictitle1">Creating a Periodic Backup</h1>
+<div><p>After resources to be protected are associated with an SLA, the system protects the resources based on the SLA. </p>
+<div class="section" id="EN-US_TOPIC_0000001792411448__section1587901714120"><h4 class="sectiontitle">Prerequisites</h4><ul id="EN-US_TOPIC_0000001792411448__ul112438191705"><li id="EN-US_TOPIC_0000001792411448__li1547552712383">The TDSQL database has been installed in the <span class="filepath" id="EN-US_TOPIC_0000001792411448__filepath418515423910"><b>/data/tdsql_run</b></span> directory.</li><li id="EN-US_TOPIC_0000001792411448__li6243201918012"><span id="EN-US_TOPIC_0000001792411448__ph675312611446">The NTP service has been enabled for the cluster and the clock source configurations are the same.</span></li><li id="EN-US_TOPIC_0000001792411448__li1059613206013">On the <strong id="EN-US_TOPIC_0000001792411448__b16936153010014">Instance management</strong> page of the TDSQL CHITU management console, select an instance and choose <strong id="EN-US_TOPIC_0000001792411448__b1883112535816">Backup &amp; Recovery</strong> &gt; <strong id="EN-US_TOPIC_0000001792411448__b101481439105817">Backup settings</strong>. Set <span class="parmname" id="EN-US_TOPIC_0000001792411448__parmname167514618715"><b>Number of days to save binlog and cold standby</b></span> of the instance to be backed up to the maximum value.</li><li id="EN-US_TOPIC_0000001792411448__li12561256173916">The database vendor does not support the backup of distributed instances whose DR mode is 1+0 active/standby. Therefore, ensure that the cold standby node has been selected for the TDSQL distributed instance to be backed up before the backup. For configuration details, select an instance on the <strong id="EN-US_TOPIC_0000001792411448__b025802854516">Instance management</strong> page of the TDSQL CHITU management console, go to the <strong id="EN-US_TOPIC_0000001792411448__b1016719531452">Set management</strong> page, and click the set name to view the current cold standby node.</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000001792411448__section198790095810"><h4 class="sectiontitle">Precautions</h4><ul id="EN-US_TOPIC_0000001792411448__ul87861553144913"><li id="EN-US_TOPIC_0000001792411448__li13786195334917">The following DDL operations cannot be performed during the backup of TDSQL distributed instances: CREATE, DROP, ALTER, and TRUNCATE.</li><li id="EN-US_TOPIC_0000001792411448__li156658154912">To back up the TDSQL distributed instances, do not mount the <span class="filepath" id="EN-US_TOPIC_0000001792411448__filepath1494223115546"><b>/tdsqlbackup</b></span> directory.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792411448__en-us_topic_0000001839142377_uicontrol123821426193719"><b><span id="EN-US_TOPIC_0000001792411448__en-us_topic_0000001839142377_text3382726113718"><strong>Protection</strong></span> &gt; Databases &gt; TDSQL</b></span>.</span></li><li><span>On the <span class="wintitle"><b><span><strong>Non-distributed Instances</strong></span></b></span> or <span class="wintitle"><b><span><strong>Distributed Instances</strong></span></b></span> tab page, select the instance to be protected and click <span class="uicontrol"><b><span><strong>Protect</strong></span></b></span>.</span><p><p>You can select multiple databases.</p>
+</p></li><li><span>Select an SLA.</span><p><p>You can also click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> to create an SLA.</p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>TDSQL distributed instances do not support <span><strong>Forever Incremental (Synthetic Full) Backup</strong></span>. Therefore, you cannot select an SLA whose protection policy contains <span><strong>Forever Incremental (Synthetic Full) Backup</strong></span> for protection.</p>
+</div></div>
+</p></li><li><span>For 1.6.0 and later versions: Set advanced parameters if a non-distributed instance is protected.</span><p><p>If archive logs in the production environment need to be deleted after log backup, enable <strong>Delete Archived Logs Immediately After Backup</strong>.</p>
+</p></li><li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001792411448__en-us_topic_0000001792503842_uicontrol196538515235"><b>OK</b></span>. </span><p><p id="EN-US_TOPIC_0000001792411448__en-us_topic_0000001792503842_p25041111535">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001792571208.html">Step 7: Performing Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

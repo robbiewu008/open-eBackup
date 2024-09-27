@@ -1,0 +1,90 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation">
+    <lv-group [lvGutter]="groupCommon.middleRowGutter">
+        <button lv-button lvType="primary" (click)="create()" auiRolePermission
+            [rolePermission]="roleOperationMap.desensitization">
+            {{'common_add_label' | i18n}}
+        </button>
+        <button lv-button (click)="delete(selection)" [disabled]="selection.length === 0" pmpermission
+            pmOperation='DeleteDesensitizationRule'>
+            {{'common_delete_label' | i18n}}
+        </button>
+    </lv-group>
+    <lv-group [lvGutter]="groupCommon.middleRowGutter">
+        <button class="aui-button-icon" lv-button lvSize="auto" (click)="getRules()">
+            <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+        </button>
+    </lv-group>
+</div>
+<div class="rules-container">
+    <lv-datatable [lvData]="tableData" [lvPaginator]="page" lvSelectionMode='multiple' [lvSelection]='selection' lvSort
+        #lvTable lvAsync lvResize lvResizeMode="expand" [lvScroll]="{ x: '100%' }">
+        <thead>
+            <tr>
+                <th lvShowCheckbox width='40px' [lvRowsData]='lvTable.renderData | selectionPipe'></th>
+                <th *ngFor="let col of columns" [lvShowFilter]="col.filterMap" (lvFilterChange)="filterChange($event)"
+                    [(lvFilters)]="col.filterMap" lvCellKey="{{ col.key }}" lvShowCustom lvFilterCheckAll>
+                    {{ col.label}}
+                    <div lvCustom *ngIf="col.key === 'name'">
+                        <aui-custom-table-search (search)="searchByName($event)"
+                            [filterTitle]="col.label"></aui-custom-table-search>
+                    </div>
+                </th>
+                <th width="144px">{{'common_operation_label'|i18n }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of lvTable.renderData">
+                <tr>
+                    <td width='40px' lvShowCheckbox [lvRowData]='item'
+                        [lvDisabled]="item.create_method !== dataMap.Senesitization_Create_Method.customized.value || item.ref_num > 0">
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.name}}</span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.create_method | textMap: 'Senesitization_Create_Method'}}</span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.type | textMap: 'Desensitization_Rule_Type'}}</span>
+                    </td>
+                    <td>
+                        <span *ngIf="dataMapService.getValueConfig('Desensitization_Rule_Type',item.type)"
+                            lv-overflow>{{i18n.get(dataMapService.getValueConfig('Desensitization_Rule_Type',item.type).desc)
+                            | nil}}</span>
+                        <span *ngIf="!dataMapService.getValueConfig('Desensitization_Rule_Type',item.type)" lv-overflow>
+                            {{item.type_description | nil}}
+                        </span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.example | nil}}</span>
+                    </td>
+                    <td>
+                        <span *ngIf="!item.ref_num">{{item.ref_num}}</span>
+                        <span *ngIf="!!item.ref_num" class="aui-link" (click)="getRelNum(item)">{{item.ref_num}}</span>
+                    </td>
+                    <td width="144px">
+                        <lv-operation-menu [lvData]="item" [lvItemsFn]="optsCallback"></lv-operation-menu>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+</div>
+<div class="aui-paginator-wrap">
+    <lv-paginator #page [lvPageSizeOptions]="sizeOptions" [lvPageSize]="pageSize" [lvTotal]="total"
+        [lvPageIndex]="pageIndex" (lvPageChange)="pageChange($event)" [hidden]="!total">
+    </lv-paginator>
+</div>

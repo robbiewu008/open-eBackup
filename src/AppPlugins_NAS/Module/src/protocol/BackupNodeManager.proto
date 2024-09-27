@@ -1,0 +1,209 @@
+syntax = "proto2";
+import "Tasks.proto";
+
+// range of commands for BackupNode Manager: 400-499
+
+message ScanRepository
+{
+    extend BasicCommand
+    {
+        optional ScanRepository cmd = 400;
+    }
+}
+
+message CleanScanRepositoryLeftovers
+{
+    extend BasicCommand
+    {
+        optional CleanScanRepositoryLeftovers cmd = 401;
+    }
+}
+
+enum ConfigHaStatus
+{
+    ConfigSuccess = 0;
+    ConfigHAFail = 1;
+    ConfigDBFail = 2;
+    RestartHAFail = 3;
+    RestartDBFail = 4;
+}
+
+message AddHaNode
+{
+    extend BasicCommand
+    {
+        optional AddHaNode cmd = 402;
+    }
+
+    optional TaskID task_id = 1;
+    repeated string node_ip = 2;
+    repeated string floatip = 3;
+    repeated string gateways = 4;
+    repeated uint64 arbitration_type = 5;
+    repeated UniformArbitrationParas uniformarbparas = 6;
+}
+
+message UniformArbitrationParas
+{
+    repeated string user_name = 1;
+    repeated string password = 2;
+    repeated string local_dc_name = 3; // for uniform arbitration
+    repeated string remote_dc_name = 4;// for uniform arbitration
+    repeated string ips = 5;// for uniform arbitration
+}
+
+message AddHaNodeReply
+{
+    extend GenericReply
+    {
+        optional AddHaNodeReply reply = 403;
+    }
+    
+    repeated ConfigHaStatus status = 1;
+}
+
+message DeleteHaNode
+{ 
+    extend BasicCommand
+    {
+        optional DeleteHaNode cmd = 404;
+    }
+     
+    optional TaskID task_id = 1;
+}
+
+message DeleteHaNodeReply
+{
+    extend GenericReply
+    {
+        optional DeleteHaNodeReply reply = 405;
+    }
+    
+    repeated ConfigHaStatus status = 1;
+}
+
+message SetHaProperty
+{
+    extend BasicCommand
+    {
+        optional SetHaProperty cmd = 406;
+    }
+
+    optional TaskID task_id = 1;
+    repeated string node_ip = 2;
+    repeated string old_floatip = 3;
+    repeated string old_gateways = 4;
+    repeated string new_floatip = 5;
+    repeated string new_gateways = 6;
+    repeated uint64 arbitration_type = 7;
+    repeated UniformArbitrationParas uniformarbparas = 8;
+}
+
+message SetHaPropertyReply
+{
+    extend GenericReply
+    {
+        optional SetHaPropertyReply reply = 407;
+    }
+    
+    repeated ConfigHaStatus status = 1;
+}
+
+
+enum GetMacStatus
+{
+    GetMacSuccess = 0;
+    GetMacFail = 1;
+}
+
+message GetMacAddress
+{
+	extend BasicCommand
+    {
+        optional GetMacAddress cmd = 408;
+    }
+}
+
+message GetMacAddressReply
+{
+    extend GenericReply
+    {
+        optional GetMacAddressReply reply = 409;
+    }
+    repeated GetMacStatus status = 1;
+    repeated string mac_address = 2;
+}
+
+//message InspectCond
+//{
+//   optional string condKey = 1;
+//   optional string condVal = 2;
+//}
+message InspectFile
+{
+    repeated string fileName = 1;
+    repeated string fileContent = 2;
+    repeated int64 fileLength= 3;
+    repeated string fileCheckSum = 4;
+}
+
+message InspectCommand
+{
+    extend BasicCommand
+    {
+        optional InspectCommand cmd = 410;
+    } 
+    optional string inspectName = 1;
+    repeated InspectFile inspectFiles = 3;
+//    repeated InspectCond conds= 2;
+}
+
+enum InspectConclusion
+{
+    INSPECT_PASS = 0;
+    INSPECT_NO_PASS = 1;
+    INSPECT_NA = 2;
+    INSPECT_EXCEPTION = 3;
+}
+
+message InspectReplyItem
+{
+   optional string replyKey = 1;
+   optional string replyVal = 2;
+}
+
+message InspectReply
+{
+    extend GenericReply
+    {
+	optional InspectReply reply = 411;
+    }
+    optional string inspectName = 1;
+    optional uint32 conclusion = 2;
+    repeated InspectReplyItem replys = 3;
+}
+
+enum GetLunWwnStatus
+{
+    GetLunWwnSuccess = 0;
+    GetLunWwnFail = 1;
+}
+
+message GetLunWwn
+{
+	extend BasicCommand
+    {
+        optional GetLunWwn cmd = 412;
+    }
+     optional string devName = 1;
+}
+
+message GetLunWwnReply
+{
+    extend GenericReply
+    {
+        optional GetLunWwnReply reply = 413;
+    }
+    repeated GetLunWwnStatus status = 1 ;
+    repeated string lunWwn = 2;
+}

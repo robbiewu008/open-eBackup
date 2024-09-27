@@ -1,0 +1,61 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="添加HA成员">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839221973.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001792342846">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>添加HA成员</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001792342846"></a><a name="ZH-CN_TOPIC_0000001792342846"></a>
+
+<h1 class="topictitle1">添加HA成员</h1>
+<div><p>添加成员节点后，如果您需要使用高可用特性，请选择某一个成员节点为HA成员。当主节点故障时，业务自动切换至HA成员节点（即备节点）。对于1.6.0及后续版本，<span class="uicontrol">“内部通信网络平面”</span>更名为<span class="uicontrol">“内部通信网络”</span>，本节以1.5.0版本为例进行描述。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>系统已添加成员节点。</li><li>待添加为HA成员的成员节点需要与主节点部署形态相同。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="menucascade" id="ZH-CN_TOPIC_0000001792342846__zh-cn_topic_0000001839142053_menucascade31053579148">“<span class="uicontrol" id="ZH-CN_TOPIC_0000001792342846__zh-cn_topic_0000001839142053_uicontrol41059577142"><span id="ZH-CN_TOPIC_0000001792342846__zh-cn_topic_0000001839142053_text1054020121612">系统</span></span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000001792342846__zh-cn_topic_0000001839142053_uicontrol154661958121418"> <span id="ZH-CN_TOPIC_0000001792342846__zh-cn_topic_0000001839142053_text8757278167">基础设施</span></span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000001792342846__zh-cn_topic_0000001839142053_uicontrol54471544151"> <span id="ZH-CN_TOPIC_0000001792342846__zh-cn_topic_0000001839142053_text1631251418164">集群管理</span></span>”</span>。</span></li><li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001792342846__zh-cn_topic_0000001839142053_uicontrol1161813395168">“<span id="ZH-CN_TOPIC_0000001792342846__zh-cn_topic_0000001839142053_text353374216166">备份集群</span>”</span>。</span></li><li><span>选择<span class="menucascade">“<span class="uicontrol"><span>HA管理</span></span> &gt; <span class="uicontrol"> <span>添加HA成员</span></span>”</span>。</span></li><li><span>在<span class="uicontrol">“<span>可选成员节点</span>”</span>区域勾选待添加为HA成员的成员节点。</span></li><li><span>在网络设置区域，填写HA成员的信息。相关参数说明请参见<a href="#ZH-CN_TOPIC_0000001792342846__table4154132019214">表1</a>。</span><p>
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000001792342846__table4154132019214"></a><a name="table4154132019214"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001792342846__table4154132019214" frame="border" border="1" rules="all"><caption><b>表1 </b>HA成员网络设置参数说明</caption><colgroup><col style="width:29.5%"><col style="width:70.5%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.5%" id="mcps1.3.3.2.5.2.1.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70.5%" id="mcps1.3.3.2.5.2.1.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="29.5%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span>浮动IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.5%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>填写内部通信网络平面的浮动IP地址。浮动IP地址需要与主节点内部通信网络平面连通。如果主节点内部通信网络平面复用了备份网络，请勿将备份网络IP地址作为浮动IP地址。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.5%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span>仲裁网关</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.5%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p><span style="color:#282B33;">仲裁网关用于主备切换时检测备节点的链路状态，数量为1-3个。仲裁网关需要和内部通信网络平面连通，且IP地址不重复。IP地址不能以127开头。</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>由于主节点宕机，心跳中断，备节点无法探测到主节点浮动IP地址，但可以探测到仲裁网关时，备节点将升主，主备切换时间为5分钟左右。</p>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001839221973.html">配置集群高可用</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

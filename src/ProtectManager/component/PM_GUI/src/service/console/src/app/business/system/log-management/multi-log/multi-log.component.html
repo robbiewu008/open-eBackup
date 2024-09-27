@@ -1,0 +1,175 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+  <div class="aui-header-1">
+    <lv-group lvGutter="8px">
+      <h1>{{ 'common_log_management_label' | i18n }}</h1>
+    </lv-group>
+  </div>
+  <div class="aui-block aui-paginator-container">
+    <div class="aui-header-2">
+      <h2>{{ 'system_log_setting_label' | i18n }}</h2>
+    </div>
+    <button
+      lv-popover
+      lv-button
+      class="settingBtn"
+      lvType="primary"
+      [lvPopoverHeader]="headerTemplate"
+      [lvPopoverContent]="contentTemplate"
+      [lvPopoverFooter]="footerTemplate"
+      lvPopoverPosition="bottomLeft"
+      lvPopoverTheme="light"
+      (click)="settingAll()"
+      lvPopoverTrigger="customize"
+      [(lvPopoverVisible)]="visible"
+      [disabled]="!size(selectionData)"
+      style="width:125px"
+    >
+      {{ 'system_setting_label' | i18n }}
+    </button>
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData">
+    </lv-pro-table>
+  </div>
+
+  <div class="aui-block export-log">
+    <div class="aui-header-2">
+      <h2>{{ 'system_export_export_info_label' | i18n }}</h2>
+    </div>
+    <lv-alert lvType="info" [lvClosable]="false">
+      {{ 'system_export_log_desc_label' | i18n }}
+    </lv-alert>
+    <lv-form [formGroup]="exportLogFormGroup" class="form-width aui-gutter-column-lg">
+      <lv-form-item>
+        <lv-form-label lvRequired>{{'system_export_content_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+          <lv-checkbox-group formControlName="type">
+                  <lv-group  [lvGutter]="'16px'">
+                    <lv-checkbox [lvValue]="dataMap.Export_Query_Type.log.value">{{'system_log_file_label' | i18n}}</lv-checkbox>
+                    <lv-checkbox [lvValue]="dataMap.Export_Query_Type.config.value">{{'system_config_file_label' | i18n}}</lv-checkbox>
+                  </lv-group>
+                </lv-checkbox-group>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item  *ngIf="(includes(exportLogFormGroup.value.type, dataMap.Export_Query_Type.log.value) || includes(exportLogFormGroup.value.type, dataMap.Export_Query_Type.config.value))">
+        <lv-form-label lvRequired>{{ 'system_servers_label' | i18n }}</lv-form-label>
+        <lv-form-control>
+          <lv-select
+            formControlName="clusterNodeName"
+            [lvOptions]="nodeNameOptions"
+            lvValueKey="value"
+            lvMode="single"
+            lvShowCheckAll
+          >
+          </lv-select>
+        </lv-form-control>
+      </lv-form-item>
+      <ng-container *ngIf="includes(exportLogFormGroup.value.type, dataMap.Export_Query_Type.log.value)">
+        <lv-form-item>
+          <lv-form-label lvRequired>{{ 'common_controller_label' | i18n }}</lv-form-label>
+          <lv-form-control>
+            <lv-select formControlName="controllerName" [lvOptions]="controllerNameOptions" lvValueKey="nodeName"
+              lvMode="multiple" lvShowCheckAll>
+            </lv-select>
+            <ng-container *ngIf="controllerLoading">
+              <i style="position: relative;" lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
+            </ng-container>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label lvRequired>
+            {{ 'system_sub_module_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control>
+            <lv-select formControlName="componentName" [lvOptions]="componentOptions" lvValueKey="value" lvMode="multiple"
+              lvShowCheckAll>
+            </lv-select>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label lvRequired>
+            {{ 'insight_log_export_range_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control>
+            <lv-select formControlName="timeRange" [lvOptions]="periodOptions" lvValueKey="value">
+            </lv-select>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label lvRequired>{{'system_log_file_name_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            <input lv-input type='text' formControlName='logName'>
+          </lv-form-control>
+        </lv-form-item>
+      </ng-container>
+      <ng-container *ngIf="includes(exportLogFormGroup.value.type, dataMap.Export_Query_Type.config.value)">
+        <lv-form-item>
+          <lv-form-label lvRequired>{{'system_config_file_name_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            <input lv-input type='text' formControlName='configName'>
+          </lv-form-control>
+        </lv-form-item>
+      </ng-container>
+      
+    </lv-form>
+    <button
+      lv-button
+      lvType="primary"
+      (click)="export()"
+      [disabled]="exportLogFormGroup.invalid"
+    >
+      {{ 'common_export_label' | i18n }}
+    </button>
+  </div>
+</div>
+
+<ng-template #logLevelTpl let-item>
+  <lv-select
+    [lvOptions]="levelOptions"
+    lvValueKey="value"
+    [(ngModel)]="item.logLevel"
+    [lvDisabled]="item.disabled"
+    (ngModelChange)="logChange($event,item.esn)"
+  ></lv-select>
+</ng-template>
+
+<ng-template #headerTemplate>
+  <p>{{ 'system_log_level_label' | i18n }}</p>
+</ng-template>
+
+<ng-template #contentTemplate let-item>
+  <lv-select
+    class="contentTpl"
+    [lvOptions]="levelOptions"
+    lvValueKey="value"
+    [(ngModel)]="settingVal"
+  ></lv-select>
+</ng-template>
+
+<ng-template #footerTemplate let-data>
+  <lv-group lvGutter="16px" class="footerBtn">
+    <button lv-button (click)="cancel()">
+      {{ 'common_cancel_label' | i18n }}
+    </button>
+    <button
+      lv-button
+      [lvLoading]="loading"
+      lvLoadingText="loading"
+      lvType="primary"
+      (click)="confirm()"
+    >
+      {{ 'common_ok_label' | i18n }}
+    </button>
+  </lv-group>
+</ng-template>

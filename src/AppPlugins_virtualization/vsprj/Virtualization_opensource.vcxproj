@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{66C43035-C00E-4F1D-90C8-D234E9B3A051}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetExt>.dll</TargetExt>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\bin\bin\</OutDir>
+    <TargetName>libvirtualization_plugin</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_WIN32;_DEBUG;_WINDOWS;_USRDLL;VIRTUALIZATION_EXPORTS;__WINDOWS__;AGENT_DLL_EXPORTS;_CRT_NO_VA_START_VALIDATION;log_util_EXPORTS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..;..\..\Module\platform\securec\include;..\..\Module\src;..\..\Module\src\parser;..\..\Module\src\common;..\..\Module\src\curl_http;..\..\Module\src\log;..\..\Module\src\metafile_parser;..\..\Module\open_src\jsoncpp\include;..\..\Module\open_src\boost\.libs\include;..\..\Module\open_src\thrift\lib\cpp\src;..\..\Module\third_open_src\curl_rel\include;..\..\Module\third_open_src\lz4_rel\include;..\..\Module\third_open_src\libaio_rel\include;..\..\Module\third_open_src\tinyxml2_rel\include;..\..\Module\open_src\openssl\include;..\..\framework\src;..\..\framework\inc;..\..\framework\inc\job;..\..\framework\inc\client;..\..\framework\inc\server;..\..\framework\inc\common;..\..\framework\inc\rpc;..\..\framework\inc\rpc\certificateservice;..\..\framework\inc\utils;..\..\framework\inc\thrift_interface;..\..\framework\dep\agent_sdk\include;..\..\framework\dep\agent_sdk\include\message\archivestream;..\..\plugins\virtualization\src;..\..\plugins\virtualization\src\common;..\..\plugins\virtualization\src\common\cert_mgr;..\..\plugins\virtualization\src\common\checkpoint;..\..\plugins\virtualization\src\common\httpclient;..\..\plugins\virtualization\src\common\model;..\..\plugins\virtualization\src\common\sha256;..\..\plugins\virtualization\src\common\token_mgr;..\..\plugins\virtualization\src\common\utils;..\..\plugins\virtualization\src\common\uuid;..\..\plugins\virtualization\src\job_controller;..\..\plugins\virtualization\src\job_controller\factory;..\..\plugins\virtualization\src\job_controller\io_scheduler;..\..\plugins\virtualization\src\job_controller\jobs;..\..\plugins\virtualization\src\job_controller\jobs\backup;..\..\plugins\virtualization\src\job_controller\jobs\restore;..\..\plugins\virtualization\src\job_controller\jobs\verify;..\..\plugins\virtualization\src\job_controller\manager;..\..\plugins\virtualization\src\protect_engines;..\..\plugins\virtualization\src\repository_handlers;..\..\plugins\virtualization\src\repository_handlers\factory;..\..\plugins\virtualization\src\volume_handlers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>..\bin\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>hyperv_plugin;VssApi.lib;log_util.lib;utils.lib;system.lib;jsoncppobj.lib;metafile_parser.lib;config_reader_util.lib;parser.lib;common_util.lib;basic_job.lib;rpc.lib;thrift_interface.lib;thrift_client.lib;thrift_server.lib;tinyxml2.lib;securec.lib;libssl.lib;libcrypto.lib;agentsdk.lib;uuid.lib;param_checker.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;VIRTUALIZATION_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..;..\..\Module\platform\securec\include;..\..\Module\src;..\..\Module\src\parser;..\..\Module\src\common;..\..\Module\src\curl_http;..\..\Module\src\log;..\..\Module\src\metafile_parser;..\..\Module\open_src\jsoncpp\include;..\..\Module\open_src\boost\.libs\include;..\..\Module\open_src\thrift\lib\cpp\src;..\..\Module\third_open_src\curl_rel\include;..\..\Module\third_open_src\lz4_rel\include;..\..\Module\third_open_src\libaio_rel\include;..\..\Module\open_src\tinyxml2\include;..\..\Module\open_src\zlib;..\..\Module\open_src\openssl\include;..\..\framework\src;..\..\framework\inc;..\..\framework\inc\job;..\..\framework\inc\client;..\..\framework\inc\server;..\..\framework\inc\common;..\..\framework\inc\rpc;..\..\framework\inc\rpc\certificateservice;..\..\framework\inc\utils;..\..\framework\inc\thrift_interface;..\..\framework\dep\agent_sdk\include;..\..\framework\dep\agent_sdk\include\message\archivestream;..\..\plugins\virtualization\src;..\..\plugins\virtualization\src\common;..\..\plugins\virtualization\src\common\cert_mgr;..\..\plugins\virtualization\src\common\checkpoint;..\..\plugins\virtualization\src\common\httpclient;..\..\plugins\virtualization\src\common\model;..\..\plugins\virtualization\src\common\sha256;..\..\plugins\virtualization\src\common\token_mgr;..\..\plugins\virtualization\src\common\utils;..\..\plugins\virtualization\src\common\uuid;..\..\plugins\virtualization\src\job_controller;..\..\plugins\virtualization\src\job_controller\factory;..\..\plugins\virtualization\src\job_controller\io_scheduler;..\..\plugins\virtualization\src\job_controller\jobs;..\..\plugins\virtualization\src\job_controller\jobs\backup;..\..\plugins\virtualization\src\job_controller\jobs\restore;..\..\plugins\virtualization\src\job_controller\jobs\verify;..\..\plugins\virtualization\src\job_controller\manager;..\..\plugins\virtualization\src\protect_engines;..\..\plugins\virtualization\src\repository_handlers;..\..\plugins\virtualization\src\repository_handlers\factory;..\..\plugins\virtualization\src\volume_handlers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_WINDOWS;_USRDLL;VIRTUALIZATION_EXPORTS;__WINDOWS__;AGENT_DLL_EXPORTS;_CRT_NO_VA_START_VALIDATION;log_util_EXPORTS;__cplusplus;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <SDLCheck>false</SDLCheck>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>..\bin\bin</AdditionalLibraryDirectories>
+      <AdditionalDependencies>hyperv_plugin.lib;VssApi.lib;log_util.lib;utils.lib;system.lib;metafile_parser.lib;config_reader_util.lib;common_util.lib;basic_job.lib;rpc.lib;thrift_client.lib;thrift_server.lib;tinyxml2.lib;securec.lib;libssl.lib;libcrypto.lib;agentsdk.lib;thrift_interface.lib;servicefactory_obj.lib;VirtDisk.lib;zlib.lib;param_checker.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..;..\..\Module\platform\securec\include;..\..\Module\src;..\..\Module\src\parser;..\..\Module\src\common;..\..\Module\src\curl_http;..\..\Module\src\log;..\..\Module\src\metafile_parser;..\..\Module\open_src\jsoncpp\include;..\..\Module\open_src\boost\.libs\include;..\..\Module\open_src\thrift\lib\cpp\src;..\..\Module\third_open_src\curl_rel\include;..\..\Module\third_open_src\lz4_rel\include;..\..\Module\third_open_src\libaio_rel\include;..\..\Module\third_open_src\tinyxml2_rel\include;..\..\Module\open_src\openssl\include;..\..\framework\src;..\..\framework\inc;..\..\framework\inc\job;..\..\framework\inc\client;..\..\framework\inc\server;..\..\framework\inc\common;..\..\framework\inc\rpc;..\..\framework\inc\rpc\certificateservice;..\..\framework\inc\utils;..\..\framework\inc\thrift_interface;..\..\framework\dep\agent_sdk\include;..\..\framework\dep\agent_sdk\include\message\archivestream;..\..\plugins\virtualization\src;..\..\plugins\virtualization\src\common;..\..\plugins\virtualization\src\common\cert_mgr;..\..\plugins\virtualization\src\common\checkpoint;..\..\plugins\virtualization\src\common\httpclient;..\..\plugins\virtualization\src\common\model;..\..\plugins\virtualization\src\common\sha256;..\..\plugins\virtualization\src\common\token_mgr;..\..\plugins\virtualization\src\common\utils;..\..\plugins\virtualization\src\common\uuid;..\..\plugins\virtualization\src\job_controller;..\..\plugins\virtualization\src\job_controller\factory;..\..\plugins\virtualization\src\job_controller\io_scheduler;..\..\plugins\virtualization\src\job_controller\jobs;..\..\plugins\virtualization\src\job_controller\jobs\backup;..\..\plugins\virtualization\src\job_controller\jobs\restore;..\..\plugins\virtualization\src\job_controller\jobs\verify;..\..\plugins\virtualization\src\job_controller\manager;..\..\plugins\virtualization\src\protect_engines;..\..\plugins\virtualization\src\repository_handlers;..\..\plugins\virtualization\src\repository_handlers\factory;..\..\plugins\virtualization\src\volume_handlers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;_DEBUG;_WINDOWS;_USRDLL;VIRTUALIZATION_EXPORTS;__WINDOWS__;AGENT_DLL_EXPORTS;_CRT_NO_VA_START_VALIDATION;log_util_EXPORTS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>..\bin\bin</AdditionalLibraryDirectories>
+      <AdditionalDependencies>hyperv_plugin;VssApi.lib;log_util.lib;utils.lib;system.lib;jsoncppobj.lib;metafile_parser.lib;config_reader_util.lib;parser.lib;common_util.lib;basic_job.lib;rpc.lib;thrift_interface.lib;thrift_client.lib;thrift_server.lib;tinyxml2.lib;securec.lib;libssl.lib;libcrypto.lib;agentsdk.lib;uuid.lib;param_checker.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\plugins\virtualization\src\common\cert_mgr\CertMgr.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\common\DirtyRanges.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\common\JobHandle.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\common\model\ModelBase.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\common\model\ResponseModel.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\common\sha256\Sha256.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\common\token_mgr\BaseTokenMgr.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\common\token_mgr\GetTokenResponse.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\common\utils\Utils.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\common\utils\Win32Utils.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\common\uuid\Uuid.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\job_controller\factory\VirtualizationJobFactory.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\job_controller\io_scheduler\TaskPool.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\job_controller\io_scheduler\TaskScheduler.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\job_controller\jobs\backup\BackupIoTask.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\job_controller\jobs\backup\BackupJob.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\job_controller\jobs\restore\ArchiveRestoreJob.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\job_controller\jobs\restore\RestoreIOTask.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\job_controller\jobs\restore\RestoreJob.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\job_controller\jobs\verify\BlockCheckTask.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\job_controller\jobs\verify\VerifyJob.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\job_controller\jobs\VirtualizationBasicJob.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\PluginMain.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\protect_engines\engine_factory\EngineFactory.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\repository_handlers\factory\RepositoryFactory.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\repository_handlers\vhd_handler\VhdHandler.cpp" />
+    <ClCompile Include="..\..\plugins\virtualization\src\repository_handlers\win32filesystem\Win32FileSystemHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\plugins\virtualization\src\common\cert_mgr\CertMgr.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\checkpoint\Checkpoint.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\client\RestClient.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\Constants.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\DirtyRanges.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\httpclient\HttpClient.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\Macros.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\model\ModelBase.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\model\ResponseModel.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\Queue.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\Semaphore.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\sha256\Sha256.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\Structs.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\token_mgr\BaseTokenMgr.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\token_mgr\GetTokenResponse.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\token_mgr\TokenDetail.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\utils\RetryOper.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\utils\Utils.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\utils\Win32Utils.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\common\uuid\Uuid.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\factory\VirtualizationJobFactory.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\io_scheduler\BlockTask.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\io_scheduler\TaskPool.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\io_scheduler\TaskScheduler.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\jobs\backup\BackupIoTask.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\jobs\backup\BackupJob.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\jobs\restore\ArchiveRestoreJob.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\jobs\restore\RestoreIOTask.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\jobs\restore\RestoreJob.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\jobs\verify\BlockCheckTask.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\jobs\verify\VerifyJob.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\jobs\VirtualizationBasicJob.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\job_controller\manager\JobManager.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\PluginMain.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\engine_factory\EngineFactory.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hcs\common\HcsCommonInfo.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hcs\common\HcsConstants.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hcs\common\HcsHttpStatus.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hcs\common\HcsMacros.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hcs\HCSProtectEngine.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hcs\resource_discovery\HcsMessageInfo.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hcs\resource_discovery\HcsResourceAccess.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hcs\utils\HCSTokenMgr.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hcs\utils\StorageMgr.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hyperv\api\powershell\model\CreateSnapshotModel.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hyperv\api\powershell\model\CreateVHDModel.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hyperv\api\powershell\model\GetVmHardDiskDriveModel.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hyperv\api\powershell\model\GetVMVolumesModel.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hyperv\api\powershell\model\GetVmInfoModel.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hyperv\api\powershell\PSClient.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hyperv\api\wmi_client\WMIClient.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hyperv\HyperVProtectEngine.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hyperv\resource_discovery\HyperVResourceAccess.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\hyperv\utils\executor\WinCmdExector.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\kubernetes\KubernetesProtectEngine.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\openstack\OpenStackProtectEngine.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\protect_engines\ProtectEngine.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\repository_handlers\factory\RepositoryFactory.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\repository_handlers\filesystem\FileSystemHandler.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\repository_handlers\RepositoryHandler.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\repository_handlers\vhd_handler\VhdHandler.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\repository_handlers\win32filesystem\Win32FileSystemHandler.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\volume_handlers\hyperv_volume\HyperVVolumeHandler.h" />
+    <ClInclude Include="..\..\plugins\virtualization\src\volume_handlers\VolumeHandler.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

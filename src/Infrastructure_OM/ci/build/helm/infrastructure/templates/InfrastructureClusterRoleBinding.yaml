@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+# 此角色绑定使得用户 "dave" 能够读取 "default" 名字空间中的 Secrets
+# 你需要一个名为 "reader" 的 ClusterRole
+kind: ClusterRoleBinding
+metadata:
+  name: infra-cluster-role-binding
+  # RoleBinding 的名字空间决定了访问权限的授予范围。
+  # 这里仅授权在 "dpa" 名字空间内的访问权限。
+  namespace: dpa
+subjects:
+- kind: ServiceAccount
+  name: infra-sa
+  namespace: dpa
+roleRef:
+  kind: ClusterRole
+  name: infra-cluster-role
+  apiGroup: rbac.authorization.k8s.io

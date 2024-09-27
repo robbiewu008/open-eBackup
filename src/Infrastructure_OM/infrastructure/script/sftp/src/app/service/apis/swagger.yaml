@@ -1,0 +1,123 @@
+---
+swagger: "2.0"
+info:
+  description: "基础设施微服务API"
+  version: "1.0"
+  title: "OceanProtect Infrastructure API"
+schemes:
+  - "https"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+basePath: "/"
+tags:
+- name: "sftp-manager-api"
+  description: "SFTP Manager Controller"
+paths:
+  /v1/infra/internal/sftp/add_user:
+    post:
+      tags:
+        - "sftp-manager-api"
+      summary: "创建SFTP用户"
+      x-swagger-router-controller: "sftp_model"
+      operationId: "add_user"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          description: "增加SFTP用户请求格式"
+          schema:
+            $ref: "#/definitions/SftpUserInfo"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: '#/definitions/DataSuccessResponse'
+        "400":
+          description: "Bad Request"
+  /v1/infra/internal/sftp/delete_user:
+    delete:
+      tags:
+        - "sftp-manager-api"
+      summary: "删除SFTP用户"
+      x-swagger-router-controller: "sftp_model"
+      operationId: "delete_user"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          description: "删除SFTP用户请求格式"
+          schema:
+            $ref: "#/definitions/SftpDeleteUser"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: '#/definitions/DataSuccessResponse'
+        "400":
+          description: "Bad Request"
+  /v1/infra/internal/sftp/password:
+    post:
+      tags:
+        - "sftp-manager-api"
+      summary: "修改SFTP用户密码"
+      x-swagger-router-controller: "sftp_model"
+      operationId: "change_pwd"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          description: "修改SFTP用户密码请求格式"
+          schema:
+            $ref: "#/definitions/SftpUserInfo"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: '#/definitions/DataSuccessResponse'
+        "400":
+          description: "Bad Request"
+  /v1/infra/internal/sftp/status:
+    get:
+      tags:
+        - "sftp-manager-api"
+      summary: "查询SFTP启动状态"
+      x-swagger-router-controller: "sftp_model"
+      operationId: "service_status"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: '#/definitions/DataSuccessResponse'
+        "400":
+          description: "Bad Request"
+definitions:
+  SftpUserInfo:
+    properties:
+      username:
+        type: "string"
+        description: "SFTP用户名"
+      password:
+        type: "string"
+        description: "SFTP用户名密码"
+  DataSuccessResponse:
+    type: object
+    required:
+      - success
+    properties:
+      success:
+        type: boolean
+        description: "结果为True或者是False"
+      code:
+        type: string
+        description: "错误码"
+      message:
+        type: string
+        maxLength: 512
+        description: "错误信息"
+  SftpDeleteUser:
+    properties:
+      username:
+        type: "string"
+        description: "SFTP用户名"

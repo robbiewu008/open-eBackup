@@ -1,0 +1,134 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2022. All rights reserved.
+ */
+.ui-tabs {
+  position: relative;
+  padding: 0.2em;
+}
+.ui-tabs > ul {
+  margin: 0;
+  padding: 0.2em 0.2em 0;
+}
+.ui-tabs > ul li.ui-tabs-tab {
+  list-style: none;
+  margin: 1px 0.2em 0 0;
+  padding: 0;
+  float: left;
+  border-bottom-width: 0;
+  white-space: nowrap;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+#searchResult li {
+  clear: both;
+}
+.ui-tabs ul a.ui-tabs-anchor {
+  float: left;
+  padding: 0.5em 1em;
+  text-decoration: none;
+}
+.ui-tabs ul li.ui-tabs-active {
+  margin-bottom: -1px;
+  padding-bottom: 1px;
+}
+/* Switch Content */
+.ui-tabs .ui-tabs-panel {
+  display: block;
+  border-width: 0;
+  padding: 1em 1.4em;
+  background: 0 0;
+}
+.ui-tabs li.ui-state-active {
+  border: 1px solid #003eff;
+  background: #007fff;
+  font-weight: 400;
+  color: #fff;
+}
+.ui-tabs li.ui-state-active:hover {
+  background: #007fff;
+  font-weight: 400;
+  color: #fff;
+}
+.ui-tabs li.ui-state-active a,
+.ui-tabs li.ui-state-active a:link,
+.ui-tabs li.ui-state-active a:visited {
+  color: #fff;
+  text-decoration: none;
+}
+.ui-helper-reset {
+  padding: 0;
+  margin: 0;
+  outline: 0;
+  border: 0;
+  line-height: 1.3;
+  font-size: 100%;
+  text-decoration: none;
+  list-style: none;
+}
+.ui-helper-clearfix:after,
+.ui-helper-clearfix:before {
+  display: table;
+  content: '';
+  border-collapse: collapse;
+}
+.ui-helper-clearfix:after {
+  clear: both;
+}
+.ui-corner-all,
+.ui-corner-left,
+.ui-corner-tl,
+.ui-corner-top {
+  border-top-left-radius: 3px;
+}
+.ui-corner-all,
+.ui-corner-right,
+.ui-corner-top,
+.ui-corner-tr {
+  border-top-right-radius: 3px;
+}
+.ui-corner-all,
+.ui-corner-bl,
+.ui-corner-bottom,
+.ui-corner-left {
+  border-bottom-left-radius: 3px;
+}
+.ui-corner-all,
+.ui-corner-bottom,
+.ui-corner-br,
+.ui-corner-right {
+  border-bottom-right-radius: 3px;
+}
+.ui-tabs .ui-state-default {
+  font-weight: normal;
+  color: #454545;
+  border: 1px solid #c5c5c5;
+  background: #f6f6f6;
+}
+.ui-tabs .ui-state-default a,
+.ui-tabs .ui-state-default a:link,
+.ui-tabs .ui-state-default a:visited {
+  color: #454545;
+  text-decoration: none;
+}
+.ui-state-focus,
+.ui-state-hover {
+  border: 1px solid #ccc;
+  background: #ededed;
+  font-weight: 400;
+  color: #2b2b2b;
+}
+li.ui-state-focus a,
+li.ui-state-focus a:hover,
+li.ui-state-focus a:link,
+li.ui-state-focus a:visited,
+li.ui-state-hover a,
+li.ui-state-hover a:hover,
+li.ui-state-hover a:link,
+li.ui-state-hover a:visited {
+  color: #2b2b2b;
+  text-decoration: none;
+}
+.ui-widget.ui-widget-content {
+  border: 1px solid #c5c5c5;
+}

@@ -1,0 +1,98 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+  <div class="aui-header-1">
+    <lv-group lvGutter='8px'>
+      <h1>{{ 'common_license_label' | i18n }}</h1>
+      <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+    </lv-group>
+  </div>
+  <div class="aui-block">
+    <div class="aui-gutter-column-lg" pmpermission pmOperation='ObtainingESN'>
+      <lv-group lvGutter="18px">
+        <ng-container *ngIf="!esn">
+          <span class="aui-link" (click)="getESNCode()">
+            {{'system_get_esn_extra_label' | i18n}}
+          </span>
+        </ng-container>
+        <ng-container *ngIf="esn">
+          <span>
+            {{'system_get_esn_extra_label' | i18n}}
+          </span>
+          <span>{{'system_esn_label' | i18n}}: {{esn | nil}}</span>
+        </ng-container>
+      </lv-group>
+    </div>
+    <div class="aui-operation">
+      <lv-group lvGutter="8px">
+        <button lvType="primary" lv-button (click)="importLicense()" pmpermission pmOperation='ImportingLicenseFile'>
+          {{'common_import_label' | i18n}}
+        </button>
+        <button lv-button pmpermission pmOperation='ImportingLicenseFile' (click)="exportLicense()"
+          [disabled]="exportBtnDisable">
+          {{'common_export_label' | i18n}}
+        </button>
+      </lv-group>
+      <lv-group>
+        <button class="aui-button-icon" lv-button lvSize="auto" (click)="getLicense()">
+          <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+        </button>
+      </lv-group>
+    </div>
+    <lv-datatable [lvData]="tableData" #lvTable lvResize>
+      <thead>
+        <tr>
+          <ng-container *ngFor="let col of columns">
+            <th lvCellKey="{{ col.key }}" [attr.width]="col.width" *ngIf="col.show">
+              {{ col.label}}
+            </th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of lvTable.renderData">
+          <tr>
+            <ng-container *ngFor="let col of columns">
+              <td *ngIf="col.show">
+                <ng-container [ngSwitch]="col.key">
+                  <ng-container *ngSwitchCase="'name'">
+                    <span lv-overflow>{{item.name | textMap: 'License_Type'}}</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'capacity'">
+                    <span lv-overflow>
+                      {{item.totalCapacity|capacityCalculateLabel:'1.1-3':unitconst.BYTE:true:true}}
+                    </span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'swUpgradeDueDate'">
+                    {{item.swUpgradeDueDate && item.swUpgradeDueDate !== '-1' && item.swUpgradeDueDate !== -1 ?
+                    item.swUpgradeDueDate :
+                    '--'}}
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <span lv-overflow>
+                      {{item[col.key] | i18n | nil}}
+                    </span>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-container>
+      </tbody>
+    </lv-datatable>
+  </div>
+</div>
+
+<ng-template #progressLabelTpl let-data>
+  {{data < 0.001 ? data==0 ? 0 : lessThanLabel + '0.001' : getCapacityPercent(data)}}% </ng-template>

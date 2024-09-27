@@ -1,0 +1,33 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-text-help-sm aui-buttom">
+    {{'common_config_leg_level_tip_label'| i18n}}
+</div>
+
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+    <lv-form-item>
+        <lv-form-label>
+          {{ 'system_log_level_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <lv-select
+            formControlName="log_level"
+            [lvOptions]="logLevelOptions"
+            lvValueKey="value"
+          >
+          </lv-select>
+        </lv-form-control>
+      </lv-form-item>
+</lv-form>
+

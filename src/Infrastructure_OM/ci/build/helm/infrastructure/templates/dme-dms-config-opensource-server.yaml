@@ -1,0 +1,23 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d10" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: protectengine-e-conf
+  namespace: dpa
+data:
+  dme_vmware.hcpconf: |-
+{{ .Files.Get "conf/databackup/dme_vmware/hcpconf.ini" | indent 4}}
+  dme_jobmanager.hcpconf: |-
+{{ .Files.Get "conf/databackup/dme_jobmanager/hcpconf.ini" | indent 4}}
+  dme_dmc.hcpconf: |-
+{{ .Files.Get "conf/databackup/dme_dmc/hcpconf.ini" | indent 4}}
+  dme_archive.hcpconf: |-
+{{ .Files.Get "conf/databackup/dme_archive/hcpconf.ini" | indent 4}}
+  dme_replication.hcpconf: |-
+{{ .Files.Get "conf/databackup/dme_replication/hcpconf.ini" | indent 4}}
+  protectengine-e-log: |-
+{{ .Files.Get "conf/databackup/logrotate/logrotate.conf" | indent 4}}
+
+{{- end }}

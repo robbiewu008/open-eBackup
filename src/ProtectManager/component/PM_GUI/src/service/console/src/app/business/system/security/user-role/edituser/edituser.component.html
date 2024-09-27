@@ -1,0 +1,99 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup user-edit-container" lvKeepRequiredWidth>
+  <lv-form-item>
+    <lv-form-label>{{ 'common_name_label' | i18n }}</lv-form-label>
+    <lv-form-control>
+      {{ user.userName }}
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container *ngIf="isOceanProtect">
+    <lv-form-item>
+      <lv-form-label>{{ 'common_type_label' | i18n }}</lv-form-label>
+      <lv-form-control>
+        {{ user.userType | textMap: 'loginUserType' }}
+      </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="user?.userType === dataMap.loginUserType.local.value">
+      <lv-form-item>
+        <lv-form-label>
+          {{'common_login_method_label' | i18n}}
+          <i lv-icon="aui-icon-help" lv-tooltip="{{'system_login_method_help_label' | i18n}}" lvTooltipTheme="light"
+            class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+          <lv-select formControlName="loginType" [lvOptions]="methodTypeOptions" lvValueKey="value">
+          </lv-select>
+        </lv-form-control>
+      </lv-form-item>
+      <!-- 收件人邮箱地址 -->
+      <ng-container *ngIf="formGroup.value.loginType === dataMap.loginMethod.email.value">
+        <lv-form-item>
+          <lv-form-label lvRequired>{{ 'system_recipient_email_address_label' | i18n }}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'system_email_address_placeholder_label' | i18n}}"
+              lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="emailErrorTip">
+            <input lv-input formControlName="dynamicCodeEmail" />
+          </lv-form-control>
+        </lv-form-item>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+  <lv-form-item>
+    <lv-form-label>{{ 'common_desc_label' | i18n }}</lv-form-label>
+    <lv-form-control>
+      <lv-input-lint>
+        <textarea rows="3" maxlength="255" formControlName="description" lv-input style="resize: vertical;"
+          [lvAutosize]="{ minRows: 4, maxRows: 8 }"></textarea>
+      </lv-input-lint>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="![dataMap.loginUserType.hcs.value].includes(user?.userType)">
+    <lv-form-label [lvRequired]="sessionRequired">
+      {{ 'system_user_maxconnections_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-group>
+        <lv-form-control>
+          <lv-switch formControlName="sessionControl" (ngModelChange)="sessionControlChange($event)"></lv-switch>
+          <i lv-icon="aui-icon-help" lvTooltipTheme="light" lvTooltipPosition="rightBottom"
+            lv-tooltip="{{ 'system_maxconnection_tip_label' | i18n }}" class="configform-constraint"
+            lvColorState='true'></i>
+        </lv-form-control>
+      </lv-group>
+      <lv-group *ngIf="sessionRequired">
+        <lv-form-control [lvErrorTip]="rangeErrorTip">
+          <input lv-input type="text" (blur)="sessionLimitBlur()" formControlName="sessionLimit"
+            [placeholder]="limitPlaceholder" />
+        </lv-form-control>
+      </lv-group>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container *ngIf="user.rolesSet[0].roleId === 7">
+    <lv-form-item>
+      <lv-form-label>{{ 'system_password_no_time_limit_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName="neverExpire"></lv-switch>
+        <div class="block-tips" *ngIf="formGroup?.value.neverExpire">
+          <i lv-icon="lv-icon-status-warning-info" lvColorState="true" class="type-icon icon-tips"></i>
+          <span class="form-tips">
+            {{ 'system_password_no_time_limit_tips_label' | i18n }}
+          </span>
+        </div>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>

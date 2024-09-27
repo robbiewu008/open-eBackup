@@ -1,0 +1,246 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item *ngIf="isCyberEngine">
+    <lv-form-label lvRequired>
+      {{ 'protection_storage_device_detect_type_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{
+          'protection_storage_device_detect_type_tips_label' | i18n
+        }}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-radio-group
+        formControlName="detectType"
+        [lvGroupName]="'group'"
+        (ngModelChange)="detectTypeChange($event)"
+        [lvDisabled]="item"
+      >
+        <lv-group [lvGutter]="'16px'">
+          <lv-radio [lvValue]="storageDeviceDetectType.cyberEngine.value">{{
+            storageDeviceDetectType.cyberEngine.label | i18n
+          }}</lv-radio>
+          <lv-radio [lvValue]="storageDeviceDetectType.inDevice.value">{{
+            storageDeviceDetectType.inDevice.label | i18n
+          }}</lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label lvRequired>{{
+      'common_equipment_type_label' | i18n
+    }}</lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="type"
+        [lvOptions]="typeOptions"
+        lvValueKey="value"
+        [lvDisabled]="item && item.subType"
+      >
+      </lv-select>
+      <div
+        *ngIf="formGroup.value.type === deviceStorageType.OceanStorDorado.value"
+        class="tips-info"
+      >
+        <i
+          lv-icon="lv-icon-status-info"
+          lvColorState="true"
+          class="type-icon"
+        ></i>
+        <span *ngIf="!isCyberEngine; else cyberEngineDoradoVersion">
+          {{ 'protection_dorado_type_tip_label' | i18n }}
+        </span>
+        <ng-template #cyberEngineDoradoVersion>
+          <span>
+            {{
+              'protection_dorado_type_version_tip_label'
+                | i18n
+                  : [
+                      formGroup.value.detectType ===
+                      storageDeviceDetectType.cyberEngine.value
+                        ? '6.1.6'
+                        : '6.1.5'
+                    ]
+            }}
+          </span>
+        </ng-template>
+      </div>
+      <div
+        *ngIf="
+          formGroup.value.type === deviceStorageType.OceanStorPacific.value
+        "
+        class="tips-info"
+      >
+        <i
+          lv-icon="lv-icon-status-info"
+          lvColorState="true"
+          class="type-icon"
+        ></i>
+        <span class="mgl-4">{{
+          'protection_pacific_type_version_tip_label' | i18n
+        }}</span>
+      </div>
+      <div
+        *ngIf="formGroup.value.type === deviceStorageType.OceanProtect.value"
+        class="tips-info"
+      >
+        <i
+          lv-icon="lv-icon-status-info"
+          lvColorState="true"
+          class="type-icon"
+        ></i>
+        <span class="mgl-4">{{
+          'protection_op_type_version_tip_label' | i18n
+        }}</span>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+
+  <ng-container *ngIf="typeValues.includes(formGroup.value.type)">
+    <lv-form-item>
+      <lv-form-label lvRequired>{{
+        'protection_equipment_name_label' | i18n
+      }}</lv-form-label>
+      <lv-form-control [lvErrorTip]="deviceNameErrorTip">
+        <input lv-input type="text" formControlName="equipment_name" />
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+
+  <ng-container>
+    <lv-form-item>
+      <lv-form-label lvRequired>{{
+        'common_ip_address_label' | i18n
+      }}</lv-form-label>
+      <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+        <input lv-input type="text" formControlName="fqdn" />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>{{ 'common_port_label' | i18n }}</lv-form-label>
+      <lv-form-control [lvErrorTip]="portErrorTip">
+        <input
+          lv-input
+          type="text"
+          formControlName="port"
+          placeholder="1~65535"
+        />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_username_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="usernameErrorTip">
+        <input
+          lv-input
+          type="text"
+          formControlName="username"
+          autocomplete="new-password"
+        />
+        <div
+          class="user-info tips-info"
+          *ngIf="!isCyberEngine; else cyberEngineUserTipsTpl"
+        >
+          <i lv-icon="lv-icon-status-info" lvColorState="true"></i>
+          <span>
+            {{ 'protection_add_storage_user_tip_label' | i18n }}
+          </span>
+        </div>
+        <ng-template #cyberEngineUserTipsTpl>
+          <div class="user-info tips-info">
+            <i lv-icon="lv-icon-status-info" lvColorState="true"></i>
+            <span>
+              {{ cyberEngineUserTipsLabel | i18n }}
+            </span>
+          </div>
+        </ng-template>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>{{
+        'common_password_label' | i18n
+      }}</lv-form-label>
+      <lv-form-control [lvErrorTip]="passwordErrorTip">
+        <lv-input-group [lvSuffix]="pwdSuffixTpl" class="input-group-full">
+          <input
+            lv-input
+            [type]="pwdVisible ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="new-password"
+            (copy)="copy()"
+            (cut)="copy()"
+          />
+        </lv-input-group>
+        <ng-template #pwdSuffixTpl>
+          <i
+            [lv-icon]="pwdVisible ? 'aui-icon-eye-open' : 'aui-icon-eye-close'"
+            [class]="{ 'pos-polyfill': pwdVisible }"
+            lvColorState="true"
+            (click)="pwdVisible = !pwdVisible"
+          ></i>
+        </ng-template>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'common_verify_cert_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName="verify_status"> </lv-switch>
+        <div *ngIf="formGroup.value.verify_status">
+          <lv-form-item>
+            <lv-form-label lvRequired>
+              {{ 'protection_fc_cert_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+              <lv-upload
+                lvAccept=".pem"
+                lvShowUpload="false"
+                [lvFilters]="fcCertFilters"
+                (lvFilesChange)="certChange($event)"
+              ></lv-upload>
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>
+              {{ 'system_revocation_list_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+              <lv-upload
+                lvAccept=".crl"
+                lvShowUpload="false"
+                [lvFilters]="revocationListFilters"
+                (lvFilesChange)="revocationListChange($event)"
+              ></lv-upload>
+            </lv-form-control>
+          </lv-form-item>
+        </div>
+        <div *ngIf="!formGroup.value.verify_status">
+          <i lv-icon="lv-icon-status-warning-info"></i>
+          <span class="aui-text-label">
+            {{ 'protection_register_cert_tips_label' | i18n }}
+          </span>
+        </div>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>

@@ -1,0 +1,90 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label>{{'protection_target_storage_pool_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="targetPool">
+                <lv-group [lvGutter]="'20px'" class="mgt-8" lvDirection='vertical'>
+                    <lv-radio [lvValue]="storageLocation.Same">
+                        {{'protection_same_storage_pool_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="storageLocation.Different">
+                        {{'protection_different_storage_pool_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.value.targetPool === storageLocation.Same">
+        <lv-form-label lvRequired>{{'protection_select_storage_pool_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-select [lvOptions]="targetDatastoreOptions" lvValueKey='value' formControlName="targetRecoveryPool"
+                [lvContentTemplate]="poolContentTpl" lvShowClear>
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.value.targetPool === storageLocation.Different">
+        <lv-form-label lvRequired>
+            {{'protection_computer_location_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <div>{{'protection_computer_location_cluster_label' | i18n}}</div>
+            <lv-tree-select [lvTreeData]="serverTreeData" lvTreeSelectionMode="single"
+                formControlName="computerLocation" lvShowClear lvTreeShowLine lvTreeShowContentIcon
+                (lvExpandedChange)="expandedChange($event)">
+                <lv-treeselect-trigger>
+                    <span>{{ formGroup.value.computerLocation[0]?.path | nil }}</span>
+                </lv-treeselect-trigger>
+            </lv-tree-select>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+<div class="disk-table">
+    <ng-container *ngIf="formGroup.value.targetPool === storageLocation.Same; else elseTableTemplate">
+        <lv-pro-table [data]="tableData" [config]="tableConfig"></lv-pro-table>
+    </ng-container>
+    <ng-template #elseTableTemplate>
+        <lv-pro-table [data]="tableData" [config]="diffTableConfig"></lv-pro-table>
+    </ng-template>
+</div>
+
+<ng-template #preallocationTpl let-item>
+    <lv-select class="type-select" [lvOptions]="preallocationOptions" [(ngModel)]="item.recoveryPreallocation"
+        (ngModelChange)='preallocationChange()' lvValueKey='value' lvShowClear>
+    </lv-select>
+</ng-template>
+
+<ng-template #sizeTpl let-item>
+    <span lv-overflow>
+        {{item.volSizeInBytes | capacityCalculateLabel:'1.0-0':unitconst.BYTE:false}}
+    </span>
+</ng-template>
+
+<ng-template #storagePoolTpl let-item>
+    <lv-select [lvOptions]="item.datastoreOptions" [(ngModel)]="item.recoveryDatastore"
+        (ngModelChange)='datastoreChange()' lvValueKey='value' lvShowClear lvShowFilter lvFilterKey='label'
+        lvFilterMode='contains' [lvContentTemplate]="poolContentTpl">
+    </lv-select>
+</ng-template>
+
+<ng-template #poolContentTpl let-item>
+    <lv-group class="datastore-group" lvGutter='14px'>
+        <span lv-overflow>{{ item.label }}</span>
+        <span class="aui-text-desc">
+            {{'protection_remain_capacity_label' | i18n:[item.showCapacity |
+            capacityCalculateLabel:'1.1-3':unitconst.BYTE:false]}}
+        </span>
+    </lv-group>
+</ng-template>

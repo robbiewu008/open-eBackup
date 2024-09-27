@@ -1,0 +1,107 @@
+{{/*
+Get running environment
+*/}}
+{{- $environment:= "" }}
+{{- if .Values.global }}
+{{- $environment = .Values.global.environment }}
+{{- else }}
+{{- $environment = .Values.local.environment }}
+{{- end }}
+
+{{- if eq $environment "Dorado" }}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: dpa-psp
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+spec:
+  privileged: false
+  allowPrivilegeEscalation: true
+  hostNetwork: true
+  hostIPC: false
+  hostPID: false
+  allowedCapabilities:
+    - SYS_MODULE
+    - SYS_RAWIO
+    - SYS_PACCT
+    - SYS_ADMIN
+    - SYS_NICE
+    - SYS_RESOURCE
+    - SYS_TIME
+    - SYS_TTY_CONFIG
+    - AUDIT_CONTROL
+    - MAC_OVERRIDE
+    - MAC_ADMIN
+    - NET_ADMIN
+    - SYSLOG
+    - DAC_READ_SEARCH
+    - DAC_OVERRIDE
+    - LINUX_IMMUTABLE
+    - NET_BROADCAST
+    - IPC_LOCK
+    - IPC_OWNER
+    - SYS_PTRACE
+    - SYS_BOOT
+    - LEASE
+    - FOWNER
+    - SETUID
+    - SETGID
+    - SETFCAP
+  volumes:
+    - '*'
+  hostPorts:
+    - min: 5555
+      max: 5555
+    - min: 30070
+      max: 30070
+    - min: 30080
+      max: 30081
+    - min: 30092
+      max: 30092
+    - min: 30095
+      max: 30095
+  readOnlyRootFilesystem: false
+  runAsUser:
+    rule: 'RunAsAny'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'RunAsAny'
+  allowedUnsafeSysctls:
+    - net.ipv4.ip_nonlocal_bind
+    - net.ipv6.ip_nonlocal_bind
+    - net.ipv4.conf.all.arp_ignore
+
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dpa-psp-role
+rules:
+  - apiGroups: ['policy']
+    resources: ['podsecuritypolicies']
+    verbs: ['use']
+    resourceNames:
+      - dpa-psp
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dpa-psp-role-binding
+roleRef:
+  kind: ClusterRole
+  name: dpa-psp-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+# Authorize all service accounts in a namespace (recommended):
+  - kind: Group
+    apiGroup: rbac.authorization.k8s.io
+    name: system:serviceaccounts:dpa
+{{- end }}

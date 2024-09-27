@@ -1,0 +1,142 @@
+.capacity {
+  height: 208px;
+  width: 100%;
+  display: flex;
+  .capacity-item {
+    flex: 1;
+    overflow: hidden;
+    .capacity-header {
+      height: 24px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      .icon {
+        height: 24px;
+        width: 24px;
+      }
+      .title {
+        padding-left: 4px;
+        color: #e6e6e6;
+        font-style: 16px;
+        margin-right: 4px;
+      }
+    }
+  }
+  .backup-storage-unit {
+    .icon {
+      background: url('assets/img/home-backup-storage-unit.svg');
+    }
+  }
+  .replication-cluster {
+    .icon {
+      background: url('assets/img/home-replication-cluster.svg');
+    }
+  }
+  .archive-repository {
+    .icon {
+      background: url('assets/img/home-archive-repository.svg');
+    }
+  }
+  .split-line {
+    margin: 16px 16px 0;
+    height: 201px;
+    width: 1px;
+    background-color: #333;
+  }
+}
+
+.backup-storage-unit,
+.replication-cluster {
+  .capacity-body {
+    height: 190px;
+    width: 100%;
+    .capacity-chart {
+      margin: 0 auto;
+      margin-top: 16px;
+      width: 100px;
+      height: 100px;
+      position: relative;
+    }
+    .detail {
+      margin-top: 16px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 22px;
+      color: #808080;
+      text-align: center;
+      .used {
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 22px;
+        color: #e6e6e6;
+      }
+    }
+  }
+}
+
+.archive-repository {
+  .capacity-body {
+    margin-top: 16px;
+    .text {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 4px;
+      .title {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 22px;
+        color: #b3b3b3;
+      }
+      .percent {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 22px;
+        color: #e6e6e6;
+        white-space: nowrap;
+      }
+    }
+    .chart {
+      margin-top: 4px;
+      height: 8px;
+      border-radius: 35px;
+      width: 100%;
+      background-color: #4d4d4d;
+      .used-chart {
+        height: 8px;
+        border-radius: 35px;
+        background-color: #6e6eff;
+      }
+    }
+    .used {
+      margin-top: 4px;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 22px;
+      color: #e6e6e6;
+      .all {
+        font-weight: 400;
+        font-size: 14px;
+        color: #808080;
+      }
+    }
+
+    .notUsed {
+      font-size: 14px;
+      line-height: 28px;
+      color: #808080;
+    }
+
+    .taped {
+      font-size: 12px;
+      line-height: 22px;
+      color: #b3b3b3;
+      margin-top: 24px;
+      .taped-used {
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 28px;
+        color: #e6e6e6;
+      }
+    }
+  }
+}

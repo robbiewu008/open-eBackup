@@ -1,0 +1,127 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+  <lv-tab lvTitle="{{'common_basic_info_label' | i18n}}" lvId="baseInfo">
+    <lv-group>
+      <div>
+        <i [lv-icon]="data.linkStatus === dataMap.resource_LinkStatus_Special.normal.value ? 'aui-icon-object-storage': 'aui-icon-object-storage-offline'"
+          class="base-info-icon"></i>
+      </div>
+      <lv-group style="width: 40%;">
+        <lv-form class="formGroup content" style="width: 100%;">
+          <lv-form-column>
+            <lv-form-item *ngFor="let item of leftColumns">
+              <lv-form-label>
+                {{item.label}}
+              </lv-form-label>
+              <lv-form-control>
+                {{item.value | nil}}
+              </lv-form-control>
+            </lv-form-item>
+          </lv-form-column>
+        </lv-form>
+      </lv-group>
+      <lv-group style="width: 40%;">
+        <lv-form class="formGroup content" style="width: 100%;">
+          <lv-form-column>
+            <lv-form-item *ngFor="let item of rightColumns">
+              <lv-form-label>
+                {{item.label}}
+              </lv-form-label>
+              <lv-form-control>
+                <ng-container [ngSwitch]="item.key">
+                  <ng-container *ngSwitchCase="'linkStatus'">
+                    <aui-status [value]="item.value" type="resource_LinkStatus_Special"></aui-status>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <span lv-overflow style="max-width:200px">{{item.value | nil}}</span>
+                  </ng-container>
+                </ng-container>
+              </lv-form-control>
+            </lv-form-item>
+          </lv-form-column>
+        </lv-form>
+      </lv-group>
+    </lv-group>
+    <div class="server">
+      <lv-form class="proxy">
+        <lv-form-item>
+          <lv-form-label>
+            {{'protection_proxy_host_label' | i18n}}
+          </lv-form-label>
+          <lv-form-control>
+            <span class="flow-agent" [lv-tooltip]="agents" lvTooltipPosition="top">{{agents | nil}}</span>
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form>
+      <div *ngIf="data.extendInfo.proxyEnable === '1'">
+        <h2 class="header">{{'system_proxy_server_label' | i18n}}</h2>
+        <lv-group lvDirection="vertical" lvGutter="22px">
+          <lv-group style="width: 100%;">
+            <lv-form>
+              <lv-form-item>
+                <lv-form-label>
+                  {{'protection_server_url_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control class="flow-text" [lv-tooltip]="data.extendInfo?.proxyHostName"
+                  lvTooltipPosition="top">
+                  {{data.extendInfo?.proxyHostName | nil}}
+                </lv-form-control>
+              </lv-form-item>
+            </lv-form>
+          </lv-group>
+          <lv-group style="width: 100%;" lvGutter="40px">
+            <lv-group style="width: 40%;">
+              <lv-form>
+                <lv-form-column>
+                  <lv-form-item>
+                    <lv-form-label>
+                      {{'common_username_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                      <span lv-overflow style="width: 100px;"> {{data.extendInfo?.proxyUserName | nil}} </span>
+                    </lv-form-control>
+                  </lv-form-item>
+                </lv-form-column>
+              </lv-form>
+            </lv-group>
+            <lv-group style="width: 40%;">
+              <lv-form>
+                <lv-form-column>
+                  <lv-form-item>
+                    <lv-form-label>
+                      {{'common_password_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                      **********
+                    </lv-form-control>
+                  </lv-form-item>
+                </lv-form-column>
+              </lv-form>
+            </lv-group>
+          </lv-group>
+        </lv-group>
+      </div>
+    </div>
+  </lv-tab>
+  <lv-tab lvTitle="{{'protection_object_set_label' | i18n}}" lvId="set">
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+  </lv-tab>
+</lv-tabs>
+
+<ng-template #slaComplianceExtraTpl>
+  <div class="custom-icon">
+    <aui-sla-compliance-tooltip lvTooltipClassName=""></aui-sla-compliance-tooltip>
+  </div>
+</ng-template>

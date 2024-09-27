@@ -1,0 +1,349 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [lvLabelColon]="false" class="formGroup">
+  <lv-form-item>
+    <lv-form-label>{{ componentLabel }}</lv-form-label>
+    <lv-form-control>
+      {{ currentComponent.name }}
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>{{ componentTypeLabel }}</lv-form-label>
+    <lv-form-control>
+      {{ currentComponent.typeNames }}
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>{{ certificateStatusLabel }}</lv-form-label>
+    <lv-form-control>
+      <aui-status
+        [value]="currentComponent.validity"
+        type="Certificate_Status"
+      ></aui-status>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>{{ componentExpiredLabel }}</lv-form-label>
+    <lv-form-control>
+      {{ componentExpirationTime | date: 'yyyy/MM/dd HH:mm:ss' }}
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>{{ daysOfWarningLabel }}</lv-form-label>
+    <lv-form-control>
+      {{ currentComponent.expirationWarningDays
+      }}{{ 'common_day_label' | i18n }}
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+<div class="tab-container">
+  <div *ngIf="!isInternalComponent">
+    <lv-tabs (lvActiveIndexChange)="typeChange($event)">
+      <lv-tab [lvTitle]="caCertificateLabel" *ngIf="caCertificate.length !== 0">
+        <ng-container
+          *ngTemplateOutlet="
+            baseTableTpl;
+            context: { title: caCertificateLabel, tabData: caCertificate }
+          "
+        >
+        </ng-container>
+      </lv-tab>
+      <lv-tab *ngIf="isRevocationListShow" [lvTitle]="cerRevocationListLabel">
+        <ng-container
+          *ngTemplateOutlet="
+            revocationTpl;
+            context: {
+              title: cerRevocationListLabel,
+              tabData: cerRevocationList
+            }
+          "
+        >
+        </ng-container>
+      </lv-tab>
+    </lv-tabs>
+  </div>
+  <div *ngIf="isInternalComponent">
+    <lv-tabs>
+      <lv-tab lvTitle="{{ 'system_certificate_label' | i18n }}">
+        <ng-container
+          *ngTemplateOutlet="
+            baseTableTpl;
+            context: {
+              title: clientCertificateLabel,
+              tabData: clientCertificate
+            }
+          "
+        >
+        </ng-container>
+      </lv-tab>
+      <lv-tab [lvTitle]="caCertificateLabel">
+        <ng-container
+          *ngTemplateOutlet="
+            baseTableTpl;
+            context: {
+              title: caCertificateLabel,
+              tabData: caCertificate,
+              isCaCertificate: true
+            }
+          "
+        >
+        </ng-container>
+      </lv-tab>
+      <lv-tab *ngIf="isRevocationListShow" [lvTitle]="cerRevocationListLabel">
+        <ng-container
+          *ngTemplateOutlet="
+            revocationTpl;
+            context: {
+              title: cerRevocationListLabel,
+              tabData: cerRevocationList
+            }
+          "
+        >
+        </ng-container>
+      </lv-tab>
+    </lv-tabs>
+  </div>
+</div>
+<ng-template
+  #baseTableTpl
+  let-data="tabData"
+  let-title="title"
+  let-isCaCertificate="isCaCertificate"
+  let-isRevocationList="isRevocationList"
+>
+  <ng-container *ngIf="data.length === 0">
+    <div class="performance-no-data">
+      <i lv-icon="aui-icon-no-data"></i>
+      <div class="no-data-label">
+        {{ 'common_no_data_label' | i18n }}
+      </div>
+      <button
+        *ngIf="isRevocationList"
+        class="import-btn"
+        lv-button
+        lvType="primary"
+        (click)="importRevocation(currentComponent)"
+      >
+        {{ 'common_import_label' | i18n }}
+      </button>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="data.length > 0">
+    <div *ngFor="let item of data; index as i">
+      <div class="details-container">
+        <div class="aui-operation title-border">
+          <div class="certificate-title">
+            <i class="status-badge"></i>
+            <span *ngIf="!isInternalComponent || isCaCertificate">
+              <span *ngIf="i === 0">{{
+                'system_chain_tail_cacertificate_label' | i18n
+              }}</span>
+              <span *ngIf="i !== 0">{{
+                'system_level_cacertificate_label'
+                  | i18n: [i18n.language === 'zh-cn' ? wordMap[i] : i + 1]
+              }}</span>
+            </span>
+            <span *ngIf="isInternalComponent && !isCaCertificate">
+              <span *ngIf="i === 0">{{
+                currentComponent.name + ('system_certificate_label' | i18n)
+              }}</span>
+              <span *ngIf="i === 1">{{
+                'system_chain_tail_cacertificate_label' | i18n
+              }}</span>
+              <span *ngIf="i > 1">{{
+                'system_level_cacertificate_label'
+                  | i18n: [i18n.language === 'zh-cn' ? wordMap[i] : i + 1]
+              }}</span>
+            </span>
+          </div>
+          <div (click)="showDetail(item)" class="lv-icon-host">
+            <i
+              *ngIf="!item.expand"
+              lv-icon="lv-icon-triangle-down"
+              [lvColorState]="true"
+            ></i>
+            <i
+              *ngIf="item.expand"
+              lv-icon="lv-icon-triangle-up"
+              [lvColorState]="true"
+            ></i>
+          </div>
+        </div>
+        <div>
+          <ng-container *ngTemplateOutlet="sunmerTpl"></ng-container>
+        </div>
+      </div>
+      <ng-template #sunmerTpl>
+        <lv-form [lvLabelColon]="false" class="formGroup info-container">
+          <lv-form-item>
+            <lv-form-label>{{ userLabel }}</lv-form-label>
+            <lv-form-control>
+              {{ item.subject }}
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>{{ issuserLabel }}</lv-form-label>
+            <lv-form-control>
+              {{ item.issuer }}
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>{{ certificateStatusLabel }}</lv-form-label>
+            <lv-form-control>
+              <lv-group lvGutter="8px">
+                <span class="validity-status">
+                  <aui-status
+                    [value]="item.validity"
+                    type="Certificate_Status"
+                  ></aui-status>
+                </span>
+                <span *ngIf="item.validity"
+                  >( {{ expireDateLabel }}
+                  {{ item.expirationTime | date: 'yyyy/MM/dd HH:mm:ss' }}
+                  )</span
+                >
+              </lv-group>
+            </lv-form-control>
+          </lv-form-item>
+          <ng-container *ngIf="item.expand">
+            <lv-form-item>
+              <lv-form-label>{{ algorithmLabel }}</lv-form-label>
+              <lv-form-control>
+                {{ item.keyAlgorithm }}
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>{{ signatureAlgLabel }}</lv-form-label>
+              <lv-form-control>
+                {{ item.signatureAlg | nil }}
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>{{ keyLengthLabel }}</lv-form-label>
+              <lv-form-control>
+                {{ item.keyLength }}
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>{{ fingerprintLabel }}</lv-form-label>
+              <lv-form-control>
+                {{ item.fingerprint }}
+              </lv-form-control>
+            </lv-form-item>
+          </ng-container>
+        </lv-form>
+      </ng-template>
+    </div>
+  </ng-container>
+</ng-template>
+<ng-template #revocationTpl let-data="tabData">
+  <ng-container *ngIf="data.length === 0">
+    <div class="performance-no-data">
+      <i lv-icon="aui-icon-no-data"></i>
+      <div class="no-data-label">
+        {{ 'common_no_data_label' | i18n }}
+      </div>
+      <button
+        class="import-btn"
+        lv-button
+        lvType="primary"
+        (click)="importRevocation(currentComponent)"
+      >
+        {{ 'common_import_label' | i18n }}
+      </button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="data.length !== 0">
+    <div class="details-container" *ngFor="let item of data; index as i">
+      <div class="aui-operation title-border">
+        <div class="certificate-title">
+          <i class="status-badge"></i>
+          <span>{{
+            ('system_cer_revocation_list_label' | i18n) + (i + 1)
+          }}</span>
+        </div>
+
+        <div>
+          <button lv-button class="card-opt-btn" lvType="link" (click)="download(item)">
+            {{ 'common_download_label' | i18n }}
+          </button>
+          <button
+            lv-button
+            class="card-opt-btn"
+            lvType="link"
+            (click)="delete(item)"
+          >
+            {{ 'common_delete_label' | i18n }}
+          </button>
+        </div>
+      </div>
+      <div>
+        <lv-form [lvLabelColon]="false" class="formGroup info-container">
+          <lv-form-item>
+            <lv-form-label>{{
+              'insight_report_generated_time_label' | i18n
+            }}</lv-form-label>
+            <lv-form-control>
+              {{ item.effectiveTime | timestamp }}
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>{{
+              'common_expriration_time_label' | i18n
+            }}</lv-form-label>
+            <lv-form-control>
+              {{ item.crlExpireTime | timestamp }}
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>{{ 'common_status_label' | i18n }}</lv-form-label>
+            <lv-form-control>
+              <span class="validity-status">
+                <aui-status
+                  [value]="item.validity"
+                  type="Certificate_Status"
+                ></aui-status>
+              </span>
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>{{
+              'system_algorithm_signature_label' | i18n
+            }}</lv-form-label>
+            <lv-form-control>
+              {{ item.signatureAlg }}
+            </lv-form-control>
+          </lv-form-item>
+
+          <lv-form-item>
+            <lv-form-label>{{ issuserLabel }}</lv-form-label>
+            <lv-form-control>
+              {{ item.issuer }}
+            </lv-form-control>
+          </lv-form-item>
+
+          <lv-form-item>
+            <lv-form-label>{{
+              'system_revocation_count_label' | i18n
+            }}</lv-form-label>
+            <lv-form-control>
+              {{ item.revokeNumber }}
+            </lv-form-control>
+          </lv-form-item>
+        </lv-form>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

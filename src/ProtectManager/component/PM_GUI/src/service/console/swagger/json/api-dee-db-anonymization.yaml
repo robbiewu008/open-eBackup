@@ -1,0 +1,2101 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 数据库脱敏接口
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: anony-controller
+    description: Anony Controller
+  - name: database-controller
+    description: Database Controller
+  - name: ident-rule-controller
+    description: Ident Rule Controller
+  - name: mask-rule-controller
+    description: Mask Rule Controller
+  - name: policy-controller
+    description: Policy Controller
+paths:
+  /v1/anonymization-job/database/authentication:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - database-controller
+      summary: 数据库认证
+      operationId: authDatabaseUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: dbInfo
+          description: dbInfo
+          required: true
+          schema:
+            $ref: '#/definitions/CreateAnonyJobDb'
+            originalRef: CreateAnonyJobDb
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AuthDatabaseVo'
+            originalRef: AuthDatabaseVo
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization-job/task/stop/controller:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anony-controller
+      summary: 停止任务
+      operationId: stopTaskUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/StopTaskRequest'
+            originalRef: StopTaskRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization-job/verification:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - database-controller
+      summary: 验证数据库连接
+      operationId: verifyDatabaseUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: request
+          required: true
+          schema:
+            $ref: '#/definitions/DatabaseVerifyRequest'
+            originalRef: DatabaseVerifyRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/VerificationVo'
+            originalRef: VerificationVo
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization/anonymization-job:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anony-controller
+      summary: 创建任务
+      operationId: createAnonyJobUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: createRequest
+          description: createRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CreateAnonyJobRequest'
+            originalRef: CreateAnonyJobRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization/ident-rule:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ident-rule-controller
+      summary: 获取识别规则
+      operationId: getPageIdentRulesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: create_method
+          in: query
+          description: create_method
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: name
+          in: query
+          description: name
+          required: false
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BasePage«IdentRuleEntity»'
+            originalRef: BasePage«IdentRuleEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ident-rule-controller
+      summary: 创建识别规则
+      operationId: createIdentRuleUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: createRequest
+          description: createRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CreateIdentRuleRequest'
+            originalRef: CreateIdentRuleRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ident-rule-controller
+      summary: 修改识别规则
+      operationId: modifyIdentRuleUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: updateRequest
+          description: updateRequest
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateIdentRuleRequest'
+            originalRef: UpdateIdentRuleRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization/ident-rule/reference/addition:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ident-rule-controller
+      summary: 获取识别规则引用详情
+      operationId: getIdentRuleReferencesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: identification_id
+          in: query
+          description: identification_id
+          required: true
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BasePage«PolicyEntity»'
+            originalRef: BasePage«PolicyEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  '/v1/anonymization/ident-rule/{id}':
+    delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - ident-rule-controller
+      summary: 删除识别规则
+      operationId: deleteIdentRuleUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization/identification/result:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anony-controller
+      summary: 获取识别结果
+      operationId: getIdentResultUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: db_id
+          in: query
+          description: db_id
+          required: true
+          type: string
+        - name: db_name
+          in: query
+          description: db_name
+          required: true
+          type: string
+        - name: db_type
+          in: query
+          description: db_type
+          required: true
+          type: string
+        - name: table_name
+          in: query
+          description: table_name
+          required: false
+          type: string
+        - name: table_space
+          in: query
+          description: table_space
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IdentificationResultVo'
+            originalRef: IdentificationResultVo
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anony-controller
+      summary: 修改识别结果
+      operationId: modifyIdentResultUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: resultRequest
+          description: resultRequest
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateIdentResultRequest'
+            originalRef: UpdateIdentResultRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization/identification/statistics:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anony-controller
+      summary: 获取识别统计数据
+      operationId: getIdentStatisticsUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: db_id
+          in: query
+          description: db_id
+          required: true
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IPage«IdentificationStatisticVo»'
+            originalRef: IPage«IdentificationStatisticVo»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization/mask-rule:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - mask-rule-controller
+      summary: 获取脱敏规则
+      operationId: getPageMaskRulesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: create_method
+          in: query
+          description: create_method
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: mask_type
+          in: query
+          description: mask_type
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: name
+          in: query
+          description: name
+          required: false
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BasePage«MaskRuleEntity»'
+            originalRef: BasePage«MaskRuleEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - mask-rule-controller
+      summary: 创建脱敏规则
+      operationId: createMaskRuleUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: createRequest
+          description: createRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CreateMaskRuleRequest'
+            originalRef: CreateMaskRuleRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - mask-rule-controller
+      summary: 修改识别规则
+      operationId: modifyMaskRuleUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: updateRequest
+          description: updateRequest
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateMaskRuleRequest'
+            originalRef: UpdateMaskRuleRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization/mask-rule/generate-example:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - mask-rule-controller
+      summary: 生成脱敏样例
+      operationId: generateMaskRuleExampleUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: exampleRequest
+          description: exampleRequest
+          required: true
+          schema:
+            $ref: '#/definitions/MaskRuleExampleRequest'
+            originalRef: MaskRuleExampleRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization/mask-rule/reference:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - mask-rule-controller
+      summary: 获取脱敏规则引用
+      operationId: getMaskRuleReferencesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: mask_id
+          in: query
+          description: mask_id
+          required: true
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: true
+          type: integer
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BasePage«IdentRuleEntity»'
+            originalRef: BasePage«IdentRuleEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  '/v1/anonymization/mask-rule/{id}':
+    delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - mask-rule-controller
+      summary: 删除脱敏规则
+      operationId: deleteMaskRuleUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization/policy:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - policy-controller
+      summary: 获取脱敏策略
+      operationId: getPagePoliciesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: create_method
+          in: query
+          description: create_method
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: name
+          in: query
+          description: name
+          required: false
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BasePage«PolicyEntity»'
+            originalRef: BasePage«PolicyEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    put:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - policy-controller
+      summary: 配置脱敏策略
+      operationId: createUpdatePolicyUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: createUpdateRequest
+          description: createUpdateRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CreateUpdatePolicyRequest'
+            originalRef: CreateUpdatePolicyRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization/policy-details:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - policy-controller
+      summary: 获取脱敏策略详情
+      operationId: getPolicyDetailsUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 100
+          format: int32
+        - name: policy_id
+          in: query
+          description: policy_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PolicyDetailVo'
+            originalRef: PolicyDetailVo
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization/policy/reference:
+    get:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - policy-controller
+      summary: 获取脱敏策略引用
+      operationId: getPolicyReferencesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: page_no
+          in: query
+          description: page_no
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: page_size
+          in: query
+          description: page_size
+          required: false
+          type: integer
+          default: 10
+          format: int32
+        - name: policy_id
+          in: query
+          description: policy_id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BasePage«PolicyReferenceEntity»'
+            originalRef: BasePage«PolicyReferenceEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  '/v1/anonymization/policy/{id}':
+    delete:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - policy-controller
+      summary: 删除脱敏策略
+      operationId: deletePolicyUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+  /v1/anonymization/report/download:
+    post:
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - anony-controller
+      summary: 下载脱敏报告
+      operationId: downloadAnonyReportUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: reportRequest
+          description: reportRequest
+          required: true
+          schema:
+            $ref: '#/definitions/DownloadReportRequest'
+            originalRef: DownloadReportRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  AuthDatabaseVo:
+    properties:
+      errorCode:
+        type: integer
+        format: int64
+        description: 错误码
+      errorMessage:
+        type: string
+        description: 错误描述
+      parameters:
+        type: array
+        items:
+          type: string
+        description: 错误参数
+      result:
+        type: boolean
+        description: 鉴权结果
+    title: AuthDatabaseVo
+  BasePage«IdentRuleEntity»:
+    properties:
+      errorCode:
+        type: string
+        description: 错误码
+      errorMessage:
+        type: string
+        description: 错误描述
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/IdentRuleEntity'
+          originalRef: IdentRuleEntity
+        description: 识别规则
+      page_no:
+        type: integer
+        format: int64
+        description: 页码
+      page_size:
+        type: integer
+        format: int64
+        description: 页大小
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      parameters:
+        type: array
+        items:
+          type: string
+        description: 错误参数
+      total:
+        type: integer
+        format: int64
+        description: 总条数
+    title: BasePage«IdentRuleEntity»
+  BasePage«MaskRuleEntity»:
+    properties:
+      errorCode:
+        type: string
+        description: 错误码
+      errorMessage:
+        type: string
+        description: 错误描述
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/MaskRuleEntity'
+          originalRef: MaskRuleEntity
+        description: 脱敏规则
+      page_no:
+        type: integer
+        format: int64
+        description: 页码
+      page_size:
+        type: integer
+        format: int64
+        description: 页大小
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      parameters:
+        type: array
+        items:
+          type: string
+        description: 错误参数
+      total:
+        type: integer
+        format: int64
+        description: 总条数
+    title: BasePage«MaskRuleEntity»
+  BasePage«PolicyEntity»:
+    properties:
+      errorCode:
+        type: string
+        description: 错误码
+      errorMessage:
+        type: string
+        description: 错误描述
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/PolicyEntity'
+          originalRef: PolicyEntity
+        description: 脱敏规则
+      page_no:
+        type: integer
+        format: int64
+        description: 页码
+      page_size:
+        type: integer
+        format: int64
+        description: 页大小
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      parameters:
+        type: array
+        items:
+          type: string
+        description: 错误参数
+      total:
+        type: integer
+        format: int64
+        description: 总条数
+    title: BasePage«PolicyEntity»
+  BasePage«PolicyReferenceEntity»:
+    properties:
+      errorCode:
+        type: string
+        description: 错误码
+      errorMessage:
+        type: string
+        description: 错误描述
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/PolicyReferenceEntity'
+          originalRef: PolicyReferenceEntity
+        description: 策略关联数据库
+      page_no:
+        type: integer
+        format: int64
+        description: 页码
+      page_size:
+        type: integer
+        format: int64
+        description: 页大小
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      parameters:
+        type: array
+        items:
+          type: string
+        description: 错误参数
+      total:
+        type: integer
+        format: int64
+        description: 总条数
+    title: BasePage«PolicyReferenceEntity»
+  CreateAnonyJobDb:
+    properties:
+      DBID:
+        type: string
+        description: ID
+        minLength: 1
+        maxLength: 128
+      DBName:
+        type: string
+        description: 名称
+        minLength: 1
+        maxLength: 128
+      DBType:
+        type: string
+        description: 类型
+      IPAdress:
+        type: string
+        description: IP地址
+        minLength: 1
+        maxLength: 128
+      Password:
+        type: string
+        description: 密码
+        minLength: 1
+        maxLength: 128
+      Port:
+        type: string
+        description: 端口
+        minLength: 1
+        maxLength: 8
+      Username:
+        type: string
+        description: 用户名
+        minLength: 1
+        maxLength: 64
+    title: CreateAnonyJobDb
+    required:
+      - DBID
+      - DBName
+      - IPAdress
+      - Password
+      - Port
+      - Username
+  CreateAnonyJobRequest:
+    properties:
+      anonymization_type:
+        type: string
+        description: 脱敏类型
+        minLength: 0
+        maxLength: 64
+      db_obj:
+        $ref: '#/definitions/CreateAnonyJobDb'
+        originalRef: CreateAnonyJobDb
+        description: 数据库信息
+      job_type:
+        type: string
+        description: 任务类型
+        minLength: 0
+        maxLength: 64
+      policy_id:
+        type: string
+        description: 策略ID
+        minLength: 0
+        maxLength: 128
+      policy_name:
+        type: string
+        description: 策略名称
+        minLength: 0
+        maxLength: 64
+    title: CreateAnonyJobRequest
+  CreateIdentRuleRequest:
+    properties:
+      create_method:
+        type: string
+        description: 创建方式
+        minLength: 1
+      expression:
+        type: string
+        description: 表达式
+        minLength: 1
+        maxLength: 2000
+      format:
+        type: string
+        description: 格式
+        minLength: 0
+        maxLength: 64
+      mask_rule_name:
+        type: string
+        description: 脱敏规则名称
+        minLength: 1
+      name:
+        type: string
+        description: 名称
+        minLength: 1
+        maxLength: 64
+    title: CreateIdentRuleRequest
+    required:
+      - create_method
+      - expression
+      - format
+      - mask_rule_name
+      - name
+  CreateMaskRuleRequest:
+    properties:
+      create_method:
+        type: string
+        description: 创建方式
+        minLength: 0
+        maxLength: 64
+      example:
+        type: string
+        description: 规则样例
+        minLength: 0
+        maxLength: 1000
+      expression:
+        type: string
+        description: 原数据
+        minLength: 0
+        maxLength: 2000
+      id:
+        type: string
+        description: ID
+        minLength: 1
+        maxLength: 128
+      input:
+        type: string
+        description: 掩码字符
+        minLength: 0
+        maxLength: 64
+      name:
+        type: string
+        description: 名称
+        minLength: 1
+        maxLength: 64
+      type:
+        type: string
+        description: 类型
+        minLength: 1
+        maxLength: 64
+      type_description:
+        type: string
+        description: 类型描述
+        minLength: 0
+        maxLength: 1000
+    title: CreateMaskRuleRequest
+    required:
+      - create_method
+      - example
+      - expression
+      - input
+      - name
+      - type
+      - type_description
+  CreateUpdatePolicyRequest:
+    properties:
+      create_method:
+        type: string
+        description: 创建方式
+        minLength: 1
+        maxLength: 64
+      description:
+        type: string
+        description: 描述
+        minLength: 0
+        maxLength: 1000
+      id:
+        type: string
+        description: ID
+        minLength: 1
+        maxLength: 128
+      name:
+        type: string
+        description: 名称
+        minLength: 1
+        maxLength: 64
+      rules:
+        type: array
+        items:
+          $ref: '#/definitions/CreateUpdatePolicyRule'
+          originalRef: CreateUpdatePolicyRule
+        description: 关联识别规则
+        minItems: 1
+        maxItems: 500
+    title: CreateUpdatePolicyRequest
+    required:
+      - create_method
+      - description
+      - name
+      - rules
+  CreateUpdatePolicyRule:
+    properties:
+      Action:
+        type: string
+        description: 动作
+      IdentRule:
+        type: string
+        description: 识别规则名称
+    title: CreateUpdatePolicyRule
+  DatabaseVerifyRequest:
+    properties:
+      column_list:
+        type: array
+        items:
+          type: string
+        description: 列
+        minItems: 1
+        maxItems: 128
+      db_obj:
+        $ref: '#/definitions/CreateAnonyJobDb'
+        originalRef: CreateAnonyJobDb
+        description: 数据库信息
+      limit:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 10
+        description: 数量
+      start_row:
+        type: integer
+        format: int32
+        minimum: 0
+        description: 开始行
+        maximum: 2147483647
+      table_name:
+        type: string
+        description: 表名
+        minLength: 1
+        maxLength: 128
+      table_space:
+        type: string
+        description: 表空间
+        minLength: 1
+        maxLength: 128
+    title: DatabaseVerifyRequest
+    required:
+      - column_list
+      - limit
+      - start_row
+      - table_name
+      - table_space
+  DownloadReportRequest:
+    properties:
+      db_id:
+        type: string
+        description: 数据库ID
+        minLength: 1
+        maxLength: 128
+      db_type:
+        type: string
+        description: 数据库类型
+        minLength: 1
+        maxLength: 16
+    title: DownloadReportRequest
+    required:
+      - db_id
+      - db_type
+  IPage«IdentificationStatisticVo»:
+    properties:
+      current:
+        type: integer
+        format: int64
+        description: 当前页
+      hitCount:
+        type: boolean
+        description: 暂无使用
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/IdentificationStatisticVo'
+          originalRef: IdentificationStatisticVo
+        description: 记录数
+      searchCount:
+        type: boolean
+        description: 暂无使用
+      size:
+        type: integer
+        format: int64
+        description: 页大小
+      total:
+        type: integer
+        format: int64
+        description: 总条数
+    title: IPage«IdentificationStatisticVo»
+  IdentRuleEntity:
+    properties:
+      create_method:
+        type: string
+        description: 创建方式
+      expression:
+        type: string
+        description: 表达式
+      format:
+        type: string
+        description: 格式
+      id:
+        type: string
+        description: ID
+      keywords:
+        type: string
+        description: 关键词
+      mask_name:
+        type: string
+        description: 脱敏规则名称
+      mask_rule_id:
+        type: string
+        description: 脱敏规则ID
+      name:
+        type: string
+        description: 名称
+      ref_num:
+        type: integer
+        format: int32
+        description: 关联脱敏策略数量
+    title: IdentRuleEntity
+  IdentificationResultVo:
+    properties:
+      db_id:
+        type: string
+        description: 数据库ID
+      db_name:
+        type: string
+        description: 数据库名称
+      errorCode:
+        type: string
+        description: 错误码
+      errorMessage:
+        type: string
+        description: 错误信息
+      items:
+        type: array
+        items:
+          type: object
+        description: 结果
+    title: IdentificationResultVo
+  IdentificationStatisticVo:
+    properties:
+      db_id:
+        type: string
+        description: 数据库ID
+      db_name:
+        type: string
+        description: 数据库名称
+      sensitive_count:
+        type: integer
+        format: int32
+        description: 暂未使用
+      table_name:
+        type: string
+        description: 表名称
+      table_namespace:
+        type: string
+        description: 表空间
+    title: IdentificationStatisticVo
+  MaskRuleEntity:
+    properties:
+      create_method:
+        type: string
+        description: 创建方式
+      example:
+        type: string
+        description: 规则样例
+      expression:
+        type: string
+        description: 掩码字符
+      id:
+        type: string
+        description: ID
+      name:
+        type: string
+        description: 名称
+      ref_num:
+        type: integer
+        format: int32
+        description: 关联识别规则数量
+      type:
+        type: string
+        description: 类型
+      type_description:
+        type: string
+        description: 类型描述
+    title: MaskRuleEntity
+  MaskRuleExampleRequest:
+    properties:
+      expression:
+        type: string
+        description: 表达式
+        minLength: 1
+        maxLength: 2000
+      input:
+        type: string
+        description: 原数据
+        minLength: 1
+        maxLength: 64
+      type:
+        type: string
+        description: 类型
+        minLength: 1
+        maxLength: 64
+    title: MaskRuleExampleRequest
+    required:
+      - expression
+      - input
+      - type
+  PolicyDetailVo:
+    properties:
+      addition_rules:
+        type: array
+        items:
+          $ref: '#/definitions/PolicyRuleVo'
+          originalRef: PolicyRuleVo
+        description: 策略规则
+      create_method:
+        type: string
+        description: 创建方式
+      description:
+        type: string
+        description: 描述
+      errorCode:
+        type: string
+        description: 错误码
+      errorMessage:
+        type: string
+        description: 错误信息
+      id:
+        type: string
+        description: ID
+      name:
+        type: string
+        description: 名称
+      page_no:
+        type: integer
+        format: int32
+        description: 页码
+      page_size:
+        type: integer
+        format: int32
+        description: 页大小
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      template_id:
+        type: string
+        description: 模板ID
+      template_name:
+        type: string
+        description: 模板名称
+      total:
+        type: integer
+        format: int64
+        description: 总条数
+    title: PolicyDetailVo
+  PolicyEntity:
+    properties:
+      create_method:
+        type: string
+        description: 创建方式
+      description:
+        type: string
+        description: 描述
+      id:
+        type: string
+        description: ID
+      name:
+        type: string
+        description: 名称
+      ref_num:
+        type: integer
+        format: int32
+        description: 关联识别规则数量
+      templateId:
+        type: string
+        description: 模板ID，暂未使用
+    title: PolicyEntity
+  PolicyReferenceEntity:
+    properties:
+      db_id:
+        type: string
+        description: 数据库ID
+      db_name:
+        type: string
+        description: 数据库名称
+      db_type:
+        type: string
+        description: 数据库类型
+      id:
+        type: string
+        description: ID
+      ip_address:
+        type: string
+        description: IP
+      policy_id:
+        type: string
+        description: 策略ID
+      port:
+        type: string
+        description: 端口
+    title: PolicyReferenceEntity
+  PolicyRuleVo:
+    properties:
+      IdentRule:
+        $ref: '#/definitions/IdentRuleEntity'
+        originalRef: IdentRuleEntity
+        description: 识别规则
+      MaskRule:
+        $ref: '#/definitions/MaskRuleEntity'
+        originalRef: MaskRuleEntity
+        description: 脱敏规则
+    title: PolicyRuleVo
+  StopTaskRequest:
+    properties:
+      request_id:
+        type: string
+        description: 请求ID
+        minLength: 1
+        maxLength: 128
+    title: StopTaskRequest
+    required:
+      - request_id
+  UpdateIdentResultRequest:
+    properties:
+      column_name:
+        type: string
+        description: 列名
+        minLength: 1
+        maxLength: 128
+      db_id:
+        type: string
+        description: ID
+        minLength: 1
+        maxLength: 128
+      db_name:
+        type: string
+        description: 名称
+        minLength: 1
+        maxLength: 128
+      db_type:
+        type: string
+        description: 类型
+      mask_rule_id:
+        type: string
+        description: 规则ID
+        minLength: 1
+        maxLength: 128
+      mask_rule_name:
+        type: string
+        description: 规则名称
+        minLength: 1
+        maxLength: 64
+      pii:
+        type: string
+        description: PII
+        minLength: 1
+        maxLength: 4096
+      table_name:
+        type: string
+        description: 表名
+        minLength: 1
+        maxLength: 128
+      table_namespace:
+        type: string
+        description: 表空间
+        minLength: 1
+        maxLength: 128
+    title: UpdateIdentResultRequest
+    required:
+      - column_name
+      - db_id
+      - db_name
+      - db_type
+      - pii
+      - table_name
+      - table_namespace
+  UpdateIdentRuleRequest:
+    properties:
+      create_method:
+        type: string
+        description: 创建方式
+      expression:
+        type: string
+        description: 表达式
+        minLength: 1
+        maxLength: 2000
+      format:
+        type: string
+        description: 格式
+      id:
+        type: string
+        description: ID
+        minLength: 1
+        maxLength: 128
+      mask_rule_name:
+        type: string
+        description: 脱敏规则名称
+        minLength: 1
+        maxLength: 64
+      name:
+        type: string
+        description: 名称
+        minLength: 1
+        maxLength: 64
+    title: UpdateIdentRuleRequest
+    required:
+      - create_method
+      - expression
+      - format
+      - id
+      - mask_rule_name
+      - name
+  UpdateMaskRuleRequest:
+    properties:
+      create_method:
+        type: string
+        description: 创建方式
+      example:
+        type: string
+        description: 规则样例
+        minLength: 0
+        maxLength: 1000
+      expression:
+        type: string
+        description: 掩码字符
+        minLength: 0
+        maxLength: 2000
+      id:
+        type: string
+        description: ID
+        minLength: 1
+        maxLength: 128
+      input:
+        type: string
+        description: 原数据
+        minLength: 0
+        maxLength: 64
+      name:
+        type: string
+        description: 名称
+        minLength: 1
+        maxLength: 64
+      type:
+        type: string
+        description: 类型
+        minLength: 1
+        maxLength: 64
+      type_description:
+        type: string
+        description: 类型描述
+        minLength: 0
+        maxLength: 1000
+    title: UpdateMaskRuleRequest
+    required:
+      - create_method
+      - example
+      - expression
+      - id
+      - input
+      - name
+      - type
+      - type_description
+  VerificationVo:
+    properties:
+      errorCode:
+        type: integer
+        format: int64
+        description: 错误码
+      errorMessage:
+        type: string
+        description: 错误描述
+      is_truncated:
+        type: integer
+        format: int32
+        description: 暂无使用
+      parameters:
+        type: array
+        items:
+          type: string
+        description: 错误参数
+      result:
+        type: array
+        items:
+          type: array
+          items:
+            type: object
+        description: 验证结果
+    title: VerificationVo
+    required:
+      - errorCode
+      - errorMessage
+      - is_truncated
+      - parameters
+      - result

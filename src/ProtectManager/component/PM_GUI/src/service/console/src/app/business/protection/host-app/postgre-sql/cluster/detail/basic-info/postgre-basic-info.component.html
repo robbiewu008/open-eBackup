@@ -1,0 +1,55 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-group class='aui-gutter-column-xxl' lvGutter='10%'>
+  <i *ngIf="online" lv-icon='aui-sla-cluster-online' class="base-info-icon"></i>
+  <i *ngIf="!online" lv-icon='aui-sla-cluster-offline' class="base-info-icon"></i>
+
+  <lv-form-column lvWidth="25%">
+    <lv-form-item>
+      <lv-form-label>{{'common_name_label' | i18n}}</lv-form-label>
+      <lv-form-control>
+        <span lv-overflow style="width: 200px">{{data?.name}}</span>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>{{'common_type_label' | i18n}}</lv-form-label>
+      <lv-form-control>{{'protection_deployment_standby_label' | i18n}}</lv-form-control>
+    </lv-form-item>
+  </lv-form-column>
+
+  <lv-form-column>
+    <lv-form-item>
+      <lv-form-label>{{'protection_cluster_type_label' | i18n}}</lv-form-label>
+      <lv-form-control>{{data?.installDeployType}}</lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>{{'common_virtual_ip_label' | i18n}}</lv-form-label>
+      <lv-form-control>{{data?.endpoint}}</lv-form-control>
+    </lv-form-item>
+  </lv-form-column>
+</lv-group>
+
+<div class="aui-gutter-column-md" *ngIf="data.extendInfo.installDeployType === dataMap.PostgreSqlDeployType.CLup.value">
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{'protection_clup_server_node_label' | i18n}}</h2>
+  </div>
+  <lv-pro-table #serverNodesTable [config]="tableConfig" [data]="clusterServerData"></lv-pro-table>
+</div>
+
+<ng-container>
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{nodeLabel}}</h2>
+  </div>
+  <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</ng-container>

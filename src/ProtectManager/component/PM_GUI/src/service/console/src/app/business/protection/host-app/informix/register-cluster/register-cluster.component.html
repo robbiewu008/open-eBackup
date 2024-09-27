@@ -1,0 +1,94 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="name"
+        [placeholder]="
+          i18n.get('common_please_enter_label', [
+            i18n.get('protection_clustername_label')
+          ])
+        "
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_host_label' | i18n }}
+      <aui-agent-jumper-tips
+        [type]="i18n.get('common_cluster_label')"
+      ></aui-agent-jumper-tips>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <aui-agent-select
+        [lvOptions]="hostOptions"
+        formControlName="host"
+        lvValueKey="value"
+        lvMode="single"
+        [lvDisabled]="!!rowData"
+        [isSimple]="true"
+      ></aui-agent-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_log_backup_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{'protection_enable_sqlserver_log_label' |i18n}}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control>
+      <lv-switch formControlName="logBackup"></lv-switch>
+      <ng-container *ngIf="!!formGroup.value.logBackup">
+        <div>
+          <i lv-icon="lv-icon-status-info"></i>
+          <span class="text-middle" style="margin-left:8px">{{'protection_informix_register_log_tip_label' | i18n}}</span>
+        </div>
+        <div class="aui-gutter-column-md"></div>
+        <lv-form-item>
+          <lv-form-label [lvKeepRequiredWidth]="false">
+            {{ 'protection_logbackup_file_path_label' | i18n }}
+            <i
+            lv-icon="aui-icon-help"
+            lv-tooltip="{{'protection_informix_cluster_path_tip_label' |i18n}}"
+            lvTooltipTheme="light"
+            class="configform-constraint"
+            lvColorState="true"
+          ></i>
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="pathErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="logBackupPath"
+              placeholder="{{
+                'protection_logbackup_file_path_tips_label' | i18n
+              }}"
+            />
+          </lv-form-control>
+        </lv-form-item>
+      </ng-container>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
