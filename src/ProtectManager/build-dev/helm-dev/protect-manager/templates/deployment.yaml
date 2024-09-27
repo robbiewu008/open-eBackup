@@ -1,0 +1,546 @@
+{{/*
+   Get running environment
+  */}}
+  {{- $environment:= "" }}
+  {{- if .Values.global }}
+  {{- $environment = .Values.global.environment }}
+  {{- else }}
+  {{- $environment = .Values.local.environment }}
+  {{- end }}
+
+  {{- $storageip:= "" }}
+  {{- if eq $environment "Dorado" }}
+  {{- $storageip = "127.0.0.1" }}
+  {{- else }}
+  {{- $storageip = .Values.global.storageip }}
+  {{- end }}
+
+  {{- $storageuser:= "" }}
+  {{- if .Values.global }}
+  {{- $storageuser = .Values.global.storageuser }}
+  {{- else }}
+  {{- $storageuser = "admin"}}
+  {{- end }}
+
+  {{- $storagepwd:= "" }}
+  {{- if .Values.global }}
+  {{- $storagepwd = .Values.global.storagepwd }}
+  {{- else }}
+  {{- $storagepwd = ""}}
+  {{- end }}
+
+  {{- $hostIp:= "" }}
+  {{- if .Values.global }}
+  {{- $hostIp = .Values.global.hostIp }}
+  {{- else }}
+  {{- $hostIp = "0.0.0.0"}}
+  {{- end }}
+
+  {{- $realreplicas:= "" }}
+  {{- if .Values.global }}
+  {{- $realreplicas = .Values.global.replicas }}
+  {{- else }}
+  {{- $realreplicas = .Values.local.replicas }}
+  {{- end }}
+
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  labels:
+    app: protect-manager
+  name: protect-manager
+  namespace: dpa
+spec:
+  replicas: {{$realreplicas}}
+  serviceName: protect-manager
+  selector:
+    matchLabels:
+      app: protect-manager
+  template:
+    metadata:
+      labels:
+        app: protect-manager
+      annotations:
+        co.elastic.logs/processors.decode_json_fields.fields.1: message
+        co.elastic.logs/processors.decode_json_fields.target: ""
+        co.elastic.logs/processors.decode_json_fields.overwrite_keys: "true"
+    spec:
+      {{- if eq $environment "Dorado" }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      terminationGracePeriodSeconds: 0
+      securityContext:
+        {{- if eq $environment "Dorado" }}
+        seccompProfile:
+          type: RuntimeDefault
+        {{- end }}
+        fsGroup: 99
+      initContainers:
+        - name: pm-database-version-migration
+          image: pm-database-version-migration:{{ .Values.global.version }}
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SERVICE_MODE
+              value: dev
+            - name: LOGLEVEL
+              value: DEBUG
+            - name: GAUSS_DB_SERVER
+              value: "gaussdb:6432"
+            - name: POSTGRES_PORT
+              value: "6432"
+            - name: POSTGRES_SERVER
+              value: "gaussdb"
+          volumeMounts:
+            - mountPath: /opt/config
+              name: common-volume
+              readOnly: true
+      containers:
+        - name: pm-gui
+          image: pm-gui:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /index.html
+              port: 30080
+            failureThreshold: 10
+          command: [ "/bin/sh", "-c", "while true;do sleep 1;prc_num=$(ps -ef | grep java | grep -v grep | grep app.jar | wc -l);if [ $prc_num == 0 ];then cd /app;sh app.sh;fi;done" ]
+          ports:
+            - containerPort: 30080
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SERVICE_MODE
+              value: dev
+            - name: server.port
+              value: "30080"
+            - name: server.address
+              value: {{$hostIp}}
+          volumeMounts:
+            - mountPath: /opt/OceanProtect/
+              name: nas-path
+            - mountPath: /opt/config
+              name: common-volume
+              readOnly: true
+            - mountPath: /OSM/conf
+              name: error-code-dir
+              readOnly: true
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "0.5"
+            limits:
+              memory: "2Gi"
+              cpu: "0.5"
+          {{- end }}
+        - name: pm-system-base
+          image: pm-system-base:{{ .Values.global.version }}
+          readinessProbe:
+            httpGet:
+              path: /internal/health
+              port: 30081
+            failureThreshold: 20
+          command: ["/bin/sh", "-c", "while true;do sleep 1;prc_num=$(ps -ef | grep java | grep -v grep | grep app.jar | wc -l);if [ $prc_num == 0 ];then cd /app;sh app.sh;fi;done"]
+          ports:
+            - containerPort: 30081
+              name: pm-base-port
+          volumeMounts:
+            - mountPath: /opt/OceanProtect/
+              name: nas-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
+            - mountPath: /opt/config
+              name: common-volume
+              readOnly: true
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "4.5Gi"
+              cpu: "2.0"
+            limits:
+              memory: "4.5Gi"
+              cpu: "2.0"
+          {{- end }}
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SERVICE_MODE
+              value: dev
+            - name: env.support.keys
+              value: repository.storage.ip,repository.storage.username,repository.storage.password,repository.storage.port,repository.storage.protocol
+            - name: repository.storage.ip
+              value: {{$storageip}}
+            - name: repository.storage.username
+              value: {{$storageuser}}
+            - name: repository.storage.password
+              value: {{$storagepwd}}
+            - name: repository.storage.port
+              value: "8088"
+            - name: runtime.env
+              value: {{$environment}}
+            - name: server.port
+              value: "30081"
+            - name: server.address
+              value: {{$hostIp}}
+        - name: pm-dm-access-point
+          image: pm-dm-access-point:{{ .Values.global.version }}
+          command: ["/bin/sh", "-c", "while true;do sleep 1;prc_num=$(ps -ef | grep java | grep -v grep | grep app.jar | wc -l);if [ $prc_num == 0 ];then cd /app;sh app.sh;fi;done"]
+          ports:
+            - containerPort: 30082
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SERVICE_MODE
+              value: dev
+            - name: spring.profiles.active
+              value: real, common, token
+            - name: env.support.keys
+              value: anybackup.url,anybackup.authorizations
+            - name: anybackup.url
+              value: protect-engine-a-business-control
+            - name: anybackup.port
+              value: "9088"
+            - name: server.port
+              value: "30082"
+            - name: server.address
+              value: {{$hostIp}}
+          volumeMounts:
+            - mountPath: /opt/OceanProtect/
+              name: nas-path
+            - mountPath: /tmp/share/
+              name: index-dir
+            - mountPath: /etc/localtime
+              name: date-config-localtime
+            - mountPath: /opt/config
+              name: common-volume
+              readOnly: true
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1.0"
+            limits:
+              memory: "2Gi"
+              cpu: "1.0"
+          {{- end }}
+        - name: pm-protection-service
+          image: pm-protection-service:{{ .Values.global.version }}
+          ports:
+            - containerPort: 30092
+              name: pm-pro-port
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SERVICE_MODE
+              value: dev
+            - name: LOGLEVEL
+              value: DEBUG
+            - name: GAUSS_DB_SERVER
+              value: "gaussdb:6432"
+            - name: REDIS_SENTINEL_HOST
+              value: "infrastructure"
+            - name: REDIS_SENTINEL_PORT
+              value: "6369"
+            - name: SCHEDULER_MISFIRE_GRACE_SEC
+              value: "300"
+            - name: SERVICE_HOST
+              value: {{$hostIp}}
+            - name: SERVICE_PORT
+              value: "30092"
+          volumeMounts:
+            - mountPath: /opt/OceanProtect/
+              name: nas-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
+            - mountPath: /opt/config
+              name: common-volume
+              readOnly: true
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "2.5Gi"
+              cpu: "1.5"
+            limits:
+              memory: "2.5Gi"
+              cpu: "1.5"
+          {{- end }}
+        - name: pm-copies-catalog
+          image: pm-copies-catalog:{{ .Values.global.version }}
+          ports:
+            - containerPort: 30093
+              name: pm-copies-port
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SERVICE_MODE
+              value: dev
+            - name: LOGLEVEL
+              value: DEBUG
+            - name: GAUSS_DB_SERVER
+              value: "gaussdb:6432"
+            - name: REDIS_SENTINEL_HOST
+              value: "infrastructure"
+            - name: REDIS_SENTINEL_PORT
+              value: "6369"
+            - name: SCHEDULER_MISFIRE_GRACE_SEC
+              value: "300"
+            - name: SERVICE_HOST
+              value: {{$hostIp}}
+            - name: SERVICE_PORT
+              value: "30093"
+          volumeMounts:
+            - mountPath: /opt/OceanProtect/
+              name: nas-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
+            - mountPath: /opt/config
+              name: common-volume
+              readOnly: true
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "0.5"
+            limits:
+              memory: "2Gi"
+              cpu: "0.5"
+          {{- end }}
+        - name: pm-resource-manager
+          image: pm-resource-manager:{{ .Values.global.version }}
+          ports:
+            - containerPort: 30094
+              name: pm-rs-port
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SERVICE_MODE
+              value: dev
+            - name: LOGLEVEL
+              value: DEBUG
+            - name: GAUSS_DB_SERVER
+              value: "gaussdb:6432"
+            - name: REDIS_SENTINEL_HOST
+              value: "infrastructure"
+            - name: REDIS_SENTINEL_PORT
+              value: "6369"
+            - name: SCHEDULER_MISFIRE_GRACE_SEC
+              value: "300"
+            - name: SERVICE_HOST
+              value: {{$hostIp}}
+            - name: SERVICE_PORT
+              value: "30094"
+            - name: TIMEZONE
+              value: "Asia/Shanghai"
+          volumeMounts:
+            - mountPath: /opt/OceanProtect/
+              name: nas-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
+            - mountPath: /opt/config
+              name: common-volume
+              readOnly: true
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1.0"
+            limits:
+              memory: "2Gi"
+              cpu: "1.0"
+          {{- end }}
+        - name: pm-resource-lock-manager
+          image: pm-resource-lock-manager:{{ .Values.global.version }}
+          ports:
+            - containerPort: 30095
+              name: pm-rlm-port
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SERVICE_MODE
+              value: dev
+            - name: LOGLEVEL
+              value: DEBUG
+            - name: DB_ENCODING
+              value: "SQL_ASCII"
+            - name: POSTGRES_PORT
+              value: "6432"
+            - name: POSTGRES_SERVER
+              value: "gaussdb"
+            - name: KAFKA_DEFAULT_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: REDIS_SENTINEL_HOST
+              value: "infrastructure"
+            - name: REDIS_SENTINEL_PORT
+              value: "6369"
+            - name: SCHEDULER_MISFIRE_GRACE_SEC
+              value: "300"
+            - name: SERVICE_HOST
+              value: {{$hostIp}}
+            - name: SERVICE_PORT
+              value: "30095"
+          volumeMounts:
+            - mountPath: /opt/OceanProtect/
+              name: nas-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
+            - mountPath: /opt/config
+              name: common-volume
+              readOnly: true
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "0.2"
+            limits:
+              memory: "2Gi"
+              cpu: "0.2"
+          {{- end }}
+        - name: pm-live-mount
+          image: pm-live-mount-manager:{{ .Values.global.version }}
+          ports:
+            - containerPort: 30090
+              name: pm-lv-port
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SERVICE_MODE
+              value: dev
+            - name: LOGLEVEL
+              value: DEBUG
+            - name: DB_ENCODING
+              value: "SQL_ASCII"
+            - name: POSTGRES_PORT
+              value: "6432"
+            - name: POSTGRES_SERVER
+              value: "gaussdb"
+            - name: KAFKA_DEFAULT_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: REDIS_SENTINEL_HOST
+              value: "infrastructure"
+            - name: REDIS_SENTINEL_PORT
+              value: "6369"
+            - name: SCHEDULER_MISFIRE_GRACE_SEC
+              value: "300"
+            - name: SERVICE_PORT
+              value: "8094"
+            - name: server.port
+              value: "30090"
+            - name: server.address
+              value: {{$hostIp}}
+          volumeMounts:
+            - mountPath: /opt/OceanProtect/
+              name: nas-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
+            - mountPath: /opt/config
+              name: common-volume
+              readOnly: true
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "0.5"
+            limits:
+              memory: "2Gi"
+              cpu: "0.5"
+          {{- end }}
+        - name: pm-agent-manager
+          image: pm-agent-manager:{{ .Values.global.version }}
+          ports:
+            - containerPort: 30084
+              name: pm-cli-port
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SERVICE_MODE
+              value: dev
+            - name: LOGLEVEL
+              value: DEBUG
+            - name: DB_ENCODING
+              value: "SQL_ASCII"
+            - name: POSTGRES_PORT
+              value: "6432"
+            - name: POSTGRES_SERVER
+              value: "gaussdb"
+            - name: REDIS_SENTINEL_HOST
+              value: "infrastructure"
+            - name: REDIS_SENTINEL_PORT
+              value: "6369"
+            - name: SERVICE_PORT
+              value: "8095"
+            - name: PM_REGISTER_PORT
+              value: "25082"
+            - name: ANYBACK_REGISTER_PORT
+              value: "9088"
+            - name: APP_VERSION
+              value: {{.Values.imageVersion}}
+          volumeMounts:
+            {{- if eq $environment "Dorado" }}
+            - mountPath: /opt/OceanProtect/
+              name: nas-path
+            {{- else }}
+            - mountPath: /opt/OceanProtect/hostAgent/
+              name: crm-agent-path
+              {{- end }}
+            - mountPath: /opt/config
+              name: common-volume
+              readOnly: true
+          {{- if eq $environment "Dorado" }}
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "0.5"
+            limits:
+              memory: "2Gi"
+              cpu: "0.5"
+          {{- end }}
+      volumes:
+        - name: error-code-dir
+          hostPath:
+            path: /OSM/conf/
+        {{- if eq $environment "Dorado" }}
+        - name: nas-path
+          persistentVolumeClaim:
+            claimName: "comm-nas"
+        - name: index-dir
+          persistentVolumeClaim:
+            claimName: "dee-nas"
+        {{- else }}
+        - name: nas-path
+          hostPath:
+            path: /opt/OceanProtect/protectmanager/
+        - name: index-dir
+          hostPath:
+            path: /tmp/share/
+        {{- end }}
+        - name: date-config-localtime
+          hostPath:
+            path: /etc/localtime
+        - name: crm-agent-path
+          hostPath:
+            path: /opt/OceanProtect/hostAgent/
+        - name: common-volume
+          configMap:
+            name: common-conf
