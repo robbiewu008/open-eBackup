@@ -1,0 +1,25 @@
+{{/*
+Get running environment
+*/}}
+{{- $environment:= "" }}
+{{- if .Values.global }}
+{{- $environment = .Values.global.environment }}
+{{- else }}
+{{- $environment = .Values.local.environment }}
+{{- end }}
+
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: common-conf
+  namespace: dpa
+data:
+  {{- if ne $environment "Dorado" }}
+  dorado.mgrip: {{ .Values.dorado.mgrip }}
+  {{- end }}
+  {{- if .Values.global.dmavip }}
+  vip.address: {{ .Values.global.dmavip }}
+  {{- end }}
+  deploy_type: {{ $deploytype }}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <artifact>
+        <versionType>BVersion</versionType>
+        <repoType>Generic</repoType>
+        <id>
+            <offering>OceanProtect DataBackup</offering>
+            <version>${PBI_NAME}</version>
+			<snapshot>${IS_SNAPSHOT}</snapshot>
+        </id>
+        <isClear>N</isClear>
+        <copies>
+            <copy>
+                <source>*.tar.gz*</source>
+                <dest></dest>
+            </copy>
+        </copies>
+    </artifact>
+</project>

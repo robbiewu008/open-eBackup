@@ -1,0 +1,13 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: dee-sa-rolebinding
+  namespace: dpa
+subjects:
+  - kind: ServiceAccount
+    name: dme-sa # dee pod在protectengine下面，这里把cluster role绑定到dme-sa
+    namespace: dpa
+roleRef:
+  kind: ClusterRole
+  name: dee-sa-role
+  apiGroup: rbac.authorization.k8s.io

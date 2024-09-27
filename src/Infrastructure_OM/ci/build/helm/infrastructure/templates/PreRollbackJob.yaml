@@ -1,0 +1,54 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pre-rollback-job
+  namespace: dpa
+  annotations:
+    "helm.sh/hook": pre-rollback
+    "helm.sh/hook-delete-policy": "hook-succeeded, hook-failed"
+spec:
+  template:
+    spec:
+      serviceAccountName: infra-sa
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - infrastructure
+              topologyKey: "kubernetes.io/hostname"
+      restartPolicy: OnFailure
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: pre-rollback-job
+          image: om:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          command:
+            - python3
+            - /opt/upgrade/pre_rollback_job.py
+          securityContext:
+            runAsUser: 0
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: DEPLOY_TYPE
+              value: {{ $deploytype }}
+          volumeMounts:
+            - name: common-nas
+              mountPath: /opt/OceanProtect
+            - name: data-nas
+              mountPath: /opt/third_data
+      volumes:
+        - name: common-nas
+          persistentVolumeClaim:
+            claimName: "comm-nas"
+        - name: data-nas
+          persistentVolumeClaim:
+            claimName: "data-nas"

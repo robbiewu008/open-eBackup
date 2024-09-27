@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<resources>
+    <!-- 资源名称最长不能超过24个字符（包括结束符’\0’） -->
+    <resource name="gaussdb">
+        <!--
+        #设置 该资源启动时所依赖的资源
+        #name    : 所依赖的资源
+        #默认情况下，不依赖与任何资源。
+        #依赖的资源必须同为HA管理的资源。资源不能循环依赖。
+        #当前资源的监控周期必须大于依赖的资源，否则资源会加载失败
+        -->
+        <depend name="floatIp"/>
+        <!--
+        #设置该资源权重，权重为0表示资源异常不会引起主备倒换
+        #value : 权重值
+        #范围  : 0-100
+        #单机模式下，该参数无效
+        -->
+        <weight value="20"/>
+        <!--
+        #判断资源异常的标准：【连续N个周期范围内，故障的次数为M】即认为资源异常，应用于资源非稳状态的检测。
+        # 比如<abnormal periods="20" count="5"/>表示：
+        # 连续20个（或小于20个）监控周期内异常的次数为5时，认为资源异常
+        # periods: 连续的最多周期数， 范围为： 0 – 100
+        # count: 异常的次数，范围为： 0 – 100
+        # periods配置为0表示不启用该功能。periods 不能小于count
+        # 如果periods不为0，count也不能为0。
+        -->
+        <abnormal periods="0" count="0"/>
+        <!--
+        #判断资源异常的标准：【连续N个周期都检测到资源故障】即认为资源异常。
+        #times监控到资源故障的周期数，范围：1－10。
+        #interval  :监控周期时间间隔,单位：秒 (范围: 1秒至86400秒（1天），含1秒和86400秒)
+        监控周期必须大于依赖的资源，尽可能让依赖的资源检测周期快于被依赖资源
+        -->
+        <monitor times="2" interval="27"/>
+        <!--
+        #设置当资源异常时是否需要重启操作系统，应用于单机模式
+        #value : 取值 yes / no
+        #双机模式下，该参数无效。
+        -->
+        <reboot value="no"/>
+        <!--
+        #设置资源的运行模式
+        #value : 取值
+        # active-null      (单主模式)
+        #说明：只在主用节点上运行的资源，如浮动IP
+        #属性：资源参数、权重、管理策略
+        #方法：启动、停止、查询等。
+        # active-active    (双主模式)
+        #说明：主备用节点上都运行的资源，如浮动NTPD
+        #属性：资源参数、权重、管理策略
+        #方法：启动、停止、查询等。
+        # active-standby   (主备模式)
+        #说明：主备用节点上都启动的资源，资源自身存在主备关系。如数据库
+        #属性：资源参数、权重、管理策略
+        #方法：启动、停止、查询、升主、降备。
+        # 单机模式下，该参数无效，并且只能以单主模式运行。
+        -->
+        <type value="active-standby"/>
+        <!--
+        #脚本插件的参数
+        # value可配置（安装时可能需要配置该参数）
+        #当两个节点运行参数不一致时,可以使用node来区分节点。
+        #如果没有node信息，说明该参数在两个节点上同时生效。
+        # show表示是否需要显示(查询资源状态时显示)取值 yes / no
+        #如果是单机模式，param中不能含有node属性。
+        #参数约束：
+        # node   最大支持40字符(含结束符\0)
+        # name  最大支持24字符(含结束符\0)
+        # value  最大支持1024字符(含结束符\0)
+        #最大支持20个参数
+        -->
+        <params>
+        <!--
+        <param name="key1" value="value1" show="no"/>
+        <param node="ha1" name="key2" value="value2" show="yes"/>
+        <param node="ha2" name="key2" value="value3" show="yes"/>
+        -->
+        </params>
+        <!-- 指定资源脚本名称
+        #脚本所在的路径为：$(ha_install_path)/ha/module/harm/plugin/script/
+        #文件名长度不能超过32个字符（包括结束符’\0’）
+        #必须保证资源脚本存在并且配置的名称正确而且有x权限，否则会导致资源无法加载
+        -->
+        <script name="gaussdb.sh"/>
+        <!--
+        #timeout  :脚本运行超时时间,单位:秒(范围: 1秒至86400秒（1天），含1秒和86400秒)
+        #name:脚本动作
+        #status: 查询进程状态 (所有模式均需实现)
+        #start: 启动进程 (单主、双主模式需要实现)
+        #stop: 停止进程 (所有模式均需实现)
+        #force-stop: 强制停止进程 (所有模式均支持，可选择性实现)
+        #active: 激活进程(升主) (仅主备模式需要实现)
+        #deactive: 去激活进程(降备) (仅主备模式需要实现)
+        #repair: 异常时修复进程(所有模式均支持，可选择性实现)
+        #notify: 无法修复的异常会发送通知(例如告警) (所有模式均支持，可选择性实现)
+        #prepare: 主备切换之前，需要做的一些准备工作 (所有模式均支持，可选择性实现)
+        #exception: 资源异常后的处理动作 (所有模式均支持，可选择性实现)
+        #diagnose: 修复备节点上异常的单主资源(仅单主模式支持，可选择性实现)
+        -->
+        <actions>
+            <action name="status" timeout="1800"/>
+            <action name="start" timeout="1800"/>
+            <action name="stop" timeout="1800"/>
+            <action name="force-stop" timeout="1800" />
+            <action name="active" timeout="1800"/>
+            <action name="deactive" timeout="1800"/>
+            <action name="repair" timeout="1800" />
+            <action name="notify" timeout="1800" />
+            <action name="prepare" timeout="1800"/>
+            <!--
+            <action name=" exception " timeout="300"/>
+            -->
+            <action name="diagnose" timeout="1800"/>
+        </actions>
+    </resource>
+</resources>

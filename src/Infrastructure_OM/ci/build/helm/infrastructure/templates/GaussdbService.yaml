@@ -1,0 +1,58 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- $gaussdbSelector:= "" }}
+{{- if .Values.global.GaussDBSelector }}
+{{- $gaussdbSelector = .Values.global.GaussDBSelector }}
+{{- else }}
+{{- $gaussdbSelector = "gaussdb"}}
+{{- end }}
+
+{{- $cluster_enable:= "" }}
+{{- if .Values.global }}
+{{- $cluster_enable = .Values.global.cluster_enable | toString }}
+{{- else }}
+{{- $cluster_enable:= "false" }}
+{{- end }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: gaussdb
+  namespace: dpa
+  labels:
+    app: gaussdb
+spec:
+  ports:
+    - port: {{ .Values.GaussDBImagePort }}
+      name: gaussdb
+    - port: 123
+      protocol: UDP
+      name: ntpd
+      targetPort: 3123
+  selector:
+    app: {{ $gaussdbSelector }}
+    {{- if eq $cluster_enable "true" }}
+    role: primary
+    {{- end }}
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inner-gaussdb
+  namespace: dpa
+  labels:
+    app: gaussdb
+spec:
+  ports:
+    - port: {{ .Values.GaussDBImagePort }}
+      name: gaussdb
+    - port: 123
+      protocol: UDP
+      name: ntpd
+  selector:
+    app: gaussdb
+    {{- if eq $cluster_enable "true" }}
+    role: primary
+    {{- end }}

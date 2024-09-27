@@ -1,0 +1,18 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d2") (eq $deploytype "d3") (eq $deploytype "d4")
+ (eq $deploytype "d6") (eq $deploytype "d7") (eq $deploytype "d8") }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: dee-global-search
+  namespace: dpa
+  labels:
+    app: protectengine
+spec:
+  selector:
+    app: protectengine
+  ports:
+    - port: {{ .Values.global_search_port }}
+      name: global-search
+{{- end }}

@@ -1,0 +1,5 @@
+CFLAGS+=-fPIC
+CFLAGS+=-fstack-protector-strong
+LDFLAGS+=-Wl,-z,now
+LDFLAGS+=-pie
+LDFLAGS+=-s

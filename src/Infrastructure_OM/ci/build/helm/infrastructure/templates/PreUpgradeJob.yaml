@@ -1,0 +1,79 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pre-upgrade-job
+  namespace: dpa
+  annotations:
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-delete-policy": "hook-succeeded, hook-failed"
+spec:
+  template:
+    spec:
+      serviceAccountName: kmc-sa
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - gaussdb
+                topologyKey: "kubernetes.io/hostname"
+      restartPolicy: OnFailure
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      securityContext:
+        fsGroup: 65534
+      containers:
+        - name: pre-upgrade-db-job
+          image: gaussdb:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - /usr/local/gaussdb/gaussdb_data_mv.sh
+          securityContext:
+            runAsUser: 1000
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: common-nas
+              mountPath: /opt/OceanProtect
+            - name: db-block
+              mountPath: /opt/db_data
+        - name: pre-upgrade-job
+          image: om:{{ .Values.global.version }}
+          imagePullPolicy: IfNotPresent
+          command:
+            - python3
+            - /opt/upgrade/pre_upgrade_job.py
+          securityContext:
+            runAsUser: 0
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: DEPLOY_TYPE
+              value: {{ $deploytype }}
+          volumeMounts:
+            - name: common-nas
+              mountPath: /opt/OceanProtect
+            - name: data-nas
+              mountPath: /opt/third_data
+      volumes:
+        - name: common-nas
+          persistentVolumeClaim:
+            claimName: "comm-nas"
+        - name: data-nas
+          persistentVolumeClaim:
+            claimName: "data-nas"
+        - name: db-block
+          persistentVolumeClaim:
+            claimName: "db-block"

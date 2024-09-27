@@ -1,0 +1,5 @@
+PACKAGE_BASE_PATH="/opt/DataBackup/packages"
+SIMBAOS_PACKAGE_PATH="/opt/k8s/SimbaOS/package"
+SIMBAOS_USER="ContainerOSUser"
+SIMBAOS_GROUP="ContainerOSGroup"
+SIMBAOS_SMARTKUBE_INSTALL_PATH="/usr/bin/"

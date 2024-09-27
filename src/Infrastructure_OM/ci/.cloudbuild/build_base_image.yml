@@ -1,0 +1,64 @@
+---
+version: 2.0
+
+#构建环境
+envs:
+  - condition: ENV_VM == "VPC"
+    label: OceanProtect_X8000_1.3.0_euler_arm_VPC
+  - condition: ENV_VM != "VPC"
+    label: X8000_1.3.0_euler_arm
+
+#是否固定构建根目录
+buildspace:
+  fixed: true   
+
+#构建参数，构建命令可通过环境变量使用
+params:
+  - name: CODE_BRANCH
+    value: ${branch}
+  - name: PRODUCT
+    value: ${PRODUCT}
+  - name: infrastructure_BRANCH
+    value: ${branch}
+  - name: framework_BRANCH
+    value: ${branch}
+  - name: tag_image
+    value: ${tag_image}
+  - name: harbor_project
+    value: ${harbor_project}
+  - name: CBB_PYTHON_BRANCH
+    value: ${branch}
+#构建步骤
+steps:
+  CONFIG_ENV:
+    - sh:
+        command: |
+          systemctl restart docker
+          chmod 777 /var/run/docker*
+          chmod 777 /run/docker*
+          ls -l /run/docker*
+        sudo: true
+  PRE_BUILD: # 构建准备
+    - checkout:
+        path: ci
+    - codehub:
+        url: https://szv-y.codehub.huawei.com/dpa/Infrastructure_OM/infrastructure.git
+        branch: ${infrastructure_BRANCH}
+        path: infrastructure
+    - codehub:
+        url: https://szv-y.codehub.huawei.com/AA_Project/AA-Sys.git
+        branch: master_612RC1
+        path: AA-Sys
+    - codehub:
+        url: https://szv-y.codehub.huawei.com/dpa/CBB/Python/public-cbb.git
+        branch: ${CBB_PYTHON_BRANCH}
+        path: cbb_python
+  BUILD:
+    - build_execute:
+        command: bash -c "
+          echo "buildVersion=$(cat ci/app_define.json | awk -F '\"version":' '{print $2}' | awk -F ',' '{print $1}' | sed 's/\"//g').$(date "+%Y%m%d%H%M%S")" > buildInfo.properties
+          && cat buildInfo.properties		
+          && cd infrastructure/script 
+          && sh build_base_image.sh ${tag_image} ${CODE_BRANCH} ${framework_BRANCH}"
+        accelerate: false
+        check: true

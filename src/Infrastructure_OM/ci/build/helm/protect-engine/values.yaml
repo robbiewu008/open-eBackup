@@ -1,0 +1,35 @@
+# Default values for Infrastructure.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+indexer_port: 8084
+scanner_port: 8082
+base_parser_port: 8085
+anti_ransomware_port: 8083
+anti_ransomware_container_port: 8092
+#flr_port: 8085
+global_search_port: 8086
+db_anonymization_port: 8087
+db_anonymization_container_port: 30178
+#offline_anonymization_port: 8088
+dme_nginx_port: 8089
+dee_nginx_port: 8089
+sftp_port: 9888
+dme_openstorageapi_port: 30173
+dme_openstorageapi_controller_port: 30174
+
+imageVersion: 1.0.0
+
+logLevel: INFO
+
+pgsslrootcert: /opt/logpath/infrastructure/cert/internal/ca/ca.crt.pem
+
+local:
+  environment: Dorado
+  replicas: 2
+  deploy_type: a8000
+
+network:
+  backupNetPlane: "1"
+  archiveNetPlane: "2"
+  updateTimestamp: ""

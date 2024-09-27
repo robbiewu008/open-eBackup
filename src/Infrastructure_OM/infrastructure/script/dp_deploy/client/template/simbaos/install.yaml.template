@@ -1,0 +1,51 @@
+apiVersion: smartkube.io/v1
+metadata:
+  name: smartkube-sample
+kind: Cluster
+spec:
+  hosts:
+    {%- for host in config.hosts %} 
+    - {name: {{host.name}}, address: {{host.address}}, internalAddress: {{host.internal_address}}, serviceAddress: {{host.service_address}}, interface: {{host.interface}}, managementAddress: {{host.management_address}}} 
+    {%- endfor %}
+  roleGroups:
+    storage:
+      {%- for host in config.hosts %} 
+      - {{host.name}}
+      {%- endfor %}
+    master0: {{config.master0}}
+    master:
+      {%- for master in config.masters %} 
+      - {{master}} 
+      {%- endfor %}
+    worker:
+      {%- for worker in config.workers %} 
+      - {{worker}} 
+      {%- endfor %}
+  controlPlaneEndpoint:
+    domain: apiserver.cluster.local
+    address: "{{config.control_plane_endpoint}}"
+    port: 16443
+  servicePlaneEndpoint:
+    address: "{{config.service_plane_endpoint}}"
+    {%- if config.service_plane_endpoint_v6 %}
+    addressV6: "{{config.service_plane_endpoint_v6}}"
+    {%- endif %}
+  kubernetes:
+    version: 1.25.3
+    clusterName: cluster.local
+  network:
+    plugin: Calico
+    calico:
+      ipipMode: Always
+      vxlanMode: Never
+      vethMTU: 1440
+    kubePodsCIDR: {{config.kube_pods_cidr}} 
+    kubeServiceCIDR: {{config.kube_service_cidr}}
+  plugin:
+    traefik:
+      useLocalConfig: true
+    devpassthrough:
+      enable: true
+  masterSchedulable: true
+  deployType: 1
+  certType: pacific
