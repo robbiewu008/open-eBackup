@@ -1,0 +1,927 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+#include "PluginUtilities.h"
+#include <boost/uuid/uuid.hpp>            // uuid class
+#include <boost/uuid/uuid_generators.hpp> // generators
+#include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string.hpp>
+#include <filesystem>
+#ifdef __linux__
+#include <sys/ioctl.h>
+#include <linux/fs.h>
+#endif
+#include "system/System.hpp"
+#include "common/CTime.h"
+#include "common/Path.h"
+#include "common/EnvVarManager.h"
+#include "PluginConstants.h"
+#include "Defines.h"
+
+#ifdef WIN32
+#include "FileSystemUtil.h"
+#endif
+
+using namespace std;
+
+namespace {
+constexpr int TIME_STR_LEN = 80;
+constexpr auto MODULE = "Utilities";
+
+constexpr uint8_t NUMBER0 = 0;
+constexpr uint8_t NUMBER1 = 1;
+constexpr uint8_t NUMBER2 = 2;
+constexpr uint32_t NUMBER4 = 4;
+constexpr int32_t NUMBER6 = 6;
+constexpr uint32_t NUMBER8 = 8;
+constexpr uint32_t NUMBER64 = 64;
+constexpr uint32_t NUMBER256 = 256;
+constexpr uint16_t MP_FAILED = Module::FAILED;
+constexpr uint16_t MP_SUCCESS = Module::SUCCESS;
+const std::string DOUBLE_BACKSLASH = "\\\\";
+const std::string DOUBLE_SLASH = "//";
+const std::string SLASH = "/";
+const std::string BACKSLASH = "\\";
+const std::wstring UNC_PATH_PREFIX = LR"(\\?\)";
+const std::string PATH_PREFIX = R"(\\?\)";
+const std::string SNAPSHOT_DIRNAME = ".snapshot";
+}
+
+namespace PluginUtils {
+// 输入是ip列表，以逗号分割。检查通过管理网络访问8088端口是否连通
+bool CheckDeviceNetworkConnect(const std::string &managerIps)
+{
+    vector<string> output;
+    vector<string> errOutput;
+    vector<string> paramList;
+    paramList.push_back(Module::CPath::GetInstance().GetRootPath());
+    paramList.push_back(managerIps);
+#ifdef _AIX
+    string cmd = "?/bin/checkIp.sh '?'";
+#else
+    string cmd = "sudo ?/bin/checkIp.sh '?'";
+#endif
+#ifndef WIN32
+    int ret = Module::runShellCmdWithOutput(INFO, MODULE, 0, cmd, paramList, output, errOutput);
+#else
+    int ret = 1;
+    ERRLOG("WIN32 NOT IMPLMENTED");
+#endif
+    if (ret != MP_SUCCESS) {
+        string msg;
+        for (auto &it : output) {
+            msg += it + " ";
+        }
+        string errmsg;
+        for (const auto &it : errOutput) {
+            errmsg += it + " ";
+        }
+        HCP_Log(DEBUG, MODULE) << "run shell ret: " << ret << HCPENDLOG;
+        HCP_Log(DEBUG, MODULE) << "run shell msg: " << WIPE_SENSITIVE(msg) << HCPENDLOG;
+        HCP_Log(DEBUG, MODULE) << "run shell errmsg: " << WIPE_SENSITIVE(errmsg) << HCPENDLOG;
+        HCP_Log(ERR, MODULE) << "Failed to visit all manager network." << HCPENDLOG;
+        return false;
+    }
+    return true;
+}
+
+std::string FormatTimeToStrBySetting(time_t timeInSeconds, const std::string& timeFormat)
+{
+#ifndef WIN32
+    struct tm *tmp = localtime(&timeInSeconds);
+    char time[TIME_STR_LEN];
+    strftime(time, sizeof(time), timeFormat.c_str(), tmp);
+    string timeStr(time);
+    return timeStr;
+#else
+    return "";
+#endif
+}
+
+std::string FormatTimeToStr(time_t timeInSeconds)
+{
+    return FormatTimeToStrBySetting(timeInSeconds, "%Y-%m-%d-%H:%M:%S");
+}
+
+void LogCmdExecuteError(int retCode, const std::vector<std::string> &output, const std::vector<std::string> &errOutput)
+{
+    string stdoutMsg;
+    for (auto &it : output) {
+        stdoutMsg += it + " ";
+    }
+    string stderrMsg;
+    for (const auto &it : errOutput) {
+        stderrMsg += it + " ";
+    }
+    HCP_Log(DEBUG, MODULE) << "run shell failed with code:" << retCode
+        << ", stdout: " << WIPE_SENSITIVE(stdoutMsg)
+        << ", stderr: " << WIPE_SENSITIVE(stderrMsg) << HCPENDLOG;
+}
+
+int RunShellCmd(const std::string& cmd, const vector<string>& paramList)
+{
+    vector<string> output;
+    vector<string> erroutput;
+    if (Module::runShellCmdWithOutput(INFO, MODULE, 0, cmd, paramList, output, erroutput) != MP_SUCCESS) {
+        string msg;
+        string errmsg;
+        for (auto &it : output) {
+            msg += it + " ";
+        }
+        ERRLOG("Run shell msg: %s", Module::WipeSensitiveDataForLog(msg).c_str());
+        for (auto &it : erroutput) {
+            errmsg += it + " ";
+        }
+        ERRLOG("Run shell error msg: %s", Module::WipeSensitiveDataForLog(errmsg).c_str());
+        return MP_FAILED;
+    }
+    return MP_SUCCESS;
+}
+
+int RunShellCmd(const std::string& cmd, const vector<string>& paramList, std::vector<std::string>& output)
+{
+    vector<string> erroutput;
+    if (Module::runShellCmdWithOutput(INFO, MODULE, 0, cmd, paramList, output, erroutput) != MP_SUCCESS) {
+        string msg;
+        for (auto &it : output) {
+            msg += it + " ";
+        }
+        ERRLOG("Run shell command error message: %s", Module::WipeSensitiveDataForLog(msg).c_str());
+        return MP_FAILED;
+    }
+    return MP_SUCCESS;
+}
+
+std::string Base64Encode(const std::string &in)
+{
+    string out;
+    // Characters involved in base64 encoding and decoding
+    const string base64Array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+    unsigned int val = NUMBER0;
+    int valb = -NUMBER6;
+    for (unsigned char c : in) {
+        val = (val << NUMBER8) + c;
+        valb += NUMBER8;
+        while (valb >= NUMBER0) {
+            out.push_back(base64Array[(val >> valb) & 0x3F]);
+            valb -= NUMBER6;
+        }
+    }
+    if (valb > -NUMBER6) {
+        out.push_back(base64Array[((val << NUMBER8) >> (valb + NUMBER8)) & 0x3F]);
+    }
+    while (out.size() % NUMBER4 != 0) {
+        out.push_back('=');
+    }
+    return out;
+}
+
+std::string Base64Decode(const std::string &in)
+{
+    string out;
+    vector<int> T(NUMBER256, -1);
+    // Characters involved in base64 encoding and decoding
+    const string base64Array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+    for (uint32_t i = 0; i < NUMBER64; i++) {
+        T[base64Array[i]] = i;
+    }
+    int val = NUMBER0;
+    int valb = -NUMBER8;
+    for (unsigned char c : in) {
+        if (T[c] == -1) {
+            break;
+        }
+        val = (val << NUMBER6) + T[c];
+        valb += NUMBER6;
+        if (valb >= NUMBER0) {
+            out.push_back(char((val >> valb) & 0xFF));
+            valb -= NUMBER8;
+        }
+    }
+    return out;
+}
+
+size_t GenerateHash(std::string jobId)
+{
+    boost::hash<string> stringHash;
+    return stringHash(jobId);
+}
+
+time_t GetCurrentTimeInSeconds()
+{
+    time_t currTime;
+    Module::CTime::Now(currTime);
+    return currTime;
+}
+
+std::string ConvertToReadableTime(time_t time)
+{
+#ifndef WIN32
+    const uint32_t timeBufferSize = 80;
+    char buffer[timeBufferSize];
+    struct tm timeinfo {};
+    localtime_r(&time, &timeinfo);
+    strftime(buffer, sizeof(buffer), "%d%m%Y%H%M%S", &timeinfo);
+    string timeStr(buffer);
+    return timeStr;
+#else
+    return "None";
+    ERRLOG("WIN32 NOT IMPLMENTED");
+#endif
+}
+
+time_t GetCurrentTimeInSeconds(std::string &dateAndTimeString)
+{
+    time_t currTime;
+    Module::CTime::Now(currTime);
+    dateAndTimeString = ConvertToReadableTime(currTime);
+    return currTime;
+}
+
+bool WriteFile(const std::string &path, const std::string &data)
+{
+    INFOLOG("start_saveStatisticInfo");
+    std::ofstream file(path);
+    if (!file.is_open()) {
+        ERRLOG("open file failed,path:%s", path.c_str());
+        return false;
+    }
+    file << data;
+    if (file.fail()) {
+        ERRLOG("Failed to write path:%s", path.c_str());
+        file.close();
+        return false;
+    }
+    file.close();
+    return true;
+}
+
+bool ReadFile(const std::string &path, std::string &data)
+{
+    if (!IsFileExist(path)) {
+        return false;
+    }
+    std::ifstream infoFile(path, std::ios::in);
+    std::stringstream fileBuffer{};
+    if (!infoFile.is_open()) {
+        return false;
+    }
+    fileBuffer << infoFile.rdbuf();
+    infoFile.close();
+    data = fileBuffer.str();
+    return true;
+}
+
+bool CreateDirectory(const std::string& path)
+{
+    if (path.empty()) {
+        return true;
+    }
+
+    if (IsDirExist(path)) {
+        DBGLOG("CreateDirectory success, dir exist: %s", path.c_str());
+        return true;
+    }
+
+    string parentDir = GetPathName(path);
+    if (!CreateDirectory(parentDir)) {
+        return false;
+    }
+
+#ifndef WIN32
+    int res = mkdir(path.c_str(), S_IRUSR | S_IWUSR | S_IXUSR);
+    if (res != Module::SUCCESS) {
+        ERRLOG("CreateDirectory fail for: %s", path.c_str());
+        return false;
+    }
+    return true;
+#else
+    std::string dirPath = ReverseSlash(path);
+    INFOLOG("call create_directory, %s", dirPath.c_str());
+    std::wstring wDirPath = Module::FileSystemUtil::Utf8ToUtf16(dirPath);
+    if (wDirPath.find(UNC_PATH_PREFIX) != 0) { // check UNC prefix
+        wDirPath = UNC_PATH_PREFIX + wDirPath;
+    }
+    if (!::CreateDirectoryW(wDirPath.c_str(), nullptr)) {
+        DWORD errorCode = ::GetLastError();
+        if (errorCode == ERROR_ALREADY_EXISTS) {
+            return true;
+        }
+        ERRLOG("dir %s create failed, errno %d", dirPath.c_str(), errorCode);
+        return false;
+    }
+    return true;
+#endif
+}
+
+bool Remove(std::string path)
+{
+    INFOLOG("Call Remove: %s", path.c_str());
+    bool flag = false;
+    try {
+        flag = boost::filesystem::exists(path);
+    }
+    catch (const boost::filesystem::filesystem_error &e) {
+        HCP_Log(ERR, MODULE) << "path exists() exeption: " << WIPE_SENSITIVE(e.code().message())
+            << ", path: " << path << HCPENDLOG;
+        return false;
+    }
+    if (!flag) {
+        INFOLOG("Path(%s) not exist, needn't remove.", path.c_str());
+        return true;
+    }
+
+    constexpr uint16_t maxRemoveDirRetryCnt = 3;
+    int retry = 0;
+    do {
+        retry++;
+        try {
+            boost::filesystem::remove_all(path);
+        }
+        catch (const boost::filesystem::filesystem_error &e) {
+            ERRLOG("remove_all() exeption: %s, path: %s", WIPE_SENSITIVE(e.code().message()).c_str(), path.c_str());
+        }
+        if (!boost::filesystem::exists(path)) {
+            break;
+        }
+        sleep(retry);
+    } while (retry < maxRemoveDirRetryCnt);
+
+    if (boost::filesystem::exists(path)) {
+        ERRLOG("Remove path fail for: %s", path.c_str());
+        return false;
+    }
+    return true;
+}
+
+bool IsPathExists(const std::string &path)
+{
+#ifdef WIN32
+    auto statResult = Module::FileSystemUtil::Stat(path);
+    if (!statResult) {
+        WARNLOG("win32 FileSystemUtil stat path %s failed, error: %d", path.c_str(), ::GetLastError());
+        return false;
+    }
+    return true;
+#else
+    bool flag = false;
+    try {
+        flag = boost::filesystem::exists(path);
+    }
+    catch (const boost::filesystem::filesystem_error &e) {
+        HCP_Log(ERR, MODULE) << "path exists() exeption: " << WIPE_SENSITIVE(e.code().message())
+            << ", path: " << path << HCPENDLOG;
+        return false;
+    }
+    if (!flag) {
+        DBGLOG("path: %s doesn't exist", path.c_str());
+        return false;
+    }
+    return true;
+#endif
+}
+
+bool Rename(std::string srcPath, std::string dstPath)
+{
+    if (!IsPathExists(srcPath)) {
+        ERRLOG("Can not rename, source path: %s doesn't exist", srcPath.c_str());
+        return false;
+    }
+
+    if (IsPathExists(dstPath) && !Remove(dstPath)) {
+        HCP_Log(ERR, MODULE) << "dst path: " << dstPath << " exist and remove failed" << HCPENDLOG;
+        return false;
+    }
+
+    constexpr uint16_t maxRemoveDirRetryCnt = 3;
+    int res = 0;
+    int retry = 0;
+    do {
+        retry++;
+        res = rename(srcPath.c_str(), dstPath.c_str());
+        if (res == 0) {
+            DBGLOG("Rename src path: %s to dst path: %s success", srcPath.c_str(), dstPath.c_str());
+            break;
+        }
+        sleep(retry);
+    } while (retry < maxRemoveDirRetryCnt);
+    if (res != 0) {
+#ifdef WIN32
+        ERRLOG("Rename failed, src: %s, dst: %s, error: %d", srcPath.c_str(), dstPath.c_str(), ::GetLastError());
+#else
+        ERRLOG("Rename src path: %s to dst path: %s failed, error: %d", srcPath.c_str(), dstPath.c_str(), errno);
+#endif
+        return false;
+    }
+    return true;
+}
+
+std::string GetPathName(const std::string &filePath)
+{
+    char sep = '/';
+#ifdef _WIN32
+    sep = '\\';
+#endif
+    size_t fileoffset = filePath.rfind(sep, filePath.length());
+    if (fileoffset != string::npos) {
+        return (filePath.substr(0, fileoffset));
+    }
+
+    return ("");
+}
+
+std::string GetFileName(const std::string& filePath)
+{
+    char sep = '/';
+#ifdef _WIN32
+    sep = '\\';
+#endif
+    size_t fileoffset = filePath.rfind(sep, filePath.length());
+    if (fileoffset == string::npos) {
+        return filePath;
+    }
+    size_t fileNameLen = filePath.length() - fileoffset - 1;
+    size_t fileStarPos = fileoffset + 1;
+    return filePath.substr(fileStarPos, fileNameLen);
+}
+
+bool IsDirExist(const std::string& pathName)
+{
+    if (!IsPathExists(pathName)) {
+        return false;
+    }
+
+    bool res = false;
+    try {
+        res = boost::filesystem::is_directory(pathName);
+    }
+    catch (const boost::filesystem::filesystem_error &e) {
+        HCP_Log(ERR, MODULE) << "pathName is_directory() exeption: " << WIPE_SENSITIVE(e.code().message())
+            << ", pathName: " << pathName << HCPENDLOG;
+        return false;
+    }
+    return res;
+}
+
+bool IsFileExist(const std::string& fileName)
+{
+    if (!IsPathExists(fileName)) {
+        return false;
+    }
+
+// to_do: windows归档恢复场景这里会报失败， 先注掉后面再看
+#ifndef WIN32
+    bool res = false;
+    try {
+        res = boost::filesystem::is_regular_file(fileName);
+    }
+    catch (const boost::filesystem::filesystem_error &e) {
+        HCP_Log(ERR, MODULE) << "fileName is_regular_file() exeption: " << WIPE_SENSITIVE(e.code().message())
+            << ", fileName: " << fileName << HCPENDLOG;
+        return false;
+    }
+#endif
+    return true;
+}
+
+std::string FormatCapacity(uint64_t capacity)
+{
+    const uint64_t NUM_1024 = 1024;
+    const uint64_t KB_size = NUM_1024;
+    const uint64_t MB_size = NUM_1024 * KB_size;
+    const uint64_t GB_size = NUM_1024 * MB_size;
+    const uint64_t TB_size = NUM_1024 * GB_size;
+    const uint64_t PB_size = NUM_1024 * TB_size;
+    float formatCapacity;
+
+    if ((capacity >= MB_size) && (capacity < GB_size)) {
+        formatCapacity = static_cast<float>(capacity) / MB_size;
+        return FloatToString(formatCapacity) + "MB";
+    } else if ((capacity >= GB_size) && (capacity < TB_size)) {
+        formatCapacity = static_cast<float>(capacity) / GB_size;
+        return FloatToString(formatCapacity) + "GB";
+    } else if ((capacity >= TB_size) && (capacity < PB_size)) {
+        formatCapacity = static_cast<float>(capacity) / TB_size;
+        return FloatToString(formatCapacity, NUMBER2) + "TB";
+    } else if ((capacity >= KB_size) && (capacity < MB_size)) {
+        formatCapacity = static_cast<float>(capacity) / KB_size;
+        return FloatToString(formatCapacity) + "KB";
+    } else if (capacity >= PB_size) {
+        formatCapacity = static_cast<float>(capacity) / PB_size;
+        return FloatToString(formatCapacity) + "PB";
+    } else {
+        return to_string(capacity) + "B";
+    }
+}
+
+bool RemoveFile(const std::string& path)
+{
+    constexpr uint16_t maxRemoveDirRetryCnt = 3;
+    bool res = false;
+    int retry = 0;
+
+    try {
+        if (!boost::filesystem::is_regular_file(path)) {
+            WARNLOG("skip remove inregular file %s", path.c_str());
+            return true;
+        }
+
+        do {
+            retry++;
+            res = boost::filesystem::remove(path);
+            if (res) {
+                INFOLOG("path:%s", path.c_str());
+                break;
+            }
+            sleep(retry);
+        } while (retry < maxRemoveDirRetryCnt);
+
+        if (!res) {
+            ERRLOG("Remove path fail for: %s", path.c_str());
+            return false;
+        }
+    }
+    catch (const boost::filesystem::filesystem_error &e) {
+        ERRLOG("remove file %s caught exception: %s", path.c_str(), e.code().message());
+        return false;
+    }
+    return true;
+}
+
+bool CopyFile(std::string srcfile, std::string dstfile)
+{
+    if (!IsFileExist(srcfile)) {
+        HCP_Log(ERR, MODULE) << "src file: " << srcfile << " isn't a file" << HCPENDLOG;
+        return false;
+    }
+
+    constexpr uint16_t maxRemoveDirRetryCnt = 3;
+    bool res = false;
+    int retry = 0;
+
+    do {
+        retry++;
+        try {
+            res = boost::filesystem::copy_file(
+                srcfile, dstfile, boost::filesystem::copy_option::overwrite_if_exists);
+        }
+        catch (const boost::filesystem::filesystem_error &e) {
+            HCP_Log(ERR, MODULE) << "copy_file() exeption: " << WIPE_SENSITIVE(e.code().message())
+                << ", srcfile: " << srcfile << ", dstfile: " << dstfile << HCPENDLOG;
+            return false;
+        }
+        if (res) {
+            break;
+        }
+        sleep(retry);
+    } while (retry < maxRemoveDirRetryCnt);
+
+    if (!res)
+        HCP_Log(ERR, MODULE) << "failed to copy file: " << WIPE_SENSITIVE(srcfile) << HCPENDLOG;
+    return res;
+}
+
+bool GetFileListInDirectory(std::string dir, std::vector<string>& fileList)
+{
+#ifdef WIN32
+    try {
+        if (!std::filesystem::exists(dir)) {
+            ERRLOG("GetFileListInDirectory failed, dir: %s is not exist", dir.c_str());
+            return false;
+        }
+        std::filesystem::directory_iterator endIter;
+        for (std::filesystem::directory_iterator iter(dir); iter != endIter; ++iter) {
+            if (std::filesystem::is_regular_file(iter->status())) {
+                fileList.push_back(iter->path().string());
+            }
+        }
+    } catch (const std::filesystem::filesystem_error &e) {
+        HCP_Log(ERR, MODULE) << "catch boost file system exception : " << e.code().message() << " "
+            << dir << HCPENDLOG;
+        return false;
+    }
+#else
+    try {
+        if (!boost::filesystem::exists(dir)) {
+            ERRLOG("GetFileListInDirectory failed, dir: %s is not exist", dir.c_str());
+            return false;
+        }
+        boost::filesystem::directory_iterator endIter;
+        for (boost::filesystem::directory_iterator iter(dir); iter != endIter; ++iter) {
+            if (boost::filesystem::is_regular_file(iter->status())) {
+                fileList.push_back(iter->path().string());
+            }
+        }
+    } catch (const boost::filesystem::filesystem_error &e) {
+        HCP_Log(ERR, MODULE) << "catch boost file system exception : " << e.code().message() << " "
+            << dir << HCPENDLOG;
+        return false;
+    }
+#endif
+    return true;
+}
+
+bool GetDirListInDirectory(std::string dir, std::vector<string>& dirList, bool skipSnapshot)
+{
+    try {
+#ifdef WIN32
+        if (!std::filesystem::exists(dir)) {
+            ERRLOG("GetDirListInDirectory failed, dir: %s is not exist", dir.c_str());
+            return false;
+        }
+        std::filesystem::directory_iterator endIter;
+        for (std::filesystem::directory_iterator iter(dir); iter != endIter; ++iter) {
+            if (std::filesystem::is_directory(iter->status()) &&
+                !(skipSnapshot && GetFileName(iter->path().string()) == SNAPSHOT_DIRNAME)) {
+                dirList.push_back(GetFileName(iter->path().string()));
+            }
+        }
+    } catch (const std::filesystem::filesystem_error &e) {
+        HCP_Log(ERR, MODULE) << "catch boost file system exception : " << e.code().message() << " " << dir << HCPENDLOG;
+        return false;
+    }
+#else
+        if (!boost::filesystem::exists(dir)) {
+            ERRLOG("GetDirListInDirectory failed, dir: %s is not exist", dir.c_str());
+            return false;
+        }
+        boost::filesystem::directory_iterator endIter;
+        for (boost::filesystem::directory_iterator iter(dir); iter != endIter; ++iter) {
+            if (boost::filesystem::is_directory(iter->status()) &&
+                !(skipSnapshot && GetFileName(iter->path().string()) == SNAPSHOT_DIRNAME)) {
+                dirList.push_back(GetFileName(iter->path().string()));
+            }
+        }
+    } catch (const boost::filesystem::filesystem_error &e) {
+        HCP_Log(ERR, MODULE) << "catch boost file system exception : " << e.code().message() << " " << dir << HCPENDLOG;
+        return false;
+    }
+#endif
+
+    return true;
+}
+
+string GetParentDirName(const std::string& dir)
+{
+    string parentRelName;
+    if (dir.empty()) {
+        return parentRelName;
+    }
+    char sep = '/';
+#ifdef _WIN32
+    sep = '\\';
+#endif
+    string parentPath = GetPathName(dir);
+    size_t fileoffset = parentPath.rfind(sep);
+    parentRelName = parentPath.substr(fileoffset + 1);
+    return parentRelName;
+}
+
+std::string FloatToString(const float &val, const uint8_t &precisson)
+{
+    stringstream sstream;
+    sstream << setiosflags(ios::fixed) << setprecision(precisson) << val;
+    return sstream.str();
+}
+
+void StripWhiteSpace(string& str)
+{
+    auto it = str.begin();
+    while (it != str.end()) {
+        if ((*it) == '\n' ||
+            (*it) == '\t') {
+            it = str.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+void StripEscapeChar(string& str)
+{
+    auto it = str.begin();
+    while (it != str.end()) {
+        if ((*it) == '\\') {
+            it = str.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+std::string ReverseSlash(const std::string& path)
+{
+    string tmp = path;
+#ifdef WIN32
+    for (char& c : tmp) {
+        if (c == '/') {
+            c = '\\';
+        }
+    }
+#endif
+    return tmp;
+}
+
+std::string ReverseSlashWithLongPath(const std::string &path)
+{
+    string tmp = path;
+#ifdef WIN32
+    for (char &c : tmp) {
+        if (c == '/') {
+            c = '\\';
+        }
+    }
+    if (path.length() > PATH_PREFIX.length() && path.find(PATH_PREFIX) == 0) {
+        return tmp;
+    }
+    return PATH_PREFIX + tmp;
+#else
+    return tmp;
+#endif
+}
+
+std::string PathJoin(std::initializer_list<std::string> paths)
+{
+    std::string fullPath = "";
+    if (paths.size() == 0) {
+        return fullPath;
+    }
+    for (auto path : paths) {
+        fullPath += !fullPath.empty() ? dir_sep : "";
+        fullPath += path;
+    }
+#ifdef WIN32
+    RemoveDoubleBackSlash(fullPath);
+#else
+    RemoveDoubleSlash(fullPath);
+#endif
+    return fullPath;
+}
+
+inline void RemoveDoubleSlash(std::string &str)
+{
+    std::size_t pos = 0;
+    while ((pos = str.find(DOUBLE_SLASH)) != std::string::npos) {
+        str.replace(pos, DOUBLE_SLASH.length(), SLASH);
+    }
+}
+
+inline void RemoveDoubleBackSlash(std::string &str)
+{
+    std::size_t beginIndex = 0;
+    if (str.find(PATH_PREFIX) == 0) {
+        beginIndex = PATH_PREFIX.size();
+    }
+    std::size_t pos = 0;
+    while ((pos = str.find(DOUBLE_BACKSLASH, beginIndex)) != std::string::npos) {
+        str.replace(pos, DOUBLE_BACKSLASH.length(), BACKSLASH);
+    }
+}
+
+std::string VolumeNameTransform(const std::string& mapperName)
+{
+    // /dev/mapper/lv1-testAll --> lv1/testAll : ({vol_group}/{logical_vol})
+    std::vector<std::string> split_string;
+    boost::split(split_string, mapperName, boost::is_any_of("/"), boost::token_compress_on);
+    std::string lvmVolumeName = split_string.back();
+    if (lvmVolumeName.empty()) {
+        ERRLOG("Transform lvm volume name failed, it's mapper path: %s", mapperName.c_str());
+        return lvmVolumeName;
+    }
+    std::string::size_type pos = lvmVolumeName.find("-");
+    if (pos != std::string::npos) {
+        lvmVolumeName.replace(pos, 1, "/");
+    }
+    return lvmVolumeName;
+}
+
+uint64_t GetVolumeSize(const std::string& devicePath)
+{
+#ifdef __linux__
+    int fd = ::open(devicePath.c_str(), O_RDONLY);
+    if (fd < 0) {
+        ERRLOG("failed to open volume device %s, errno = %d", devicePath.c_str(), errno);
+        return 0;
+    }
+    uint64_t size = 0;
+    if (::ioctl(fd, BLKGETSIZE64, &size) < 0) {
+        close(fd);
+        ERRLOG("failed to execute ioctl BLKGETSIZE64, device %s, errno = %d", devicePath.c_str(), errno);
+        return 0;
+    }
+    ::close(fd);
+    return size;
+#else
+    WARNLOG("GetVolumeSize not implemented on this platform!");
+    return 0;
+#endif
+}
+
+string GetVolumeUuid(const std::string& devicePath)
+{
+#ifdef __linux__
+    struct stat st;
+    if (devicePath.empty()) {
+        ERRLOG("devicePath is empty, cannot get its volumeId");
+        return "";
+    }
+    if (stat(devicePath.c_str(), &st) < 0) {
+        ERRLOG("cannot get stat res:%s", devicePath.c_str());
+        return "";
+    }
+    return to_string(st.st_ino);
+#else
+    WARNLOG("GetVolumeUuid not implemented on this platform!");
+    return "";
+#endif
+}
+
+// return lvm vg-lv name
+std::string GetLvmVolumeName(const std::string& dmDevicePath)
+{
+    if (dmDevicePath.find("/dev/mapper/") != 0) {
+        ERRLOG("invalid lvm dm device path %s", dmDevicePath.c_str());
+        return dmDevicePath;
+    }
+    return dmDevicePath.substr(std::string("/dev/mapper/").length());
+}
+
+
+std::string LowerCase(const std::string& path)
+{
+    std::string lowerPath = path;
+    std::transform(lowerPath.begin(), lowerPath.end(), lowerPath.begin(),
+        [](unsigned char c) { return ::tolower(c); });
+    return lowerPath;
+}
+
+#ifndef WIN32
+string GetRealPath(const string& path)
+{
+    string realPath;
+    char normalizePath[PATH_MAX + 1] = { 0x00 };
+    if (realpath(path.c_str(), normalizePath) != nullptr) {
+        realPath = normalizePath;
+    }
+    return realPath;
+}
+#endif
+
+#ifndef WIN32
+string GetDirName(const string& path)
+{
+    vector<char> copy(path.c_str(), path.c_str() + path.size() + 1);
+    return dirname(copy.data());
+}
+#endif
+
+#ifndef WIN32
+bool IsDir(const string& path)
+{
+    struct stat st {};
+    return (lstat(path.c_str(), &st) == 0) && S_ISDIR(st.st_mode);
+}
+#endif
+
+std::string GetFileNameOfPath(std::string filePath)
+{
+    while (!filePath.empty() && filePath.back() == dir_sep[0]) {
+        filePath.pop_back();
+    }
+    auto pos = filePath.find_last_of(dir_sep);
+    return pos == std::string::npos ? filePath : filePath.substr(pos + 1);
+}
+
+std::string ReadFileContent(const std::string fullpath)
+{
+    INFOLOG("read content of file %s", fullpath.c_str());
+    std::string content;
+    try {
+        std::ifstream inFileStream {};
+        std::stringstream fileBuffer {};
+        inFileStream.open(fullpath.c_str(), std::ios::in);
+        if (!inFileStream.is_open()) {
+            ERRLOG("read from file open file failed %s, errno %d", fullpath.c_str(), errno);
+            return "";
+        }
+        fileBuffer << inFileStream.rdbuf();
+        content = fileBuffer.str();
+        inFileStream.close();
+    } catch (...) {
+        ERRLOG("read system name record file got exception");
+    }
+    return content;
+}
+} // namespace

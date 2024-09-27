@@ -1,0 +1,149 @@
+syntax = "proto2";
+import "BasicCommands.proto";
+import "BasicTypes.proto";
+import "Tasks.proto";
+
+enum EventType
+{
+   
+    EVENT_TYPE_EVENT = 0;
+    EVENT_TYPE_FAULT = 1;
+    EVENT_TYPE_ALARM_RESUME = 2;
+	EVENT_TYPE_OPER_LOG = 3;
+    EVENT_TYPE_RUN_LOG = 4;
+
+    UNKNOWN_EVENT_TYPE = 255;         
+}
+
+enum EventLevel
+{
+    EVENT_LEVEL_INFO	= 2;
+    EVENT_LEVEL_WARN	= 3;
+    EVENT_LEVEL_MAJOR   = 5;
+    EVENT_LEVEL_CRITIC  = 6;
+
+    UNKNOWN_EVENT_LEVEL = 255;        
+}
+
+enum ModuleIndex
+{
+    EVENT_USER      = 1;
+    EVENT_SECURITY  = 2;
+    EVENT_BRICK     = 3;
+    EVENT_STORAGE_POOL = 4;
+    EVENT_NAMESPACE = 5;
+    EVENT_HOSTGROUP = 6;
+    EVENT_DOMAIN    = 7;
+    EVENT_POLICY    = 8;
+    EVENT_BACKUP    = 9;
+    EVENT_RESTORE   = 10;
+    EVENT_TASK      = 11;
+    EVENT_NODE      = 12;
+    EVENT_HEART_BEAT        = 13;
+    EVENT_PROCESS_MONITOR   = 14;
+    EVENT_HYPERVISOR        = 15;
+    EVENT_SNAP              = 16;
+    EVENT_ALARM             = 17;
+    EVENT_LICENSE			= 18;
+    EVENT_SYSTEM_CONFIG     = 19;
+    EVENT_ADMINDB_BACKUP    = 20;
+    EVENT_TIME_MANAGER      = 21;
+    EVENT_HA      = 22;
+    EVENT_COPY    = 23;
+    EVENT_COPY_PLAN  = 24;  
+    EVENT_ZMQCERT = 25;
+    EVENT_COPY_POLICY = 26;
+    EVENT_CERT = 27;
+    EVENT_EBK_GOVERNANCE= 28;
+    EVENT_EBK_ACCELERATOR= 29;
+    EVENT_PROXY = 30;
+
+    UNKNOWN_MODULE_INDEX    = 255;        
+}
+
+// range of commands for EventCommand : 1000-1099
+message EventCommand
+{
+    extend BasicCommand
+    {
+        optional EventCommand cmd = 1000;
+    }
+    
+    repeated uint64 generate_time = 1;
+    repeated uint64 recover_time = 2;
+    repeated uint64 clear_time = 3;
+    repeated string generate_node = 4;
+    repeated ModuleIndex generate_module = 5;
+    repeated string parameters = 6;
+    repeated uint64 sn = 7;
+    repeated EventType event_type = 8;
+    repeated EventLevel event_level = 9;
+    repeated bool report_flag = 10;
+    repeated uint64 local_sn = 11;
+    repeated uint64 event_id = 12;
+    repeated uint64 request_id = 13;
+    repeated string clear_username =14;
+    repeated uint64 event_userid =15; //used for operation log, record who add the event
+    repeated string generate_node_ip=16;
+    repeated string extend_info=17;
+}
+
+message EventCommandReply
+{
+    extend GetTaskStateReply
+    {
+        optional EventCommandReply cmd = 1001;
+    }
+    
+    optional uint64 answer_code = 1;
+	repeated uint64 synced_local_sn = 2;
+	repeated uint64 request_id = 3;
+	repeated uint64 event_id=4;
+	repeated uint64 event_type=5;
+	repeated string event_parameters=6;
+}
+
+message NTPServerCommand
+{
+    extend BasicCommand
+    {
+        optional NTPServerCommand cmd = 1300;
+    }
+	optional string server_ip = 1;
+	optional uint64 cmd_type = 2; 
+	optional string user_info = 3;
+	optional uint64 user_id = 4;
+}
+
+message TimeOptReply
+{
+    extend GenericReply
+    {
+        optional TimeOptReply reply = 1301;
+    }
+	optional uint64 answer_code = 1;
+	optional uint64 opt_type = 2;
+	optional string opt_result = 3;
+}
+
+message ZMQKeyPairCommand
+{
+    extend BasicCommand
+    {
+        optional ZMQKeyPairCommand cmd = 1302;
+    }
+	optional uint64 cmd_type = 1; 
+	optional string adminnode_publickey = 2;
+	optional string user_info = 3;
+}
+
+message ZMQKeyPairCommandReply
+{
+    extend GenericReply
+    {
+        optional ZMQKeyPairCommandReply cmd = 1303;
+    }
+	optional uint64 cmd_type = 1; 
+	optional string backupnode_publickey = 2;
+	optional string opt_result = 3;
+}

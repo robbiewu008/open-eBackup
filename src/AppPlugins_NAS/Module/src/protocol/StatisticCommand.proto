@@ -1,0 +1,40 @@
+syntax = "proto2";
+import "BasicCommands.proto";
+import "BasicTypes.proto";
+
+enum SatisticReplyStatus
+{
+    REPLY_OK = 1;
+    REPLY_ERROR = 2;
+}
+
+message AccumulatorMsg
+{
+	optional string accumulatorName = 1;
+	optional uint64 accumulatorScopeType = 2;
+	optional string accumulatorScope = 3;
+	optional double value = 4;
+	optional uint64 count = 5;
+    optional uint64 timestamp = 6;
+}
+
+message GetAccumulator
+{
+	 extend BasicCommand
+    {
+        optional GetAccumulator cmd = 1100;
+    } 
+   repeated string NodeID = 1;
+}
+
+message GetAccumulatorResponse
+{
+	 extend  GenericReply
+    {
+        optional GetAccumulatorResponse response = 1101;
+    } 
+	repeated AccumulatorMsg accumulators = 1;
+    repeated uint32 replystatus = 2;
+    repeated string nodeId = 3;
+}
+

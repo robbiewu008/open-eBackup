@@ -1,0 +1,5 @@
+set(COMP_DIR "/opt/buildtools/python-3.8.2/lib/python3.8/site-packages/hdt/extensions/hdtp_c_cpp")
+include("${COMP_DIR}/gtest/hook/gtest.cmake")
+include("${COMP_DIR}/mockcpp/hook/mockcpp.cmake")
+include("${COMP_DIR}/gcov/hook/gcov.cmake")
+include("${COMP_DIR}/asan/hook/asan.cmake")

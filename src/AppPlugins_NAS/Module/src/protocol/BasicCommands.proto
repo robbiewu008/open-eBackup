@@ -1,0 +1,40 @@
+syntax = "proto2";
+import public "CommandTypes.proto";
+
+// range for basic commands and replies: 100-199
+
+message BasicCommand
+{
+    extensions 100 to max;
+    
+    optional CommandType type = 1;
+    
+    repeated string upSessionID = 2;//using repeated to get a good compatibility
+
+    optional uint64 requestid = 3;
+    
+    optional string url = 4;
+
+    optional string sendbody = 5;
+}
+
+enum CommandStatus
+{
+    ACK = 1;
+    FailureDueToSessionMismatch = 2;
+    AuthorizationWrong = 3;
+    NotSupport = 4;
+    ResourceIsUsing = 5;
+}
+
+message GenericReply
+{
+    extensions 100 to max;
+
+    extend BasicCommand
+    {
+        optional GenericReply cmd = 100;
+    }
+    
+    repeated CommandStatus status = 1;
+}

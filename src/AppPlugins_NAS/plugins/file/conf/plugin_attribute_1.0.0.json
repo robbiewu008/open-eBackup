@@ -1,0 +1,27 @@
+{
+    "application": "Fileset,Volume",
+    "name": "FilePlugin",
+    "cpu_limit": -1,
+    "application_version": [{
+        "application": "Fileset",
+        "min_version": "",
+        "max_version": ""
+    },
+    {
+        "application": "Volume",
+        "min_version": "",
+        "max_version": ""
+    }
+    ],
+    "mount" : {
+        "Fileset" : "nfsvers=3,rw,bg,soft,nointr,rsize=1048576,wsize=1048576,tcp,nolock,sync"
+     },
+    "run_account": "root",
+    "feature": [
+        "backup",
+        "restore",
+        "livemount",
+        "scan_resource"
+    ],
+    "application_sub_job_cnt_max": { "Fileset": 10 }
+}

@@ -1,0 +1,2 @@
+add_subdirectory(huawei)
+add_subdirectory(alibaba)

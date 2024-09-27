@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ This file is a part of the open-eBackup project.
+ This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one at
+ http://mozilla.org/MPL/2.0/.
+
+ Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+
+ THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+-->
+<!--
+struct_define:定义一类消息体的校验规则，其中包含该消息体中各参数所使用的param_type的组合
+    param:对应一个参数的检查，一个参数可能有多种检验规则，可以包含多个usetype
+    必选子标签：name、usetype
+    name:结构体类型名，大小写敏感
+    usetype:参数类型的引用（已定义的param_type）
+
+
+param_type:定义一种参数的校验规则，仅指示某种规则
+    必选子标签:id、type、cond
+    id:标识一种检验规则
+    type:string/int/internal/length
+    cond:条件
+        string:正则表达式
+        int:(0,10)/(0,)/(,10)
+        length: 字符串长度
+        internal:自定义的过滤器
+-->
+<rest_define>
+    <param_type_define>
+        <!--param_type common config-->
+        <param_type id="COMMON_VALUE_UINT64">
+            <type>int</type>
+            <cond>[0,18446744073709551615]</cond>
+        </param_type>
+        <param_type id="COMMON_VALUE_UINT32">
+            <type>int</type>
+            <cond>[0,4294967295]</cond>
+        </param_type>
+        <param_type id="COMMON_IPV4">
+            <type>string</type>
+            <cond>^((25[0-5]|2[0-4]\d|1\d\d|[1-9]\d?)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]\d?|[0-9])){3})$</cond>
+        </param_type>
+        <!--端口号-->
+        <param_type id="COMMON_PORT">
+            <type>int</type>
+            <cond>[1,65535]</cond>
+        </param_type>
+        <param_type id="COMMON_BOOL_VALUE">
+            <type>string</type>
+            <cond>^(false|true|0|1)$</cond>
+        </param_type>
+        <param_type id="COMMON_ANY_CHAR">
+            <type>string</type>
+            <cond>.*</cond>
+        </param_type>
+        <!--param_type length of string-->
+        <!--jobId-->
+        <param_type id="JOB_ID_LENGTH">
+            <type>length</type>
+            <cond>[36,36]</cond>
+        </param_type>
+        <param_type id="PATH_LENGTH">
+            <type>length</type>
+            <cond>[1,32767]</cond>
+        </param_type>
+        <!--param_type range of number-->
+        <param_type id="AUTH_TYPE">
+            <type>int</type>
+            <cond>[0,8]</cond>
+        </param_type>
+        <param_type id="BACKUP_TYPE">
+            <type>int</type>
+            <cond>[1,6]</cond>
+        </param_type>
+        <param_type id="REPOSITORY_DATA_TYPE">
+            <type>int</type>
+            <cond>[1,6]</cond>
+        </param_type>
+        <param_type id="PAGE_SIZE">
+            <type>int</type>
+            <cond>[0,1000]</cond>
+        </param_type>
+        <!--param_type string regular matching-->
+        <!--目标路径-->
+        <param_type id="RECOVERY_LOCATION">
+            <type>string</type>
+            <cond>^/[0-9a-zA-Z/\.#%=@{_}~:-]{1,255}$|^Origin$</cond>
+        </param_type>
+        <param_type id="HOST_NAME">
+            <type>string</type>
+            <cond>^[a-zA-Z0-9][a-zA-Z0-9-_]*[a-zA-Z0-9]$</cond>
+        </param_type>
+        <!--自定义恢复原对象的检查规则-->
+        <!-- <param_type id="CUSTOM_RESTOREOBJECTS">
+            <type>internal</type>
+            <cond>RestoreObjectChecker</cond>
+        </param_type> -->
+    </param_type_define>
+    <struct_define>
+        <struct id="ResourceFilter">
+            <param>
+                <name>filterBy</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <param>
+                <name>type</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <param>
+                <name>rule</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <param>
+                <name>values</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="DataLayout">
+            <param>
+                <name>encryption</name>
+                <usetype>COMMON_BOOL_VALUE</usetype>
+            </param>
+            <param>
+                <name>deduption</name>
+                <usetype>COMMON_BOOL_VALUE</usetype>
+            </param>
+            <param>
+                <name>compression</name>
+                <usetype>COMMON_BOOL_VALUE</usetype>
+            </param>
+            <param>
+                <name>nativeData</name>
+                <usetype>COMMON_BOOL_VALUE</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="Qos">
+            <param>
+                <name>bandwidth</name>
+                <usetype>COMMON_VALUE_UINT32</usetype>
+            </param>
+            <param>
+                <name>protectIops</name>
+                <usetype>COMMON_VALUE_UINT32</usetype>
+            </param>
+            <param>
+                <name>backupIops</name>
+                <usetype>COMMON_VALUE_UINT32</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="JobScripts">
+            <param>
+                <name>preScript</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <param>
+                <name>postScript</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <param>
+                <name>failPostScript</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="BackupJobParam">
+            <param>
+                <name>backupType</name>
+                <usetype>BACKUP_TYPE</usetype>
+            </param>
+            <subStruct>
+                <name>filters</name>
+                <usetype>ResourceFilter</usetype>
+            </subStruct>
+            <subStruct>
+                <name>dataLayout</name>
+                <usetype>DataLayout</usetype>
+            </subStruct>
+            <subStruct>
+                <name>qos</name>
+                <usetype>Qos</usetype>
+            </subStruct>
+            <subStruct>
+                <name>scripts</name>
+                <usetype>JobScripts</usetype>
+            </subStruct>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="StorageRepository">
+            <param>
+                <name>id</name>
+                <usetype>JOB_ID_LENGTH</usetype>
+            </param>
+            <subStruct>
+                <name>filters</name>
+                <usetype>ResourceFilter</usetype>
+            </subStruct>
+            <subStruct>
+                <name>dataLayout</name>
+                <usetype>DataLayout</usetype>
+            </subStruct>
+            <subStruct>
+                <name>qos</name>
+                <usetype>Qos</usetype>
+            </subStruct>
+            <subStruct>
+                <name>scripts</name>
+                <usetype>JobScripts</usetype>
+            </subStruct>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="BackupJob">
+            <param>
+                <name>requestId</name>
+                <usetype>JOB_ID_LENGTH</usetype>
+            </param>
+            <param>
+                <name>jobId</name>
+                <usetype>JOB_ID_LENGTH</usetype>
+            </param>
+            <subStruct>
+                <name>jobParam</name>
+                <usetype>BackupJobParam</usetype>
+            </subStruct>
+            <subStruct>
+                <name>protectEnv</name>
+                <usetype>ApplicationEnvironment</usetype>
+            </subStruct>
+            <subStruct>
+                <name>protectObject</name>
+                <usetype>Application</usetype>
+            </subStruct>
+            <subStruct>
+                <name>protectSubObject</name>
+                <usetype>ApplicationResource</usetype>
+            </subStruct>
+            <subStruct>
+                <name>repositories</name>
+                <usetype>StorageRepository</usetype>
+            </subStruct>
+            <subStruct>
+                <name>copy</name>
+                <usetype>Copy</usetype>
+            </subStruct>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="Authentication">
+            <param>
+                <name>authType</name>
+                <usetype>AUTH_TYPE</usetype>
+            </param>
+            <param>
+                <name>authkey</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <param>
+                <name>authPwd</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="ApplicationEnvironment">
+            <param>
+                <name>id</name>
+                <usetype>JOB_ID_LENGTH</usetype>
+            </param>
+            <param>
+                <name>name</name>
+                <usetype>HOST_NAME</usetype>
+            </param>
+            <param>
+                <name>type</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <param>
+                <name>subType</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <param>
+                <name>endpoint</name>
+                <usetype>COMMON_IPV4</usetype>
+            </param>
+            <param>
+                <name>port</name>
+                <usetype>COMMON_PORT</usetype>
+            </param>
+            <subStruct>
+                <name>auth</name>
+                <usestruct>Authentication</usestruct>
+            </subStruct>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="Application">
+            <param>
+                <name>type</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <param>
+                <name>subType</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <param>
+                <name>id</name>
+                <usetype>JOB_ID_LENGTH</usetype>
+            </param>
+            <param>
+                <name>name</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <param>
+                <name>parentId</name>
+                <usetype>JOB_ID_LENGTH</usetype>
+            </param>
+            <param>
+                <name>parentName</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <subStruct>
+                <name>auth</name>
+                <usestruct>Authentication</usestruct>
+            </subStruct>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="QueryByPage">
+            <param>
+                <name>pageNo</name>
+                <usetype>COMMON_VALUE_UINT32</usetype>
+            </param>
+            <param>
+                <name>pageSize</name>
+                <usetype>PAGE_SIZE</usetype>
+            </param>
+            <param>
+                <name>conditions</name>
+                <usetype>COMMON_ANY_CHAR</usetype>
+            </param>
+            <subStruct>
+                <name>orders</name>
+                <usestruct>COMMON_ANY_CHAR</usestruct>
+            </subStruct>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="ListResourceRequest">
+            <subStruct>
+                <name>appEnv</name>
+                <usestruct>ApplicationEnvironment</usestruct>
+            </subStruct>
+            <subStruct>
+                <name>applications</name>
+                <usestruct>Application</usestruct>
+            </subStruct>
+            <subStruct>
+                <name>condition</name>
+                <usestruct>QueryByPage</usestruct>
+            </subStruct>
+        </struct>
+    </struct_define>
+    <struct_define>
+        <struct id="ApplicationResource">
+            <param>
+                <name>type</name>
+                <usestruct>COMMON_ANY_CHAR</usestruct>
+            </param>
+            <param>
+                <name>subType</name>
+                <usestruct>COMMON_ANY_CHAR</usestruct>
+            </param>
+            <param>
+                <name>id</name>
+                <usestruct>JOB_ID_LENGTH</usestruct>
+            </param>
+            <param>
+                <name>name</name>
+                <usestruct>COMMON_ANY_CHAR</usestruct>
+            </param>
+            <param>
+                <name>parentId</name>
+                <usestruct>JOB_ID_LENGTH</usestruct>
+            </param>
+            <param>
+                <name>parentName</name>
+                <usestruct>COMMON_ANY_CHAR</usestruct>
+            </param>
+        </struct>
+    </struct_define>
+</rest_define>
