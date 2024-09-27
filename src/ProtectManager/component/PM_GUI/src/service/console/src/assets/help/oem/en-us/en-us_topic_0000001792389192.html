@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Clearing Residual Mount Information on the Host">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792389192">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Clearing Residual Mount Information on the Host</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792389192"></a><a name="EN-US_TOPIC_0000001792389192"></a>
+  <h1 class="topictitle1">Clearing Residual Mount Information on the Host</h1>
+  <div>
+   <p>If the following conditions are met, the forcible unmount job fails and residual mount information exists on the Oracle host. This section describes how to clear the mount information on the Oracle host.</p>
+   <ul>
+    <li><span class="uicontrol"><b><span><strong>Forcibly delete after destruction failure</strong></span></b></span> is enabled before the unmount job is executed.</li>
+    <li>A message similar to the following is displayed in the result of the unmount job: <span class="uicontrol"><b>The mounted resources have been forcibly unmounted. Residual resources may exist on the host. Manually clear the residual resources.</b></span></li>
+   </ul>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Check whether the file system corresponding to the unmount job has residual data on the host.</span><p></p>
+      <ol type="a">
+       <li>Obtain the file system name on the management page.
+        <ol class="substepthirdol">
+         <li>Obtain the file system name from the unmount job.<p>The file system name is similar to <strong>RDcd58afd3daec45e5b545c07eb9a24663</strong>.</p> <p>If the file system name is not found in the unmount job, go to the next step.</p></li>
+         <li>Search for the live mount job corresponding to the unmount job, and query the file system name in the live mount job.</li>
+        </ol></li>
+       <li>Check whether the file system has residual mount information on the host.
+        <ol class="substepthirdol">
+         <li id="EN-US_TOPIC_0000001792389192__li14647185922920">Use PuTTY to log in to the Oracle database host.</li>
+         <li id="EN-US_TOPIC_0000001792389192__li20329136566">Run the following command to switch to user <strong id="EN-US_TOPIC_0000001792389192__b16255161422315">oracle</strong>:<p id="EN-US_TOPIC_0000001792389192__p139165195318"><strong id="EN-US_TOPIC_0000001792389192__b86201184533">su - oracle</strong></p></li>
+         <li id="EN-US_TOPIC_0000001792389192__li15978143816593"><a name="EN-US_TOPIC_0000001792389192__li15978143816593"></a><a name="li15978143816593"></a>Run the following command to check whether the mount information of the file system exists on the host:<p><a name="EN-US_TOPIC_0000001792389192__li15978143816593"></a><a name="li15978143816593"></a><strong>df -h</strong></p> <p>If the mount information of the file system exists in the command output, residual mount information exists.</p> <p>For example, the following command output contains the mount information of the file system <strong>RDcd58afd3daec45e5b545c07eb9a24663</strong>:</p> <pre class="screen">[oracle@raca02 ~]$ df -h
+Filesystem                                          Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root                                48G   34G   15G  70% /
+devtmpfs                                            3.9G     0  3.9G   0% /dev
+tmpfs                                               2.0G  1.1G  940M  55% /dev/shm
+tmpfs                                               3.9G  9.9M  3.9G   1% /run
+tmpfs                                               3.9G     0  3.9G   0% /sys/fs/cgroup
+/dev/sda1                                          1014M  177M  838M  18% /boot
+/dev/mapper/rhel-home                                24G   37M   24G   1% /home
+tmpfs                                               783M     0  783M   0% /run/user/54323
+tmpfs                                               783M   12K  783M   1% /run/user/42
+tmpfs                                               783M     0  783M   0% /run/user/54322
+[192.168.99.244]:/RDcd58afd3daec45e5b545c07eb9a24663/  400G  256K  400G   1% /mnt/c93e27aa-16f3-38ae-b54f-2253abaab16f
+[192.168.99.245]:/RDcd58afd3daec45e5b545c07eb9a24663/  400G  256K  400G   1% /mnt/c93e27aa-16f3-38ae-b54f-2253abaab16f</pre></li>
+        </ol></li>
+      </ol> <p></p></li>
+     <li><span>Shut down the database mounted to the host.</span><p></p>
+      <ol type="a">
+       <li>Use PuTTY to log in to the Oracle database host.</li>
+       <li>Run the following command to switch to user <strong id="EN-US_TOPIC_0000001792389192__en-us_topic_0000001792389192_b16255161422315">oracle</strong>:<p id="EN-US_TOPIC_0000001792389192__en-us_topic_0000001792389192_p139165195318"><strong id="EN-US_TOPIC_0000001792389192__en-us_topic_0000001792389192_b86201184533">su - oracle</strong></p></li>
+       <li>Run the following commands to log in to the Oracle database instance.
+        <ul>
+         <li>If OS authentication is used, run the following commands:<p><strong>export ORACLE_SID=</strong><em>Database instance name</em></p> <p><strong>sqlplus / as sysdba</strong></p></li>
+         <li>If database authentication is used, run the following commands:<p><strong>export ORACLE_SID=</strong><em>Database instance name</em></p> <p><strong>sqlplus</strong></p> <p>Enter the name of a user with the <strong>sysdba</strong> permissions as prompted:</p> <pre class="screen"><em>username </em>as sysdba</pre> <p>Enter the password as prompted.</p></li>
+        </ul></li>
+       <li>Run the following command to shut down the database:<p><strong>shutdown immediate;</strong></p></li>
+      </ol> <p></p></li>
+     <li><span>Run the following command to unmount the file system:</span><p></p><p><strong>umount -f </strong><em>Mount directory of the file system</em></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>You can obtain the <em>Mount directory of the file system</em> from <a href="#EN-US_TOPIC_0000001792389192__li15978143816593">1.b.iii</a>.</p>
+       </div>
+      </div> <p>Example:</p> <pre class="screen">umount -f /mnt/c93e27aa-16f3-38ae-b54f-2253abaab16f</pre> <pre class="screen">umount -f /mnt/c93e27aa-16f3-38ae-b54f-2253abaab16f</pre> <p></p></li>
+     <li><span>Run the following command to delete the mount directory:</span><p></p><p><strong>rm -rf </strong><em>Mount directory of the file system</em></p> <p>Example:</p> <pre class="screen">rm -rf /mnt/c93e27aa-16f3-38ae-b54f-2253abaab16f</pre> <pre class="screen">rm -rf /mnt/c93e27aa-16f3-38ae-b54f-2253abaab16f</pre> <p></p></li>
+     <li><span>Log in to the database again and delete the pfile parameter file, such as <strong>initorcl.ora</strong>.</span><p></p>
+      <ol type="a">
+       <li>Run the following command to access the directory where the pfile parameter file resides:<p><strong>cd ${ORACLE_HOME}/dbs</strong></p></li>
+       <li>Run the following command to delete the pfile parameter file:<p><strong>rm -rf </strong> <em>pfile parameter file name</em></p> <p>The naming convention of the pfile parameter file in the Oracle database is as follows: init<em>Database instance name</em>.ora</p> <p>Example:</p> <pre class="screen"><strong>rm -rf </strong><strong>initorcl.ora</strong></pre></li>
+      </ol> <p></p></li>
+    </ol>
+    <ol start="6">
+     <li><span>Delete the corresponding file system.</span><p></p>
+      <ul>
+       <li>
+        <ol type="a">
+         <li>Log in to DeviceManager.</li>
+         <li>Choose <span class="uicontrol"><b>Services &gt; File Service &gt; File Systems</b></span>.</li>
+         <li>Search for the file system by name and delete it.</li>
+        </ol></li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

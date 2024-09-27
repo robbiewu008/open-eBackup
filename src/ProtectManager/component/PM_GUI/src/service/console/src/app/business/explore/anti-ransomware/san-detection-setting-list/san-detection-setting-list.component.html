@@ -1,0 +1,43 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation">
+    <lv-group>
+        <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData" [maxDisplayItems]="3">
+        </lv-pro-button-group>
+    </lv-group>
+    <lv-group lvGutter="8px">
+        <lv-group lvGutter="8px">
+            <button class="aui-button-icon" lv-button lvSize="auto" (click)="dataTable.fetchData()">
+                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+            </button>
+        </lv-group>
+    </lv-group>
+</div> 
+<div class="list-container">
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div> 
+
+<ng-template #realTimeTpl let-item>
+    <div class="lv-pro-status">
+        <span class="lv-pro-status-dot"
+            [style.backgroundColor]="item.isRealTimeDetectEnabled === realTimeStatus[0].value ? '#b8becc' : '#7adfa0'">
+            <i class="lv-pro-status-animate-dot"></i>
+        </span>
+        <span
+            *ngIf="item.isRealTimeDetectEnabled === realTimeStatus[1].value && item.isRealTimeEnhancedDetectEnabled === realTimeStatus[1].value">{{falseAlarmEnableLabel}}</span>
+        <span
+            *ngIf="item.isRealTimeDetectEnabled === realTimeStatus[1].value && item.isRealTimeEnhancedDetectEnabled === realTimeStatus[0].value">{{falseAlarmDisableLabel}}</span>
+        <span *ngIf="item.isRealTimeDetectEnabled === realTimeStatus[0].value">{{'system_tape_disabled_label' | i18n}}</span>
+    </div>
+</ng-template>

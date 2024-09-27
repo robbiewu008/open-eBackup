@@ -1,0 +1,165 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation">
+  <lv-group></lv-group>
+  <lv-radio-group [(ngModel)]="listView" (ngModelChange)='changeListView($event)' [lvGroupName]="'listViewGroup'">
+    <lv-group lvGutter='8px'>
+      <lv-group>
+      </lv-group>
+      <lv-group>
+        <lv-radio [lvViewType]="'button'" [lvValue]="0" class="sla-view">
+          <i lv-icon="aui-time-line" [lvColorState]='true'></i>
+        </lv-radio>
+        <lv-radio [lvViewType]="'button'" [lvValue]="1" class="sla-view">
+          <i lv-icon="aui-icon-sla-list-view" [lvColorState]='true' class="list-view-mgt"></i>
+        </lv-radio>
+      </lv-group>
+      <lv-group>
+        <button class="aui-button-icon" lv-button lvSize="auto" (click)="refreshCopy(listView)">
+          <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+        </button>
+      </lv-group>
+    </lv-group>
+  </lv-radio-group>
+</div>
+<ng-container *ngIf='!listView'>
+  <div class="timeline-container">
+    <lv-slider [(ngModel)]="sliderVal" [lvMin]="0" [lvMax]="86399" [lvDivision]="24" [lvLines]="sliderLines"
+      [lvTooltip]="tipTemp" [lvPoints]="sliderPoints" [lvHandleColor]="sliderHandleColor" [lvTrackVisible]="false"
+      (onChange)="sliderChange($event)" (onSlideEnd)='queryCopyPoint($event)' [lvHoverShowTooltip]="false">
+    </lv-slider>
+  </div>
+  <ng-template #tipTemp let-data> {{ sliderChange({value: data}, true) }} </ng-template>
+  <div class="copydata-operation">
+    <lv-group lvGutter='12px'>
+      <i *ngIf='copyData' lv-icon='aui-file-copy' lv-tooltip="{{ 'common_copies_label' | i18n }}"></i>
+      <i *ngIf='logData && !copyData' lv-icon='aui-file-log' lv-tooltip="{{ 'common_log_label' | i18n }}"></i>
+      <i *ngIf='!copyData && !logData' lv-icon='aui-no-copy'
+        lv-tooltip="{{ 'protection_unvaliable_label' | i18n }}"></i>
+      <lv-time-picker [(ngModel)]="timePickerValue" (ngModelChange)="timePickerChange($event)" lvPlaceholder="HH:mm:ss">
+      </lv-time-picker>
+    </lv-group>
+  </div>
+  <div class='aui-gutter-column-lg'></div>
+  <ng-container *ngIf='resType !== resourceResourceType.HBaseBackupSet.value && copyData'>
+    <lv-datatable [lvData]="[copyData]" #lvTable>
+      <thead>
+        <tr>
+          <th lvCellKey='display_timestamp'>{{'common_time_stamp_label' | i18n}}</th>
+          <th width='110px'>{{'common_operation_label' | i18n}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor='let item of lvTable.renderData'>
+          <tr>
+            <td>
+              <span class="aui-link" id='outerClosable' (click)="getDetail(item)">
+                <i lv-icon='aui-sla-oracle'></i>
+                {{item.display_timestamp | date : 'yyyy-MM-dd HH:mm:ss' : timeZone}}
+              </span>
+            </td>
+            <td width='110px'>
+              <lv-operation-menu [lvData]="item" [lvItemsFn]="optsCallback"></lv-operation-menu>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </lv-datatable>
+  </ng-container>
+  <ng-container *ngIf='resType === resourceResourceType.HBaseBackupSet.value && copyData'>
+    <lv-datatable [lvData]="[copyData]" #lvHBaseTable>
+      <thead>
+        <tr>
+          <th *ngFor="let item of columns" [lvCellKey]="item.key">
+            {{ item.label }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of lvHBaseTable.renderData;let i = index;trackBy:trackByUuid">
+          <tr>
+            <ng-container *ngFor="let col of columns">
+              <td>
+                <ng-container [ngSwitch]="col.key">
+                  <ng-container *ngSwitchCase="'display_timestamp'">
+                    <a lv-overflow id="outerClosable" (click)="getDetail(item)">
+                      {{ item.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss' : timeZone}}
+                    </a>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'status'">
+                    <aui-status [value]="item.status" type="copydata_validStatus"></aui-status>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'generated_by'">
+                    <span lv-overflow>
+                      {{ item.generated_by | textMap: 'CopyData_generatedType' }}
+                    </span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'backup_type'">
+                    <span lv-overflow>
+                      {{ item.backup_type | textMap: 'specialBackUpType' }}
+                    </span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'indexed'">
+                    <aui-file-indexed [indexed]="item.indexed"></aui-file-indexed>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'expiration_time'">
+                    <span lv-overflow>
+                      {{ item.expiration_time | date: 'yyyy-MM-dd HH:mm:ss' | nil }}
+                    </span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'op'">
+                    <lv-operation-menu [lvItemsFn]="optsCallback" [lvData]="item"></lv-operation-menu>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <span lv-overflow>
+                      {{item[col.key] | nil}}
+                    </span>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-container>
+      </tbody>
+    </lv-datatable>
+  </ng-container>
+  <ng-container *ngIf='logData && !copyData'>
+    <lv-datatable [lvData]="[logData]" #lvLogTable>
+      <thead>
+        <tr>
+          <th>{{'common_time_stamp_label' | i18n}}</th>
+          <th width='110px'>{{'common_operation_label' | i18n}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor='let item of lvLogTable.renderData'>
+          <tr>
+            <td>
+              <span>
+                {{_toString(getTodayTime(timePickerValue) * 1000) | date : 'yyyy-MM-dd HH:mm:ss'}}
+              </span>
+            </td>
+            <td width='110px'>
+              <lv-operation-menu [lvData]="item" [lvItemsFn]="optsCallback" lvMaxShowNum="1"></lv-operation-menu>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </lv-datatable>
+  </ng-container>
+</ng-container>
+<ng-container *ngIf='!!listView'>
+  <aui-copy-data-list [id]="id" [rowData]="rowData" [currentDate]="currentDate" [resType]="resType">
+  </aui-copy-data-list>
+</ng-container>

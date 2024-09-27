@@ -1,0 +1,95 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ 'common_name_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input type="text" formControlName="name" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ 'protection_name_space_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select formControlName="namespace" [lvOptions]="namespaceOptions" lvValueKey="uuid" lvShowFilter
+                lvFilterKey='label' lvFilterMode='contains' [lvDisabled]="!!rowItem">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <!-- 包含选择器 -->
+    <lv-form-item>
+        <lv-form-label>
+            <h3>{{'protection_include_tag_label' |i18n}}</h3>
+        </lv-form-label>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_labels_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <ng-container *ngFor="let item of includeLabels; last as isLast">
+                <lv-group lvGutter='8px' [ngClass]="{'mgb': !isLast, 'mgb-min': isLast}" class="label-group"
+                    [lvColumns]='["auto", "auto", "20px"]'>
+                    <lv-form-control [lvErrorTip]='keyErrorTip'>
+                        <input lv-input [formControlName]="prefixInKey + item.id"
+                            placeholder="{{'common_enter_key_label' | i18n}}" />
+                    </lv-form-control>
+                    <lv-form-control [lvErrorTip]='valueErrorTip'>
+                        <input lv-input [formControlName]="prefixInValue + item.id"
+                            placeholder="{{'common_enter_value_label' | i18n}}" />
+                    </lv-form-control>
+                    <i lv-icon="aui-icon-remove" (click)="deleteIncludeLabels(item.id)" lvColorState='true'></i>
+                </lv-group>
+            </ng-container>
+            <lv-group lvGutter='8px' class="add-group aui-link" (click)="addIncludeLabels()">
+                <i lv-icon="aui-icon-add-enable"></i>
+                <span class="text-middle">{{'common_add_label' | i18n}}</span>
+            </lv-group>
+        </lv-form-control>
+    </lv-form-item>
+    <!-- 排除选择器 -->
+    <lv-form-item>
+        <lv-form-label>
+            <h3>{{'protection_exclude_tag_label' |i18n}}</h3>
+        </lv-form-label>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_labels_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <ng-container *ngFor="let item of excludeLabels; last as isLast">
+                <lv-group lvGutter='8px' [ngClass]="{'mgb': !isLast, 'mgb-min': isLast}" class="label-group"
+                    [lvColumns]='["auto", "auto", "20px"]'>
+                    <lv-form-control [lvErrorTip]='keyErrorTip'>
+                        <input lv-input [formControlName]="prefixExKey + item.id"
+                            placeholder="{{'common_enter_key_label' | i18n}}" />
+                    </lv-form-control>
+                    <lv-form-control [lvErrorTip]='valueErrorTip'>
+                        <input lv-input [formControlName]="prefixExValue + item.id"
+                            placeholder="{{'common_enter_value_label' | i18n}}" />
+                    </lv-form-control>
+                    <i lv-icon="aui-icon-remove" (click)="deleteExcludeLabels(item.id)" lvColorState='true'></i>
+                </lv-group>
+            </ng-container>
+            <lv-group lvGutter='8px' class="add-group aui-link" (click)="addExcludeLabels()">
+                <i lv-icon="aui-icon-add-enable"></i>
+                <span class="text-middle">{{'common_add_label' | i18n}}</span>
+            </lv-group>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

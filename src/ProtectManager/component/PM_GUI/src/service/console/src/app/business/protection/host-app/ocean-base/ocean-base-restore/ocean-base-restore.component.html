@@ -1,0 +1,187 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item *ngIf="!isDrill">
+      <lv-form-label lvRequired>
+        {{ 'protection_restore_to_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-radio-group formControlName="restoreLocation">
+          <lv-group [lvGutter]="'24px'">
+            <lv-radio
+              [lvValue]="restoreLocationType.ORIGIN"
+              [lvDisabled]="rowCopy?.resource_status === 'NOT_EXIST'"
+            >
+              {{ 'common_restore_to_origin_location_label' | i18n }}
+            </lv-radio>
+            <lv-radio [lvValue]="restoreLocationType.NEW">
+              {{ 'common_restore_to_new_location_label' | i18n }}
+            </lv-radio>
+          </lv-group>
+        </lv-radio-group>
+      </lv-form-control>
+    </lv-form-item>
+    <ng-container
+      *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN"
+    >
+      <lv-form-item>
+        <lv-form-label>
+          {{ 'common_location_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <input lv-input type="text" formControlName="originLocation" />
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label lvRequired>
+          {{ 'common_single_tenant_label' | i18n }}
+        </lv-form-label>
+        <lv-datatable
+        [lvData]="originalTenantData"
+        #originalTable
+        lvSelectionMode="multiple"
+        [lvSelection]="originalSelection"
+        (lvSelectionChange)="checkBoxChange()"
+       >
+       <thead>
+           <tr>
+               <th
+               width="64px"
+               lvShowCheckbox
+               ></th>
+               <th>{{ 'protection_original_tenant_label' | i18n }}</th>
+               <th>{{ 'protection_vm_resource_pool_label' | i18n }}</th>
+           </tr>
+       </thead>
+       <tbody>
+           <ng-container *ngFor="let item of originalTable.renderData">
+             <tr >
+               <td
+               lvShowCheckbox
+               [lvRowData]="item"
+               (lvCheckChange)="checkChange()"
+               >
+               </td>
+               <td>
+                <span lv-overflow>
+                  {{item.name}}
+                </span>
+               </td>
+               <td>
+               <lv-select
+               [lvOptions]="resourcePoolOptions"
+               [(ngModel)]='item.selectedData'
+               [ngModelOptions]="{standalone: true}"
+               (ngModelChange)='selectionChange()'
+               lvShowClear
+               >
+               </lv-select>
+               </td>
+             </tr>
+           </ng-container>
+         </tbody>
+       </lv-datatable>
+    </lv-form-item>
+    </ng-container>
+     <ng-container
+      *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW"
+    >
+    <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'targetLocation'"></aui-select-tag>
+      <lv-form-item>
+          <lv-form-label lvRequired>
+            {{ 'common_target_to_cluster_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control>
+          <lv-select
+            [lvOptions]="clusterOptions"
+            formControlName="targetLocation"
+            lvValueKey="value"
+            lvFilterKey="label"
+            lvFilterMode="contains"
+          >
+          </lv-select>
+          </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label lvRequired>
+          {{ 'common_single_tenant_label' | i18n }}
+        </lv-form-label>
+        <lv-datatable
+        [lvData]="newTenantData"
+        #originalTable
+        lvSelectionMode="multiple"
+        [lvSelection]="newSelection"
+        (lvSelectionChange)="checkBoxChange()"
+       >
+       <thead>
+        <tr>
+          <th
+          width="64px"
+          lvShowCheckbox
+          ></th>
+          <th width="200px">{{ 'protection_original_tenant_label' | i18n }}</th>
+          <th width="200px">
+            {{ 'protection_new_tenant_label' | i18n }}
+            <i
+              lv-icon="aui-icon-help"
+              lv-tooltip="{{'protection_oceanbase_restore_tenant_tips_label' | i18n}}"
+              lvTooltipTheme="light"
+              lvColorState="true"
+            ></i>
+          </th>
+          <th>{{ 'protection_vm_resource_pool_label' | i18n }}</th>
+        </tr>
+       </thead>
+       <tbody>
+           <ng-container *ngFor="let item of originalTable.renderData; let i = index">
+             <tr >
+               <td
+               lvShowCheckbox
+               [lvRowData]="item"
+               (lvCheckChange)="checkChange()"
+               >
+               </td>
+               <td>
+                <span lv-overflow>
+                  {{item.name}}
+                </span>
+               </td>
+               <td>
+                 <input
+                  lv-input
+                  type="text"
+                  [(ngModel)]='item.targetName'
+                  [ngClass]="{'valid-tenant': validOptions[i]}"
+                  [ngModelOptions]="{standalone: true}"
+                  (ngModelChange)='checkChange($event,i)'
+                 />
+               </td>
+               <td>
+               <lv-select
+                [lvOptions]="targetResourcePoolOptions"
+                [(ngModel)]='item.selectedData'
+                [ngModelOptions]="{standalone: true}"
+                (ngModelChange)='selectionChange()'
+                lv-overflow
+                lvShowClear
+               >
+               </lv-select>
+               </td>
+             </tr>
+           </ng-container>
+         </tbody>
+        </lv-datatable>
+    </lv-form-item>
+    </ng-container>
+</lv-form>

@@ -1,0 +1,133 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <h1>{{'system_alarm_term_notify_label' | i18n}}</h1>
+    </div>
+    <ng-container *ngIf="isLoaded">
+        <ng-container *ngIf="useEnable; else elseTemplate">
+            <div class="aui-block">
+                <div class="aui-header-2">
+                    <lv-group lvGutter='10px'>
+                        <h2>{{'system_alarm_sender_setting_label' | i18n}}</h2>
+                        <lv-switch [(ngModel)]="alarmNotifyStatus" [lvControl]="true" (click)="alarmNotifyChange()">
+                        </lv-switch>
+                    </lv-group>
+                    <lv-group lvGutter='8px'>
+                        <a class="aui-link" (click)='modify()' *ngIf="!isModify"
+                            [ngClass]="{'aui-link': alarmNotifyStatus, 'aui-link-disabled': !alarmNotifyStatus}">
+                            {{'common_modify_label' | i18n}}
+                        </a>
+                        <a class="aui-link" (click)="save()" *ngIf="isModify"
+                            [ngClass]="{'aui-link': this.formGroup.valid, 'aui-link-disabled': !this.formGroup.valid}">
+                            {{'common_save_label' | i18n}}
+                        </a>
+                        <a class="aui-link" (click)="cancel()" *ngIf="isModify">
+                            {{'common_cancel_label' | i18n}}
+                        </a>
+                    </lv-group>
+                </div>
+                <div class="dashed-line aui-gutter-column-md"></div>
+                <ng-container *ngIf="alarmNotifyStatus">
+                    <div class="aui-gutter-column-lg aui-text-desc">
+                        {{'system_recipent_desc_label' | i18n}}
+                    </div>
+                    <ng-container *ngIf="!isModify">
+                        <lv-form [lvLabelColon]="false">
+                            <ng-container *ngFor="let item of alarmNotify">
+                                <lv-form-item>
+                                    <lv-form-label>
+                                        {{item.label}}
+                                    </lv-form-label>
+                                    <lv-form-control>
+                                        <ng-container *ngIf="item.key === 'severity'; else elseTemplate">
+                                            <lv-group [lvGutter]="'16px'">
+                                                <ng-container *ngIf="item.value?.length; else elseEmpty">
+                                                    <ng-container *ngFor="let v of item.value">
+                                                        <alarm-level [type]="_toLower(v)"></alarm-level>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <ng-template #elseEmpty>
+                                                    --
+                                                </ng-template>
+                                            </lv-group>
+                                        </ng-container>
+                                        <ng-template #elseTemplate>
+                                            <span>{{item.value | textMap: 'alarmNotifyLanguage'}}</span>
+                                        </ng-template>
+                                    </lv-form-control>
+                                </lv-form-item>
+                            </ng-container>
+                        </lv-form>
+                    </ng-container>
+                    <ng-container *ngIf="isModify">
+                        <lv-form [formGroup]="formGroup" [lvLabelColon]="false" lvKeepRequiredWidth>
+                            <lv-form-item>
+                                <lv-form-label>
+                                    {{'system_alarm_severity_label' | i18n}}
+                                </lv-form-label>
+                                <lv-form-control>
+                                    <lv-checkbox-group formControlName="alarmSeveritySet">
+                                        <lv-group [lvGutter]="'16px'">
+                                            <lv-checkbox *ngFor="let item of severityItems" [lvValue]="item.value">
+                                                <alarm-level [type]="item.value"></alarm-level>
+                                            </lv-checkbox>
+                                        </lv-group>
+                                    </lv-checkbox-group>
+                                </lv-form-control>
+                            </lv-form-item>
+                            <lv-form-item>
+                                <lv-form-label>
+                                    {{'system_language_type_label' | i18n}}
+                                </lv-form-label>
+                                <lv-form-control>
+                                    <lv-select [lvOptions]='languageMethods' lvValueKey='value'
+                                        formControlName="language">
+                                    </lv-select>
+                                </lv-form-control>
+                            </lv-form-item>
+                        </lv-form>
+                    </ng-container>
+                    <div class="email-container">
+                        <div class="aui-gutter-column-lg">
+                            <div class="aui-operation">
+                                <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData"
+                                    [maxDisplayItems]="4">
+                                </lv-pro-button-group>
+                                <button class="aui-button-icon" lv-button lvSize="auto" (click)="getEmail()">
+                                    <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-container">
+                            <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-container>
+        <ng-template #elseTemplate>
+            <div class="aui-block">
+                <div class="aui-header-2">
+                    <h2>{{'system_alarm_sender_setting_label' | i18n}}</h2>
+                </div>
+                <div class="dashed-line"></div>
+                <p class="aui-text-help-sm" [innerHTML]="dynamicCodeHelp"></p>
+            </div>
+        </ng-template>
+    </ng-container>
+  <div class="aui-block mgt-16">
+    <aui-sys-log-notify></aui-sys-log-notify>
+  </div>
+</div>

@@ -1,0 +1,115 @@
+@color-white: #ffffff;
+
+.drill-title-group {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.drill-content-group {
+  height: 100%;
+}
+
+.plan-list {
+  margin-top: 32px;
+}
+
+.over-view {
+  height: 340px;
+  margin-top: 20px;
+
+  .overview-group {
+    height: 100%;
+  }
+
+  .overview {
+    width: 65%;
+    height: 100%;
+    padding: 18px;
+    background-image: url('assets/img/drill-overview-bk.png');
+    background-repeat: no-repeat;
+    background-position: right -10px bottom -10px;
+    background-color: #f8fafe;
+
+    .result-container {
+      height: 40%;
+    }
+
+    .first {
+      padding-left: 40px;
+    }
+
+    .result {
+      font-weight: bold;
+      font-size: 36px;
+    }
+  }
+
+  .abnormal-result {
+    width: calc(35% - 14px);
+    height: 100%;
+    background: @color-white;
+    padding: 18px;
+
+    .abnormal-table {
+      width: 100%;
+      padding: 10px 30px;
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+
+      tr {
+        height: 32px;
+      }
+
+      .tr-border td {
+        border-bottom: 1px solid #e6ebf5;
+      }
+
+      .mgl-td {
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+.drill-card {
+  display: inline-block;
+  margin: 0 16px 16px 0;
+  width: 495px;
+  border: 1px solid #e8eaee;
+}
+
+.card-header {
+  background-image: url('assets/img/drill-cardbg.svg');
+  background-repeat: no-repeat;
+  height: 110px;
+  width: 100%;
+  padding: 14px;
+}
+
+.card-header-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.mgt-name {
+  margin-top: 12px;
+}
+
+.card-content {
+  height: 120px;
+  padding: 14px;
+}
+
+.no-data {
+  margin-top: 64px;
+  text-align: center;
+}
+
+.no-data i {
+  width: 72px;
+  height: 72px;
+}

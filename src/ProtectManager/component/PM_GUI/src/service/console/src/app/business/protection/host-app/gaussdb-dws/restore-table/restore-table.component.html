@@ -1,0 +1,123 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_restore_to_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group
+        formControlName="restoreTo"
+        [lvGroupName]="'restoreToGroup'"
+      >
+        <lv-group [lvGutter]="'20px'">
+          <lv-radio
+            [lvValue]="restoreLocationType.ORIGIN"
+            [lvDisabled]="disableOriginLocation"
+            [lv-tooltip]="
+              disableOriginLocation
+                ? tip
+                : ''
+            "
+          >
+            {{ 'common_restore_to_origin_location_label' | i18n }}
+          </lv-radio>
+          <lv-radio
+            [lvValue]="restoreLocationType.NEW"
+            [lvDisabled]="
+              rowCopy.resource_sub_type === 'DWS-table' && !isGDSBackup
+            "
+          >
+            {{ 'common_restore_to_new_location_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container
+    *ngIf="formGroup.value.restoreTo === restoreLocationType.ORIGIN"
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_location_label' | i18n }}
+      </lv-form-label>
+      <input
+        lv-input
+        type="text"
+        formControlName="position"
+        [placeholder]="placeHolder"
+      />
+    </lv-form-item>
+  </ng-container>
+  <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_target_to_cluster_label' | i18n }}
+      </lv-form-label>
+      <lv-select
+        formControlName="cluster"
+        [lvOptions]="clusterOptions"
+        lvValueKey="key"
+        lvShowFilter
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        [lvPlaceholder]="placeHolder"
+        [lvDisabled]="
+          (restoreType === typeRestore.CommonRestore &&
+            rowCopy.resource_sub_type === 'DWS-table' &&
+            !isGDSBackup)
+        "
+      >
+      </lv-select>
+      <div
+        class="tips-container"
+        *ngIf="
+          rowCopy.resource_sub_type ===
+            dataMap.Resource_Type.DWS_Schema.value && !formGroup?.value?.cluster
+        "
+      >
+        <i
+          lv-icon="lv-icon-status-info"
+          lvColorState="true"
+          class="tips-icon"
+        ></i>
+        <span
+          innerHTML="{{schemaTip}}"
+          class="tips-text"
+        >
+        </span>
+      </div>
+    </lv-form-item>
+    <ng-container *ngIf="restoreType === typeRestore.CommonRestore">
+      <lv-form-item>
+        <lv-form-label lvRequired>
+          {{ 'common_database_label' | i18n }}
+        </lv-form-label>
+        <lv-select
+          formControlName="database"
+          [lvOptions]="databaseOptions"
+          lvValueKey="key"
+          lvShowFilter
+          lvFilterKey="label"
+          lvFilterMode="contains"
+          [lvDisabled]="
+            restoreType !== typeRestore.CommonRestore &&
+            rowCopy.resource_sub_type === 'DWS-schema'
+          "
+        >
+        </lv-select>
+      </lv-form-item>
+    </ng-container>
+  </ng-container>
+</lv-form>

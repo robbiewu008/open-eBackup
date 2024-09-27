@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Managing NAS Share Protection">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792360674.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001839159777">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Managing NAS Share Protection</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001839159777"></a><a name="EN-US_TOPIC_0000001839159777"></a>
+  <h1 class="topictitle1">Managing NAS Share Protection</h1>
+  <div>
+   <p>You can modify, remove, enable, or disable NAS share protection.</p>
+   <p>Choose <span class="uicontrol"><b><span id="EN-US_TOPIC_0000001839159777__en-us_topic_0000001666345505_text99081414144119"><strong>Protection</strong></span> &gt; File Services &gt; NAS Shares</b></span> and find the desired NAS share.</p>
+   <div class="note">
+    <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+    <div class="notebody">
+     <p id="EN-US_TOPIC_0000001839159777__en-us_topic_0000001839142377_p5978112341818">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000001839159777__en-us_topic_0000001839142377_uicontrol129783237180"><b><span id="EN-US_TOPIC_0000001839159777__en-us_topic_0000001839142377_text10978172391818"><strong>Protection</strong></span> &gt; File Services &gt; NAS Shares</b></span>.</p>
+    </div>
+   </div>
+   <p><a href="#EN-US_TOPIC_0000001839159777__table24934294919">Table 1</a> describes the operations.</p>
+   <div class="tablenoborder">
+    <a name="EN-US_TOPIC_0000001839159777__table24934294919"></a><a name="table24934294919"></a>
+    <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839159777__table24934294919" frame="border" border="1" rules="all">
+     <caption>
+      <b>Table 1 </b>Operations related to NAS share protection
+     </caption>
+     <colgroup>
+      <col style="width:14.360000000000001%">
+      <col style="width:57.86%">
+      <col style="width:27.779999999999998%">
+     </colgroup>
+     <thead align="left">
+      <tr>
+       <th align="left" class="cellrowborder" valign="top" width="14.360000000000001%" id="mcps1.3.5.2.4.1.1"><p>Operation</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="57.86%" id="mcps1.3.5.2.4.1.2"><p>Description</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="27.779999999999998%" id="mcps1.3.5.2.4.1.3"><p>Navigation Path</p></th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Modify Protection</strong></span></p></td>
+       <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>You can modify the protection plan of a NAS share. After the modification, the next backup will be executed based on the new protection plan.</p> <p><strong>Note</strong></p>
+        <ul>
+         <li>The modification does not affect the protection job that is in progress. The new protection plan is used from the next protection period.</li>
+         <li>If the SLA associated with a resource changes, you are advised to modify the current SLA by choosing <span class="uicontrol"><b><span><strong>Protection</strong></span> &gt; <span><strong>Protection Policies</strong></span> &gt; <span><strong>SLAs</strong></span></b></span>. You are advised not to associate the resource with another SLA by modifying the protection.</li>
+         <li>For some models of this product, when the built-in agent is used to protect NAS shares, the default value of <span class="parmname"><b><span><strong>Channels</strong></span></b></span> is 10 and the maximum value is 15. If this parameter is set to a value greater than the maximum value, the available memory of the process may be insufficient.</li>
+        </ul></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>Locate the row that contains the target resource, and choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify Protection</strong></span></b></span>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Remove Protection</strong></span></p></td>
+       <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>You can remove the protection plan if the SLA share no longer needs to be protected. After the protection plan is removed, the system cannot execute protection jobs for the NAS share.</p> <p><strong>Note</strong></p>
+        <ul>
+         <li>When a protection job of the NAS share is in progress, protection cannot be removed.</li>
+         <li>If the SLA associated with a resource changes, you are advised to modify the current SLA by choosing <span class="uicontrol"><b><span id="EN-US_TOPIC_0000001839159777__en-us_topic_0000001666345505_text71111921162814"><strong>Protection</strong></span> &gt; Protection Policies &gt; SLAs</b></span>. You are advised not to associate the resource with another SLA after removing the protection.</li>
+        </ul></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Remove Protection</strong></span></b></span>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Restore</strong></span></p></td>
+       <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>If a file of the NAS share is lost or damaged, you can restore the file using its backup.</p></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>Locate the row that contains the target resource, and choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Restore</strong></span></b></span>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Disable Protection</strong></span></p></td>
+       <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>You can disable the protection plan if the NAS share no longer needs to be periodically protected. After the protection plan is disabled, the system does not perform automatic backup jobs for the NAS share.</p> <p><strong>Note</strong></p> <p>Disabling protection does not affect ongoing backup jobs.</p></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Disable Protection</strong></span></b></span>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Activate Protection</strong></span></p></td>
+       <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>After the protection plan of the NAS share is disabled, you can activate it again. After the protection plan is activated, the system backs up the NAS share based on the protection plan.</p> <p><strong>Note</strong></p> <p>You can perform this operation only on a NAS share that has been associated with an SLA and is in the <span class="uicontrol"><b><span><strong>Unprotected</strong></span></b></span> state.</p></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Activate Protection</strong></span></b></span>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Test Connectivity</strong></span></p></td>
+       <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>Connectivity text of the NAS share, which is used to check the connectivity between the built-in agent and the production environment (NAS share).</p></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>Locate the row that contains the target resource, and choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Test Connectivity</strong></span> </b></span>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Modify</strong></span></p></td>
+       <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>When the FQDN, IP address, or authentication mode of a registered NAS share is changed, you need to perform this operation to synchronize the change.</p> <p>If a NAS share registered using the storage device has authentication information, you need to configure the authentication information.</p></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify</strong></span></b></span>.</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Delete</strong></span></p></td>
+       <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>If you no longer need to protect a NAS share registered manually, you can delete it. After deletion, information about the NAS share is deleted from the management platform.</p> <p><strong>Note</strong></p>
+        <ul>
+         <li>If a backup or scanning job is in progress, the NAS share cannot be deleted. Wait until the job is complete.</li>
+         <li>NAS shares discovered through device addition cannot be deleted.</li>
+        </ul></td>
+       <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Delete</strong></span></b></span>.</p></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001792360674.html">NAS Shares</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,132 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item *ngIf="!isDrill">
+        <lv-form-label>
+            {{ 'protection_restore_to_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
+                <lv-group [lvGutter]="'20px'">
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="disabledOrigin" [lv-tooltip]="getRestoreToOriginTip()">
+                        {{ 'common_restore_to_origin_location_label' | i18n }}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreLocationType.NEW">
+                        {{ 'common_restore_to_new_location_label' | i18n }}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'common_location_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <input lv-input type="text" formControlName="originCluster" />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+        <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'cluster'" [isAgentTag]="true"></aui-select-tag>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_target_host_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="cluster" [lvOptions]="clusterOptions" lvValueKey="key" lvShowFilter lvFilterKey="label"
+                    lvFilterMode="contains">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_instance_cluster_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="instance" [lvOptions]="instanceOptions" lvValueKey="key" lvShowFilter
+                    lvFilterKey="label" lvFilterMode="contains">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <div class="advanced-container" *ngIf="!isDrill">
+        <lv-collapse [lvType]="'simple'">
+            <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+              <lv-form-item>
+                <lv-form-label>
+                  {{ 'protection_parallel_process_label' | i18n }}
+                  <i lv-icon="aui-icon-help" lvTooltipTheme="light"
+                     lv-tooltip="{{ 'protect_restore_parallel_process_help_label' | i18n }}"
+                     class="configform-constraint" lvColorState="true">
+                  </i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="parallelNumberErrorTip">
+                  <input type="text" formControlName="parallel_process" lv-input placeholder="1~999" />
+                </lv-form-control>
+              </lv-form-item>
+              <lv-form-item>
+                    <lv-form-label>
+                        {{ 'protection_restore_pre_script_label' | i18n }}
+                        <i lv-icon="aui-icon-help" lvTooltipTheme="light"
+                            lv-tooltip="{{ 'common_script_oracle_linux_help_label' | i18n }}"
+                            class="configform-constraint" lvColorState="true">
+                        </i>
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="scriptErrorTip">
+                        <input formControlName="preScript" lv-input
+                            placeholder="{{ 'common_script_linux_placeholder_label' | i18n }}" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'protection_restore_post_script_label' | i18n }}
+                        <i lv-icon="aui-icon-help" lvTooltipTheme="light"
+                            lv-tooltip="{{ 'common_script_oracle_linux_help_label' | i18n }}"
+                            class="configform-constraint" lvColorState="true">
+                        </i>
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="scriptErrorTip">
+                        <input formControlName="postScript" lv-input
+                            placeholder="{{ 'common_script_linux_placeholder_label' | i18n }}" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'protection_restore_fail_script_label' | i18n }}
+                        <i lv-icon="aui-icon-help" lvTooltipTheme="light"
+                            lv-tooltip="{{ 'common_script_oracle_linux_help_label' | i18n }}"
+                            class="configform-constraint" lvColorState="true">
+                        </i>
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="scriptErrorTip">
+                        <input formControlName="executeScript" lv-input
+                            placeholder="{{ 'common_script_linux_placeholder_label' | i18n }}" />
+                    </lv-form-control>
+                </lv-form-item>
+            </lv-collapse-panel>
+        </lv-collapse>
+    </div>
+</lv-form>
+
+<ng-template #titleTpl>
+    <lv-group lvGutter="8px">
+        <span class="custom-collapse-title-text">{{ 'common_advanced_label' | i18n }}</span>
+        <i lv-icon="aui-icon-help" lvTooltipTheme="light"
+            lv-tooltip="{{ 'protection_fileset_restore_advance_params_label' | i18n }}" lvColorState="true">
+        </i>
+    </lv-group>
+</ng-template>

@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring GaussDB Instances">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792505738.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792505746">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring GaussDB Instances</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792505746"></a><a name="EN-US_TOPIC_0000001792505746"></a>
+  <h1 class="topictitle1">Restoring GaussDB Instances</h1>
+  <div>
+   <p>This section describes how to restore a GaussDB copy that has been backed up to the original or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>Backup and replication copies can be used for restoration. GaussDB can be restored to the original location or a new location. Replication copies cannot be used for restoration of GaussDB to the original location.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>You can perform restoration operations only when the database status is normal.</li>
+     <li>Before the restoration is performed, you need to start backUpAgent on the agent host. For details about how to start the backUpAgent, see "Starting backUpAgent" in the <em>ProtectAgent Installation Guide</em>.</li>
+     <li>Before the restoration is performed, ensure that monitoring has been enabled for the instances managed by OLTP OPS.</li>
+     <li>For OLTP OPS, before the restoration is performed, ensure that the default backup root path has been configured for the instance and backup has been performed on the OLTP OPS management page. If no backup operation has been performed, refresh the default backup root path of the instance.</li>
+     <li>Before the restoration is performed, ensure that TPOPS does not cancel the management of the original instance.</li>
+     <li>When data is restored to a new location, ensure that the new instance exists and the deployment mode, number of shards, and version number of the new instance are the same as those of the original instance.</li>
+     <li>Point-in-time recovery (PITR) depends on the NTP clock. The clock source configurations must be the same among the nodes where the instances reside in the production environment.</li>
+     <li>Before the restoration, ensure that the space of the restoration target instance is greater than or equal to the size of the backup copy.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>When the restoration job fails, the TPOPS instance monitoring is automatically disabled, which affects alarm reporting. You need to manually enable instance monitoring.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li id="EN-US_TOPIC_0000001792505746__li0198134611381"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792505746__en-us_topic_0000001839145101_en-us_topic_0000001839142377_uicontrol17911421542"><b><span id="EN-US_TOPIC_0000001792505746__en-us_topic_0000001839145101_en-us_topic_0000001839142377_text2791124220547"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000001792505746__en-us_topic_0000001839145101_en-us_topic_0000001839142377_text137911742135414"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000001792505746__en-us_topic_0000001839145101_en-us_topic_0000001839142377_text102119344153"><strong>Databases</strong></span> &gt; GaussDB</b></span>.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000001792505746__en-us_topic_0000001839145101_en-us_topic_0000001839142377_note10308124081215">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000001792505746__en-us_topic_0000001839145101_en-us_topic_0000001839142377_p5308194081211">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000001792505746__en-us_topic_0000001839145101_en-us_topic_0000001839142377_uicontrol53537515125"><b><span id="EN-US_TOPIC_0000001792505746__en-us_topic_0000001839145101_en-us_topic_0000001839142377_text1035316516128"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000001792505746__en-us_topic_0000001839145101_en-us_topic_0000001839142377_text10353125121211"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000001792505746__en-us_topic_0000001839145101_en-us_topic_0000001839142377_text16353175161210"><strong>Cloud Platforms</strong></span> &gt; GaussDB</b></span>.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Search for copies by resource or copy. This section describes how to search for copies by resource.</span><p></p><p>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> tab page, locate the instance to be restored by instance name and click the instance name.</p> <p></p></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p></p><p>If <span><img src="en-us_image_0000001839225137.png"></span> is displayed below a month or day, a copy is generated in the month or on the day.</p> <p></p></li>
+     <li><span>Find the copy to be restored and choose <span><strong>More</strong></span> &gt; <span><strong>Restore</strong></span> on the right.</span></li>
+     <li><span>Specify a copy or point in time for restoration.</span><p></p>
+      <ol type="a">
+       <li>Specify a copy or any point in time between two copies for restoration.
+        <ul>
+         <li>Specify a copy for restoration.<p><span><img class="eddx" src="en-us_image_0000001839145189.png"></span></p></li>
+         <li>Specify a point in time for restoration.<p><span><img class="eddx" src="en-us_image_0000001792505810.png"></span></p> <p>Data can be restored to a specific point in time in the blue part on the timeline. <span><img src="en-us_image_0000001792346082.png"></span> indicates that a copy exists at this point in time. You cannot specify a point in time for restoration if no backup log exists at the point in time.</p></li>
+        </ul></li>
+       <li>Restore data to the original location or a new location.
+        <ul>
+         <li>Restore to the original location<p><a href="#EN-US_TOPIC_0000001792505746__table774016874418">Table 1</a> describes the related parameters.</p>
+          <div class="tablenoborder">
+           <a name="EN-US_TOPIC_0000001792505746__table774016874418"></a><a name="table774016874418"></a>
+           <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792505746__table774016874418" frame="border" border="1" rules="all">
+            <caption>
+             <b>Table 1 </b>Parameters for restoring data to the original location
+            </caption>
+            <colgroup>
+             <col style="width:24.21%">
+             <col style="width:75.79%">
+            </colgroup>
+            <thead align="left">
+             <tr>
+              <th align="left" class="cellrowborder" valign="top" width="24.21%" id="mcps1.3.5.2.5.2.1.2.1.1.2.2.3.1.1"><p>Parameter</p></th>
+              <th align="left" class="cellrowborder" valign="top" width="75.79%" id="mcps1.3.5.2.5.2.1.2.1.1.2.2.3.1.2"><p>Description</p></th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="cellrowborder" valign="top" width="24.21%" headers="mcps1.3.5.2.5.2.1.2.1.1.2.2.3.1.1 "><p><span><strong>Location</strong></span></p></td>
+              <td class="cellrowborder" valign="top" width="75.79%" headers="mcps1.3.5.2.5.2.1.2.1.1.2.2.3.1.2 "><p>Location of the instance, which cannot be modified by users.</p></td>
+             </tr>
+            </tbody>
+           </table>
+          </div></li>
+         <li>Restore to a new location
+          <ol class="substepthirdol">
+           <li>Enter <span class="uicontrol"><b>Basic Information</b></span>. <a href="#EN-US_TOPIC_0000001792505746__table1799312512502">Table 2</a> describes the basic parameters. 
+            <div class="tablenoborder">
+             <a name="EN-US_TOPIC_0000001792505746__table1799312512502"></a><a name="table1799312512502"></a>
+             <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792505746__table1799312512502" frame="border" border="1" rules="all">
+              <caption>
+               <b>Table 2 </b>Basic parameters
+              </caption>
+              <colgroup>
+               <col style="width:11.62%">
+               <col style="width:88.38000000000001%">
+              </colgroup>
+              <thead align="left">
+               <tr>
+                <th align="left" class="cellrowborder" valign="top" width="11.62%" id="mcps1.3.5.2.5.2.1.2.1.2.1.1.3.2.3.1.1"><p>Parameter</p></th>
+                <th align="left" class="cellrowborder" valign="top" width="88.38000000000001%" id="mcps1.3.5.2.5.2.1.2.1.2.1.1.3.2.3.1.2"><p>Description</p></th>
+               </tr>
+              </thead>
+              <tbody>
+               <tr>
+                <td class="cellrowborder" valign="top" width="11.62%" headers="mcps1.3.5.2.5.2.1.2.1.2.1.1.3.2.3.1.1 "><p><span><strong>Target Project</strong></span></p></td>
+                <td class="cellrowborder" valign="top" width="88.38000000000001%" headers="mcps1.3.5.2.5.2.1.2.1.2.1.1.3.2.3.1.2 "><p>Fill in the project to be restored to the new location. Only the project where the instance associating with the copy is located can be selected as the target project.</p></td>
+               </tr>
+               <tr>
+                <td class="cellrowborder" valign="top" width="11.62%" headers="mcps1.3.5.2.5.2.1.2.1.2.1.1.3.2.3.1.1 "><p><span><strong>Target Instance</strong></span></p></td>
+                <td class="cellrowborder" valign="top" width="88.38000000000001%" headers="mcps1.3.5.2.5.2.1.2.1.2.1.1.3.2.3.1.2 "><p>Name of the instance to be restored to a new location.</p>
+                 <div class="note">
+                  <span class="notetitle"> NOTE: </span>
+                  <div class="notebody">
+                   <ul>
+                    <li>During the restoration, the system deletes archive logs from the target location.</li>
+                   </ul>
+                   <ul>
+                    <li>Before the restoration, ensure that the space of the restoration target instance is greater than or equal to the size of the backup copy.</li>
+                    <li>Data in the target location will be overwritten during restoration.</li>
+                   </ul>
+                  </div>
+                 </div></td>
+               </tr>
+              </tbody>
+             </table>
+            </div></li>
+           <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
+          </ol></li>
+        </ul></li>
+      </ol> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001792505738.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

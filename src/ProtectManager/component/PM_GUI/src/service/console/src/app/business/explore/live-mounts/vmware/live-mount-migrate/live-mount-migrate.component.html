@@ -1,0 +1,75 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+    <lv-form-item>
+        <lv-form-label>{{'protection_storage_location_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="storageLocation">
+                <lv-group [lvGutter]="'20px'" class="mgt-8">
+                    <lv-radio [lvValue]="storageLocation.Different">{{'protection_diff_database_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="storageLocation.Same">{{'protection_same_database_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>{{'protection_vm_storage_location_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-select [lvOptions]='dataStoreOptions' lvValueKey='value' formControlName='vmStorageLocation'
+                lvShowClear>
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+<ng-container *ngIf="formGroup.value.storageLocation === storageLocation.Different">
+    <div class="disk-container formGroup">
+        <lv-datatable [lvData]="diskData" lvSort #lvTable lvSize="small">
+            <thead>
+                <tr>
+                    <th lvCellKey="name" width="115px">{{'common_disk_name_label' | i18n}}</th>
+                    <th lvCellKey="slot" width="85px">{{'common_slot_label' | i18n}}</th>
+                    <th>{{'protection_disk_data_capacity_label' | i18n}}</th>
+                    <th lvCellKey="target_datastore" width="230px">{{'protection_tagert_database_label' | i18n}}</th>
+                    <th width="180px" lvShowCustom>{{'protection_tagert_database_capacity_label' |
+                        i18n}}
+                        <div lvCustom class="resource-sla-help">
+                            <i lv-icon="aui-icon-help"
+                                lv-tooltip="{{'protection_tagert_database_capacity_help_label'| i18n}}"
+                                lvTooltipPosition="rightTop" class="configform-constraint" lvColorState='true'></i>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let item of lvTable.renderData">
+                    <tr>
+                        <td>{{item.name}}</td>
+                        <td>{{item.slot}}</td>
+                        <td>{{ item.capacity | capacityCalculateLabel:'1.1-3':unitconst.KB: true }}</td>
+                        <td>
+                            <lv-select [lvOptions]='dataStoreOptions' [(ngModel)]='item.target_datastore'
+                                lvValueKey='value' (ngModelChange)='diskDataStoreChange($event)'>
+                            </lv-select>
+                        </td>
+                        <td>
+                            {{item.target_datastore ? (item.targetDatastoreFreeSpace | capacityCalculateLabel:'1.1-3':unitconst.KB: true ) :'--'}}
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </lv-datatable>
+    </div>
+</ng-container>

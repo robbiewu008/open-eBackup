@@ -1,0 +1,137 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="替换管理平面域认证证书">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001583029352.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="防勒索">
+<meta name="DC.Publisher" content="20220629">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001633268429">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>替换管理平面域认证证书</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001633268429"></a><a name="ZH-CN_TOPIC_0000001633268429"></a>
+
+<h1 class="topictitle1">替换管理平面域认证证书</h1>
+<div id="body8662426"><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p13504145516426">存储设备与LDAP域服务器通信的场景，存储设备作为客户端，LDAP域服务器作为服务端。此场景中，CA证书必须导入，客户端证书可选导入。</p>
+<div class="section" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_section7135421349"><h4 class="sectiontitle">背景信息</h4><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p33477314415">域认证场景不存在默认证书。</p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_section136381225269"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_ol682142852620"><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li5239141322519"><span>获取证书请求文件及对应的私钥。</span><p><div class="p" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p15568201392517">支持如下两种方式：<ul class="subitemlist" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_ul199551854174810"><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li09558541489">通过DeviceManager界面将域认证场景的证书请求文件导出，此时在存储设备上生成对应的私钥并保存到数据库中。<ol type="a" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_ol121595321147"><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li7159123216414">登录DeviceManager。<ol class="substepthirdol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_ol8463855369"><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li10464175173610">登录OceanProtect。</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li929117916361">选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_uicontrol1098185683619">“<span id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_text1797654312392">系统</span> &gt; <span id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_text5379794163">基础设施</span> &gt; <span id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_text11448135813156">本地存储</span>”</span>。</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li81908119372">单击本地存储中的<span class="uicontrol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_uicontrol187060917409">“<span id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_text28901228194111">打开设备管理</span>”</span>，进入DeviceManager。</li></ol>
+</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li205759381342">选择“设置 &gt; 证书 &gt; 证书管理”。</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li4501819511">勾选<span class="uicontrol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_uicontrol17934952957">“管理平面域认证证书”</span>。</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li172011019618">单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_uicontrol47121515611">“导出请求文件”</span>。</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_zh-cn_topic_0232105725_li599144918413">选择“证书密钥算法”。<div class="msonormal" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_zh-cn_topic_0272257835_p20114152695013"><a name="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_zh-cn_topic_0232105725_li599144918413"></a><a name="zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_zh-cn_topic_0232105725_li599144918413"></a>相关参数说明如<a href="#ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_table1471382513466">表1</a>所示。
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_table1471382513466"></a><a name="zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_table1471382513466"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_table1471382513466" frame="border" border="1" rules="all"><caption><b>表1 </b>导出请求文件参数</caption><colgroup><col style="width:26.14%"><col style="width:73.86%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_row1671342554618"><th align="left" class="cellrowborder" valign="top" width="26.14%" id="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.1"><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_zh-cn_topic_0272257835_p511413268502">参数名称</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="73.86%" id="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.2"><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_zh-cn_topic_0272257835_p1211482612509">参数说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_row16713142554611"><td class="cellrowborder" valign="top" width="26.14%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p3713202554616">证书密钥算法</p>
+</td>
+<td class="cellrowborder" valign="top" width="73.86%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p1157151184619">选择算法产生证书请求文件<span style="color:#242424;">(CSR)</span>。系统默认值为“RSA_2048”。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_row97131525124612"><td class="cellrowborder" valign="top" width="26.14%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p97133253463">Country</p>
+</td>
+<td class="cellrowborder" valign="top" width="73.86%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p18713102554618"><span style="color:#242424;">生成CSR时，subject字段中参数“country”的取值。</span>系统默认值为 “CN”。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_row15713172584610"><td class="cellrowborder" valign="top" width="26.14%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p139761356155511">State or Province</p>
+</td>
+<td class="cellrowborder" valign="top" width="73.86%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p471332534612"><span style="color:#242424;">生成CSR时，subject字段中参数“state or province name”的取值。</span>无默认值。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_row117131325194610"><td class="cellrowborder" valign="top" width="26.14%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p99761756175519">City or Locality</p>
+</td>
+<td class="cellrowborder" valign="top" width="73.86%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p13639184316143"><span style="color:#242424;">生成CSR时，subject字段中参数“locality”的取值。</span>无默认值。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_row16713122518468"><td class="cellrowborder" valign="top" width="26.14%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p189761156115514">Organization</p>
+</td>
+<td class="cellrowborder" valign="top" width="73.86%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p8997726111311"><span style="color:#242424;">生成CSR时，subject字段中参数“organization”的取值。</span>系统默认值为“Huawei”。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_row4713142516466"><td class="cellrowborder" valign="top" width="26.14%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p1097614561558">Organization Unit</p>
+</td>
+<td class="cellrowborder" valign="top" width="73.86%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p85601129121312"><span style="color:#242424;">生成CSR时，subject字段中参数“organizational unit”的取值。</span>系统默认值为“Storage”。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_row1713132511461"><td class="cellrowborder" valign="top" width="26.14%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p39761756125511">Common Name</p>
+</td>
+<td class="cellrowborder" valign="top" width="73.86%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p14401435111318"><span style="color:#242424;">生成CSR时，subject字段中参数“common name”的取值。</span>默认值为 ESN。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_row16636171725611"><td class="cellrowborder" valign="top" width="26.14%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p1297635615553">Subject Alternative Name</p>
+</td>
+<td class="cellrowborder" valign="top" width="73.86%" headers="mcps1.3.3.2.1.2.1.1.1.1.5.1.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p1563621715569"><span style="color:#242424;">X509标准中导出CSR时可扩展字段SAN(Subject Alternative Name)。</span>使用了 SAN 字段的 SSL 证书，可以扩展此证书支持的域名，使得一个证书可以支持多个不同域名的解析。</p>
+<p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p5584841191110">示例如下：</p>
+<pre class="screen" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_screen331255111111">DNS:*.huawei.com,IP:10.10.10.10,IP:13::17,email:me@huawei.com,RID:1.2.3.5,URI://my.url.here/,otherName:1.0.0.1;UTF8:some\sother\sidentifier,dirName:dir_name\n[dir_name]\nC=UK\nST=London\nCN=My\sname country=CN state_province=Beijing locality=Chengdu organization=Huawei organizational_unit=Huawei\sStorage common_name=Huawei\sIT@storage</pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_zh-cn_topic_0272257835_note131151026195016"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p class="text" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_zh-cn_topic_0272257835_p13115202611506">“Country”、“State or Province”和“City or Locality”等为隐藏参数。如需显示隐藏参数，单击“高级”即可。</p>
+</div></div>
+</div>
+</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li32181256278">单击“确定”。</li></ol>
+</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li1695585410483">使用OpenSSL工具生成明文私钥及证书请求文件。<div class="p" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p786843114379"><a name="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li1695585410483"></a><a name="zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li1695585410483"></a>使用OpenSSL工具命令行生成明文私钥和证书请求文件的具体命令如下：<pre class="screen" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_screen39196283">openssl genrsa -out test.key 2048 </pre>
+<pre class="screen" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_screen17222231">openssl req -new -sha256 -days 3650 -subj </pre>
+<pre class="screen" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_screen20782358">/C=XXX/ST=XXXX/L=XXX/O=XXXX/OU=XXXX/CN=XXXX -key test.key -out test.csr     </pre>
+</div>
+<p class="msonormal" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p52823495">各参数的解释如下：</p>
+<ul id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_ul5649413"><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li63026925">C：国家</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li30371416">ST：州/省</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li4907296">L：城/镇</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li44165669">O：组织名</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li61946704">OU：单位名</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li73621349194516">CN：名称，使用当前存储设备ESN作为CN，可在DeviceManager界面首页查看ESN。</li></ul>
+</li></ul>
+</div>
+</p></li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li095514544488"><span>将导出的证书请求文件发送到第三方CA中心进行签名或者使用企业自己的根证书进行签名，得到对应的证书文件。</span><p><p class="MsoNormal" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p57087753">常用的第三方CA中心如<a href="#ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_table60705275">表2</a>所示。</p>
+
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_table60705275"></a><a name="zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_table60705275"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_table60705275" frame="border" border="1" rules="all"><caption><b>表2 </b>常用第三方CA中心</caption><colgroup><col style="width:21.43%"><col style="width:39.800000000000004%"><col style="width:38.78%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_row65725252"><th align="left" class="cellrowborder" valign="top" width="21.42785721427857%" id="mcps1.3.3.2.2.2.2.2.4.1.1"><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p22145185">第三方CA中心名称</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="39.796020397960206%" id="mcps1.3.3.2.2.2.2.2.4.1.2"><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p48929542">简介</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="38.77612238776123%" id="mcps1.3.3.2.2.2.2.2.4.1.3"><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p3869980">访问链接</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_row45032970"><td class="cellrowborder" valign="top" width="21.42785721427857%" headers="mcps1.3.3.2.2.2.2.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p23791993">VeriSign</p>
+</td>
+<td class="cellrowborder" valign="top" width="39.796020397960206%" headers="mcps1.3.3.2.2.2.2.2.4.1.2 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p48103313">VeriSign的数字证书产品是目前市场上最完整的支持最多应用和最多设备的数字证书产品。其支持的SSL证书主要包括Secure Site Pro、Secure Site、Secure Site Pro with EV和Secure Site with EV。</p>
+</td>
+<td class="cellrowborder" valign="top" width="38.77612238776123%" headers="mcps1.3.3.2.2.2.2.2.4.1.3 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p4054265"><a href="https://www.verisign.com/" target="_blank" rel="noopener noreferrer">https://www.verisign.com/</a></p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_row59960025"><td class="cellrowborder" valign="top" width="21.42785721427857%" headers="mcps1.3.3.2.2.2.2.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p24923866">GeoTrust</p>
+</td>
+<td class="cellrowborder" valign="top" width="39.796020397960206%" headers="mcps1.3.3.2.2.2.2.2.4.1.2 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p5567267">GeoTrust的数字证书产品主要是SSL证书，包括以下三种类型：</p>
+<ul id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_ul50105411"><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li48295517">只验证域名所有权而不验证营业执照的超快SSL系列(QuickSSL Premium、RapidSSL、Power Server ID)</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li32006476">需要验证营业执照的证书(True Business ID)</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li19622832">新推出的EV SSL证书(True Business ID with EV)</li></ul>
+</td>
+<td class="cellrowborder" valign="top" width="38.77612238776123%" headers="mcps1.3.3.2.2.2.2.2.4.1.3 "><p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p45945539"><a href="https://www.geotrust.com/ssl/" target="_blank" rel="noopener noreferrer">https://www.geotrust.com/ssl/</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li775722792914"><span>导入证书文件。</span><p><ul id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_ul1575182472912"><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li57512419297">如果证书请求是通过DeviceManager界面导出生成的，则将签名得到的证书以及从签名LDAP域服务器证书的可信第三方CA中心下载的CA证书，通过DeviceManager界面导入到存储设备。</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li1475172416296">如果证书请求是通过OpenSSL工具生成的，需要将明文私钥和签名后的证书，以及从签名LDAP域服务器证书的可信第三方CA中心下载的CA证书，通过DeviceManager界面导入到存储设备。</li></ul>
+<div class="p" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p1059311316474">通过DeviceManager界面导入证书的操作如下：<ol type="a" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_ol1261253064717"><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li12612183018476">登录DeviceManager。<ol class="substepthirdol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_ol0963615245"><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li59632118245">登录OceanProtect。</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li5963201162420">选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_uicontrol29630152414">“<span id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_text796381172418">系统</span> &gt; <span id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_text396310111246">基础设施</span> &gt; <span id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_text49634172410">本地存储</span>”</span>。</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li39633112249">单击本地存储中的<span class="uicontrol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_uicontrol1396310182410">“<span id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_text129631012249">打开设备管理</span>”</span>，进入DeviceManager。</li></ol>
+</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li861283014474">选择“设置 &gt; 证书 &gt; 证书管理”。</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li166128308471">勾选<span class="uicontrol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_uicontrol11612830134717">“管理平面域认证证书”</span>。</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li10612730164712">单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_uicontrol2612193064719">“导入证书”</span>。</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li136121830134712">选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_uicontrol1480134814711">“证书文件”</span>、<span class="uicontrol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_uicontrol1411965834714">“CA证书文件”</span>或<span class="uicontrol" id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_uicontrol119201939482">“私钥文件”</span>。</li><li id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_li9612103013472">单击“确定”。</li></ol>
+</div>
+<p id="ZH-CN_TOPIC_0000001633268429__zh-cn_topic_0000001506145385_zh-cn_topic_0000001263453192_p197581227132914">对于服务端校验客户端的场景中，域服务器侧进行安全证书替换时，当存储设备侧导入证书和私钥后，域服务器上需导入签名存储设备侧证书的CA证书。</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001583029352.html">替换存储设备证书</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

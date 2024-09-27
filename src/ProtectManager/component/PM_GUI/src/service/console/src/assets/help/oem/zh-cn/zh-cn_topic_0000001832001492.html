@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="功能概览">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001878840661.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001832001492">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>功能概览</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001832001492"></a><a name="ZH-CN_TOPIC_0000001832001492"></a>
+  <h1 class="topictitle1">功能概览</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">备份</h4>
+    <ul>
+     <li>全量备份：备份资源当前时间点的所有数据。</li>
+     <li><span id="ZH-CN_TOPIC_0000001832001492__zh-cn_topic_0000001862053249_ph0724454151718">永久增量（合成全量）备份：当不存在全量副本时，首次<span id="ZH-CN_TOPIC_0000001832001492__zh-cn_topic_0000001862053249_text11876739133719">永久增量（合成全量）备份</span>将执行全量备份，后续每次备份均为增量备份。永久增量（合成全量）备份产生的副本为永久增量（合成全量）副本，可提升恢复性能，且不占用额外空间。</span></li>
+     <li>源端重删：开启源端重删可以减少传输的数据量，但会增加客户端的资源占用。</li>
+     <li>传输和存储加密：<span>使用AES256加密算法对备份数据进行加密。</span></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">复制</h4>
+    <ul id="ZH-CN_TOPIC_0000001832001492__zh-cn_topic_0000001862053249_ul1627759153116">
+     <li id="ZH-CN_TOPIC_0000001832001492__zh-cn_topic_0000001862053249_li816915753113">备份副本复制：将备份副本从源端复制到目标端，在本地数据中心发生灾难时，通过复制副本恢复业务数据。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">恢复</h4>
+    <ul id="ZH-CN_TOPIC_0000001832001492__zh-cn_topic_0000001862053249_ul691518483322">
+     <li id="ZH-CN_TOPIC_0000001832001492__zh-cn_topic_0000001862053249_li18600174653218">恢复副本至原位置或新位置：支持使用备份副本、复制副本（不支持恢复至原位置）进行恢复。</li>
+    </ul>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001878840661.html">概述</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

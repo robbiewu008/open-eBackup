@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="loading-container">
+    <ng-container *ngIf="viewType === type.BackupView">
+        <ng-container *ngIf="backupResult.status === initStatus.running.value">
+            <img [src]="'assets/img/init_loading.gif'">
+            <div [innerHTML]="initStatus.running.label | i18n: [backupResult.rate]"></div>
+        </ng-container>
+
+        <ng-container *ngIf="backupResult.status === initStatus.ok.value && backupResult.code">
+            <img [src]="'assets/img/init_failed.png'">
+            <div [innerHTML]="backupResult.code | i18n : backupResult.params"></div>
+            <div>
+                <ng-container *ngTemplateOutlet="resetBackupTpl"></ng-container>
+            </div>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="viewType === type.ArchiveView">
+        <ng-container *ngIf="archiveResult.status === initStatus.running.value">
+            <img [src]="'assets/img/init_loading.gif'">
+            <div [innerHTML]="initStatus.running.label | i18n: [archiveResult.rate]"></div>
+        </ng-container>
+
+        <ng-container *ngIf="archiveResult.status === initStatus.ok.value && archiveResult.code">
+            <img [src]="'assets/img/init_failed.png'">
+            <div [innerHTML]="archiveResult.code | i18n : archiveResult.params"></div>
+            <div>
+                <ng-container *ngTemplateOutlet="resetArchiveTpl"></ng-container>
+            </div>
+        </ng-container>
+    </ng-container>
+
+
+</div>
+
+<ng-template #resetBackupTpl>
+    <button lv-button lvType='primary' (click)='onResetBackup()'>
+        {{'common_modify_config_label' | i18n}}
+    </button>
+</ng-template>
+
+<ng-template #resetArchiveTpl>
+    <button lv-button lvType='primary' (click)='onResetArchive()'>
+        {{'common_modify_config_label' | i18n}}
+    </button>
+</ng-template>

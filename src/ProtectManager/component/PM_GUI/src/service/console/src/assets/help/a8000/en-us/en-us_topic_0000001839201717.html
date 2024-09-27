@@ -1,0 +1,53 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Enabling the Archive Mode">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792402592.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001839201717">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Enabling the Archive Mode</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001839201717"></a><a name="EN-US_TOPIC_0000001839201717"></a>
+
+<h1 class="topictitle1">Step 2: Enabling the Archive Mode</h1>
+<div><p>Before backing up the database, you must enable the archive mode. Otherwise, the backup fails.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><p><strong>Method 1: Enabling the archive mode by modifying configuration file parameters</strong></p>
+<ol><li><span>Use PuTTY to log in to the PostgreSQL database host.</span></li><li id="EN-US_TOPIC_0000001839201717__li72311543204718"><span>Create a path for storing archive logs (WAL logs) in the directory of the user who installs the Linux OS of the database. The OS user who runs the database must have the read and write permissions on the path. The <strong id="EN-US_TOPIC_0000001839201717__b39115435584">/mnt/server/archivedir/</strong> path is used as an example in subsequent operations.</span></li><li><span>Modify the <strong>wal_level</strong>, <strong>archive_mode</strong>, and <strong>archive_command</strong> parameters in the <strong>postgresql.conf</strong> file.</span><p><ul><li>Set <strong>wal_level</strong> to <strong>archive</strong> or higher (or <strong>replica</strong> or higher for PostgreSQL 9.6 or later).</li><li>Set <strong>archive_mode</strong> to <strong>on</strong>.</li><li>Set <strong>archive_command</strong> to <strong>'cp %p /mnt/server/archivedir/%f'</strong> and ensure that the archive log path is a single path.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>When modifying the <strong>postgresql.conf</strong> file, change the values of existing fields in the file. Do not add the same fields to the file. Otherwise, the restoration job will be affected.</p>
+</div></div>
+</li></ul>
+<p>For example:</p>
+<p>wal_level = replica</p>
+<p>archive_mode = on</p>
+<p>archive_command = 'cp %p /mnt/server/archivedir/%f'</p>
+</p></li></ol>
+<p><strong>Method 2: Enabling the archive mode by running database commands</strong></p>
+<ol><li><span>Use PuTTY to log in to the PostgreSQL database host.</span></li><li><span>Create a path for storing archive logs (WAL logs) in the directory of the user who installs the Linux OS of the database. The OS user who runs the database must have the read and write permissions on the path. The <strong id="EN-US_TOPIC_0000001839201717__en-us_topic_0000001839201717_b39115435584">/mnt/server/archivedir/</strong> path is used as an example in subsequent operations.</span></li><li><span>Run the following commands in sequence to enable the database archive mode:</span><p><pre class="screen">alter system set wal_level= 'replica';
+ALTER SYSTEM
+alter system set archive_mode= 'on';
+ALTER SYSTEM
+alter system set archive_command ='cp %p /mnt/server/archivedir/%f'</pre>
+</p></li><li><span>In cluster scenarios, run the <strong>stemctl restart patroni.service</strong> command to restart the Patroni service.</span><p><p>In a single-node system, run the <strong>/usr/local/pgsql/bin/pg_ctl -D</strong> and <strong>/usr/local/pgsql/data -l logfile  restart</strong> commands in sequence to restart the database.</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001792402592.html">Backing Up PostgreSQL</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

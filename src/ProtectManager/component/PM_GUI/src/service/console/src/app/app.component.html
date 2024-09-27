@@ -1,0 +1,370 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-layout lvDirection="row" class="page-layout">
+  <lv-sider class="aui-sider" lvWidth="256px" lvCollapsedWidth="0px" [(lvCollapsed)]="collapsed"
+    *ngIf="!isLogin && cookieService.isInited && !isHcsUser && !isDmeUser">
+    <ng-container *ngTemplateOutlet="titleTpl">
+    </ng-container>
+    <div class="aui-header-menu" *ngIf="cookieService.isInited">
+      <lv-menu #menu class="aui-menu-content" [lvMenus]="menus" lvMenuPanelAlignment="center"
+        (lvItemClick)="menuItemClick($event)" [lvActiveItemId]="activeId"></lv-menu>
+      <auto-active-menu [menu]="menu" (activeMenuChange)="activeMenuChange($event)"></auto-active-menu>
+    </div>
+  </lv-sider>
+  <lv-layout lvMinWidth="1110px" style="overflow: auto;" [ngClass]="{'collapsed-main': collapsed}">
+    <lv-header *ngIf="!isLogin && !isReportDetail && !isErrorPage && !isHcsUser && !isDmeUser" lvFixed="true"
+      class="aui-header-icon">
+      <div class="aui-header-log" *ngIf="collapsed">
+        <div (click)="collapsed = false" style="margin-right: 8px;cursor: pointer;margin-top: 5px;">
+          <svg width=" 24px" height=" 24px" fill="#6c7280" viewBox="0 0 24 24" version="1.1"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M3,4 L21,4 C21.5522847,4 22,4.44771525 22,5 C22,5.55228475 21.5522847,6 21,6 L3,6 C2.44771525,6 2,5.55228475 2,5 C2,4.44771525 2.44771525,4 3,4 Z M3,18 L17,18 C17.5522847,18 18,18.4477153 18,19 C18,19.5522847 17.5522847,20 17,20 L3,20 C2.44771525,20 2,19.5522847 2,19 C2,18.4477153 2.44771525,18 3,18 Z M3,11 L14,11 C14.5522847,11 15,11.4477153 15,12 C15,12.5522847 14.5522847,13 14,13 L3,13 C2.44771525,13 2,12.5522847 2,12 C2,11.4477153 2.44771525,11 3,11 Z">
+            </path>
+          </svg>
+        </div>
+        <div class="collapsed-container">
+          <aui-logo-title [isMenu]="true" [colorDark]="colorDark"></aui-logo-title>
+        </div>
+      </div>
+      <!-- 初始化logo -->
+      <div class="aui-header-log" *ngIf="!cookieService.isInited">
+        <aui-logo-title [isMenu]="true"></aui-logo-title>
+      </div>
+      <lv-group *ngIf="!collapsed">
+        <i class="aui-collapsed-logo" style="width: 0px;"></i>
+      </lv-group>
+      <!-- 全局检索 -->
+      <lv-group lvGutter='4px'
+        *ngIf="cookieService.isInited && !isHyperdetect && !isCyberEngine && router.url !== '/search'"
+        (click)="toggleSearch()" [ngClass]="{'global-search': !collapsed, 'global-search-collapsed': collapsed}">
+        <i lv-icon="aui-menu-search" [lvColorState]="true"></i>
+        <span class="aui-text-label">{{'common_search_copy_resource_label' | i18n}}</span>
+      </lv-group>
+      <div class="aui-header-operation">
+        <ng-container *ngIf="cookieService.isInited">
+          <!-- 备份向导 -->
+          <span class="aui-gutter-row-md" lv-tooltip="{{'protection_guide_title_label' | i18n}}" (click)="toggleGuide()"
+            *ngIf="needGuideProduct" lv-popover [lvPopoverClosable]="false" [lvPopoverContent]="guideContent"
+            lvPopoverPosition="bottomRight" lvPopoverTrigger="customize" [(lvPopoverVisible)]="guideTipShow">
+            <i lv-icon="aui-guide-small"></i>
+          </span>
+          <lv-group *ngIf="!cookieService.isCloudBackup && !isCyberEngine" class="aui-gutter-row-md">
+            <i lv-icon="aui-cluster-topo"></i>
+            <span class="clusters-container menu-label" lv-popover [lvPopoverContent]="clustersPopTemplate"
+              [lvPopoverTrigger]="'click'" lvPopoverTheme="dark" lvPopoverBlockPageScroll="true"
+              lvPopoverBackdrop="true" lvPopoverMaskTransparent="true" lvPopoverPosition="bottomLeft"
+              lvPopoverClassName="customer-cluster">
+              {{ currentCluster.clusterName }}
+              <i #lvDropdownTrigger lv-icon="lv-icon-triangle-down"></i>
+            </span>
+          </lv-group>
+          <span class="aui-gutter-row-md top-task" [lv-badge]="criticalAlarmCount" #alarmPopover="lvPopover" lv-popover
+            [lvBadgeVisible]="alarmBadgeVisible" [lvPopoverTrigger]="'click'" [lvPopoverPosition]="'bottom'"
+            [lvPopoverHeader]="alarmHeaderTpl" [lvPopoverContent]="alarmContentTpl" [lvPopoverFooter]="alarmFooterTpl"
+            lvPopoverClassName="taskPopoverClass" lvPopoverShowArrow="false" (click)="refreshRecentAlarms()"
+            [lvBadgeMaxValue]="99">
+            <i lv-icon="aui-icon-new-alarms" class="aui-icon-large"></i>
+          </span>
+          <span class="aui-gutter-row-md top-task" #taskPopover="lvPopover" lv-popover [lvPopoverTrigger]="'click'"
+            [lvPopoverPosition]="'bottom'" [lvPopoverHeader]="taskHeaderTpl" [lvPopoverContent]="taskContentTpl"
+            [lvPopoverFooter]="taskFooterTpl" lvPopoverClassName="taskPopoverClass" lvPopoverShowArrow="false"
+            (click)="jobIndexChange(latest)" (lvPopoverExternalTrigger)="taskExternalTrigger()">
+            <span [ngClass]="{'running-task-icon': !!runningTaskCount, 'task-icon': !runningTaskCount}"></span>
+          </span>
+        </ng-container>
+        <span class="aui-toggle-language menu-label aui-gutter-row-md" (click)="toggleLanguage()">
+          <i lv-icon="aui-language"></i>
+          {{ language }}
+        </span>
+
+        <lv-group lvGutter='4px' class="aui-gutter-row-md">
+          <i lv-icon="aui-accout" class="aui-icon-large"></i>
+          <span lv-dropdown [lvDropdownMenus]="optMenus" [lvDropdownTrigger]="'click'"
+            lvDropdownPanelClass="user-dropdown" [lvDropdownPosition]="'bottomCenter'">
+            <div class="user-name menu-label" lv-overflow>{{ userName }}</div>
+          </span>
+        </lv-group>
+        <span class="top-help" lv-popover [lvPopoverTrigger]="'click'" [lvPopoverPosition]="'bottom'"
+          [lvPopoverHeader]="helpHeaderTpl" [lvPopoverContent]="helpContentTpl" lvPopoverClassName="taskPopoverClass"
+          lvPopoverShowArrow="false" lvTooltipPosition="bottom">
+          <i lv-icon="aui-icon-menu-help" class="aui-icon-large"></i>
+        </span>
+      </div>
+    </lv-header>
+    <lv-content>
+      <router-outlet></router-outlet>
+    </lv-content>
+  </lv-layout>
+  <!-- 智能助手 -->
+  <lv-sider lvWidth="416px" *ngIf="needGuideProduct && showGuide" lvCollapsedWidth="0px">
+    <aui-user-guide (close)="closeGuide()"></aui-user-guide>
+  </lv-sider>
+</lv-layout>
+<!-- 预加载智能助手背景图 -->
+<div class="hide-guide-bg"></div>
+
+<ng-template #titleTpl>
+  <div *ngIf="cookieService.isInited" class="aui-menu-header">
+    <aui-logo-title [isMenu]="true"></aui-logo-title>
+    <i lv-icon="aui-icon-menu-unfold" lvColorState="true" (click)="collapsed = true"></i>
+  </div>
+</ng-template>
+
+<ng-template #taskHeaderTpl>
+  <div class="top-task-header-title aui-operation">
+    <div class="aui-number-4">{{ recentTaskLabel }}</div>
+    <div class="task-view-container">
+      <lv-tabs [lvSize]="'small'" [(lvActiveIndex)]="latest" (lvActiveIndexChange)="jobIndexChange($event)">
+        <lv-tab [lvId]="'latest'" [lvTitle]="'common_latest_ten_label' | i18n"></lv-tab>
+        <lv-tab [lvId]="'unfinished'" [lvTitle]="'common_unfinished_label' | i18n:[runningTotal]"></lv-tab>
+      </lv-tabs>
+    </div>
+  </div>
+  <div class="top-task-header-underline"></div>
+</ng-template>
+
+<ng-template #taskContentTpl>
+  <lv-loading [lvLoading]="taskLoading">
+    <table class="top-task-container alarm-list-container">
+      <ng-container *ngFor="let task of taskData">
+        <tr style="height: 45px;" (click)="getJobDetail(task)">
+          <td>
+            <lv-group [lvColumns]="['8%', '82%', '10%']" lvGutter="16px">
+              <lv-group class="task-status-container">
+                <i *ngIf="jobStatus.success.value === task.status" [lv-tooltip]="
+                    dataMapService.getLabel('Job_status', task.status)
+                  " lv-icon="aui-icon-job-status-success"></i>
+                <i *ngIf="
+                    _includes(
+                      [
+                        jobStatus.partial_success.value
+                      ],
+                      task.status
+                    )
+                  " [lv-tooltip]="
+                    dataMapService.getLabel('Job_status', task.status)
+                  " lv-icon="aui-job-power-off"></i>
+                <i *ngIf="
+                    !_includes(
+                      [
+                        jobStatus.success.value,
+                        jobStatus.partial_success.value
+                      ],
+                      task.status
+                    ) &&
+                    !_includes(
+                      [jobStatus.aborted.value, jobStatus.cancelled.value],
+                      task.status
+                    ) &&
+                    !_includes(
+                      [
+                        jobStatus.initialization.value,
+                        jobStatus.pending.value,
+                        jobStatus.running.value,
+                        jobStatus.aborting.value,
+                        jobStatus.dispatching.value,
+                        jobStatus.redispatch.value
+                      ],
+                      task.status
+                    )
+                  " [lv-tooltip]="
+                    dataMapService.getLabel('Job_status', task.status)
+                  " lv-icon="aui-icon-job-status-fail"></i>
+                <i *ngIf="
+                    _includes(
+                      [jobStatus.aborted.value, jobStatus.cancelled.value],
+                      task.status
+                    )
+                  " [lv-tooltip]="
+                    dataMapService.getLabel('Job_status', task.status)
+                  " lv-icon="aui-icon-job-status-abort"></i>
+                <i *ngIf="
+                    _includes(
+                      [
+                        jobStatus.initialization.value,
+                        jobStatus.pending.value,
+                        jobStatus.running.value,
+                        jobStatus.aborting.value,
+                        jobStatus.dispatching.value,
+                        jobStatus.redispatch.value
+                      ],
+                      task.status
+                    )
+                  " [lv-tooltip]="
+                    dataMapService.getLabel('Job_status', task.status)
+                  " lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
+              </lv-group>
+              <lv-group lvDirection="vertical">
+                <span class="task-type-container">
+                  <ng-container *ngIf="
+                      task.type === 'ManualScanEnvironment';
+                      else elseTemplate
+                    ">
+                    {{ 'common_rescan_label' | i18n }}
+                  </ng-container>
+                  <ng-template #elseTemplate>
+                    <ng-container *ngIf="isCyberEngine && task.type === 'RESTORE'">
+                      {{'common_restore_to_origin_location_cyber_label'|i18n}}
+                    </ng-container>
+                    <ng-container *ngIf="isCyberEngine && task.type !== 'RESTORE' || !isCyberEngine ">
+                      {{ (task.type | textMap: 'Job_type') || '--' }}
+                    </ng-container>
+                  </ng-template>
+                </span>
+                <span class="source-conainer" lv-overflow>
+                  {{ task.sourceName | nil }}
+                </span>
+              </lv-group>
+              <lv-group>
+                <i class="source-conainer" lv-icon="lv-icon-arrow-next"></i>
+              </lv-group>
+            </lv-group>
+          </td>
+        </tr>
+      </ng-container>
+    </table>
+
+    <ng-container *ngIf="!taskData.length">
+      <div class="no-data">
+        {{ noDataLabel }}
+      </div>
+    </ng-container>
+  </lv-loading>
+</ng-template>
+
+<ng-template #taskFooterTpl>
+  <div class="top-task-bottom-underline"></div>
+  <div class="top-task-look-opt">
+    <a class="aui-link aui-number-5" [routerLink]="['insight/jobs']" (click)="closeTaskPopover()">
+      {{ showAllTaskLabel }}&nbsp;>
+    </a>
+  </div>
+</ng-template>
+
+<ng-template #alarmHeaderTpl>
+  <div class="top-task-header-title aui-operation">
+    <div class="aui-number-4">{{ recentAlarmLabel }}</div>
+  </div>
+  <div class="top-task-header-underline"></div>
+</ng-template>
+
+<ng-template #alarmContentTpl>
+  <table class="top-task-container alarm-list-container">
+    <ng-container *ngFor="let alarm of alarmData">
+      <tr (click)="alarmDetailClick(alarm)">
+        <td>
+          <div class="alarm-item">
+            <div class="alarm-detail">
+              <div class="alarm-icon" [ngSwitch]="alarm.severity">
+                <i *ngSwitchCase="alarmSeverityType.warning.value" lv-icon="aui-icon-alarm-warning"
+                  lv-tooltip="{{ 'common_alarms_warning_label' | i18n }}"></i>
+                <i *ngSwitchCase="alarmSeverityType.major.value" lv-icon="aui-icon-alarm-major"
+                  lv-tooltip="{{ 'common_alarms_major_label' | i18n }}"></i>
+                <i *ngSwitchCase="alarmSeverityType.critical.value" lv-icon="aui-icon-alarm-critical"
+                  lv-tooltip="{{ 'common_alarms_critical_label' | i18n }}"></i>
+                <i *ngSwitchDefault lv-icon="aui-icon-alarm-info"
+                  lv-tooltip="{{ 'common_alarms_info_label' | i18n }}"></i>
+              </div>
+              <div class="alarm-info">
+                <span class="alarm-desc" lv-overflow lvTooltipPosition="topLeft" innerHTML="{{
+                    i18n.get(alarm.description, alarm.params || [])
+                  }}">
+                </span>
+                <span class="alarm-time">
+                  {{ isCyberEngine || isV1Alarm ? alarm.alarmTimeStr : (alarm.alarmTime * 1000 | date: 'yyyy-MM-dd
+                  HH:mm:ss') }}
+                </span>
+                <span class="alarm-link">></span>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+  </table>
+
+  <ng-container *ngIf="!alarmData.length">
+    <div class="no-data">
+      {{ noDataLabel }}
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #alarmFooterTpl>
+  <div class="top-task-bottom-underline"></div>
+  <div class="top-task-look-opt">
+    <a class="aui-link aui-number-5" [routerLink]="['/insight/alarms']" (click)="closeAlarmPopover()">
+      {{ showAllAlarmLabel }}&nbsp;>
+    </a>
+  </div>
+</ng-template>
+
+<ng-template #helpHeaderTpl>
+  <div class="top-task-header-title help-label">
+    <div class="aui-number-4">{{ 'common_help_label' | i18n }}</div>
+  </div>
+  <div class="top-task-header-underline"></div>
+</ng-template>
+
+<ng-template #helpContentTpl>
+  <div class="help-menu-container">
+    <section class="help-menu-section">
+      <div class="n-help-link" (click)="openHelp()">
+        <div class="help-wrapper">
+          <span>{{ 'common_online_help_label' | i18n }}</span>
+        </div>
+      </div>
+      <div class="n-help-link" (click)="openAbout()">
+        <div class="help-wrapper">
+          <span>{{ 'common_about_label' | i18n }}</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</ng-template>
+
+<ng-template #aboutHeaderTpl>
+  <div class="about-header">
+    <aui-logo-title class="about-title"></aui-logo-title>
+    <i lv-icon="lv-icon-close" class="close-icon" (click)="closeAbout()"></i>
+  </div>
+</ng-template>
+
+<ng-template #aboutContentTpl>
+  <div class="about-content">
+    <p class="about-version">{{ versionLabel }}</p>
+    <p class="about-address" *ngIf="!isOpenVersion">
+      <span [innerHTML]="websiteLabel"></span>
+    </p>
+    <p class="about-warning">{{ warningLabel }}</p>
+  </div>
+</ng-template>
+
+<ng-template #aboutFooterTpl>
+  <div class="about-footer" *ngIf="!isOpenVersion">
+    <p>{{ copyRightLabel }}</p>
+  </div>
+</ng-template>
+
+<ng-template #clustersPopTemplate>
+  <aui-global-clusters-filter [currentCluster]="currentCluster"></aui-global-clusters-filter>
+</ng-template>
+
+<ng-template #guideContent>
+  <p>{{'protection_guide_pop_content_label' | i18n}}</p>
+  <span class="aui-link pop-know" (click)="hasKnowGuide()">
+    {{'protection_guide_pop_know_label' | i18n}}
+  </span>
+</ng-template>

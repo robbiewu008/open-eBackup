@@ -1,0 +1,578 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="copy-data-list">
+  <lv-datatable
+    [lvData]="tableData"
+    (lvSortChange)="sortChange($event)"
+    [lvPaginator]="page"
+    lvSort
+    #lvTable
+    lvAsync
+    class="aui-table-group"
+    [(lvActiveSort)]="activeSort"
+    lvSelectionMode="multiple"
+    [lvSelection]="selection"
+    (lvSelectionChange)="selectionChange()"
+    lvCompareWith="uuid"
+    lvMultiGroup
+  >
+    <thead>
+      <tr>
+        <th
+          lvShowCheckbox
+          rowspan="2"
+          width="40px"
+          [lvRowsData]="lvTable.renderData | filterTable"
+          *ngIf="!isResourceSet"
+        ></th>
+        <ng-container *ngFor="let item of columns">
+          <th
+            *ngIf="item.show"
+            [attr.colspan]="filter(item.children, { show: true }).length"
+          >
+            {{ item.label }}
+          </th>
+        </ng-container>
+        <th rowspan="2" width="144px" *ngIf="!isResourceSet">
+          {{ 'common_operation_label' | i18n }}
+        </th>
+        <th rowspan="2" width="16px" style="padding: 0;" lvResizable="false">
+          <i
+            lv-icon="lv-icon-col-setting"
+            #colPopover="lvPopover"
+            lv-popover
+            [lvPopoverContent]="colHideTpl"
+            lvPopoverPosition="bottomRight"
+            lvPopoverTheme="light"
+            lvPopoverTrigger="click"
+            style="cursor: pointer;"
+          ></i>
+        </th>
+      </tr>
+      <tr>
+        <ng-container *ngFor="let column of columns">
+          <ng-container *ngIf="column.children">
+            <ng-container *ngFor="let col of column.children">
+              <th
+                *ngIf="col.show"
+                [lvShowFilter]="col.filter"
+                (lvFilterChange)="filterChange($event)"
+                [attr.class]="col.class"
+                [attr.width]="col.width"
+                [(lvFilters)]="col.filterMap"
+                lvCellKey="{{ col.key }}"
+                [lvShowSort]="col.showSort"
+                lvShowCustom
+                lvFilterCheckAll
+                lvFilterSearch
+              >
+                <div lv-overflow>
+                  {{ col.label }}
+                  <div
+                    lvCustom
+                    *ngIf="
+                      col.key === 'indexed' &&
+                      childResourceType[0] ===
+                        dataMap.Resource_Type.volume.value
+                    "
+                    class="resource-sla-help"
+                  >
+                    <i
+                      lv-icon="aui-icon-help"
+                      lv-tooltip="{{
+                        'explore_volume_copy_index_tip_label' | i18n
+                      }}"
+                      lvTooltipTheme="light"
+                      lvTooltipPosition="top"
+                      lvColorState="true"
+                      class="index-icon"
+                    ></i>
+                  </div>
+                </div>
+                <div lvCustom *ngIf="col.key === 'uuid'">
+                  <aui-custom-table-search
+                    (search)="searchByCopyUuid($event)"
+                    [filterTitle]="col.label"
+                  ></aui-custom-table-search>
+                </div>
+                <div lvCustom *ngIf="col.key === 'origin_backup_id'">
+                  <aui-custom-table-search
+                    (search)="searchByBackupCopyUuid($event)"
+                    [filterTitle]="col.label"
+                  ></aui-custom-table-search>
+                </div>
+                <div lvCustom *ngIf="col.key === 'cluster_name'">
+                  <aui-custom-table-search
+                    (search)="searchByCopyClusterName($event)"
+                    [filterTitle]="col.label"
+                  ></aui-custom-table-search>
+                </div>
+                <div lvCustom *ngIf="col.key === 'name'">
+                  <aui-custom-table-search
+                    (search)="searchByCopyName($event)"
+                    [filterTitle]="col.label"
+                  ></aui-custom-table-search>
+                </div>
+                <div lvCustom *ngIf="col.key === 'resource_name'">
+                  <aui-custom-table-search
+                    (search)="searchByName($event)"
+                    [filterTitle]="col.label"
+                  ></aui-custom-table-search>
+                </div>
+                <div lvCustom *ngIf="col.key === 'location'">
+                  <aui-custom-table-search
+                    (search)="searchByCopyLocation($event)"
+                    [filterTitle]="col.label"
+                  ></aui-custom-table-search>
+                </div>
+                <div lvCustom *ngIf="col.key === 'resource_location'">
+                  <aui-custom-table-search
+                    (search)="searchByResourceLocation($event)"
+                    [filterTitle]="col.label"
+                  ></aui-custom-table-search>
+                </div>
+                <div lvCustom *ngIf="col.key === 'sla_name'">
+                  <aui-custom-table-search
+                    (search)="searchBySla($event)"
+                    [filterTitle]="col.label"
+                  ></aui-custom-table-search>
+                </div>
+                <div lvCustom *ngIf="col.key === 'labelList'">
+                  <aui-custom-table-search (search)="searchByLabel($event)" [filterTitle]="col.label"></aui-custom-table-search>
+                </div>
+              </th>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container
+        *ngFor="let item of lvTable.renderData; trackBy: trackByUuid"
+      >
+        <tr [ngClass]="{ 'lv-table-row-highlight': isActive(item) }">
+          <td
+            lvShowCheckbox
+            [lvRowData]="item"
+            width="40px"
+            [lvDisabled]="
+              cookieService.isCloudBackup ? item.backup_type === 2 : false
+            "
+            *ngIf="!isResourceSet"
+          ></td>
+          <ng-container *ngFor="let column of columns">
+            <ng-container *ngIf="column.children">
+              <ng-container *ngFor="let col of column.children">
+                <ng-container *ngIf="col.show">
+                  <td>
+                    <ng-container [ngSwitch]="col.key">
+                      <ng-container *ngSwitchCase="'origin_copy_time_stamp'">
+                        <div
+                          [ngClass]="{ 'aui-link': !isResourceSet }"
+                          id="outerClosable"
+                          (click)="getCopyDetail(item)"
+                        >
+                          {{
+                            item.origin_copy_time_stamp
+                              ? (item.origin_copy_time_stamp
+                                | date: 'yyyy-MM-dd HH:mm:ss')
+                              : '--'
+                          }}
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'display_timestamp'">
+                        <div
+                          [ngClass]="{ 'aui-link': !isResourceSet }"
+                          id="outerClosable"
+                          (click)="getCopyDetail(item)"
+                        >
+                          {{
+                            item.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss'
+                          }}
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'status'">
+                        <aui-status
+                          [value]="item.status"
+                          type="copydata_validStatus"
+                        >
+                        </aui-status>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'version'">
+                        {{ getVersion(item) }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'generated_by'">
+                        {{
+                          item.generated_by | textMap: 'CopyData_generatedType'
+                        }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'backup_type'">
+                        <span
+                          *ngIf="
+                            [
+                              dataMap.Resource_Type.fusionComputeVirtualMachine
+                                .value,
+                              dataMap.Resource_Type.FusionCompute.value,
+                              dataMap.Resource_Type.HCS.value
+                            ].includes(resourceType) ||
+                              [
+                                dataMap.Resource_Type.ElasticsearchBackupSet
+                                  .value,
+                                dataMap.Resource_Type.HBaseBackupSet.value,
+                                dataMap.Resource_Type.HDFSFileset.value,
+                                dataMap.Resource_Type.HiveBackupSet.value,
+                                dataMap.Resource_Type.virtualMachine.value,
+                                dataMap.Resource_Type.openStackCloudServer
+                                  .value,
+                                dataMap.Resource_Type.tdsqlInstance.value,
+                                dataMap.Resource_Type.kubernetesNamespaceCommon
+                                  .value,
+                                dataMap.Resource_Type.kubernetesDatasetCommon
+                                  .value
+                              ].includes(item.resource_sub_type);
+                            else normalType
+                          "
+                          lv-overflow
+                        >
+                          {{
+                            item.source_copy_type | textMap: 'specialBackUpType'
+                          }}
+                        </span>
+                        <ng-template #normalType>
+                          {{
+                            item.source_copy_type
+                              | textMap: 'CopyData_Backup_Type'
+                          }}
+                        </ng-template>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'extend_type'">
+                        <span lv-overflow>
+                          {{ item?.extend_type | textMap: 'objectBackupLevel' }}
+                        </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'storage_snapshot_flag'">
+                        {{
+                          !!item?.storage_snapshot_flag
+                            | textMap: 'isBusinessOptions'
+                        }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'worm_status'">
+                        <i
+                          [lv-tooltip]="getWormLabel(item) | i18n"
+                          [lv-icon]="getWormIcon(item)"
+                          [ngClass]="{
+                            'lv-m-rotate': item?.worm_status === 2
+                          }"
+                          style="width:20px;height:20px"
+                        ></i>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'isSanClient'">
+                        {{
+                          (item.properties
+                            ? _parse(item.properties).isSanClient
+                            : ''
+                          ) | textMap: 'copyDataSanclient'
+                        }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'system_backup_flag'">
+                        {{
+                          (item.resource_properties
+                            ? _parse(item.resource_properties).ext_parameters
+                                .system_backup_flag
+                            : ''
+                          ) | textMap: 'copyDataVolume'
+                        }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'isBackupAcl'">
+                        {{
+                          (item.resource_properties
+                            ? !!_parse(item.resource_properties).ext_parameters
+                                .isBackupAcl
+                            : false
+                          ) | textMap: 'aclType'
+                        }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'indexed'">
+                        <ng-container
+                          *ngIf="
+                            item.indexed === 'Unsupport';
+                            else elseIndexedTemplate
+                          "
+                        >
+                          --
+                        </ng-container>
+                        <ng-template #elseIndexedTemplate>
+                          <aui-file-indexed
+                            [indexed]="item.indexed"
+                          ></aui-file-indexed>
+                        </ng-template>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'canRestore'">
+                        {{
+                          _get(_parse(item.properties), 'canRestore', true)
+                            | textMap: 'gaussDBCanRestoreMode'
+                        }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'resource_set_type'">
+                         <span lv-overflow>
+                            {{item.resource_sub_type | textMap: 'Job_Target_Type'}}
+                         </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'resource_name'">
+                        <span
+                          [ngClass]="{ 'aui-link': !isResourceSet }"
+                          lv-overflow
+                          id="outerClosable"
+                          (click)="getResourceDetail(item)"
+                        >
+                          <span lv-overflow>
+                            {{ item.resource_name }}
+                          </span>
+                        </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'resource_sub_type'">
+                        <ng-container
+                          *ngIf="
+                            [
+                              dataMap.Resource_Type.dbTwoDatabase.value,
+                              dataMap.Resource_Type.dbTwoTableSet.value
+                            ].includes(item.resource_sub_type)
+                          "
+                        >
+                          <span lv-overflow>
+                            {{
+                              item.resource_sub_type
+                                | textMap: 'copyDataDbTwoType'
+                            }}
+                          </span>
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            [
+                              dataMap.Resource_Type.DWS_Cluster.value,
+                              dataMap.Resource_Type.DWS_Database.value,
+                              dataMap.Resource_Type.DWS_Schema.value,
+                              dataMap.Resource_Type.DWS_Table.value
+                            ].includes(item.resource_sub_type)
+                          "
+                        >
+                          <span lv-overflow>
+                            {{
+                              item.resource_sub_type
+                                | textMap: 'CopyData_DWS_Type'
+                            }}
+                          </span>
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            [
+                              dataMap.Resource_Type.SQLServerCluster.value,
+                              dataMap.Resource_Type.SQLServerInstance.value,
+                              dataMap.Resource_Type.SQLServerGroup.value,
+                              dataMap.Resource_Type.SQLServerDatabase.value,
+                              dataMap.Resource_Type.SQLServerClusterInstance
+                                .value
+                            ].includes(item.resource_sub_type)
+                          "
+                        >
+                          <span lv-overflow>
+                            {{
+                              item.resource_sub_type
+                                | textMap: 'CopyData_SQL_Server_Type'
+                            }}
+                          </span>
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            [
+                              dataMap.Resource_Type.MySQLClusterInstance.value,
+                              dataMap.Resource_Type.MySQLInstance.value,
+                              dataMap.Resource_Type.MySQLDatabase.value
+                            ].includes(item.resource_sub_type)
+                          "
+                        >
+                          <span lv-overflow>
+                            {{
+                              item.resource_sub_type
+                                | textMap: 'copyDataMysqlType'
+                            }}
+                          </span>
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            [
+                              dataMap.Resource_Type.OpenGauss_instance.value,
+                              dataMap.Resource_Type.OpenGauss_database.value
+                            ].includes(item.resource_sub_type)
+                          "
+                        >
+                          <span lv-overflow>
+                            {{
+                              item.resource_sub_type
+                                | textMap: 'CopyDataOpengaussType'
+                            }}
+                          </span>
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            [dataMap.Resource_Type.ClickHouse.value].includes(
+                              item.resource_sub_type
+                            )
+                          "
+                        >
+                          <span lv-overflow>
+                            {{
+                              item.resource_type
+                                | textMap: 'clickHouseResourceType'
+                            }}
+                          </span>
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            [
+                              dataMap.Resource_Type.OceanBaseCluster.value,
+                              dataMap.Resource_Type.OceanBaseTenant.value
+                            ].includes(item.resource_sub_type)
+                          "
+                        >
+                          <span lv-overflow>
+                            {{
+                              item.resource_sub_type
+                                | textMap: 'copyDataOceanBaseType'
+                            }}
+                          </span>
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            [
+                              dataMap.Resource_Type.tidbCluster.value,
+                              dataMap.Resource_Type.tidbDatabase.value,
+                              dataMap.Resource_Type.tidbTable.value,
+                              dataMap.Resource_Type.ExchangeSingle.value,
+                              dataMap.Resource_Type.ExchangeGroup.value,
+                              dataMap.Resource_Type.ExchangeDataBase.value,
+                              dataMap.Resource_Type.ExchangeEmail.value
+                            ].includes(item.resource_sub_type)
+                          "
+                        >
+                          <span lv-overflow>
+                            {{
+                              item.resource_sub_type
+                                | textMap: 'Job_Target_Type'
+                            }}
+                          </span>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'resource_status'">
+                        <aui-status
+                          [value]="item.resource_status"
+                          type="Resource_Status"
+                        >
+                        </aui-status>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'sla_name'">
+                        <span lv-overflow>
+                          <sla-type
+                            [name]="
+                              item.generated_by ===
+                              dataMap.CopyData_generatedType.liveMount.value
+                                ? ''
+                                : item.sla_name
+                            "
+                          >
+                          </sla-type>
+                        </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'generation'">
+                        {{ getGeneration(item) }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'copy_format'">
+                        <span lv-overflow>
+                          {{
+                            (item.properties
+                              ? _parse(item.properties).isAggregation
+                              : ''
+                            ) | textMap: 'Copy_Format'
+                          }}
+                        </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'copy_verify_status'">
+                        <span lv-overflow>
+                          {{
+                            item?.copy_verify_status
+                              | textMap: 'HCSCopyDataVerifyStatus'
+                          }}
+                        </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'labelList'">
+                        <ng-container *ngIf="item?.labelList?.length; else emptyTpl">
+                            <lv-tag [ngModel]="item?.showLabelList" [lv-tooltip]="TagTpl"></lv-tag>
+                            <ng-template #TagTpl>
+                                <lv-tag [ngModel]="item?.hoverLabelList"></lv-tag>
+                            </ng-template>
+                        </ng-container>
+                    </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        <span lv-overflow>
+                          {{ item[col.key] | nil }}
+                        </span>
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+          <td width="144px" *ngIf="!isResourceSet">
+            <lv-operation-menu
+              [lvItemsFn]="optsCallback"
+              [lvData]="item"
+            ></lv-operation-menu>
+          </td>
+          <td></td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </lv-datatable>
+</div>
+<div class="aui-paginator-wrap">
+  <lv-paginator
+    lvShowSelected
+    [lvPageSize]="pageSize"
+    [lvTotal]="total"
+    [lvPageIndex]="pageIndex"
+    #page
+    [lvPageSizeOptions]="sizeOptions"
+    [hidden]="!total"
+    (lvPageChange)="pageChange($event)"
+  >
+  </lv-paginator>
+</div>
+
+<ng-template #colHideTpl>
+  <lv-tree
+    [lvData]="columns"
+    [lvShowCheckbox]="true"
+    [lvShowExpandedIcon]="false"
+    lvSelectionMode="multiple"
+    [(lvSelection)]="columnSelection"
+    (lvCheck)="columnCheck($event)"
+    [lvScroll]="virtualScroll.scrollParam"
+  ></lv-tree>
+</ng-template>
+
+<ng-template #emptyTpl>
+  --
+</ng-template>
+

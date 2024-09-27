@@ -1,0 +1,67 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup aui-formGroup-v3">
+  <div class="aui-gutter-column-l">
+    <div class="formGroup-h1">{{'common_basic_info_label' | i18n}}</div>
+    <div>
+      <lv-form-item class="form-item-m">
+        <lv-form-label lvRequired>{{'system_role_name_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+          <input lv-input type="text" lvSize="large" formControlName="roleName">
+        </lv-form-control>
+      </lv-form-item>
+    </div>
+    <lv-form-item class="form-item-m">
+      <lv-form-label>{{'system_role_desc_label' | i18n}}</lv-form-label>
+      <lv-form-control>
+        <lv-input-lint>
+          <textarea rows="3" maxlength="255" formControlName="roleDescription" lv-input style="resize: vertical;"
+            [lvAutosize]="{ minRows: 4, maxRows: 8 }"></textarea>
+        </lv-input-lint>
+      </lv-form-control>
+    </lv-form-item>
+  </div>
+  <div class="formGroup-h1">{{'system_select_permissions_label' | i18n}}</div>
+  <lv-form-item class="form-item-block">
+    <lv-form-control>
+      <lv-checkbox-group formControlName="authList" style="display: block;">
+        <ng-container *ngFor="let item of permissionTable">
+          <lv-collapse>
+            <lv-collapse-panel [lvTitle]="i18n.get(item.label)" [lvExpanded]="true" [lvExtra]="titleExtraTpl">
+              <ng-container *ngFor="let subItem of item.children">
+                <div class="check-box-item">
+                  <lv-checkbox [lvValue]="subItem.value">
+                    <span lv-tooltip="{{subItem?.tooltip | i18n}}">{{subItem.label | i18n}}</span>
+                  </lv-checkbox>
+                </div>
+              </ng-container>
+              <ng-template #titleExtraTpl>
+                <div>
+                  <lv-group lvGutter="4px">
+                    <span class="aui-link" *ngIf="!item?.allSelected"
+                      (click)="allSelectPermission($event, item)">{{'system_resourceset_all_select_label' |
+                      i18n}}</span>
+                    <span class="aui-link" *ngIf="!!item?.allSelected"
+                      (click)="allSelectPermission($event, item)">{{'system_resourceset_cancel_all_select_label'
+                      | i18n}}</span>
+                  </lv-group>
+                </div>
+              </ng-template>
+            </lv-collapse-panel>
+          </lv-collapse>
+        </ng-container>
+      </lv-checkbox-group>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>

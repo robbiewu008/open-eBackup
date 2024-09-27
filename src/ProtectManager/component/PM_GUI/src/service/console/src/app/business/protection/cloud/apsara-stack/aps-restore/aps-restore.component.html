@@ -1,0 +1,128 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form class="formGroup" [formGroup]="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ 'protection_restore_to_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreLocation">
+                <lv-group [lvGutter]="'24px'">
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN"
+                        [lvDisabled]="rowCopy?.resource_status === 'NOT_EXIST'">
+                        {{ 'common_restore_to_origin_location_label' | i18n }}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreLocationType.NEW">
+                        {{ 'common_restore_to_new_location_label' | i18n }}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'common_location_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <input lv-input type="text" formControlName="originLocation" />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'explore_ali_target_org_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select [lvOptions]="orgOptions" lvValueKey="value" formControlName="targetOrg" lvShowFilter lvFilterKey="label"
+                    lvFilterMode="contains"></lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'explore_ali_target_zone_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select [lvOptions]="zoneOptions" lvValueKey="value" formControlName="targetZone" lvShowFilter lvFilterKey="label"
+                    lvFilterMode="contains"></lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_cloud_server_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select [lvOptions]="serverOptions" lvValueKey="value" formControlName="server" lvShowFilter lvFilterKey="label"
+                    lvFilterMode="contains"></lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+               {{'explore_ali_target_resourceset_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <input lv-input type="text" formControlName="targetResourceSet">
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>
+
+<div class="aui-gutter-column-xl"></div>
+
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
+    <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+        <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_proxy_host_label' | i18n}}
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="'protection_hcs_proxy_server_tip_label' | i18n"
+                        lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select [lvOptions]="proxyOptions" formControlName="proxyHost" lvValueKey='value' lvShowCheckAll
+                        lvShowFilter lvFilterKey="label" lvFilterMode="contains" lvMode="multiple"></lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>{{'protection_auto_power_on_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="restoreAutoPowerOn"></lv-switch>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>{{'common_restore_before_copy_verify_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protect_hcs_restore_before_copy_verify_label' | i18n}}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-tooltip [lvContent]="copyVerifyDisableLabel|i18n"
+                        *ngIf="verifyStatus === CopyDataVerifyStatus.noGenerate.value;else verifyStatusEnableTpl">
+                        <lv-switch formControlName="copyVerify" [lvDisabled]="true"></lv-switch>
+                    </lv-tooltip>
+                    <ng-template #verifyStatusEnableTpl>
+                        <lv-switch formControlName="copyVerify"></lv-switch>
+                    </ng-template>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form>
+    </lv-collapse-panel>
+</lv-collapse>
+
+<ng-template #titleTpl>
+    <lv-group lvGutter='8px'>
+        <span class="custom-collapse-title-text">{{'common_advanced_label'|i18n}}</span>
+    </lv-group>
+</ng-template>

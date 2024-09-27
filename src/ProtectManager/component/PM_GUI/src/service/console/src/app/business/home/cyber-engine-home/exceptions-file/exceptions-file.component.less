@@ -1,0 +1,51 @@
+@import url('../module.style.less');
+
+.border_bottom {
+  border-bottom: solid 1px #2d313a;
+  padding-bottom: 24px;
+}
+.lv-group {
+  width: 100%;
+  .total-count {
+    color: #737c8a;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+.exceptions-file-talbe-container {
+  height: 100%;
+  overflow-y: scroll;
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(#fff, 0.1);
+  }
+}
+.exceptions-file-talbe {
+  width: 100%;
+  thead {
+    color: #9299a9;
+    .lv-table-th-deliver {
+      //border-left: none; // 覆盖aui.min.css的样式
+    }
+  }
+  tr {
+    height: 27px;
+    line-height: 27px;
+  }
+  td {
+    color: #d2d8e6;
+  }
+}
+.no-exception-file-container {
+  align-items: center;
+  justify-content: center;
+  .exceptions-file-no-config {
+    width: 80px;
+    height: 80px;
+    background-image: url('assets/img/innormal_file_system.svg');
+    background-size: cover;
+  }
+  span {
+    font-size: 14px;
+    color: #808080;
+  }
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring openGauss">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839269517.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792550172">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring openGauss</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792550172"></a><a name="EN-US_TOPIC_0000001792550172"></a>
+  <h1 class="topictitle1">Restoring openGauss</h1>
+  <div>
+   <p>This section describes how to restore an openGauss backup set that has been backed up to the original or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>Backup copies, replication copies, and imported copies can be used for restoration. Restoration to the original or a new location is supported. If you use replication copies, the data cannot be restored to the original location.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>Based on openGauss3.0 database applications, if an instance restoration job fails and the cluster is in degraded status, manually rebuild the standby node. (In degraded status, the active node is started but the standby node fails to be started.)</p>
+    <p>Log in to the standby node as the database system user and run the <strong>gs_ctl build</strong> <em>Data directory</em> command to rebuild the standby node.</p>
+    <div class="note">
+     <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+     <div class="notebody">
+      <p>The data directory is specified upon instance running. If no data directory is specified, the data directory configured on the database active node during installation and deployment is used by default.</p>
+     </div>
+    </div>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul id="EN-US_TOPIC_0000001792550172__en-us_topic_0000001792550248_ul155946913719">
+     <li id="EN-US_TOPIC_0000001792550172__en-us_topic_0000001792550248_li178221624154012">Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li>
+    </ul>
+    <ul id="EN-US_TOPIC_0000001792550172__en-us_topic_0000001792550248_ul1648381342319">
+     <li id="EN-US_TOPIC_0000001792550172__en-us_topic_0000001792550248_li69561792311">Before restoring data to a new location, ensure that the database installation user has the read and write permissions on the target path of restoration.</li>
+     <li id="EN-US_TOPIC_0000001792550172__en-us_topic_0000001792550248_li97319774218">If the resource to be restored is an active/standby MPP cluster, ensure that the active/standby database information is correct before stopping the database. Otherwise, you need to scan the restoration target resource.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792550172__en-us_topic_0000001839142377_uicontrol13535171992714"><b><span id="EN-US_TOPIC_0000001792550172__en-us_topic_0000001839142377_text19535171918274"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000001792550172__en-us_topic_0000001839142377_text175351119172711"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000001792550172__en-us_topic_0000001839142377_text59261952124911"><strong>Databases</strong></span> &gt; <span id="EN-US_TOPIC_0000001792550172__en-us_topic_0000001839142377_text11575567321"><strong>openGauss</strong></span></b></span>.</span></li>
+     <li><span>You can search for copies by resource or copy. This section describes how to search for copies by resource.</span><p></p><p>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> tab page, find the resource to be restored by resource name and click the resource name.</p> <p></p></li>
+     <li><span>Select the year, month, and day in sequence to find the copy.</span><p></p><p><span><img src="en-us_image_0000001792390552.png"></span> above the time indicates that a copy exists in the month or on the day.</p> <p></p></li>
+     <li><span>You can specify a copy for restoration.</span><p></p><p>Restore a backup set to the original or a new location.</p>
+      <div class="p">
+       <a href="#EN-US_TOPIC_0000001792550172__en-us_topic_0000001385658689_table194961441141219">Table 1</a> describes related parameters. 
+       <div class="tablenoborder">
+        <a name="EN-US_TOPIC_0000001792550172__en-us_topic_0000001385658689_table194961441141219"></a><a name="en-us_topic_0000001385658689_table194961441141219"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792550172__en-us_topic_0000001385658689_table194961441141219" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>Restoring an openGauss backup set
+         </caption>
+         <colgroup>
+          <col style="width:32.019999999999996%">
+          <col style="width:67.97999999999999%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.5.2.4.2.2.2.2.3.1.1"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.5.2.4.2.2.2.2.3.1.2"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p><span><strong>Restore To</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>Select <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> or <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p><span><strong>Location</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>If you select restoration to <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span>, the target location is displayed by default.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p><span><strong>Target Cluster</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>If you select restoration to <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>, you can select a target cluster.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p><span><strong>Target Instance</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>If you select restoration to <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>, you can select a target instance.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.1 "><p><span><strong>Rename Database</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.2.2.2.3.1.2 "><p>Only restored databases can be renamed.</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001839269517.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

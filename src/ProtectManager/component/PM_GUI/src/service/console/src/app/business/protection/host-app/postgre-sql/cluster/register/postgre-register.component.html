@@ -1,0 +1,81 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input type="text" formControlName="name" />
+        </lv-form-control>
+    </lv-form-item> 
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_type_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select formControlName="type" [lvOptions]='typeOptions' lvValueKey='value' [lvDisabled]='data'>
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_virtual_ip_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+            <input lv-input type="text" formControlName="virtual_ip" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.get('installDeployType').value === dataMap.PostgreSqlDeployType.CLup.value">
+      <lv-form-label lvRequired>
+        {{'protection_clup_server_node_label'|i18n}}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="agentsErrorTip">
+        <lv-select [lvOptions]='proxyOptions' formControlName='clupServerNode' lvValueKey='value' lvMode='multiple'
+                   lvShowFilter lvShowCheckAll lvFilterKey='label' lvFilterMode='contains'>
+        </lv-select>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{nodeLabel | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="agentsErrorTip">
+            <lv-select [lvOptions]='proxyOptions' formControlName='agents' lvValueKey='value' lvMode='multiple'
+                lvShowFilter lvShowCheckAll lvFilterKey='label' lvFilterMode='contains'
+                [lvContentTemplate]="contentTpl">
+            </lv-select>
+            <ng-template #contentTpl let-item>
+                <lv-group lvGutter="4px">
+                    <span lv-overflow>{{ item.label }}</span>
+                    <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
+                        {{'protection_guide_new_resource_label' | i18n}}
+                    </span>
+                </lv-group>
+            </ng-template>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="isSupport">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_cluster_type_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                <lv-select formControlName="installDeployType" [lvOptions]='deployTypeOptions' lvValueKey='value'
+                    [lvDisabled]='data'>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>

@@ -1,0 +1,120 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation">
+    <lv-group>
+        <lv-pro-button-group
+                [config]="optsConfig"
+                [bindData]="selectionData"
+                [maxDisplayItems]="4"
+        >
+        </lv-pro-button-group>
+    </lv-group>
+    <lv-group lvGutter="8px">
+        <lv-group lvGutter="8px">
+            <lv-search
+                    [lvFocus]="true"
+                    [(ngModel)]="name"
+                    (lvSearch)="search()"
+                    lvPlaceHolder="{{ 'common_search_type_label' | i18n: [''] }}"
+            >
+            </lv-search>
+            <button
+                    class="aui-button-icon"
+                    lv-button
+                    lvSize="auto"
+                    (click)="dataTable.fetchData()"
+            >
+                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+            </button>
+        </lv-group>
+    </lv-group>
+</div>
+<div class="list-container">
+    <lv-pro-table
+        #dataTable
+        [config]="tableConfig"
+        [data]="tableData"
+    ></lv-pro-table>
+</div>
+
+<!--报表类型-->
+<ng-template #typeTpl let-item>
+    <span lv-overflow>
+        {{ formatTaskType(item) }}
+    </span>
+</ng-template>
+
+<!--统计范围-->
+<ng-template #scopeTpl let-item>
+    <ng-container *ngIf="showScopeAndFrequency(item) else emptyTpl">
+        <ng-container
+                *ngIf="item.timeRange !== dataMap.Report_Generated_Period.custom.value"
+        >
+            {{ item.timeRange | textMap: 'Report_Generated_Period' }}
+        </ng-container>
+        <ng-container
+                *ngIf="item.timeRange === dataMap.Report_Generated_Period.custom.value"
+        >
+    <span lv-overflow>
+     {{'explore_last_label'|i18n}}
+        {{item.recentDays}}
+        {{'common_days_label'|i18n}}
+    </span>
+        </ng-container>
+    </ng-container>
+</ng-template>
+
+<!--统计频率-->
+<ng-template #timeUnitTpl let-item>
+    <ng-container *ngIf="showScopeAndFrequency(item) else emptyTpl">
+        {{ item.timeUnit | textMap: 'reportFrequency' }}
+        {{ 'common_day_label' | i18n }}
+    </ng-container>
+</ng-template>
+
+<ng-template #fileFormatTpl let-item>
+    {{ item.fileFormat | textMap: 'Report_Format' }}
+</ng-template>
+
+<!--上次执行时间-->
+<ng-template #preExecTimeTpl let-item>
+  <span lv-overflow>
+    {{ item.preExecTime | date: 'yyyy-MM-dd HH:mm:ss' | nil }}
+  </span>
+</ng-template>
+
+<!--下次执行时间-->
+<ng-template #nextExecTimeTpl let-item>
+  <span lv-overflow>
+    {{ item.nextExecTime | date: 'yyyy-MM-dd HH:mm:ss' | nil }}
+  </span>
+</ng-template>
+
+<!--收件人邮箱-->
+<ng-template #emailsTpl let-item>
+  <span lv-overflow>
+    {{ item.emailsDisplay | nil }}
+  </span>
+</ng-template>
+
+<!--生成计划-->
+<ng-template #generatedPlanTpl let-item>
+  <span lv-overflow>
+    {{ item.generatedPlan | nil }}
+  </span>
+</ng-template>
+
+<ng-template #emptyTpl>
+    --
+</ng-template>

@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Querying HDFS Information">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839276397.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001839276417">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Querying HDFS Information</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001839276417"></a><a name="EN-US_TOPIC_0000001839276417"></a>
+  <h1 class="topictitle1">Querying HDFS Information</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab page, query the HDFS cluster information.</span><p></p>
+      <ol type="a">
+       <li>This page displays information about registered HDFS clusters.<p><a href="#EN-US_TOPIC_0000001839276417__table14170211115420">Table 1</a> describes the related parameters.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000001839276417__table14170211115420"></a><a name="table14170211115420"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839276417__table14170211115420" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>HDFS cluster information
+          </caption>
+          <colgroup>
+           <col style="width:40%">
+           <col style="width:60%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="40%" id="mcps1.3.1.2.1.2.1.1.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="60%" id="mcps1.3.1.2.1.2.1.1.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="40%" headers="mcps1.3.1.2.1.2.1.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="60%" headers="mcps1.3.1.2.1.2.1.1.2.2.3.1.2 "><p>HDFS cluster name.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="40%" headers="mcps1.3.1.2.1.2.1.1.2.2.3.1.1 "><p><strong>fs.defaultFS</strong></p></td>
+            <td class="cellrowborder" valign="top" width="60%" headers="mcps1.3.1.2.1.2.1.1.2.2.3.1.2 "><p>Address of the HDFS cluster.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="40%" headers="mcps1.3.1.2.1.2.1.1.2.2.3.1.1 "><p><span><strong>Status</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="60%" headers="mcps1.3.1.2.1.2.1.1.2.2.3.1.2 ">
+             <div class="p">
+              Status of the HDFS cluster.
+              <ul>
+               <li><span><strong>Online</strong></span>: If the connection between the agent host and the HDFS cluster is normal, <span class="uicontrol"><b><span><strong>Status</strong></span></b></span> is <span class="uicontrol"><b><span><strong>Online</strong></span></b></span>.</li>
+               <li><span><strong>Offline</strong></span>: If the connection between the agent host and the HDFS cluster is abnormal, <span class="uicontrol"><b><span><strong>Status</strong></span></b></span> is <span class="uicontrol"><b><span><strong>Offline</strong></span></b></span>.</li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="40%" headers="mcps1.3.1.2.1.2.1.1.2.2.3.1.1 "><p><span><strong>Authentication Mode</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="60%" headers="mcps1.3.1.2.1.2.1.1.2.2.3.1.2 "><p>Authentication mode for communication between the HDFS cluster and the <span>product</span>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="40%" headers="mcps1.3.1.2.1.2.1.1.2.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="60%" headers="mcps1.3.1.2.1.2.1.1.2.2.3.1.2 "><p>Agent host associated with the cluster.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>Click the cluster name to view the basic information of the filesets related to the cluster.</li>
+      </ol> <p></p></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Filesets</strong></span></b></span> tab page, query the HDFS fileset information.</span><p></p>
+      <ol type="a">
+       <li>This page displays the details about the filesets.<p><a href="#EN-US_TOPIC_0000001839276417__table5610162112314">Table 2</a> describes the related parameters.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000001839276417__table5610162112314"></a><a name="table5610162112314"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839276417__table5610162112314" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 2 </b>Fileset parameters
+          </caption>
+          <colgroup>
+           <col style="width:40%">
+           <col style="width:60%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="40%" id="mcps1.3.1.2.2.2.1.1.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="60%" id="mcps1.3.1.2.2.2.1.1.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="40%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="60%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.2 "><p>Name of the fileset.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="40%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.1 "><p><span><strong>Cluster</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="60%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.2 "><p>Name of the protected HDFS cluster.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="40%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.1 "><p><span><strong>SLAs</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="60%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.2 "><p>If an SLA has been associated with the fileset, the SLA name is displayed. Otherwise, <span class="uicontrol"><b>--</b></span> is displayed.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="40%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.1 "><p><span><strong>SLA Compliance</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="60%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.2 ">
+             <div class="p">
+              Whether a backup job is successfully executed based on the backup frequency or backup window set in the SLA.
+              <ul id="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_en-us_topic_0000001792344094_ul1823814519293">
+               <li id="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919">If the backup time of a backup job (except for the first full backup) meets the backup time window or backup interval requirements and the backup job is executed successfully, SLA compliance is met.</li>
+               <li id="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912">If the backup time does not meet the backup time window or backup frequency requirements, for example, if the backup frequency set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup frequency or backup window.</li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="40%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.1 "><p><span><span><strong>Protection Status</strong></span></span></p></td>
+            <td class="cellrowborder" valign="top" width="60%" headers="mcps1.3.1.2.2.2.1.1.2.2.3.1.2 "><p>Whether the fileset is protected.</p>
+             <ul>
+              <li><span><strong>Unprotected</strong></span>: The fileset is not associated with an SLA, or the fileset is associated with an SLA but protection is disabled.</li>
+              <li><span><strong>Protected</strong></span>: The fileset is associated with an SLA and protection is activated.</li>
+              <li><span><strong>Creating</strong></span>: The fileset is associated with an SLA and protection is being created.</li>
+             </ul></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ol>
+      <ol type="a" start="2">
+       <li>Click the name and check the overview, copy information, and related jobs. 
+        <ul id="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_ul865415431221">
+         <li id="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_li165311431228">Overview<p id="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_p18940145516325"><a name="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_li165311431228"></a><a name="en-us_topic_0000001792344110_li165311431228"></a>Display the SLA information, job execution time, and total number of copies.</p></li>
+         <li id="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_li15654174342214">Copy data<p id="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_p565454392218"><a name="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_li15654174342214"></a><a name="en-us_topic_0000001792344110_li15654174342214"></a>You can search for copies by year, month, and day.</p> <p id="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_p6521122942916">If <span><img id="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_image7611125417346" src="en-us_image_0000001792344154.png"></span> is displayed below the time, a copy exists at the time.</p></li>
+         <li id="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_li0654134382213">Related jobs<p id="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_p1747754963312"><a name="EN-US_TOPIC_0000001839276417__en-us_topic_0000001792344110_li0654134382213"></a><a name="en-us_topic_0000001792344110_li0654134382213"></a>Displays backup and restoration jobs.</p></li>
+        </ul></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001839276397.html">HDFS Cluster Environment</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

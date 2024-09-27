@@ -1,0 +1,73 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="fileset-list-tree">
+    <lv-alert lvType="info" lvClosable="false">
+        {{'explore_export_file_tip_label'  | i18n }}
+      </lv-alert>
+    <lv-treetable #lvTreeTable [lvData]="treeTableData" lvSelectionMode="multiple" [(lvSelection)]="treeTableSelection"
+        (lvSelectionChange)="selectionChange($event)" lvSize="small" lvVirtualScroll [lvScroll]="{ y: '350px' }" class="tree-container"
+        lvVirtualMinBuffer="96px" [lvVirtualTrackBy]="trackByIndex">
+        <thead>
+            <tr>
+                <th lvShowCheckbox lvCellKey="name">
+                    {{ 'common_name_label' | i18n }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-template lv-virtual-scroll let-item>
+                <ng-container *ngTemplateOutlet='contentTpl; context: { $implicit: item, level: 0}'>
+                </ng-container>
+            </ng-template>
+
+            <ng-template #bodyContentTpl let-data let-level="level">
+                <ng-container *ngFor="let item of data">
+                    <ng-container *ngTemplateOutlet="contentTpl; context: { $implicit: item, level: level }">
+                    </ng-container>
+                </ng-container>
+            </ng-template>
+
+            <ng-template #contentTpl let-item let-level="level">
+                <tr>
+                    <td [lvShowCheckbox]="!item.isMoreBtn" [lvShowExpanded]='item.children?.length'
+                        [(lvExpanded)]='item.expanded' [lvRowData]='item' (lvExpandedChange)="expandedChange(item)"
+                        [lvPaddingLeft]='item.isLeaf ? level*32 + 32 +"px" : level*32+"px"'>
+                        <div>
+                            <span *ngIf="!item.isMoreBtn">
+                                <lv-group lvGutter='4px'>
+                                    <i lv-icon="{{item.icon}}" [lvColorState]="true"></i>
+                                    <lv-group lvGutter='30px' style="width: 280px;">
+                                        <span lv-overflow>{{item.name}}</span>
+                                        <span *ngIf="item.icon === 'aui-icon-file'" style="text-wrap:nowrap">{{item.size ? (item.size |
+                                            capacityCalculateLabel:'1.1-3':unitconst.BYTE: true ) :'--'}}</span>
+                                    </lv-group>
+                                </lv-group>
+                            </span>
+                            <span *ngIf="item.isMoreBtn" class="aui-link" (click)="getResource(item.parent,item.startPage)">{{item.name}}</span>
+                        </div>
+                    </td>
+                </tr>
+                <ng-container *ngIf='item.expanded && item.children?.length'>
+                    <ng-container
+                        *ngTemplateOutlet='bodyContentTpl; context: { $implicit: item.children, level: level+1}'>
+                    </ng-container>
+                </ng-container>
+            </ng-template>
+        </tbody>
+    </lv-treetable>
+</div>
+
+<ng-template #fileDownloadCompletedTpl>
+    <div id="file-download-completed" [innerHTML]="fileDownloadCompletedLabel"></div>
+</ng-template>

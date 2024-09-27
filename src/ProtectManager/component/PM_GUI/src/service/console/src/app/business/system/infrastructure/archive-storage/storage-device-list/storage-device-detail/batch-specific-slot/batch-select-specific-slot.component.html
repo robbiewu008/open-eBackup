@@ -1,0 +1,31 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<h2 class="aui-gutter-column-md">{{ 'system_archive_drive_label' | i18n }}</h2>
+
+<button class="top-button" lv-button (click)="clearAllDriver()">{{'common_batch_delete_label' | i18n}}</button>
+<lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+
+<ng-template #typeSelectionExtraTpl let-item>
+  <lv-select [(ngModel)]="item.type"  [lvOptions]="TypeOptions" lvValueKey="value"
+             (ngModelChange)="typeChange($event,item)"
+             class="typeSelectionExtraTplSelect">
+  </lv-select>
+</ng-template>
+
+<ng-template #driverSelectionExtraTpl let-item>
+  <lv-select [(ngModel)]="item.targetSlot" (ngModelChange)="targetSlotChange($event, item,true)" [lvOptions]="getShowData(item)" lvValueKey="value"
+             class="driverSelectionExtraTplSelect"
+             lvShowFilter lvFilterMode="contains" lvFilterKey="label" lvShowClear >
+  </lv-select>
+</ng-template>

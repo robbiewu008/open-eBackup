@@ -1,0 +1,169 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Viewing Exchange Copy Information">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001853243201.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001853083329">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Viewing Exchange Copy Information</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001853083329"></a><a name="EN-US_TOPIC_0000001853083329"></a>
+
+<h1 class="topictitle1">Viewing Exchange Copy Information</h1>
+<div><p>This section describes how to view details about Exchange copies.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001839142377_uicontrol201131546165412"><b><span id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001839142377_text4113184695420"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001839142377_text1311384665413"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001839142377_text843804914500"><strong>Applications</strong></span> &gt; <span id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001839142377_text1781814011566"><strong>Exchange</strong></span></b></span>.</span></li><li><span>Choose a resource viewing mode in the upper right corner of the page to view the copy information.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Replication copies can be viewed only in the target cluster.</p>
+</div></div>
+<ul><li>Click the <span class="uicontrol"><b>Resources</b></span> tab to view the copy information of a resource by single-node system, availability group, database, or mailbox. If a resource is faulty and data needs to be restored, you are advised to search for the copies at the time point through this entry.<p><a href="#EN-US_TOPIC_0000001853083329__en-us_topic_0000001264096738_table20406195873110">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001853083329__en-us_topic_0000001264096738_table20406195873110"></a><a name="en-us_topic_0000001264096738_table20406195873110"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001264096738_table20406195873110" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Resource parameters</caption><colgroup><col style="width:18%"><col style="width:30%"><col style="width:52%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.2.2.2.1.3.2.4.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.2.2.2.1.3.2.4.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" rowspan="3" valign="top" width="18%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Resources</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.2 "><p>Database name.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p>IP address of the host where the database resides.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p>Whether the database is registered with the current OceanProtect WebUI.</p>
+<ul><li>Yes</li><li>No</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" rowspan="3" valign="top" width="18%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Copy</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Quantity</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.2 "><p>Number of backup copies or replication copies of the database instance on the current <span>OceanProtect</span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Replicated Copy SLA</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p>Allows you to specify the target to which the backup copy is replicated, and customize the replication job execution interval and copy retention period.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Replicated Copy Protection Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><div class="p">Indicates whether a replication copy is protected. <ul><li><span><strong>Unprotected</strong></span>: The replication copy is not associated with an SLA, or the replication copy is associated with an SLA but protection is disabled.</li><li><span><strong>Protected</strong></span>: The replication copy is associated with an SLA and protection is activated.</li></ul>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>View all copy data by copy. When you need to recover data by using a specified copy, you are advised to search for the copy through this entry.<p><a href="#EN-US_TOPIC_0000001853083329__en-us_topic_0000001264096738_table1390718405171">Table 2</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001853083329__en-us_topic_0000001264096738_table1390718405171"></a><a name="en-us_topic_0000001264096738_table1390718405171"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001264096738_table1390718405171" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Copy parameters</caption><colgroup><col style="width:15%"><col style="width:28.999999999999996%"><col style="width:56.00000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.2.2.2.2.2.2.4.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.2.2.2.2.2.2.4.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" rowspan="7" valign="top" width="15%" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Copy</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="28.999999999999996%" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Backup Time</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="56.00000000000001%" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.2 "><p>Time when a backup copy is generated.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Copy Time</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>Time when a copy is generated.</p>
+<p>You can click the time displayed in the <strong>Copy Time</strong> column to view information such as the copy expiration time.</p>
+<p>If the expiration time is <strong>--</strong>, the copy is retained permanently.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><div class="p">Copy status. <ul><li><strong><span>Normal</span></strong>: The copy is available.</li><li><strong>Invalid</strong>: The copy is invalid.</li><li><strong><span>Deleting</span></strong>: The copy is being deleted.</li><li><span><strong>Restoring</strong></span>: The copy is being used for recovery.</li><li><strong><span>Deletion failed</span></strong>: The copy deletion fails.</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><div class="p">Location of a copy.<ul><li>If <span class="uicontrol"><b><span><strong>Generation Mode</strong></span></b></span> of a copy is <span class="uicontrol"><b><span><strong>Backup</strong></span></b></span>, <span class="uicontrol"><b><span><strong>Cascaded Replication</strong></span></b></span>, <span class="uicontrol"><b><span><strong>Reverse Replication</strong></span></b></span>, or <span class="uicontrol"><b><span><strong>Replicate</strong></span></b></span>, the copy is stored in the corresponding backup storage unit and the name of the backup storage unit is displayed.</li><li>If <span class="uicontrol" id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001792503826_uicontrol20454181902"><b><span id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001792503826_text945418114019"><strong>Generation Mode</strong></span></b></span> of a copy is <span class="uicontrol" id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001792503826_uicontrol1943016186013"><b><span id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001792503826_text2035114288014"><strong>Object Storage Archive</strong></span></b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001792503826_uicontrol123221341402"><b><span id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001792503826_text98939521909"><strong>Import</strong></span></b></span>, the copy is stored in an object storage bucket. In this case, the bucket name is displayed.</li><li>If <span class="uicontrol" id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001792503826_uicontrol12512936015"><b><span id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001792503826_text651210311015"><strong>Generation Mode</strong></span></b></span> of a copy is <span class="uicontrol" id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001792503826_uicontrol58800591007"><b><span id="EN-US_TOPIC_0000001853083329__en-us_topic_0000001792503826_text128561869115"><strong>Tape Archive</strong></span></b></span>, the copy is stored in a tape library. In this case, the media set name is displayed.</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Generation Mode</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>Mode in which a copy is generated.</p>
+<ul><li><span><strong>Replicate</strong></span>: copies generated by replication jobs.</li><li><span><strong>Backup</strong></span>: copies generated by backup jobs.</li><li><span><strong>Object Storage Archive</strong></span>: copies generated by object storage archive jobs.</li><li><span><strong>Tape Archive</strong></span>: copies generated by tape archiving jobs.</li><li><span><strong>Live Mount</strong></span>: copies generated by live mount jobs. </li><li><span><strong>Cascaded Replication</strong></span>: copies generated by cascaded replication jobs.</li><li><span><strong>Reverse Replication</strong></span>: copies generated by reverse replication jobs.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Copy Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>Backup type of a generated copy.</p>
+<p>Options are full, incremental, and forever incremental (synthetic full) backup.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><span><strong>WORM</strong></span></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>Indicates whether a copy has been set as a WORM copy. </p>
+<ul><li><span><img src="en-us_image_0000001806364650.png"></span>: Disabled. The copy is not set as a WORM copy, that is, the copy is a common copy.</li><li><span><img src="en-us_image_0000001853243329.png"></span>: Enabled. The copy has been set as a WORM copy. The WORM copy cannot be deleted and its retention period cannot be shortened.</li><li><span><img src="en-us_image_0000001806364642.png"></span>: Setting. The copy is being set as a WORM copy. A copy in this state cannot be deleted and the retention period cannot be modified.</li><li><span><img src="en-us_image_0000001853243333.png"></span>: Failed. The copy fails to be set as a WORM copy. A copy which fails to be set as a WORM copy cannot be deleted and the retention period cannot be shortened.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" rowspan="4" valign="top" width="15%" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Resources</strong></span></p>
+<p></p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="28.999999999999996%" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="56.00000000000001%" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.2 "><p>Name of the Exchange resource that generates a copy.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Type</strong></span></p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>Exchange copy type.</p>
+<ul><li>Exchange single-node system</li><li>Exchange availability group</li><li>Exchange database</li><li>Exchange mailbox</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>Location of the host where the Exchange resource that generates a copy resides.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>Whether the Exchange resource that generates a copy is registered with the current OceanProtect WebUI.</p>
+<ul><li>Yes</li><li>No</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001853243201.html">Copies</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

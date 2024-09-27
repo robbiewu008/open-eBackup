@@ -1,0 +1,656 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 资源集管理接口
+  description: ResourceSetGroup
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: resource-set-api
+    description: 资源集相关接口
+paths:
+  /v1/resource-set/{resourceSetId}:
+    get:
+      tags:
+        - resource-set-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 根据资源集id查询数量和类型关系
+      description: 根据资源集id查询数量和类型关系
+      operationId: QueryResourceSetTypeCount
+      parameters:
+        - name: resourceSetId
+          in: path
+          required: true
+          type: string
+          description: 资源集id
+          pattern: ^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ResourceSetTypeCountVo'
+  /v1/resource-set:
+    post:
+      tags:
+        - resource-set-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 创建资源集
+      description: 创建资源集
+      operationId: CreateResourceSet
+      parameters:
+        - name: ResourceSetRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ResourceSetRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+    put:
+      tags:
+        - resource-set-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 修改资源集
+      description: 修改资源集
+      operationId: ModifyResourceSet
+      parameters:
+        - name: ResourceSetRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ResourceSetRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+    get:
+      tags:
+        - resource-set-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 查询资源集列表
+      description: 查询资源集列表
+      operationId: QueryResourceSet
+      parameters:
+        - name: conditions
+          in: query
+          required: false
+          type: string
+          maxLength: 1024
+        - name: pageNo
+          in: query
+          required: false
+          type: integer
+          format: int32
+          minimum: 0
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+          minimum: 0
+        - name: orders
+          in: query
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 1024
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse_reource_set'
+    delete:
+      tags:
+        - resource-set-api
+      summary: 批量删除资源集
+      description: 批量删除资源集
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: BatchDeleteResourceSetId
+      parameters:
+        - name: resourceSetDeleteRequest
+          in: body
+          required: true
+          description: 资源集批量删除请求
+          schema:
+            $ref: '#/definitions/ResourceSetDeleteRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v1/resource-set/query-by-user/{userId}:
+    get:
+      tags:
+        - resource-set-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 根据传入的userId查找对应资源集
+      description: 根据传入的userId查找对应资源集
+      operationId: QueryResourceSetByUserId
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: 用户id
+          pattern: '[0-9a-f]{32}'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ResourceSetRoleResponse'
+  /v1/resource-set/query-related-user-role/{resourceSetId}:
+    get:
+      tags:
+        - resource-set-api
+      summary: 根据资源集查询对应的用户和角色
+      description: 根据资源集查询对应的用户和角色
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: QueryRelatedUserRoleByResourceSetId
+      parameters:
+        - name: resourceSetId
+          in: path
+          required: true
+          type: string
+          pattern: '[0-9a-f]{32}'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ResourceSetRelatedUserRoleResponse'
+  /v1/resource-set/query-resource-object:
+    get:
+      tags:
+        - resource-set-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 根据资源集id和资源列表查询对应列表
+      description: 根据资源集id和资源列表查询对应列表
+      operationId: QueryResourceObjectIdList
+      parameters:
+        - name: resourceSetId
+          in: query
+          type: string
+          required: true
+          description: 资源集Id
+        - name: scopeModule
+          in: query
+          type: string
+          required: true
+          description: 应用类型
+        - name: type
+          in: query
+          type: string
+          required: true
+          description: 资源组/资源
+      responses:
+        '200':
+          description: 资源对象id列表
+          schema:
+            type: array
+            items:
+              type: string
+definitions:
+  ResourceSetTypeCountVo:
+    type: object
+    properties:
+      scopeModule:
+        type: string
+        description: 对应module
+        maxLength: 32
+      resourceNum:
+        type: integer
+        format: int32
+        description: 资源数量
+        minimum: 0
+  ResourceSetRequest:
+    type: object
+    properties:
+      resourceSetId:
+        type: string
+        description: 资源集id
+        pattern: '[0-9a-f]{32}'
+      name:
+        type: string
+        description: 资源集名称
+        maxLength: 64
+        pattern: ^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-\.]*$
+      description:
+        type: string
+        description: 资源集描述
+        maxLength: 255
+        pattern: ^[\u4e00-\u9fa5\w-\.]*$
+      resourceSetRelationList:
+        type: array
+        items:
+          $ref: '#/definitions/ResourceSetRelationDto'
+        description: 选择的资源
+  ResourceSetRelationDto:
+    type: object
+    properties:
+      resourceDtoList:
+        type: array
+        items:
+          $ref: '#/definitions/ResourceDto'
+      type:
+        $ref: '#/definitions/ResourceSetTypeEnum'
+  ResourceDto:
+    type: object
+    properties:
+      resourceIdList:
+        type: array
+        items:
+          type: string
+          pattern: ^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$
+        description: 选择的资源列表
+      scopeModule:
+        description: 资源类型枚举
+        $ref: '#/definitions/ResourceSetScopeModuleEnum'
+      isAllSelected:
+        description: 资源全选标识
+        type: boolean
+  ResourceSetTypeEnum:
+    type: object
+    properties:
+      RESOURCE:
+        type: string
+        description: RESOURCE
+      RESOURCE_GROUP:
+        type: string
+        description: RESOURCE_GROUP
+      SLA:
+        type: string
+        description: SLA
+      QOS:
+        type: string
+        description: QOS
+      COPY:
+        type: string
+        description: COPY
+      JOB:
+        type: string
+        description: JOB
+      ALARM:
+        type: string
+        description: ALARM
+      EVENT:
+        type: string
+        description: EVENT
+      REPORT:
+        type: string
+        description: REPORT
+      EXERCISE:
+        type: string
+        description: EXERCISE
+      JOB_LOG:
+        type: string
+        description: JOB_LOG
+  ResourceSetScopeModuleEnum:
+    type: object
+    properties:
+      VMware:
+        type: string
+        description: VMWARE
+      CNware:
+        type: string
+        description: CNWARE
+      FusionCompute:
+        type: string
+        description: FUSION_COMPUTE
+      Hyper_V:
+        type: string
+        description: HYPER_V
+      Kubernetes_CSI:
+        type: string
+        description: KUBERNETES_CSI
+      Kubernetes_FlexVolume:
+        type: string
+        description: KUBERNETES_FLEXVOLUME
+      OpenStack:
+        type: string
+        description: OPENSTACK
+      HCSStack:
+        type: string
+        description: HCSSTACK
+      HCSStack_GaussDB:
+        type: string
+        description: HCSSTACK_GAUSSDB
+      ApsaraStack:
+        type: string
+        description: APSARA_STACK
+      ADDS:
+        type: string
+        description: ADDS
+      Exchange:
+        type: string
+        description: EXCHANGE
+      SAP_HANA:
+        type: string
+        description: SAP_HANA
+      StorageEquipment:
+        type: string
+        description: STORAGE_EQUIPMENT
+      NasShare:
+        type: string
+        description: NAS_SHARE
+      NasFileSystem:
+        type: string
+        description: NAS_FILE_SYSTEM
+      ObjectStorage:
+        type: string
+        description: OBJECT_STORAGE
+      CommonShare:
+        type: string
+        description: COMMON_SHARE
+      Volume:
+        type: string
+        description: VOLUME
+      Fileset:
+        type: string
+        description: FILE_SET
+      DB2:
+        type: string
+        description: DB2
+      Dameng:
+        type: string
+        description: DAMENG
+      GaussDB:
+        type: string
+        description: GAUSSDB
+      GaussDB_T:
+        type: string
+        description: GAUSSDB_T
+      GoldenDB:
+        type: string
+        description: GOLDENDB
+      Informix:
+        type: string
+        description: INFORMIX
+      Kingbase:
+        type: string
+        description: KING_BASE
+      MySQL:
+        type: string
+        description: MYSQL
+      OceanBase:
+        type: string
+        description: OCEANBASE
+      Oracle:
+        type: string
+        description: ORACLE
+      PostgrepSQL:
+        type: string
+        description: POSTGREP_SQL
+      SQL_Server:
+        type: string
+        description: SQL_SERVER
+      TDSQL:
+        type: string
+        description: TDSQL
+      TiDB:
+        type: string
+        description: TIDB
+      openGauss:
+        type: string
+        description: OPENGAUSS
+      GeneralDb:
+        type: string
+        description: GENERALDB
+      GaussDB_DWS:
+        type: string
+        description: GAUSSDB_DWS
+      ClickHouse:
+        type: string
+        description: CLICK_HOUSE
+      Elasticsearch:
+        type: string
+        description: ELASTICSEARCH
+      HBase:
+        type: string
+        description: HBASE
+      HDFS:
+        type: string
+        description: HDFS
+      Hive:
+        type: string
+        description: HIVE
+      MongoDB:
+        type: string
+        description: MONGODB
+      Redis:
+        type: string
+        description: REDIS
+      Agent:
+        type: string
+        description: AGENT
+      RESOURCE_GROUP:
+        type: string
+        description: RESOURCE_GROUP
+      SLA:
+        type: string
+        description: SLA
+      QOS:
+        type: string
+        description: QOS
+      type:
+        type: string
+        description: 类型
+  PageListResponse_reource_set:
+    type: object
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        description: 总记录数
+      startIndex:
+        type: integer
+        format: int32
+        description: 开始索引
+      pageSize:
+        type: integer
+        format: int32
+        description: 页面大小
+      totalPages:
+        type: integer
+        format: int32
+        description: 总页数
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/ResourceSetVo'
+        description: 结果列表
+  ResourceSetVo:
+    type: object
+    properties:
+      userNum:
+        type: integer
+        format: int32
+      uuid:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      isDefault:
+        type: boolean
+      isPublic:
+        type: boolean
+      createTime:
+        type: integer
+        format: int64
+  ResourceSetDeleteRequest:
+    type: object
+    required:
+      - resourceSetIdList
+    properties:
+      resourceSetIdList:
+        type: array
+        items:
+          type: string
+        description: 资源集Id列表
+  ResourceSetRoleResponse:
+    type: object
+    properties:
+      resourceSetName:
+        type: string
+        description: 资源集名称
+        minLength: 0
+        maxLength: 64
+      roleName:
+        type: string
+        description: 角色名称
+        minLength: 0
+        maxLength: 64
+      resourceSetDescription:
+        type: string
+        description: 资源集描述
+        minLength: 0
+        maxLength: 1024
+      resourceSetId:
+        type: string
+        description: 资源集Id
+        pattern: ^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$
+      roleId:
+        type: string
+        description: 角色id
+        pattern: ^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$
+      isDefault:
+        type: boolean
+        description: 是否是默认资源集
+      isPublic:
+        type: boolean
+        description: 是否是公开资源集
+  ResourceSetRelatedUserRoleResponse:
+    type: object
+    properties:
+      userName:
+        type: string
+        description: 用户名称
+        maxLength: 64
+      userDesc:
+        type: string
+        description: 用户描述
+        maxLength: 255
+      roleName:
+        type: string
+        description: 角色名称
+        maxLength: 64
+      roleDesc:
+        type: string
+        description: 角色描述
+        maxLength: 255
+  resourceSetQueryRequest:
+    type: object
+    properties:
+      resourceSetId:
+        type: string
+        description: 资源集id
+        pattern: ^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$
+      scopeModule:
+        type: string
+        description: 待查找的资源对象所属模块
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512

@@ -1,0 +1,68 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-datatable [lvData]="tableData" (lvSortChange)="sortChange($event)" [lvPaginator]="page" lvSort #lvTable lvAsync>
+    <thead>
+        <tr>
+            <th width="40px"></th>
+            <th *ngFor="let col of columns" [lvShowFilter]="col.filter" (lvFilterChange)="filterChange($event)"
+                [(lvFilters)]="col.filterMap" lvCellKey="{{ col.key }}" lvShowCustom
+                lvShowSort="{{col.key === 'userName'}}" lvFilterCheckAll>
+                {{ col.label}}
+                <div lvCustom *ngIf="col.key === 'userName'">
+                    <aui-custom-table-search (search)="searchByUserName($event)"
+                        [filterTitle]="col.label"></aui-custom-table-search>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor='let item of lvTable.renderData'>
+            <tr [ngClass]='{"lv-table-row-highlight": lvTable.isSelected(item)}'>
+                <td width="40px" (click)='selectionRow(item)'>
+                    <div class="td-radio-container">
+                        <label lv-radio [ngModel]='lvTable.isSelected(item)'></label>
+                    </div>
+                </td>
+                <ng-container *ngFor="let column of columns">
+                    <td>
+                        <ng-container [ngSwitch]="column.key">
+                            <ng-container *ngSwitchCase="'roleName'">
+                                <span lv-overflow>
+                                    {{userRoleI18nMap[userRoleType[item.rolesSet[0]?.roleId + '']] | i18n}}
+                                </span>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'login'">
+                                <aui-status [value]="item.login" type="User_Login_Status"></aui-status>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'lock'">
+                                {{ item.lock | textMap: 'USRE_LOCK' }}
+                            </ng-container>
+                            <ng-container *ngSwitchDefault>
+                                <span lv-overflow>
+                                    {{item[column.key] | nil}}
+                                </span>
+                            </ng-container>
+                        </ng-container>
+                    </td>
+                </ng-container>
+            </tr>
+        </ng-container>
+    </tbody>
+</lv-datatable>
+<div class="aui-paginator-wrap">
+    <lv-paginator [lvPageSize]="pageSize" [lvTotal]="total" [lvPageIndex]="startIndex" #page
+        [lvPageSizeOptions]="sizeOptions" [hidden]="!total" [lvShowPageSizeOptions]="false" lvMode='simple'
+        (lvPageChange)="pageChange($event)">
+    </lv-paginator>
+</div>

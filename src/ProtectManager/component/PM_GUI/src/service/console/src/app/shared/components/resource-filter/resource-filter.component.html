@@ -1,0 +1,171 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]='formGroup' [lvKeepRequiredWidth]="true" [lvLabelColon]="false" class="formGroup create-fileset">
+    <lv-form-item>
+        <lv-form-label>
+            <span>{{'protection_file_filter_rule_label' | i18n}}</span>
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_fileset_filter_tip_label' | i18n}}"
+                lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control class="control-container filter-check-container">
+            <label lv-checkbox formControlName="fileCheck">{{'common_files_label' | i18n}}</label>
+            <div *ngIf="formGroup.get('fileCheck').value" class="condition-container">
+                <lv-group lvDirection='vertical' lvGutter="8px">
+                    <lv-form-control class="control-container padding-container">
+                        <lv-radio-group formControlName="fileFilterType">
+                            <lv-group lvGutter='24px'>
+                                <lv-radio [lvValue]="fileSetFilterType.Exclude">{{'common_exclude_label' | i18n}}
+                                </lv-radio>
+                                <lv-radio [lvValue]="fileSetFilterType.Include">{{'common_include_label' | i18n}}
+                                </lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                    </lv-form-control>
+                    <lv-form-control class="control-container padding-container">
+                        <lv-input-group [lvSuffix]='formGroup.get("filesetFilterInput").value ? includeSuffix : ""'>
+                            <input lv-input [placeholder]="filesetFilterDesc" formControlName='filesetFilterInput'
+                                class="control-container" />
+                        </lv-input-group>
+                        <span class='create-icon'>
+                            <span class="aui-link" (click)='addFilesFilter(formGroup)'>{{'common_save_label' |
+                                i18n}}</span>
+                        </span>
+                        <ng-template #includeSuffix>
+                            <i class='clear-icon' lv-icon='lv-icon-clear' [lvColorState]='true'
+                                (click)="clearIcon(formGroup, 'filesetFilterInput')"></i>
+                        </ng-template>
+                        <lv-tag formControlName='filesetTags' lvShowClearAll></lv-tag>
+                    </lv-form-control>
+                </lv-group>
+            </div>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+        </lv-form-label>
+        <lv-form-control class="control-container filter-check-container top-control">
+            <label lv-checkbox formControlName="contentCheck">{{'common_directory_label' | i18n}}</label>
+            <div *ngIf="formGroup.get('contentCheck').value" class="condition-container">
+                <lv-group lvDirection='vertical' lvGutter="8px">
+                    <lv-form-control class="control-container padding-container">
+                        <lv-radio-group formControlName="contentFilterType">
+                            <lv-group lvGutter='24px'>
+                                <lv-radio [lvValue]="fileSetFilterType.Exclude">{{'common_exclude_label' | i18n}}
+                                </lv-radio>
+                                <lv-radio [lvValue]="fileSetFilterType.Include">{{'common_include_label' | i18n}}
+                                </lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                    </lv-form-control>
+                    <lv-form-control class="control-container padding-container">
+                        <lv-input-group [lvSuffix]='formGroup.get("contentsFilterInput").value ? includeSuffix : ""'>
+                            <input lv-input [placeholder]="contentsFilterDesc" formControlName='contentsFilterInput'
+                                class="control-container" />
+                        </lv-input-group>
+                        <span class='create-icon'>
+                            <span class="aui-link" (click)='addContentsFilter(formGroup)'>{{'common_save_label' |
+                                i18n}}</span>
+                        </span>
+                        <ng-template #includeSuffix>
+                            <i class='clear-icon' lv-icon='lv-icon-clear' [lvColorState]='true'
+                                (click)="clearIcon(formGroup, 'contentsFilterInput')"></i>
+                        </ng-template>
+                        <lv-tag formControlName='contentsTags' lvShowClearAll></lv-tag>
+                    </lv-form-control>
+                </lv-group>
+            </div>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item
+        *ngIf="subType !== resourceType.HDFS.value && subType !== resourceType.NASShare.value && subType !== resourceType.fileset.value && subType !== resourceType.volume.value">
+        <lv-form-label>
+        </lv-form-label>
+        <lv-form-control class="control-container filter-check-container top-control">
+            <label lv-checkbox formControlName="formatCheck">{{'common_format_label' | i18n}}</label>
+            <div *ngIf="formGroup.get('formatCheck').value" class="condition-container">
+                <lv-group lvDirection='vertical' lvGutter="8px">
+                    <lv-form-control class="control-container padding-container">
+                        <lv-radio-group formControlName="formatFilterType">
+                            <lv-group lvGutter='24px'>
+                                <lv-radio [lvValue]="fileSetFilterType.Exclude">{{'common_exclude_label' | i18n}}
+                                </lv-radio>
+                                <lv-radio [lvValue]="fileSetFilterType.Include">{{'common_include_label' | i18n}}
+                                </lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                    </lv-form-control>
+                    <lv-form-control class="control-container padding-container">
+                        <lv-input-group [lvSuffix]="suffixTpl">
+                            <input #input lv-input lv-autocomplete formControlName="formatType"
+                                [lvAutocompleteData]="formatOptions" />
+                        </lv-input-group>
+                        <span class='create-icon'>
+                            <span class="aui-link" (click)='addFormatFilter(formGroup)'>{{'common_save_label' |
+                                i18n}}</span>
+                        </span>
+                        <ng-template #suffixTpl>
+                            <i lv-icon="lv-icon-triangle-down" (click)="iconClick()"></i>
+                        </ng-template>
+                        <lv-tag formControlName='formatTags' lvShowClearAll></lv-tag>
+                    </lv-form-control>
+                </lv-group>
+            </div>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item
+        *ngIf="subType !== resourceType.HDFS.value && subType !== resourceType.NASShare.value && subType !== resourceType.fileset.value && subType !== resourceType.volume.value">
+        <lv-form-label>
+        </lv-form-label>
+        <lv-form-control class="control-container filter-check-container top-control">
+            <label lv-checkbox formControlName="dateCheck">{{'protection_date_label' | i18n}}</label>
+            <div *ngIf="formGroup.get('dateCheck').value" class="condition-container">
+                <lv-group lvDirection='vertical' lvGutter="8px">
+                    <lv-form-control class="control-container padding-container">
+                        <lv-radio-group formControlName="dateFilterType">
+                            <lv-group lvGutter='24px'>
+                                <lv-radio [lvValue]="fileSetFilterType.Exclude">{{'common_exclude_label' | i18n}}
+                                </lv-radio>
+                                <lv-radio [lvValue]="fileSetFilterType.Include">{{'common_include_label' | i18n}}
+                                </lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                    </lv-form-control>
+                    <lv-form-control class="control-container padding-container">
+                        <lv-radio-group formControlName="dateType">
+                            <lv-group lvGutter='24px'>
+                                <lv-radio [lvValue]="dataMapService.getConfig('Filter_Date_Type').start.value">
+                                    {{'common_create_time_label' | i18n}}
+                                </lv-radio>
+                                <lv-radio [lvValue]="dataMapService.getConfig('Filter_Date_Type').modify.value">
+                                    {{'protection_last_modifyed_label' | i18n}}
+                                </lv-radio>
+                                <lv-radio [lvValue]="dataMapService.getConfig('Filter_Date_Type').interview.value">
+                                    {{'protection_interview_time_label' | i18n}}
+                                </lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                    </lv-form-control>
+                    <lv-form-control class="control-container padding-container">
+                        <lv-date-range-picker formControlName='timeRange' lvShowTime="true"></lv-date-range-picker>
+                    </lv-form-control>
+                </lv-group>
+            </div>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+
+<ng-template #formatContentTpl let-item>
+    <span lv-tooltip="{{item.tip}}">{{item.label}}</span>
+</ng-template>

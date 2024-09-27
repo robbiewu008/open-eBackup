@@ -1,0 +1,152 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: common-share-restore-api
+paths:
+  /v1/common-share/restore:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - common-share-restore-api
+      summary: 创建通用共享恢复
+      description: 创建通用共享恢复
+      operationId: CreateRestore
+      parameters:
+        - name: CreateRestoreRequestBody
+          in: body
+          required: true
+          description: 创建恢复请求
+          schema:
+            $ref: '#/definitions/CommonShareRestoreRequest'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: 返回参数
+          schema:
+            $ref: '#/definitions/CommonShareRestoreResponse'
+  /v1/common-share/restore/{copyId}:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - common-share-restore-api
+      summary: 停止通用共享恢复
+      description: 停止通用共享恢复
+      operationId: StopRestore
+      parameters:
+        - name: copyId
+          in: path
+          required: true
+          type: string
+          description: 副本ID
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+definitions:
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512
+  NfsProtocol:
+    type: object
+    description: nfs共享协议信息，恢复任务时sharepath为非必填
+    required:
+      - whitelist
+    properties:
+      sharePath:
+        type: string
+        description: 共享路径
+      whitelist:
+        type: array
+        items:
+          type: string
+        description: 白名单
+  CifsProtocol:
+    type: object
+    description: cifs共享协议信息，uesrtype为everyone时usernames为非必填，恢复时sharename为非必填
+    required:
+      - userType
+    properties:
+      shareName:
+        type: string
+        description: 共享名称
+      userType:
+        type: string
+        description: 用户类型
+      userNames:
+        type: array
+        items:
+          type: string
+        description: 用户名列表
+  CommonShareRestoreRequest:
+    type: object
+    description: 创建恢复请求
+    required:
+      - copyId
+    properties:
+      copyId:
+        type: string
+        description: 副本ID
+      nfs:
+        description: nfs协议
+        $ref: '#/definitions/NfsProtocol'
+      cifs:
+        description: cifs协议
+        $ref: '#/definitions/CifsProtocol'
+  CommonShareRestoreResponse:
+    type: object
+    description: 创建恢复返回体
+    required:
+      - filesystemName
+    properties:
+      filesystemName:
+        type: string
+        description: 文件系统名称
+      nfs:
+        $ref: '#/definitions/NfsProtocol'
+      cifs:
+        $ref: '#/definitions/CifsProtocol'

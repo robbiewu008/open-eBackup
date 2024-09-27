@@ -1,0 +1,157 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item *ngIf="!isDrill">
+    <lv-form-label lvRequired>
+      {{ 'protection_restore_to_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="restoreLocation">
+        <lv-group [lvGutter]="'24px'">
+          <lv-radio
+            [lvValue]="restoreLocationType.ORIGIN"
+            [lvDisabled]="disableOriginLocation"
+            [lv-tooltip]="
+              disableOriginLocation
+                ? ('protection_cloud_origin_restore_disabled_label' | i18n)
+                : ''
+            "
+          >
+            {{ 'common_restore_to_origin_location_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="restoreLocationType.NEW">
+            {{ 'common_restore_to_new_location_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container
+    *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN"
+  >
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'common_location_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-select
+          lvShowFilter
+          lvFilterKey="label"
+          lvFilterMode="contains"
+          formControlName="originLocation"
+          [lvOptions]="originInstanceOptions"
+          lvDisabled
+          lvValueKey="value"
+        >
+          <lv-select-trigger>
+            <div
+              [ngClass]="{
+                'selected-item-zh': !i18n.isEn,
+                'selected-item-en': i18n.isEn
+              }"
+            >
+              <span>{{ originInstance?.label }}</span>
+              <span class="group">
+                {{ 'protection_part_num_label' | i18n
+                }}{{ originInstance?.groupNum }}
+              </span>
+            </div>
+          </lv-select-trigger>
+        </lv-select>
+        <div class="tips-container">
+          <i
+            lv-icon="lv-icon-status-info"
+            lvColorState="true"
+            class="tips-icon"
+          ></i>
+          <span [innerHTML]="instanceTips" class="tips-text"> </span>
+        </div>
+        <ng-template #addAfterTpl>
+          <span class="group">
+            {{ 'protection_part_num_label' | i18n }}{{ copyResourceGroupNum }}
+          </span>
+        </ng-template>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <ng-container
+    *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW"
+  >
+  <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'cluster'"></aui-select-tag>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_target_to_cluster_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-select
+          lvShowFilter
+          lvFilterKey="label"
+          lvFilterMode="contains"
+          formControlName="cluster"
+          [lvOptions]="clusterOptions"
+          lvValueKey="value"
+        >
+        </lv-select>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_instance_cluster_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-select
+          [lvContentTemplate]="selectTpl"
+          lvShowFilter
+          lvFilterKey="label"
+          lvFilterMode="contains"
+          formControlName="instance"
+          [lvOptions]="instanceOptions"
+          lvValueKey="value"
+        >
+          <lv-select-trigger>
+            <div
+              [ngClass]="{
+                'selected-item-zh': !i18n.isEn,
+                'selected-item-en': i18n.isEn
+              }"
+            >
+              <span>{{ selectedInstance?.label }}</span>
+              <span class="group">
+                {{ 'protection_part_num_label' | i18n
+                }}{{ selectedInstance?.groupNum }}
+              </span>
+            </div>
+          </lv-select-trigger>
+        </lv-select>
+        <div class="tips-container">
+          <i
+            lv-icon="lv-icon-status-info"
+            lvColorState="true"
+            class="tips-icon"
+          ></i>
+          <span [innerHTML]="instanceTips" class="tips-text"> </span>
+        </div>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>
+
+<ng-template #selectTpl let-item>
+  <div class="select-item">
+    <span>{{ item.label }}</span>
+    <span class="group">
+      {{ 'protection_part_num_label' | i18n }}{{ item.groupNum }}
+    </span>
+  </div>
+</ng-template>

@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Performing Periodic Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001853083309.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001806524390">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Performing Periodic Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001806524390"></a><a name="EN-US_TOPIC_0000001806524390"></a>
+  <h1 class="topictitle1">Performing Periodic Backup</h1>
+  <div>
+   <p>Associate the mailbox to be protected with a specified SLA. The system backs up these resources periodically based on the SLA.</p>
+   <div class="section" id="EN-US_TOPIC_0000001806524390__section1432145615443">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p id="EN-US_TOPIC_0000001806524390__p17201613205718">Before the backup, ensure that the Exchange Server service and related dependent services are running properly. For details about the corresponding services, see <a href="https://learn.microsoft.com/en-us/exchange/plan-and-deploy/deployment-ref/services-overview?view=exchserver-2019" target="_blank" rel="noopener noreferrer">Overview of Exchange services on Exchange servers</a>.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>For mailbox backup, a registered user must have the <strong>ApplicationImpersonation</strong> role permissions. When the mailbox is backed up for the first time, the agent host automatically creates a user group named <strong>Databackup</strong>, which has the <strong>ApplicationImpersonation</strong> role permissions, and adds the registered user to the user group.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001806524390__en-us_topic_0000001839142377_uicontrol26447265316"><b><span id="EN-US_TOPIC_0000001806524390__en-us_topic_0000001839142377_text8644926538"><strong>Protection</strong></span> &gt; <span id="EN-US_TOPIC_0000001806524390__en-us_topic_0000001839142377_text1310114196546"><strong>Applications</strong></span> &gt; <span id="EN-US_TOPIC_0000001806524390__en-us_topic_0000001839142377_text2114145125312"><strong>Exchange</strong></span></b></span>.</span></li>
+    </ol>
+    <ol start="2">
+     <li><span>On the <span class="uicontrol"><b><span><strong>Email</strong></span></b></span> tab page, select the mailbox that you want to protect and choose <span class="uicontrol"><b>More &gt; <span><strong>Protect</strong></span></b></span>.</span><p></p><p>You can choose multiple mailboxes for batch protection.</p> <p></p></li>
+     <li><span>Select a created SLA.</span><p></p><p>You can also click <span class="uicontrol"><b><span>Create</span></b></span> to create an SLA.</p> <p></p></li>
+     <li><span>Select whether to continue to protect emails or folders after they fail to be backed up.</span></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>. </span><p></p><p>If the current system time is later than the start time of the first backup set in the SLA, you can choose to perform the backup immediately or wait for the next scheduling based on the backup policy set in the SLA after the backup SLA is associated with the resource.</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001853083309.html">Step 4: Performing the Backup</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

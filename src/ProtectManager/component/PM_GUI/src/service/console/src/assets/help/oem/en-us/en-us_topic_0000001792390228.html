@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="How Should I Add a Source Deduplication User to sudoers?">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792390228">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>How Should I Add a Source Deduplication User to sudoers?</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792390228"></a><a name="EN-US_TOPIC_0000001792390228"></a>
+  <h1 class="topictitle1">How Should I Add a Source Deduplication User to <strong id="en-us_topic_0000001608686382_b122172319386">sudoers</strong>?</h1>
+  <div>
+   <p id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_p183483913313">If ProtectAgent is installed in automatic push mode, <span class="uicontrol" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_uicontrol109791574319"><b>User Type</b></span> is <span class="uicontrol" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_uicontrol139797571032"><b>Super administrator</b></span>, and source deduplication is required, perform operations in this section to add the source deduplication user to <strong id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_b198498455467">sudoers</strong> before initial backup.</p>
+   <div class="section" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_section175941115163111">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_ol122521212317">
+     <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li12252102115312"><span>Log in to the agent host as user <strong id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_b12911736114214">root</strong>.</span></li>
+     <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li1296882714311"><span>Run the following command to search for the directory of the <strong id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_b141561101361">sudoers</strong> configuration file:</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_screen2925152217527">whereis sudoers</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li1967213198527"><span>Run the following command to change the permission on the <strong id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_b1921113912368">sudoers</strong> configuration file.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_screen2141552105214">chmod u+w /etc/sudoers</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li1783801718592"><span>Back up the source file.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_screen205131331105917">mkdir /etc/bak_sudoers
+cp /etc/sudoers /etc/bak_sudoers</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li4145165012521"><a name="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li4145165012521"></a><a name="en-us_topic_0000001608686382_li4145165012521"></a><span>Run the following command to open configuration file <strong id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_b1546115783714">/etc/sudoers</strong>.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_screen92963290535">vim /etc/sudoers</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li994215063110"><a name="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li994215063110"></a><a name="en-us_topic_0000001608686382_li994215063110"></a><span>Check whether the <span class="parmname" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_parmname16677101819376"><b>Defaults requiretty</b></span> field exists in the configuration file. If yes, perform the following steps:</span><p></p>
+      <ul id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_ul1075815385454">
+       <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li47581238144518">Method 1: Delete the <span class="parmname" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_parmname13796151318468"><b>Defaults requiretty</b></span> field.</li>
+       <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li3953715144612">Method 2: Add the source deduplication user to <strong id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_b7549597388">sudoers</strong>.
+        <ul id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_ul1930163133910">
+         <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li322843014419">To perform source deduplication for VMware, add VMware DataTurbo user <strong id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_b134624619487">VMDataTurbo</strong> to the configuration file.<pre class="screen" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_screen17383131323011">Defaults:VMDataTurbo !requiretty</pre></li>
+         <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li13228230164411">To perform source deduplication for another application, add DataTurbo user <strong id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_b036695634811">data_turbo_account</strong> corresponding to the application to the configuration file.<pre class="screen" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_screen0598122863010">Defaults:data_turbo_account !requiretty</pre></li>
+        </ul></li>
+      </ul> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li79011641162019"><span>View the configuration file to check whether the modification is successful.</span><p></p><pre class="screen" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_screen83592506128">cat /etc/sudoers</pre>
+      <ul id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_ul1215921062014">
+       <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li12370814142619">If the modification fails, roll back the configuration file. After confirming that the rollback is successful, repeat <a href="#EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li4145165012521">5</a> and <a href="#EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li994215063110">6</a>.<pre class="screen" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_screen247405762119">cp /etc/backup_sudoers/sudoers /etc/sudoers
+cat /etc/sudoers</pre></li>
+       <li id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_li0454155172211">If the modification is successful, delete the backup file.<pre class="screen" id="EN-US_TOPIC_0000001792390228__en-us_topic_0000001608686382_screen129061154233">rm -fr /etc/backup_sudoers</pre></li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

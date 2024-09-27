@@ -1,0 +1,47 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div>
+    <div class="aui-header-2 aui-gutter-column-md">
+        <h2>{{ 'common_basic_info_label' | i18n }}</h2>
+    </div>
+    <div class="content">
+        <lv-form [lvLabelColon]="false">
+            <lv-form-item *ngFor="let item of columns">
+                <lv-form-label>{{ item.label }}</lv-form-label>
+                <lv-form-control>{{ item.content }}</lv-form-control>
+            </lv-form-item>
+        </lv-form>
+    </div>
+    <div class="list-container tenant">
+        <div class="aui-gutter-column-lg">
+            <h2>{{'system_oc_associate_vstore_label' | i18n}}</h2>
+        </div>
+        <div class="aui-operation">
+            <lv-group lvGutter="10px">
+                <button lvType="primary" lv-button (click)="modify()">
+                    {{ 'system_add_nic_relation_label' | i18n}}
+                </button>
+                <button lvType="primary" lv-button (click)="delete()" [disabled]="deleteDisableBtn">
+                    {{ 'system_delete_nic_relation_label' | i18n}}
+                </button>
+            </lv-group>
+            <lv-group>
+                <button class="aui-button-icon" lv-button lvSize="auto" (click)="refresh()">
+                    <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                </button>
+            </lv-group>
+        </div>
+        <lv-pro-table #tenantTable [config]="tenantTableConfig" [data]="tenantTableData"></lv-pro-table>
+    </div>
+</div>

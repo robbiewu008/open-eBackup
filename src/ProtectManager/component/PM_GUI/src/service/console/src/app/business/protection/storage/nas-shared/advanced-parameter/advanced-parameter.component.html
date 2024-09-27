@@ -1,0 +1,290 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<ng-container *ngIf="subResourceType === dataMap.Resource_Type.NASShare.value">
+    <lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
+        <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="true">
+            <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
+                <lv-form-item *ngIf="false">
+                    <lv-form-label>
+                        {{'protection_small_file_aggregation_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-radio-group formControlName="aggregation_mode">
+                            <lv-group [lvGutter]="'14px'" lvDirection='vertical' class="mgt-8">
+                                <div>
+                                    <lv-radio [lvValue]="dataMap.Aggregation_Mode.enable.value">
+                                        {{'protection_aggregation_yes_label' | i18n}}
+                                    </lv-radio>
+                                    <p class="tip-container">{{'protection_aggregation_enable_tip_label' | i18n}}</p>
+                                </div>
+                                <div>
+                                    <lv-radio [lvValue]="dataMap.Aggregation_Mode.disable.value">
+                                        {{'protection_aggregation_no_label' | i18n}}
+                                    </lv-radio>
+                                    <p class="tip-container">{{'protection_aggregation_disable_tip_label' | i18n}}</p>
+                                </div>
+                            </lv-group>
+                        </lv-radio-group>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>{{ 'protection_channel_number_label' | i18n }}
+                        <i lv-icon="aui-icon-help" [lv-tooltip]="tipsLabel" lvTooltipTheme="light"
+                            class="configform-constraint" lvColorState="true"></i>
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="channelsErrorTip">
+                        <input lv-input type="text" formControlName="channels" placeholder="1-40"
+                            style="width: 140px;" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>{{ 'protection_small_file_aggregation_label' | i18n }}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{
+                          'protection_small_file_aggregation_tips_label' | i18n
+                        }}" lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="smallFile" [lvDisabled]="isModified || disableSmallFile">
+                        </lv-switch>
+                        <div *ngIf="!!formGroup.value.smallFile" class="tips-info">
+                            <i lv-icon="lv-icon-status-info" lvColorState="true" class="type-icon"></i>
+                            <span>
+                                {{'protection_aggregation_tip_label' | i18n}}
+                            </span>
+                        </div>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item
+                    *ngIf="subResourceType !== dataMap.Resource_Type.NASFileSystem.value && resourceData.extendInfo.shareMode ===dataMap.Shared_Mode.cifs.value">
+                    <lv-form-label>{{ 'protection_smb_hardlink_protection_label' | i18n }}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_smb_protection_tips_label'|i18n}}"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="smbHardlinkProtection">
+                        </lv-switch>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item
+                    *ngIf="subResourceType !== dataMap.Resource_Type.NASFileSystem.value && resourceData.extendInfo.shareMode === dataMap.Shared_Mode.cifs.value ">
+                    <lv-form-label>{{ 'protection_smb_acl_protection_label' | i18n }}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_smb_protection_tips_label'|i18n}}"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="smbAclProtection">
+                        </lv-switch>
+                    </lv-form-control>
+                </lv-form-item>
+                <ng-container *ngIf="!!formGroup.value.smallFile">
+                    <lv-form-item>
+                        <lv-form-label>{{
+                            'protection_small_file_size_label' | i18n
+                            }}</lv-form-label>
+                        <lv-form-control>
+                            <ng-container *ngIf="isModified">
+                                <div>
+                                    {{
+                                    resourceData?.protectedObject?.extParameters
+                                    ?.aggregation_file_size + ' KB' | nil
+                                    }}
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="!isModified">
+                                <lv-radio-group formControlName="fileSize" [lvGroupName]="'fileSize'"
+                                    [lvDisabled]="isModified">
+                                    <lv-group>
+                                        <lv-radio [lvViewType]="'button'"
+                                            [lvValue]="dataMap.Small_File_Size.small.value">{{
+                                            dataMap.Small_File_Size.small.label }}</lv-radio>
+                                        <lv-radio [lvViewType]="'button'"
+                                            [lvValue]="dataMap.Small_File_Size.normal.value">
+                                            {{ dataMap.Small_File_Size.normal.label }}</lv-radio>
+                                        <lv-radio [lvViewType]="'button'"
+                                            [lvValue]="dataMap.Small_File_Size.large.value">{{
+                                            dataMap.Small_File_Size.large.label }}</lv-radio>
+                                        <lv-radio [lvViewType]="'button'"
+                                            [lvValue]="dataMap.Small_File_Size.xlarge.value">
+                                            {{ dataMap.Small_File_Size.xlarge.label }}</lv-radio>
+                                    </lv-group>
+                                </lv-radio-group>
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                    <lv-form-item>
+                        <lv-form-label>{{
+                            'protection_file_max_size_label' | i18n
+                            }}</lv-form-label>
+                        <lv-form-control>
+                            <ng-container *ngIf="isModified">
+                                <div>
+                                    {{
+                                    resourceData?.protectedObject?.extParameters
+                                    ?.aggregation_file_max_size + ' KB' | nil
+                                    }}
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="!isModified">
+                                <lv-radio-group formControlName="maxFileSize" [lvGroupName]="'maxFileSize'"
+                                    [lvDisabled]="isModified">
+                                    <lv-group>
+                                        <lv-radio [lvViewType]="'button'"
+                                            [lvValue]="dataMap.Small_File_Size.small.value">{{
+                                            dataMap.Small_File_Size.small.label }}</lv-radio>
+                                        <lv-radio [lvViewType]="'button'"
+                                            [lvValue]="dataMap.Small_File_Size.normal.value">
+                                            {{ dataMap.Small_File_Size.normal.label }}</lv-radio>
+                                        <lv-radio [lvViewType]="'button'"
+                                            [lvValue]="dataMap.Small_File_Size.large.value">{{
+                                            dataMap.Small_File_Size.large.label }}</lv-radio>
+                                        <lv-radio [lvViewType]="'button'"
+                                            [lvValue]="dataMap.Small_File_Size.xlarge.value">
+                                            {{ dataMap.Small_File_Size.xlarge.label }}</lv-radio>
+                                    </lv-group>
+                                </lv-radio-group>
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+                <lv-form-item *ngIf="false">
+                    <lv-form-label>
+                        {{'protection_permissons_attributes_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-radio-group formControlName="permissons_attributes">
+                            <lv-group [lvGutter]="'14px'" lvDirection='vertical' class="mgt-8">
+                                <div>
+                                    <lv-radio [lvValue]="permissonsAttributes.FolderOnly">
+                                        {{'protection_folder_only_label' |
+                                        i18n}}
+                                    </lv-radio>
+                                    <p class="tip-container">{{'protection_folder_only_tip_label' | i18n}}</p>
+                                </div>
+                                <div>
+                                    <lv-radio [lvValue]=" permissonsAttributes.FileAndFolder">
+                                        {{'protection_files_and_folder_label'
+                                        |
+                                        i18n}}</lv-radio>
+                                    <p class="tip-container">{{'protection_files_and_folder_tip_label' | i18n}}</p>
+                                </div>
+                            </lv-group>
+                        </lv-radio-group>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_backup_hot_data_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="enableHotData">
+                        </lv-switch>
+                        <lv-group class="hot-data-tip" [lvColumns]='["16px", "auto"]' lvRowGutter="4px"
+                            *ngIf="formGroup.value.enableHotData">
+                            <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+                            <span>
+                                {{'protection_backup_hot_data_open_label' | i18n}}
+                            </span>
+                        </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item *ngIf="formGroup.value.enableHotData">
+                    <lv-form-label></lv-form-label>
+                    <lv-form-control [lvErrorTip]="hotDataErrorTip">
+                        <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right retention-interval">
+                            <input lv-input formControlName="hotData" />
+                        </lv-input-group>
+                        <ng-template #unitTpl>
+                            <lv-select [lvOptions]="unitOptions" formControlName="unit" class="interval-unit"
+                                lvValueKey="value"></lv-select>
+                        </ng-template>
+                    </lv-form-control>
+                </lv-form-item>
+            </lv-form>
+            <!-- 防勒索副本设置参数 -->
+                <aui-copy-limit-advanced-parameter [formGroup]="formGroup" [data]="resourceData"></aui-copy-limit-advanced-parameter>
+            <!-- 修改索引设置 -->
+            <aui-update-index [formGroup]="formGroup" [extParams]="extParams"></aui-update-index>
+        </lv-collapse-panel>
+    </lv-collapse>
+</ng-container>
+<ng-container
+    *ngIf="includes([dataMap.Resource_Type.NASFileSystem.value, dataMap.Resource_Type.ndmp.value],subResourceType)">
+    <h2>{{'protection_share_label' | i18n}}</h2>
+    <p class="aui-text-help aui-gutter-column-md">
+        {{'protection_select_share_protocol_tips_label' | i18n}}
+    </p>
+    <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'explore_share_protocol_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select lvShowClear [lvOptions]='protocolOptions' formControlName='protocol' lvValueKey='value'>
+                </lv-select>
+                <div *ngIf="protocolOptions.length === 0" class="no-protocol-tip">
+                    <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+                    <span>
+                        {{'protection_no_protocol_tip_label' | i18n:[baseUtilService.getProductName()]}}
+                    </span>
+                </div>
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="exterAgent">
+            <lv-form-item>
+                <lv-form-label lvRequired>
+                    {{'protection_proxy_host_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select [lvOptions]="hostOptions" formControlName="proxyHost" lvValueKey='value' lvShowFilter
+                        lvShowCheckAll lvFilterKey='label' lvFilterMode='contains' lvMode="multiple">
+                    </lv-select>
+                    <div *ngIf="isAgentExternal" class="agentTip">
+                        <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                        <span class="text-middle">
+                            {{'protection_nas_filesystem_protection_tips_label' | i18n:[externalAgentLists.join(',')]}}
+                        </span>
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+        <!-- NDMP过滤目录/文件 -->
+        <ng-container *ngIf="subResourceType === dataMap.Resource_Type.ndmp.value">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_ndmp_protect_filters_label' | i18n}}
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="filterHelpTpl" lvTooltipTheme="light"
+                        class="configform-constraint" lvColorState="true"></i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="filterErrorTip">
+                    <textarea formControlName='filterFile' rows='3' lv-input
+                        placeholder="{{'protection_ndmp_protect_filters_placeholder_label' | i18n}}"></textarea>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </lv-form>
+    <!-- 防勒索副本设置参数 -->
+        <aui-copy-limit-advanced-parameter [formGroup]="formGroup" [data]="resourceData"></aui-copy-limit-advanced-parameter>
+    <!-- 修改索引设置 -->
+    <aui-update-index [formGroup]="formGroup" [extParams]="extParams"></aui-update-index>
+</ng-container>
+
+<ng-template #titleTpl>
+    <lv-group lvGutter='8px'>
+        <span class="aui-h3">{{'common_advanced_label'|i18n}}</span>
+    </lv-group>
+</ng-template>
+
+<ng-template #filterHelpTpl>
+    <span innerHTML="{{'protection_ndmp_protect_filters_help_label' | i18n}}"></span>
+</ng-template>

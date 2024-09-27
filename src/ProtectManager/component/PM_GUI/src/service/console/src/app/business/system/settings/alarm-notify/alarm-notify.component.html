@@ -1,0 +1,312 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+  <div class="aui-header-1">
+    <lv-group lvGutter="8px">
+      <h1>{{ notifyLabel }}</h1>
+      <aui-multi-cluster-switch
+        (onChange)="onChange()"
+      ></aui-multi-cluster-switch>
+    </lv-group>
+  </div>
+  <div class="aui-block">
+    <div class="aui-header-2">
+      <h2>{{ senderSettingLabel }}</h2>
+      <div>
+        <a
+          *ngIf="!isModifySender"
+          class="aui-link"
+          (click)="modifySenderData()"
+          pmpermission
+          pmOperation="ModifyNotifySendingSettings"
+        >
+          {{ editLabel }}</a
+        >
+        <lv-group *ngIf="isModifySender" lvGutter="8px">
+          <a
+            class="aui-link"
+            (click)="testSenderData()"
+            [ngClass]="{
+              'aui-link':
+                this.sendeForm.valid && !!this.sendeForm.value['testEmail'],
+              'aui-link-disabled':
+                !this.sendeForm.valid || !this.sendeForm.value['testEmail']
+            }"
+            >{{ testLabel }}</a
+          >
+          <a
+            class="aui-link"
+            (click)="saveSenderData()"
+            [ngClass]="{
+              'aui-link': this.sendeForm.valid && hasTested,
+              'aui-link-disabled': !this.sendeForm.valid || !hasTested
+            }"
+            >{{ saveLabel }}</a
+          >
+          <a class="aui-link" (click)="cancelSenderData()">{{ cancelLabel }}</a>
+        </lv-group>
+      </div>
+    </div>
+
+    <div class="dashed-line"></div>
+    <ng-container *ngIf="!isModifySender">
+      <lv-form [lvLabelColon]="false">
+        <lv-form-item *ngFor="let item of senderFormItms">
+          <lv-form-label [lvKeepRequiredWidth]="true">{{
+            item.label
+          }}</lv-form-label>
+          <lv-form-control class="system-long-control">
+            <lv-group lvGutter="8px">
+              <span lv-overflow class="max-content">
+                {{ item.content }}
+              </span>
+              <ng-container
+                *ngIf="
+                  (item.label === senderEmailLabel ||
+                    item.label === testEmailLabel) &&
+                  item.content !== '--'
+                "
+              >
+                <i
+                  [ngClass]="{
+                    'icon-eye-open': item.icon === 'aui-icon-eye-open'
+                  }"
+                  lv-icon="{{ item.icon }}"
+                  lvTooltipPosition="rightTop"
+                  lvTooltipTheme="light"
+                  class="configform-constraint"
+                  lvColorState="true"
+                  (click)="changeEmail(item)"
+                ></i>
+              </ng-container>
+            </lv-group>
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form>
+    </ng-container>
+
+    <ng-container *ngIf="isModifySender">
+      <lv-form [formGroup]="sendeForm" class="formGroup" [lvLabelColon]="false">
+        <lv-form-item>
+          <lv-form-label lvRequired>{{ smtpServerLabel }}</lv-form-label>
+          <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="server"
+              class="form-control-input"
+            />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label lvRequired>{{ smtpPortLabel }}</lv-form-label>
+          <lv-form-control [lvErrorTip]="rangeErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="port"
+              placeholder="1~65535"
+              class="form-control-input"
+            />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label lvRequired>{{ senderEmailLabel }}</lv-form-label>
+          <lv-form-control [lvErrorTip]="emailErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="emailFrom"
+              (blur)="emailBlur()"
+              (focus)="emailFocus()"
+              class="form-control-input"
+            />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label lvRequired>{{ testEmailLabel }}</lv-form-label>
+          <lv-form-control [lvErrorTip]="testEmailErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="testEmail"
+              (blur)="testEmailBlur()"
+              (focus)="testEmailFocus()"
+              class="form-control-input"
+            />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>{{ encryptionMethodLabel }}</lv-form-label>
+          <lv-form-control class="system-encry-select">
+            <lv-select
+              [lvOptions]="encryptionMethods"
+              lvValueKey="value"
+              formControlName="protocol"
+              [lvPanelClass]="'system-max-width-select'"
+              (ngModelChange)="encryptionMethodChange($event)"
+              class="form-control-input"
+            ></lv-select>
+            <div>
+              <i lv-icon="lv-icon-status-info" class="icon-info"></i>
+              <span class="encription-tip aui-text-help-sm">
+                {{ encriptionTipLabel }}
+              </span>
+            </div>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="!(sendeForm.value['protocol'] != 1)">
+          <lv-form-label [lvRequired]="sendeForm.value['protocol'] == 1">{{
+            sslPortLabel
+          }}</lv-form-label>
+          <lv-form-control [lvErrorTip]="rangeErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="sslSmtpPort"
+              placeholder="1~65535"
+              class="form-control-input"
+            />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>{{ smtpServerAuthLabel }}</lv-form-label>
+          <lv-form-control>
+            <lv-switch
+              formControlName="validateEnable"
+              (ngModelChange)="validateChange($event)"
+            >
+            </lv-switch>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="sendeForm.value['validateEnable']">
+          <lv-form-label [lvRequired]="sendeForm.value['validateEnable']"
+            >{{ usernameLabel }}
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="userNameErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="userName"
+              autocomplete="new-password"
+              class="form-control-input"
+            />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="sendeForm.value['validateEnable']">
+          <lv-form-label [lvRequired]="sendeForm.value['validateEnable']"
+            >{{ passwordLabel }}
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="passwordErrorTip">
+            <div class="form-control-input">
+              <aui-inupt-with-eye
+                formControlName="password"
+                [lvPasteAllowed]="false"
+              ></aui-inupt-with-eye>
+            </div>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>{{ proxyServerLabel }}</lv-form-label>
+          <lv-form-control [lvErrorTip]="requiredErrorTip">
+            <lv-switch
+              formControlName="proxyEnable"
+              (ngModelChange)="proxyChange($event)"
+            ></lv-switch>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="sendeForm.value['proxyEnable']">
+          <lv-form-label [lvRequired]="sendeForm.value['proxyEnable']">{{
+            ipAdressLabel
+          }}</lv-form-label>
+          <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="proxyServer"
+              class="form-control-input"
+            />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="sendeForm.value['proxyEnable']">
+          <lv-form-label [lvRequired]="sendeForm.value['proxyEnable']">{{
+            portLabel
+          }}</lv-form-label>
+          <lv-form-control [lvErrorTip]="rangeErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="proxyPort"
+              placeholder="1~65535"
+              class="form-control-input"
+            />
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #textSimpleViewTpl let-item>
+  <td>
+    <lv-group lvGutter="8px">
+      <span lv-overflow class="table-email-label">{{ item.emailAddress }}</span>
+      <i
+        [ngClass]="{ 'icon-eye-open': item.icon === 'aui-icon-eye-open' }"
+        lv-icon="{{ item.icon }}"
+        lvTooltipPosition="rightTop"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+        (click)="changeEmailAddress(item)"
+      ></i>
+    </lv-group>
+  </td>
+  <td>
+    <span lv-overflow>{{ item.desc || '--' }}</span>
+  </td>
+  <td pmpermission pmOperation="ManagingNotifyReceivingSettings">
+    <span class="aui-link" (click)="deleteRow(item)">{{ deleteLabel }}</span>
+  </td>
+</ng-template>
+
+<ng-template #editSimpleViewTpl let-item>
+  <td></td>
+  <td class="add-input-container">
+    <lv-form [formGroup]="formGroupMap[item.id]" [lvLabelColon]="false">
+      <lv-form-control #lvFormControl [lvErrorTip]="emailAddressError">
+        <input
+          lv-input
+          class="notify-tb-input"
+          formControlName="emailAddress"
+          (blur)="emailAddressBlur(item)"
+          (focus)="emailAddressFocus(item)"
+        />
+      </lv-form-control>
+    </lv-form>
+  </td>
+  <td class="add-input-container">
+    <lv-form [formGroup]="formGroupMap[item.id]" [lvLabelColon]="false">
+      <lv-form-control #lvFormControl [lvErrorTip]="descErrorTip">
+        <input lv-input class="notify-tb-input" formControlName="desc" />
+      </lv-form-control>
+    </lv-form>
+  </td>
+  <td>
+    <lv-operation-menu
+      [lvItemsFn]="optsCallback"
+      [lvData]="item"
+    ></lv-operation-menu>
+  </td>
+</ng-template>

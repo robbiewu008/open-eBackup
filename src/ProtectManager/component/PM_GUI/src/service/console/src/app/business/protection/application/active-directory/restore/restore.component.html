@@ -1,0 +1,46 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-alert lvType="info" lvClosable="false">
+  {{'protection_system_status_restore_inline_tips_label'|i18n}}
+</lv-alert>
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item *ngIf="!isDrill">
+    <lv-form-label lvRequired>
+      {{ 'protection_restore_to_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="restoreLocation">
+        <lv-group [lvGutter]="'24px'">
+          <lv-radio
+            [lvValue]="restoreLocationType.ORIGIN"
+          >
+            {{ 'common_restore_to_origin_location_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container
+    *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN"
+  >
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'common_location_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <input lv-input type="text" formControlName="originLocation" />
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>

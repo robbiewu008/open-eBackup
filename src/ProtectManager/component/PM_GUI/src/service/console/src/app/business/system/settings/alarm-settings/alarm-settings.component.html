@@ -1,0 +1,34 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+  <div class="aui-header-1">
+    <lv-group lvGutter="8px">
+      <h1>{{ 'system_alarm_settings_label' | i18n }}</h1>
+      <aui-multi-cluster-switch
+      ></aui-multi-cluster-switch>
+    </lv-group>
+  </div>
+  <div class="aui-block">
+    <div class="aui-header-2">
+      <h2>{{ 'system_alarm_settings_label' | i18n }}</h2>
+    </div>
+    <div class="dashed-line"></div>
+    <p
+      class="aui-text-help-sm"
+      [innerHTML]="desc"
+      pmpermission
+      pmOperation="ModifySystemTime"
+    ></p>
+  </div>
+</div>

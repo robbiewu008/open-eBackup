@@ -1,0 +1,156 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <lv-group lvGutter="8px">
+            <i lv-icon="aui-widget-datepicker-previous" [lvColorState]="true" (click)="goBack()"></i>
+            <h1>{{data.name}}</h1>
+        </lv-group>
+    </div>
+    <div class="aui-block aui-paginator-container" style="padding:0">
+        <lv-tabs lvType="card">
+            <lv-tab lvTitle="{{'common_resource_label' | i18n}}">
+                <lv-form>
+                    <lv-form-column lvWidth="20%">
+                        <lv-form-item>
+                            <lv-form-label>
+                                {{'common_name_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control>
+                                <span lv-overflow style="width:90%">{{data.name}}</span>
+                            </lv-form-control>
+                        </lv-form-item>
+                    </lv-form-column>
+                    <lv-form-column lvWidth="20%">
+                        <lv-form-item>
+                            <lv-form-label>
+                                {{'system_resource_set_desc_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control>
+                                <span lv-overflow>{{data?.description | nil}}</span>
+                            </lv-form-control>
+                        </lv-form-item>
+                    </lv-form-column>
+                </lv-form>
+                <div class="resource-content">
+                    <h2 class="aui-gutter-column-lg">{{'common_resource_label' | i18n}}</h2>
+                    <lv-tabs *ngIf="!isNoData">
+                        <ng-container *ngFor="let item of allSelectedApps">
+                            <ng-container [ngSwitch]="item.type">
+                                <ng-container *ngSwitchCase="resourceSetType.Agent">
+                                    <lv-tab lvTitle="{{item.label}} ({{item.num}})">
+                                        <aui-client-template [allSelectionMap]="allSelectionMap" [data]="[data]"
+                                            [isDetail]="true"></aui-client-template>
+                                    </lv-tab>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="resourceSetType.SLA">
+                                    <lv-tab lvTitle="{{item.label}} ({{item.num}})">
+                                        <aui-sla-template [subName]="'SLA'" [allSelectionMap]="allSelectionMap"
+                                            [data]="[data]" [isDetail]="true"></aui-sla-template>
+                                    </lv-tab>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="resourceSetType.QOS">
+                                    <lv-tab lvTitle="{{item.label}} ({{item.num}})">
+                                        <aui-qos-template [allSelectionMap]="allSelectionMap" [data]="[data]"
+                                            [isDetail]="true"></aui-qos-template>
+                                    </lv-tab>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="resourceSetType.AirGap">
+                                    <lv-tab lvTitle="{{item.label}} ({{item.num}})">
+                                        <aui-airgap-tactics [allSelectionMap]="allSelectionMap" [data]="[data]"
+                                            [isDetail]="true" [isResourceSet]="true"></aui-airgap-tactics>
+                                    </lv-tab>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="resourceSetType.LiveMount">
+                                    <lv-tab lvTitle="{{item.label}} ({{item.num}})">
+                                        <aui-mount-update-policy [allSelectionMap]="allSelectionMap" [data]="[data]"
+                                            [isResourceSet]="true" [isDetail]="true"></aui-mount-update-policy>
+                                    </lv-tab>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="resourceSetType.Worm">
+                                    <lv-tab lvTitle="{{item.label}} ({{item.num}})">
+                                        <aui-anti-policy [allSelectionMap]="allSelectionMap" [data]="[data]"
+                                            [isDetail]="true" [isResourceSet]="true"></aui-anti-policy>
+                                    </lv-tab>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="resourceSetType.Report">
+                                    <lv-tab lvTitle="{{item.label}} ({{item.num}})">
+                                        <aui-reports-list [allSelectionMap]="allSelectionMap" [data]="[data]"
+                                            [isDetail]="true" [isResourceSet]="true"></aui-reports-list>
+                                    </lv-tab>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'copy'">
+                                    <lv-tab lvTitle="{{item.label}} ({{item.num}})">
+                                        <aui-copy-list [data]="[data]" [isResourceSet]="true"
+                                            (onNumChange)="copyNumChange($event)"></aui-copy-list>
+                                    </lv-tab>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    <lv-tab lvTitle="{{item.label}} ({{item.num}})">
+                                        <lv-collapse [lvMultiExpansion]="false" [lvBeforeExpanded]="beforeExpanded">
+                                            <ng-container *ngFor="let app of item.apps">
+                                                <lv-collapse-panel lvTitle="{{app.label}} ({{app.count}})">
+                                                    <!-- 有多层子资源的应用 -->
+                                                    <lv-tabs
+                                                        *ngIf="!singleLayerApp.includes(app.slaId) && !virtualCloudApp.includes(app.slaId)">
+                                                        <ng-container *ngFor="let tab of app?.tabs">
+                                                            <lv-tab lvTitle="{{tab.label}}">
+                                                                <aui-normal-resourceset-template
+                                                                    [resourceType]="tab.resType" [subName]="app.label"
+                                                                    [isDetail]="true"
+                                                                    [allSelectionMap]="allSelectionMap"
+                                                                    [appType]="app.resourceSetType"
+                                                                    [data]="[data]"></aui-normal-resourceset-template>
+                                                            </lv-tab>
+                                                        </ng-container>
+                                                    </lv-tabs>
+                                                    <!-- 只有一类子资源的应用 -->
+                                                    <ng-container *ngIf="singleLayerApp.includes(app.slaId)">
+                                                        <aui-normal-resourceset-template [resourceType]="app.resType"
+                                                            [subName]="app.label" [isDetail]="true"
+                                                            [allSelectionMap]="allSelectionMap"
+                                                            [appType]="app.resourceSetType"
+                                                            [data]="[data]" (onNumChange)="nasNumChange($event)"></aui-normal-resourceset-template>
+                                                    </ng-container>
+                                                    <!-- 虚拟化和云平台的应用模板 -->
+                                                    <ng-container *ngIf="virtualCloudApp.includes(app.slaId)">
+                                                        <aui-virtual-cloud-template [resourceType]="app.resType"
+                                                            [subName]="app.label" [isDetail]="true"
+                                                            [allSelectionMap]="allSelectionMap"
+                                                            [appType]="app.resourceSetType"
+                                                            [data]="[data]"></aui-virtual-cloud-template>
+                                                    </ng-container>
+                                                </lv-collapse-panel>
+                                            </ng-container>
+                                        </lv-collapse>
+                                    </lv-tab>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </lv-tabs>
+                    <ng-container *ngIf="isNoData">
+                        <div class="no-data">
+                            <i lv-icon="lv-icon-no-data"></i>
+                            <div class="no-data-label" [innerHTML]="noDataTip">
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </lv-tab>
+            <lv-tab lvTitle="{{'system_resource_set_associate_role_label' | i18n}}">
+                <aui-associated-role-user [data]="data"></aui-associated-role-user>
+            </lv-tab>
+        </lv-tabs>
+    </div>
+</div>

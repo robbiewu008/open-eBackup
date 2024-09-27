@@ -1,0 +1,169 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_host_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="host"
+        [lvOptions]="hostsOptions"
+        lvValueKey="value"
+        [lvDisabled]="data"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_client_path_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="pathErrorTip">
+      <input lv-input type="text" formControlName="client" />
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_business_ip_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+      <input lv-input type="text" formControlName="business_ip" />
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_port_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ 'protection_clickhouse_port_tips_label' | i18n }}"
+        lvTooltipTheme="light"
+        lvTooltipPosition="right"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="portErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="port"
+        placeholder="1~65535"
+      />
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_auth_method_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="auth_method"
+        [lvOptions]="authMethodOptions"
+        lvValueKey="value"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+
+  <ng-container
+    *ngIf="
+      formGroup.value.auth_method ===
+      dataMap.clickHouse_Auth_Method_Type.database.value
+    "
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_database_user_name_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="nameErrorTip">
+        <input lv-input type="text" formControlName="database_username" />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_password_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="nameErrorTip">
+        <aui-inupt-with-eye formControlName="database_password"></aui-inupt-with-eye>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+
+  <ng-container
+    *ngIf="
+      formGroup.value.auth_method ===
+      dataMap.clickHouse_Auth_Method_Type.kerber.value
+    "
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_kerberos_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{
+            'protection_hdfs_register_cluster_kerberos_tip_label' | i18n
+          }}"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+        <lv-group lvGutter="8px">
+          <lv-select
+            formControlName="kerberosId"
+            [lvOptions]="kerberosOptions"
+            lvValueKey="kerberosId"
+            lvShowFilter
+            lvFilterKey="label"
+            lvFilterMode="contains"
+          >
+          </lv-select>
+          <button
+            lv-button
+            (click)="createKerberos()"
+            pmpermission
+            pmOperation="CreateKerberos"
+          >
+            {{ 'common_create_label' | i18n }}
+          </button>
+        </lv-group>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>
+
+<ng-template #footerTpl>
+  <div class="lv-modal-btns">
+    <lv-group lvGutter="8px">
+      <button
+        lv-button
+        lvType="primary"
+        (click)="ok()"
+        [disabled]="!formGroup.valid"
+        [lvLoading]="okLoading"
+      >
+        {{ 'common_ok_label' | i18n }}
+      </button>
+      <button lv-button (click)="modal.close()">
+        {{ 'common_cancel_label' | i18n }}
+      </button>
+    </lv-group>
+  </div>
+</ng-template>

@@ -1,0 +1,39 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div [ngClass]="{
+    'lv-pro-text': textConfig.align !== 'right',
+    'lv-pro-text-space-between': textConfig.iconPos === 'right'
+  }">
+  <i *ngIf="!isNull() && _icon && textConfig.iconPos === 'left'" [lv-icon]="_icon" class="lv-pro-text-icon"
+    [style.color]="_iconColor"></i>
+
+  <!-- 超出省略号显示 -->
+  <div *ngIf="textConfig.overflow" lv-overflow>
+    <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+  </div>
+
+  <!-- 超出换行显示 -->
+  <div *ngIf="!textConfig?.overflow">
+    <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+  </div>
+
+  <i *ngIf="!isNull() && _icon && textConfig.iconPos !== 'left'" [lv-icon]="_icon"
+    class="lv-pro-text-icon lv-pro-text-icon-right" [style.color]="_iconColor"></i>
+</div>
+
+<ng-template #contentTpl>
+  <span [attr.id]="textConfig.id" [ngClass]="{'aui-link': textConfig.click && !isNull()}"
+    (click)="!isNull() && textConfig.click && textConfig.click(data, $event)">{{ _value |
+    nil }}</span>
+</ng-template>

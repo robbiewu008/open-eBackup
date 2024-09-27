@@ -1,0 +1,1557 @@
+swagger: '2.0'
+info:
+  title: 副本管理接口
+  version: v1
+tags:
+  - name: copies
+paths:
+  /v1/copies/action/query:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 数据库的id
+          in: query
+          maxLength: 64
+          minLength: 1
+          name: db_id
+          required: true
+          type: string
+        - description: scn号
+          in: query
+          maxLength: 15
+          name: scn
+          required: true
+          type: string
+        - description: 资源的类型
+          in: query
+          name: database_type
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: The response is the list of copies id
+          schema:
+            items:
+              $ref: '#/definitions/CopySchema'
+            title: Response Query Copy By Scn V1 Copies Action Query Get
+            type: array
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - copies
+      operationId: query_copy_by_scn_v1_copies_action_query_get
+      summary: 根据Oracle scn查询副本
+  /v1/copies/extended_parameters:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 副本id
+          in: query
+          maxLength: 64
+          minLength: 1
+          name: copy_id
+          required: false
+          type: string
+        - description: Oracle scn
+          in: query
+          maxLength: 15
+          name: system_change_number
+          required: false
+          type: string
+        - description: Oracle 时间点
+          in: query
+          name: time
+          required: false
+          type: string
+        - description: 资源id
+          in: query
+          maxLength: 128
+          minLength: 1
+          name: resource_id
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/CopyRestoreInformation'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - copies
+      operationId: get_copy_extended_parameter_v1_copies_extended_parameters_get
+      summary: 查询Oracle恢复目标主机参数配置
+  /v1/copies/statistics:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 统计视图（枚举）。取值范围：year/month
+          enum:
+            - year
+            - month
+          in: query
+          name: view
+          required: false
+        - description: 时间点
+          in: query
+          name: time_point
+          required: false
+          type: string
+        - description: 资源ID
+          in: query
+          name: resource_id
+          required: false
+          type: string
+        - description: 授权token
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              $ref: '#/definitions/CopyStatistic'
+            title: Response Query Copy Statistics V1 Copies Statistics Get
+            type: array
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - copies
+      operationId: query_copy_statistics_v1_copies_statistics_get
+      summary: 指定日期副本数量
+  /v1/copies/summary/resources:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - collectionFormat: multi
+          description: 排序字段：copy_count，display_timestamp
+          in: query
+          items:
+            type: string
+          name: orders
+          required: false
+          type: array
+        - description: 条件参数：%resource_name%，%resource_location%，%sla_name%，%resource_environment_name%，%resource_environment_ip%，!properties，!resource_properties，!sla_properties，%protected_sla_name%，resource_id，resource_name，resource_type，resource_sub_type，resource_location，resource_status，properties，resource_properties，resource_environment_name，resource_environment_ip，sla_name，protected_resource_id，protected_object_uuid，protected_sla_id，protected_sla_name，protected_status，copy_count
+          in: query
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_CopyResourceSummarySchema_'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - copies
+      operationId: query_resources_v1_copies_summary_resources_get
+      summary: 副本资源列表查询
+  /v1/copies/summary/statistics:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 资源ID
+          in: query
+          maxLength: 128
+          minLength: 1
+          name: resource_id
+          required: true
+          type: string
+        - description: 授权token
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - copies
+      operationId: resource_status_statistics_v1_copies_summary_statistics_get
+      summary: 资源状态统计
+  /v1/copies/{copy_id}:
+    delete:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 副本ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: copy_id
+          required: true
+          type: string
+        - default: true
+          description: 是否创建任务
+          in: query
+          name: create_job
+          required: false
+          type: boolean
+        - default: false
+          description: 是否强制删除
+          in: query
+          name: is_forced
+          required: false
+          type: boolean
+        - description: 授权token
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - copies
+      operationId: delete_copy_v1_copies__copy_id__delete
+      summary: 删除副本
+  /v1/copies/{copy_id}/action/create-index:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 副本id
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: copy_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - copies
+      operationId: create_copy_index_v1_copies__copy_id__action_create_index_post
+      summary: 创建副本索引
+  /v1/copies/{copy_id}/action/update-retention:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 副本ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: copy_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          schema:
+            allOf:
+              - $ref: '#/definitions/CopyRetentionPolicySchema'
+            description: 副本保留策略
+            title: Retention Policy
+          required: false
+      responses:
+        '200':
+          description: Successful Response
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - copies
+      operationId: update_copy_retention_v1_copies__copy_id__action_update_retention_post
+      summary: 修改副本保留策略
+  /v1/copies/index:
+    delete:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - copies
+      summary: 删除资源ID对应的副本索引
+      description: 删除资源ID对应的副本索引
+      operationId: DeleteResourceIndex
+      parameters:
+        - name: resource_id
+          in: query
+          required: true
+          type: string
+          description: 资源ID
+      responses:
+        '200':
+          description: 操作成功无返回结果，操作失败异常报错。
+  /v1/readiness:
+    get:
+      x-dr-role: 'Y'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful Response
+      operationId: readiness_v1_readiness_get
+      summary: Readiness
+  /v1/copies:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30092
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - copies
+      operationId: query_resources_v1_copies_get
+      parameters:
+        - name: page_no
+          in: query
+          required: true
+          description: 分页页面编码
+          type: integer
+          format: int32
+        - name: page_size
+          in: query
+          required: true
+          description: 分页数据条数
+          type: integer
+          format: int32
+          exclusiveMinimum: true
+          exclusiveMaximum: true
+          minimum: 0
+          maximum: 200
+        - name: orders
+          in: query
+          required: false
+          description: 排序字段：display_timestamp
+          type: array
+          items:
+            type: string
+        - name: conditions
+          in: query
+          required: false
+          description: 条件参数：%location%，%resource_name%，%sla_name%，%resource_location%，!properties，!resource_properties，!sla_properties
+          type: string
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: 访问令牌
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_CopySchema_'
+        '404':
+          description: Not found
+          schema:
+            type: string
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+  /v1/copies/{copy_id}/cyber:
+    delete:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 副本ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: copy_id
+          required: true
+          type: string
+        - default: true
+          description: 是否创建任务
+          in: query
+          name: create_job
+          required: false
+          type: boolean
+        - default: false
+          description: 是否强制删除
+          in: query
+          name: is_forced
+          required: false
+          type: boolean
+        - description: 授权token
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successful Response
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - copies
+      operationId: delete_copy_v1_copies_copy_id_cyber_delete
+      summary: 删除快照-安全一体机
+  /v1/copies/{copy_id}/action/update-retention-cyber:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 副本ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: copy_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+        - in: body
+          name: body
+          schema:
+            allOf:
+              - $ref: '#/definitions/CopyRetentionPolicySchema'
+            description: 副本保留策略
+            title: Retention Policy
+          required: false
+      responses:
+        '200':
+          description: Successful Response
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - copies
+      operationId: update_copy_retention_v1_copies_copy_id_action_update_retention_cyber_post
+      summary: 更新快照保留策略-安全一体机
+definitions:
+  BasePage_CopyResourceSummarySchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/CopyResourceSummarySchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: BasePage[CopyResourceSummarySchema]
+    type: object
+  BasePage_CopySchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/CopySchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: BasePage[CopySchema]
+    type: object
+  CopyArchiveMapSchema:
+    properties:
+      copy_id:
+        description: 副本ID
+        title: Copy Id
+        type: string
+      resource_id:
+        description: 资源ID
+        title: Resource Id
+        type: string
+      storage_id:
+        description: 存储ID
+        title: Storage Id
+        type: string
+    required:
+      - copy_id
+      - storage_id
+      - resource_id
+    title: CopyArchiveMapSchema
+    type: object
+  CopyInfoSchema:
+    properties:
+      backup_type:
+        description: 备份类型
+        title: Backup Type
+        type: integer
+      chain_id:
+        description: 副本链ID
+        title: Chain Id
+        type: string
+      deletable:
+        description: 副本是否可删除
+        title: Deletable
+        type: boolean
+      display_timestamp:
+        description: 副本时间戳
+        format: date-time
+        title: Display Timestamp
+        type: string
+      duration_unit:
+        description: 副本保留时间单位（天、周、月、年）
+        title: Duration Unit
+        type: string
+      expiration_time:
+        description: 副本过期时间
+        format: date-time
+        title: Expiration Time
+        type: string
+      features:
+        description: 副本支持的特性
+        title: Features
+        type: integer
+      generated_by:
+        description: 副本生成类型
+        title: Generated By
+        type: string
+      generated_time:
+        description: 副本时间戳
+        format: date-time
+        title: Generated Time
+        type: string
+      generation:
+        description: 副本代数
+        title: Generation
+        type: integer
+      indexed:
+        description: 副本建立索引状态
+        title: Indexed
+        type: string
+      is_archived:
+        description: 副本是否归档
+        title: Is Archived
+        type: boolean
+      is_replicated:
+        description: 副本是否复制
+        title: Is Replicated
+        type: boolean
+      location:
+        description: 副本位置
+        title: Location
+        type: string
+      parent_copy_uuid:
+        description: 父副本ID
+        title: Parent Copy Uuid
+        type: string
+      properties:
+        description: 副本扩展属性
+        title: Properties
+        type: string
+      resource_environment_ip:
+        description: 资源环境IP
+        title: Resource Environment Ip
+        type: string
+      resource_environment_name:
+        description: 资源环境名称
+        title: Resource Environment Name
+        type: string
+      resource_id:
+        description: 资源ID
+        title: Resource Id
+        type: string
+      resource_location:
+        description: 资源位置
+        title: Resource Location
+        type: string
+      resource_name:
+        description: 资源名称
+        title: Resource Name
+        type: string
+      resource_properties:
+        description: 资源属性（JSON格式）
+        title: Resource Properties
+        type: string
+      resource_status:
+        description: 资源状态
+        title: Resource Status
+        type: string
+      resource_sub_type:
+        description: 资源子类型
+        title: Resource Sub Type
+        type: string
+      resource_type:
+        description: 资源类型
+        title: Resource Type
+        type: string
+      retention_duration:
+        description: 副本保留时间
+        title: Retention Duration
+        type: integer
+      retention_type:
+        description: 副本保留类型：1（永久保留）2（指定时间保留）
+        title: Retention Type
+        type: integer
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_properties:
+        description: SLA属性（JSON格式）
+        title: Sla Properties
+        type: string
+      status:
+        description: 副本有效性
+        title: Status
+        type: string
+      timestamp:
+        description: 副本时间戳
+        title: Timestamp
+        type: string
+      user_id:
+        description: 副本资源的用户id
+        title: User Id
+        type: string
+      uuid:
+        description: 副本ID
+        title: Uuid
+        type: string
+      detail:
+        type: string
+        description: 副本详情
+    title: CopyInfoSchema
+    required:
+      - deletable
+      - display_timestamp
+      - generated_by
+      - generation
+      - indexed
+      - resource_id
+      - resource_location
+      - resource_name
+      - resource_properties
+      - resource_status
+      - resource_type
+      - retention_type
+      - status
+      - timestamp
+  CopyInfoWithArchiveFieldsSchema:
+    properties:
+      backup_type:
+        description: 备份类型
+        title: Backup Type
+        type: integer
+      chain_id:
+        description: 副本链ID
+        title: Chain Id
+        type: string
+      deletable:
+        description: 副本是否可删除
+        title: Deletable
+        type: boolean
+      display_timestamp:
+        description: 副本时间戳
+        format: date-time
+        title: Display Timestamp
+        type: string
+      duration_unit:
+        description: 副本保留时间单位（天、周、月、年）
+        title: Duration Unit
+        type: string
+      expiration_time:
+        description: 副本过期时间
+        format: date-time
+        title: Expiration Time
+        type: string
+      features:
+        description: 副本支持的特性
+        title: Features
+        type: integer
+      generated_by:
+        description: 副本生成类型
+        title: Generated By
+        type: string
+      generated_time:
+        description: 副本时间戳
+        format: date-time
+        title: Generated Time
+        type: string
+      generation:
+        description: 副本代数
+        title: Generation
+        type: integer
+      indexed:
+        description: 副本建立索引状态
+        title: Indexed
+        type: string
+      is_archived:
+        description: 副本是否归档
+        title: Is Archived
+        type: boolean
+      is_replicated:
+        description: 副本是否复制
+        title: Is Replicated
+        type: boolean
+      location:
+        description: 副本位置
+        title: Location
+        type: string
+      parent_copy_uuid:
+        description: 父副本ID
+        title: Parent Copy Uuid
+        type: string
+      properties:
+        description: 副本扩展属性
+        title: Properties
+        type: string
+      resource_environment_ip:
+        description: 资源环境IP
+        title: Resource Environment Ip
+        type: string
+      resource_environment_name:
+        description: 资源环境名称
+        title: Resource Environment Name
+        type: string
+      resource_id:
+        description: 资源ID
+        title: Resource Id
+        type: string
+      resource_location:
+        description: 资源位置
+        title: Resource Location
+        type: string
+      resource_name:
+        description: 资源名称
+        title: Resource Name
+        type: string
+      resource_properties:
+        description: 资源属性（JSON格式）
+        title: Resource Properties
+        type: string
+      resource_status:
+        description: 资源状态
+        title: Resource Status
+        type: string
+      resource_sub_type:
+        description: 资源子类型
+        title: Resource Sub Type
+        type: string
+      resource_type:
+        description: 资源类型
+        title: Resource Type
+        type: string
+      retention_duration:
+        description: 副本保留时间
+        title: Retention Duration
+        type: integer
+      retention_type:
+        description: 副本保留类型：1（永久保留）2（指定时间保留）
+        title: Retention Type
+        type: integer
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_properties:
+        description: SLA属性（JSON格式）
+        title: Sla Properties
+        type: string
+      status:
+        description: 副本有效性
+        title: Status
+        type: string
+      storage_id:
+        description: 存储ID
+        title: Storage Id
+        type: string
+      timestamp:
+        description: 副本时间戳
+        title: Timestamp
+        type: string
+      user_id:
+        description: 副本资源的用户id
+        title: User Id
+        type: string
+      uuid:
+        description: 副本ID
+        title: Uuid
+        type: string
+    required:
+      - timestamp
+      - display_timestamp
+      - deletable
+      - status
+      - generated_by
+      - indexed
+      - generation
+      - retention_type
+      - resource_id
+      - resource_name
+      - resource_type
+      - resource_location
+      - resource_status
+      - resource_properties
+    title: CopyInfoWithArchiveFieldsSchema
+    type: object
+  CopyProtectionSchema:
+    properties:
+      protected_object_uuid:
+        description: 保护对象UUID
+        title: Protected Object Uuid
+        type: string
+      protected_resource_id:
+        description: 保护资源ID
+        title: Protected Resource Id
+        type: string
+      protected_sla_id:
+        description: 保护SLA ID
+        title: Protected Sla Id
+        type: string
+      protected_sla_name:
+        description: 保护SLA名称
+        title: Protected Sla Name
+        type: string
+      protected_status:
+        description: 保护状态
+        title: Protected Status
+        type: boolean
+    required:
+      - protected_resource_id
+      - protected_object_uuid
+      - protected_sla_id
+      - protected_status
+    title: CopyProtectionSchema
+    type: object
+  CopyResourceSummarySchema:
+    properties:
+      copy_count:
+        description: 资源副本数量
+        title: Copy Count
+        type: integer
+      properties:
+        description: 副本资源属性
+        title: Properties
+        type: string
+      protected_object_uuid:
+        description: 保护对象UUID
+        title: Protected Object Uuid
+        type: string
+      protected_resource_id:
+        description: 保护资源ID
+        title: Protected Resource Id
+        type: string
+      protected_sla_id:
+        description: 保护SLA ID
+        title: Protected Sla Id
+        type: string
+      protected_sla_name:
+        description: 保护SLA名称
+        title: Protected Sla Name
+        type: string
+      protected_status:
+        description: 保护状态
+        title: Protected Status
+        type: boolean
+      resource_environment_ip:
+        description: 资源环境IP
+        title: Resource Environment Ip
+        type: string
+      resource_environment_name:
+        description: 资源环境名称
+        title: Resource Environment Name
+        type: string
+      resource_id:
+        description: 资源ID
+        title: Resource Id
+        type: string
+      resource_location:
+        description: 资源位置
+        title: Resource Location
+        type: string
+      resource_name:
+        description: 资源名称
+        title: Resource Name
+        type: string
+      resource_properties:
+        description: 资源属性
+        title: Resource Properties
+        type: string
+      resource_status:
+        description: 资源状态
+        title: Resource Status
+        type: string
+      resource_sub_type:
+        description: 资源子类型
+        title: Resource Sub Type
+        type: string
+      resource_type:
+        description: 资源类型
+        title: Resource Type
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+    required:
+      - resource_id
+      - resource_name
+      - resource_type
+      - resource_sub_type
+      - resource_location
+      - resource_status
+      - resource_properties
+      - copy_count
+    title: CopyResourceSummarySchema
+    type: object
+  CopyRestoreInformation:
+    properties:
+      PFILE:
+        description: 目标副本对应数据库配置
+        title: Pfile
+        type: string
+    title: CopyRestoreInformation
+    type: object
+  CopyRetentionPolicySchema:
+    properties:
+      duration_unit:
+        $ref: '#/definitions/RetentionTimeUnit'
+      resource_id:
+        description: 资源ID
+        title: Resource Id
+        type: string
+      retention_duration:
+        default: 0
+        description: 副本保留周期
+        title: Retention Duration
+        type: integer
+      retention_type:
+        $ref: '#/definitions/RetentionTypeEnum'
+    title: CopyRetentionPolicySchema
+    type: object
+  CopySchema:
+    title: CopySchema
+    allOf:
+      - $ref: '#/definitions/CopyInfoSchema'
+      - required:
+          - gn
+        type: object
+        properties:
+          gn:
+            description: 副本序列号
+            title: Gn
+            type: integer
+          next_copy_gn:
+            description: 下一个副本的gn
+            title: Next Copy Gn
+            type: integer
+          next_copy_id:
+            description: 下一个副本的ID
+            title: Next Copy Id
+            type: string
+          prev_copy_gn:
+            description: 上一个副本的gn
+            title: Prev Copy Gn
+            type: integer
+          prev_copy_id:
+            description: 上一个副本的ID
+            title: Prev Copy Id
+            type: string
+          storage_unit_name:
+            type: string
+            description: 存储单元名称
+          storage_device_name:
+            type: string
+            description: 存储设备名称
+          storage_group_name:
+            type: string
+            description: 存储单元组名称
+          storage_unit_id:
+            type: string
+            description: 存储单元ID
+          storage_device_id:
+            type: string
+            description: 存储设备ID
+          storage_group_id:
+            type: string
+            description: 存储单元组ID
+  CopyStatistic:
+    properties:
+      count:
+        description: 副本统计结果
+        title: Count
+        type: integer
+      index:
+        description: 索引值，对应：月/日
+        title: Index
+        type: string
+    required:
+      - index
+      - count
+    title: CopyStatistic
+    type: object
+  CopyStatisticView:
+    description: An enumeration.
+    enum:
+      - year
+      - month
+    title: CopyStatisticView
+  CopyStatus:
+    description: |-
+      deleting: 副本正在删除中
+      Normal: 副本有效
+      Invalid: 副本无效
+      Mounting: 副本正在挂载
+      Restoring: 副本正在恢复
+    enum:
+      - Deleting
+      - Normal
+      - Invalid
+      - Restoring
+      - Mounting
+      - Mounted
+      - Unmounting
+    title: CopyStatus
+    type: string
+  CopyStatusUpdate:
+    properties:
+      deletable:
+        description: 副本是否可删除
+        title: Deletable
+        type: boolean
+      display_timestamp:
+        description: 副本时间戳
+        format: date-time
+        title: Display Timestamp
+        type: string
+      expiration_time:
+        description: 副本过期时间
+        format: date-time
+        title: Expiration Time
+        type: string
+      generated_time:
+        description: 副本时间戳
+        format: date-time
+        title: Generated Time
+        type: string
+      is_archived:
+        description: 是否归档
+        title: Is Archived
+        type: boolean
+      is_replicated:
+        description: 副本是否已被复制
+        title: Is Replicated
+        type: boolean
+      status:
+        $ref: '#/definitions/CopyStatus'
+      timestamp:
+        description: 副本时间戳
+        title: Timestamp
+        type: string
+    required:
+      - status
+    title: CopyStatusUpdate
+    type: object
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  ProtectedCopyBatchOperationReq:
+    properties:
+      resource_ids:
+        description: 批量操作资源id
+        items:
+          type: string
+        title: Resource Ids
+        type: array
+    required:
+      - resource_ids
+    title: ProtectedCopyBatchOperationReq
+    type: object
+  RetentionTimeUnit:
+    description: An enumeration.
+    enum:
+      - d
+      - w
+      - MO
+      - 'y'
+    title: RetentionTimeUnit
+    type: string
+  RetentionTypeEnum:
+    description: An enumeration.
+    enum:
+      - 1
+      - 2
+    title: RetentionTypeEnum
+    type: integer
+  SaveImportCopyRequest:
+    properties:
+      chain_id:
+        description: ChainID
+        title: Chain Id
+        type: string
+      generated_by:
+        description: 副本生成方式
+        title: Generated By
+        type: string
+      generated_time:
+        description: 导入副本生成时间戳(如：1628604206)秒
+        title: Generated Time
+        type: integer
+      name:
+        description: DWS导入副本文件系统名
+        title: Name
+        type: string
+      resource_id:
+        description: 资源ID
+        title: Resource Id
+        type: string
+      resource_sub_type:
+        description: 子资源类型
+        title: Resource Sub Type
+        type: string
+      resource_type:
+        description: 资源类型
+        title: Resource Type
+        type: string
+      uuid:
+        description: 导入副本ID
+        title: Uuid
+        type: string
+    required:
+      - uuid
+      - name
+      - generated_time
+      - generated_by
+      - resource_type
+      - resource_sub_type
+      - resource_id
+      - chain_id
+    title: SaveImportCopyRequest
+    type: object
+  UuidObject:
+    properties:
+      uuid:
+        description: UUID
+        title: Uuid
+        type: string
+    required:
+      - uuid
+    title: UuidObject
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+  BasePage_Copy:
+    properties:
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/CopyInfoSchema'
+      total:
+        type: integer
+        format: int32
+      pages:
+        type: integer
+        format: int32
+      page_no:
+        type: integer
+        format: int32
+      page_size:
+        type: integer
+        format: int32
+  CopyAntiRansomwareReq:
+    description: 防勒索报告对象
+    properties:
+      status:
+        type: integer
+        format: int32
+        description: 0：准备中；1:进行中；2：未感染；3：已感染；4：异常；
+        minimum: 0
+        maximum: 4
+        x-access-port: 30092
+        x-auth-required: 'Y'
+        x-public-api: 'N'
+      model:
+        type: string
+        description: 防勒索检测模型
+      detection_start_time:
+        type: string
+        description: 副本检测开始时间
+      detection_end_time:
+        type: string
+        description: 防勒索结束时间
+      report:
+        type: string
+        description: 检测报告
+    required:
+      - status
+  UpdateCopyAntiRansomwareStatus:
+    properties:
+      status:
+        type: integer
+        format: int32
+        description: 0：准备中；1:进行中；2：未感染；3：已感染；4：异常；
+    required:
+      - status
+  CopyAntiRansomwareReport:
+    description: 副本检测信息
+    required:
+      - copy_id
+      - timestamp
+      - model
+      - status
+      - detection_time
+      - last_tested_time
+    properties:
+      copy_id:
+        type: string
+        description: 副本ID
+      timestamp:
+        type: string
+        description: 副本时间戳
+      model:
+        type: string
+        description: 防勒索检测模型
+      status:
+        type: string
+        description: 检测状态
+      detection_duration:
+        type: string
+        description: 检测持续时间
+      detection_time:
+        type: string
+        description: 副本检测时间
+      report:
+        type: string
+        description: 防勒索检测报告
+      last_tested_time:
+        type: string
+        description: 防勒索最新检测时间
+  CopyAntiRansomwar:
+    description: 副本检测信息
+    required:
+      - copy_id
+      - timestamp
+      - location
+    properties:
+      copy_id:
+        type: string
+        description: 副本ID
+      timestamp:
+        type: string
+        description: 副本时间戳
+      location:
+        type: string
+        description: 副本位置
+      model:
+        type: string
+        description: 防勒索检测模型
+      status:
+        type: string
+        description: 检测状态
+      detection_time:
+        type: string
+        description: 副本检测时间
+  CopyAntiRansomwarStatistics:
+    description: 副本的防勒索统计信息
+    required:
+      - resource_id
+      - name
+      - location
+      - repicas
+    properties:
+      resource_id:
+        type: string
+        description: 资源ID
+      name:
+        type: string
+        description: 资源名称
+      location:
+        type: string
+        description: 资源位置
+      repicas:
+        type: string
+        description: 副本总数量
+      infectedRepicas:
+        type: string
+        description: 感染副本数量
+      uninfectedRepicas:
+        type: string
+        description: 未感染副本数量
+      detectingRepicas:
+        type: string
+        description: 正在检测副本数量
+      uninspectedRepicas:
+        type: string
+        description: 未检测副本数量
+x-components: {}

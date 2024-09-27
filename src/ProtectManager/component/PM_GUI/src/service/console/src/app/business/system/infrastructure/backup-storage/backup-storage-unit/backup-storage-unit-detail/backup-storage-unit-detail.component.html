@@ -1,0 +1,164 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form>
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{ 'common_basic_info_label' | i18n }}</h2>
+  </div>
+  <div class="aui-gutter-column-xl">
+    <lv-form-column lvWidth="50%">
+      <lv-form-item>
+        <lv-form-label>
+          {{ 'common_name_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <div lv-overflow>
+            {{ data.name | nil }}
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+
+      <lv-form-item *ngIf="!appUtilsService.isDistributed">
+        <lv-form-label>
+          {{ 'common_health_status_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <div lv-overflow>
+            <td>
+              <aui-status [value]="data.healthStatus" type="HealthStatus"></aui-status>
+            </td>
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>
+          {{ 'system_running_satatus_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <div lv-overflow>
+            <td>
+              <aui-status [value]="data.runningStatus" [type]="appUtilsService.isDistributed
+                ? 'DistributedStoragePoolRunningStatus'
+                : 'StoragePoolRunningStatus'"></aui-status>
+            </td>
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+
+      <lv-form-item>
+        <lv-form-label>
+          {{ 'protection_storage_device_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <div lv-overflow>
+            {{ data.deviceName | nil }}
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form-column>
+
+    <lv-form-column lvWidth="50%">
+      <lv-form-item>
+        <lv-form-label>
+          {{ 'common_equipment_type_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <div lv-overflow>
+            {{ data.deviceType | textMap: 'poolStorageDeviceType' }}
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+
+        <lv-form-item>
+          <lv-form-label>
+            {{ 'common_capacity_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control>
+            <div class='percent-bar'>
+              <lv-progress [lvValue]="Math.round (data.usedCapacity / data.totalCapacity * 10000) / 100" [lvSize]="'small'" [lvColors]='progressBarColor'
+                           [lvLabel]="progressLabelTpl" lvDecimals="3"></lv-progress>
+              <div class='size-percent' *ngIf="!appUtilsService.isDistributed">
+                {{data.usedCapacity * 512 | capacityCalculateLabel:'1.1-3':unitconst.BYTE:
+                true}}/{{data.totalCapacity * 512 | capacityCalculateLabel:'1.1-3':unitconst.BYTE:
+                true}}
+              </div>
+              <div class='size-percent' *ngIf="appUtilsService.isDistributed">
+                {{data.usedCapacity | capacityCalculateLabel:'1.1-3':unitconst.KB:
+                true}}/{{data.totalCapacity | capacityCalculateLabel:'1.1-3':unitconst.KB:
+                true}}
+              </div>
+            </div>
+          </lv-form-control>
+        </lv-form-item>
+
+        <lv-form-item>
+          <lv-form-label>
+            {{ 'common_storage_pool_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control>
+            <div lv-overflow>
+              {{ data.poolName | nil }}
+            </div>
+          </lv-form-control>
+        </lv-form-item>
+
+        <lv-form-item>
+          <lv-form-label>
+            {{ 'common_alarm_threshold_label' | i18n }}
+          </lv-form-label>
+          <lv-form [lvLabelColon]="false" class="formGroup basicInfo" [formGroup]="formGroup">
+          <ng-container>
+            <ng-container *ngIf="!isEdit else editTpl">
+              <lv-form-control>
+            <span lv-overflow style="margin-top: 5px">
+              {{ (formGroup.value.limitValue === 0 ? null: formGroup.value.limitValue + '%' ) | nil }}
+              <i lv-icon="aui-icon-edit" lvColorState='true' title="{{'common_modify_label' | i18n}}" class="edit"
+                 (click)="modifyThreshold(true)"></i>
+            </span>
+              </lv-form-control>
+            </ng-container>
+            <ng-template #editTpl>
+              <lv-form-control [lvErrorTip]="thresholdErrorTip">
+                <lv-group lvGutter="8px">
+                  <input lv-input type="text" placeholder="50~90" formControlName="limitValue" style="width: 72px"/>
+                  <a *ngIf=" isView && isEdit"
+                     [ngClass]="{'aui-link': formGroup.controls.limitValue.valid,'aui-link-disabled': formGroup.controls.limitValue.invalid}"
+                     (click)="updateThreshold()">{{ 'common_save_label' | i18n }}</a>
+                  <a *ngIf=" isView && isEdit" class="aui-link" (click)="modifyThreshold(false)">{{ 'common_cancel_label' | i18n }}</a>
+                </lv-group>
+              </lv-form-control>
+            </ng-template>
+          </ng-container>
+            </lv-form>
+        </lv-form-item>
+      </lv-form-column>
+  </div>
+
+  <div class="aui-block aui-paginator-container">
+    <div class="aui-operation">
+      <lv-tabs class="aui-tab">
+
+        <lv-tab lvTitle="{{'common_user_authorization_label' | i18n}}" lvId="userAuth">
+          <ng-template lv-tab-lazy>
+            <aui-user-auth [storageId]="data.id" [authType]="1"></aui-user-auth>
+          </ng-template>
+        </lv-tab>
+
+      </lv-tabs>
+    </div>
+  </div>
+</lv-form>
+
+<ng-template #progressLabelTpl let-data>
+  {{ data < 0.001 ? (data == 0 ? 0 : lessThanLabel + '0.001') : data }}%
+</ng-template>

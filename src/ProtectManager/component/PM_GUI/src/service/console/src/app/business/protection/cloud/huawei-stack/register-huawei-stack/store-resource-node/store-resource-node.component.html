@@ -1,0 +1,276 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <div
+    class="aui-gutter-column-md"
+    *ngIf="
+      !includes(
+        [
+          dataMap.Resource_Type.FusionCompute.value,
+          dataMap.Resource_Type.vmware.value,
+          dataMap.Resource_Type.oracle.value
+        ],
+        subType
+      )
+    "
+  >
+    <lv-form-item>
+      <lv-form-label>{{ 'common_type_label' | i18n }}</lv-form-label>
+      <lv-radio-group
+        formControlName="storageType"
+        [ngStyle]="{
+          'margin-left': i18n.language === 'zh-cn' ? '40px' : '125px'
+        }"
+      >
+        <lv-group [lvGutter]="'48px'">
+          <lv-radio [lvValue]="value1">{{
+            'common_san_storage_label' | i18n
+          }}</lv-radio>
+          <lv-radio [lvValue]="value2">{{
+            'protection_database_type_block_storage_label' | i18n
+          }}</lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-item>
+  </div>
+
+  <!-- vmware netApp存储 -->
+  <lv-form-item *ngIf="subType === dataMap.Resource_Type.vmware.value">
+    <lv-form-label>{{ 'common_type_label' | i18n }}</lv-form-label>
+    <lv-radio-group formControlName="storageType">
+      <lv-group [lvGutter]="'48px'" class="mgt-8">
+        <lv-radio
+          [lvValue]="dataMap.Device_Storage_Type.OceanStorDorado_6_1_3.value"
+        >
+          {{ dataMap.Device_Storage_Type.OceanStorDorado_6_1_3.label | i18n }}
+        </lv-radio>
+        <lv-radio [lvValue]="dataMap.Device_Storage_Type.NetApp.value">
+          {{ dataMap.Device_Storage_Type.NetApp.label | i18n }}
+        </lv-radio>
+      </lv-group>
+    </lv-radio-group>
+  </lv-form-item>
+
+  <lv-form-item *ngIf="isOracle">
+    <lv-form-label lvRequired>{{
+      'common_equipment_type_label' | i18n
+    }}</lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="deviceType"
+        [lvOptions]="deviceTypeOptions"
+        lvValueKey="value"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_management_ip_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        [lv-tooltip]="'common_storage_add_help_label' | i18n"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control>
+      <div formArrayName="ips">
+        <div
+          *ngFor="let ip of ipArr; let i = index; last as isLast"
+          [ngClass]="{ 'mgb-ip': !isLast, 'last-mgb-ip': isLast }"
+        >
+          <lv-form-control
+            [lvErrorTip]="baseUtilService.ipErrorTip"
+            class="ips-control"
+          >
+            <lv-group [lvColumns]="['auto', '25px']">
+              <input lv-input type="text" [formControlName]="i" />
+              <div class="aui-link" *ngIf="ipArr.length > 1">
+                <i
+                  lv-icon="lv-icon-remove"
+                  lvColorState="true"
+                  (click)="deleteIp(i)"
+                  lv-tooltip="{{ 'common_delete_label' | i18n }}"
+                ></i>
+              </div>
+            </lv-group>
+          </lv-form-control>
+        </div>
+      </div>
+      <div class="tips" *ngIf="ipRepeat">
+        <i lv-icon="lv-icon-status-failed" class="error-icon"></i>
+        {{ repeatTips }}
+      </div>
+      <div class="aui-link">
+        <span (click)="addIp()">
+          <i lv-icon="aui-icon-create" class="add-ip-icon"></i>
+          {{ 'common_add_label' | i18n }}
+        </span>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_port_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="portErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="port"
+        placeholder="1~65535"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_username_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <input lv-input type="text" formControlName="username" />
+      <div *ngIf="dataMap.Resource_Type.oracle.value === subType">
+        <i lv-icon="lv-icon-status-info" lvColorState="true"></i>
+        <span>
+          {{ 'protection_add_storage_user_tip_label' | i18n }}
+        </span>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_password_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="passwordErrorTip">
+      <aui-inupt-with-eye formControlName="password"></aui-inupt-with-eye>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="dataMap.Resource_Type.oracle.value === subType">
+    <lv-form-label lvRequired>
+      {{ 'common_protocol_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select
+        [lvOptions]="protocolOptions"
+        formControlName="transport_protocol"
+        lvValueKey="value"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_verify_cert_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-switch formControlName="cert"> </lv-switch>
+      <div *ngIf="!formGroup.value.cert">
+        <i lv-icon="lv-icon-status-warning-info"></i>
+        <span class="aui-text-label">
+          {{ 'protection_register_cert_tips_label' | i18n }}
+        </span>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container *ngIf="formGroup.value.cert">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'protection_fc_cert_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-upload
+          lvAccept=".pem"
+          lvShowUpload="false"
+          [lvFilters]="fcCertFilters"
+          [(lvFiles)]="certFiles"
+          (lvFilesChange)="certFilesChange($event)"
+          (lvChange)="cartChange($event)"
+        ></lv-upload>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'system_revocation_list_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-upload
+          lvAccept=".crl"
+          lvShowUpload="false"
+          [lvFilters]="revocationListFilters"
+          [(lvFiles)]="revocationFiles"
+          (lvFilesChange)="revocationFilesChange($event)"
+          (lvChange)="revocationChange($event)"
+        ></lv-upload>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <ng-container
+    *ngIf="
+      subType === dataMap.Resource_Type.HCS.value &&
+      formGroup.value.storageType === value2
+    "
+  >
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'protection_vbs_node_info_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName="isVbsNodeInfo"> </lv-switch>
+        <div *ngIf="formGroup.value.isVbsNodeInfo">
+          <lv-form-item>
+            <lv-form-label lvRequired>
+              {{ 'protection_vbs_node_user_name_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.nameErrorTip">
+              <input lv-input type="text" formControlName="vbsNodeUserName" />
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label lvRequired>
+              {{ 'protection_vbs_node_ip_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+              <input lv-input type="text" formControlName="vbsNodeIp" />
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label lvRequired>
+              {{ 'protection_vbs_node_port_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="portErrorTip">
+              <input lv-input type="text" formControlName="vbsNodePort" />
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label lvRequired>
+              {{ 'protection_vbs_node_password_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="passwordErrorTip">
+              <aui-inupt-with-eye
+                formControlName="vbsNodePassword"
+              ></aui-inupt-with-eye>
+            </lv-form-control>
+          </lv-form-item>
+        </div>
+        <div *ngIf="!formGroup.value.isVbsNodeInfo">
+          <i lv-icon="lv-icon-status-info"></i>
+          <span class="aui-text-label">
+            {{ 'protection_vbs_node_info_tip_label' | i18n }}
+          </span>
+        </div>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>

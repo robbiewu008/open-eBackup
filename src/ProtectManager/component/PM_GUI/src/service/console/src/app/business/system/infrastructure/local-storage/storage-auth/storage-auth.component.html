@@ -1,0 +1,144 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-header-2 aui-gutter-column-sm">
+    <h2>{{ 'system_auth_info_label' | i18n }}</h2>
+</div>
+<div class="aui-operation">
+    <p class="aui-text-help-sm descrip-info">
+        {{'system_storage_auth_help_label' | i18n}}
+    </p>
+    <lv-group lvGutter="8px">
+        <a *ngIf="!isView || !isAuth"
+            [ngClass]="{'aui-link': formGroup.valid || authForm.valid,'aui-link-disabled': formGroup.invalid && authForm.invalid}"
+            (click)="save()">{{ 'common_save_label' | i18n }}</a>
+        <a *ngIf="!isView || !isAuth" class="aui-link" (click)="cancel()">{{ 'common_cancel_label' | i18n }}</a>
+        <a *ngIf="isAuth && isView"
+            [ngClass]="{'aui-link': managerAble,'aui-link-disabled':!managerAble,'en-management-width':isEn}"
+            (click)="modify()" pmpermission pmOperation='ModifyAuthenticationStatus'>
+            {{'common_modify_manger_auth_label'|i18n}}</a>
+        <div class='spacing'></div>
+        <a *ngIf="isAuth && isView"
+            [ngClass]="{'aui-link': serviceAble,'aui-link-disabled':!serviceAble,'en-width':isEn}"
+            (click)="authService()" pmpermission pmOperation='ModifyAuthenticationStatus'>
+            {{'common_modify_severice_auth_label'|i18n}}</a>
+    </lv-group>
+</div>
+<div class="dashed-line"></div>
+<div class="aui-header-2 aui-gutter-column-sm">
+    <lv-group lvGutter='8px'>
+        <h2> {{'common_manger_auth_label'|i18n}}</h2>
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'common_manger_auth_help_label' | i18n}}" lvTooltipTheme="light"
+            lvColorState='true'></i>
+    </lv-group>
+</div>
+
+<lv-form [formGroup]="formGroup">
+    <ng-container *ngIf="!isView">
+        <div class='box'>
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'common_username_label' | i18n}}</lv-form-label>
+                <lv-form-control [lvErrorTip]='nameErrorTip'>
+                    <input lv-input type="text" formControlName="userName" autocomplete="new-password" />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
+                <lv-form-control [lvErrorTip]='pwdErrorTip'>
+                    <aui-inupt-with-eye formControlName="password"></aui-inupt-with-eye>
+                </lv-form-control>
+            </lv-form-item>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="isView">
+        <div class='box'>
+            <lv-form-column lvWidth="50%">
+                <lv-form-item>
+                    <lv-form-label>{{'common_username_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <span lv-overflow>
+                            {{formGroup.value.userName | nil}}
+                        </span>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>{{'common_password_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        ********
+                    </lv-form-control>
+                </lv-form-item>
+            </lv-form-column>
+            <lv-form-column lvWidth="50%">
+                <lv-form-item>
+                    <lv-form-label>{{'common_status_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <aui-status [value]="formGroup.value.status" type="Storage_Status"></aui-status>
+                    </lv-form-control>
+                </lv-form-item>
+            </lv-form-column>
+        </div>
+    </ng-container>
+
+</lv-form>
+
+<div class="aui-header-2 aui-gutter-column-sm">
+    <lv-group lvGutter='8px'>
+        <h2> {{'common_severice_auth_label'|i18n}}</h2>
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'common_severice_auth_help_label' | i18n}}" lvTooltipTheme="light"
+            lvColorState='true'></i>
+    </lv-group>
+</div>
+<lv-form [formGroup]="authForm">
+    <ng-container *ngIf="!isAuth">
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'common_username_label' | i18n}}</lv-form-label>
+            <lv-form-control [lvErrorTip]='nameErrorTip'>
+                <input lv-input type="text" formControlName="userName" autocomplete="new-password" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
+            <lv-form-control [lvErrorTip]='pwdErrorTip'>
+                <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <ng-container *ngIf="isAuth">
+        <lv-form-column lvWidth="50%">
+            <lv-form-item>
+                <lv-form-label>{{'common_username_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <span lv-overflow>
+                        {{authForm.value.userName | nil}}
+                    </span>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>{{'common_password_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    ********
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form-column>
+        <lv-form-column lvWidth="50%">
+            <lv-form-item>
+                <lv-form-label>{{'common_status_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <aui-status [value]="authForm.value.status" type="Storage_Status"></aui-status>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form-column>
+    </ng-container>
+</lv-form>

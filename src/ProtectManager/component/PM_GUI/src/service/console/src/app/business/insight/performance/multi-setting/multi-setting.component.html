@@ -1,0 +1,63 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-pro-table #dataTable [config]="tableConfig" [data]="tableData">
+</lv-pro-table>
+<ng-template #statusTpl let-item>
+  <aui-status
+    *ngIf="
+      item.status !== dataMap.Node_Status.setting.value &&
+      item.status !== dataMap.Node_Status.deleting.value
+    "
+    [value]="item.status"
+    type="Cluster_Status"
+    class="sub-title"
+  ></aui-status>
+  <div
+    *ngIf="item.status === dataMap.Node_Status.setting.value"
+    lv-overflow
+    class="delete-status sub-title"
+  >
+    <i lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
+    <span> {{ 'system_net_plane_setting_label' | i18n }}</span>
+  </div>
+  <div
+    *ngIf="item.status === dataMap.Node_Status.deleting.value"
+    lv-overflow
+    class="delete-status sub-title"
+  >
+    <i lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
+    <span>{{ 'common_status_deleting_label' | i18n }}</span>
+  </div>
+</ng-template>
+
+<ng-template #switchTpl let-item>
+  <lv-switch
+    lvValueKey="value"
+    [(ngModel)]="item.open"
+    [lvLoading]="loading"
+    [lvControl]="true"
+    [lvDisabled]="item.status !== dataMap.Node_Status.online.value"
+    (click)="switchChange(item)"
+  >
+  </lv-switch>
+</ng-template>
+
+<ng-template #tipContentTpl>
+  <div [innerHTML]="switchOffContent"></div>
+  <div class="container-checkbox">
+    <label lv-checkbox [(ngModel)]="isDeleteHistory">{{
+      'insight_performance_switch_checkbox_label' | i18n
+    }}</label>
+  </div>
+</ng-template>

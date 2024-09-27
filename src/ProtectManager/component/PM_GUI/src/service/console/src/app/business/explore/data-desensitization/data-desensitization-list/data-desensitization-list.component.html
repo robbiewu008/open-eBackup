@@ -1,0 +1,104 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <lv-group lvGutter='8px'>
+            <h1>{{ header }}</h1>
+            <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+        </lv-group>
+    </div>
+    <div class="aui-block aui-paginator-container">
+        <div class="aui-operation refresh-icon">
+            <button class="aui-button-icon" lv-button lvSize="auto" (click)="getResource()">
+                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+            </button>
+        </div>
+        <div class="list-container">
+            <lv-datatable [lvData]='tableData' #lvTable lvResize lvAsync [lvPaginator]="page" lvResizeMode="expand"
+                [lvScroll]="{ x: '100%' }">
+                <thead>
+                    <tr>
+                        <ng-container *ngFor="let col of columns">
+                            <th [lvShowFilter]="col.filter" (lvFilterChange)="filterChange($event)"
+                                [attr.width]="col.width" [(lvFilters)]="col.filterMap" lvCellKey="{{ col.key }}"
+                                [lvShowSort]="col.showSort" lvShowCustom lvFilterCheckAll>
+                                {{col.label}}
+                                <div lvCustom *ngIf="col.key === 'name'">
+                                    <aui-custom-table-search (search)="searchByName($event)"
+                                        [filterTitle]="col.label"></aui-custom-table-search>
+                                </div>
+                                <div lvCustom *ngIf="col.key === 'environment_endpoint'">
+                                    <aui-custom-table-search (search)="searchByIp($event)"
+                                        [filterTitle]="col.label"></aui-custom-table-search>
+                                </div>
+                                <div lvCustom *ngIf="col.key === 'instance_names'">
+                                    <aui-custom-table-search (search)="searchByInstanceNames($event)"
+                                        [filterTitle]="col.label"></aui-custom-table-search>
+                                </div>
+                            </th>
+                        </ng-container>
+                        <th width='144px'>
+                            {{'common_operation_label'|i18n }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor='let item of lvTable.renderData;trackBy:trackByUuid'>
+                        <tr>
+                            <ng-container *ngFor="let col of columns">
+                                <td>
+                                    <ng-container [ngSwitch]="col.key">
+                                        <ng-container *ngSwitchCase="'name'">
+                                            <span class="aui-link" lv-overflow id='outerClosable'
+                                                (click)="getResourceDetail(item)">
+                                                {{item[col.key]}}
+                                            </span>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'desesitization_status'">
+                                            <aui-status
+                                                [value]="item.desesitization_status ? item.desesitization_status : dataMap.Desensitization_Status.not_desesitize.value"
+                                                type="Desensitization_Status"></aui-status>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'identification_status'">
+                                            <aui-status
+                                                [value]="item.identification_status ? item.identification_status : dataMap.Identification_Status.not_identified.value"
+                                                type="Identification_Status"></aui-status>
+                                        </ng-container>
+                                        <ng-container *ngSwitchDefault>
+                                            <span lv-overflow>
+                                                {{item[col.key] | nil}}
+                                            </span>
+                                        </ng-container>
+                                    </ng-container>
+                                </td>
+                            </ng-container>
+                            <td width='150px'>
+                                <lv-operation-menu [lvItemsFn]="optsCallback" [lvData]="item"></lv-operation-menu>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </lv-datatable>
+        </div>
+        <div class="aui-paginator-wrap">
+            <lv-paginator [lvPageSize]="pageSize" [lvTotal]="total" [lvPageIndex]="pageIndex" #page
+                [lvPageSizeOptions]="sizeOptions" [hidden]="!total" (lvPageChange)="pageChange($event)">
+            </lv-paginator>
+        </div>
+    </div>
+</div>
+
+<ng-template #identifiedTpl>
+    <span innerHTML="{{'explore_identified_warn_label' | i18n}}"></span>
+</ng-template>

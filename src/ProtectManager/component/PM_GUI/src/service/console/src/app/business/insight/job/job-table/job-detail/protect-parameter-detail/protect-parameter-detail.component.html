@@ -1,0 +1,356 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form class="formGroup">
+    <!-- 备份完成后删除归档日志 -->
+    <lv-form-item *ngIf="isDeleteLog">
+        <lv-form-label>
+            {{'protection_oracle_delete_log_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{data?.delete_archived_log | textMap: 'Switch_Status'}}
+        </lv-form-control>
+    </lv-form-item>
+    <!-- Oracle -->
+    <ng-container *ngIf="application === applicationType.Oracle">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_snapshot_backup_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.storage_snapshot_flag | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <!-- FC -->
+    <ng-container *ngIf="application === applicationType.FusionCompute">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_same_snapshot_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.is_consistent | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_fc_snap_delete_speed_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.snap_delete_speed}}
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <!-- K8S -->
+    <lv-form-item
+        *ngIf="[applicationType.KubernetesDatasetCommon,dataMap.Resource_Type.kubernetesNamespaceCommon.value].includes(job.sourceSubType)">
+        <lv-form-label>
+            {{'protection_ensure_consistency_backup_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{data?.is_consistent | textMap: 'Switch_Status'}}
+        </lv-form-control>
+    </lv-form-item>
+    <!-- 对象存储高级参数 -->
+    <ng-container *ngIf="application === applicationType.ObjectStorage">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'explore_acl_backup_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.isBackupAcl | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="isObjectShowBucket">
+            <lv-form-label>
+                {{ 'protection_bucket_log_scan_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{ data?.useBucketLog | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'explore_object_check_point_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{ data?.checkPoint | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="!!data?.checkPoint">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'explore_object_retry_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    {{data?.retryNum | nil}}
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'protection_small_file_aggregation_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.aggregateSwitch | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="data?.aggregateSwitch">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_small_file_size_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    {{data?.maxSizeAfterAggregate + ' KB' | nil}}
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_file_max_size_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    {{data?.maxSizeToAggregate + ' KB' | nil}}
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </ng-container>
+    <!-- exchange -->
+    <ng-container
+        *ngIf="[applicationType.Exchange,dataMap.Resource_Type.ExchangeSingle.value, dataMap.Resource_Type.ExchangeGroup.value].includes(job.sourceSubType)">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_exchange_vss_copy_verify_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.m_isConsistent | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container
+        *ngIf="[dataMap.Resource_Type.ExchangeGroup.value].includes(job.sourceSubType) || ([applicationType.Exchange].includes(job.sourceSubType) && extendInfo?.isGroup === '1')">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_exchange_dag_backup_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.dag_backup | textMap: 'dagBackupType'}}
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="[dataMap.Resource_Type.ExchangeEmail.value].includes(job.sourceSubType)">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_exchange_email_failed_continue_backup_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.backup_continue | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <!-- MongoDB -->
+    <lv-form-item
+        *ngIf="[dataMap.Resource_Type.MongodbClusterInstance.value, dataMap.Resource_Type.MongodbSingleInstance.value].includes(job.sourceSubType)">
+        <lv-form-label>
+            {{'protection_lvm_percent_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{data?.create_lvm_percent}}%
+        </lv-form-control>
+    </lv-form-item>
+    <!-- AD域的对象级备份 -->
+    <lv-form-item *ngIf="application === applicationType.ActiveDirectory">
+        <lv-form-label>
+            {{'protection_active_directory_advanced_backup_label'|i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{data?.object_backup | textMap: 'Switch_Status'}}
+        </lv-form-control>
+    </lv-form-item>
+    <!-- 卷的操作系统备份 -->
+    <lv-form-item *ngIf="application === applicationType.Volume">
+        <lv-form-label>
+            {{'protection_volume_advanced_backup_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{data?.system_backup_flag | textMap: 'Switch_Status'}}
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="isChannel">
+        <lv-form-label>
+            {{ 'protection_channel_number_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            {{data?.channels | nil}}
+        </lv-form-control>
+    </lv-form-item>
+    <!-- 文件集 -->
+    <ng-container *ngIf="application === applicationType.Fileset">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'protection_same_backup_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.consistent_backup| textMap: 'Switch_Status' }}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'protection_cross_file_system_backup_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.cross_file_system | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="osType !== dataMap.Fileset_Template_Os_Type.windows.value">
+            <lv-form-label>
+                {{ 'protection_backup_nfs_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.backup_nfs| textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="osType === dataMap.Fileset_Template_Os_Type.windows.value">
+            <lv-form-label>
+                {{ 'protection_backup_smb_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.backup_smb | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_fileset_sla_advanced_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.backup_continue_with_files_backup_failed | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="osType !== dataMap.Fileset_Template_Os_Type.aix.value">
+            <lv-form-label>
+                {{ 'protection_sparse_file_detect_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.sparse_file_detection | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <!-- Nasshare -->
+    <ng-container *ngIf="application === applicationType.NASShare">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'protection_smb_hardlink_protection_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.smb_hardlink_protection | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'protection_smb_acl_protection_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.smb_acl_protection | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_backup_hot_data_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{!!data?.backup_hot_data | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'protection_small_file_aggregation_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{(data?.small_file_aggregation === dataMap.Aggregation_Mode.enable.value) | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="data?.small_file_aggregation === dataMap.Aggregation_Mode.enable.value">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_small_file_size_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    {{data?.aggregation_file_size + ' KB' | nil}}
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_file_max_size_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    {{data?.aggregation_file_max_size + ' KB' | nil}}
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </ng-container>
+    <!-- Nas文件系统、NDMP-->
+    <lv-form-item *ngIf="[applicationType.NASFileSystem, dataMap.Resource_Type.ndmp.value].includes(job.sourceSubType)">
+        <lv-form-label>
+            {{'explore_share_protocol_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{String(data?.protocol) | textMap: 'NasFileSystem_Protocol'}}
+        </lv-form-control>
+    </lv-form-item>
+    <!-- 代理主机 -->
+    <lv-form-item *ngIf="isProxy">
+        <lv-form-label>
+            {{'protection_proxy_host_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <span class="flow-agent" [lv-tooltip]="agentName" lvTooltipPosition="bottom"
+                lvTooltipClassName="taskTool">{{agentName | nil}}</span>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="isConcurrent">
+        <lv-form-label>
+            {{'protection_concurrency_number_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{data?.concurrent_requests | nil}}
+        </lv-form-control>
+    </lv-form-item>
+    <!-- 小文件聚合 -->
+    <ng-container *ngIf="isSmallFile">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'protection_small_file_aggregation_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.small_file_aggregation | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="data?.small_file_aggregation">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_small_file_size_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    {{data?.aggregation_file_size + ' KB' | nil}}
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_file_max_size_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    {{data?.aggregation_file_max_size + ' KB' | nil}}
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </ng-container>
+</lv-form>

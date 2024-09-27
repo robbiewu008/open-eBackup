@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤2：开启zkmeta自动备份功能">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839290513.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001792571132">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤2：开启zkmeta自动备份功能</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001792571132"></a><a name="ZH-CN_TOPIC_0000001792571132"></a>
+  <h1 class="topictitle1">步骤2：开启zkmeta自动备份功能</h1>
+  <div>
+   <p>TDSQL在执行分布式实例备份任务前，需开启zkmeta自动备份功能，否则会导致跨集群恢复数据库失败。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>使用<strong>root</strong>用户登录schedule节点。</span></li>
+     <li><span>执行以下命令，修改<span class="filepath">“confscheduler.xml”</span>配置文件。</span><p></p><p><strong>cd /data/application/scheduler/conf/</strong></p> <p><strong>vi scheduler.xml</strong></p> <p>在配置文件中增加以下内容：</p> <pre class="screen">&lt;back_zkmeta value="on"/&gt;</pre> <p></p></li>
+     <li><span>使用<strong>root</strong>用户登录zk节点。</span><p></p><p><strong>cd /data/application/zookeeper/bin/</strong></p> <p><strong>./zkCli.sh -server 127.0.0.1:</strong><em>端口号</em></p> <p>示例：</p> <pre class="screen">cd /data/application/zookeeper/bin/
+./zkCli.sh -server 127.0.0.1:2118</pre>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>命令中的<em>端口号</em>为对应zk的端口号，请根据赤兔管理平台实际查询到的端口号替换。</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>执行以下命令，修改配置。</span><p></p>
+      <ol type="a">
+       <li>执行以下命令，查询配置项内容。<p><strong>get /tdsqlzk/configs/agent@global</strong></p> <p>查询结果示例：</p> <pre class="screen">{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966"}</pre></li>
+       <li id="ZH-CN_TOPIC_0000001792571132__li176434913571"><a name="ZH-CN_TOPIC_0000001792571132__li176434913571"></a><a name="li176434913571"></a>在返回的json结果中，添加以下内容：<pre class="screen">"local_backup":"1"</pre> <p>添加结果示例：</p> <pre class="screen">{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966","local_backup":"1"}</pre></li>
+       <li>执行以下命令，将<a href="#ZH-CN_TOPIC_0000001792571132__li176434913571">4.b</a>中添加的结果设置到配置项中。<p><strong>set /tdsqlzk/configs/agent@global </strong><em>{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966","local_backup":"1"}</em></p>
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>命令中的<em>{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966","local_backup":"1"}</em>仅为示例，请根据实际替换。</p>
+         </div>
+        </div></li>
+      </ol> <p></p></li>
+     <li><span>使用<strong>root</strong>用户登录集群所在的所有节点，执行<strong>reboot</strong>命令，重启生产主机。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001839290513.html">备份TDSQL数据库</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

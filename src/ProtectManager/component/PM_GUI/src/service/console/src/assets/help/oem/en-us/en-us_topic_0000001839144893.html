@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Setting the Device Time">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001839144893">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Setting the Device Time</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001839144893"></a><a name="EN-US_TOPIC_0000001839144893"></a>
+  <h1 class="topictitle1">Setting the Device Time</h1>
+  <div>
+   <p class="msonormal">This section describes how to set the system time. With correct system time, you can accurately determine the alarm generation time based on alarm logs. You can synchronize the client time to the system and set Network Time Protocol (NTP) automatic synchronization or manually change the system time. After configuring the device time, you must restart all <span>product</span> services. Otherwise, data protection jobs will fail to be delivered.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>You have configured the NTP server before configuring automatic NTP synchronization. For details about how to configure the NTP server, see the related configuration documents of the NTP server.</li>
+     <li>If a firewall is configured, port 123 has been enabled.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <ul>
+     <li>NTP is a protocol that synchronizes the time of a computer system to Universal Time Coordinated (UTC). Servers that support NTP are called NTP servers.</li>
+     <li>By synchronizing the client time, you can adjust the system time to be consistent with the client time.</li>
+     <li>By configuring the NTP automatic synchronization, you can periodically and automatically synchronize a device with the NTP server which serves as an external time source.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p class="msonormal">Changing the device time may cause the following impacts:</p>
+    <ul>
+     <li>If the device time is later than the license expiration date, the license may become invalid.</li>
+     <li>If the device time is later than the certificate expiration date, the certificate will expire.</li>
+     <li>If the device time is later than the user-defined password expiration date, the system may force users to change the login password.</li>
+     <li>If the device time is later than the deadline for saving historical performance data, the system will no longer save historical performance data.</li>
+     <li>Changing the device time affects BBU modules' lifespan and may trigger alarms indicating that a BBU module's life expires or is aged.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol"><b><span><strong>Settings</strong></span> &gt; <span><strong>Basic Info</strong></span> &gt; <span><strong>Device Time</strong></span></b></span> and set the device time.</span><p></p><p class="msonormal">Use one of the following methods to set the device time:</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p class="text">Set the correct time zone and time. Otherwise, the time recorded in alarms or logs may be different from the actual time, affecting fault locating.</p>
+       </div>
+      </div>
+      <ul>
+       <li>Manual
+        <ol type="a">
+         <li>Click <strong>Modify</strong> and select <strong>Change manually</strong>.</li>
+         <li>Set the device time and time zone.
+          <ul>
+           <li>In the time area, change the device time and click <strong>OK</strong>.</li>
+           <li>Select the time zone where the device is located from the <strong>Time Zone</strong> drop-down list box.</li>
+          </ul></li>
+         <li>Click <strong>Save</strong>.<p class="litext">The security alert dialog box is displayed.</p></li>
+         <li>Confirm the information in the dialog box, select <strong>I have read and understand the consequences associated with performing this operation</strong>, and click <strong>OK</strong>.</li>
+        </ol></li>
+       <li>Synchronize with the client time.
+        <ol type="a">
+         <li>Click <strong>Modify</strong> and select <strong>Synchronize with client time</strong>.</li>
+         <li>If the time zone ID cannot be obtained, DeviceManager displays <strong>Client Time Zone</strong>. Specify <strong>Client Time Zone</strong>, which is the time zone where the current client resides.</li>
+         <li>Click <strong>Save</strong>.<p class="litext">The security alert dialog box is displayed.</p></li>
+         <li>Confirm the information in the dialog box, select <strong>I have read and understand the consequences associated with performing this operation</strong>, and click <strong>OK</strong>.</li>
+        </ol></li>
+      </ul>
+      <ul>
+       <li>Set automatic NTP synchronization.
+        <ol type="a">
+         <li>Click <strong>Modify</strong> and select <strong>Synchronize with NTP server time</strong>.</li>
+         <li>In <strong>NTP Server Address</strong>, enter the IPv4 address, IPv6 address, or domain name of the NTP server.
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <ul>
+             <li>A maximum of two NTP servers can be added. If the system cannot synchronize the time from one NTP server, it synchronizes the time from the other one.</li>
+             <li>Ensure that the time of the two NTP servers is consistent.</li>
+            </ul>
+           </div>
+          </div></li>
+         <li>(Optional) Click <strong>Test</strong>.</li>
+         <li>Set <strong>NTP Authentication</strong> to <strong>Enable</strong>.
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <ul>
+             <li class="text">NTP authentication can be enabled only when NTPv4 or later is used. After authentication, the NTP server automatically synchronizes the time to the storage device.</li>
+             <li>After NTP authentication is enabled, you need to import the CA certificate.</li>
+            </ul>
+           </div>
+          </div></li>
+         <li>In <strong>Time Zone</strong>, select a time zone.</li>
+         <li>Click <strong>Save</strong>.<p class="litext">The security alert dialog box is displayed.</p></li>
+         <li>Confirm the information in the dialog box, select <strong>I have read and understand the consequences associated with performing this operation</strong>, and click <strong>OK</strong>.</li>
+        </ol></li>
+      </ul> <p></p></li>
+     <li><span>Restart all services of the <span>product</span>.</span><p></p>
+      <ol type="a">
+       <li>Use PuTTY to log in to the <span>product</span> as user <strong>admin</strong> through the management IP address.<p>The password of user <strong>admin</strong> is the password set by the user upon first login. For the security purpose of the <span>product</span>, change your login password periodically. For details about how to change the login password, see the <i><cite>Account List</cite></i>.</p></li>
+       <li>Run the following command to switch to the developer mode.<pre class="screen">change user_mode current_mode user_mode=developer</pre> <p>The command output is as follows:</p> <pre class="screen">DANGER: You are about to switch to the developer view. Commands in this view must be run under the guidance of R&amp;D engineers. You can choose whether to run this command. If you run this command to switch to the developer view, it means that you know risks of running commands in the developer view.
+Device vendors are not responsible for any loss or damage caused to the user or others by running commands in the developer view.
+1. Running the command in the developer view may cause system reset, restart, offline, service interruption, data loss, and data inconsistency.
+2. Running the command in the developer view may cause the performance to decrease.
+3. Running the command in the developer view to delete or remove configurations may have impact on the service and data.
+4. Running the command in the developer view may cause system alarms.
+Suggestion: Run this command under the guidance of R&amp;D engineers.
+Have you read danger alert message carefully?(y/n)</pre></li>
+       <li>Read the message carefully and enter <strong>y</strong>.<p>The command output is as follows:</p> <pre class="screen">Are you sure you really want to perform the operation?(y/n)</pre></li>
+       <li>Enter <strong>y</strong>.</li>
+       <li>Enter <strong>minisystem</strong>.<p>The command output is as follows:</p> <pre class="screen">-----------------System Information-----------------
+| Product Version | 1.1.RC2 |
+| System Version | 7600508195 |
+| Release Time | 20220314221834 |
+----------------------------------------------------</pre></li>
+       <li>Run the following command to restart the kube-dns service.<pre class="screen">container.sh -c kubectl delete pod --selector k8s-app=kube-dns -n kube-system</pre> <p>The command output is as follows:</p> <pre class="screen">DANGER: You are going to perform a danger command. Ensure that no container are being used. Otherwise, this behavior causes container service interruption.
+Suggestion: Before you perform this operation, make sure that the operation will not affect working of system.
+Have you read danger alert message carefully?(y/n)</pre></li>
+       <li>Read the message carefully and enter <strong>y</strong>.<p>The command output is as follows:</p> <pre class="screen">Enter "I have read and understand the consequences associated with performing this operation." to confirm running this command.</pre></li>
+       <li>Enter the following content as prompted:<pre class="screen">I have read and understand the consequences associated with performing this operation.</pre> <p>The command output is as follows. If <strong>exec kubectl success</strong> is displayed, the restart succeeds.</p> <pre class="screen">pod "coredns-555f99b786-prmld" deleted
+pod "coredns-555f99b786-2tv2m" deleted
+exec kubectl success</pre></li>
+       <li>Run the following command to restart the dev-passthrough service.<pre class="screen">container.sh -c kubectl delete pod --selector dorado-app=dev-passthrough -n kube-system</pre> <p>The command output is as follows:</p> <pre class="screen">DANGER: You are going to perform a danger command. Ensure that no container are being used. Otherwise, this behavior causes container service interruption.
+Suggestion: Before you perform this operation, make sure that the operation will not affect working of system.
+Have you read danger alert message carefully?(y/n)</pre></li>
+       <li>Read the message carefully and enter <strong>y</strong>.<p>The command output is as follows:</p> <pre class="screen">Enter "I have read and understand the consequences associated with performing this operation." to confirm running this command.</pre></li>
+       <li>Enter the following content as prompted:<pre class="screen">I have read and understand the consequences associated with performing this operation.</pre> <p>The command output is as follows. If <strong>exec kubectl success</strong> is displayed, the restart succeeds.</p> <pre class="screen">pod "dev-passthrough-52wj9" deleted
+pod "dev-passthrough-lpp9m" deleted
+exec kubectl success</pre></li>
+       <li>Run the following command to restart all data backup feature containers in the <span>product</span>:<pre class="screen">container.sh -c kubectl delete --all pods -n dpa</pre> <p>The command output is as follows:</p> <pre class="screen">DANGER: You are going to perform a danger command. Ensure that no container are being used. Otherwise, this behavior causes container service interruption.
+Suggestion: Before you perform this operation, make sure that the operation will not affect working of system.
+Have you read danger alert message carefully?(y/n)</pre></li>
+       <li>Read the message carefully and enter <strong>y</strong>.<p>The command output is as follows:</p> <pre class="screen">Enter "I have read and understand the consequences associated with performing this operation." to confirm running this command.</pre></li>
+       <li>Enter the following content as prompted:<pre class="screen">I have read and understand the consequences associated with performing this operation.</pre> <p>The command output is as follows. If <strong>exec kubectl success</strong> is displayed, the restart succeeds.</p> <pre class="screen">pod "dataenableengine-server-0" deleted
+pod "protectengine-e-dma-0" deleted
+pod "infrastructure-0" deleted
+pod "gaussdb-0" deleted
+pod "sftp-0" deleted
+pod "dataenableengine-server-1" deleted
+pod "protectengine-1" deleted
+pod "protectmanager-system-base-0" deleted
+pod "protectmanager-system-base-1" deleted
+pod "protectmanager-biz-service-0" deleted
+pod "protectmanager-biz-service-1" deleted
+pod "protectengine-0" deleted
+exec kubectl success</pre></li>
+       <li>Run the following command to check whether all pods are started.<pre class="screen">container.sh -c kubectl get pods -n dpa</pre> <p>The command output is as follows:</p> <pre class="screen">NAME READY STATUS RESTARTS AGE
+dataenableengine-server-0 4/4 Running 0 49m
+protectengine-e-dma-0 2/2 Running 0 49m
+infrastructure-0 7/7 Running 0 49m
+gaussdb-0 1/1 Running 0 49m
+sftp-0 1/1 Running 0 49m
+dataenableengine-server-1 4/4 Running 0 16m
+protectengine-1 9/9 Running 0 47m
+protectmanager-system-base-1 2/2 Running 0 49m
+protectmanager-system-base-0 2/2 Running 0 44m
+protectmanager-biz-service-0 2/2 Running 0 49m
+protectmanager-biz-service-1 2/2 Running 0 49m
+protectengine-0 9/9 Running 0 49m
+exec kubectl success</pre> <p>If all pods are in the <span class="parmvalue"><b>Running</b></span> state, the service is restarted successfully. This process takes about 5 to 10 minutes.</p></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

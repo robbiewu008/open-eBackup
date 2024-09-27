@@ -1,0 +1,84 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="创建介质集（归档存储是磁带库）">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839194489.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839194501">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>创建介质集（归档存储是磁带库）</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001839194501"></a><a name="ZH-CN_TOPIC_0000001839194501"></a>
+
+
+  <h1 class="topictitle1">创建介质集（归档存储是磁带库）</h1>
+
+  <div><p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_p52126361762">当将磁带库作为归档存储时，请参考本节创建介质集。如果归档存储不是磁带库请忽略本节。</p>
+<div class="section" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_section64578218528"><h4 class="sectiontitle">背景信息</h4><ul id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_ul20158183415546"><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_li12775337145414">介质集是基于磁带创建的，是一个磁带存储池，用于存放归档数据。因此创建介质集前需确保已有磁带库被扫描并更新至<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_text18376218116">OceanProtect</span>。</li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_li104011181308">系统每隔10分钟自动扫描磁带库，发现连接到<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_text1834982214116">OceanProtect</span>的磁带库后会将其自动更新至<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_text1679762213115">OceanProtect</span>。<p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_p22934181108">如果您发现磁带库还未更新至<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_text102942231211">OceanProtect</span>，可手动扫描磁带库，具体操作可参考<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001132896521_cite789410454417">《OceanProtect <span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001792502994_ph14959193919202">备份一体机 1.5.0-1.6.0</span> 管理员指南》</span>中的<span class="parmvalue" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001132896521_parmvalue63001041533">“扫描磁带库”</span>。</p>
+</li></ul>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_section8876201915305"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_ol16741124252118"><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li79299103444"><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_zh-cn_topic_0000001839144717_zh-cn_topic_0000001091431193_uicontrol123381932135316">“<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_zh-cn_topic_0000001839144717_text3591711162920">系统</span> &gt; <span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_zh-cn_topic_0000001839144717_text134875310309">基础设施</span> &gt; <span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_zh-cn_topic_0000001839144717_text78169323429">归档存储库</span>”</span>。</span></li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li3233732194510"><span>在<span class="uicontrol" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_uicontrol17681657155019">“<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_text17165161385110">磁带</span>”</span>页签，选择某个节点，单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_uicontrol94863210528">“<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_text716846185211">介质集</span>”</span>。</span></li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li3878513121018"><span>单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_uicontrol1977312120105">“<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_text18211164020818">创建</span>”</span>。</span></li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li821082311014"><span>填写基本信息。</span><p><ol type="a" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_ol197571878143"><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li67571175143">自定义介质集的名称。</li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li5344115992215">选择驱动块大小。支持64KB、128KB、256KB。向磁带写入数据时，是一块一块写入的。介质集所属磁带数据会以设置的块大小进行写入。<div class="note" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_note5905143444614"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p816211409472">建议按照文件大小选择驱动块大小。</p>
+<ul id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_ul593113415471"><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li1668012442475">对于大文件，选择较大的驱动块大小，以保证读写效率。</li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li293164111479">对于小文件，选择较小的驱动块大小，以充分利用磁带空间。</li></ul>
+</div></div>
+</li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li6417127182319">选择是否启用数据压缩。<ul id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_ul9806153473116"><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li18806534143120">启用：将开启磁带库的硬件压缩功能，启用压缩可以提升磁带容量与写入速度。</li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li205989400317">禁用：将禁用磁带库的硬件压缩功能。</li></ul>
+</li></ol>
+</p></li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li572619291102"><span>选择磁带。</span><p><ol type="a" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_ol9767151591519"><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li10767191519153">选择磁带所属控制器。</li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li1068113221153">选择磁带。<p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p9396047111710"><a name="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li1068113221153"></a><a name="zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li1068113221153"></a>在左侧的磁带库列表中，选择某个磁带库，勾选右侧磁带库中的磁带。</p>
+<div class="note" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_note42406912010"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_ul15940152412208"><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li69401124162010">支持添加多个磁带库中的磁带。不支持跨控制器添加磁带。</li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li622341419310">向介质集添加磁带时，不支持添加已经加入其它介质集的磁带。</li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li1090495541515">要求磁带在库，且磁带<span class="uicontrol" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_uicontrol664242251811">“<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_text82042310911">写入状态</span>”</span>不为<span class="uicontrol" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_uicontrol125171917181716">“<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_text2016814914">错误</span>”</span>或<span class="uicontrol" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_uicontrol537512021712">“<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_text1067117302919">未知</span>”</span>。</li></ul>
+</div></div>
+</li></ol>
+</p></li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li13229183551020"><span>选择是否开启可用磁带不足告警。</span><p><ul id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_ul247996151913"><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li1747915691918">开启告警。您需要设置磁带数量。当空白磁带和过期可覆盖磁带数量小于该值时，将产生告警。此时，您可以插入空白磁带或者将磁带标记为空。<div class="note" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_note2252142318213"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_ul11252192352115"><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li19943535191610">如果启用了数据压缩，一个磁带能实际存储的最大数据量是未知的。比如磁带标称容量为50GB，实际可能存储60G、80G、100G的数据，所以无法做到按容量进行告警，只能按空白的磁带个数进行告警。</li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li136157489214">告警阈值设置不能超过已选择磁带数量。</li></ul>
+</div></div>
+</li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li112311528132112">关闭告警。关闭可用磁带不足告警后，您将无法知道可用磁带数量。建议开启。</li></ul>
+</p></li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li54306598294"><span>选择磁带保留策略。</span><p><p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p1289133300"></p>
+<div class="p" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p52923102303">磁带保留策略参数说明如<a href="#ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_table6292131043013">表1</a>所示。
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_table6292131043013"></a><a name="zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_table6292131043013"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_table6292131043013" frame="border" border="1" rules="all"><caption><b>表1 </b>磁带保留策略参数说明</caption><colgroup><col style="width:26.33%"><col style="width:73.67%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_row429212106306"><th align="left" class="cellrowborder" valign="top" width="26.33%" id="mcps1.3.3.2.7.2.2.2.2.3.1.1"><p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p14292181015308">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="73.67%" id="mcps1.3.3.2.7.2.2.2.2.3.1.2"><p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p729251019302">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_row32927102303"><td class="cellrowborder" valign="top" width="26.33%" headers="mcps1.3.3.2.7.2.2.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p152921410203019"><span style="color:#282B33;" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_text4601640696">不保护数据（根据需要循环覆盖磁带）</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="73.67%" headers="mcps1.3.3.2.7.2.2.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p1329214109306">不保护磁带中的数据，有新的数据写入时，直接覆盖原有数据。</p>
+<p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p122151545115915">选择此保留策略时，请确保当前介质集中至少有两个磁带。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_row1729213103305"><td class="cellrowborder" valign="top" width="26.33%" headers="mcps1.3.3.2.7.2.2.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p2292141093017"><span style="color:#282B33;" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_text89981449896">永久保留数据</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="73.67%" headers="mcps1.3.3.2.7.2.2.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p1329241003015">永久保留磁带中的数据。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_row17292151011302"><td class="cellrowborder" valign="top" width="26.33%" headers="mcps1.3.3.2.7.2.2.2.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p182921510103014"><span style="color:#282B33;" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_text181111455196">定期保护数据</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="73.67%" headers="mcps1.3.3.2.7.2.2.2.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p529241033012">定期保护磁带中的数据。保护xx天/月/年。</p>
+<p id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_p8292410153017">例如，设置定期保护数据的时间为10天，那么从对磁带最后一次写数据完成，经过10天后，将磁带标记为空，可以对磁带进行覆盖写。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_li2882165851013"><span>单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_uicontrol1193214611112">“<span id="ZH-CN_TOPIC_0000001839194501__zh-cn_topic_0000001839143173_zh-cn_topic_0000001839224677_text42337112109">确定</span>”</span>。介质集创建完成后，系统每隔1小时刷新介质集的状态和容量。可能存在介质集的状态与容量与实际不一致的情况，请等待系统刷新。</span></li></ol>
+</div>
+</div>
+
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001839194489.html">步骤1：添加归档存储</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

@@ -1,0 +1,178 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-group [lvColumns]='["16px", "auto"]' lvRowGutter="4px" class="vm-name-tip aui-gutter-column-md">
+    <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+    <span>
+        {{'protection_vm_tip_label' | i18n}}
+    </span>
+</lv-group>
+<ng-container *ngIf="!isBatch">
+    <div class='aui-gutter-column-md aui-h3'>
+        {{'common_selected_label'|i18n}}
+    </div>
+    <ng-container *ngTemplateOutlet="tableTpl; context: { $implicit: selectedData }">
+    </ng-container>
+</ng-container>
+
+<ng-container *ngIf="isBatch">
+    <lv-collapse class="custom-title" [lvMultiExpansion]="'false'" lvType="simple">
+        <lv-collapse-panel [lvTitle]="title" [lvExpanded]="true">
+            <lv-tabs [(lvActiveIndex)]="activeIndex" [lvSize]="'small'" *ngIf="isBatch">
+                <lv-tab [lvTitle]="totalTpl" [lvId]="'total'">
+                    <ng-template lv-tab-lazy>
+                        <ng-container *ngTemplateOutlet="
+                tableTpl;
+                context: { $implicit: allDatas, async: true }
+              ">
+                        </ng-container>
+                    </ng-template>
+                </lv-tab>
+                <lv-tab [lvTitle]="selectedTpl" [lvId]="'selected'">
+                    <ng-template lv-tab-lazy>
+                        <ng-container *ngTemplateOutlet="tableTpl; context: { $implicit: selectedData }">
+                        </ng-container>
+                    </ng-template>
+                </lv-tab>
+            </lv-tabs>
+
+            <ng-template #totalTpl>
+                <div class="host-register-tabnav">
+                    <span>{{ 'common_total_label' | i18n }}</span>
+                    <span class="host-register-tabnav-num">{{ total }}</span>
+                </div>
+            </ng-template>
+            <ng-template #selectedTpl>
+                <div class="host-register-tabnav">
+                    <span>{{ 'common_selected_label' | i18n }}</span>
+                    <span class="host-register-tabnav-num">{{
+                        selectedData.length
+                        }}</span>
+                </div>
+            </ng-template>
+        </lv-collapse-panel>
+    </lv-collapse>
+</ng-container>
+
+<ng-template #title>
+    <div [ngClass]="{ title: isHyperv && !isBatch }">
+        <span class="selected-disk-title">{{
+            'common_selected_info_label' | i18n: [selectedTitle]
+            }}</span>
+        <div style="max-width:300px; display: inline-block;vertical-align: sub;" lv-overflow>
+            <span>{{ isBatch ? selectedData.length : selectedData[0].name }}</span>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #tableTpl let-tabledata let-async="async">
+    <div [ngClass]="{'aui-gutter-column-xl': !isBatch}">
+        <lv-datatable [lvData]="tabledata" #lvTable lvSelectionMode="multiple"
+            [lvPaginator]="async ? totalPage : selectedPage" lvSize="small"
+            (lvSelectionChange)="selectionChange($event)" [(lvSelection)]="selectedData" [lvAsync]="async"
+            lvCompareWith="uuid">
+            <thead>
+                <tr>
+                    <th *ngIf="async" lvShowCheckbox width="64px" [lvRowsData]="lvTable.renderData"
+                        [lvDisabled]="getTableHeadDiabled(lvTable.renderData)"></th>
+                    <th>{{ 'common_name_label' | i18n }}</th>
+                    <th width="100px">{{ 'common_sla_label' | i18n }}</th>
+                    <th *ngIf="!isHyperv">{{ diskName }}</th>
+                    <th *ngIf="!isHyperv && !isVirtualMachine">
+                        {{ 'protection_vms_label' | i18n }}
+                    </th>
+                    <th *ngIf="!async && isBatch" width="110px">
+                        {{ 'common_operation_label' | i18n }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="
+          let item of lvTable.renderData;
+          let i = index;
+          trackBy: trackById
+        ">
+                    <tr>
+                        <td *ngIf="async" [lvDisabled]="getRowDisabled(item)" lvShowCheckbox [lvRowData]="item"></td>
+                        <td>
+                            <span lv-overflow>{{ item.name }}</span>
+                        </td>
+                        <td>
+                            <span lv-overflow>
+                                <sla-type [name]="item.sla_name"></sla-type>
+                            </span>
+                        </td>
+                        <td *ngIf="!isHyperv">
+                            <ng-container *ngIf="isBatch">
+                                <span lv-overflow [ngClass]="{ 'aui-link': !item.diskError }"
+                                    (click)="selectDisks(item)">
+                                    {{
+                                    (item.diskError
+                                    ? 'protection_protect_disk_error_label'
+                                    : item.allDisks?.length !== item.allUsableDisks?.length
+                                    ? 'protection_protect_disk_error_label'
+                                    : 'common_selected_label'
+                                    ) | i18n
+                                    }}
+                                </span>
+                            </ng-container>
+                            <ng-container *ngIf="!isBatch">
+                                <span lv-overflow [ngClass]="{ 'aui-link': !item.diskError }"
+                                    (click)="selectDisk(item)">
+                                    <ng-container *ngIf="countSelectedDisks(item)">
+                                        {{ 'common_selected_label' | i18n }} {{selectDiskNum}}
+                                    </ng-container>
+                                    <ng-container *ngIf="!countSelectedDisks(item)">
+                                        {{
+                                        (item.diskError
+                                        ? 'protection_protect_disk_error_label'
+                                        : item.allDisks?.length !== item.allUsableDisks?.length
+                                        ? 'protection_protect_disk_error_label'
+                                        : diskSelectTipKey
+                                        ) | i18n
+                                        }}
+                                    </ng-container>
+                                </span>
+                            </ng-container>
+                        </td>
+                        <td *ngIf="!isHyperv && !isVirtualMachine">
+                            {{ item.children }}
+                        </td>
+                        <td width="110px" *ngIf="!async && isBatch">
+                            <span class='aui-link' (click)="delete(item)">{{'common_remove_label'|i18n}}</span>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </lv-datatable>
+    </div>
+
+
+
+
+
+    <!-- totalTable分页  -->
+    <lv-paginator #totalPage [lvShowTotal]="false" [hidden]="!async || !total" lvMode="simple"
+        [lvPageSize]="totalPageSize" [lvTotal]="total" [lvShowPageSizeOptions]="false" [lvPageIndex]="totalPageIndex"
+        (lvPageChange)="pageChange($event)">
+    </lv-paginator>
+
+    <!-- selectedTable分页 -->
+    <lv-paginator #selectedPage [lvShowPageSizeOptions]="false" [lvShowTotal]="false"
+        [hidden]="async || !tabledata.length || !isBatch" lvMode="simple" [lvPageIndex]="selectedPageIndex"
+        [lvPageSize]="selectedPageSize">
+    </lv-paginator>
+
+
+
+</ng-template>

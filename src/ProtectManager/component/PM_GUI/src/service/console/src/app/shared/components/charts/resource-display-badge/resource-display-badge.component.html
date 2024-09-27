@@ -1,0 +1,46 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation">
+  <lv-group>
+    <ng-container *ngIf="!cookieService.isCloudBackup">
+      <a class="tittle" lvDropdownPanelClass="job-resource-dropdown" lv-dropdown [lvDropdownMenus]="options">{{
+        resourceText }}
+        <i #lvDropdownTrigger lv-icon="lv-icon-triangle-down"></i></a>
+    </ng-container>
+    <ng-container *ngIf="cookieService.isCloudBackup">
+      <a class="tittle">{{resourceText}}</a>
+    </ng-container>
+  </lv-group>
+  <span class="aui-link"
+    [routerLink]="resourceDetailUrl">
+    {{ 'common_view_details_label' | i18n }} &gt;
+  </span>
+</div>
+
+<lv-group class="badage-container" lvGutter="50px">
+  <lv-group lvGutter="30px">
+    <img src="assets/img/home-protected.png" class="icon">
+    <div class="label-container">
+      <div class="label">{{ (protection.protected < 1000 ? protection.protected : '999+' ) | nil }}</div>
+          <div>{{ 'common_protected_label' | i18n }}</div>
+      </div>
+  </lv-group>
+  <lv-group lvGutter="30px">
+    <img src="assets/img/home-unprotected.png" class="icon">
+    <div class="label-container">
+      <div class="label">{{ (protection.unprotected < 1000 ? protection.unprotected : '999+' ) | nil }}</div>
+          <div>{{ 'common_unprotected_label' | i18n }}</div>
+      </div>
+  </lv-group>
+</lv-group>

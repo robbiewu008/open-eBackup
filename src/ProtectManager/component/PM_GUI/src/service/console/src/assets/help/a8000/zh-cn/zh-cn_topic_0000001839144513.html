@@ -1,0 +1,94 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="扫描磁带库">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001792505054.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839144513">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>扫描磁带库</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001839144513"></a><a name="ZH-CN_TOPIC_0000001839144513"></a>
+
+<h1 class="topictitle1">扫描磁带库</h1>
+<div><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p8060118">系统每隔10分钟自动扫描磁带库，发现连接到<span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text14923659173920">OceanProtect</span>的磁带库。如果您发现新接入的磁带库还未扫描至<span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text1832312816131">OceanProtect</span>，可以通过本节操作，手动扫描磁带库，将其添加至<span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text82759317401">OceanProtect</span>。</p>
+<div class="section" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_section15402165315167"><h4 class="sectiontitle">约束与限制</h4><ul id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_ul138793265179"><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li2068675910384">不支持不带机械臂的独立驱动器。</li><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li987922691714">支持LTO-3以上物理磁带库及虚拟磁带库。</li><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li173551059181714">仅支持有条形码的磁带库。</li><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li938225111815">物理磁带库与<span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text61241144403">OceanProtect</span>之间通过FC光纤通道连接，虚拟磁带库使用ISCSI协议。</li><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li29334582180">磁带库的不同驱动器需要支持相同的磁带标准。</li><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li15528103364810">不支持磁带部分空间过期。</li><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li1458819301476">仅支持RW类型磁带，不支持WORM类型的磁带。</li></ul>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_section356334914524"><h4 class="sectiontitle">前提条件</h4><ul id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_ul4735536364"><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li17351313611">已有磁带库成功连接<span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text14923594015">OceanProtect</span>。</li><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li776618368">对于物理磁带库，需要确保有导入导出槽位、且磁带库允许进行磁带挂载和解挂载操作。以昆腾磁带库为例，在磁带库的配置管理界面，进行如下配置。其他磁带库厂商的相应操作，请咨询厂商。<ul id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_ul1531914811531"><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_li1345351311534">选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_uicontrol1552115302002">“Library”</span>，在右侧<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_uicontrol2938711121">“Operations”</span>区域，单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_uicontrol198402055913">“IE Area”</span>，根据需要选择Slots（导入导出槽位数量）。</li><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_li1049913100444">选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_uicontrol1123512351814">“Library”</span>，在右侧<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_uicontrol41534156218">“Operations”</span>区域，单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_uicontrol1897816512011">“Settings”</span>，确保勾选<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_uicontrol267864164812">“Automatic Inventory”</span>、<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_uicontrol17434247164817">“Library-Assisted Drive Unload”</span>、<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_uicontrol9287112234811">“Logical Drive Serial Number Addressing”</span>、<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001506034709_uicontrol16372732134820">“Logical System Addressing”</span>参数。</li></ul>
+</li></ul>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_section85267543435"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_ol6919600448"><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001091431193_li1570821013536"><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001839144717_zh-cn_topic_0000001091431193_uicontrol123381932135316">“<span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001839144717_text3591711162920">系统</span> &gt; <span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001839144717_text134875310309">基础设施</span> &gt; <span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_zh-cn_topic_0000001839144717_text78169323429">归档存储库</span>”</span>。</span></li><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li3233732194510"><span>在<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_uicontrol120212905318">“<span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text1278022313534">磁带</span>”</span>页签，选择某个节点，单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_uicontrol663051135311">“<span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text6263729145310">磁带库</span>”</span>。</span></li><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li2061123114818"><span>单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_uicontrol17485191818512">“<span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text1372772714165">扫描磁带库</span>”</span>，系统将自动识别已成功连接<span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text37636518406">OceanProtect</span>的磁带库。扫描完成后，在磁带库列表可以查看新扫描的磁带库的信息。相关参数说明如表<a href="#ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_table17556217174917">表1</a>所示。</span><p>
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_table17556217174917"></a><a name="zh-cn_topic_0000001839144865_table17556217174917"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_table17556217174917" frame="border" border="1" rules="all"><caption><b>表1 </b>磁带库参数说明</caption><colgroup><col style="width:15.1%"><col style="width:84.89999999999999%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_row555613174491"><th align="left" class="cellrowborder" valign="top" width="15.1%" id="mcps1.3.4.2.3.2.1.2.3.1.1"><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p12556171774913">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="84.89999999999999%" id="mcps1.3.4.2.3.2.1.2.3.1.2"><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p10556181724910">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_row18556101794917"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p13556111718497"><span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text612519440161">名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p46371934161919">磁带库的名称，由系统生成。命名方式为：TapeLibrary- + 磁带库所属的控制器名称 + 编号。编号按照磁带库扫描的顺序排序。</p>
+<p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p11556101712499">例如，第一个被扫描到的磁带库，其所属的控制器名称为0A，该磁带库的名称为TapeLibrary-0A0。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_row1055612178495"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p25561017114919"><span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text1497145651614">状态</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p16556181716492">磁带库当前状态。</p>
+<ul id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_ul219732945413"><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li1419717298545"><span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text882694021718">在线</span>：磁带库与<span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text14289362404">OceanProtect</span>正常连接。</li><li id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_li1674016385547"><span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text2079911485175">离线</span>：磁带库与<span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text168522610401">OceanProtect</span>断开连接。</li></ul>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_row13556017124918"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p14556171710498"><span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text1344920419172">序列号</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p1755641711496">磁带库的序列号。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_row55569178492"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p1455615178496"><span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text17170811111711">厂商</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p12556181716497">磁带库的厂商。支持虚拟磁带库的所有厂商，支持的物理磁带库厂商包含IBM和Quantum。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_row613201115509"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p614411155012"><span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text931720187171">产品型号</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p614111145014">磁带库的具体型号。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_row183836134505"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p1638415137504"><span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text20646623181713">槽位数量</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p238441375018">磁带库的槽位数量。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_row56662118509"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p266142112505"><span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text1553516295179">驱动数量</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p26682116507">磁带库的驱动数量。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_row43971423145011"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p13397192317501"><span id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_text1699813412173">所属控制器</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839144513__zh-cn_topic_0000001839144865_p123971723155017">磁带库所属的控制器。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001792505054.html">管理磁带库</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

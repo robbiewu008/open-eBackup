@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<ng-container *ngIf="isDetail; else elseTemplate">
+    <lv-form>
+        <lv-form-item *ngIf="_isBoolean(protectData?.backup_res_auto_index)">
+            <lv-form-label>{{'protection_backup_index_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                {{protectData?.backup_res_auto_index | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="_isBoolean(protectData?.archive_res_auto_index)">
+            <lv-form-label>{{'protection_archive_index_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                {{protectData?.archive_res_auto_index | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+</ng-container>
+<ng-template #elseTemplate>
+    <div class="update-index-container" *ngIf="initSla && !isHcsUser && (hasBackup || hasArchive)">
+        <lv-alert lvType="warning" lvClosable="false">
+            <h2 class="lv-alert-title">
+                {{'protection_modify_index_warn_label' | i18n}}
+            </h2>
+        </lv-alert>
+        <lv-form [formGroup]="formGroup">
+            <lv-form-item *ngIf="hasBackup">
+                <lv-form-label></lv-form-label>
+                <lv-form-control>
+                    <lv-group lvGutter='8px'>
+                        <lv-switch formControlName="backup_res_auto_index"></lv-switch>
+                        <span>{{'protection_backup_index_label' | i18n}}</span>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item *ngIf="hasArchive">
+                <lv-form-label></lv-form-label>
+                <lv-form-control>
+                    <lv-group lvGutter='8px'>
+                        <lv-switch formControlName="archive_res_auto_index"></lv-switch>
+                        <span>{{'protection_archive_index_label' | i18n}}</span>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form>
+    </div>
+</ng-template>

@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Configuring the LDAP Service">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792345342.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001839144385">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Configuring the LDAP Service</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001839144385"></a><a name="EN-US_TOPIC_0000001839144385"></a>
+  <h1 class="topictitle1">Configuring the LDAP Service</h1>
+  <div>
+   <p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_p8060118">You can log in to the <span id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_text5812258201217">product</span> in Lightweight Directory Access Protocol (LDAP) server authentication mode to manage user information in a unified manner.</p>
+   <div class="section" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_section944932203517">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_ul453211633912">
+     <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_li17532116113914">The LDAP server has been installed and deployed.</li>
+     <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_li8682141703911">If LDAPS is used, apply for a CA certificate that matches the domain authentication server's certificate from a third-party certification authority, and then import the CA certificate. For details about how to import a CA certificate, see "Importing a Certificate" in the <em id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_i10473191985515">Security Configuration Guide</em>.</li>
+    </ul>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_section36341118113516">
+    <h4 class="sectiontitle">Context</h4>
+    <p class="MsoNormal" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_p33648747">LDAP is a TCP/IP network protocol that enables users to access directory system agents (DSAs). LDAP functionalities are reduced from X.500 Directory Access Protocol (DAP).</p>
+    <p class="MsoNormal" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_p34403269">The complexity of network management, especially user management, increases as the number of network applications grows. Most systems that provide a single service implement username-password authentication. However, each user has different permissions on various applications, which means that each user requires a different username and password for each application. In this condition, users must enter different usernames and passwords to access different applications. LDAP provides directory services to address this issue.</p>
+    <p class="MsoNormal" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_p41193968">The purpose of LDAP-based authentication is to set up a directory-oriented user authentication system, specifically, an LDAP environment. When a client attempts to access applications in the LDAP environment, the LDAP server compares the username and password sent by the client with the authentication information in the directory database for identity verification.</p>
+    <p class="MsoNormal" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_p35201398">For storage applications, client hierarchy information is stored on the LDAP server, and users are authenticated by the LDAP server when accessing the storage system.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_section1646643033718">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_ol62951659141510">
+     <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_li5295195911513"><span>Choose <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b129934391215">System</strong> &gt; <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b132152045141212">Security</strong> &gt; <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b0147158201217">LDAP Service Settings</strong>.</span></li>
+     <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_li34791134111616"><span>Enable <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b1176665951217">LDAP Service</strong>.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_note1779573312412">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p16795733152413">If <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b15594430171318">LDAP Service</strong> has been enabled, click <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b25951300136">Modify</strong> in the upper right corner.</p>
+       </div>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_li0911154591617"><span>Set the LDAP binding parameters listed in <a href="#EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_table961764631715">Table 1</a>.</span><p></p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_table961764631715"></a><a name="en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_table961764631715"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_table961764631715" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>LDAP binding parameters
+        </caption>
+        <colgroup>
+         <col style="width:21.57%">
+         <col style="width:78.43%">
+        </colgroup>
+        <thead align="left">
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row1661844612172">
+          <th align="left" class="cellrowborder" valign="top" width="21.57%" id="mcps1.3.4.2.3.2.1.2.3.1.1"><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p66181646101717">Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="78.43%" id="mcps1.3.4.2.3.2.1.2.3.1.2"><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p4618194611715">Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row1961874641715">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p361854618176">Server Type</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p8562121263818">In 1.6.0 and later versions: Available options include <span class="uicontrol" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_uicontrol1849942620810"><b>Windows AD domain server</b></span> and <span class="uicontrol" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_uicontrol876383813"><b>LDAP server</b></span>.</p> <p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_p18512030181218">In 1.5.0 and earlier versions, only <span class="uicontrol" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_uicontrol36091120101315"><b>LDAP server</b></span> is available.</p> <p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p5562141253819">Client hierarchy information is stored on the domain authentication server. Users are authenticated by the server when they attempt to access shared resources.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row1861864610171">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p13618446121713">Protocol</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p461818462172">Encryption protocol used for domain authentication. The value can be <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b9228359233">LDAP</strong> or <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b17234350233">LDAPS</strong>.</p>
+           <div class="note" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_note14944530145214">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <ul id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_ul345314127403">
+              <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_li19453141219408">LDAP over SSL (LDAPS) is used for communication between the system and the LDAP server. If the LDAP server supports SSL, you can select <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b1850419131782">LDAPS</strong>.</li>
+              <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_li9454151204011">Security risks arise if <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b71066519110">LDAP</strong> is selected. You are advised to select <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b5385154911102">LDAPS</strong>.</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row166751053183710">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p367635343717">Binding DN</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p58644341589">Binding directory on the server.</p> <p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p13865203414584">Binding is a process that a client initiates a connection request to establish a session to the LDAP server. During binding, the client needs to specify accounts used to access directory information on the server. You must search the binding directory for desired content.</p> <p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_en-us_topic_0291592739_p1624172392817">[Example]</p> <p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p1130155393510">cn=My Application,ou=applications,dc=bigcorp,dc=com</p>
+           <div class="note" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_note8111554105811">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p040325143813">The default access account is the administrator account. If you use another account, ensure that it has the access permission on the domain service on the LDAP server.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row10478105516377">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p114787555375">Binding Password</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p1047895513716">Password for accessing the directory corresponding to the binding DN. The value contains 1 to 63 characters.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_row10709114210157">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_p137091442161518">CN Verification</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_p1470917422151">After this function is enabled, the CN field of the LDAP server certificate is verified. If the CN field is inconsistent with the value of <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b1915212511548">Address Type</strong>, the LDAP server connectivity check will fail.</p>
+           <div class="note" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_note36381445155617">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_p26381845195620">This parameter is displayed only when 1.6.0 or later is used and <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b1725968135519">Protocol</strong> is set to <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b58807935512">LDAPS</strong>.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row965094819242">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p8650134892418">Address Type</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p865054822413">The LDAP domain server of the management plane can be configured by <span class="uicontrol" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_uicontrol89217479713"><b>IP address</b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_uicontrol19231114913711"><b>Domain name</b></span>.</p>
+           <div class="note" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_note9936040163715">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <ul id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_ul19285124512554">
+              <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_li328564515556">By default, the domain name is automatically generated by the storage system based on the value of <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b7191717202717">Binding DN</strong>. You can also enter a user-defined domain name.</li>
+              <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_li328554515519">If <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b146606338270">Address Type</strong> is set to <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b13624735132720">Domain Name</strong>, you need to configure the DNS service in advance. For details, see <a href="en-us_topic_0000001923246549.html#EN-US_TOPIC_0000001923246549">Configuring the DNS Service</a>.</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row1469861914256">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p106191046181718">IP Address</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p1619164615173">IPv4 or IPv6 address to be added to the LDAP server. Enter an IP address and click <span><img id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_image99810256817" src="en-us_image_0000001839145097.png"></span>.</p>
+           <div class="note" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_note134372544">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <ul id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_ul13632182913014">
+              <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_li18632142913303">To remove an IP address, click <span><img id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_image3341184119813" src="en-us_image_0000001839225041.png"></span> on its right.</li>
+              <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_li260214715434">You can enter a maximum of four IP addresses.</li>
+              <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_li126326299305">This parameter is displayed only when <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b197313250370">Address Type</strong> is <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b17973152519375">IP Address</strong>.</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row1408171722514">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p16619154651710">Port</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p583541545616">Port number of the server. The value ranges from 1 to 65535.</p> <p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p2083531545618">Default port number of the LDAP server: 389</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_li1242912156016"><span>Set LDAP user parameters. <a href="#EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_table19336917119">Table 2</a> describes the parameters.</span><p></p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_table19336917119"></a><a name="en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_table19336917119"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_table19336917119" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 2 </b>LDAP user parameters
+        </caption>
+        <colgroup>
+         <col style="width:21.57%">
+         <col style="width:78.43%">
+        </colgroup>
+        <thead align="left">
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row1433791719">
+          <th align="left" class="cellrowborder" valign="top" width="21.57%" id="mcps1.3.4.2.4.2.1.2.3.1.1"><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p233791917">Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="78.43%" id="mcps1.3.4.2.4.2.1.2.3.1.2"><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p4337151616">Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row17337191117">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p63371111311">Directory</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p1549916431918">Path of the created domain user.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row633714111110">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p16337714115">Name Attribute</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p1759412451412">Name attribute of the user. This parameter defines the name of the user object and allows the query of a specific user based on the given name.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row33381914110">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.4.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p1633810113120">Object Type</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.4.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p1641114712117">Type of the user object. Each entry under the LDAP directory is associated with one or more object types, including user, group, email, and maintenance terminal.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_li1599418531824"><span>Enable <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b14343121112556">LDAP user group</strong> and set LDAP parameters. <a href="#EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_table179618292317">Table 3</a> describes the parameters.</span><p></p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_table179618292317"></a><a name="en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_table179618292317"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_table179618292317" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 3 </b>LDAP user group parameters
+        </caption>
+        <colgroup>
+         <col style="width:21.57%">
+         <col style="width:78.43%">
+        </colgroup>
+        <thead align="left">
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row119611297313">
+          <th align="left" class="cellrowborder" valign="top" width="21.57%" id="mcps1.3.4.2.5.2.1.2.3.1.1"><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p149614293310">Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="78.43%" id="mcps1.3.4.2.5.2.1.2.3.1.2"><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p296152911315">Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row296429832">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.5.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p1096122915316">Directory</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.5.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p10964292311">Path of the created domain user group.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row189615291136">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.5.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p4962298312">Name Attribute</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.5.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p79682912310">Name attribute of the group. This parameter defines the name of the group object and allows the query of a specific group based on the given name.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row1049625411313">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.5.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p74968546316">Member Attribute</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.5.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p10496195416320">Group member attribute. This parameter defines members of a group.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_row89610291237">
+          <td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.5.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p9961729438">Object Type</p></td>
+          <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.5.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p11967291434">Type of the group object. Each entry under the LDAP directory is associated with one or more object types, including user, group, email, and maintenance terminal.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_li19471757193914"><span><strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b731749155911">(Optional)</strong> Click <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b1152983255911">Test</strong> in the upper right corner to test the availability of the domain authentication server.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_note151452038184614">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_p21459381462">When <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b1036484505">Protocol</strong> is <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b10365441209">LDAPS</strong>, you must import the CA certificate before performing the test.</p>
+       </div>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_en-us_topic_0000001175120797_en-us_topic_0000001160283107_li1958514911515"><span>Click <strong id="EN-US_TOPIC_0000001839144385__en-us_topic_0000001839224797_b17661410817">Save</strong>. Confirm the information as prompted.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001792345342.html">System</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

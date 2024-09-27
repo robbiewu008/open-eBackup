@@ -1,0 +1,43 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div *ngIf="!cookieService.isCloudBackup">
+  <div *ngIf="isHomepage">
+    <h1>{{ 'common_data_reduction_label' | i18n }}</h1>
+  </div>
+  <div class="content">
+    <div class="photo" [ngClass]="{ homepage: isHomepage }">
+      <div class="data-reduction">
+        <img src="assets/img/data_reduction.svg" />
+      </div>
+      <div [ngClass]="{'large-bucket': logicalUsed, 'large-bucket-zero': !logicalUsed}">
+        <span class="number">{{ logicalUsed | nil }}</span><span class="unit">{{ logicalUsedUnit }}</span>
+      </div>
+      <div [ngClass]="{'small-bucket': physicalUsed, 'small-bucket-zero': !physicalUsed}">
+        <span class="number">{{ physicalUsed | nil }}</span><span class="unit">{{ physicalUsedUnit }}</span>
+      </div>
+      <div class="ratio">
+        {{ spaceReductionRate | nil }}
+      </div>
+      <div class="label logical-label">
+        {{ 'common_reduction_used_logical_label' | i18n }}
+      </div>
+      <div class="label ratio-label" [ngStyle]="{ left: isZh ? '50%' : '46%' }">
+        {{ 'common_data_deduction_label' | i18n }}
+      </div>
+      <div class="label physical-label" [ngStyle]="{ left: isZh ? '78%' : '75%' }">
+        {{ 'common_reduction_used_physical_label' | i18n }}
+      </div>
+    </div>
+  </div>
+</div>

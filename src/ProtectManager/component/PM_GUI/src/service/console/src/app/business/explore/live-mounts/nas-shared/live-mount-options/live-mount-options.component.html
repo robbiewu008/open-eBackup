@@ -1,0 +1,21 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<aui-create-file-system [formGroup]="formGroup" [disableFileSystemName]="disableFileSystemName">
+</aui-create-file-system>
+<div class="advanced-column-xxl"></div>
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple" class="live-mount-advanced-container">
+    <lv-collapse-panel lvTitle="{{'common_advanced_label'|i18n}}" [lvExpanded]="false">
+        <aui-live-mount-advanced-performance [formGroup]="formGroup"></aui-live-mount-advanced-performance>
+    </lv-collapse-panel>
+</lv-collapse>

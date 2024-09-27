@@ -1,0 +1,42 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Uploading and Updating the Kubernetes Image Package">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001934848789.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001839180461">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Uploading and Updating the Kubernetes Image Package</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001839180461"></a><a name="EN-US_TOPIC_0000001839180461"></a>
+
+<h1 class="topictitle1">Uploading and Updating the Kubernetes Image Package</h1>
+<div><div class="section"><h4 class="sectiontitle">Prerequisites</h4><p id="EN-US_TOPIC_0000001839180461__en-us_topic_0000001839260277_p155091416131516">Before uploading the Kubernetes installation package, download the <strong id="EN-US_TOPIC_0000001839180461__en-us_topic_0000001839260277_b16650175519346">OceanProtect_DataProtect_</strong><em id="EN-US_TOPIC_0000001839180461__en-us_topic_0000001839260277_i199201950123411">X.X.X</em><strong id="EN-US_TOPIC_0000001839180461__en-us_topic_0000001839260277_b1410025919348">_K8s_BackupImage.tgz</strong> installation package based on the version and patch number. Decompress the installation package to obtain the compressed package <strong id="EN-US_TOPIC_0000001839180461__en-us_topic_0000001839260277_b1969324463513">k8s_backup_image_x86.tar</strong> or <strong id="EN-US_TOPIC_0000001839180461__en-us_topic_0000001839260277_b327235016356">k8s_backup_image_arm64.tar</strong> of the corresponding product architecture. You can obtain the Kubernetes installation package by using the following methods:</p>
+<ul id="EN-US_TOPIC_0000001839180461__en-us_topic_0000001839260277_ul1470191016457"><li id="EN-US_TOPIC_0000001839180461__en-us_topic_0000001839260277_li12701151074511">For enterprise users: <a href="https://support.huawei.com/enterprise/en/flash-storage/oceanprotect-databackup-pid-258115661/software/" target="_blank" rel="noopener noreferrer">Click here</a>.</li><li id="EN-US_TOPIC_0000001839180461__en-us_topic_0000001839260277_li8194016184520">For carrier users: <a href="https://support.huawei.com/carrier/navi?coltype=software#col=software&amp;path=PBI1-21430725/PBI1-251363742/PBI1-250389226/PBI1-251366310/PBI1-258115661" target="_blank" rel="noopener noreferrer">Click here</a>.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><p>The tenant of each Cloud Container Engine (CCE) cluster that needs to use the backup or restoration function needs to perform the following steps to upload and update the image package.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to ManageOne Operation Portal.</span></li><li><span>Choose <span class="uicontrol"><b>Service List &gt; Cloud Container Engine &gt; SoftWare Repository for Container &gt;</b></span> to go to the <strong>Dashboard</strong> page of the image repository.</span></li><li><span>Upload an image by following steps 1 and 2 in the <strong>Getting Started</strong> area on the <span class="uicontrol"><b>Overview</b></span> page.</span></li><li><span>After the image package is uploaded, click <span class="uicontrol"><b>My Images</b></span> and select the name of the uploaded compressed image package to go to the corresponding details page.</span></li><li id="EN-US_TOPIC_0000001839180461__li4890151815206"><a name="EN-US_TOPIC_0000001839180461__li4890151815206"></a><a name="li4890151815206"></a><span>Locate the row that contains the <strong>latest</strong> image version, click <span class="uicontrol"><b>containerd Command</b></span>, and copy the command for downloading the image.</span></li><li><span>Click <span class="uicontrol"><b>Edit</b></span> in the upper right corner of the page to set <span class="uicontrol"><b>Type</b></span> to <span class="uicontrol"><b>Public</b></span>.</span></li><li id="EN-US_TOPIC_0000001839180461__li17365195215269"><a name="EN-US_TOPIC_0000001839180461__li17365195215269"></a><a name="li17365195215269"></a><span>Log in to all nodes of the Kubernetes cluster, run the <strong>crictl images</strong> command respectively to view the local image information, and record the value of <strong>IMAGE ID</strong> corresponding to the image name whose <strong>TAG</strong> value is <strong>latest</strong>.</span><p><p><span><img src="en-us_image_0000001792381708.png"></span></p>
+</p></li><li><span>Run the image download command copied in <a href="#EN-US_TOPIC_0000001839180461__li4890151815206">5</a> on all nodes that you have logged in to.</span></li><li><span>After the image download command is successfully executed, run the <strong>crictl images</strong> command again to view the local image information. If <strong>IMAGE ID</strong> of the image whose <strong>TAG</strong> value is <strong>latest</strong> is different from the image ID queried in <a href="#EN-US_TOPIC_0000001839180461__li17365195215269">7</a>, the local image is successfully updated.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001934848789.html">Preparing for Backup (Applicable to CCE)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

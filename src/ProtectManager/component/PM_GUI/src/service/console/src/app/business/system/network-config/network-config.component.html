@@ -1,0 +1,42 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <lv-group lvGutter='8px'>
+            <h1>{{ 'common_network_config_label' | i18n }}</h1>
+        </lv-group>
+    </div>
+
+    <div class="aui-block aui-paginator-container">
+        <div class="aui-operation">
+            <lv-group></lv-group>
+            <lv-group lvGutter="8px">
+                <lv-search [lvFocus]="true" (lvSearch)="search($event)" [lvPlaceHolder]="searchPlaceHolder" class="header">
+                </lv-search>
+                <button class="aui-button-icon" lv-button lvSize="auto" (click)="refreshNetworkInfo()">
+                  <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                </button>
+              </lv-group>
+        </div>
+
+        <div class="list-container">
+            <lv-pro-table #dataTable [config]="networkTableConfig" [data]="networkData"></lv-pro-table>
+        </div>
+    </div>
+</div>
+
+<ng-template #typeTpl let-item>
+  <span *ngIf="item.parentName">{{ 'VLAN' | i18n }}</span>
+  <span *ngIf="!item.parentName">{{ 'system_service_network_label' | i18n}}</span>
+</ng-template>

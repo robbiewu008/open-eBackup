@@ -1,0 +1,183 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 5: Registering a MySQL/MariaDB Database">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792343590.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001839222573">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 5: Registering a MySQL/MariaDB Database</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001839222573"></a><a name="EN-US_TOPIC_0000001839222573"></a>
+
+<h1 class="topictitle1">Step 5: Registering a MySQL/MariaDB Database</h1>
+<div><p>After ProtectAgent is installed on the host where the MySQL/MariaDB database resides, the <span>OceanProtect</span> automatically discovers the MySQL/MariaDB database host. You need to register the database of the host on the management page to protect the database or use the database as the restoration target.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>The <span>OceanProtect</span> supports the backup of the <span><strong>MySQL/MariaDB</strong></span> database and other user-defined databases, but does not support the backup of the system databases <strong>information_schema</strong>, <strong>performance_schema</strong>, <strong>sys</strong>, and <strong>mysql</strong>. Therefore, the registration of the system database is not supported.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><div class="p">Before registering a MySQL or MariaDB cluster instance, ensure that all cluster nodes of the database must be registered. Data cannot be backed up on unregistered nodes, and as a result, user data at the restoration time point will be inconsistent.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Data on all nodes in the cluster must be synchronized.</p>
+</div></div>
+</div>
+</div>
+<div class="section"><h4 class="sectiontitle">Registering a Single MySQL/MariaDB Instance</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839222573__en-us_topic_0000001839142377_uicontrol189688153618"><b><span id="EN-US_TOPIC_0000001839222573__en-us_topic_0000001839142377_text148961988368"><strong>Protection</strong></span> &gt; Databases &gt; MySQL/MariaDB</b></span>.</span></li><li><span>Click the <span class="uicontrol"><b><span><strong>Instance</strong></span></b></span> tab.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register <span><strong>MySQL/MariaDB</strong></span>.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Instances in the MySQL cluster environment cannot be used for single-instance registration.</p>
+</div></div>
+</p></li><li><span>Select <span class="uicontrol"><b><span><strong>Type</strong></span></b></span> as <span class="uicontrol"><b><span><strong>Single instance</strong></span></b></span>.</span></li><li><span>Configure the database instance and its authentication information.</span><p><p><a href="#EN-US_TOPIC_0000001839222573__en-us_topic_0000001311214069_table241515964115">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839222573__en-us_topic_0000001311214069_table241515964115"></a><a name="en-us_topic_0000001311214069_table241515964115"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839222573__en-us_topic_0000001311214069_table241515964115" frame="border" border="1" rules="all"><caption><b>Table 1 </b>MySQL/MariaDB single-instance registration information</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.4.2.5.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.4.2.5.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.5.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.5.2.2.2.3.1.2 "><p>Name of an instance, which can be customized.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.5.2.2.2.3.1.1 "><p><span><strong>Hosts</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.5.2.2.2.3.1.2 "><p>Database host to be registered.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.5.2.2.2.3.1.1 "><p>Add IP address for accessing MySQL</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.5.2.2.2.3.1.2 "><p>The IP address for accessing MySQL instance.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.5.2.2.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.5.2.2.2.3.1.2 "><p>Enter the username created in <a href="en-us_topic_0000001839142693.html">Step 1: Enabling MySQL/MariaDB Database Permission</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.5.2.2.2.3.1.1 "><p><span><strong>Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.5.2.2.2.3.1.2 "><p>Password of the username.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.5.2.2.2.3.1.1 "><p><span><strong>Port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.5.2.2.2.3.1.2 "><p>In the Linux OS, the port number is displayed. The default port number is <strong>3306</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.5.2.2.2.3.1.1 "><p>Character Set</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>This parameter is displayed only in 1.6.0 and later versions.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.5.2.2.2.3.1.2 "><p>Database character set.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.4.2.5.2.2.2.3.1.1 "><p>MySQL Configuration File Path</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>This parameter is displayed only in 1.6.0 and later versions.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.4.2.5.2.2.2.3.1.2 "><p>This parameter is required if the configuration file is not stored in the default path such as <strong>/etc/my.cnf</strong>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Registering a MySQL/MariaDB Cluster Instance</h4><ol><li><span>Create a cluster.</span><p><ol type="a"><li>On the MySQL/MariaDB page, click the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab.</li><li>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</li><li>On the <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> page, customize the cluster name and select the type and cluster node.<div class="p"><a href="#EN-US_TOPIC_0000001839222573__table8422135145120">Table 2</a> describes the related parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839222573__table8422135145120"></a><a name="table8422135145120"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839222573__table8422135145120" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Parameters for registering a cluster</caption><colgroup><col style="width:17.18%"><col style="width:82.82000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="17.18%" id="mcps1.3.5.2.1.2.1.3.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="82.82000000000001%" id="mcps1.3.5.2.1.2.1.3.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="17.18%" headers="mcps1.3.5.2.1.2.1.3.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="82.82000000000001%" headers="mcps1.3.5.2.1.2.1.3.2.2.2.3.1.2 "><p>User-defined cluster name.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="17.18%" headers="mcps1.3.5.2.1.2.1.3.2.2.2.3.1.1 "><p><span><strong>Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="82.82000000000001%" headers="mcps1.3.5.2.1.2.1.3.2.2.2.3.1.2 "><p>Cluster type, which can be <strong>Active/Standby Replication</strong>, <strong>Active/Active Replication</strong>, or <strong>PXC(Percona XtraDB Cluster)</strong>.</p>
+<ul><li>If you select <span class="uicontrol"><b><span><strong>Active/Standby Replication</strong></span></b></span>, the node where the active MySQL/MariaDB instance resides must be included.</li><li>If you select <span class="uicontrol"><b>PXC(Percona XtraDB Cluster)</b></span>, the nodes where the MySQL/MariaDB cluster instances are located must be included.</li><li>If you select <span class="uicontrol"><b>Active/Active Replication</b></span>, the nodes where the MySQL/MariaDB cluster instances are located must be included.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="17.18%" headers="mcps1.3.5.2.1.2.1.3.2.2.2.3.1.1 "><p><span><strong>Cluster Node</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="82.82000000000001%" headers="mcps1.3.5.2.1.2.1.3.2.2.2.3.1.2 "><p>Host where the MySQL/MariaDB instance is located.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>The selected hosts must be from the same cluster.</li><li>If the database cluster is an active/standby cluster and the <strong>relay-log</strong> configuration item exists in the <strong>/etc/my.cnf</strong> file, set <strong>relay_log_recovery</strong> to <strong>on</strong> to avoid restoration failure.</li></ul>
+</div></div>
+</div>
+</li><li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</li></ol>
+</p></li><li><span>Register the database of a cluster instance.</span><p><ol type="a"><li>On the MySQL/MariaDB page, click the <span class="uicontrol"><b><span><strong>Instance</strong></span></b></span> tab.</li><li>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</li><li>Select <span class="uicontrol"><b><span><strong>Type</strong></span></b></span> as <span class="uicontrol"><b><span><strong>Cluster instance</strong></span></b></span>.</li><li>Enter an instance name and select a cluster.</li><li>Click <strong>Add</strong>. In the displayed <strong>Add</strong> dialog box, add all nodes in the cluster instance.<p><a href="#EN-US_TOPIC_0000001839222573__table1412426182113">Table 3</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839222573__table1412426182113"></a><a name="table1412426182113"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839222573__table1412426182113" frame="border" border="1" rules="all"><caption><b>Table 3 </b>Node information of a cluster instance</caption><colgroup><col style="width:28.64%"><col style="width:71.36%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="28.64%" id="mcps1.3.5.2.2.2.1.5.4.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="71.36%" id="mcps1.3.5.2.2.2.1.5.4.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p><span><strong>Hosts</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.36%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.2 "><p>Select a host node in the cluster.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p>eAppMySQL Address</p>
+</td>
+<td class="cellrowborder" valign="top" width="71.36%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.2 "><p>IP address for accessing the eAppMySQL service.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p><span><strong>Port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.36%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.2 "><p>In the Linux OS, the port number is displayed. The default port number is <strong>3306</strong>. If you select <strong>Active/Active Replication</strong> for the cluster type, the port number is <strong>3307</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.36%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.2 "><p>Username of the database.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p><span><strong>Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.36%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.2 "><p>Password of the database.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p>Character Set</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>This parameter is displayed only in 1.6.0 and later versions.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="71.36%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.2 "><p>Database character set.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.64%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.1 "><p>MySQL Configuration File Path</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>This parameter is displayed only in 1.6.0 and later versions.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="71.36%" headers="mcps1.3.5.2.2.2.1.5.4.2.3.1.2 "><p>This parameter is required if the configuration file is not stored in the default path such as <strong>/etc/my.cnf</strong>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001792343590.html">Backing Up MySQL/MariaDB Database</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

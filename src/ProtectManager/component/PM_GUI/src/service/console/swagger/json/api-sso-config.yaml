@@ -1,0 +1,416 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: SSOConfig
+paths:
+  /v1/sso/config:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - SSOConfig
+      operationId: GetAllConfig
+      summary: 查询SSO配置
+      description: 查询SSO配置
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: startIndex
+          in: query
+          required: true
+          description: 分页起始页
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          description: 分页数量
+          type: integer
+          format: int32
+        - name: orderBy
+          in: query
+          required: false
+          description: 排序字段名称
+          type: string
+        - name: orderType
+          in: query
+          required: false
+          description: 排序的方式：asc：升序，desc：降序
+          type: string
+        - name: filter
+          in: query
+          required: false
+          description: 过滤筛选
+          type: string
+      responses:
+        '200':
+          description: SSO Config Information
+          schema:
+            $ref: '#/definitions/SSOConfigInfo'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - SSOConfig
+      operationId: createSsoConfig
+      consumes:
+        - multipart/form-data
+      summary: 保存SSO配置
+      description: 保存SSO配置
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: file
+          in: formData
+          required: true
+          description: 元数据文件
+          type: file
+        - name: configName
+          in: formData
+          required: true
+          description: 配置名称
+          type: string
+        - name: description
+          in: formData
+          required: false
+          description: 描述
+          type: string
+      responses:
+        '200':
+          description: Demo Information
+          schema:
+            $ref: '#/definitions/SSOConfigInfo'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - SSOConfig
+      operationId: updateSsoConfig
+      consumes:
+        - multipart/form-data
+      summary: 保存SSO配置
+      description: 保存SSO配置
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: file
+          in: formData
+          required: false
+          description: 元数据文件
+          type: file
+        - name: configName
+          in: formData
+          required: true
+          description: 配置名称
+          type: string
+        - name: description
+          in: formData
+          required: false
+          description: 描述
+          type: string
+        - name: uuid
+          in: formData
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Demo Information
+          schema:
+            $ref: '#/definitions/SSOConfigInfo'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+  /v1/sso/config/active/{uuid}/{configName}:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - SSOConfig
+      operationId: ActiveSsoConfig
+      summary: 激活SSO配置
+      description: 激活sso配置
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          type: string
+        - name: configName
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Delete result
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+  /v1/sso/config/{uuid}/{configName}:
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - SSOConfig
+      operationId: DeleteSsoConfig
+      summary: 删除SSO配置
+      description: 删除SSO配置
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          type: string
+        - name: configName
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Demo Information
+          schema:
+            $ref: '#/definitions/SSOConfigInfo'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+  /v1/sso/config/deactive/{uuid}/{configName}:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - SSOConfig
+      summary: 禁用SSO配置
+      description: 禁用SSO配置
+      operationId: DeActiveSsoConfig
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          type: string
+        - name: configName
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+  /v1/sso/config/metadata:
+    get:
+      tags:
+        - SSOConfig
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'Y'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 导出元数据
+      description: 导出元数据
+      operationId: DownloadMetadata
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+      x-order: 0
+definitions:
+  SSOConfigInfo:
+    description: sso config info
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        example: 2
+        description: 总数
+      records:
+        items:
+          properties:
+            uuid:
+              type: string
+              example: 1626029937478295553
+              description: 配置id
+            configName:
+              type: string
+              example: test003
+              description: 配置名称
+            protocol:
+              type: string
+              example: SAML2.0
+              description: 协议
+            description:
+              type: string
+              example: null
+              description: 描述
+            status:
+              type: string
+              example: 1
+              description: 状态
+            metadata:
+              type: string
+              example: null
+              description: 元数据
+        description: 配置列表
+        type: array
+      totalPages:
+        type: integer
+        format: int32
+        description: 总页数
+      startIndex:
+        type: integer
+        format: int32
+        description: 起始index
+      pageSize:
+        type: string
+        description: 每页size
+    type: object
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512

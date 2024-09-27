@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring Dameng">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792550196.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792550248">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring Dameng</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792550248"></a><a name="EN-US_TOPIC_0000001792550248"></a>
+  <h1 class="topictitle1">Restoring Dameng</h1>
+  <div>
+   <p>This section describes how to restore a Dameng backup set that has been backed up to the original location or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>Backup and replication copies (data cannot be restored to the original location) can be used for restoration.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000001792550248__section13258102544115">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul id="EN-US_TOPIC_0000001792550248__ul155946913719">
+     <li id="EN-US_TOPIC_0000001792550248__li178221624154012">Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li>
+    </ul>
+    <ul id="EN-US_TOPIC_0000001792550248__ul1648381342319">
+     <li id="EN-US_TOPIC_0000001792550248__li69561792311">Before restoring data to a new location, ensure that the database installation user has the read and write permissions on the target path of restoration.</li>
+     <li id="EN-US_TOPIC_0000001792550248__li97319774218">If the resource to be restored is an active/standby MPP cluster, ensure that the active/standby database information is correct before stopping the database. Otherwise, you need to scan the restoration target resource.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792550248__en-us_topic_0000001839142377_uicontrol11808134865610"><b><span id="EN-US_TOPIC_0000001792550248__en-us_topic_0000001839142377_text1680804813566"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000001792550248__en-us_topic_0000001839142377_text18808144820567"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000001792550248__en-us_topic_0000001839142377_text19349625124914"><strong>Databases</strong></span> &gt; <span id="EN-US_TOPIC_0000001792550248__en-us_topic_0000001839142377_text166390482814"><strong>Dameng</strong></span></b></span>.</span></li>
+     <li><span>You can search for copies by Dameng backup set resource or copy. This section describes how to search for copies by resource.</span><p></p><p>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> tab page, locate the resource to be restored by resource name and click the name.</p> <p></p></li>
+     <li><span>Select the year, month, and day in sequence to find the copy.</span><p></p><p>If <span><img src="en-us_image_0000001839189653.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p> <p></p></li>
+     <li><span>Restore data to a specified point in time or using a specific copy.</span><p></p>
+      <div class="p">
+       <a href="#EN-US_TOPIC_0000001792550248__table194961441141219">Table 1</a> describes the related parameters. 
+       <div class="tablenoborder">
+        <a name="EN-US_TOPIC_0000001792550248__table194961441141219"></a><a name="table194961441141219"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792550248__table194961441141219" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>Dameng database restoration parameters
+         </caption>
+         <colgroup>
+          <col style="width:21.44%">
+          <col style="width:15.690000000000001%">
+          <col style="width:62.870000000000005%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="21.44%" id="mcps1.3.4.2.4.2.1.2.2.4.1.1"><p>Type</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="15.690000000000001%" id="mcps1.3.4.2.4.2.1.2.2.4.1.2"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="62.870000000000005%" id="mcps1.3.4.2.4.2.1.2.2.4.1.3"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" rowspan="6" valign="top" width="21.44%" headers="mcps1.3.4.2.4.2.1.2.2.4.1.1 "><p><span><strong>Dameng Single Server</strong></span></p> <p></p> <p></p> <p></p> <p></p> <p></p></td>
+           <td class="cellrowborder" valign="top" width="15.690000000000001%" headers="mcps1.3.4.2.4.2.1.2.2.4.1.2 "><p><span><strong>Restore To</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="62.870000000000005%" headers="mcps1.3.4.2.4.2.1.2.2.4.1.3 "><p>Select either <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> or <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.1 "><p><span><strong>Location</strong></span></p></td>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.2 "><p>If you select restoration to <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span>, the target location is displayed by default.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.1 "><p><span><strong>Target Host</strong></span></p></td>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.2 "><p>Target host for restoration, which is mandatory if you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for the <strong>Restore To</strong> parameter.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.1 "><p><span><strong>Target Path</strong></span></p></td>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.2 "><p>Target path for restoration, which is mandatory if you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for the <strong>Restore To</strong> parameter.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.1 "><p><span><strong>Database Name</strong></span></p></td>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.2 "><p>New name of the restored database. The database needs to be renamed after the restoration to a new location.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.1 "><p><span><strong>Database Port</strong></span></p></td>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.2 "><p>If <strong>Database Port</strong> is specified when the database is restored to a new location, the system overwrites the original database port when the database exists in the target path of restoration. If <strong>Database Port</strong> is not specified and the database does not exist in the target path of restoration, the default database port number <strong>5236</strong> is used.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" rowspan="3" valign="top" width="21.44%" headers="mcps1.3.4.2.4.2.1.2.2.4.1.1 "><p>Active/standby MPP cluster</p>
+            <div class="note">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p>In 1.5.0, the value is <strong>MPP Cluster</strong>.</p>
+             </div>
+            </div> <p></p></td>
+           <td class="cellrowborder" valign="top" width="15.690000000000001%" headers="mcps1.3.4.2.4.2.1.2.2.4.1.2 "><p><span><strong>Restore To</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="62.870000000000005%" headers="mcps1.3.4.2.4.2.1.2.2.4.1.3 "><p>Select either <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> or <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.1 "><p><span><strong>Location</strong></span></p></td>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.2 "><p>If you select restoration to <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span>, the target location is displayed by default.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.1 "><p><span><strong>Target Cluster</strong></span></p></td>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.4.2.1.2.2.4.1.2 "><p>Target cluster for restoration, which is mandatory if you select restoration to <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div>
+      <ol type="a">
+       <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
+      </ol> <p></p></li>
+     <li><span>Run the <strong>recover mppctl</strong> command on the monitor to restore the <strong>dmmpp.ctl</strong> files of all nodes in the cluster to the consistent status.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul>
+         <li>After the restoration, if a node in the <span class="uicontrol"><b><span><strong>Offline</strong></span></b></span> state exists in the cluster, run the <strong>help</strong> command on the monitor to query the command for restarting the cluster and restart the cluster service.</li>
+         <li>When the resource to be restored is an active/standby MPP cluster, scan the restoration target resource after the restoration job is complete to ensure that the obtained active/standby database information is correct.</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001792550196.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

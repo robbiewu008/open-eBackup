@@ -1,0 +1,470 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-collapse [lvType]="'simple'">
+    <lv-collapse-panel [lvTitle]="'common_advanced_label'|i18n" lvExpanded>
+        <lv-form [formGroup]="formGroup" [lvLabelColon]="isSlaDetail" [ngClass]="{'vmAdvance': isCapacityThreshold}">
+            <aui-specify-destination-location [formGroup]="formGroup" [data]="data" [isSlaDetail]="isSlaDetail"
+                [action]="action" [isRetry]="isRetry" [isUsed]="isUsed" (isDisableQos)="storageTypeChange($event)" *ngIf="isSpecifiedLocation">
+            </aui-specify-destination-location>
+            <!-- 限速策略 -->
+            <lv-form-item *ngIf="appType !== applicationType.CommonShare">
+                <lv-form-label>
+                    {{'common_limit_rate_policy_single_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'common_limit_rate_policy_tip_label' | i18n}}"
+                        lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{qosNames.length ? find(qosNames, {uuid: formGroup.value.qos_id}) ? find(qosNames, {uuid:
+                        formGroup.value.qos_id})['label']: '--':'--'}}
+                    </ng-container>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-select [lvOptions]="qosNames" formControlName="qos_id" lvValueKey="uuid" lvShowClear [lvDisabled]="isDisableQos">
+                        </lv-select>
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 通道数 -->
+            <lv-form-item *ngIf="appType === applicationType.Oracle">
+                <lv-form-label>
+                    {{'protection_channel_number_label' | i18n}}
+                </lv-form-label>
+                <ng-container *ngIf="isSlaDetail">
+                    <lv-form-control>
+                        {{formGroup.value.channel_number}}
+                    </lv-form-control>
+                </ng-container>
+                <ng-container *ngIf="!isSlaDetail">
+                    <lv-form-control [lvErrorTip]="channelNumberErrorTip">
+                        <input lv-input formControlName="channel_number" type="text" placeholder="1~254" />
+                    </lv-form-control>
+                </ng-container>
+            </lv-form-item>
+            <!-- 传输与存储加密 -->
+            <lv-form-item *ngIf="appType === applicationType.Oracle">
+                <lv-form-label>
+                    {{'common_encryption_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_sla_data_encryption_help_label' | i18n}}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.encryption | textMap: 'Switch_Status'}}
+                    </ng-container>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="encryption" [lvDisabled]="action === protectResourceAction.Modify">
+                        </lv-switch>
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 并发数 -->
+            <lv-form-item *ngIf="isConcurrent">
+                <lv-form-label>
+                    {{'protection_concurrent_number_label' | i18n}}
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="getConcurrentTip()" lvTooltipPosition="rightTop"
+                        lvTooltipTheme="light" class="configform-constraint" lvColorState='true'
+                        *ngIf="hasConcurrentTip"></i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="concurrentNumberErrorTip">
+                    <ng-container *ngIf="!isSlaDetail">
+                        <input lv-input formControlName="channel_number" type="text"
+                            [placeholder]="getConcurrentPlaceholder()" />
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.channel_number | nil}}
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 备份运行内存 -->
+            <lv-form-item *ngIf="isUseMemory">
+                <lv-form-label>
+                    {{'protection_use_memory_label' | i18n}}
+                    <i lv-icon="aui-icon-help"
+                        lv-tooltip="{{'protection_tdsql_distributed_use_memory_tips_label' | i18n}}"
+                        lvTooltipPosition="top" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="memoryErrorTip">
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-input-group [lvSuffix]="'MB'" [lvDisabled]="disabled">
+                            <input lv-input formControlName="use_memory" type="text"
+                                placeholder="{{ 'protection_use_memory_tips_label' | i18n}}" />
+                        </lv-input-group>
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.use_memory | nil}}MB
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 副本校验 -->
+            <lv-form-item *ngIf="isCopyVerify">
+                <lv-form-label>
+                    {{'common_copies_verification_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protect_copy_verify_tip_label' | i18n }}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState="true"></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="copy_verify"></lv-switch>
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.copy_verify | textMap: 'Switch_Status'}}
+                    </ng-container>
+                    <ng-container *ngIf="!isSlaDetail && formGroup.value.copy_verify && isCopyVerifyInfo">
+                        <div>
+                            <i lv-icon="lv-icon-status-info" lvColorState="true" class="icon"></i>
+                            <span>{{ 'common_copy_verification_tips_label' | i18n }}</span>
+                        </div>
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 归档日志删除 -->
+            <lv-form-item *ngIf="isArchiveLogDelete">
+                <lv-form-label>
+                    {{'protection_delete_archive_log_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_delete_archive_log_tips_label' | i18n }}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState="true"></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="delete_log"></lv-switch>
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.delete_log | textMap: 'Switch_Status'}}
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 优先使用备节点备份 -->
+            <lv-form-item *ngIf="isBackupNodeFirst">
+                <lv-form-label>
+                    {{'protection_backup_node_preferred_label' | i18n}}
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="getBackupNodeTip()" lvTooltipPosition="rightTop"
+                        lvTooltipTheme="light" class="configform-constraint" lvColorState='true'
+                        *ngIf="hasBackupNodeTip"></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="slave_node_first"></lv-switch>
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.slave_node_first | textMap: 'Switch_Status'}}
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 自动索引 -->
+            <lv-form-item *ngIf="!isHcsUser && isAutoIndex">
+                <lv-form-label>
+                    <span>{{'protection_auto_indexing_label' | i18n}}</span>
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="getAutoIndexTip() " lvTooltipTheme="light"
+                        class="configform-constraint" lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control *ngIf="!isVirtualCloud">
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="auto_index"></lv-switch>
+                        <div *ngIf="formGroup.value.auto_index">
+                            <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                            <span>
+                                {{'protection_sla_index_enable_label' | i18n}}
+                            </span>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.auto_index | textMap: 'Switch_Status'}}
+                    </ng-container>
+                </lv-form-control>
+                <lv-form-control *ngIf="isVirtualCloud">
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.fine_grained_restore | textMap: 'Switch_Status'}}
+                    </ng-container>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="fine_grained_restore"></lv-switch>
+                        <div *ngIf="formGroup.value.fine_grained_restore">
+                            <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                            <span>
+                                {{'protection_sla_index_enable_label' | i18n}}
+                            </span>
+                        </div>
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-alert lvType="info" *ngIf="!isSlaDetail && isBackupGroup">{{'protection_gaussdb_sla_params_tip_label' |i18n}}</lv-alert>
+            <ng-container *ngIf="isRateLimit">
+                 <!-- 流量控制 -->
+                 <lv-form-item>
+                    <lv-form-label>
+                        {{getRateLimitLabel()}}&nbsp;{{getRateLimitUnit()}}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="rateLimitTip">
+                        <ng-container *ngIf="!isSlaDetail">
+                            <input lv-input type="text" formControlName="rate_limit">
+                        </ng-container>
+                        <ng-container *ngIf="isSlaDetail">
+                            {{formGroup.value.rate_limit | nil}}
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <ng-container *ngIf="isBackupGroup">
+                <!-- 备机备份 -->
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_gaussdb_backup_mark_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <ng-container *ngIf="!isSlaDetail">
+                            <lv-switch formControlName="enable_standby_backup"></lv-switch>
+                        </ng-container>
+                        <ng-container *ngIf="isSlaDetail">
+                            {{formGroup.value.enable_standby_backup | textMap: 'Switch_Status'}}
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+                <!-- 关闭数据压缩 -->
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_gaussdb_close_compression_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <ng-container *ngIf="!isSlaDetail">
+                            <lv-switch formControlName="close_compression"></lv-switch>
+                        </ng-container>
+                        <ng-container *ngIf="isSlaDetail">
+                            {{formGroup.value.close_compression | textMap: 'Switch_Status'}}
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <!-- 重删压缩 -->
+            <lv-form-item *ngIf="appUtilsService.isDistributed">
+                <lv-form-label> {{ 'protection_deduption_label' | i18n }} </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="enable_deduption_compression"></lv-switch>
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.enable_deduption_compression | textMap: 'Switch_Status'}}
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 目标端重删 -->
+            <lv-form-item *ngIf="!appUtilsService.isDistributed && isDeduplication">
+                <lv-form-label>
+                    <span>{{'protection_deduplication_label' | i18n}}</span>
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="getDeduplicationTip()" lvTooltipTheme="light"
+                        class="configform-constraint" lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="deduplication" [lvDisabled]="isDeduplicationDisabled"></lv-switch>
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.deduplication | textMap: 'Switch_Status'}}
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 源端重删 -->
+            <lv-form-item *ngIf="!appUtilsService.isDistributed && isSourceDeduplication">
+                <lv-form-label>
+                    {{'protection_sla_source_deduplication_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protect_sla_source_deduplication_help_label' | i18n}}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.source_deduplication | textMap: 'Switch_Status'}}
+                    </ng-container>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="source_deduplication">
+                        </lv-switch>
+                        <aui-multi-duduplication-tip [formGroup]="formGroup"></aui-multi-duduplication-tip>
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 日志备份失败后自动转全量 -->
+            <lv-form-item *ngIf="isLogFailTransformFull">
+                <lv-form-label>
+                    {{'protection_log_fail_transform_full_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="autoFullBackup"></lv-switch>
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.autoFullBackup | textMap: 'Switch_Status'}}
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!--线程数-->
+            <lv-form-item *ngIf="isThread">
+              <lv-form-label>
+                {{'protection_thread_number_label' | i18n}}
+              </lv-form-label>
+              <lv-form-control [lvErrorTip]="concurrentNumberErrorTip">
+                <ng-container *ngIf="!isSlaDetail">
+                  <input type="text" formControlName="thread_number" lv-input placeholder="1~256" />
+                </ng-container>
+                <ng-container *ngIf="isSlaDetail">
+                  {{formGroup.get('thread_number').value | nil}}
+                </ng-container>
+              </lv-form-control>
+            </lv-form-item>
+            <!-- 并发进程数 -->
+            <lv-form-item *ngIf="isParallelNumber">
+                <lv-form-label>
+                    {{'protection_parallel_process_label' | i18n}}
+                  <i lv-icon="aui-icon-help" *ngIf="showParallelNumberTip" lv-tooltip="{{'protect_sla_parallel_process_help_label' | i18n}}"
+                     lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                     lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="parallelNumberErrorTip">
+                    <ng-container *ngIf="!isSlaDetail">
+                        <input type="text" formControlName="parallel_process" lv-input [placeholder]="parallelNumberPlaceHolder" />
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.parallel_process | nil}}
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 任务超过时间窗告警 -->
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_job_timeout_alarm_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_job_timeout_alarm_help_label' | i18n}}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="alarm_over_time_window"></lv-switch>
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.alarm_over_time_window | textMap: 'Switch_Status'}}
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 任务失败告警 -->
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_job_failed_alarm_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_alarm_after_failure_help_label' | i18n}}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="alarm_after_failure"></lv-switch>
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.alarm_after_failure | textMap: 'Switch_Status'}}
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 生产存储剩余容量阈值 -->
+            <lv-form-item *ngIf="isCapacityThreshold">
+                <lv-form-label [lvRequired]="!isSlaDetail">
+                    {{'protection_vmware_capacity_threshold_label' | i18n}}
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="capacityThresholdToolTip"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <ng-container *ngIf="!isSlaDetail">
+                    <lv-form-control [lvErrorTip]="capacityThresholdErrorTip">
+                        <lv-group lvGutter='8px' class="lv-group-flex-start">
+                            <input lv-input formControlName="available_capacity_threshold" type="text" lvSize="small"
+                                [placeholder]="capacityThresholdPlaceHolder" class="backup-for-text" />
+                            <span class="configform-constraint">%</span>
+                        </lv-group>
+                    </lv-form-control>
+                </ng-container>
+                <ng-container *ngIf="isSlaDetail">
+                    <lv-form-control>
+                        {{formGroup.value.available_capacity_threshold}}%
+                    </lv-form-control>
+                </ng-container>
+            </lv-form-item>
+            <!-- 失败后自动重试 -->
+            <ng-container *ngIf="!isSlaDetail">
+                <lv-form-item>
+                    <lv-form-label>{{'protection_auto_retry_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="auto_retry"></lv-switch>
+                        <ng-container *ngIf="formGroup.value.auto_retry">
+                            <div class="aui-gutter-column-md"></div>
+                            <lv-form-label lvRequired>
+                                {{'common_retry_times_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="retryTimesErrorTip" class="groupInControl">
+                                <lv-group lvGutter='8px' class="lv-group-flex-start">
+                                    <lv-group>
+                                        <input lv-input formControlName="auto_retry_times" type="text" placeholder="1~5"
+                                            class="backup-for-text" />
+                                    </lv-group>
+                                    <lv-group>
+                                        <span class="configform-constraint">{{'common_times_label' | i18n}}</span>
+                                    </lv-group>
+                                </lv-group>
+                            </lv-form-control>
+                            <div class="aui-gutter-column-md"></div>
+                            <lv-form-label lvRequired>
+                                {{'common_waiting_time_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="waitTimesErrorTip" class="groupInControl">
+                                <lv-group lvGutter='8px' class="lv-group-flex-start">
+                                    <lv-group>
+                                        <input lv-input formControlName="auto_retry_wait_minutes" type="text"
+                                            placeholder="1~30" class="backup-for-text" />
+                                    </lv-group>
+                                    <lv-group>
+                                        <span class="configform-constraint">{{'common_minutes_label' | i18n}}</span>
+                                    </lv-group>
+                                </lv-group>
+                            </lv-form-control>
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <ng-container *ngIf="isSlaDetail">
+                <lv-form-item>
+                    <lv-form-label>{{'protection_auto_retry_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <ng-container *ngIf="!formGroup.value.auto_retry">
+                            {{formGroup.value.auto_retry | textMap: 'Switch_Status'}}
+                        </ng-container>
+                        <ng-container *ngIf="formGroup.value.auto_retry">
+                            <ng-container *ngIf="i18n.isEn">
+                                {{'common_retry_times_label' | i18n: []:
+                                true}}{{formGroup.value.auto_retry_times}} {{'common_times_label' |
+                                i18n}}{{'common_comma_label'|i18n}}
+                                {{'common_waiting_time_label' | i18n: []:
+                                true}}{{formGroup.value.auto_retry_wait_minutes}} {{'common_minutes_label' | i18n}}
+                            </ng-container>
+                            <ng-container *ngIf="!i18n.isEn">
+                                {{'common_retry_times_label' | i18n: []:
+                                true}}{{formGroup.value.auto_retry_times}}{{'common_times_label' |
+                                i18n}}{{'common_comma_label'|i18n}}
+                                {{'common_waiting_time_label' | i18n: []:
+                                true}}{{formGroup.value.auto_retry_wait_minutes}}{{'common_minutes_label' | i18n}}
+                            </ng-container>
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+        </lv-form>
+    </lv-collapse-panel>
+</lv-collapse>

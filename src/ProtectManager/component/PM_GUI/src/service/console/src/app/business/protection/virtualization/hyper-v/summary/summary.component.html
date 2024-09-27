@@ -1,0 +1,65 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{'common_basic_info_label' | i18n}}</h2>
+</div>
+<ng-container *ngIf="sourceType === dataMap.Resource_Type.hyperVVm.value; else elseTemplate">
+    <resoure-base-info [source]="source" [sourceType]="sourceType"></resoure-base-info>
+    <div class="mgt-20">
+        <h2 class="vm-title">{{'common_disk_label' | i18n}}</h2>
+        <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+    </div>
+</ng-container>
+<ng-template #elseTemplate>
+    <ng-container *ngIf="sourceType === dataMap.Resource_Type.hyperVHost.value; else elseClusterTemplate">
+        <aui-special-base-info [source]="source" [sourceType]="sourceType"></aui-special-base-info>
+        <h2 class="vm-title">{{'common_virtual_machine_label' | i18n}}</h2>
+        <aui-vir-base-table [subType]="dataMap.Resource_Type.hyperVVm.value" [treeSelection]="source"
+            [isSummary]="true">
+        </aui-vir-base-table>
+    </ng-container>
+    <ng-template #elseClusterTemplate>
+        <lv-group class='aui-gutter-column-xxl' lvGutter='20px'>
+            <i lv-icon='aui-sla-cluster' class="base-info-icon"></i>
+            <lv-group lvDirection='vertical'>
+                <lv-form [lvLabelColon]='false'>
+                    <lv-form-item>
+                        <lv-form-label></lv-form-label>
+                        <lv-form-control>
+                            <span lv-overflow class="warp">{{source.name | nil}}</span>
+                        </lv-form-control>
+                    </lv-form-item>
+                    <lv-form-item>
+                        <lv-form-label></lv-form-label>
+                        <lv-form-control>
+                            <span lv-overflow class="warp">{{source.path | nil}}</span>
+                        </lv-form-control>
+                    </lv-form-item>
+                </lv-form>
+            </lv-group>
+        </lv-group>
+        <lv-tabs [(lvActiveIndex)]="activeIndex">
+            <ng-container *ngFor="let tab of tabs">
+                <lv-tab lvTitle='{{tab.label}}' [lvId]="tab.id" *ngIf="!tab.hide">
+                    <aui-vir-base-table [subType]="tab.subType" [treeSelection]="source" [isSummary]="true">
+                    </aui-vir-base-table>
+                </lv-tab>
+            </ng-container>
+        </lv-tabs>
+    </ng-template>
+</ng-template>
+
+<ng-template #sizeTpl let-item>
+    <span lv-overflow>{{item.extendInfo?.Capacity | capacityCalculateLabel:'1.0-0':unitconst.BYTE:false}}</span>
+</ng-template>

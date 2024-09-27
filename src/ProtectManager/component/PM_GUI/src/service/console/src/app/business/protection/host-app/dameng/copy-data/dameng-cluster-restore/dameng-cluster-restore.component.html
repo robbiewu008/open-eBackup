@@ -1,0 +1,65 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item *ngIf="!isDrill">
+        <lv-form-label>
+            {{ 'protection_restore_to_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
+                <lv-group [lvGutter]="'20px'">
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="isReplicated"
+                        [lv-tooltip]="isReplicated ? ('protection_cloud_origin_restore_disabled_label' | i18n) : ''">
+                        {{ 'common_restore_to_origin_location_label' | i18n }}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreLocationType.NEW">
+                        {{ 'common_restore_to_new_location_label' | i18n }}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'common_location_label' | i18n }}
+            </lv-form-label>
+            <input lv-input formControlName="cluster" />
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+        <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'targetCuster'"></aui-select-tag>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_target_to_cluster_label'|i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="targetCuster" [lvOptions]="clusterOptions" lvValueKey="value" [lvContentTemplate]="clusterTpl">
+                </lv-select>
+                <ng-template #clusterTpl let-item>
+                    <lv-group lvGutter="4px" lvDirection="vertical">
+                        <span>{{item.label}}</span>
+                        <span class="aui-text-help-sm" style="font-size: 0.13rem">{{item.extendInfo.version | nil}}</span>
+                    </lv-group>
+                </ng-template>
+                <ng-container *ngIf="displayDifferentDatabaseTip">
+                    <i lv-icon="lv-icon-status-failed" style="margin: 2px" lvColorState='true'></i>
+                    <span class="proxy-host-info-label different-tip text-middle"
+                          innerHTML="{{'protection_mongedb_restore_to_new_station_different_version_tip_label' | i18n:[currentVersion]}}">
+                </span>
+                </ng-container>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>

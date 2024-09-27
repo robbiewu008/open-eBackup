@@ -1,0 +1,63 @@
+.aui-overview {
+  background: url('../../../assets/img/home_background.png') repeat-x;
+  background-size: contain;
+  height: 450px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.aui-overview > ul {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.aui-overview > ui > li {
+  width: 25%;
+}
+
+.home-block-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.no-performance-container {
+  height: 60vh;
+}
+
+.data-reduction,
+.system-capacity {
+  width: 500px;
+}
+
+.capacity-forecast {
+  display: flex;
+  justify-content: center;
+  height: 380px;
+}
+
+.system-performance-chart {
+  height: 380px;
+}
+
+.cluster-node-container {
+  margin-bottom: 24px;
+}
+
+.system-forecast-no-data {
+  text-align: center;
+}
+
+.system-forecast-no-data i {
+  width: 240px;
+  height: 240px;
+}
+
+.no-data-label {
+  text-align: center;
+  font-size: 0.14rem;
+}

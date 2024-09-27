@@ -1,0 +1,284 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 勒索检测报表
+  description: GroupDesc
+schemes:
+  - https
+host: 'localhost.com'
+basePath: /
+tags:
+  - name: Detect-Reports
+paths:
+  /v1/anti-ransomware/detect-reports/environments:
+    get:
+      tags:
+        - Detect-Reports
+      operationId: queryEnvironment
+      summary: 查询设备信息
+      description: query environment
+      x-is-registered: "N"
+      x-support-sdk: "N"
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Environment Information(设备信息)
+          schema:
+            "$ref": "#/definitions/EnvironmentResp"
+  /v1/anti-ransomware/detect-reports/resource-detect-configs:
+    get:
+      tags:
+        - Detect-Reports
+      operationId: getResourceDetectConfigs
+      summary: 查询设备信息
+      description: 查询文件系统粒度勒索保护设置信息
+      x-is-registered: "N"
+      x-support-sdk: "N"
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: 文件系统粒度勒索保护设置信息
+          schema:
+            "$ref": "#/definitions/ResDetectConfigSummaryResp"
+  /v1/anti-ransomware/detect-reports/exception-file-systems:
+    get:
+      tags:
+        - Detect-Reports
+      operationId: getExceptionFileSystems
+      summary: 查询异常文件系统信息
+      description: 查询异常文件系统信息
+      x-is-registered: "N"
+      x-support-sdk: "N"
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: 异常文件系统信息
+          schema:
+            "$ref": "#/definitions/ExceptionFileSystemResp"
+definitions:
+  EnvironmentResp:
+    description: 设备信息返回值汇总信息
+    properties:
+      environmentInfoList:
+        type: array
+        items:
+          $ref: '#/definitions/EnvironmentPojo'
+        description: 设备基本信息
+      deviceTotalNum:
+        type: integer
+        description: 设备总数
+      normalDeviceNum:
+        type: integer
+        description: 正常设备数
+      exceptionDeviceNum:
+        type: integer
+        description: 异常设备数
+  EnvironmentPojo:
+    description: 首页需要的设备相关信息
+    properties:
+      uuid:
+        type: string
+        description: 设备uuid
+      name:
+        type: string
+        description: 设备名称
+      type:
+        type: string
+        description: 资源类型（主类）
+      subType:
+        type: string
+        description: 资源子类
+      path:
+        type: string
+        description: 资源路径
+      endpoint:
+        type: string
+        description: 设备ip
+      port:
+        type: integer
+        description: port
+      version:
+        type: string
+        description: 资源的版本信息
+      linkStatus:
+        type: string
+        description: 设备在线状态,1代表正常
+      environmentStatus:
+        type: boolean
+        description: 设备状态：true代表正常，false代表异常
+      fileSystemTotalNum:
+        type: integer
+        description: 文件系统总数
+      exceptionFileSystemNum:
+        type: integer
+        description: 异常文件系统数
+
+  ResDetectConfigSummaryResp:
+    properties:
+      detectConfigs:
+        type: array
+        items:
+          $ref: '#/definitions/ResDetectConfigSummaryEntity'
+      fileExtensionFilterEnabledCount:
+        type: integer
+        format: int64
+        description: 所有设备文件拦截开启检测数量
+      fileExtensionFilterDisabledCount:
+        type: integer
+        format: int64
+        description: 所有设备文件拦截关闭检测的数量
+      ioDetectConfigEnabledCount:
+        type: integer
+        format: int64
+        description: 所有设备事中开启检测数量
+      ioDetectConfigDisabledCount:
+        type: integer
+        format: int64
+        description: 所有设备事中关闭检测的数量
+      copyDetectConfigEnabledCount:
+        type: integer
+        format: int64
+        description: 所有设备事后开启检测数量
+      copyDetectConfigDisabledCount:
+        type: integer
+        format: int64
+        description: 所有设备事后关闭检测的数量
+  ResDetectConfigSummaryEntity:
+    properties:
+      id:
+        type: string
+        description: 设备id
+      environmentName:
+        type: string
+        description: 设备名称
+      endpoint:
+        type: string
+        description: 设备ip
+      fileExtensionFilterEnabledCount:
+        type: integer
+        format: int32
+        description: 事前：勒索文件拦截enable数量
+      fileExtensionFilterDisabledCount:
+        type: integer
+        format: int32
+        description: 事前：勒索文件拦截disable数量
+      ioDetectConfigEnabledCount:
+        type: integer
+        format: int32
+        description: 事中：实时勒索检测enable数量
+      ioDetectConfigDisabledCount:
+        type: integer
+        format: int32
+        description: 事中：实时勒索检测disable数量
+      copyDetectConfigEnabledCount:
+        type: integer
+        format: int32
+        description: 事后：智能勒索检测enable数量
+      copyDetectConfigDisabledCount:
+        type: integer
+        format: int32
+        description: 事后：智能勒索检测disable数量
+  ExceptionFileSystemResp:
+    properties:
+      ioDetectExceptionFileSystems:
+        type: array
+        items:
+          $ref: '#/definitions/IoDetectExceptionFSPojo'
+        description: 实时侦测异常文件系统列表
+      resCopyDetectRespList:
+        type: array
+        items:
+          $ref: '#/definitions/ResCopyDetectResp'
+        description: 智能侦测遗异常该文件系统列表
+      exceptionFileSystemList:
+        type: array
+        items:
+          $ref: '#/definitions/ExceptionFileSystemPojo'
+        description: 实时侦测与智能侦测异常文件系统汇总
+  IoDetectExceptionFSPojo:
+    properties:
+      vstoreName:
+        type: string
+        description: 租户名称
+      environmentId:
+        type: string
+        description: 设备id
+      environmentName:
+        type: string
+        description: 设备名称
+      endpoint:
+        type: string
+        description: 设备ip
+      resourceName:
+        type: string
+        description: 文件系统名称
+      latestDetectionTime:
+        type: integer
+        format: int64
+        description: 最近侦测时间
+  ResCopyDetectResp:
+    properties:
+      uuid:
+        type: string
+        description: 资源id
+      name:
+        type: string
+        description: 资源名称
+      type:
+        type: string
+        description: 资源类型（主类）
+      subType:
+        type: string
+        description: 资源子类
+      parentName:
+        type: string
+        description: 父资源名称
+      parentUuid:
+        type: string
+        description: 父资源uuid
+
+      rootUuid:
+        type: string
+        description: 受保护环境uuid
+      detectionEndTime:
+        type: string
+        description: 侦测结束时间
+      status:
+        type: integer
+        description: 副本侦测状态
+      model:
+        type: string
+        description: 侦测模型
+      displayTimestamp:
+        type: string
+        description: 副本时间戳
+      tenantId:
+        type: string
+        description: 租户id
+      tenantName:
+        type: string
+        description: 租户名称
+  ExceptionFileSystemPojo:
+    properties:
+      vstoreName:
+        type: string
+        description: 租户名称
+      environmentId:
+        type: string
+        description: 设备id
+      environmentName:
+        type: string
+        description: 设备名称
+      endpoint:
+        type: string
+        description: 设备ip
+      resourceName:
+        type: string
+        description: 文件系统名称
+      latestDetectionTime:
+        type: integer
+        format: int64
+        description: 最近侦测时间

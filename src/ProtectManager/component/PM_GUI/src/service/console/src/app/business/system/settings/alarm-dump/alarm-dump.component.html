@@ -1,0 +1,155 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+  <div class="aui-header-1">
+    <lv-group lvGutter='8px'>
+      <h1>{{alarmDumpLabel}}</h1>
+      <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+    </lv-group>
+  </div>
+  <div class="between-page aui-gutter-column-md">
+    <div class="aui-block">
+      <div class="aui-header-2">
+        <h2>{{dumpParamsLabel}}</h2>
+        <div>
+          <a *ngIf="!isModify" class="aui-link" (click)='modifyDump()' pmpermission
+            pmOperation='ModifyDumpSettings'>{{editLabel}}</a>
+          <lv-group *ngIf="isModify" lvGutter="8px">
+            <a class="aui-link" (click)="saveDumpData()"
+              [ngClass]="{'aui-link': this.dumpForm.valid, 'aui-link-disabled': !this.dumpForm.valid}">{{saveLabel}}</a>
+            <a class="aui-link" (click)="cancelDump()">{{cancelLabel}}</a>
+          </lv-group>
+        </div>
+      </div>
+      <div class="alarm-dump-operation">
+        <p class="aui-text-help-sm">{{paramsTipLabel}}</p>
+      </div>
+      <div class="dashed-line alarm-dump-dashed-line"></div>
+      <ng-container *ngIf="!isModify">
+        <lv-form [lvLabelColon]='false'>
+          <lv-form-item *ngFor='let item of formItms'>
+            <lv-form-label>{{item.label}}</lv-form-label>
+            <lv-form-control>{{item.content | nil}}</lv-form-control>
+          </lv-form-item>
+        </lv-form>
+      </ng-container>
+      <ng-container *ngIf="isModify">
+        <lv-form [formGroup]="dumpForm" [lvLabelColon]='false'>
+          <lv-form-item>
+            <lv-form-label lvRequired>{{dumpedTimeLabel}}</lv-form-label>
+            <lv-form-control [lvErrorTip]='requiredErrorTip'>
+              <lv-time-picker formControlName="transferStartTime" class="form-control-input" lvShowClear='false'
+                lvPlaceholder="HH:mm:ss">
+              </lv-time-picker>
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label lvRequired>{{dumpPeriodLabel}}</lv-form-label>
+            <lv-form-control [lvErrorTip]='rangeErrorTip'>
+              <input lv-input class="form-control-input" formControlName="period" placeholder="7~120" />
+              <label class="configform-constraint">{{i18n.get('common_day_label')}}</label>
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label lvRequired>{{dataSavedLabel}}</lv-form-label>
+            <lv-form-control [lvErrorTip]='rangeErrorTip'>
+              <input lv-input class="form-control-input" formControlName="dataSavedTime" placeholder="7~120" />
+              <label class="configform-constraint">{{i18n.get('common_day_label')}}</label>
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>{{nextDumpTimeLabel}}</lv-form-label>
+            <lv-form-control>
+              <div class="modify-form">{{baseTime}}</div>
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>{{fileFormatLabel}}</lv-form-label>
+            <lv-form-control>
+              <lv-select [lvOptions]='fileFormatMethods' lvValueKey='value' formControlName="fileType" class="form-control-input"></lv-select>
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label>{{languageLabel}}</lv-form-label>
+            <lv-form-control>
+              <lv-select [lvOptions]='languageMethods' lvValueKey='value' formControlName="languageType" class="form-control-input"></lv-select>
+            </lv-form-control>
+          </lv-form-item>
+        </lv-form>
+      </ng-container>
+    </div>
+    <div class="aui-block">
+      <aui-dump-sftp (getAlarmSftpServer)="getAlarmSftpServer($event)"></aui-dump-sftp>
+    </div>
+  </div>
+
+  <div class="aui-block">
+    <div class="aui-header-2">
+      <h2>{{dumpHistoryLabel}}</h2>
+      <div>
+        <button class="aui-button-icon" lv-button lvSize="auto" (click)="initHistoryData()">
+          <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+        </button>
+      </div>
+    </div>
+    <lv-datatable [lvData]='historyData' #lvTable>
+      <thead>
+        <tr>
+          <th lvCellKey='startTime'> {{ startTimeLabel }} </th>
+          <th lvCellKey='endTime'> {{ endTimeLabel }} </th>
+          <th lvCellKey='result'> {{ resultLabel }} </th>
+          <th lvCellKey='node'> {{ nodeLabel }} </th>
+          <th lvCellKey='file'> {{ fileLabel }} </th>
+          <th lvCellKey='occurred' pmpermission pmOperation='DeletingDumpFile' width='144px'> {{ optLabel }} </th>
+        </tr>
+      </thead>
+      <tbody *ngIf='historyData?.length > 10'>
+        <ng-template lv-virtual-scroll let-item>
+          <ng-container *ngTemplateOutlet="tbody;context: { $implicit: item }"></ng-container>
+        </ng-template>
+      </tbody>
+      <tbody>
+        <ng-container *ngFor='let item of lvTable.renderData;trackBy:trackById'>
+          <tr>
+            <td>
+              <span lv-overflow lvTooltipTheme="light">{{item.startTime}}</span>
+            </td>
+            <td>
+              <span lv-overflow lvTooltipTheme="light">{{item.endTime}}</span>
+            </td>
+            <td>
+              <aui-status [value]="item.result" type="Dump_History_Result">
+              </aui-status>
+            </td>
+            <td>
+              <span lv-overflow lvTooltipTheme="light">{{item.node | nil}}</span>
+            </td>
+            <td>
+              <span lv-overflow lvTooltipTheme="light" [ngClass]="{'aui-link': item.resultLink}"
+                (click)="exportFile(item)">
+                {{item.resultLink | nil}}
+              </span>
+            </td>
+            <td pmpermission pmOperation='DeletingDumpFile'>
+              <lv-operation-menu [lvItemsFn]="optsCallback" [lvData]="item">
+              </lv-operation-menu>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </lv-datatable>
+    <lv-paginator #page [lvPageIndex]='startPage' [lvPageSize]='pageSize' [lvTotal]='totalCount'
+      (lvPageChange)="pageChange($event)" [lvPageSizeOptions]='sizeOptions' [hidden]="!totalCount"></lv-paginator>
+  </div>
+</div>

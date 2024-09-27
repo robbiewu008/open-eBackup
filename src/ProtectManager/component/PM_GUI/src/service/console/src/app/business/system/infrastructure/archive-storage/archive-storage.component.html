@@ -1,0 +1,202 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <lv-group lvGutter='8px'>
+            <ng-container *ngIf="!cookieService.isCloudBackup">
+                <h1>{{'system_archive_storage_warehouse_label' | i18n}}</h1>
+            </ng-container>
+            <ng-container *ngIf="cookieService.isCloudBackup">
+                <h1>{{'common_backup_storage_label' | i18n}}</h1>
+            </ng-container>
+            <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+        </lv-group>
+    </div>
+    <div class="aui-block aui-paginator-container" [ngClass]="{'custom-main-tab': !cookieService.isCloudBackup}">
+        <lv-tabs [(lvActiveIndex)]="activeIndex" *ngIf="!cookieService.isCloudBackup"
+            (lvActiveIndexChange)="tabChange($event)" lvType="card">
+            <lv-tab [lvTitle]="'common_object_storage_label' | i18n" [lvId]="'object'">
+                <ng-container *ngTemplateOutlet="objectArchiveTpl"></ng-container>
+            </lv-tab>
+            <lv-tab *ngIf="showTapeTab" [lvTitle]="'system_archive_tape_label' | i18n" [lvId]="'tape'">
+                <lv-group [lvColumns]="['260px', 'auto']" lvGutter="16px" style="height: 100%;align-items: flex-start;"
+                    *ngIf="isDataBackup">
+                    <lv-group lvDirection="vertical" lvGutter="8px" class="left-menus">
+                        <h3>{{ 'protection_statefulset_node_label' | i18n }}</h3>
+                        <lv-group lvGutter="8px">
+                            <lv-search [lvFocus]="true" [(ngModel)]="nodeName" (lvSearch)="search()"
+                                style="width: 212px;">
+                            </lv-search>
+                            <button class="aui-button-icon" lv-button lvSize="auto" (click)="refresh()">
+                                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                            </button>
+                        </lv-group>
+                        <div class="cluster-menus custom-cluster-menus">
+                            <lv-menu [lvMenus]="clusterMenus" [lvMode]="'icon'" [lvTheme]="'light'"
+                                [lvActiveItemId]="activeNode" [lvLabelTemplate]="clusterNodeTpl"
+                                (lvItemClick)="nodeChange($event)"></lv-menu>
+                        </div>
+                    </lv-group>
+                    <lv-tabs [(lvActiveIndex)]="tapeActiveIndex" style="height: 100%;">
+                        <lv-tab lvTitle="{{'system_archive_storage_pool_label'|i18n}}" [lvId]="'storagePool'">
+                            <aui-storage-pool-list></aui-storage-pool-list>
+                        </lv-tab>
+                        <lv-tab lvTitle="{{'system_archive_device_label'|i18n}}" [lvId]="'device'">
+                            <aui-storage-device-list></aui-storage-device-list>
+                        </lv-tab>
+                    </lv-tabs>
+                </lv-group>
+                <lv-tabs [(lvActiveIndex)]="tapeActiveIndex" *ngIf="!isDataBackup">
+                    <lv-tab lvTitle="{{'system_archive_storage_pool_label'|i18n}}" [lvId]="'storagePool'">
+                        <aui-storage-pool-list></aui-storage-pool-list>
+                    </lv-tab>
+                    <lv-tab lvTitle="{{'system_archive_device_label'|i18n}}" [lvId]="'device'">
+                        <aui-storage-device-list></aui-storage-device-list>
+                    </lv-tab>
+                </lv-tabs>
+            </lv-tab>
+        </lv-tabs>
+
+        <ng-container *ngIf="cookieService.isCloudBackup">
+            <ng-container *ngTemplateOutlet="objectArchiveTpl"></ng-container>
+        </ng-container>
+    </div>
+</div>
+
+<ng-template #objectArchiveTpl>
+    <div class="aui-operation">
+        <lv-group [lvGutter]="groupCommon.middleRowGutter">
+            <button lv-button lvType='primary' (click)="createArchiveStorage()" pmpermission
+                pmOperation='CreateArchiveStorage'>
+                {{cookieService.isCloudBackup ? this.addBackupStorageLabel : createArchiveStorageLabel}}
+            </button>
+            <button lv-button (click)="deleteArchiveStorage(selection)" [disabled]="disabledDelete" pmpermission
+                pmOperation='DeletingArchiveStorage'>
+                {{deleteArchiveStorageLabel}}
+            </button>
+        </lv-group>
+        <lv-group>
+            <button class="aui-button-icon" lv-button lvSize="auto" (click)="getArchiveStorages()">
+                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+            </button>
+        </lv-group>
+    </div>
+    <div class="list-container">
+        <lv-datatable lvAsync [lvData]='tableData' [lvPaginator]='page' #lvTable (lvStateChange)="stateChange($event)"
+            lvSelectionMode='multiple' [lvSelection]='selection' (lvSelectionChange)='selectionChange($event)'
+            lvResizeMode="expand" [lvScroll]="{ x: '100%' }" lvResize>
+            <thead>
+                <tr>
+                    <th lvShowCheckbox width='40px' [lvRowsData]='lvTable.renderData | selectionPipe'
+                        (lvCheckChange)='checkAllChange($event)'>
+                    </th>
+                    <th>{{nameLabel}}</th>
+                    <th>{{typeLabel}}</th>
+                    <th>{{statusLabel}}</th>
+                    <th width='300px'>
+                        {{capacityLabel}}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'system_archive_capcity_desc_label' | i18n}}"
+                            lvTooltipTheme="light" class="configform-constraint size" lvColorState='true'></i>
+                    </th>
+                    <th width='144px'>{{optLabel}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let item of lvTable.renderData">
+                    <tr>
+                        <td width='40px' lvShowCheckbox [lvRowData]='item' (lvCheckChange)='checkOneChange($event)'
+                            [lvDisabled]='item.type === dataMapService.getConfig("Archive_Storage_Type")["local"]["value"]'>
+                        </td>
+                        <td>
+                            <ng-container
+                                *ngIf='item.type === dataMapService.getConfig("Archive_Storage_Type")["local"]["value"]'>
+                                <span lv-overflow>{{item.name}}</span>
+                            </ng-container>
+                            <ng-container
+                                *ngIf='item.type !== dataMapService.getConfig("Archive_Storage_Type")["local"]["value"]'>
+                                <span class="aui-link" id='outerClosable' (click)="getDetail(item)"
+                                    lv-overflow>{{item.name}}</span>
+                            </ng-container>
+                        </td>
+                        <td>
+                            {{item.type | textMap: 'Archive_Storage_Type'}}
+                        </td>
+                        <td>
+                            <lv-group lvGutter='10px' class="link_status">
+                                <aui-status [value]='item.status' type='Archive_Storage_Status'>
+                                </aui-status>
+                                <ng-container *ngIf="item.status == dataMap.Archive_Storage_Status.partOnline.value">
+                                    <a class="aui-link" (click)="getStatusDetail(item)">
+                                        {{'common_view_label' | i18n}}
+                                    </a>
+                                </ng-container>
+                            </lv-group>
+                        </td>
+                        <td width='300px'>
+                            <div class='percent-bar' *ngIf="item.cloudType !== 4; else elseTemplate">
+                                <lv-progress [lvValue]="item.sizePercent" [lvSize]="'small'"
+                                    [lvColors]='item.progressBarColor' [lvLabel]="progressLabelTpl"
+                                    [lvExtra]="progressExtraTpl" lvDecimals="3"></lv-progress>
+                                <div class='size-percent'>
+                                    {{item.usedSize|capacityCalculateLabel:'1.1-3':unitconst.BYTE:
+                                    true}}/{{item.totalSize|capacityCalculateLabel:'1.1-3':unitconst.BYTE:
+                                    true}}
+                                </div>
+                            </div>
+                            <ng-template #progressExtraTpl>
+                                <div class="alarm-threashold" [ngStyle]="{'width': item.alarmThreasholdPer}"></div>
+                            </ng-template>
+                            <ng-template #elseTemplate>
+                                --
+                            </ng-template>
+                        </td>
+                        <td>
+                            <lv-operation-menu [lvItemsFn]="optsCallback" [lvData]="item" [lvMaxShowNum]="1">
+                            </lv-operation-menu>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </lv-datatable>
+    </div>
+    <div class="aui-paginator-wrap">
+        <lv-paginator [lvPageSize]='pageSize' #page [lvPageSizeOptions]="sizeOptions" [lvTotal]='total'
+            [hidden]="!total" (lvPageChange)="storagePageChange($event)">
+        </lv-paginator>
+    </div>
+</ng-template>
+
+<ng-template #progressLabelTpl let-data>{{data < 0.001 ? data==0 ? 0 : lessThanLabel + '0.001' : data}}% </ng-template>
+
+        <ng-template #clusterNodeTpl let-data>
+            <lv-group lvDirection="vertical" lvGutter="8px">
+                <div class="sub-title">{{ data.role | textMap:'Target_Cluster_Role' }}</div>
+                <div>{{ data.label }}</div>
+                <div>
+                    <aui-status
+                        *ngIf="data.status !== dataMap.Node_Status.setting.value && data.status !== dataMap.Node_Status.deleting.value"
+                        [value]="data.status" type="Cluster_Status"></aui-status>
+                    <div *ngIf="data.status === dataMap.Node_Status.setting.value" lv-overflow
+                        class="delete-status sub-title">
+                        <i lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
+                        <span> {{ 'system_net_plane_setting_label' | i18n}}</span>
+                    </div>
+                    <div *ngIf="data.status === dataMap.Node_Status.deleting.value" lv-overflow
+                        class="delete-status sub-title">
+                        <i lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
+                        <span>{{'common_status_deleting_label' | i18n}}</span>
+                    </div>
+                </div>
+            </lv-group>
+        </ng-template>

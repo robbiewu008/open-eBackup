@@ -1,0 +1,111 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div [ngClass]="{ visible: activeStep === 1, hidden: activeStep !== 1 }">
+    <lv-form [formGroup]='formGroup' class="formGroup">
+        <!-- 共享协议 -->
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'explore_share_protocol_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-checkbox-group formControlName="shareProtocol">
+                    <lv-group [lvGutter]="'16px'">
+                        <lv-checkbox *ngFor="let item of shareProtocolOps" [lvValue]="item.value">
+                            {{item.label}}
+                        </lv-checkbox>
+                    </lv-group>
+                </lv-checkbox-group>
+            </lv-form-control>
+        </lv-form-item>
+        <!-- nfs设置 -->
+        <ng-container *ngIf="includes(formGroup.value.shareProtocol,'nfs')">
+            <h2 class="textDiv">{{'protection_commonshare_nfs_label' | i18n}}</h2>
+            <lv-alert *ngIf="isHcsUser" lvType="info" lvClosable="false">
+                {{'protection_commonshare_nfs_tips_label' | i18n}}
+            </lv-alert>
+            <lv-form-item>
+                <lv-form-label [lvRequired]="!isHcsUser">
+                    {{'protection_share_client_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_commonshare_whitelist_tips_label' | i18n}}"
+                        lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <div formArrayName="whitelist" class="whitelist">
+                        <div [formGroupName]="i" *ngFor="let item of ips; let i=index" class="mgb-ip">
+                            <lv-group [lvGutter]="'10px'">
+                                <lv-form-control [lvErrorTip]="whiteListErrorTip">
+                                    <input lv-input type="text" formControlName="ip" /></lv-form-control>
+                                <ng-container *ngIf="ips.length > 1">
+                                    <i lv-icon="aui-icon-remove" (click)="deleteIp(i)" lvColorState='true'
+                                        style="width:20px"></i>
+                                </ng-container>
+                            </lv-group>
+                        </div>
+                    </div>
+                    <div class="tips" *ngIf="ipRepeat">
+                        <i lv-icon="lv-icon-status-failed" class="error-icon"></i>
+                        {{ repeatTips }}
+                    </div>
+                    <lv-group lvGutter='8px'
+                        [ngClass]="{'aui-link-disabled':ips.length >= 100, 'aui-link': ips.length < 100 }"
+                        (click)="addIp()">
+                        <i lv-icon="aui-icon-create"></i>
+                        <span class="text-middle">{{'common_add_label' | i18n}}</span>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+
+        <!-- cifs设置 -->
+        <ng-container *ngIf="includes(formGroup.value.shareProtocol,'cifs')">
+            <h2 class="textDiv">{{'protection_commonshare_cifs_label' | i18n}}</h2>
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'common_type_label' | i18n}}</lv-form-label>
+                <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                    <lv-select [lvOptions]='userTypeOptions' lvValueKey='value' formControlName='userType'>
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container
+                *ngIf="formGroup.value.userType && formGroup.value.userType !== dataMap.Cifs_Domain_Client_Type.everyone.value">
+                <ng-container>
+                    <lv-form-item>
+                        <lv-form-label lvRequired>{{'common_users_label' | i18n}}</lv-form-label>
+                        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                            <lv-select [lvOptions]='userOptions' lvValueKey='value' formControlName='userNames'
+                                lvMode='multiple' lvShowFilter lvShowCheckAll lvFilterKey='label'
+                                lvFilterMode='contains'>
+                            </lv-select>
+                            <div class="user-info">
+                                <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+                                <span>
+                                    {{'protection_file_system_user_tip_label' | i18n}}
+                                </span>
+                            </div>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </lv-form>
+</div>
+
+<div [ngClass]="{ visible: activeStep === 2, hidden: activeStep !== 2 }">
+    <aui-link [detailData]="detailData" [isConfig]="isConfig"></aui-link>
+</div>
+
+<ng-template #headerTpl>
+    <div class="aui-operation aui-custom-modal-container">
+        <div class="aui-custom-modal-title" style="width: 400px;" lv-overflow lvTooltipTheme="light">{{'common_restore_label' | i18n}}
+        </div>
+    </div>
+</ng-template>

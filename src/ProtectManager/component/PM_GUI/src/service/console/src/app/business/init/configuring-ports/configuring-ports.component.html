@@ -1,0 +1,84 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div>
+  <div class="header-bottom">
+    <div class="aui-header-2">
+      <h2>{{ 'common_port_network_config_label' | i18n }}</h2>
+    </div>
+    <div>
+      <lv-group lvGutter="4px">
+        <i
+          lv-icon="lv-icon-download"
+          class="aui-link"
+          lvColorState="true"
+          (click)="getLld()"
+        ></i>
+        <span class="aui-link" (click)="getLld()">
+          {{ 'common_port_network_config_help_label' | i18n }}
+        </span>
+      </lv-group>
+    </div>
+  </div>
+  <div>
+    <lv-group lvGutter="16px">
+      <span>
+        {{ 'common_lld_config_file_label' | i18n }}
+      </span>
+      <lv-upload
+        lvAccept=".xls"
+        lvShowUpload="false"
+        (lvChange)="uploadChange($event)"
+        [lvFilters]="filters"
+        style="width:276px"
+      ></lv-upload>
+      <span>
+        <button lv-button (click)="upload()" [disabled]="!selectFile">
+          {{ 'common_upload_label' | i18n }}
+        </button>
+      </span>
+    </lv-group>
+
+    <div class="error-tip-init" *ngIf="networkSize">
+      <span>
+        <i lv-icon="aui-icon-job-status-fail"></i>
+        <span class="text-middle">
+          {{ 'common_lld_network_size_label' | i18n }}</span
+        >
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="controller-config" *ngIf="fileReceive">
+  <lv-collapse [lvType]="'simple'" class="panel-cluster">
+    <ng-container *ngFor="let control of controllers">
+      <lv-collapse-panel [lvTitle]="titleTpl" lvExpanded="true">
+        <aui-config-table
+          [isLLD]="true"
+          [data]="control"
+          [columns]="columns"
+          (onStatusChange)="nameChange($event)"
+        ></aui-config-table>
+      </lv-collapse-panel>
+      <ng-template #titleTpl>
+        <lv-group lvGutter="4px">
+          <img src="assets/img/cpu.svg" />
+          <h2>
+            {{ 'common_controller_label' | i18n }}{{ control.controllerName }}
+          </h2>
+        </lv-group>
+      </ng-template>
+    </ng-container>
+  </lv-collapse>
+</div>

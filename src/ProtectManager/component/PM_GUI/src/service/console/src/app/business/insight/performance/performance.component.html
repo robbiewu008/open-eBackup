@@ -1,0 +1,281 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-header-1 header-container" pmpermission pmOperation='ChangePerformanceStatus'>
+        <lv-group lvGutter='8px' *ngIf="!isDataBackupOrDecouple">
+            <h1>{{performanceMonitorLabel}}</h1>
+            <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+        </lv-group>
+        <div class="switch-container" *ngIf="!isDataBackupOrDecouple && !appUtilsService.isDistributed">
+            <lv-switch [(ngModel)]="showMonitor" [lvLoading]="loading" [lvControl]="true" (click)="switchMonitor()">
+            </lv-switch>
+            <i lv-icon="aui-icon-help" [lv-tooltip]="contentTemplate" lvTooltipPosition="rightTop"
+                lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+            <ng-template #contentTemplate>
+                <span [innerHTML]="switchHelp"></span>
+            </ng-template>
+        </div>
+
+        <div class="multi-header" *ngIf="isDataBackupOrDecouple">
+            <h1>{{performanceMonitorLabel}}</h1>
+            <div *ngIf="!appUtilsService.isDecouple" class="setting-container">
+                <lv-group lvGutter='4px' (click)="setting()" lv-popover *ngIf="!popoverFlag && allClose"
+                    [lvPopoverHeader]="settingHeaderTpl"
+                    lvPopoverContent="{{'insight_perfomance_switch_tips_label' | i18n}}" lvPopoverTheme="light"
+                    lvPopoverPosition="leftTop" [lvPopoverClosable]="true" lvPopoverTrigger="hover">
+                    <img src="assets/img/setting.svg" />
+                    <span>{{'common_setting_label' | i18n}}</span>
+                </lv-group>
+
+                <lv-group lvGutter='4px' (click)="setting()"
+                    *ngIf="(popoverFlag && allClose) || (!popoverFlag && !allClose)" lv-popover
+                    [lvPopoverHeader]="settingHeaderTpl"
+                    lvPopoverContent="{{'insight_perfomance_switch_tips_label' | i18n}}" lvPopoverTheme="light"
+                    lvPopoverPosition="leftTop" [lvPopoverClosable]="true" lvPopoverTrigger="customize"
+                    [lvPopoverVisible]="tipShow" [lvPopoverBeforeClose]="close">
+                    <img src="assets/img/setting.svg" />
+                    <span>{{'common_setting_label' | i18n}}</span>
+                </lv-group>
+            </div>
+        </div>
+    </div>
+    <lv-alert lvType="info" lvClosable="false" *ngIf="!showMonitor && appUtilsService.isDecouple">
+        {{'insight_decouple_performance_no_data_tip_label' | i18n}}
+    </lv-alert>
+    <div class="echart-container aui-block">
+        <div class="cluster-container">
+            <lv-menu #menu [lvMenus]="clusters" [(lvActiveItemId)]="activeNode" [lvTheme]="'light'"
+                [lvLabelTemplate]="parentNodeTpl" [lvCollapsed]="collapsed"
+                (lvItemClick)="clusterItemClick($event)"></lv-menu>
+        </div>
+        <div class="right-container">
+            <div class="performance-tab" *ngIf="showMonitor || !hasRemoveHistoryData">
+                <lv-tabs (lvActiveIndexChange)="reloadView()" *ngIf="!isCloudbackup">
+                    <lv-tab
+                        lvTitle="{{(isDataBackupOrDecouple ? 'insight_performance_backup_restore_label' : 'common_backup_label') | i18n}}"
+                        [lvId]="'backup'">
+                        <ng-container *ngTemplateOutlet="operationTemplate"> </ng-container>
+                        <div *ngIf="appUtilsService.isDistributed">
+                            <ng-container *ngTemplateOutlet="distributedTemplate"> </ng-container>
+                        </div>
+                        <ng-container *ngTemplateOutlet="backupTemplate"> </ng-container>
+                    </lv-tab>
+                    <lv-tab lvTitle="{{'common_replicate_label' | i18n}}" [lvId]="'copy'">
+                        <ng-container *ngTemplateOutlet="operationTemplate"> </ng-container>
+                        <ng-container *ngTemplateOutlet="copyTemplate"> </ng-container>
+                    </lv-tab>
+                </lv-tabs>
+                <div *ngIf="isCloudbackup">
+                    <ng-container *ngTemplateOutlet="operationTemplate"> </ng-container>
+                    <ng-container *ngTemplateOutlet="backupTemplate"> </ng-container>
+                </div>
+            </div>
+            <div class="performance-no-data aui-block" *ngIf="!showMonitor && hasRemoveHistoryData">
+                <i lv-icon="aui-icon-no-data"></i>
+                <div class="no-data-label">{{'common_open_performance_link_label' | i18n}}</div>
+                <button *ngIf="isDataBackupOrDecouple" class="btn" (click)="switchMonitor()">{{'common_open_label'
+                    |i18n}}</button>
+            </div>
+
+            <!--右上角切换标签-->
+            <ng-template #operationTemplate>
+                <div class="node-operation">
+                    <lv-group lvGutter='16px' class="operation-group">
+                        <!--切换按设备与按存储池-->
+                        <lv-radio-group [(ngModel)]="deviceOrStoragePoolModel"
+                            (ngModelChange)="deviceOrStoragePoolModelChange()" [hidden]="appUtilsService.isDistributed">
+                            <lv-group>
+                                <lv-radio [lvViewType]="'button'" [lvValue]="'device'">{{device}}</lv-radio>
+                                <lv-radio [lvViewType]="'button'" [lvValue]="'storagePool'">{{storagePool}}</lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+
+                        <!--切换最大值与平均值-->
+                        <lv-radio-group [(ngModel)]="staticsMode" (ngModelChange)="staticsModeChange()"
+                            [hidden]="appUtilsService.isDistributed">
+                            <lv-group>
+                                <lv-radio [lvViewType]="'button'" [lvValue]="'max'">{{maxLabel}}</lv-radio>
+                                <lv-radio [lvViewType]="'button'" [lvValue]="'avg'">{{avgLabel}}</lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                        <lv-select [lvOptions]='performanceTimeOptions' [(ngModel)]='timeSeleted'
+                            (ngModelChange)='performanceTimeChange($event)' lvValueKey='value'>
+                        </lv-select>
+                        <lv-tooltip lvContent="{{'insight_performance_refresh_desc_label'|i18n}}"
+                            lvTooltipPosition="bottom">
+                            <button class="aui-button-icon" lv-button lvSize="auto" (click)="refreshView()">
+                                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                            </button>
+                        </lv-tooltip>
+                    </lv-group>
+                </div>
+            </ng-template>
+
+            <!--图表-->
+            <div class="aui-echarts">
+                <ng-template #backupTemplate>
+                    <div class="chart-card" *ngIf="!appUtilsService.isDistributed">
+                        <h3>
+                            {{(isOceanProtect ? 'insight_latency_label' : 'insight_backup_latency_label') | i18n}}
+                        </h3>
+                        <div class="chart-container" *ngIf="showLatency">
+                            <div id="latency-chart" my-auto-fit-layout></div>
+                        </div>
+                        <div class="performance-no-data" *ngIf="!showLatency">
+                            <i lv-icon="aui-icon-no-data"></i>
+                            <div class="no-data-label">{{noData}}</div>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>
+                            {{(isOceanProtect ? 'common_iops_label' : 'insight_backup_iops_label') | i18n}}
+                        </h3>
+                        <div class="chart-container" *ngIf="showIops">
+                            <div id="iops-chart" my-auto-fit-layout></div>
+                        </div>
+                        <div class="performance-no-data" *ngIf="!showIops">
+                            <i lv-icon="aui-icon-no-data"></i>
+                            <div class="no-data-label">{{noData}}</div>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>
+                            {{(isOceanProtect ? 'common_bindwidth_kb_label' : 'insight_backup_bindwidth_label') | i18n}}
+                        </h3>
+                        <div class="chart-container" *ngIf="showBindwidth">
+                            <div id="bindwidth-chart" my-auto-fit-layout></div>
+                        </div>
+                        <div class="performance-no-data" *ngIf="!showBindwidth">
+                            <i lv-icon="aui-icon-no-data"></i>
+                            <div class="no-data-label">{{noData}}</div>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template #copyTemplate>
+                    <div class="chart-card">
+                        <h3>{{'insight_copy_latency_label' | i18n}}</h3>
+                        <div class="chart-container" *ngIf="showCopyLatency">
+                            <div id="copy-latency-chart" my-auto-fit-layout></div>
+                        </div>
+                        <div class="performance-no-data" *ngIf="!showCopyLatency">
+                            <i lv-icon="aui-icon-no-data"></i>
+                            <div class="no-data-label">{{noData}}</div>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>{{'insight_copy_iops_label' | i18n}}</h3>
+                        <div class="chart-container" *ngIf="showCopyIops">
+                            <div id="copy-iops-chart" my-auto-fit-layout></div>
+                        </div>
+                        <div class="performance-no-data" *ngIf="!showCopyIops">
+                            <i lv-icon="aui-icon-no-data"></i>
+                            <div class="no-data-label">{{noData}}</div>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>{{'insight_copy_bindwidth_label' | i18n}}</h3>
+                        <div class="chart-container" *ngIf="showCopyBindwidth">
+                            <div id="copy-bindwidth-chart" my-auto-fit-layout></div>
+                        </div>
+                        <div class="performance-no-data" *ngIf="!showCopyBindwidth">
+                            <i lv-icon="aui-icon-no-data"></i>
+                            <div class="no-data-label">{{noData}}</div>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <lv-group>
+                            <h3>{{'insight_copy_get_bindwidth_label' | i18n}}</h3>
+                            <i lv-icon="aui-icon-help" class="bindwidth-help"
+                                lv-tooltip="{{'insight_copy_get_bindwidth_help_label' | i18n}}"></i>
+                        </lv-group>
+                        <div class="chart-container" *ngIf="showNasBindwidth">
+                            <div id="copy-nas-bindwidth-chart" my-auto-fit-layout></div>
+                        </div>
+                        <div class="performance-no-data" *ngIf="!showNasBindwidth">
+                            <i lv-icon="aui-icon-no-data"></i>
+                            <div class="no-data-label">{{noData}}</div>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template #distributedTemplate>
+                    <ng-template *ngIf="!!selectedNodeIp">
+                        <div class="chart-card">
+                            <h3>{{'insight_cfs_backup_latency_label' | i18n}}</h3>
+                            <div class="chart-container" *ngIf="showCfsLatency">
+                                <div id="cfs-latency-chart-distributed" my-auto-fit-layout></div>
+                            </div>
+                            <div class="performance-no-data" *ngIf="!showCfsLatency">
+                                <i lv-icon="aui-icon-no-data"></i>
+                                <div class="no-data-label">{{noData}}</div>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>{{'insight_nfs_backup_latency_label' | i18n}}</h3>
+                            <div class="chart-container" *ngIf="showNfsLatency">
+                                <div id="nfs-latency-chart-distributed" my-auto-fit-layout></div>
+                            </div>
+                            <div class="performance-no-data" *ngIf="!showNfsLatency">
+                                <i lv-icon="aui-icon-no-data"></i>
+                                <div class="no-data-label">{{noData}}</div>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>{{'insight_object_service_backup_latency_label' | i18n}}</h3>
+                            <div class="chart-container" *ngIf="showObjectServiceLatency">
+                                <div id="object-service-latency-chart-distributed" my-auto-fit-layout></div>
+                            </div>
+                            <div class="performance-no-data" *ngIf="!showObjectServiceLatency">
+                                <i lv-icon="aui-icon-no-data"></i>
+                                <div class="no-data-label">{{noData}}</div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #tipContentTpl>
+    <div [innerHTML]="switchOffContent"></div>
+    <div class="container-checkbox">
+        <label lv-checkbox [(ngModel)]='isDeleteHistory'>{{'insight_performance_switch_checkbox_label' | i18n}}</label>
+    </div>
+</ng-template>
+
+<ng-template #parentNodeTpl let-data>
+    <div style="margin-left:10px">
+        <span lv-overflow style="width:135px">{{ data.label }}</span>
+        <div *ngIf="!isEmpty(data.items)">
+            <aui-status
+                *ngIf="data.status !== dataMap.Node_Status.setting.value && data.status !== dataMap.Node_Status.deleting.value"
+                [value]="data.status" type="Cluster_Status" class="sub-title"></aui-status>
+            <div *ngIf="data.status === dataMap.Node_Status.setting.value" lv-overflow class="delete-status sub-title">
+                <i lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
+                <span> {{ 'system_net_plane_setting_label' | i18n}}</span>
+            </div>
+            <div *ngIf="data.status === dataMap.Node_Status.deleting.value" lv-overflow class="delete-status sub-title">
+                <i lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
+                <span>{{'common_status_deleting_label' | i18n}}</span>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #settingHeaderTpl>
+    <lv-group lvGutter='4px'>
+        <i lv-icon="lv-icon-status-info"></i>
+        <span>{{'common_alarms_info_label' | i18n}}</span>
+    </lv-group>
+</ng-template>

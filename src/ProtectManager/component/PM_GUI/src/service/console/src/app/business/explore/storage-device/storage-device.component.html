@@ -1,0 +1,85 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="overview-tag">
+        <lv-group [lvColumns]='["122px", "auto"]' lvRowGutter="24px" class="group-mgr">
+            <img src="assets/img/storage_brand.svg" style="height: 140px;">
+            <lv-group lvGutter="8px" lvDirection='vertical'>
+                <h1>{{'protection_storage_devices_label' | i18n}}</h1>
+                <span class="aui-text-label desc-font">
+                    {{'explore_storage_device_help_label' | i18n}}
+                </span>
+            </lv-group>
+        </lv-group>
+        <lv-group lvGutter="56px" class="statistic-group">
+            <lv-group lvGutter="8px" lvDirection='vertical'>
+                <h1 class="summary-count">
+                    {{totalFileSystem}}
+                </h1>
+                <span class="aui-text-label desc-font">
+                    {{'protection_storage_devices_label' | i18n}}
+                </span>
+            </lv-group>
+            <lv-group lvGutter="8px" lvDirection='vertical'>
+                <h1 class="summary-count">
+                    {{totalNormal}}<span class="total-count-summay">/{{totalFileSystem}}</span>
+                </h1>
+                <span class="aui-text-label desc-font">
+                    {{'common_online_label' | i18n}}
+                </span>
+            </lv-group>
+            <lv-group lvGutter="8px" lvDirection='vertical'>
+                <h1 class="summary-count">{{totalOceanCyber}}</h1>
+                <span class="aui-text-label desc-font">
+                    {{'protection_detect_type_cyber_engine_label' | i18n}}
+                </span>
+            </lv-group>
+            <lv-group lvGutter="8px" lvDirection='vertical'>
+                <h1 class="summary-count">{{totalInDevice}}</h1>
+                <span class="aui-text-label desc-font">
+                    {{'protection_detect_type_indevice_label' | i18n}}
+                </span>
+            </lv-group>
+        </lv-group>
+    </div>
+    <div class="aui-block aui-paginator-container">
+        <div class="aui-operation">
+            <lv-group>
+                <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData">
+                </lv-pro-button-group>
+            </lv-group>
+            <lv-group lvGutter="16px">
+                <lv-search [lvFocus]="true" [(ngModel)]="name" (lvSearch)="search()"
+                    lvPlaceHolder="{{'common_search_type_label'|i18n:['common_equipment_label']}}">
+                </lv-search>
+                <button class="aui-button-icon" lv-button lvSize="auto" (click)="dataTable.fetchData()">
+                    <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                </button>
+            </lv-group>
+        </div>
+        <div class="list-container">
+            <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+        </div>
+    </div>
+</div>
+<ng-template #nameTpl let-item>
+    <ng-container *ngIf="item.detectType === dataMap.storageDeviceDetectType.inDevice.value; else elseTemplate">
+        <span lv-overflow class="aui-link" (click)="gotoPM(item)">
+            {{item.name}}
+        </span>
+    </ng-container>
+    <ng-template #elseTemplate>
+        <span lv-overflow>{{item.name}}</span>
+    </ng-template>
+</ng-template>

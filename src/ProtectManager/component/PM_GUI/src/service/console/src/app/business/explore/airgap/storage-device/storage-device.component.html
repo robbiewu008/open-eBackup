@@ -1,0 +1,77 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation">
+  <lv-group [lvGutter]="groupCommon.middleRowGutter"> 
+    <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData" [maxDisplayItems]="5">
+    </lv-pro-button-group>
+  </lv-group>
+  <lv-group [lvGutter]="groupCommon.middleRowGutter">
+    <lv-search
+      [lvFocus]="true"
+      lvPlaceHolder="{{ 'common_search_device_name_label' | i18n }}"
+      (lvSearch)="search($event)"
+    >
+    </lv-search>
+    <button
+      class="aui-button-icon"
+      lv-button
+      l
+      vSize="auto"
+      (click)="refresh()"
+    >
+      <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+    </button>
+  </lv-group>
+</div>
+<div class="double-row-height">
+  <lv-pro-table
+    #dataTable
+    [config]="tableConfig"
+    [data]="tableData"
+  ></lv-pro-table>
+</div>
+
+<ng-template #warningContentTpl>
+  <lv-group lvDirection="vertical" lvGutter="16px">
+    <span [innerHTML]="removeDangerTipLable"></span>
+    <label
+      lv-checkbox
+      [(ngModel)]="warningConfirm"
+      (ngModelChange)="modalCheckBoxChange($event)"
+      >{{ 'common_warning_confirm_label' | i18n }}</label
+    >
+  </lv-group>
+</ng-template>
+
+<ng-template #removeContentTpl>
+  <span [innerHTML]="removeInfoContentTpl"></span>
+</ng-template>
+
+<ng-template #turnOnContentTpl>
+  <span [innerHTML]="turnOnInfoContentTpl"></span>
+</ng-template>
+<ng-template #turnOffContentTpl>
+  <span [innerHTML]="turnOffInfoContentTpl"></span>
+</ng-template>
+
+<ng-template #timeTpl let-item>
+  <div lv-overflow>{{ item.airGapPolicyInfo?.name | nil }}</div>
+  <div class="aui-text-help-sm">
+    {{ 'protection_frequency_label' | i18n }}
+    <span class="colon">
+      :
+    </span>
+    {{ item.frequency }}
+  </div>
+</ng-template>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="Bookmark" type="image/x-icon" href="css/img/favicon.ico"/>
+    <link rel="icon" type="image/x-icon" href="css/img/favicon.ico"/>
+    <link rel="shortcut icon" type="image/x-icon" href="css/img/favicon.ico"/>
+
+    <link type="text/css" rel="styleSheet" href="css/tabs.css"/>
+    <link type="text/css" rel="styleSheet" href="css/zTreeStyle.css"/>
+    <link type="text/css" rel="styleSheet" href="css/indexUI.css"/>
+    <title>帮助文档</title>
+</head>
+
+<body>
+
+<div class="title_div">
+    <img class="a_img" src="css/img/huawei_logo.png"/>
+</div>
+
+<!--navigating-->
+<div id="tabs" class="nav_div">
+    <ul class="tabs_ul">
+        <li><a href="#zTree" class="li-a catalog-title">目录（C）</a></li>
+        <li><a href="#search" class="li-a search-title">搜索（S）</a></li>
+    </ul>
+    <div id="zTree" class="ztree ztree_div"></div>
+    <div id="search" style="width: 270px;padding: 0px">
+        <span class="span-search">请输入要搜索的关键字（W）:</span>
+        <div class="div-placeholder" style="display: inline">
+            <select id="titleOrContext" class="titleOrContext">
+                <option value="1">标题</option>
+                <option value="2" selected>内容</option>
+            </select>
+            <input id="keyWord" placeholder="请输入关键字" class="placeholder"/>
+        </div>
+        <div class="div-search">
+            <input id="searchButton" type="button" class="search" value="搜索"
+                   style="font-family: 宋体,serif;font-size: 12px"/>
+        </div>
+        <span class="span-search-result">搜索到的结果:</span>
+        <div class="result-div" id="result-div">
+        </div>
+    </div>
+</div>
+
+<!--Body Content-->
+<div class="content_div">
+    <h5 class="div-h5">No Information.</h5>
+    <iframe id="iframeContent" scrollin="auto" width="100%" style="border: 0px" frameborder="0"></iframe>
+</div>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/tabs.js"></script>
+<script type="text/javascript" src="js/jquery.ztree.core.min.js"></script>
+<script type="text/javascript" src="js/jquery.ztree.exhide.min.js"></script>
+<script type="text/javascript" src="js/polyfill.min.js"></script>
+<script type="text/javascript" src="js/indexUI.js"></script>
+<script type="text/javascript" src="js/search.js"></script>
+<script type="text/javascript" src="js/highlight.js"></script>
+<script type="text/javascript" src="data/nav_json.js"></script>
+<script type="text/javascript" src="js/utils.js"></script>
+
+</body>
+</html>

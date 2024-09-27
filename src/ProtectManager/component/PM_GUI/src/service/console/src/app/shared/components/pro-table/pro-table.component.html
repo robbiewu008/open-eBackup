@@ -1,0 +1,355 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!-- 过滤条件展示区 -->
+<div *ngIf="initConfig.filterTags" class="lv-pro-table-filter">
+  <lv-tag
+    [ngModel]="filterTags"
+    [lvTagTemplate]="initConfig.filterTags?.tagTemplate || tagTpl"
+    [lvExtraContent]="initConfig.filterTags?.extraContent"
+    lvShowClearAll
+    (lvClearAll)="_clearFilterTag()"
+    (lvRemove)="_clearFilterTag($event)"
+  ></lv-tag>
+  <!-- 默认标签模板 -->
+  <ng-template #tagTpl let-item>
+    <div lv-overflow>{{ _getTagName(item.key) }}: {{ item.label }}</div>
+  </ng-template>
+</div>
+
+<!-- 表格区 -->
+<div *ngIf="!initing" class="lv-pro-table custom-pro-table" [ngClass]="{'list-container': !initConfig.pagination?.winTablePagination}">
+  <lv-loading [lvLoading]="tableLoading" lvLoadingText="">
+    <lv-datatable
+      #lvTable
+      lvSort
+      #sort="lvSort"
+      [lvSortDirct]="sort"
+      [lvActiveSort]="activeSort"
+      [ngClass]="{
+        'lv-pro-table-control': initConfig.table.colDisplayControl
+      }"
+      [lvPaginator]="page"
+      [lvSize]="initConfig.table.size"
+      [lvScroll]="tableScroll"
+      [lvVirtualScroll]="initConfig.table.virtualScroll"
+      [lvVirtualItemSize]="initConfig.table.virtualItemHeight"
+      [lvVirtualTrackBy]="initConfig.table.virtualScroll && initConfig.table.trackByFn"
+      [lvData]="tableData.data"
+      [lvAsync]="initConfig.table.async"
+      [lvStripe]="initConfig.table.rows?.showStripe"
+      [lvResize]="initConfig.table.colResize"
+      [lvResizeMode]="initConfig.table.colResize && initConfig.table.colResize.mode"
+      [lvSelection]="selection"
+      [lvSelectionMode]="initConfig.table.rows?.selectionMode"
+      [lvCompareWith]="initConfig.table.compareWith"
+      [lvFake]="initConfig.table.fake"
+      (lvSelectionChange)="_selectionChange($event)"
+      (lvStateChange)="_stateChange($event)"
+    >
+      <thead>
+        <tr>
+          <!-- 行展开占位单元格 -->
+          <ng-container *ngIf="initConfig.table.rows?.expandable">
+            <th width="40" class="lv-table-th-expand"></th>
+          </ng-container>
+          <!-- 选择器checkbox -->
+          <ng-container *ngIf="initConfig.table.rows?.selectionMode === 'multiple' && initConfig.table.rows?.showSelector">
+            <th class="lv-table-th-checkbox" [attr.width]="initConfig.table.rows?.expandable ? 48 : 40">
+              <label
+                style="margin-top: 3px;"
+                *ngIf="initConfig.table.rows?.selectionMode === 'multiple'"
+                lv-checkbox
+                [lvControl]="true"
+                (click)="_toggleAllSelection()"
+                [ngModel]="_isAllCheck()"
+                [lvIndeterminate]="_isHalfCheck()"
+              ></label>
+            </th>
+          </ng-container>
+          <!-- 选择器radio -->
+          <ng-container *ngIf="initConfig.table.rows?.selectionMode === 'single' && initConfig.table.rows?.showSelector">
+            <th class="lv-table-th-checkbox" [attr.width]="initConfig.table.rows?.expandable ? 48 : 40"></th>
+          </ng-container>
+
+          <ng-container *ngFor="let col of tableCols">
+            <th
+              *ngIf="!col.hidden || col.hidden === 'ignoring'"
+              [lvCellKey]="col.key || null"
+              [width]="col.width"
+              [lvAlign]="col.thAlign"
+              [lvLeft]="col.fixLeft"
+              [lvRight]="col.fixRight"
+              [lvShowCustom]="col.thExtra || (col.filter && col.filter.type !== 'select')"
+              [lvShowFilter]="col.filter && col.filter.type === 'select'"
+              [lvFilterTemplate]="col.filter?.template || filterSelectTpl"
+              [lvFilters]="col.filter && col.filter.type === 'select' && filterSelectMap[col.key]"
+              [lvFilterMultiple]="col.filter && col.filter.type === 'select' && col.filter.isMultiple"
+              [lvFilterCheckAll]="col.filter && col.filter.type === 'select' && col.filter.showCheckAll"
+              [lvFilterSearch]="col.filter && col.filter.type === 'select' && col.filter.showSearch"
+              [lvFilterAuto]="col.filter && col.filter.type === 'select' && col.filter.filterAuto"
+              [lvFilterMode]="col.filter && col.filter.type === 'select' && col.filter.filterMode"
+              [lvFilterCaseSensitive]="col.filter && col.filter.type === 'select' && col.filter.caseSensitive"
+              [lvCustomFilter]="col.filter && col.filter.type === 'select' && col.filter.customFilter"
+              [lvCustomItemFilter]="col.filter && col.filter.type === 'select' && col.filter.customItemFilter"
+              (lvFilterChange)="filterChange($event)"
+              [lvShowSort]="col.sort"
+              [lvCustomSort]="col.sort && col.sort.customSort"
+              [lvShowCheckbox]="false"
+            >
+              <ng-container *ngIf="typeUtils.isRealString(col.name)"
+                ><div lv-overflow>
+                  <span>{{ col.name }}</span>
+                  <!-- 自定义表头模板 -->
+                  <ng-container [ngSwitch]="true">
+                    <ng-container *ngSwitchCase="typeUtils.isTemplateRef(col.thExtra)" [ngTemplateOutlet]="col.thExtra"></ng-container>
+                    <ng-container *ngSwitchCase="typeUtils.isRealString(col.thExtra)">{{ col.thExtra }}</ng-container>
+                  </ng-container>
+                </div></ng-container
+              >
+              <ng-container *ngIf="typeUtils.isTemplateRef(col.name)" [ngTemplateOutlet]="col.name"></ng-container>
+              <div lvCustom>
+                <!-- 表头的搜索和日期选择过滤 -->
+                <ng-container *ngIf="col.filter && col.filter.type === 'search'">
+                  <aui-custom-table-search (search)="_doSearch($event, col)" [filterTitle]="col.name"></aui-custom-table-search>
+                </ng-container>
+                <ng-container *ngIf="col.filter && col.filter.type === 'date'">
+                  <lv-pro-filter-date
+                    #filterDate
+                    [value]="_getfilterValue(col)"
+                    [config]="col.filter"
+                    (search)="_doSearch($event, col)"
+                  ></lv-pro-filter-date>
+                </ng-container>
+              </div>
+            </th>
+          </ng-container>
+          <ng-container *ngIf="initConfig.table.colDisplayControl">
+            <!-- 列显示/隐藏控制 -->
+            <th width="16px" style="padding: 0;" lvResizable="false">
+              <lv-pro-cols-display
+                [(value)]="displayCols"
+                [data]="displayControlCols"
+                [ignoringColsType]="initConfig.table.colDisplayControl?.ignoringColsType || 'hide'"
+                (valueChange)="setColsDisplay($event, true)"
+              ></lv-pro-cols-display>
+            </th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody *ngIf="table">
+        <ng-container *ngIf="initConfig.table.virtualScroll">
+          <ng-template lv-virtual-scroll let-item>
+            <ng-container *ngTemplateOutlet="tableBody; context: { $implicit: item }"></ng-container>
+          </ng-template>
+        </ng-container>
+        <ng-container *ngIf="!initConfig.table.virtualScroll">
+          <ng-container *ngFor="let item of table.renderData; let even = even; let odd = odd; trackBy: initConfig.table.trackByFn">
+            <ng-container *ngTemplateOutlet="tableBody; context: { $implicit: item }"></ng-container>
+          </ng-container>
+        </ng-container>
+
+        <ng-template #tableBody let-item>
+          <tr
+            [ngClass]="{
+              'lv-odd': odd,
+              'lv-even': even,
+              'lv-table-row-highlight': isActive(item)
+            }"
+          >
+            <!-- 行展开 -->
+            <ng-container *ngIf="initConfig.table.rows?.expandable">
+              <td
+                lvShowUnfold
+                [(lvUnfold)]="item._lv_expand"
+                (lvUnfoldChange)="_rowExpandChange($event, item)"
+                [lvUnfoldToggleIcon]="initConfig.table.rows?.expandToggleIcon"
+              ></td>
+            </ng-container>
+            <!-- checkbox -->
+            <ng-container *ngIf="initConfig.table.rows?.selectionMode === 'multiple' && initConfig.table.rows?.showSelector">
+              <td>
+                <label
+                  [lv-tooltip]="
+                    !(item.disabled && initConfig.table.rows?.disabledTooltip)
+                      ? null
+                      : typeUtils.isTemplateRef(initConfig.table.rows?.disabledTooltip)
+                      ? tooltipTpl
+                      : initConfig.table.rows?.disabledTooltip
+                  "
+                  lvTooltipPosition="right"
+                  lvTooltipTheme="light"
+                  lv-checkbox
+                  class="lv-cell-checkbox"
+                  (ngModelChange)="_toggleCheckboxSelect(item)"
+                  [lvDisabled]="item.disabled"
+                  [ngModel]="_isRowSeleted(item)"
+                ></label>
+              </td>
+            </ng-container>
+            <!-- radio -->
+            <ng-container *ngIf="initConfig.table.rows?.selectionMode === 'single' && initConfig.table.rows?.showSelector">
+              <td>
+                <label
+                  [lv-tooltip]="
+                    !(item.disabled && initConfig.table.rows?.disabledTooltip)
+                      ? null
+                      : typeUtils.isTemplateRef(initConfig.table.rows?.disabledTooltip)
+                      ? tooltipTpl
+                      : initConfig.table.rows?.disabledTooltip
+                  "
+                  lvTooltipPosition="right"
+                  lvTooltipTheme="light"
+                  lv-radio
+                  [ngModel]="lvTable.isSelected(item)"
+                  [lvControl]="true"
+                  [lvDisabled]="item.disabled"
+                  (click)="_radioSelect(item)"
+                ></label>
+              </td>
+            </ng-container>
+            <ng-template #tooltipTpl>
+              <ng-container *ngTemplateOutlet="initConfig.table.rows?.disabledTooltip; context: { $implicit: item }"></ng-container>
+            </ng-template>
+
+            <ng-container *ngFor="let col of tableCols">
+              <td
+                *ngIf="!col.hidden || col.hidden === 'ignoring'"
+                (click)="_toggleSelect(item)"
+                [lvAlign]="_setTdAlign(col)"
+                [lvLeft]="col.fixLeft"
+                [lvRight]="col.fixRight"
+              >
+                <!-- 文本/链接 -->
+                <ng-container *ngIf="col.cellRender?.type === 'text'">
+                  <ng-container *ngIf="col.key === 'sla_name'">
+                    <ng-container *ngIf="item.sla_id;else emptyTpl">
+                      <span class="aui-link" id='outerClosable'
+                          (click)="col.cellRender.config.click && col.cellRender.config.click(item)" lv-overflow>
+                          <sla-type [name]="item.sla_name"></sla-type>
+                      </span>
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngIf="col.key !== 'sla_name'">
+                    <lv-group lvGutter='4px'>
+                      <div lv-overflow>
+                        <lv-pro-text [value]="item[col.key]" [data]="item" [config]="col.cellRender.config"></lv-pro-text>
+                      </div>
+                      <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
+                        {{'protection_guide_new_resource_label' | i18n}}
+                      </span>
+                    </lv-group>
+                  </ng-container>
+                </ng-container>
+                <!-- 进度 -->
+                <ng-container *ngIf="col.cellRender?.type === 'progress'">
+                  <lv-pro-progress [value]="item[col.key]" [config]="col.cellRender.config"></lv-pro-progress>
+                </ng-container>
+                <!-- 状态 -->
+                <ng-container *ngIf="col.cellRender?.type === 'status'">
+                  <lv-pro-status [value]="item[col.key]" [config]="col.cellRender.config"></lv-pro-status>
+                </ng-container>
+                <!-- 容量 -->
+                <ng-container *ngIf="col.cellRender?.type === 'capacity'">
+                  <div lv-overflow lvTooltipTheme="light">
+                    {{ item[col.key] | capacity: col.cellRender?.config?.decimals:undefined:col.cellRender?.config?.method }}
+                  </div>
+                </ng-container>
+                <!-- 百分比 -->
+                <ng-container *ngIf="col.cellRender?.type === 'percent'">
+                  <div lv-overflow lvTooltipTheme="light">
+                    {{ item[col.key] | percent: col.cellRender?.config?.decimals:col.cellRender?.config?.method }}
+                  </div>
+                </ng-container>
+                <!-- 数字 -->
+                <ng-container *ngIf="col.cellRender?.type === 'number'">
+                  <div lv-overflow lvTooltipTheme="light">
+                    {{ item[col.key] | number: col.cellRender?.config?.decimals:col.cellRender?.config?.method }}
+                  </div>
+                </ng-container>
+                <!-- 日期 -->
+                <ng-container *ngIf="col.cellRender?.type === 'date'">
+                  <div lv-overflow lvTooltipTheme="light">
+                    {{ dateService.format(item[col.key], col.cellRender?.config?.format, col.cellRender?.config?.timezoneOffset) | nil }}
+                  </div>
+                </ng-container>
+                <!-- 操作 -->
+                <ng-container *ngIf="col.cellRender?.type === 'operation'">
+                  <lv-pro-button-group
+                    mode="link"
+                    [maxDisplayItems]="col.cellRender?.config?.maxDisplayItems"
+                    [keepDropdown]="col.cellRender?.config?.keepDropdown"
+                    [menuText]="col.cellRender?.config?.menuText"
+                    [config]="col.cellRender?.config?.items"
+                    [bindData]="[item]"
+                  ></lv-pro-button-group>
+                </ng-container>
+                <!-- 自定义模板 -->
+                <ng-container *ngIf="col.cellRender && typeUtils.isTemplateRef(col.cellRender)">
+                  <ng-container *ngTemplateOutlet="col.cellRender; context: { $implicit: item }"></ng-container>
+                </ng-container>
+                <!-- 默认 -->
+                <ng-container *ngIf="!col.cellRender">
+                  <div lv-overflow lvTooltipTheme="light">{{ item[col.key] | nil }}</div>
+                </ng-container>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="initConfig.table.colDisplayControl">
+              <td (click)="_toggleSelect(item)"></td>
+            </ng-container>
+          </tr>
+          <!-- 展开行内容 -->
+          <tr *ngIf="initConfig.table.rows?.expandable && item._lv_expand" lvInnerUnfold>
+            <td [attr.colspan]="_getCols()" lvInnerUnfold>
+              <ng-container *ngIf="typeUtils.isTemplateRef(initConfig.table.rows?.expandContent)">
+                <ng-container *ngTemplateOutlet="initConfig.table.rows?.expandContent; context: { $implicit: item }"></ng-container>
+              </ng-container>
+              <ng-container *ngIf="typeUtils.isRealString(initConfig.table.rows?.expandContent)">{{
+                initConfig.table.rows?.expandContent
+              }}</ng-container>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </lv-datatable>
+  </lv-loading>
+</div>
+
+<!-- 分页区 -->
+<div
+  *ngIf="!initing && initConfig.pagination"
+  class="lv-pro-table-pagination aui-paginator-wrap"
+  [ngClass]="{ 'lv-pro-table-pagination-hide': _isHidePagination() }"
+>
+  <lv-paginator
+    #lvPage
+    [lvPageIndex]="filterMap.paginator.pageIndex"
+    [lvTotal]="tableData.total"
+    [lvPageSize]="filterMap.paginator.pageSize"
+    [lvPageSizeOptions]="initConfig.pagination.pageSizeOptions"
+    [lvMode]="initConfig.pagination.mode"
+    [lvShowTotal]="initConfig.pagination.showTotal"
+    [lvShowPageSizeOptions]="initConfig.pagination.showPageSizeOptions"
+    (lvPageChange)="_pageChange()"
+  >
+  </lv-paginator>
+</div>
+
+<!-- 默认下拉选项模板 -->
+<ng-template #filterSelectTpl let-item>
+  <span lv-overflow>{{ item.label }}</span>
+</ng-template>
+
+<ng-template #emptyTpl>
+  --
+</ng-template>

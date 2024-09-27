@@ -1,0 +1,338 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]='formGroup' lvLabelWidth="130px" class="formGroup">
+    <div class="aui-gutter-column-lg">
+        <h2>{{'explore_mount_target_label' | i18n}}</h2>
+    </div>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ 'common_target_host_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select formControlName="targetPos" [lvOptions]="hostOptions" lvValueKey="value" lvShowFilter
+                lvFilterKey="label" lvFilterMode="contains">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+
+    <ng-container *ngIf="!isFileset && !!formGroup?.value.targetPos">
+        <lv-form-item>
+            <lv-form-label>
+                {{ '' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-group lvDirection="vertical">
+                    <span>{{volumePos}}</span>
+                    <span>
+                        <i lv-icon="lv-icon-status-info" class="info-icon"></i>
+                        <span [innerHTML]="volumeTips" class="text-middile"></span>
+                    </span>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <ng-container *ngIf="!isWindows && isFileset">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_destination_path_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-tree-select formControlName="metadataPath" [lvTreeData]="filePathData" lvTreeSelectionMode="single"
+                    (lvExpandedChange)="expandedChange($event)" [lvTreeNodeTemplate]="nodeTpl" lvVirtualScroll
+                    lvTreeShowLine lvShowFilter lvFilterKey="label" lvFilterMode="contains"></lv-tree-select>
+                <ng-template #nodeTpl let-item>
+                    <div style="width: 380px;" lv-overflow>
+                        <span *ngIf="!item.isMoreBtn"
+                            [lv-tooltip]="item.disabled && item.extendInfo?.type !== restoreFileType.File ? disabledTips : ''"
+                            lvTooltipPosition="right">
+                            {{item.label}}
+                        </span>
+                    </div>
+                    <span class="aui-link" *ngIf="item.isMoreBtn"
+                        (click)="getFileResource(item.parent,item.startPage)">{{item.label}}</span>
+                </ng-template>
+                <div style="width: 620px;" *ngIf="!!formGroup?.value.metadataPath">
+                    <i style="display: inline-block; margin-right: 4px;margin-bottom: 6px;"
+                        lv-icon="lv-icon-status-info" lvColorState="true" class="type-icon"></i>
+                    <span class="form-tips" innerHTML="{{ 'protection_fileset_livemount_dir_tips_label' | i18n }}">
+                    </span>
+                </div>
+            </lv-form-control>
+        </lv-form-item>
+
+    </ng-container>
+
+    <ng-container  *ngIf="isWindows">
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'common_cifs_shares_name_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="nameErrorTip">
+                <input lv-input formControlName="name"/>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'common_type_label' | i18n}}</lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                <lv-select [lvOptions]='userTypeOptions' lvValueKey='value' formControlName='userType'>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container
+            *ngIf="formGroup.value.userType && formGroup.value.userType !== dataMap.Cifs_Domain_Client_Type.everyone.value">
+            <ng-container *ngIf="isHcsUser && isFileset; else elseUserTemplate">
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'common_username_label' | i18n}}</lv-form-label>
+                    <lv-form-control [lvErrorTip]="userErrorTip">
+                        <input lv-input formControlName="customUserName" [lv-tooltip]="userComplexTipTpl"
+                            lvTooltipTrigger="focus" lvTooltipPosition="topLeft" lvTooltipTheme="light" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
+                    <lv-form-control [lvErrorTip]="pwdErrorTip">
+                        <div>
+                            <aui-inupt-with-eye formControlName="customUserPwd" autocomplete="new-password"
+                                [lv-tooltip]="pwdComplexTipTpl" lvTooltipTrigger="focus" lvTooltipPosition="topLeft"
+                                lvTooltipTheme="light"></aui-inupt-with-eye>
+                        </div>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <ng-template #elseUserTemplate>
+                <ng-container *ngIf="createFileSystem">
+                    <lv-form-item>
+                        <lv-form-label lvRequired>{{'common_users_label' | i18n}}</lv-form-label>
+                        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                            <lv-select [lvOptions]='userOptions' lvValueKey='value' formControlName='userName'>
+                            </lv-select>
+                            <div class="user-info">
+                                <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+                                <span>
+                                    {{'protection_file_system_user_tip_label' | i18n}}
+                                </span>
+                            </div>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+                <ng-container *ngIf="!createFileSystem">
+                    <lv-form-item>
+                        <lv-form-label lvRequired>{{'common_users_label' | i18n}}</lv-form-label>
+                        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                            <lv-select [lvOptions]='userOptions' lvValueKey='value' formControlName='userName'
+                                lvMode='multiple' lvShowFilter lvShowCheckAll lvFilterKey='label'
+                                lvFilterMode='contains'>
+                            </lv-select>
+                            <div class="user-info">
+                                <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+                                <span>
+                                    {{'protection_file_system_user_tip_label' | i18n}}
+                                </span>
+                            </div>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+            </ng-template>
+        </ng-container>
+    </ng-container>
+
+
+
+
+    <div class="aui-gutter-column-xl"></div>
+    <lv-collapse [lvMultiExpansion]="'false'" lvType="simple" class="live-mount-advanced-container">
+        <lv-collapse-panel lvTitle="{{'common_advanced_label'|i18n}}" [lvExpanded]="false">
+            <lv-form-item>
+                <lv-form-label [lvRequired]="formGroup.value.bindWidthStatus"> {{ 'common_bindwidth_label' | i18n }}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-group lvDirection='vertical' lvGutter='8px'>
+                        <lv-switch formControlName='bindWidthStatus' class="mount-bindWidth"></lv-switch>
+                        <lv-group lvGutter='8px' *ngIf="formGroup.value.bindWidthStatus" class="lv-group-flex-start">
+                            <lv-group lvDirection='vertical'>
+                                <lv-form-label>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_min_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='minBandwidthErrorTip'>
+                                    <input lv-input type="text" formControlName="min_bandwidth"
+                                        class="advanced-input-container" placeholder="1~999999999" />
+                                </lv-form-control>
+                            </lv-group>
+                            <lv-group lvDirection='vertical'>
+                                <lv-form-label>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_max_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='maxBandwidthErrorTip'>
+                                    <input lv-input type="text" formControlName="max_bandwidth"
+                                        class="advanced-input-container" placeholder="1~999999999" />
+                                </lv-form-control>
+                            </lv-group>
+                            <lv-group lvDirection='vertical'
+                                *ngIf="formGroup.value.max_bandwidth && formGroup.get('max_bandwidth').valid">
+                                <lv-form-label>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_burst_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='burstBandwidthErrorTip'>
+                                    <input lv-input type="text" formControlName="burst_bandwidth"
+                                        class="advanced-input-container" placeholder="1~999999999" />
+                                </lv-form-control>
+                            </lv-group>
+                            <lv-group lvDirection='vertical'>
+                                <lv-form-label></lv-form-label>
+                                MB/s
+                            </lv-group>
+                        </lv-group>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label [lvRequired]="formGroup.value.iopsStatus">
+                    {{ 'protection_nor_iops_label' | i18n }}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-group lvDirection='vertical' lvGutter='8px'>
+                        <lv-group lvGutter='8px'>
+                            <lv-switch formControlName='iopsStatus'></lv-switch>
+                            <span class="aui-link" lv-popover [lvPopoverTrigger]="'hover'"
+                                [lvPopoverContent]="iopsContentTpl">
+                                {{'common_more_label'|i18n}}
+                            </span>
+                        </lv-group>
+                        <lv-group lvGutter='8px' *ngIf="formGroup.value.iopsStatus" class="lv-group-flex-start">
+                            <lv-group lvDirection='vertical'>
+                                <lv-form-label>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_min_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='minIopsErrorTip'>
+                                    <input lv-input type="text" formControlName="min_iops"
+                                        class="advanced-input-container" placeholder="100~999999999" />
+                                </lv-form-control>
+                            </lv-group>
+                            <lv-group lvDirection='vertical'>
+                                <lv-form-label>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_max_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='maxIopsErrorTip'>
+                                    <input lv-input type="text" formControlName="max_iops"
+                                        class="advanced-input-container" placeholder="100~999999999" />
+                                </lv-form-control>
+                            </lv-group>
+                            <lv-group lvDirection='vertical'
+                                *ngIf="formGroup.value.max_iops && formGroup.get('max_iops').valid">
+                                <lv-form-label>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_burst_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]='burstIopsErrorTip'>
+                                    <input lv-input type="text" formControlName="burst_iops"
+                                        class="advanced-input-container" placeholder="100~999999999" />
+                                </lv-form-control>
+                            </lv-group>
+                        </lv-group>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container
+                *ngIf="(formGroup.value.iopsStatus && formGroup.value.burst_iops && formGroup.value.max_iops) || (formGroup.value.bindWidthStatus && formGroup.value.burst_bandwidth && formGroup.value.max_bandwidth)">
+                <lv-form-item>
+                    <lv-form-label lvRequired> {{'explore_max_burst_label' | i18n}}</lv-form-label>
+                    <lv-form-control [lvErrorTip]='burstTimeErrorTip'>
+                        <input lv-input type="text" formControlName="burst_time" class="advanced-input-container"
+                            placeholder="1~999999999" />
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_max_burst_desc_label' | i18n}}"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <lv-form-item>
+                <lv-form-label> {{'protection_nor_latency_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <lv-group lvDirection='vertical' lvGutter='8px'>
+                        <lv-group lvGutter='8px'>
+                            <lv-switch formControlName='latencyStatus'></lv-switch>
+                            <span class="aui-link" lv-popover [lvPopoverTrigger]="'hover'"
+                                [lvPopoverContent]="latencyContentTpl">
+                                {{'common_more_label'|i18n}}
+                            </span>
+                        </lv-group>
+                        <lv-group lvGutter='8px' *ngIf="formGroup.value.latencyStatus">
+                            <lv-group lvDirection='vertical'>
+                                <lv-form-label lvRequired>
+                                    <span class="aui-text-help-sm">
+                                        {{'explore_max_label' | i18n}}
+                                    </span>
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                                    <lv-select formControlName="latency" [lvOptions]='latencyOptions' lvValueKey='value'
+                                        class="advanced-input-container" lvShowClear>
+                                    </lv-select>
+                                </lv-form-control>
+                            </lv-group>
+                        </lv-group>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-collapse-panel>
+    </lv-collapse>
+</lv-form>
+
+
+<ng-template #iopsContentTpl>
+    <lv-group lvGutter='32px'>
+        <lv-group lvDirection='vertical' lvGutter='16px'>
+            <span class="aui-text-desc">{{'explore_io_size_label' | i18n}}</span>
+            <span class="aui-text-desc">Min</span>
+            <span class="aui-text-desc">Max</span>
+            <span class="aui-text-desc">Burst</span>
+        </lv-group>
+        <lv-group *ngFor="let item of iopsItems" lvDirection='vertical' lvGutter='16px'>
+            <span>{{item.header}}</span>
+            <span>{{item.min | nil}}</span>
+            <span>{{item.max | nil}}</span>
+            <span>{{item.burst | nil}}</span>
+        </lv-group>
+    </lv-group>
+</ng-template>
+
+<ng-template #latencyContentTpl>
+    <lv-group lvGutter='32px'>
+        <lv-group lvDirection='vertical' lvGutter='16px'>
+            <span class="aui-text-desc">{{'explore_io_size_label' | i18n}}</span>
+            <span class="aui-text-desc">Max</span>
+        </lv-group>
+        <lv-group *ngFor="let item of latencyItems" lvDirection='vertical' lvGutter='16px'>
+            <span>{{item.header}}</span>
+            <span>{{item.max | nil}}</span>
+        </lv-group>
+    </lv-group>
+</ng-template>
+
+<ng-template #userComplexTipTpl>
+    <span innerHTML="{{'protection_fileset_user_tips_label' | i18n}}"></span>
+</ng-template>
+
+<ng-template #pwdComplexTipTpl>
+    <span innerHTML="{{'protection_fileset_password_tips_label' | i18n}}"></span>
+</ng-template>

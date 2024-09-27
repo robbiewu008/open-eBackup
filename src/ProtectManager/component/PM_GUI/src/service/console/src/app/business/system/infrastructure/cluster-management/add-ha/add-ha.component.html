@@ -1,0 +1,195 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-group class="card-container" [lvColumns]="['45%','10%','45%']" lvRowGutter="4px">
+  
+    <div class="node-card">
+      <lv-group>
+        <div class="card-title">
+          <img src="assets/img/ha_logo.svg" />
+          <p>{{ 'system_backup_cluster_primary_node_label' | i18n }}</p>
+        </div>
+      </lv-group>
+      <lv-group class="baseInfo">
+        <img src="assets/img/ha_cluster.svg" />
+        <lv-group lvDirection="vertical">
+          <div class="node-name">
+            {{ primaryInfo.name }}
+          </div>
+          <div class="node-status">
+            <aui-status [value]="primaryInfo.status" type="Cluster_Node_Status"></aui-status>
+          </div>
+        </lv-group>
+      </lv-group>
+      <lv-group>
+        <lv-form lvLayout="vertical">
+          <lv-form-item>
+            <lv-form-label>
+              <span lv-overflow>
+                {{ 'system_network_plane_ip1_label' | i18n }}
+              </span>
+            </lv-form-label>
+            <lv-form-control>{{
+              primaryInfo?.gaussIp
+              }}</lv-form-control>
+          </lv-form-item>
+  
+          <lv-form-item>
+            <lv-form-label>
+              <span lv-overflow>
+                {{ 'system_network_plane_ip2_label' | i18n }}
+              </span>
+            </lv-form-label>
+            <lv-form-control>{{
+              primaryInfo?.infraIp
+              }}</lv-form-control>
+          </lv-form-item>
+  
+          <lv-form-item>
+            <lv-form-label>{{ 'common_mask_ip_label' | i18n }}</lv-form-label>
+            <lv-form-control>{{ primaryInfo.netMask }}</lv-form-control>
+          </lv-form-item>
+        </lv-form>
+      </lv-group>
+    </div>
+    <div class="join-line">
+      <img src="assets/img/ha_line.svg" />
+    </div>
+    <div class="node-card">
+      <lv-group>
+        <div class="card-title">
+          <img src="assets/img/ha_logo.svg" />
+          <p>{{ 'system_ha_member_label' | i18n }}</p>
+        </div>
+      </lv-group>
+      <lv-group class="baseInfo">
+        <img src="assets/img/ha_cluster.svg" />
+        <lv-group lvDirection="vertical">
+          <div class="node-name">
+            {{ standByInfo.name }}
+          </div>
+          <div class="node-status">
+            <aui-status [value]="standByInfo.status" type="Cluster_Node_Status"></aui-status>
+          </div>
+        </lv-group>
+      </lv-group>
+      <lv-group>
+        <lv-form lvLayout="vertical">
+          <lv-form-item>
+            <lv-form-label>
+              <span lv-overflow>
+                {{ 'system_network_plane_ip1_label' | i18n }}
+              </span>
+            </lv-form-label>
+            <lv-form-control>{{
+              standByInfo.gaussIp
+              }}</lv-form-control>
+          </lv-form-item>
+  
+          <lv-form-item>
+            <lv-form-label>
+              <span lv-overflow>
+                {{ 'system_network_plane_ip2_label' | i18n }}
+              </span>
+            </lv-form-label>
+            <lv-form-control>{{
+              standByInfo.infraIp
+              }}</lv-form-control>
+          </lv-form-item>
+  
+          <lv-form-item>
+            <lv-form-label>{{ 'common_mask_ip_label' | i18n }}</lv-form-label>
+            <lv-form-control>{{ standByInfo.netMask }}</lv-form-control>
+          </lv-form-item>
+        </lv-form>
+      </lv-group>
+    </div>
+</lv-group>
+<div *ngIf="!isEdit">
+  <h2>{{ 'system_optional_ha_member_label' | i18n }}</h2>
+  <div class="table-container">
+    <lv-pro-table
+      #dataTable
+      [config]="tableConfig"
+      [data]="tableData"
+    ></lv-pro-table>
+  </div>
+</div>
+<lv-form [formGroup]="addForm" class="formGroup">
+  <h2>{{ 'system_network_set_label' | i18n }}</h2>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{'system_floating_ip_label' | i18n}}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{'system_ha_floating_ip_label' | i18n}}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+        style="margin-left: 4px;width: 14px;"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+      <input lv-input type="text" formControlName="ip" />
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label lvRequired
+      >{{ 'system_quorum_gateway_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ 'system_ha_gateway_tips_label' | i18n }}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+        style="margin-left: 4px;width: 14px;"
+      ></i>
+    </lv-form-label>
+    <lv-form-control>
+      <div formArrayName="gatewayArr">
+        <div
+          [formGroupName]="i"
+          *ngFor="let item of gatewayArr; let i = index"
+          class="gatway-box"
+        >
+          <lv-group class="lv-group-flex-start">
+            <lv-form-control [lvErrorTip]="gatewayErrorTip">
+              <input lv-input type="text" formControlName="gateway" />
+            </lv-form-control>
+            <span
+              (click)="removeRow(i)"
+              *ngIf="gatewayArr.length > 1"
+              class="interval"
+            >
+              <i
+                lv-icon="aui-icon-remove"
+                class="remove-target-host-container"
+              ></i>
+            </span>
+          </lv-group>
+        </div>
+      </div>
+      <span
+        [ngClass]="{
+          'aui-link': gatewayArr.length < 3,
+          'aui-link-disabled': gatewayArr.length === 3
+        }"
+        (click)="addGateway()"
+      >
+        <i lv-icon="aui-icon-create"></i>
+        {{ 'common_add_label' | i18n }}
+      </span>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>

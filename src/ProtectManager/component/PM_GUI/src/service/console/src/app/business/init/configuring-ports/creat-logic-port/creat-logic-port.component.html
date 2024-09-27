@@ -1,0 +1,210 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_role_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control class="firstSection">
+      <lv-radio-group formControlName="role">
+        <lv-group lvGutter="16px">
+          <lv-radio [lvValue]="dataMap.initRole.data.value" [lvDisabled]="disableRoleRadio.backup">{{'common_backup_label' | i18n}}</lv-radio>
+          <lv-radio [lvValue]="dataMap.initRole.copy.value" [lvDisabled]="disableRoleRadio.replicate">{{'common_replicate_label' | i18n}}</lv-radio>
+          <lv-radio [lvValue]="dataMap.initRole.dataManage.value" [lvDisabled]="disableRoleRadio.archive">{{'common_archive_label' | i18n}}</lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+
+  <h2 class="header">{{ 'common_network_config_label' | i18n }}</h2>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_ip_address_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select formControlName="ipType" [lvOptions]="ipTypeOptions" lvValueKey="value">
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_ip_address_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="ipErrorTip">
+      <input lv-input type="text" formControlName="ip" />
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      <ng-container *ngIf="formGroup.value.ipType === dataMap.IP_Type.ipv4.value">
+        {{ 'common_mask_ip_label' | i18n }}
+      </ng-container>
+      <ng-container *ngIf="formGroup.value.ipType === dataMap.IP_Type.ipv6.value">
+        {{ 'common_prefix_length_label' | i18n }}
+      </ng-container>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="prefixErrorTip">
+      <input lv-input type="text" formControlName="mask" />
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_gateway_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="ipErrorTip">
+      <input lv-input type="text" formControlName="gateWay" />
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+
+<h2 class="header">
+  {{ 'common_port_config_label' | i18n }}
+</h2>
+<lv-alert lvType="warning" *ngIf="!modifyData">{{
+  'common_config_ports_alert_label' | i18n
+  }}</lv-alert>
+<div class="header">
+  <lv-group lvGutter="8px" lvDirection="vertical">
+    <lv-checkbox [(ngModel)]="vlan" (ngModelChange)="vlanChange($event)" [lvDisabled]="!!modifyData">{{
+      'common_vlan_enable_label' | i18n
+      }}</lv-checkbox>
+    <span class="check-box-span aui-text-desc" *ngIf="!modifyData">{{
+      'common_vlan_tip_label' | i18n
+      }}</span>
+  </lv-group>
+</div>
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_ports_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select formControlName="homePortType" [lvOptions]="homePortTypeOptions" lvValueKey="value"
+        [lvDisabled]="!!modifyData">
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="(vlan || formGroup.value.homePortType !==
+  dataMap.initHomePortType.ethernet.value) && !this.modifyData">
+    <lv-form-label>
+      {{ 'common_port_choice_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-group lvGutter="8px" lvDirection="vertical" style="margin-top:8px">
+        <lv-radio-group formControlName="portChoice" [lvDisabled]="!!modifyData">
+          <lv-group lvGutter="20px">
+            <lv-radio lvValue="1"
+              [lvDisabled]="portLimit && formGroup.value.homePortType !== dataMap.initHomePortType.ethernet.value">
+              {{ 'common_create_new_port_label' | i18n }}
+            </lv-radio>
+            <lv-radio lvValue="0">
+              {{ 'common_reuse_port_label' | i18n }}
+            </lv-radio>
+          </lv-group>
+        </lv-radio-group>
+        <lv-group lvGutter="4px"
+          *ngIf="portLimit && formGroup.value.homePortType !== dataMap.initHomePortType.ethernet.value">
+          <i lv-icon="aui-icon-caution" lvColorState="true" class="type-icon"></i>
+          <span class="text-middle">{{
+            'common_port_choice_tip_label' | i18n
+            }}</span>
+        </lv-group>
+      </lv-group>
+    </lv-form-control>
+  </lv-form-item>
+
+  <ng-container *ngIf="
+      formGroup.value.homePortType === dataMap.initHomePortType.ethernet.value &&
+      !(vlan && formGroup.value.portChoice === '0')
+    ">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_ehternet_port_content_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-select formControlName="ethPort" [lvOptions]="ethPortOptions" lvValueKey="value"
+          [lvDisabled]="!!modifyData">
+        </lv-select>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <!-- 创建vlan或绑定端口类型的逻辑端口需要mtu-->
+  <ng-container *ngIf="(formGroup.value.portChoice === '1' && vlan) || (formGroup.value.portChoice === '1' &&
+  formGroup.value.homePortType !== dataMap.initHomePortType.ethernet.value) ||
+  (formGroup.value.portChoice === '0' && formGroup.value.homePortType !==
+  dataMap.initHomePortType.ethernet.value && formGroup.value.vlanId !== logicSelectionData[0]?.vlanId && vlan)
+">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_maximum_transmission_unit_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="mtuErrorTip">
+        <input lv-input type="text" formControlName="mtu"/>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <ng-container *ngIf="
+  formGroup.value.homePortType !==
+    dataMap.initHomePortType.ethernet.value &&
+  formGroup.value.portChoice === '1'
+">
+    <div [ngClass]="{ 'ethernet': !vlan, 'ethernet-vlan': vlan }">
+      <span style="color:red;padding-right: 0.04rem">*</span>
+      <span class="aui-text-label">{{ 'common_ethernet_label' | i18n }}</span>
+      <div class="ethernetTable">
+        <span>{{
+          'commonn_least_objects_tip_label' | i18n: [selectionData.length]
+          }}</span>
+        <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="
+      formGroup.value.portChoice === '0' && !(formGroup.value.homePortType ===
+      dataMap.initHomePortType.ethernet.value && !vlan)
+    ">
+    <div [ngClass]="{'header':!vlan, 'ethernet': formGroup.value.homePortType ===
+    dataMap.initHomePortType.ethernet.value &&
+  formGroup.value.portChoice === '0'}" style="margin-bottom:8px">
+      <lv-pro-table #logicDataTable [config]="logicTableConfig" [data]="logicTableData"></lv-pro-table>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="vlan && !(formGroup.value.homePortType ===
+  dataMap.initHomePortType.ethernet.value &&
+formGroup.value.portChoice === '0')">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'VLAN ID' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="vlanErrorTip">
+        <lv-group lvGutter="4px" lvDirection="vertical">
+          <input lv-input type="text" formControlName="vlanId" />
+          <span *ngIf="!modifyData">{{ 'common_old_vlan_id_tip_label' | i18n : [usedVlanList.join('、') || '--']
+            }}</span>
+        </lv-group>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>

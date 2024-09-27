@@ -1,0 +1,87 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]='formGroup' [lvLabelColon]='false' class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired="true">{{thresholdTypeLabel}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group lvGroupName="type" formControlName="type">
+                <lv-group [lvGutter]="'25px'">
+                    <lv-radio lvValue="1" (click)="clearLimitValue('1', true)">{{percentageLabel}}</lv-radio>
+                    <lv-radio lvValue="2" (click)="clearLimitValue('2', true)">{{absoluteValueLabel}}</lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired="true">{{alarmThresholdLabel}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="alarmThresholdErrorTip">
+            <input formControlName="limitValue" lv-input placeholder="{{formGroup.value.type == '2' ? '' : '50~90'}}"
+                [ngStyle]="{'width': formGroup.value.type == '2' ? '70%': '90%'}" />
+            <ng-container *ngIf="formGroup.value.type == '1'">
+                <span class="config-notes">%</span>
+            </ng-container>
+            <ng-container *ngIf="formGroup.value.type == '2'">
+                <lv-select formControlName="limitValueUnit" [lvOptions]='limitValueUnits' lvValueKey='key'
+                    #alarmThresholdSelect class="capacity-unit" (ngModelChange)="clearLimitValue('2', false)">
+                </lv-select>
+            </ng-container>
+            <ng-container *ngIf="formGroup.value.type == '2'">
+                <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_limit_value_desc_label'|i18n }}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState='true'></i>
+            </ng-container>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired="true">{{clearThresholdLabel}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="recoverValueErrorTip">
+            <input formControlName="recoverValue" lv-input
+                [ngStyle]="{'width': formGroup.value.type == '2' ? '70%': '90%'}" />
+            <ng-container *ngIf="formGroup.value.type == '1'">
+                <span class="config-notes">%</span>
+            </ng-container>
+            <ng-container *ngIf="formGroup.value.type == '2'">
+                <lv-select formControlName="recoverValueUnit" [lvOptions]='recoverValueUnits' lvValueKey='key'
+                    #clearThresholdSelect class="capacity-unit" (ngModelChange)="clearLimitValue('2', false)">
+                </lv-select>
+            </ng-container>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired="true">{{triggerThresholdLabel}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="triggerThresholdErrorTip">
+            <input formControlName="matchTime" lv-input placeholder="1~10" />
+            <ng-container *ngIf="formGroup.value.type == '2'">
+                <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_match_time_desc_label'|i18n }}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState='true'></i>
+            </ng-container>
+            <span class="config-notes">{{timesLabel}}</span>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired="true">{{alarmLevelLabel}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group lvGroupName="alarmLevel" formControlName="alarmLevel">
+                <lv-group [lvGutter]="'24px'">
+                    <ng-container *ngFor="let item of alarmLevelItems">
+                        <lv-radio lvValue="{{item.key}}">
+                            <alarm-level [type]="item.value"></alarm-level>
+                        </lv-radio>
+                    </ng-container>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

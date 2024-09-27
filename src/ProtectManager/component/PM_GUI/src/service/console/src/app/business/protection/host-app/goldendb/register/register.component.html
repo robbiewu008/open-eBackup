@@ -1,0 +1,150 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form
+  [formGroup]="formGroup"
+  class="formGroup aui-gutter-column-xxl"
+  lvKeepRequiredWidth
+>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'operation_target_cluster_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="cluster"
+        [lvOptions]="clusterOptions"
+        lvValueKey="value"
+        lvMode="single"
+        [lvDisabled]="!!rowData"
+        lvShowFilter
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        [lvContentTemplate]="contentTpl"
+      >
+      </lv-select>
+      <ng-template #contentTpl let-item>
+        <lv-group lvGutter="4px">
+          <span lv-overflow>{{ item.label }}</span>
+          <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
+            {{ 'protection_guide_new_resource_label' | i18n }}
+          </span>
+        </lv-group>
+      </ng-template>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_database_instance_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="instance"
+        [lvOptions]="instanceOptions"
+        lvValueKey="value"
+        lvMode="single"
+        [lvDisabled]="!!rowData"
+        lvShowFilter
+        lvFilterKey="label"
+        lvFilterMode="contains"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_accountname_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ 'protection_goldendb_accountname_tips_label' | i18n }}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="commonErrorTip">
+      <input lv-input type="text" formControlName="userName" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_password_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="commonErrorTip">
+      <aui-inupt-with-eye
+        formControlName="password"
+        [lvPasteAllowed]="false"
+      ></aui-inupt-with-eye>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label [lvRequired]="!rowData">
+      {{ 'protection_goldendb_storage_file_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ 'protection_goldendb_storage_file_tips_label' | i18n }}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control>
+      <lv-upload
+        lvAccept=".ini"
+        lvShowUpload="false"
+        [lvFilters]="fileFilters"
+        (lvFilesChange)="filesChange($event)"
+      ></lv-upload>
+    </lv-form-control>
+  </lv-form-item>
+  <div class="aui-gutter-column-xl"></div>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      <h3>{{ 'protection_data_node_label' | i18n }}</h3>
+    </lv-form-label>
+  </lv-form-item>
+  <div class="aui-text-desc aui-gutter-column-md">
+    {{ 'protection_data_node_tips_label' | i18n }}
+  </div>
+  <div>
+    <lv-pro-table
+      #dataTable
+      [config]="dataTableConfig"
+      [data]="dataTableData"
+    ></lv-pro-table>
+  </div>
+  <div class="aui-gutter-column-xl"></div>
+  <lv-form-item>
+    <lv-form-label>
+      <h3>{{ 'protection_manage_database_node_label' | i18n }}</h3>
+    </lv-form-label>
+  </lv-form-item>
+  <div class="aui-text-desc aui-gutter-column-md">
+    {{ 'protection_manage_database_node_tips_label' | i18n }}
+  </div>
+  <div>
+    <lv-pro-table
+      #dataTable
+      [config]="gtmTableConfig"
+      [data]="gtmTableData"
+    ></lv-pro-table>
+  </div>
+</lv-form>

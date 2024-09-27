@@ -1,0 +1,93 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_airgap_tactics_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select
+        formControlName="tactics"
+        [lvOptions]="tacticsOptions"
+        lvValueKey="value"
+        lvShowFilter
+        lvFilterKey="label"
+        lvFilterMode="contains"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_logical_port_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ 'common_airgap_port_tip_label' | i18n }}"
+        lvTooltipTheme="light"
+        lvTooltipPosition="right"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select
+        formControlName="port"
+        [lvOptions]="portOptions"
+        lvValueKey="value"
+        lvMode="multiple"
+        lvShowCheckAll
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+
+  <ng-container *ngIf="!isCyberengine">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_force_abort_replication_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{ 'common_force_abort_replication_tip_label' | i18n }}"
+          lvTooltipTheme="light"
+          lvTooltipPosition="right"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName="isForceStop" lvValueKey="value">
+        </lv-switch>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+
+  <ng-container *ngIf="isCyberengine || isDataBackup">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{'explore_linked_detection_label'|i18n}}
+          <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{ 'explore_linked_detection_help_label' | i18n }}"
+          lvTooltipTheme="light"
+          lvTooltipPosition="right"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName='isLinkedDetection'></lv-switch>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>

@@ -1,0 +1,147 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage" *ngIf="!isResourceSet">
+    <div class="aui-header-1">
+        <lv-group lvGutter='8px'>
+            <h1>{{'common_mount_update_policy_label' | i18n}}</h1>
+            <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+        </lv-group>
+    </div>
+    <div class="aui-block aui-paginator-container">
+        <div class="aui-operation">
+            <lv-group lvGutter="10px">
+                <button lvType="primary" lv-button (click)="create()" auiRolePermission
+                    [rolePermission]="roleOperationMap.liveMountPolicy">
+                    {{'common_create_label' | i18n}}
+                </button>
+            </lv-group>
+            <lv-group>
+                <button class="aui-button-icon" lv-button lvSize="auto" (click)="getPolicyList()">
+                    <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                </button>
+            </lv-group>
+        </div>
+        <div class="list-container double-row-height">
+            <ng-container *ngTemplateOutlet="tableTpl"></ng-container>
+        </div>
+    </div>
+</div>
+
+<div class="aui-operation" *ngIf="!isDetail && isResourceSet">
+    <lv-group>
+        <lv-group lvGutter="8px">
+            <button lv-button (click)="allSelect(true)" [disabled]="!tableData?.length">
+                {{buttonLabel}}
+            </button>
+        </lv-group>
+        <lv-group></lv-group>
+    </lv-group>
+</div>
+<div class="list-container" *ngIf="isResourceSet">
+    <ng-container *ngTemplateOutlet="tableTpl"></ng-container>
+</div>
+
+<ng-template #tableTpl>
+    <lv-datatable [lvData]="tableData" [lvPaginator]="page" #lvTable (lvSortChange)="sortChange($event)"
+        lvSelectionMode='multiple' lvCompareWith="policyId" [lvSelection]='selection'
+        (lvSelectionChange)="selectionChange($event)" lvResize lvSort lvAsync lvResizeMode="expand"
+        [lvScroll]="{ x: '100%' }">
+        <thead>
+            <tr>
+                <th lvShowCheckbox width='64px' [lvRowsData]='lvTable.renderData' *ngIf="!isDetail && isResourceSet"
+                    [lvDisabled]="isAllSelect">
+                </th>
+                <th *ngFor="let col of columns" [lvShowFilter]="col.filter" [attr.width]="col.width"
+                    (lvFilterChange)="filterChange($event)" [(lvFilters)]="col.filterMap" lvCellKey="{{col.key}}"
+                    lvShowSort="{{col.key === 'liveMountCount'}}" lvShowCustom lvFilterCheckAll>
+                    {{ col.label}}
+                    <div lvCustom *ngIf="col.key === 'name'">
+                        <aui-custom-table-search (search)="searchByName($event)"
+                            [filterTitle]="col.label"></aui-custom-table-search>
+                    </div>
+                </th>
+                <th width='144px' *ngIf="!isResourceSet">
+                    {{'common_operation_label' | i18n}}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor='let item of lvTable.renderData'>
+                <tr>
+                    <td width='64px' lvShowCheckbox [lvRowData]='item' *ngIf="!isDetail && isResourceSet"
+                        [lvDisabled]="!!item?.disabled"></td>
+                    <td>
+                        <span lv-overflow>
+                            {{item.name}}
+                        </span>
+                    </td>
+                    <td>
+                        {{item.copyDataSelectionPolicy | textMap: 'CopyData_Selection_Policy'}}
+                    </td>
+                    <td>
+                        <ng-container *ngIf="item.schedulePolicy === schedulePolicy.AfterBackupDone">
+                            <span lv-overflow>
+                                {{'explore_after_backup_done_label'|i18n}}
+                            </span>
+                        </ng-container>
+                        <ng-container *ngIf="item.schedulePolicy === schedulePolicy.PeriodSchedule">
+                            <div class="main-schedule-policy-container">
+                                <div class="main-schedule">
+                                    <div>
+                                        {{executionPeriodLabel}}{{spaceLabel}}{{item.scheduleInterval}}
+                                        {{spaceLabel}}{{item.scheduleIntervalUnit | textMap: 'Interval_Unit'}}
+                                    </div>
+                                    <div class="aui-text-help-sm">
+                                        {{firstExecuteTimeLabel}}{{spaceLabel}}
+                                        {{item.scheduleStartTime | date: 'yyyy-MM-dd HH:mm:ss'}}
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </td>
+                    <td>
+                        <span lv-overflow>
+                            <ng-container [ngSwitch]="item.retentionPolicy">
+                                <ng-container *ngSwitchCase="retentionPolicy.Permanent">
+                                    {{'explore_permanent_retention_label'|i18n}}
+                                </ng-container>
+                                <ng-container *ngSwitchCase="retentionPolicy.LatestOne">
+                                    {{'explore_always_latest_label'|i18n}}
+                                </ng-container>
+                                <ng-container *ngSwitchCase="retentionPolicy.FixedTime">
+                                    {{'common_retention_label'|i18n}}{{spaceLabel}}{{item.retentionValue}}
+                                    {{spaceLabel}}{{item.retentionUnit | textMap:'Interval_Unit'}}
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    --
+                                </ng-container>
+                            </ng-container>
+                        </span>
+                    </td>
+                    <td>
+                        {{item.liveMountCount | nil}}
+                    </td>
+                    <td *ngIf="!isResourceSet">
+                        <lv-operation-menu [lvItemsFn]="optsCallback" [lvData]="item"></lv-operation-menu>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+    <div class="aui-paginator-wrap">
+        <lv-paginator #page [lvPageSizeOptions]="sizeOptions" [lvPageSize]="pageSize" [lvTotal]="total"
+            [lvPageIndex]="startPage" (lvPageChange)="pageChange($event)" [hidden]="!total">
+        </lv-paginator>
+    </div>
+</ng-template>

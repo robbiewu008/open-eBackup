@@ -1,0 +1,153 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation" *ngIf="!isResourceSet">
+  <lv-group>
+    <lv-pro-button-group
+      [config]="optsConfig"
+      [bindData]="selectionData"
+      [maxDisplayItems]="5"
+    >
+    </lv-pro-button-group>
+  </lv-group>
+  <lv-group [lvGutter]="groupCommon.middleRowGutter">
+    <lv-search
+      [lvFocus]="true"
+      [(ngModel)]="name"
+      (lvSearch)="search()"
+      lvPlaceHolder="{{ 'common_search_type_label' | i18n: [''] }}"
+    >
+    </lv-search>
+    <button
+      class="aui-button-icon"
+      lv-button
+      lvSize="auto"
+      (click)="dataTable.fetchData()"
+    >
+      <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+    </button>
+  </lv-group>
+</div>
+<div class="aui-operation" *ngIf="!isDetail && isResourceSet">
+  <lv-group>
+      <lv-group lvGutter="8px">
+          <button lv-button (click)="allSelect(true)" [disabled]="allSelectDisabled">
+              {{buttonLabel}}
+          </button>
+      </lv-group>
+      <lv-group></lv-group>
+  </lv-group>
+</div>
+<div class="list-container">
+  <lv-pro-table
+    #dataTable
+    [config]="tableConfig"
+    [data]="tableData"
+  ></lv-pro-table>
+</div>
+
+<ng-template #statusTpl let-item>
+  <ng-container *ngIf="item.status === dataMap.Report_Status.running.value">
+    <lv-group lvGutter="8px">
+      <i lv-icon="aui-icon-loading" class="lv-m-rotate loading"></i>
+      <span>{{ item.status | textMap: 'Report_Status' }}</span>
+    </lv-group>
+  </ng-container>
+  <ng-container *ngIf="item.status !== dataMap.Report_Status.running.value">
+    <lv-group lvGutter="8px">
+      <aui-status [value]="item.status" type="Report_Status"></aui-status>
+      <ng-container
+        *ngIf="
+          [dataMap.Report_Status.fail.value].includes(item.status) &&
+          item.errorCode
+        "
+      >
+        <i
+          lv-icon="aui-icon-reasons"
+          [lvColorState]="true"
+          lvTooltipTheme="light"
+          lvTooltipPosition="right"
+          [lv-tooltip]="errorCodeTpl"
+        ></i>
+        <ng-template #errorCodeTpl>
+          <span
+            [innerHTML]="i18n.get(item?.errorCode, item?.errorParams || [])"
+          ></span>
+        </ng-template>
+      </ng-container>
+    </lv-group>
+  </ng-container>
+</ng-template>
+
+<ng-template #typeTpl let-item>
+  {{ item.type | textMap: 'Report_Type' }}
+</ng-template>
+
+<ng-template #scopeTpl let-item>
+  <ng-container
+    *ngIf="item.timeRange !== dataMap.Report_Generated_Period.custom.value"
+  >
+    {{ item.timeRange | textMap: 'Report_Generated_Period' }}
+  </ng-container>
+  <ng-container
+    *ngIf="item.timeRange === dataMap.Report_Generated_Period.custom.value"
+  >
+    <span lv-overflow>
+      {{ item.scope[0] | date: 'yyyy-MM-dd HH:mm:ss' | nil }} -
+      {{ item.scope[1] | date: 'yyyy-MM-dd HH:mm:ss' | nil }}
+    </span>
+  </ng-container>
+</ng-template>
+
+<ng-template #timeUnitTpl let-item>
+  {{ item.timeUnit | textMap: 'reportFrequency' }}
+  <ng-container
+    *ngIf="![
+    dataMap.Report_Type.storageSpace.value,
+    dataMap.Report_Type.agentResourceUsed.value,
+    dataMap.Report_Type.resourceUsed.value,
+    dataMap.Report_Type.tapeUsed.value
+    ].includes(item.type)"
+  >
+    {{ 'common_day_label' | i18n }}
+  </ng-container>
+</ng-template>
+
+<ng-template #fileFormatTpl let-item>
+  {{ item.fileFormat | textMap: 'Report_Format' }}
+</ng-template>
+
+<ng-template #createTimeTpl let-item>
+  <span lv-overflow>
+    {{ item.createTime | date: 'yyyy-MM-dd HH:mm:ss' | nil }}
+  </span>
+</ng-template>
+
+<ng-template #postEmailTpl>
+  <lv-form [formGroup]="formGroup">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'system_recipient_email_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="emailErrorTips">
+        <textarea
+          style="width: 432px;"
+          rows="3"
+          lv-input
+          placeholder="{{ 'insight_report_email_placeholder_label' | i18n }}"
+          formControlName="emailAddress"
+        ></textarea>
+      </lv-form-control>
+    </lv-form-item>
+  </lv-form>
+</ng-template>

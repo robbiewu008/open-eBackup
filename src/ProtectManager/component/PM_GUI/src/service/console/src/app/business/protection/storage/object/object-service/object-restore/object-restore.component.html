@@ -1,0 +1,164 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_restore_to_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="restoreLocation">
+        <lv-group [lvGutter]="'24px'">
+          <lv-radio
+            [lvValue]="restoreLocationType.ORIGIN"
+            [lvDisabled]="
+              rowCopy?.resource_status ===
+              dataMap.Resource_Status.notExist.value
+            "
+          >
+            {{ 'common_restore_to_origin_location_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="restoreLocationType.NEW">
+            {{ 'common_restore_to_new_location_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container
+    *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN"
+  >
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'common_location_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <input lv-input type="text" formControlName="originLocation" />
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <ng-container
+    *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW"
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'explore_target_object_storage_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-select
+          [lvOptions]="storageOptions"
+          lvValueKey="value"
+          formControlName="target"
+          lvFilterKey="label"
+          lvFilterMode="contains"
+          lvShowFilter
+        ></lv-select>
+        <div *ngIf="!!formGroup.value.target">
+          <i
+            lv-icon="lv-icon-status-info"
+            lvColorState="true"
+            class="type-icon"
+          ></i>
+          <span class="text-middle">
+            {{ 'explore_object_storage_restore_tip_label' | i18n }}
+          </span>
+        </div>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'explore_target_bucket_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{ 'explore_bucket_tip_label' | i18n }}"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName="bucketEnable" class="switch"></lv-switch>
+        <ng-container *ngIf="formGroup.value?.bucketEnable">
+          <lv-radio-group formControlName="bucketType" class="radio">
+            <lv-group lvGutter="20px">
+              <lv-radio [lvValue]="'0'">{{
+                'explore_choose_exist_bucket_label' | i18n
+              }}</lv-radio>
+              <lv-radio [lvValue]="'1'">{{
+                'explore_new_bucket_label' | i18n
+              }}</lv-radio>
+            </lv-group>
+          </lv-radio-group>
+          <ng-container *ngIf="formGroup.value?.bucketType === '0'">
+            <lv-select
+              formControlName="targetBucket"
+              [lvOptions]="bucketOptions"
+              lvValueKey="value"
+              lvFilterKey="label"
+              lvFilterMode="contains"
+              lvShowFilter
+            ></lv-select>
+            <lv-group lvGutter="8px">
+              <span>
+                <i
+                  lv-icon="lv-icon-status-info"
+                  lvColorState="true"
+                  class="type-icon"
+                ></i>
+                {{ 'explore_object_exist_bucket_acl_tip_label' | i18n }}
+              </span>
+            </lv-group>
+          </ng-container>
+          <ng-container *ngIf="formGroup.value?.bucketType === '1'">
+            <input lv-input type="text" formControlName="newBucket" />
+          </ng-container>
+        </ng-container>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'common_subnet_prefix_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{ 'explore_object_prefix_tip_label' | i18n }}"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="prefixTip">
+        <input lv-input type="text" formControlName="prefix" />
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <lv-form-item>
+    <lv-form-label>{{
+      'protection_over_write_rule_label' | i18n
+    }}</lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="overwriteType">
+        <lv-group [lvGutter]="'20px'" lvDirection="vertical" class="mgt-8">
+          <lv-radio [lvValue]="fileReplaceStrategy.Replace"
+            >{{ 'protection_overwrite_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="fileReplaceStrategy.Ignore">{{
+            'protection_skip_label' | i18n
+          }}</lv-radio>
+          <lv-radio [lvValue]="fileReplaceStrategy.ReplaceOldFile">
+            {{ 'protection_restore_replace_older_label' | i18n }}</lv-radio
+          >
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>

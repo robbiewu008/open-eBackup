@@ -1,0 +1,1641 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 即时挂载接口
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: live-mount-api
+    description: Live Mount Controller
+  - name: live-mount-policy-api
+    description: Policy Controller
+paths:
+  /v1/live-mount:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-api
+      summary: 查询即时挂载
+      operationId: queryLiveMountEntitiesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: conditions
+          in: query
+          description: >-
+            查询条件[取值范围] 1.VMWare查询resource_sub_type:vim.VirtualMachine
+            2.Oracle查询resource_sub_type:Oracle
+          required: false
+          type: string
+        - name: orders
+          in: query
+          description: 排序字段
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: page
+          in: query
+          description: 分页起始页面
+          required: false
+          type: integer
+          format: int32
+        - name: size
+          in: query
+          description: 分页大小
+          required: false
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BasePage«LiveMountModel»'
+            originalRef: BasePage«LiveMountModel»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-api
+      summary: 创建即时挂载
+      operationId: createLiveMountUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: liveMountObject
+          description: 创建即时挂载参数
+          required: false
+          schema:
+            $ref: '#/definitions/LiveMountObject'
+            originalRef: LiveMountObject
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/live-mount/environment/{copy_id}:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-api
+      summary: 查询可挂载的目标资源
+      operationId: queryTargetEnvironmentsUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: copy_id
+          in: path
+          description: 副本id
+          required: false
+          type: string
+          maxLength: 128
+          minLength: 0
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BasePage«Environment»'
+            originalRef: BasePage«Environment»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/live-mount/{live_mount_id}:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-api
+      summary: 修改即时挂载
+      operationId: modifyLiveMountUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: liveMountParam
+          description: 修改即时挂载参数
+          required: false
+          schema:
+            $ref: '#/definitions/LiveMountParam'
+            originalRef: LiveMountParam
+        - name: live_mount_id
+          in: path
+          description: 即时挂载主键
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    delete:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-api
+      summary: 卸载即时挂载
+      operationId: unmountLiveMountUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: force_delete
+          in: query
+          description: 是否强制删除即使挂载[取值范围] true 是，false 否
+          required: false
+          type: boolean
+          default: false
+        - name: live_mount_id
+          in: path
+          description: 即时挂载主键
+          required: false
+          type: string
+          maxLength: 128
+          minLength: 0
+        - name: reserve_copy
+          in: query
+          description: 是否保留副本[取值范围] true 是，false 否
+          required: false
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+  /v1/live-mount/{live_mount_id}/action/activate:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-api
+      summary: 激活即时挂载
+      operationId: activeUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: live_mount_id
+          in: path
+          description: 即时挂载主键
+          required: false
+          type: string
+          maxLength: 128
+          minLength: 0
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/live-mount/{live_mount_id}/action/deactivate:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-api
+      summary: 禁用即时挂载
+      operationId: deactivateUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: live_mount_id
+          in: path
+          description: 即时挂载主键
+          required: false
+          type: string
+          maxLength: 128
+          minLength: 0
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/live-mount/{live_mount_id}/action/migrate:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-api
+      summary: 迁移即时挂载
+      operationId: migrateUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: liveMountMigrateRequest
+          description: 即时挂载请求迁移参数
+          required: false
+          schema:
+            $ref: '#/definitions/LiveMountMigrateRequest'
+            originalRef: LiveMountMigrateRequest
+        - name: live_mount_id
+          in: path
+          description: 即时挂载主键
+          required: false
+          type: string
+          maxLength: 128
+          minLength: 0
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/live-mount/{live_mount_id}/action/update:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-api
+      summary: 更新即时挂载
+      operationId: updateLiveMountUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: liveMountUpdate
+          description: 更新即时挂载参数
+          required: false
+          schema:
+            $ref: '#/definitions/LiveMountUpdate'
+            originalRef: LiveMountUpdate
+        - name: live_mount_id
+          in: path
+          description: 即时挂载主键
+          required: false
+          type: string
+          maxLength: 128
+          minLength: 0
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/livemount-policies:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-policy-api
+      summary: 查询更新策略
+      operationId: getPoliciesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: conditions
+          in: query
+          description: 挂载更新策略查询条件
+          required: false
+          type: string
+        - name: orders
+          in: query
+          description: 排序字段
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: page
+          in: query
+          description: 分页起始页面
+          required: false
+          type: integer
+          format: int32
+        - name: size
+          in: query
+          description: 分页大小
+          required: false
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BasePage«LiveMountPolicyEntity»'
+            originalRef: BasePage«LiveMountPolicyEntity»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-policy-api
+      summary: 创建更新策略
+      operationId: createPolicyUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: createRequest
+          description: 创建挂载更新策略参数
+          required: false
+          schema:
+            $ref: '#/definitions/CreatePolicyRequest'
+            originalRef: CreatePolicyRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/livemount-policies/{policyId}:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-policy-api
+      summary: 查询单个更新策略
+      operationId: getPolicyUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: policyId
+          in: path
+          description: 更新策略主键
+          required: true
+          type: string
+          maxLength: 128
+          minLength: 0
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/LiveMountPolicyVo'
+            originalRef: LiveMountPolicyVo
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+    delete:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-policy-api
+      summary: 删除更新策略
+      operationId: deletePolicyUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: policyId
+          in: path
+          description: 更新策略主键
+          required: true
+          type: string
+          maxLength: 128
+          minLength: 0
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+  /v1/livemount-policies/{policyId}/action/update:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-policy-api
+      summary: 修改更新策略
+      operationId: updatePolicyUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: policyId
+          in: path
+          description: 更新策略主键
+          required: true
+          type: string
+          maxLength: 128
+          minLength: 0
+        - in: body
+          name: updateRequest
+          description: 修改挂载更新策略参数
+          required: false
+          schema:
+            $ref: '#/definitions/UpdatePolicyRequest'
+            originalRef: UpdatePolicyRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/live-mount/cyber:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - live-mount-api
+      summary: 创建即时挂载-cyber
+      operationId: createLiveMountCyberUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: liveMountObject
+          description: 创建即时挂载参数
+          required: false
+          schema:
+            $ref: '#/definitions/LiveMountObject'
+            originalRef: LiveMountObject
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              type: string
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  BasePage«Environment»:
+    type: object
+    properties:
+      items:
+        type: array
+        description: 详情
+        items:
+          $ref: '#/definitions/Environment'
+          originalRef: Environment
+      page_no:
+        type: integer
+        format: int64
+        description: 页码
+      page_size:
+        type: integer
+        format: int64
+        description: 每页总数
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      total:
+        type: integer
+        format: int64
+        description: 总数
+    title: BasePage«Environment»
+  BasePage«LiveMountModel»:
+    type: object
+    properties:
+      items:
+        type: array
+        description: 详情
+        items:
+          $ref: '#/definitions/LiveMountModel'
+          originalRef: LiveMountModel
+      page_no:
+        type: integer
+        format: int64
+        description: 页码
+      page_size:
+        type: integer
+        format: int64
+        description: 每页总数
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      total:
+        type: integer
+        format: int64
+        description: 总数
+    title: BasePage«LiveMountModel»
+  BasePage«LiveMountPolicyEntity»:
+    type: object
+    properties:
+      items:
+        type: array
+        description: 详情
+        items:
+          $ref: '#/definitions/LiveMountPolicyEntity'
+          originalRef: LiveMountPolicyEntity
+      page_no:
+        type: integer
+        format: int64
+        description: 页码
+      page_size:
+        type: integer
+        format: int64
+        description: 每页总数
+      pages:
+        type: integer
+        format: int64
+        description: 总页数
+      total:
+        type: integer
+        format: int64
+        description: 总数
+    title: BasePage«LiveMountPolicyEntity»
+  CreatePolicyRequest:
+    type: object
+    properties:
+      copyDataSelectionPolicy:
+        type: string
+        description: >-
+          副本选择策略 [取值范围] LAST_HOUR:最近一小时 LAST_DAY:最近一天 LAST_WEEK:最近一周
+          LAST_MONTH:最近一月 LATEST:最新的副本
+        enum:
+          - last_hour
+          - last_day
+          - last_week
+          - last_month
+          - latest
+      name:
+        type: string
+        description: 更新策略名称
+        minLength: 1
+        maxLength: 64
+        pattern: '[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+      retentionPolicy:
+        type: string
+        description: '副本保留策略 [取值范围] PERMANENT:永久保留 FIXED_TIME:按固定时间保留 LATEST_ONE: 只保留最后一个'
+        enum:
+          - permanent
+          - fixed_time
+          - latest_one
+      retentionUnit:
+        type: string
+        description: 副本保留策略单位 [取值范围] DAY:天 WEEK:周 MONTH:月 YEAR:年，当副本保留策略选择为固定时间填写
+        enum:
+          - d
+          - w
+          - MO
+          - 'y'
+      retentionValue:
+        type: integer
+        format: int32
+        description: 副本保留策略固定时间取值， 当副本保留策略为固定时间填写
+      scheduleInterval:
+        type: integer
+        format: int32
+        description: 策略调度周期的时间间隔取值， 当策略调度周期为间隔时填写
+      scheduleIntervalUnit:
+        type: string
+        description: 策略调度周期单位 [取值范围] HOUR:小时 DAY:天 WEEK:周 MONTH:月，当策略调度周期选择为固定时间填写
+        enum:
+          - h
+          - d
+          - w
+      schedulePolicy:
+        type: string
+        description: 策略调度周期 [取值范围] PERIOD_SCHEDULE:周期调度 AFTER_BACKUP_DONE:备份完成后执行
+        enum:
+          - period_schedule
+          - after_backup_done
+      scheduleStartTime:
+        type: string
+        description: 周期调度首次执行时间
+    title: CreatePolicyRequest
+  Datastore:
+    type: object
+    properties:
+      moId:
+        type: string
+        description: datastore对应的MoRef
+        minLength: 0
+        maxLength: 128
+    title: Datastore
+  Disk:
+    type: object
+    properties:
+      datastore:
+        description: 存储空间
+        $ref: '#/definitions/Datastore'
+        originalRef: Datastore
+      diskId:
+        type: string
+        description: 磁盘id
+        minLength: 0
+        maxLength: 128
+    title: Disk
+  Environment:
+    type: object
+    properties:
+      authorized_user:
+        type: string
+      children_uuids:
+        type: array
+        items:
+          type: string
+      cluster_info:
+        type: array
+        items:
+          type: string
+      created_time:
+        type: string
+      endpoint:
+        type: string
+      environment_endpoint:
+        type: string
+      environment_is_cluster:
+        type: boolean
+      environment_name:
+        type: string
+      environment_os_name:
+        type: string
+      environment_os_type:
+        type: string
+      environment_sub_type:
+        type: string
+      environment_type:
+        type: string
+      environment_uuid:
+        type: string
+      ext_parameters:
+        type: object
+        additionalProperties:
+          type: object
+      is_cluster:
+        type: boolean
+      link_status:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      os_type:
+        type: string
+      parent_name:
+        type: string
+      parent_uuid:
+        type: string
+      password:
+        type: string
+      path:
+        type: string
+      port:
+        type: string
+      root_uuid:
+        type: string
+      sub_type:
+        type: string
+      type:
+        type: string
+      user_id:
+        type: string
+      user_name:
+        type: string
+      uuid:
+        type: string
+      version:
+        type: string
+    title: Environment
+  JobBo:
+    type: object
+    properties:
+      associativeId:
+        type: string
+        description: 实例id
+      copyId:
+        type: string
+        description: 副本id
+      copyTime:
+        type: integer
+        format: int64
+        description: 副本数据时间
+      data:
+        type: string
+      detail:
+        type: string
+        description: 任务描述
+      detailPara:
+        type: array
+        description: 描述参数
+        items:
+          type: string
+      detailParas:
+        type: string
+        description: 描述参数
+      enableStop:
+        type: boolean
+      endTime:
+        type: integer
+        format: int64
+        description: 结束时间
+      extendStr:
+        type: string
+        description: 扩展属性
+      jobId:
+        type: string
+        description: 任务id
+      jobLogs:
+        type: array
+        description: 任务详情
+        items:
+          $ref: '#/definitions/JobLogBo'
+          originalRef: JobLogBo
+      lastUpdateTime:
+        type: integer
+        format: int64
+        description: 任务上次更新时间
+      message:
+        type: string
+      name:
+        type: string
+        description: 任务名称
+      progress:
+        type: integer
+        format: int32
+        description: 任务进度
+      requestId:
+        type: string
+      sourceId:
+        type: string
+        description: 任务对象ID
+      sourceLocation:
+        type: string
+        description: 任务对象位置
+      sourceName:
+        type: string
+        description: 任务对象名称
+      sourceSubType:
+        type: string
+        description: >-
+          资源类型[取值范围]Host:主机 Fileset:文件集 DFSFileset:DFS文件集 Database:数据库
+          Application:Application VirtualPlatform:虚拟化 CloudPlatform:云平台 VM:虚拟机
+          BigData:大数据
+        enum:
+          - DBBackupAgent
+          - VMBackupAgent
+          - ABBackupClient
+          - Fileset
+          - DFSFileset
+          - Oracle
+          - SQLServer
+          - DB2
+          - MySQL
+          - GaussDB
+          - SAP HANA
+          - Kingbase
+          - Sybase IQ
+          - Informix
+          - TimesTen
+          - Gbase
+          - Dameng
+          - Cassandra
+          - OscarDB
+          - Exchange
+          - VMware vCenter Server
+          - VMware ESX
+          - VMware ESXi
+          - Hyper-V
+          - ms.VirtualMachine
+          - ms.HostSystem
+          - FusionSphere
+          - vim.ClusterComputeResource
+          - vim.HostSystem
+          - vim.Folder
+          - vim.ResourcePool
+          - OpenStack
+          - HuaweiCloudStack
+          - vim.VirtualMachine
+          - Hadoop
+          - vim.VirtualApp
+          - FusionInsight
+          - HDFS
+          - HBase
+          - ImportCopy
+      speed:
+        type: string
+        description: 执行速度
+      startTime:
+        type: integer
+        format: int64
+        description: 开始时间
+      status:
+        type: string
+        description: >-
+          任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
+          PARTIAL_SUCCESS:部分成功 ABORTED: 停止 ABORTING: 停止中 FAIL:失败 ABNORMAL:异常
+          CANCELLED:取消 ABORT_FAILED:停止失败
+        enum:
+          - PENDING
+          - READY
+          - RUNNING
+          - ABNORMAL
+          - FAIL
+          - CANCELLED
+          - SUCCESS
+          - PARTIAL_SUCCESS
+          - ABORTING
+          - ABORTED
+          - ABORT_FAILED
+      targetLocation:
+        type: string
+        description: 任务目标结果位置
+      targetName:
+        type: string
+        description: 任务目标结果对象
+      type:
+        type: string
+        description: >-
+          任务类型[取值范围]BACKUP:备份 RESTORE:恢复 INSTANT_RESTORE:即时恢复 live_mount:即时挂载
+          copy_replication:副本复制 archive:归档 COPY_DELETE:副本删除 COPY_EXPIRE:副本过期
+          unmount:卸载 DB_IDENTIFICATION:敏感数据识别 DB_DESESITIZATION:数据脱敏
+          archive_import:副本导入 migrate:迁移 resource_scan:注册
+          resource_protection:资源保护 resource_protection_modify:修改保护
+        enum:
+          - BACKUP
+          - RESTORE
+          - INSTANT_RESTORE
+          - live_mount
+          - copy_replication
+          - archive
+          - cloud_archive_restore
+          - COPY_DELETE
+          - COPY_EXPIRE
+          - archive_import
+          - unmount
+          - migrate
+          - resource_scan
+          - host_register
+          - protect_agent_update
+      userId:
+        type: string
+        description: 用户id
+    title: JobBo
+  JobLogBo:
+    type: object
+    properties:
+      endTime:
+        type: integer
+        format: int64
+        description: 结束时间
+      jobId:
+        type: string
+        description: 任务id
+      level:
+        type: string
+        description: 日志级别[取值范围]info:提示 warning:警告 error:错误 fatal:致命
+      logDetail:
+        type: string
+        description: "任务详情附加信息（失败时为错误码）\r\n\r\n"
+      logDetailInfo:
+        type: string
+        description: 任务详情补充说明
+      logDetailParam:
+        type: array
+        description: "任务详情附加信息参数\r\n\r\n"
+        items:
+          type: string
+      logInfo:
+        type: string
+        description: 日志信息
+      logInfoParam:
+        type: array
+        description: "任务详情参数\r\n"
+        items:
+          type: string
+      startTime:
+        type: integer
+        format: int64
+        description: 开始时间
+    title: JobLogBo
+  LiveMountMigrateRequest:
+    type: object
+    properties:
+      vmWareMigrateParam:
+        description: VMWare迁移请求参数
+        $ref: '#/definitions/VMWareMigrateParam'
+        originalRef: VMWareMigrateParam
+    title: LiveMountMigrateRequest
+  LiveMountModel:
+    type: object
+    properties:
+      anonymization_status:
+        type: integer
+        format: int32
+        description: 匿名状态
+      copy_id:
+        type: string
+        description: 副本id
+      created_time:
+        type: string
+        description: 创建时间
+      enable_status:
+        type: string
+        description: 激活状态[取值范围]activated:激活 disabled:禁用
+      id:
+        type: string
+        description: 即时挂载主键
+      mounted_copy_display_timestamp:
+        type: string
+        description: 已挂载副本时间戳
+      mounted_copy_id:
+        type: string
+        description: 已挂载副本id
+      mounted_resource_id:
+        type: string
+        description: 已挂载资源id
+      mounted_source_copy_id:
+        type: string
+        description: 已挂载资源副本id
+      parameters:
+        type: string
+        description: >-
+          扩展参数[取值类型]1.VMWare:{performance:{max_bandwidth:最大带宽,min_bandwidth:最小带宽,burst_time:峰值时间,latency:时延,min_iops:最小每秒输入/输出操作,burst_bandwidth:峰值带宽,max_iops:最大每秒输入/输出操作,burst_iops:峰值每秒输入/输出操作},name:挂载名称,config:{power_on:开/关机,startup_network_adaptor:开/关网络适配器,specify_location_config:{storage_location:存储Id,network:[{adapter_name:网卡名称
+          1,target_network_uuid:网卡id}]},cpu:{use_original:cpu是/否使用原配置},memory:{use_original:内存是/否使用原配置}}} 
+          2.Oracle:{performance:{max_bandwidth:最大带宽,min_bandwidth:最小带宽,burst_time:峰值时间,latency:时延,min_iops:最小每秒输入/输出操作,burst_bandwidth:峰值带宽,max_iops:最大每秒输入/输出操作,burst_iops:峰值每秒输入/输出操作},name:挂载名称,config:{power_on:开/关机},pre_script:前置脚本,post_script:后置脚本,failed_script:失败脚本}
+      policy_id:
+        type: string
+        description: 挂载更新策略id
+      policy_name:
+        type: string
+        description: 更新策略名称
+      resource_id:
+        type: string
+        description: 源资源id
+      resource_ip:
+        type: string
+        description: 源资源ip
+      resource_name:
+        type: string
+        description: 源资源名称
+      resource_path:
+        type: string
+        description: 源资源路径
+      resource_sub_type:
+        type: string
+        description: 资源子类型
+      resource_type:
+        type: string
+        description: 资源类型
+      schedule_id:
+        type: string
+        description: 定时调度id
+      status:
+        type: string
+        description: >-
+          挂载状态[取值范围]ready:准备中 mounting:挂载中 unmounting:卸载中 migrating:迁移中
+          available:可用 mount_failed:挂载失败 invalid:无效
+      target_location:
+        type: string
+        description: 目标资源位置
+      target_resource_id:
+        type: string
+        description: 目标资源id
+      target_resource_ip:
+        type: string
+        description: 目标资源ip
+      target_resource_name:
+        type: string
+        description: 目标资源名称
+      target_resource_path:
+        type: string
+        description: 目标资源路径
+      updated_time:
+        type: string
+        description: 更新时间
+      user_id:
+        type: string
+        description: 用户id
+    title: LiveMountModel
+  LiveMountObject:
+    properties:
+      copy_id:
+        type: string
+        description: 副本id
+      parameters:
+        type: object
+        description: >-
+          扩展参数[取值类型]1.VMWare:{performance:{max_bandwidth:最大带宽,min_bandwidth:最小带宽,burst_time:峰值时间,latency:时延,min_iops:最小每秒输入/输出操作,burst_bandwidth:峰值带宽,max_iops:最大每秒输入/输出操作,burst_iops:峰值每秒输入/输出操作},name:挂载名称,config:{power_on:开/关机,startup_network_adaptor:开/关网络适配器,specify_location_config:{storage_location:存储Id,network:[{adapter_name:网卡名称
+          1,target_network_uuid:网卡id}]},cpu:{use_original:cpu是/否使用原配置},memory:{use_original:内存是/否使用原配置}}} 
+          2.Oracle:{performance:{max_bandwidth:最大带宽,min_bandwidth:最小带宽,burst_time:峰值时间,latency:时延,min_iops:最小每秒输入/输出操作,burst_bandwidth:峰值带宽,max_iops:最大每秒输入/输出操作,burst_iops:峰值每秒输入/输出操作},name:挂载名称,config:{power_on:开/关机},pre_script:前置脚本,post_script:后置脚本,failed_script:失败脚本}
+      policy_id:
+        type: string
+        description: 挂载更新策略id
+      source_resource_id:
+        type: string
+        description: 源资源id
+      target_location:
+        type: string
+        description: 挂载原位置[取值范围] original 原位置，others 新位置
+        enum:
+          - original
+          - others
+      target_resource_uuid_list:
+        type: array
+        description: 目标资源id
+        items:
+          type: string
+      file_system_share_info_list:
+        items:
+          $ref: '#/definitions/LiveMountFileSystemShareInfo'
+        description: 共享文件系统信息
+        type: array
+    title: LiveMountObject
+  LiveMountParam:
+    type: object
+    properties:
+      parameters:
+        type: object
+        description: >-
+          扩展参数[取值类型]performance:{max_bandwidth:最大带宽,min_bandwidth:最小带宽,burst_time:峰值时间,latency:时延,min_iops:最小每秒输入/输出操作,burst_bandwidth:峰值带宽,max_iops:最大每秒输入/输出操作,burst_iops:峰值每秒输入/输出操作}
+      policyId:
+        type: string
+        description: 挂载更新策略id
+    title: LiveMountParam
+  LiveMountPolicyEntity:
+    type: object
+    properties:
+      afterCopyGenerated:
+        type: string
+        description: 副本备份生成
+      copyDataSelectionPolicy:
+        type: string
+        description: >-
+          副本选择策略 [取值范围] LAST_HOUR:最近一小时 LAST_DAY:最近一天 LAST_WEEK:最近一周
+          LAST_MONTH:最近一月 LATEST:最新的副本
+      createdTime:
+        description: 创建时间
+        $ref: '#/definitions/Timestamp'
+        originalRef: Timestamp
+      latestCopyFor:
+        type: string
+        description: 最新一个副本
+      liveMountCount:
+        type: integer
+        format: int32
+        description: 已关联即时挂载数量
+      name:
+        type: string
+        description: 更新策略名称
+      policyId:
+        type: string
+        description: "主键id\r\n"
+      retentionPolicy:
+        type: string
+        description: '副本保留策略 [取值范围] PERMANENT:永久保留 FIXED_TIME:按固定时间保留 LATEST_ONE: 只保留最后一个'
+      retentionUnit:
+        type: string
+        description: 副本保留策略单位 [取值范围] DAY:天 WEEK:周 MONTH:月 YEAR:年，当副本保留策略选择为固定时间填写
+      retentionValue:
+        type: integer
+        format: int32
+        description: 副本保留策略固定时间取值， 当副本保留策略为固定时间填写
+      scheduleInterval:
+        type: integer
+        format: int32
+        description: 策略调度周期的时间间隔取值， 当策略调度周期为间隔时填写
+      scheduleIntervalUnit:
+        type: string
+        description: 策略调度周期单位 [取值范围] HOUR:小时 DAY:天 WEEK:周 MONTH:月，当策略调度周期选择为固定时间填写
+      schedulePolicy:
+        type: string
+        description: 策略调度周期 [取值范围] PERIOD_SCHEDULE:周期调度 AFTER_BACKUP_DONE:备份完成后执行
+      scheduleStartTime:
+        description: 周期调度首次执行时间
+        $ref: '#/definitions/Timestamp'
+        originalRef: Timestamp
+      updatedTime:
+        description: 更新时间
+        $ref: '#/definitions/Timestamp'
+        originalRef: Timestamp
+      userId:
+        type: string
+        description: 用户id
+    title: LiveMountPolicyEntity
+  LiveMountPolicyVo:
+    type: object
+    properties:
+      copyDataSelectionPolicy:
+        type: string
+        description: >-
+          副本选择策略 [取值范围] LAST_HOUR:最近一小时 LAST_DAY:最近一天 LAST_WEEK:最近一周
+          LAST_MONTH:最近一月 LATEST:最新的副本
+      liveMountCount:
+        type: integer
+        format: int32
+        description: 已关联即时挂载数量
+      name:
+        type: string
+        description: 更新策略名称
+      policyId:
+        type: string
+        description: "主键id\r\n"
+      retentionPolicy:
+        type: string
+        description: '副本保留策略 [取值范围] PERMANENT:永久保留 FIXED_TIME:按固定时间保留 LATEST_ONE: 只保留最后一个'
+      retentionUnit:
+        type: string
+        description: 副本保留策略单位 [取值范围] DAY:天 WEEK:周 MONTH:月 YEAR:年，当副本保留策略选择为固定时间填写
+      retentionValue:
+        type: integer
+        format: int32
+        description: 副本保留策略固定时间取值， 当副本保留策略为固定时间填写
+      scheduleInterval:
+        type: integer
+        format: int32
+        description: 策略调度周期的时间间隔取值， 当策略调度周期为间隔时填写
+      scheduleIntervalUnit:
+        type: string
+        description: 策略调度周期单位 [取值范围] HOUR:小时 DAY:天 WEEK:周 MONTH:月，当策略调度周期选择为固定时间填写
+      schedulePolicy:
+        type: string
+        description: 策略调度周期 [取值范围] PERIOD_SCHEDULE:周期调度 AFTER_BACKUP_DONE:备份完成后执行
+      scheduleStartTime:
+        type: string
+        description: 周期调度首次执行时间
+    title: LiveMountPolicyVo
+  LiveMountUpdate:
+    type: object
+    properties:
+      copy_id:
+        type: string
+      mode:
+        type: string
+        description: 扩展参数[取值类型] latest:最新副本 specified:指定副本
+        enum:
+          - latest
+          - specified
+    title: LiveMountUpdate
+  Timestamp:
+    type: object
+    properties:
+      date:
+        type: integer
+        format: int32
+      day:
+        type: integer
+        format: int32
+      hours:
+        type: integer
+        format: int32
+      minutes:
+        type: integer
+        format: int32
+      month:
+        type: integer
+        format: int32
+      nanos:
+        type: integer
+        format: int32
+      seconds:
+        type: integer
+        format: int32
+      time:
+        type: integer
+        format: int64
+      timezoneOffset:
+        type: integer
+        format: int32
+      year:
+        type: integer
+        format: int32
+    title: Timestamp
+  UpdatePolicyRequest:
+    type: object
+    properties:
+      copyDataSelectionPolicy:
+        type: string
+        description: >-
+          副本选择策略 [取值范围] LAST_HOUR:最近一小时 LAST_DAY:最近一天 LAST_WEEK:最近一周
+          LAST_MONTH:最近一月 LATEST:最新的副本
+        enum:
+          - last_hour
+          - last_day
+          - last_week
+          - last_month
+          - latest
+      name:
+        type: string
+        description: 更新策略名称
+      retentionPolicy:
+        type: string
+        description: '副本保留策略 [取值范围] PERMANENT:永久保留 FIXED_TIME:按固定时间保留 LATEST_ONE: 只保留最后一个'
+        enum:
+          - permanent
+          - fixed_time
+          - latest_one
+      retentionUnit:
+        type: string
+        description: 副本保留策略单位 [取值范围] DAY:天 WEEK:周 MONTH:月 YEAR:年，当副本保留策略选择为固定时间填写
+        enum:
+          - d
+          - w
+          - MO
+          - 'y'
+      retentionValue:
+        type: integer
+        format: int32
+        description: 副本保留策略固定时间取值， 当副本保留策略为固定时间填写
+      scheduleInterval:
+        type: integer
+        format: int32
+        description: 策略调度周期的时间间隔取值， 当策略调度周期为间隔时填写
+      scheduleIntervalUnit:
+        type: string
+        description: 策略调度周期单位 [取值范围] HOUR:小时 DAY:天 WEEK:周 MONTH:月，当策略调度周期选择为固定时间填写
+        enum:
+          - h
+          - d
+          - w
+      schedulePolicy:
+        type: string
+        description: 策略调度周期 [取值范围] PERIOD_SCHEDULE:周期调度 AFTER_BACKUP_DONE:备份完成后执行
+        enum:
+          - period_schedule
+          - after_backup_done
+      scheduleStartTime:
+        type: string
+        description: 周期调度首次执行时间
+    title: UpdatePolicyRequest
+  VMWareMigrateParam:
+    type: object
+    properties:
+      disk:
+        type: array
+        description: 虚拟机磁盘配置datastore信息
+        items:
+          $ref: '#/definitions/Disk'
+          originalRef: Disk
+      diskDatastoreType:
+        type: string
+        description: >-
+          虚拟机和磁盘配置是否采用相同的datastore
+          【取值范围】different_datastore：磁盘和虚拟机配置不同的datastore 
+          same_datastore：磁盘和虚拟机配置相同的datastore
+        enum:
+          - different_datastore
+          - same_datastore
+      vmxDatastore:
+        description: 虚拟机配置datastore的UUID
+        $ref: '#/definitions/Datastore'
+        originalRef: Datastore
+    title: VMWareMigrateParam
+  LiveMountFileSystemShareInfo:
+    properties:
+      type:
+        type: integer
+        format: int32
+        description: '0: nfs; 1: cifs'
+      fileSystemName:
+        type: string
+        description: 文件系统名称
+      accessPermission:
+        type: integer
+        format: int32
+        description: 0:只读; 1:读写
+      advanceParams:
+        type: object
+        additionalProperties:
+          type: object
+        description: 高级参数

@@ -1,0 +1,47 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-datatable [lvData]='dbData' lvSize="small" #lvTable lvAsync>
+    <thead>
+        <tr>
+            <th lvCellKey='db_name'>{{'common_name_label' | i18n}}</th>
+            <th lvCellKey='db_type'>{{'common_type_label' | i18n}}</th>
+            <th lvCellKey='ip_address'>{{'common_ip_address_label' | i18n}}</th>
+            <th lvCellKey='port'>{{'common_port_label' | i18n}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor='let item of lvTable.renderData'>
+            <tr>
+                <td>
+                    <span lv-overflow>{{item.db_name}}</span>
+                </td>
+                <td>
+                    <span lv-overflow>
+                        {{item.db_type}}
+                    </span>
+                </td>
+                <td>
+                    <span lv-overflow>
+                        {{item.ip_address}}
+                    </span>
+                </td>
+                <td>
+                    {{item.port}}
+                </td>
+            </tr>
+        </ng-container>
+    </tbody>
+</lv-datatable>
+<lv-paginator lvMode="simple" [lvShowPageSizeOptions]="false" [lvPageSize]='pageSize' [lvTotal]='total'
+    [lvPageIndex]='pageIndex' (lvPageChange)='pageChange($event)' [hidden]="!total"></lv-paginator>

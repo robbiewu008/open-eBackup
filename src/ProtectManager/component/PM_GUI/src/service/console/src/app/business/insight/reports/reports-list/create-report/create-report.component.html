@@ -1,0 +1,149 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'insight_report_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'insight_report_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select
+        lvShowCheckAll
+        lvMode="single"
+        [lvOptions]="reportTypeOptions"
+        formControlName="type"
+        lvValueKey="value"
+      >
+      </lv-select>
+      <div class="descrip-info" *ngIf="showPeriod && showPeriodTips">
+        <i
+          style="display: inline-block; margin-right: 4px;"
+          lv-icon="lv-icon-status-info"
+          lvColorState="true"
+          class="type-icon"
+        ></i>
+        <span class="form-tips">
+          {{ 'insight_report_type_tips_label' | i18n }}
+        </span>
+      </div>
+      <lv-group class="type-tip" [lvColumns]='["16px", "auto"]' lvRowGutter="4px"
+        *ngIf="formGroup.value.type === dataMap.Report_Type.storageSpace.value && !appUtilsService.isDistributed">
+        <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+        <span [innerHTML]="i18n.get('insight_storage_space_tip_label')"></span>
+      </lv-group>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="!hideDataSource">
+    <lv-form-label lvRequired>
+      {{ 'common_data_source_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-tree-select
+        [lvTreeData]="clusterOptions"
+        lvTreeSelectionMode="multiple"
+        lvTreeShowCheckbox
+        lvTreeShowLine
+        lvSelectedValueMode="parent"
+        formControlName="cluster"
+      ></lv-tree-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="showPeriod">
+    <lv-form-label lvRequired>
+      {{ 'insight_report_scope_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        [lv-tooltip]="tipsTemplate"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select
+        [lvOptions]="periodOptions"
+        formControlName="period"
+        lvValueKey="value"
+      >
+      </lv-select>
+      <div
+        *ngIf="
+          formGroup.value.period ===
+          dataMap.Report_Generated_Period.custom.value
+        "
+      >
+        <div class="aui-gutter-column-md"></div>
+        <lv-form-item>
+          <lv-form-control [lvErrorTip]="rangeErrorTip">
+            <lv-date-range-picker
+              formControlName="customPeriod"
+              lvNowAsBaseTime="false"
+            ></lv-date-range-picker>
+          </lv-form-control>
+        </lv-form-item>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="showPeriod">
+    <lv-form-label lvRequired>
+      {{ 'insight_report_frequency_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select
+        style="width: 90%"
+        [lvOptions]="frequencyOptions"
+        formControlName="frequency"
+        lvValueKey="value"
+      >
+      </lv-select>
+      <span style="padding-left: 20px;">{{ 'common_day_label' | i18n }}</span>
+      <div class="descrip-info" *ngIf="formGroup.value.frequency">
+        <span class="form-tips">
+          {{
+            i18n.get('insight_report_frequency_desc_label', [
+              dataMapService.getLabel(
+                'reportFrequency',
+                formGroup?.value?.frequency
+              )
+            ])
+          }}
+        </span>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'insight_report_format_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select
+        [lvOptions]="formatOptions"
+        formControlName="format"
+        lvValueKey="value"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+
+<ng-template #tipsTemplate>
+  <span [innerHTML]="i18n.get('insight_report_period_tips_label')"></span>
+</ng-template>

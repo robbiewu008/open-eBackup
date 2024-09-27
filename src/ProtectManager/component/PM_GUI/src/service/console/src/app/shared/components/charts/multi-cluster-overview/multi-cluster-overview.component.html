@@ -1,0 +1,211 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="multi-cluster-overview">
+  <div class="multi-cluster-title">
+    <lv-group>
+      <h1>
+        {{ 'common_multi_overview_label' | i18n }}
+      </h1>
+      <i lv-icon="aui-icon-help" lv-tooltip="{{ 'common_multi_overview_tip_label' | i18n }}" lvTooltipTheme="light"
+        class="configform-constraint" lvColorState='true'></i>
+    </lv-group>
+  </div>
+  <div class="card-container">
+    <lv-group lvGutter="16px" class="full-line">
+      <div [ngClass]="appUtilsService.isDistributed ? 'distributed-card-box' : 'card-box'">
+        <div class="card-title">
+          <lv-group lvGutter="8px">
+            <img src="assets/img/multi_cluster_envir.svg" class="title-img" />
+            <span>{{ 'common_cluster_envir_label' | i18n }}</span>
+          </lv-group>
+        </div>
+        <div class="card-content">
+          <lv-group>
+            <img
+              src="assets/img/multi_cluster_resource.png"
+              class="content-img"
+            />
+            <lv-group lvDirection="vertical" class="full-line">
+              <div class="content-title">
+                {{ 'common_resource_label' | i18n }}
+              </div>
+              <div class="resource-text">
+                <span>{{ 'common_multi_protected_resource_label' | i18n }}</span>
+                <span class="resourceNum">{{ resourceProtect }}</span>
+              </div>
+              <div class="card-line resource-text"></div>
+              <ng-container *ngFor="let v of resourceData">
+                <ng-container *ngIf="v.protectedCount!==0">
+                  <div class="resource-text">
+                    <span>{{ v.label }}</span>
+                    <span>{{ v.protectedCount }}</span>
+                  </div>
+                </ng-container>
+              </ng-container>
+            </lv-group>
+          </lv-group>
+        </div>
+      </div>
+
+      <div class="backup-card" [ngClass]="appUtilsService.isDistributed ? 'distributed-card-box' : 'card-box'">
+        <div class="card-title">
+          <lv-group lvGutter="8px">
+            <img src="assets/img/multi_cluster_backup.svg" class="title-img" />
+            <span>{{ 'common_backup_label' | i18n }}</span>
+          </lv-group>
+        </div>
+        <div class="card-content">
+          <lv-group lvDirection="vertical" lvGutter="50px">
+            <div class="full-line" style="display: flex">
+              <img src="assets/img/multi_cluster_backup_normal.png" class="content-img" />
+              <lv-group lvDirection="vertical" style="width: 75%">
+                <div class="content-title">{{ 'system_backup_storage_unit_label' | i18n }}</div>
+                <div class="resource-text">{{ 'common_amount_label' | i18n }} : {{ backupStorageUnits.total }}</div>
+                <div class="card-line resource-text"></div>
+                <div class="resource-text" style="font-weight: bold">{{ 'common_capacity_rate_top3_label' | i18n }}</div>
+                <lv-group lvDirection="vertical" lvGutter="20px" class="full-line">
+                  <ng-container *ngFor="let item of backupStorageUnits.data">
+                    <div class="percent-bar">
+                      <div style="display: flex;justify-content: space-between">
+                        <span lv-overflow style="width: 75%">{{item.name}}</span>
+                        <span>{{item.spaceReductionRate}}:1</span>
+                      </div>
+                      <lv-progress
+                        [lvValue]="round(item.usedCapacity / item.totalCapacity * 10000) / 100"
+                        [lvSize]="'small'"
+                        [lvShowLabel]="false"
+                        [lvColors]="progressBarColor"
+                        lvDecimals="3"
+                        class="content-process"
+                      ></lv-progress>
+                      <div class='size-percent' *ngIf="!appUtilsService.isDistributed">
+                        {{item.usedCapacity * 512 | capacityCalculateLabel:'1.1-3':unitconst.BYTE:
+                        true}}/{{item.totalCapacity * 512 | capacityCalculateLabel:'1.1-3':unitconst.BYTE:
+                        true}}
+                      </div>
+                      <div class='size-percent' *ngIf="appUtilsService.isDistributed">
+                        {{item.usedCapacity | capacityCalculateLabel:'1.1-3':unitconst.KB:
+                        true}}/{{item.totalCapacity | capacityCalculateLabel:'1.1-3':unitconst.KB:
+                        true}}
+                      </div>
+                    </div>
+                  </ng-container>
+                  <span class="aui-link" (click)="jumpToStorageUnitsPage()">
+                    {{'common_view_all_label' | i18n}}
+                  </span>
+                </lv-group>
+              </lv-group>
+            </div>
+          </lv-group>
+        </div>
+      </div>
+
+      <div *ngIf="!appUtilsService.isDistributed" [ngClass]="appUtilsService.isDistributed ? 'distributed-card-box' : 'card-box'">
+        <div class="card-title">
+          <lv-group lvGutter="8px">
+            <img src="assets/img/multi_cluster_copy.svg" class="title-img" />
+            <span>{{ 'common_replicate_label' | i18n }}</span>
+          </lv-group>
+        </div>
+        <div class="card-content">
+          <ng-container *ngFor="let v of copyList">
+            <lv-group class="full-line">
+              <img [src]="v.src" class="content-img" />
+              <lv-group lvDirection="vertical" style="width: 75%">
+                <div class="content-title">{{ v.label }}</div>
+                <div class="percent-bar">
+                  <div class="size-percent" *ngIf="v.totalCapacity !== 0">
+                    {{
+                      v.usedCapacity
+                        | capacityCalculateLabel: '1.1-3':unitconst.KB:true
+                    }}/{{
+                      v.totalCapacity
+                        | capacityCalculateLabel: '1.1-3':unitconst.KB:true
+                    }}
+                  </div>
+                  <div class="size-percent" *ngIf="v.totalCapacity === 0">
+                    --
+                  </div>
+                  <lv-progress
+                  [lvValue]="v.usedPercent"
+                    [lvSize]="'small'"
+                    [lvShowLabel]="false"
+                    [lvColors]="progressBarColor"
+                    lvDecimals="3"
+                    class="content-process"
+                  ></lv-progress>
+                </div>
+              </lv-group>
+            </lv-group>
+          </ng-container>
+        </div>
+      </div>
+
+      <div [ngClass]="appUtilsService.isDistributed ? 'distributed-card-box' : 'card-box'">
+        <div class="card-title">
+          <lv-group lvGutter="8px">
+            <img src="assets/img/multi_cluster_archive.svg" class="title-img" />
+            <span>{{ 'common_archive_label' | i18n }}</span>
+          </lv-group>
+        </div>
+        <div class="card-content">
+          <lv-group lvDirection="vertical" lvGutter="50px">
+            <ng-container *ngFor="let v of archiveList">
+              <lv-group class="full-line">
+                <img [src]="v.src" class="content-img" />
+                <lv-group lvDirection="vertical" style="width: 75%">
+                  <div class="content-title">{{ v.label }}</div>
+                  <div *ngIf="v.type === 'tape'">
+                    <ng-container *ngIf="v.usedCapacity!==0 else emptyTpl">
+                      {{ 'common_archive_used_label' | i18n }}
+                      {{
+                      v.usedCapacity
+                        | capacityCalculateLabel: '1.1-3':unitconst.MB:true
+                      }}
+                    </ng-container>
+                    <ng-template #emptyTpl>
+                      --
+                    </ng-template>
+                  </div>
+                  <div class="percent-bar" *ngIf="v.type !== 'tape'">
+                    <div class="size-percent" *ngIf="v.totalCapacity !== 0">
+                      {{
+                        v.usedCapacity
+                          | capacityCalculateLabel: '1.1-3':unitconst.KB:true
+                      }}/{{
+                        v.totalCapacity
+                          | capacityCalculateLabel: '1.1-3':unitconst.KB:true
+                      }}
+                    </div>
+                    <div class="size-percent" *ngIf="v.totalCapacity === 0">
+                      --
+                    </div>
+                    <lv-progress
+                    [lvValue]="v.usedPercent"
+                      [lvSize]="'small'"
+                      [lvShowLabel]="false"
+                      [lvColors]="progressBarColor"
+                      lvDecimals="3"
+                      class="content-process"
+                    ></lv-progress>
+                  </div>
+                </lv-group>
+              </lv-group>
+            </ng-container>
+          </lv-group>
+        </div>
+      </div>
+    </lv-group>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="如何修改ESXi主机NFS卷的挂载数量">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839187005">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>如何修改ESXi主机NFS卷的挂载数量</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001839187005"></a><a name="ZH-CN_TOPIC_0000001839187005"></a>
+  <h1 class="topictitle1">如何修改ESXi主机NFS卷的挂载数量</h1>
+  <div>
+   <p>即时挂载是将<span>本产品</span>上产生的副本的链接克隆，挂载至ESXi主机，创建NFS类型的数据存储，然后再启动虚拟机。如果单个ESXi主机上挂载任务超过最大支持挂载NFS卷数量，挂载任务会失败。可参考以下步骤修改ESXi主机上NFS卷的挂载数量，此处以vCenter 6.7.0为例说明：</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>使用浏览器，打开vCenter Server登录地址。</span><p></p><p id="ZH-CN_TOPIC_0000001839187005__zh-cn_topic_0000001839187061_p171383317558">登录地址：<strong id="ZH-CN_TOPIC_0000001839187005__zh-cn_topic_0000001839187061_b1846275114553">https://</strong><em id="ZH-CN_TOPIC_0000001839187005__zh-cn_topic_0000001839187061_i849984595510">vcenter_server_ip_address</em></p> <p></p></li>
+     <li><span>选择需要修改配置的ESXi主机，进入主机页面。</span></li>
+     <li><span>选择<span class="uicontrol">“配置 &gt; 系统 &gt; 高级系统设置”</span>。</span></li>
+     <li><span>单击<span class="uicontrol">“编辑”</span>，查找到<span class="uicontrol">“NFS.MaxVolumes”</span>，修改<span class="uicontrol">“NFS.MaxVolumes”</span>值。</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>执行此操作前，请自行记录修改前的可挂载数量，便于需要时回退。</p>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

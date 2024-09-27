@@ -1,0 +1,56 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-loading [lvLoading]="cardInfo.loading" class="loading">
+  <div
+    [class]="{
+      card: true,
+      'mission-overview-background': cardInfo.name === 'missionOverview'
+    }"
+  >
+    <div class="card-header">
+      <div class="title">
+        {{ cardInfo.title | i18n }}
+        <div class="icon" *ngIf="cardInfo.slaTooltip">
+          <aui-sla-compliance-tooltip></aui-sla-compliance-tooltip>
+        </div>
+        <span class="subTitle">
+          {{ cardInfo.subtitle | i18n }}
+        </span>
+        <div class="select-box">
+          <ng-content select="[header]"></ng-content>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ng-content></ng-content>
+    </div>
+    <div *ngIf="cardInfo.footer" class="card-footer">
+      <div
+        *ngFor="let item of cardInfo.footer"
+        [class]="{ 'footer-item': true, left: item.align === 'left' }"
+      >
+        <span
+          *ngIf="item.isBtn; else textContent"
+          (click)="navigate(item.navigateInfo, item.navigateParams)"
+          class="footer-btn"
+        >
+          {{ item.text | i18n }}
+        </span>
+        <ng-template #textContent>
+          <span>{{ item.text | i18n }}</span>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</lv-loading>

@@ -1,0 +1,96 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <lv-group lvGutter='8px'>
+            <h1>{{'common_limit_rate_policy_label' | i18n}}</h1>
+            <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+        </lv-group>
+    </div>
+    <div class="aui-block aui-paginator-container">
+        <div class="aui-operation">
+            <lv-group [lvGutter]="groupCommon.middleRowGutter">
+                <ng-container *ngIf="isDataBackup; else elseCreateTemplate">
+                    <button lvType="primary" lv-button (click)="createQos()" auiRolePermission
+                        [rolePermission]="roleOperationMap.speedLimitStrategy">
+                        {{'common_create_label' | i18n}}
+                    </button>
+                </ng-container>
+                <ng-template #elseCreateTemplate>
+                    <button lvType="primary" lv-button (click)="createQos()" pmpermission pmOperation='CreateQos'>
+                        {{'common_create_label' | i18n}}
+                    </button>
+                </ng-template>
+                <button lv-button (click)="deleteQos(qosSelection)" [disabled]="qosSelection.length === 0" pmpermission
+                    pmOperation="DeleteQos">
+                    {{'common_delete_label' | i18n}}
+                </button>
+            </lv-group>
+            <lv-group>
+                <button class="aui-button-icon" lv-button lvSize="auto" (click)="getQos()"
+                    lv-tooltip="{{'common_refresh_label' | i18n}}">
+                    <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                </button>
+            </lv-group>
+        </div>
+        <div class="list-container">
+            <lv-datatable [lvData]='qosData' #lvTable lvResize lvSelectionMode='multiple' [lvSelection]='qosSelection'
+                lvResizeMode="expand" [lvScroll]="{ x: '100%' }">
+                <thead>
+                    <tr>
+                        <th lvShowCheckbox width='40px' [lvRowsData]="lvTable.renderData"></th>
+                        <th lvCellKey='name' lvShowCustom>
+                            {{'common_name_label' | i18n}}
+                            <div lvCustom>
+                                <aui-custom-table-search (search)="searchByName($event)"
+                                    filterTitle="{{'common_name_label' | i18n}}"></aui-custom-table-search>
+                            </div>
+                        </th>
+                        <th lvCellKey='speed_limit' *ngIf="language.EN === i18n.language">
+                            {{'protection_max_bandwidth_label' | i18n}}&nbsp;(MB/s)</th>
+                        <th lvCellKey='speed_limit' *ngIf="language.EN !== i18n.language">
+                            {{'protection_max_bandwidth_label' | i18n}}(MB/s)</th>
+                        <th lvCellKey='desc'>{{'common_desc_label' | i18n}}</th>
+                        <th width="144px">{{'common_operation_label' | i18n}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor='let item of lvTable.renderData'>
+                        <tr>
+                            <td lvShowCheckbox width='40px' [lvRowData]='item'></td>
+                            <td>
+                                <span lv-overflow>{{item.name}}</span>
+                            </td>
+                            <td>
+                                <span>{{item.speed_limit}}</span>
+                            </td>
+                            <td>
+                                <span lv-overflow>{{item.description | nil}}</span>
+                            </td>
+                            <td width="144px">
+                                <lv-operation-menu [lvItemsFn]="optsCallback" [lvData]="item">
+                                </lv-operation-menu>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </lv-datatable>
+            <div class="aui-paginator-wrap">
+                <lv-paginator [lvPageSize]="pageSize" [lvTotal]="total" [lvPageIndex]="pageIndex"
+                    (lvPageChange)="pageChange($event)" [lvPageSizeOptions]="sizeOptions" [hidden]="!total">
+                </lv-paginator>
+            </div>
+        </div>
+    </div>
+</div>

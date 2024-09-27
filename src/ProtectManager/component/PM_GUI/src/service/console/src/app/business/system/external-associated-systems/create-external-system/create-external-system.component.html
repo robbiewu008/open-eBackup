@@ -1,0 +1,98 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup lv-form-label-required">
+    <lv-form-item>
+        <lv-form-label>
+            {{'common_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input type="text" formControlName="name" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'common_backup_software_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select formControlName="type" [lvOptions]="systemTypeOptions" lvValueKey="value">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'common_ip_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+            <input lv-input type="text" formControlName="endpoint" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'common_port_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="portErrorTip">
+            <input lv-input type="text" formControlName="port" />
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.get('type').value === 'ebackup'">
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_username_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="usernameErrorTip">
+                <input lv-input type="text" formControlName="username" />
+                <p class="aui-text-help-sm">
+                    <lv-group [lvGutter]="'8px'" class="help-text-group">
+                        <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+                        <span>{{'system_external_system_username_help_label' | i18n}}</span>
+                    </lv-group>
+                </p>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_password_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="passwordErrorTip">
+                <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="true"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="formGroup.get('type').value === 'dpa'">
+        <lv-form-item>
+            <lv-form-label>
+                {{'system_ak_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <input lv-input type="text" formControlName="ak" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'system_sk_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <aui-inupt-with-eye formControlName="sk" [lvPasteAllowed]="true"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'system_visit_url_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="urlErrorTip">
+                <input lv-input type="text" formControlName="location" />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>

@@ -1,0 +1,91 @@
+#performance-chart {
+  height: 260px;
+  width: 100%;
+}
+
+.status-circle-display-indigo {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  background-color: #6c92fa;
+  display: inline-block;
+}
+
+.status-circle-display-red {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  background-color: rgb(108, 191, 255);
+  display: inline-block;
+  margin-left: 20px;
+}
+
+.status-label-display {
+  font-size: 12px;
+  /* color: #b8becc; */
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+.performance-subtitle-number {
+  color: #6e94fa;
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.Physical {
+  color: rgb(108, 191, 255);
+  margin-left: 30px;
+}
+
+.Logic {
+  margin-left: 70px;
+}
+
+.performance-subtitle-unit {
+  font-size: 12px;
+  color: #b8becc;
+  white-space: nowrap;
+}
+
+.performance-unit {
+  font-size: 16px;
+  color: #828893;
+}
+
+.subtittle {
+  margin-bottom: 10px;
+}
+
+.tittle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.home-performance-type-select {
+  width: 125px;
+}
+
+.home-perfomance-time-select {
+  width: 150px;
+}
+
+.performance-no-data {
+  margin: auto;
+  text-align: center;
+}
+
+.no-data-label {
+  text-align: center;
+  font-size: 14px;
+}
+
+.performance-no-data i {
+  width: 240px;
+  height: 240px;
+}
+
+.performance-subtitle div {
+  text-align: right;
+}

@@ -1,0 +1,121 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_type_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="type" [lvGroupName]="'typeGroup'" [lvDisabled]='item'>
+                <lv-group [lvGutter]="'24px'">
+                    <lv-radio [lvValue]="dataMap.gaussDBTClusterType.single.value">
+                        {{'protection_deployment_single_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="dataMap.gaussDBTClusterType.cluster.value">
+                        {{'operation_target_cluster_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input type="text" formControlName="name" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_username_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="usernameErrorTip">
+            <input lv-input type="text" formControlName="username" [attr.placeholder]="placeHolderTips" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'protection_deploy_type_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select formControlName="deployment_type" [lvOptions]='deploymentTypeOptions' lvValueKey='value'
+                [lvDisabled]="isDisabled">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'protection_statefulset_node_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <ng-container *ngIf="formGroup.value.type === dataMap.gaussDBTClusterType.single.value">
+                <lv-select [lvOptions]='proxyOptions' formControlName='agent' lvValueKey='value' lvMode='single'
+                    lvShowFilter lvShowCheckAll lvFilterKey='label' lvFilterMode='contains' [lvDisabled]='item'
+                    [lvContentTemplate]="contentTpl">
+                </lv-select>
+            </ng-container>
+            <ng-container *ngIf="formGroup.value.type === dataMap.gaussDBTClusterType.cluster.value">
+                <lv-select [lvOptions]='proxyOptions' formControlName='agents' lvValueKey='value' lvMode='multiple'
+                    lvShowFilter lvShowCheckAll lvFilterKey='label' lvFilterMode='contains'
+                    [lvContentTemplate]="contentTpl">
+                </lv-select>
+            </ng-container>
+            <ng-template #contentTpl let-item>
+                <lv-group lvGutter="4px">
+                    <span lv-overflow>{{ item.label }}</span>
+                    <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
+                        {{'protection_guide_new_resource_label' | i18n}}
+                    </span>
+                </lv-group>
+            </ng-template>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.value.type === dataMap.gaussDBTClusterType.single.value">
+        <lv-form-label lvRequired>
+            {{ 'protection_auth_method_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select formControlName="authMode" [lvOptions]="authOptions" lvValueKey="value">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item
+        *ngIf="formGroup.value.type === dataMap.gaussDBTClusterType.single.value && formGroup.value.authMode === dataMap.Postgre_Auth_Method.db.value">
+        <lv-form-label lvRequired>
+            {{ 'protection_system_database_password_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="passwordErrorTip">
+            <aui-inupt-with-eye formControlName="password" [placeholder]="
+          i18n.get('common_please_enter_label', [
+            i18n.get('protection_system_database_password_label')
+          ])
+        "></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+
+
+<ng-template #footerTpl>
+    <div class="lv-modal-btns">
+        <lv-group lvGutter='8px'>
+            <button lv-button lvType='primary' (click)='ok()' [disabled]='!formGroup.valid' [lvLoading]='okLoading'>
+                {{ 'common_ok_label' | i18n }}
+            </button>
+            <button lv-button (click)='modal.close()'>
+                {{ 'common_cancel_label' | i18n }}
+            </button>
+        </lv-group>
+    </div>
+</ng-template>

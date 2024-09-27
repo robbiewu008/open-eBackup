@@ -1,0 +1,100 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-header-2 alarm-dump-operation">
+    <h2>
+        {{'system_dump_sftp_label' | i18n}}
+    </h2>
+    <div>
+        <a *ngIf="!isModify" class="aui-link" (click)='modifyData()' pmpermission pmOperation='ModifyDumpSettings'>
+            {{'common_modify_label' | i18n}}
+        </a>
+        <lv-group *ngIf="isModify" lvGutter="8px">
+            <a class="aui-link" (click)="testData()"
+                [ngClass]="{'aui-link': formGroup.value.useEnable && formGroup.valid, 'aui-link-disabled': !(formGroup.value.useEnable && formGroup.valid)}">
+                {{'common_test_label' | i18n}}
+            </a>
+            <a class="aui-link" (click)="saveData()"
+                [ngClass]="{'aui-link': (formGroup.value.useEnable && formGroup.valid) || !formGroup.value.useEnable, 'aui-link-disabled': !((formGroup.value.useEnable && formGroup.valid) || !formGroup.value.useEnable)}">
+                {{'common_save_label' | i18n}}
+            </a>
+            <a class="aui-link" (click)="cancelData()">
+                {{'common_cancel_label' | i18n}}
+            </a>
+        </lv-group>
+    </div>
+</div>
+<div class="alarm-dump-operation">
+    <p class="aui-text-help-sm">{{'system_sftp_desc_label' | i18n}}</p>
+</div>
+<div class="dashed-line"></div>
+<ng-container *ngIf="!isModify">
+    <lv-form [lvLabelColon]='false'>
+        <lv-form-item *ngFor='let item of formItms'>
+            <lv-form-label>
+                {{item.label}}
+            </lv-form-label>
+            <lv-form-control>
+                <div class="content" lv-overflow>
+                    {{item.content | nil}}
+                </div>
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+</ng-container>
+<ng-container *ngIf="isModify">
+    <lv-form [formGroup]="formGroup" [lvLabelColon]='false'>
+        <lv-form-item>
+            <lv-form-label lvKeepRequiredWidth="true">{{'common_status_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-switch formControlName="useEnable"></lv-switch>
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="formGroup.value.useEnable">
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'common_username_label' | i18n}}</lv-form-label>
+                <lv-form-control [lvErrorTip]='userNameErrorTip'>
+                    <input lv-input class="modify-form" formControlName="userName" />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
+                <lv-form-control [lvErrorTip]='passwordErrorTip'>
+                    <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false" (focus)="focusPwd()">
+                    </aui-inupt-with-eye>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'system_service_ip_label' | i18n}}</lv-form-label>
+                <lv-form-control [lvErrorTip]='ipErrorTip'>
+                    <input lv-input class="modify-form" formControlName="ipAddress"
+                        placeholder="{{'common_ip4_ipv6_placeholder_label' | i18n}}" />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'common_port_label' | i18n}}</lv-form-label>
+                <lv-form-control [lvErrorTip]='portErrorTip'>
+                    <input lv-input class="modify-form" formControlName="port" placeholder="1~65535" />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired>{{'system_file_save_path_label' | i18n}}</lv-form-label>
+                <lv-form-control [lvErrorTip]='pathErrorTip'>
+                    <input lv-input class="modify-form" formControlName="uploadPath"
+                        lv-tooltip="{{'common_valid_file_path_label' | i18n}}" />
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+
+    </lv-form>
+</ng-container>

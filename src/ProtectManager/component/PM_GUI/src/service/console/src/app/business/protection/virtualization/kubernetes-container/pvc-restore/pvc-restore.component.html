@@ -1,0 +1,100 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form class="aui-gutter-column-lg">
+    <lv-form-item>
+        <lv-form-label>{{'protection_selected_copy_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            {{rowCopy?.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss'}}
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+<h3 class="aui-gutter-column-md">{{'protection_recovery_selected_pvc_label' | i18n}}</h3>
+<lv-pro-table #allDataTable [data]="allTableData" [config]="allTableConfig"></lv-pro-table>
+<div class="recovery-conifg">
+    <h3 class="aui-gutter-column-md">{{'protection_restore_file_config_label' | i18n}}</h3>
+    <lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'protection_restore_to_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
+                    <lv-group [lvGutter]="'20px'">
+                        <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="restoreToNewLocationOnly"
+                            [lv-tooltip]="restoreToNewLocationOnly ? ('protection_cloud_origin_restore_disabled_label' | i18n) : ''">
+                            {{ 'common_restore_to_origin_location_label' | i18n }}
+                        </lv-radio>
+                        <lv-radio [lvValue]="restoreLocationType.NEW">
+                            {{ 'common_restore_to_new_location_label' | i18n }}
+                        </lv-radio>
+                    </lv-group>
+                </lv-radio-group>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'protection_volume_restore_target_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.ORIGIN; else elseTemplate">
+                    {{resource?.parentName}}/{{resource?.name}}
+                </ng-container>
+                <ng-template #elseTemplate>
+                    <lv-tree-select [lvTreeData]="namespaceTreeData" lvTreeSelectionMode="single"
+                        formControlName="targetNamespace" lvShowClear lvTreeShowContentIcon lvTreeShowLine
+                        (lvExpandedChange)="expandedChange($event)">
+                        <lv-treeselect-trigger>
+                            <span>{{ formGroup.value.targetNamespace[0]?.path | nil }}</span>
+                        </lv-treeselect-trigger>
+                    </lv-tree-select>
+                </ng-template>
+            </lv-form-control>
+        </lv-form-item>
+        <div class="aui-gutter-column-lg">
+            <lv-pro-table #recoveyDataTable [data]="recoveyTableData" [config]="recoveyTableConfig"></lv-pro-table>
+        </div>
+        <lv-form-item>
+            <lv-form-label>{{'protection_over_write_rule_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-radio-group formControlName="overwriteType">
+                    <lv-group [lvGutter]="'20px'" lvDirection='vertical' class="mgt-8">
+                        <lv-radio [lvValue]="fileReplaceStrategy.Replace">
+                            {{'protection_overwrite_label' | i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="fileReplaceStrategy.Ignore">
+                            {{'protection_skip_label' | i18n}}
+                        </lv-radio>
+                    </lv-group>
+                </lv-radio-group>
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+</div>
+
+<ng-template #targetPvcTpl let-item>
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.ORIGIN; else elseTemplate">
+        <span lv-overflow>{{item.name}}</span>
+    </ng-container>
+    <ng-template #elseTemplate>
+        <lv-select [(ngModel)]="item.targetPvc" [lvOptions]="item.targetPvcOptions"
+            [ngModelOptions]="{standalone: true}" lvValueKey="value" (ngModelChange)='pvcChange($event,item)'
+            lvShowFilter lvFilterMode="contains" lvShowClear>
+        </lv-select>
+    </ng-template>
+</ng-template>
+
+<ng-template #targetPvcHelpTpl>
+  <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+    <i lv-icon="aui-icon-help" class="target-pvc-help"
+       lv-tooltip="{{'protection_target_pvc_help_label' | i18n}}"></i>
+  </ng-container>
+</ng-template>

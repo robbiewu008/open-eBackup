@@ -1,0 +1,74 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring Files in a File System">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001188779368.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20220315">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001234554539">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring Files in a File System</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001234554539"></a><a name="EN-US_TOPIC_0000001234554539"></a>
+
+<h1 class="topictitle1">Restoring Files in a File System</h1>
+<div id="body0000001234554539"><p id="EN-US_TOPIC_0000001234554539__p19491127143415">You can use file level restore to restore some files in a file system that has been backed up.</p>
+<div class="section" id="EN-US_TOPIC_0000001234554539__section1336517011362"><h4 class="sectiontitle">Prerequisites</h4><p id="EN-US_TOPIC_0000001234554539__p18593062363">Automatic indexing has been enabled for the SLA associated with the file system.</p>
+</div>
+<div class="section" id="EN-US_TOPIC_0000001234554539__section6539155125419"><h4 class="sectiontitle">Precautions</h4><ul id="EN-US_TOPIC_0000001234554539__ul1587743275414"><li id="EN-US_TOPIC_0000001234554539__li030795165718">Restoration to a file system in WORM, CLONE, or non-UNIX security mode is not supported.</li><li id="EN-US_TOPIC_0000001234554539__li1187703205410">Restoration to a file system whose name starts with <strong id="EN-US_TOPIC_0000001234554539__b1015524173616">pvc_</strong> is not supported.</li><li id="EN-US_TOPIC_0000001234554539__li1082581817276">Restoration to the secondary file system of asynchronous remote replication is not supported.</li><li id="EN-US_TOPIC_0000001234554539__li1990322761619">Restoration to the snapshot directory is not supported.</li><li id="EN-US_TOPIC_0000001234554539__li19618339132617">After HyperMetro brain-split occurs, the end that fails arbitration does not support restoration.</li><li id="EN-US_TOPIC_0000001234554539__li4213967375">Ensure that no other user is reading or writing the file system during the restoration. Otherwise, data may be inconsistent or even damaged.</li><li id="EN-US_TOPIC_0000001234554539__li174754564378">The restoration operation is irreversible. If the restoration fails, data is not rolled back and some data may be damaged.</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000001234554539__section17228824236"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000001234554539__ol16757174020210"><li id="EN-US_TOPIC_0000001234554539__li0198134611381"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001234554539__uicontrol1370815953411"><b><span id="EN-US_TOPIC_0000001234554539__text2708149173411"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000001234554539__text1770879143413"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000001234554539__text4708199183413"><strong>Local File System</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000001234554539__li888616341964"><span>You can search for copies by resource or copy. This section uses the resource dimension as an example.</span><p><p id="EN-US_TOPIC_0000001234554539__p624620403810">On the <strong id="EN-US_TOPIC_0000001234554539__b1862465013520">Resources</strong> tab page, locate the file system to be restored by file system name and click the name.</p>
+</p></li><li id="EN-US_TOPIC_0000001234554539__li02165214225"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001234554539__uicontrol25510216355"><b><span id="EN-US_TOPIC_0000001234554539__text185520273519"><strong>Copy Data</strong></span></b></span> and select the year, month, and day in sequence to find the copy.</span><p><p id="EN-US_TOPIC_0000001234554539__p9918150182310">If <span><img id="EN-US_TOPIC_0000001234554539__image99531319193912" src="en-us_image_0000001633762233.png"></span> is displayed below a month or day, copies exist in the month or on the day.</p>
+</p></li><li id="EN-US_TOPIC_0000001234554539__li7995952193812"><span>Locate the copy to be restored and choose <span class="menucascade" id="EN-US_TOPIC_0000001234554539__menucascade105006471489"><b><span class="uicontrol" id="EN-US_TOPIC_0000001234554539__uicontrol1750044715818"><span id="EN-US_TOPIC_0000001234554539__text18510338183720"><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000001234554539__uicontrol1641125016814"><span id="EN-US_TOPIC_0000001234554539__text13690114915377"><strong>File-level Restoration</strong></span></span></b></span>.</span></li><li id="EN-US_TOPIC_0000001234554539__li346391153911"><span>Determine whether to select <span class="uicontrol" id="EN-US_TOPIC_0000001234554539__uicontrol1920394273020"><b><span id="EN-US_TOPIC_0000001234554539__text17827251193519"><strong>Only the selected files or directories will be restored to the target path. The upper-level directory will not be restored.</strong></span></b></span> according to the actual requirements.</span></li><li id="EN-US_TOPIC_0000001234554539__li12518163182912"><span>In the left pane, select the files to be restored. In the right pane, select the target location for restoration.</span><p><div class="note" id="EN-US_TOPIC_0000001234554539__note9851195510477"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul id="EN-US_TOPIC_0000001234554539__ul383604217314"><li id="EN-US_TOPIC_0000001234554539__li15621555121712">File level restore is supported only when the index status of the copy is <span class="uicontrol" id="EN-US_TOPIC_0000001234554539__uicontrol86104216382"><b><span id="EN-US_TOPIC_0000001234554539__text165742173817"><strong>Indexed</strong></span></b></span>.</li><li id="EN-US_TOPIC_0000001234554539__li158712231756">If the backup copy does not contain OS data, no index can be created for the copy. Therefore, the copy cannot be used for file level restore.</li><li id="EN-US_TOPIC_0000001234554539__li7100104738">If a folder or file name contains garbled characters, file level restore is not supported. Do not select folders or files of this type. Otherwise, file level restore fails.</li></ul>
+</div></div>
+<ul id="EN-US_TOPIC_0000001234554539__ul13911134412128"><li id="EN-US_TOPIC_0000001234554539__li139111844151213">Select the original location for restoration, that is, the original directory of the original file system.<p id="EN-US_TOPIC_0000001234554539__p118899239132"><a name="EN-US_TOPIC_0000001234554539__li139111844151213"></a><a name="li139111844151213"></a><a href="#EN-US_TOPIC_0000001234554539__table131747562531">Table 1</a> describes the related parameters.</p>
+<p id="EN-US_TOPIC_0000001234554539__p1495882011321"></p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001234554539__table131747562531"></a><a name="table131747562531"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001234554539__table131747562531" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for restoring a file system</caption><colgroup><col style="width:35.8%"><col style="width:64.2%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000001234554539__row1717417561533"><th align="left" class="cellrowborder" valign="top" width="35.8%" id="mcps1.3.4.2.6.2.2.1.3.2.3.1.1"><p id="EN-US_TOPIC_0000001234554539__p12174175614538"><strong id="EN-US_TOPIC_0000001234554539__b7200131444112">Parameter</strong></p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="64.2%" id="mcps1.3.4.2.6.2.2.1.3.2.3.1.2"><p id="EN-US_TOPIC_0000001234554539__p10174256105311"><strong id="EN-US_TOPIC_0000001234554539__b1754112175416">Description</strong></p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000001234554539__row11741456145310"><td class="cellrowborder" valign="top" width="35.8%" headers="mcps1.3.4.2.6.2.2.1.3.2.3.1.1 "><p id="EN-US_TOPIC_0000001234554539__p4174256175313"><span id="EN-US_TOPIC_0000001234554539__text34148718362"><strong>Skip existing files</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="64.2%" headers="mcps1.3.4.2.6.2.2.1.3.2.3.1.2 "><p id="EN-US_TOPIC_0000001234554539__p6558173523711">The files that already exist in the file system are not processed during the restoration.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001234554539__row717445615317"><td class="cellrowborder" valign="top" width="35.8%" headers="mcps1.3.4.2.6.2.2.1.3.2.3.1.1 "><p id="EN-US_TOPIC_0000001234554539__p317411569536"><span id="EN-US_TOPIC_0000001234554539__text11771013173616"><strong>Replace existing files</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="64.2%" headers="mcps1.3.4.2.6.2.2.1.3.2.3.1.2 "><p id="EN-US_TOPIC_0000001234554539__p61741756105318">The files that already exist in the file system are replaced during the restoration.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001234554539__row101741656165318"><td class="cellrowborder" valign="top" width="35.8%" headers="mcps1.3.4.2.6.2.2.1.3.2.3.1.1 "><p id="EN-US_TOPIC_0000001234554539__p191742565539"><span id="EN-US_TOPIC_0000001234554539__text115192188364"><strong>Only replace the files older than the restoration file</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="64.2%" headers="mcps1.3.4.2.6.2.2.1.3.2.3.1.2 "><p id="EN-US_TOPIC_0000001234554539__p1117495613531">Among the files that already exist in the file system, only the outdated files are replaced.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li id="EN-US_TOPIC_0000001234554539__li9480252141217">Select a new location for restoration, that is, a specified file system.<p id="EN-US_TOPIC_0000001234554539__p15690101817157"><a name="EN-US_TOPIC_0000001234554539__li9480252141217"></a><a name="li9480252141217"></a><a href="#EN-US_TOPIC_0000001234554539__table131747562531">Table 1</a> describes the related parameters.</p>
+</li></ul>
+</p></li><li id="EN-US_TOPIC_0000001234554539__li2096014115112"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001234554539__uicontrol922417198454"><b><span id="EN-US_TOPIC_0000001234554539__text13224619174519"><strong>OK</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000001234554539__li198776169312"><span>Read the warning message carefully, select <span id="EN-US_TOPIC_0000001234554539__text157054506106"><strong>I have read and understand the consequences associated with performing this operation.</strong></span>, and then click <span id="EN-US_TOPIC_0000001234554539__text09092213211"><strong>OK</strong></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001188779368.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

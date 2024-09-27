@@ -1,0 +1,386 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="report-container">
+  <ng-container *ngIf="isProtectObjectDetail; else elseTemplate">
+    <div class="header protect-object-header">
+      <div class="report-title" *ngIf="loaded">{{ protectObjectName }}</div>
+      <div class="report-create-time" *ngIf="loaded">
+        {{ 'explore_until_now_label' | i18n:[protectObjectDetectTime] }}
+      </div>
+      <div class="other-header-info" *ngIf="loaded" [innerHTML]="poTips"></div>
+    </div>
+    <div class="report-content">
+      <div class="report-base-info">
+        <div class="info-card-title">{{ 'common_basic_info_label' | i18n }}</div>
+        <div class="base-info-content">
+          <div class="base-info-block file-system-info">
+            <div class="report-protection-icon"></div>
+            <div style="width:200px">
+              <div class="base-info-label">
+                {{ 'explore_protect_object_name_label' | i18n }}
+              </div>
+              <div class="po-base-info-value" lv-overflow>
+                {{ protectObjectName | nil }}
+              </div>
+            </div>
+          </div>
+          <div class="base-info-block">
+            <div class="base-info-label">
+              {{ (softwareType === softwareTypeEnum.VEEAM ? 'explore_protect_object_backup_time_label' :
+              'explore_protect_object_backup_file_count_label') | i18n }}
+            </div>
+            <div class="po-base-info-value" lv-overflow>{{ protectObjectBackupTimes | nil }}</div>
+          </div>
+          <div class="base-info-block">
+            <div class="base-info-label">
+              {{ 'explore_belong_filesystem_label' | i18n }}
+            </div>
+            <div class="po-base-info-value" lv-overflow>
+              {{ owningFilesystem | nil }}
+            </div>
+          </div>
+          <div class="base-info-block">
+            <div class="base-info-label">
+              {{ 'protection_file_system_path_label' | i18n }}
+            </div>
+            <div class="po-base-info-value" lv-overflow>
+              {{ protectObjectFileSystemLocation | nil }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- veeam没有最近一次侦测情况 -->
+      <ng-container *ngIf="softwareType !== softwareTypeEnum.VEEAM">
+        <div class="latest-card-title aui-gutter-column-lg">
+          {{ 'explore_latest_copy_detect_report_label' | i18n }}
+        </div>
+        <div class="content-container aui-gutter-column-lg">
+          <ng-container *ngIf="hasLatestInfectionCopyInfo; else elseNoDataTemplate">
+            <!-- 最后一次侦测概述 -->
+            <div class="aui-gutter-column-lg" *ngIf="loaded">
+              <lv-alert lvType="{{!!latestInfectedFileNum ? 'warning' : 'success'}}" lvClosable="false">
+                <div class="alert-warn-title">
+                  {{'explore_infected_file_report_label' | i18n:[latestInfectedFileNum]}}
+                </div>
+                <span [innerHTML]="latestInfectedFileDetail"></span>
+              </lv-alert>
+            </div>
+            <div class="info-card-sub-title">
+              {{ 'explore_detection_statistics_label' | i18n }}
+              <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_report_file_help_label' | i18n}}"
+                lvColorState='true'></i>
+            </div>
+            <!-- 图表 -->
+            <lv-group lvGutter='8px' class="aui-gutter-column-lg">
+              <div id="statistics-chart"></div>
+              <lv-group lvGutter='8px' *ngIf="softwareType === softwareTypeEnum.NBU">
+                <div id="file-capacity-chart"></div>
+                <div>
+                  <div class="status-circle-display-normal"></div>
+                  <span class="status-number-display">
+                    {{normalFileCapacity | capacityCalculateLabel:'1.1-3':unitconst.BYTE:true:true}}
+                  </span>
+                  <div class="status-label-display">{{'explore_detection_statistics_normal_file_label' | i18n}}</div>
+                  <div class="status-circle-display-infected"></div>
+                  <span class="status-number-display">
+                    {{infectionFileCapacity | capacityCalculateLabel:'1.1-3':unitconst.BYTE:true:true}}
+                  </span>
+                  <div class="status-label-display">{{'explore_detection_statistics_infected_file_label' | i18n}}</div>
+                </div>
+              </lv-group>
+            </lv-group>
+            <!-- 异常文件列表 -->
+            <div class="info-card-sub-title aui-gutter-column-lg">
+              {{ 'explore_suspicious_file_list_label' | i18n }}
+              <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_max_infected_file_label' | i18n:[1000]}}"
+                lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
+            </div>
+            <lv-pro-table #poTnfectedFileTable [config]="poTnfectedFileTableConfig" [data]="poTnfectedFileTableData">
+            </lv-pro-table>
+          </ng-container>
+        </div>
+      </ng-container>
+      <div class="latest-card-title aui-gutter-column-lg">
+        {{ 'explore_po_copy_detail_label' | i18n }}
+      </div>
+      <div class="content-container">
+        <!-- 保护对象副本概述 -->
+        <div class="aui-gutter-column-lg" *ngIf="loaded">
+          <lv-alert lvType="{{hasAbnormalBackupCount ? 'warning' : 'success'}}" lvClosable="false">
+            <div class="alert-warn-title">
+              {{protectObjectCopyDetailTitle}}
+            </div>
+            <span [innerHTML]="protectObjectCopyDetail"></span>
+          </lv-alert>
+        </div>
+        <!-- 关联的副本 -->
+        <div class="info-card-sub-title aui-gutter-column-lg">
+          {{ 'explore_associated_snapshot_file_label' | i18n }}
+        </div>
+        <lv-pro-table #assCopyTable [config]="assCopyTableConfig" [data]="assCopyTableData">
+        </lv-pro-table>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #elseTemplate>
+    <div class="header">
+      <div class="report-title" *ngIf="loaded">{{ reportName }}</div>
+      <div class="report-create-time" *ngIf="loaded">
+        {{ 'insight_report_create_time_label' | i18n }}: {{ reportCreateTime }}
+      </div>
+      <div class="other-header-info" *ngIf="loaded" [innerHTML]="
+        tips
+          | i18n
+            : [
+                detectStartTime,
+                detectEndTime,
+                fileSystemName,
+                snapshotCount,
+                infectionSnapshotCount,
+                handleFalseCount,
+                totalSnapshotCount
+              ]
+      "></div>
+    </div>
+    <div class="report-content">
+      <div class="report-base-info">
+        <div class="info-card-title">{{ 'common_basic_info_label' | i18n }}</div>
+        <div class="base-info-content">
+          <div class="base-info-block file-system-info">
+            <div class="file-system-icon"></div>
+            <div>
+              <div class="base-info-label">
+                {{ 'protection_file_system_name_label' | i18n }}
+              </div>
+              <div class="base-info-value" lv-overflow>
+                {{ fileSystemName | nil }}
+              </div>
+            </div>
+          </div>
+          <div class="base-info-block">
+            <div class="base-info-label">
+              {{ 'protection_file_system_path_label' | i18n }}
+            </div>
+            <div class="base-info-value" lv-overflow>{{ fileSystemLocation | nil }}</div>
+          </div>
+          <div class="base-info-block">
+            <div class="base-info-label">
+              {{ 'insight_report_scope_label' | i18n }}
+            </div>
+            <div class="base-info-value" lv-overflow>
+              {{ detectStartTime }} - {{ detectEndTime }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 最近一次快照侦测情况 -->
+      <div class="latest-card-title aui-gutter-column-lg">
+        {{ 'explore_latest_snapshot_detect_report_label' | i18n }}
+      </div>
+      <div class="latest-report">
+        <ng-container *ngIf="reportDataResponse?.latestInfectionSnapshotInfo; else elseNoDataTemplate">
+          <div class="report-detail" *ngIf="reportDetailContent">
+            <lv-alert lvType="{{!!reportDetailInfectedCopyNum ? 'warning' : 'success'}}" lvClosable="false">
+              <div class="alert-warn-title">
+                {{'explore_latest_infected_file_report_label' | i18n:[reportDetailInfectedCopyNum]}}
+              </div>
+              <span [innerHTML]="reportDetailContent"></span>
+            </lv-alert>
+          </div>
+          <div class="statistics-chart-container" *ngIf="!isIoDetectionReport">
+            <div class="sub-title aui-gutter-column-lg">
+              {{'explore_detection_statistics_label' | i18n}}
+              <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_report_file_help_label' | i18n}}"
+                lvColorState='true'></i>
+            </div>
+            <div id="statistics-chart"></div>
+          </div>
+          <div class="infected-file">
+            <div class="sub-title aui-gutter-column-lg">
+              {{'explore_suspicious_file_list_label' | i18n}}
+              <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_max_infected_file_label' | i18n:[1000]}}"
+                lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
+            </div>
+            <ng-container *ngIf="isIoDetectionReport; else elseInfectedFileTemplate">
+              <lv-pro-table [config]="ioInfectedFileTableConfig" [data]="ioInfectedFileTableData">
+              </lv-pro-table>
+            </ng-container>
+            <ng-template #elseInfectedFileTemplate>
+              <lv-pro-table #infectedFileTable [config]="infectedFileTableConfig" [data]="infectedFileTableData">
+              </lv-pro-table>
+            </ng-template>
+          </div>
+        </ng-container>
+      </div>
+      <div class="latest-card-title aui-gutter-column-lg">
+        {{ 'insight_report_history_copy_info_label' | i18n }}
+      </div>
+      <div class="report-history-info aui-gutter-column-lg">
+        <div class="history-info-block">
+          <div class="info-card-sub-title">
+            {{ 'explore_report_file_count_change_chart_label' | i18n }}
+          </div>
+          <div class="trend-chart-container">
+            <aui-detection-trend-chart [seriesData]="seriesData" [isSnapshotReport]="true"
+              [largeSizeChart]="true"></aui-detection-trend-chart>
+          </div>
+        </div>
+        <div class="history-info-block">
+          <div class="info-card-sub-title">
+            {{ 'explore_history_detection_result_label' | i18n }}
+          </div>
+          <div class="history-table-tips">
+            {{ 'explore_history_detection_title_label' | i18n }}
+          </div>
+          <div class="history-table-container">
+            <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+          </div>
+        </div>
+      </div>
+      <!-- 最新快照保护对象列表 -->
+      <div class="latest-card-title aui-gutter-column-lg">
+        {{ 'explore_latest_snapshot_po_label' | i18n }}
+      </div>
+      <div class="latest-po-report">
+        <lv-pro-table #latestPoTable [config]="latestPoTableConfig" [data]="latestPoTableData">
+        </lv-pro-table>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #addFileCountTpl>
+  <div class="custom-icon">
+    <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_add_file_label' | i18n}}" lvTooltipTheme="light"
+      lvColorState='true'></i>
+  </div>
+</ng-template>
+<ng-template #changeFileCountTpl>
+  <div class="custom-icon">
+    <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_modify_file_label' | i18n}}" lvTooltipTheme="light"
+      lvColorState='true'></i>
+  </div>
+</ng-template>
+<ng-template #deleteFileCountTpl>
+  <div class="custom-icon">
+    <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_delete_file_label' | i18n}}" lvTooltipTheme="light"
+      lvColorState='true'></i>
+  </div>
+</ng-template>
+<ng-template #infectedFileCountTpl>
+  <div class="custom-icon">
+    <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_infected_file_help_label' | i18n}}" lvTooltipTheme="light"
+      lvColorState='true'></i>
+  </div>
+</ng-template>
+
+<ng-template #statusTpl let-item>
+  <div *ngIf="item.handle_false">
+    <span class="flg-tag">{{
+      'insight_report_positive_flag_label' | i18n
+      }}</span>
+  </div>
+  <lv-pro-status [value]="item.anti_status" [config]="statusConfig"></lv-pro-status>
+</ng-template>
+
+<ng-template #poNameTpl let-item>
+  <span lv-overflow class="aui-link" (click)="protectObjectDetail(item)">
+    {{item.protectObjectName}}
+  </span>
+</ng-template>
+
+<ng-template #dateTpl let-item>
+  <span lv-overflow>
+    {{item.backupTime}}
+  </span>
+</ng-template>
+
+<ng-template #fileAttrTpl let-item>
+  <span lv-overflow>
+    {{'protection_last_modifyed_label' | i18n}}: {{item.latestModifyTime}}
+  </span>
+</ng-template>
+
+<ng-template #sizeTpl let-item>
+  <span lv-overflow>
+    {{item.fileSize | capacityCalculateLabel:'1.1-3':unitconst.BYTE:true:true}}
+  </span>
+</ng-template>
+
+<ng-template #copySizeTpl let-item>
+  <span lv-overflow>
+    {{item.backupCopySize | capacityCalculateLabel:'1.1-3':unitconst.BYTE:true:true}}
+  </span>
+</ng-template>
+
+<ng-template #elseNoDataTemplate>
+  <div class="no-data">
+    <i lv-icon="lv-icon-no-data"></i>
+    <div class="no-data-label">
+      {{'common_no_data_label' | i18n}}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #backupTaskExtraTpl>
+  <div class="custom-icon backup-task-help">
+    <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_backup_task_help_label' | i18n}}" lvColorState='true'></i>
+  </div>
+</ng-template>
+
+<ng-template #copyTypeTpl let-item>
+  <span lv-overflow>{{getCopyType(item)}}</span>
+</ng-template>
+
+<ng-template #fileCountExtraTpl>
+  <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_file_count_help_label' | i18n}}" lvColorState='true'
+    class="th-icon"></i>
+</ng-template>
+
+<ng-template #infectedFileCountExtraTpl>
+  <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_infected_file_count_help_label' | i18n}}" lvColorState='true'
+    class="th-icon"></i>
+</ng-template>
+
+<ng-template #fileCountTpl let-item>
+  <ng-container *ngIf="!isVMware(item); else elseEmptyTemplate">
+    <span lv-overflow>{{item.fileCount}}</span>
+  </ng-container>
+</ng-template>
+
+<ng-template #infectFileCountTpl let-item>
+  <ng-container *ngIf="!isVMware(item); else elseEmptyTemplate">
+    <span lv-overflow>{{item.abnormalFileCount}}</span>
+  </ng-container>
+</ng-template>
+
+<ng-template #attrTpl let-item>
+  <lv-group lvGutter='8px' lv-overflow>
+    <span>{{'common_create_time_label' | i18n:[]:true}}</span>
+    <span>{{item.createDate}}</span>
+  </lv-group>
+  <lv-group lvGutter='8px' lv-overflow>
+    <span>{{'protection_last_modifyed_label' | i18n:[]:true}}</span>
+    <span>{{item.latestModifyTime}}</span>
+  </lv-group>
+</ng-template>
+
+<ng-template #subjectUserTpl>
+  <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_subject_user_tip_label' | i18n}}" lvTooltipTheme="light"
+    class="operation-help-icon" lvColorState='true'></i>
+</ng-template>
+
+<ng-template #elseEmptyTemplate>
+  --
+</ng-template>

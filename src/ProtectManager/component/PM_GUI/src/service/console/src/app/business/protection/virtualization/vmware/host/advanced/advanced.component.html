@@ -1,0 +1,115 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
+    <lv-collapse-panel lvTitle="{{'common_advanced_label'|i18n}}" [lvExpanded]="false">
+        <lv-form [formGroup]='formGroup' class="formGroup" [lvLabelColon]='false'>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_proxy_host_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select [lvOptions]='proxyHost' formControlName='proxyHost' lvValueKey='key'></lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_pre_script_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <input lv-input type='text' formControlName='preScript' />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_post_script_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <input lv-input type='text' formControlName='postScript' />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'common_select_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="isBindSla">
+                        <lv-radio-group formControlName="slaSelect">
+                            <lv-group [lvGutter]="'20px'" lvDirection='vertical'>
+                                <lv-radio *ngFor="let item of slaSelectRadioOption" [lvValue]="item.value">
+                                    {{item.label}}
+                                </lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                    </ng-container>
+                    <ng-container *ngIf="!isBindSla">
+                        <lv-checkbox-group formControlName="slaSelect" [lvDisabled]="disabled">
+                            <lv-group [lvGutter]="'20px'" lvDirection='vertical'>
+                                <lv-checkbox *ngFor="let item of slaSelectCheckboxOption" [lvValue]="item.value">
+                                    {{item.label}}
+                                </lv-checkbox>
+                            </lv-group>
+                        </lv-checkbox-group>
+                    </ng-container>
+
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_vm_filter_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="vmFilter"></lv-switch>
+                    <div *ngIf='formGroup.value.vmFilter' class="vmfilter-container">
+                        <lv-group lvDirection='vertical' lvGutter='16px'>
+                            <label lv-checkbox formControlName="excludeCheck">{{'common_exclude_label' | i18n}}</label>
+                            <lv-form-control *ngIf='formGroup.value.excludeCheck'>
+                                <lv-group lvGutter='8px'>
+                                    <lv-input-group class="filter-group"
+                                        [lvSuffix]='formGroup.value.excludeInput ? excludeSuffix : ""'>
+                                        <input lv-input type='text' formControlName='excludeInput'
+                                            (keyup)='($event.which === 13) ? addExclude() : 0' />
+                                    </lv-input-group>
+                                    <span class='create-icon'>
+                                        <i lv-icon='aui-icon-create' [lvColorState]='true' (click)='addExclude()'></i>
+                                    </span>
+                                </lv-group>
+                                <ng-template #excludeSuffix>
+                                    <i lv-icon='lv-icon-clear' [lvColorState]='true' (click)='clearExclude()'></i>
+                                </ng-template>
+                                <lv-tag formControlName='exclude'></lv-tag>
+                            </lv-form-control>
+                            <label lv-checkbox formControlName="includeCheck">{{'common_include_label' | i18n}}</label>
+                            <lv-form-control *ngIf='formGroup.value.includeCheck'>
+                                <lv-group lvGutter='8px'>
+                                    <lv-input-group class="filter-group"
+                                        [lvSuffix]='formGroup.value.includeInput ? includeSuffix : ""'>
+                                        <input lv-input type='text' formControlName='includeInput'
+                                            (keyup)='($event.which === 13) ? addInclude() : 0' />
+                                    </lv-input-group>
+                                    <span class='create-icon'>
+                                        <i lv-icon='aui-icon-create' [lvColorState]='true' (click)='addInclude()'></i>
+                                    </span>
+                                </lv-group>
+                                <ng-template #includeSuffix>
+                                    <i lv-icon='lv-icon-clear' [lvColorState]='true' (click)='clearInclude()'></i>
+                                </ng-template>
+                                <lv-tag formControlName='include'></lv-tag>
+                            </lv-form-control>
+                        </lv-group>
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form>
+    </lv-collapse-panel>
+</lv-collapse>

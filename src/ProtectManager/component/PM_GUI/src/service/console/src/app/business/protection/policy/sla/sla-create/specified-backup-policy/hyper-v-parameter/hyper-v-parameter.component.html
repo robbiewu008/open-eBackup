@@ -1,0 +1,152 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-collapse [lvType]="'simple'">
+    <lv-collapse-panel [lvTitle]="'common_advanced_label'|i18n" [lvExpanded]="false">
+        <lv-form [formGroup]="formGroup" [lvLabelColon]="isSlaDetail">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'common_limit_rate_policy_single_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'common_limit_rate_policy_tip_label' | i18n}}"
+                    lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint" lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{qosNames.length ? find(qosNames, {uuid: formGroup.value.qos_id}) ? find(qosNames, {uuid:
+                        formGroup.value.qos_id})['label']: '--':'--'}}
+                    </ng-container>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-select [lvOptions]="qosNames" formControlName="qos_id" lvValueKey="uuid" lvShowClear>
+                        </lv-select>
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="!isSlaDetail">
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_host_concurrent_backup_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="use_client_thread"></lv-switch>
+                        <ng-container *ngIf="formGroup.value.use_client_thread">
+                            <div class="aui-gutter-column-md"></div>
+                            <lv-group>
+                                <lv-form-label lvRequired>
+                                    {{'protection_concurrent_num_backup_label' | i18n}}
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]="hostConcurrentBackupErrorTip">
+                                    <input lv-input formControlName="use_client_num" type="text" lvSize="small"
+                                        placeholder="2~10" />
+                                </lv-form-control>
+                            </lv-group>
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <ng-container *ngIf="isSlaDetail">
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_concurrent_num_backup_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        {{formGroup.value.use_client_num | nil}}
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <lv-form-item>
+                <lv-form-label>
+                    <span>{{'common_encryption_label' | i18n}}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_sla_data_encryption_help_label' | i18n}}"
+                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                            lvColorState='true'></i>
+                    </span>
+                </lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="!isSlaDetail">
+                        <lv-switch formControlName="encryption" [lvDisabled]="action === protectResourceAction.Modify">
+                        </lv-switch>
+                    </ng-container>
+                    <ng-container *ngIf="isSlaDetail">
+                        {{formGroup.value.encryption | textMap: 'Switch_Status'}}
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="!isSlaDetail">
+                <lv-form-item>
+                    <lv-form-label>{{'protection_auto_retry_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="auto_retry"></lv-switch>
+                        <ng-container *ngIf="formGroup.value.auto_retry">
+                            <div class="aui-gutter-column-md"></div>
+                            <lv-form-label lvRequired>
+                                {{'common_retry_times_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="retryTimesErrorTip" class="groupInControl">
+                                <lv-group lvGutter='8px' class="lv-group-flex-start">
+                                    <lv-group>
+                                        <input lv-input formControlName="auto_retry_times" type="text" placeholder="1~5"
+                                            class="backup-for-text" />
+                                    </lv-group>
+                                    <lv-group>
+                                        <span class="configform-constraint">{{'common_times_label' | i18n}}</span>
+                                    </lv-group>
+                                </lv-group>
+                            </lv-form-control>
+                            <div class="aui-gutter-column-md"></div>
+                            <lv-form-label lvRequired>
+                                {{'common_waiting_time_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="waitTimesErrorTip" class="groupInControl">
+                                <lv-group lvGutter='8px' class="lv-group-flex-start">
+                                    <lv-group>
+                                        <input lv-input formControlName="auto_retry_wait_minutes" type="text"
+                                            placeholder="1~30" class="backup-for-text" />
+                                    </lv-group>
+                                    <lv-group>
+                                        <span class="configform-constraint">{{'common_minutes_label' | i18n}}</span>
+                                    </lv-group>
+                                </lv-group>
+                            </lv-form-control>
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <ng-container *ngIf="isSlaDetail">
+                <lv-form-item>
+                    <lv-form-label>{{'protection_auto_retry_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <ng-container *ngIf="!formGroup.value.auto_retry">
+                            {{formGroup.value.auto_retry | textMap: 'Switch_Status'}}
+                        </ng-container>
+                        <ng-container *ngIf="formGroup.value.auto_retry">
+                            <ng-container *ngIf="i18n.isEn">
+                                {{'common_retry_times_label' | i18n: []:
+                                true}}{{formGroup.value.auto_retry_times}} {{'common_times_label' |
+                                i18n}}{{'common_comma_label'|i18n}}
+                                {{'common_waiting_time_label' | i18n: []:
+                                true}}{{formGroup.value.auto_retry_wait_minutes}} {{'common_minutes_label' | i18n}}
+                            </ng-container>
+                            <ng-container *ngIf="!i18n.isEn">
+                                {{'common_retry_times_label' | i18n: []:
+                                true}}{{formGroup.value.auto_retry_times}}{{'common_times_label' |
+                                i18n}}{{'common_comma_label'|i18n}}
+                                {{'common_waiting_time_label' | i18n: []:
+                                true}}{{formGroup.value.auto_retry_wait_minutes}}{{'common_minutes_label' | i18n}}
+                            </ng-container>
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+        </lv-form>
+    </lv-collapse-panel>
+</lv-collapse>

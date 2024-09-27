@@ -1,0 +1,45 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_ip_address_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+            <input lv-input type="text" formControlName="ip" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_port_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="portErrorTip">
+            <input lv-input type="text" formControlName="port" placeholder='1~65535' />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_username_label' | i18n}}
+            <i lv-icon="aui-icon-help" lvTooltipTheme="light" lvTooltipPosition="bottom"
+                lv-tooltip="{{'system_storage_username_label' | i18n}}" lvColorState='true'
+                class="configform-constraint"></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="usernameErrorTip">
+            <input lv-input type="text" formControlName="userName" autocomplete="new-password" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="passwordErrorTip">
+            <input lv-input type="text" type="password" formControlName="password"
+                autocomplete="new-password" (focus)="passwordFocus()" (blur)="passwordBlur()" />
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

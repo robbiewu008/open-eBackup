@@ -1,0 +1,826 @@
+swagger: '2.0'
+info:
+  title: 资源管理（主机）
+  version: v1
+tags:
+  - name: host
+  - name: debug
+paths:
+  /v1/resource/host/:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          maximum: 10000
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - description: 主机应用类型
+          in: query
+          maxLength: 64
+          name: type_of_app
+          required: false
+          type: string
+        - description: 主机ID
+          in: query
+          maxLength: 64
+          minLength: 1
+          name: uuid
+          required: false
+          type: string
+        - description: 条件参数
+          in: query
+          maxLength: 1024
+          minLength: 1
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          maxLength: 10000
+          minLength: 1
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The response is the list of all host names and IDs available
+          schema:
+            $ref: '#/definitions/BasePage_HostDetail_'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - host
+      operationId: page_query_hosts_v1_resource_host__get
+      summary: 分页查询主机信息列表
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'N'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'N'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/HostCreate'
+      responses:
+        '200':
+          description: The response is the created host
+          schema:
+            $ref: '#/definitions/Host'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - debug
+        - host
+      operationId: create_host_v1_resource_host__post
+      summary: 注册主机
+  /v1/resource/host/{cluster_id}/nodes:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 集群ID
+          in: path
+          maxLength: 64
+          name: cluster_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: The response is the cluster Info for a host
+          schema:
+            items:
+              $ref: '#/definitions/ClusterHost'
+            title: Response Host Cluster Info V1 Resource Host  Cluster Id  Nodes Get
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - host
+      operationId: host_cluster_info_v1_resource_host__cluster_id__nodes_get
+      summary: 根据集群ID查询集群的主机信息列表
+  /v1/resource/host/{host_id}:
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: host_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - host
+      operationId: delete_host_v1_resource_host__host_id__delete
+      summary: 根据主机ID删除主机
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: host_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: The response is the info about a host - TBD
+          schema:
+            $ref: '#/definitions/Host'
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - host
+      operationId: get_host_v1_resource_host__host_id__get
+      summary: 根据主机ID查询主机信息
+  /v1/resource/host/{host_id}/action/modify:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: host_id
+          required: true
+          type: string
+        - description: 主机名称
+          in: query
+          maxLength: 64
+          minLength: 1
+          name: host_name
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            items:
+              type: string
+            title: Response Modify Host V1 Resource Host  Host Id  Action Modify Put
+            type: array
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - host
+      operationId: modify_host_v1_resource_host__host_id__action_modify_put
+      summary: 修改主机名名称
+  /v1/resource/host/{host_id}/action/sync-snmp-conf:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 主机ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: host_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: The response is the newly created fileset
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+        '500':
+          description: Internal Server Error
+      tags:
+        - host
+      operationId: synchronize_snmp_to_host_v1_resource_host__host_id__action_sync_snmp_conf_post
+      summary: 同步Trap信息到Oracle主机
+  /v1/resource/hosts/upgradeable-versions:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 主机的uuid列表
+          in: query
+          name: host_uuids
+          required: true
+          type: array
+          items:
+            type: string
+            maxLength: 64
+            minLength: 1
+          x-impact-subsystem: 不影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-rd-admin-role: 'N'
+          x-auditor-role: 'Y'
+          x-dp-admin-role: 'Y'
+          x-public-api: 'Y'
+          x-sysadmin-role: 'Y'
+          minItems: 1
+          maxItems: 20
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: 主机可升级信息列表
+          schema:
+            items:
+              $ref: '#/definitions/host_info'
+            type: array
+        '404':
+          description: Not Found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - host
+      operationId: get_update_agent_host_v1_resource_hosts_upgradeable-versions
+      summary: 查询主机可升级的版本
+definitions:
+  AgentSubeTypeEnum:
+    description: An enumeration.
+    enum:
+      - VMBackupAgent
+      - ABBackupClient
+    title: AgentSubeTypeEnum
+    type: string
+  AsmAuthRequest:
+    properties:
+      asm_insts:
+        description: ASM实例列表
+        items: {}
+        title: Asm Insts
+        type: array
+      auth_type:
+        description: 认证方式
+        title: Auth Type
+        type: integer
+      password:
+        default: ''
+        description: 密码
+        maxLength: 2048
+        title: Password
+        type: string
+      username:
+        default: ''
+        description: 用户名
+        maxLength: 255
+        title: Username
+        type: string
+    required:
+      - auth_type
+    title: AsmAuthRequest
+    type: object
+  AsmAuthResponse:
+    properties:
+      asm_insts:
+        description: ASM实例列表
+        items: {}
+        title: Asm Insts
+        type: array
+      auth_type:
+        description: 认证方式
+        title: Auth Type
+        type: integer
+      password:
+        description: 密码
+        title: Password
+        type: string
+      username:
+        description: 用户名
+        title: Username
+        type: string
+    title: AsmAuthResponse
+    type: object
+  AsmInfo:
+    properties:
+      auth_type:
+        description: 认证方式
+        title: Auth Type
+        type: string
+      inst_name:
+        description: 实例名称
+        title: Inst Name
+        type: string
+      is_cluster:
+        description: 是否集群
+        title: Is Cluster
+        type: string
+    required:
+      - auth_type
+      - inst_name
+      - is_cluster
+    title: AsmInfo
+    type: object
+  BasePage_HostDetail_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/HostDetail'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: BasePage[HostDetail]
+    type: object
+  ClusterHost:
+    properties:
+      endpoint:
+        description: 主机IP地址
+        title: Endpoint
+        type: string
+      host_id:
+        description: 主机ID
+        title: Host Id
+        type: string
+      name:
+        description: 主机名称
+        title: Name
+        type: string
+      os_type:
+        default: Unknown
+        description: 主机操作系统类型
+        title: Os Type
+        type: string
+    title: ClusterHost
+    type: object
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  Host:
+    properties:
+      authorized_user:
+        description: 授权用户
+        title: Authorized User
+        type: string
+      cluster_info:
+        description: 集群信息
+        items: {}
+        title: Cluster Info
+        type: array
+      endpoint:
+        description: 主机IP地址
+        title: Endpoint
+        type: string
+      error_duplicate_ip:
+        default: Unknown
+        description: 注册主机时已存在的重复IP地址
+        title: Error Duplicate Ip
+        type: string
+      host_id:
+        description: 主机ID
+        title: Host Id
+        type: string
+      is_cluster:
+        default: false
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        default: Unknown
+        description: 主机状态
+        title: Link Status
+        type: string
+      name:
+        description: 主机名称
+        minLength: 1
+        title: Name
+        type: string
+      os_type:
+        description: 主机操作系统类型
+        title: Os Type
+        type: string
+      port:
+        description: 主机端口号
+        title: Port
+        type: string
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+    required:
+      - name
+    title: Host
+    type: object
+  HostCreate:
+    properties:
+      cluster_info:
+        description: 集群信息
+        items: {}
+        title: Cluster Info
+        type: array
+      host_id:
+        description: 主机ID
+        maxLength: 64
+        title: Host Id
+        type: string
+      ip:
+        description: 主机IP地址
+        maxLength: 128
+        title: Ip
+        type: string
+      is_cluster:
+        default: false
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        default: Unknown
+        description: 主机状态
+        maxLength: 32
+        title: Link Status
+        type: string
+      name:
+        description: 主机名称
+        minLength: 1
+        title: Name
+        type: string
+      os_type:
+        default: Unknown
+        description: 主机操作系统类型
+        maxLength: 32
+        title: Os Type
+        type: string
+      path:
+        description: 资源位置
+        maxLength: 1024
+        title: Path
+        type: string
+      port:
+        description: 主机端口号
+        maxLength: 16
+        title: Port
+        type: string
+      proxy_type:
+        description: 代理类型
+        title: Proxy Type
+        type: integer
+      userid:
+        description: 用户ID
+        maxLength: 255
+        title: Userid
+        type: string
+    required:
+      - name
+      - proxy_type
+    title: HostCreate
+    type: object
+  HostDetail:
+    properties:
+      app_type:
+        description: 资源类型
+        title: App Type
+        type: string
+      asm_info:
+        default: {}
+        description: ASM信息
+        title: Asm Info
+        type: object
+      authorized_user:
+        description: 授权用户
+        title: Authorized User
+        type: string
+      cluster_info:
+        description: 集群信息
+        items: {}
+        title: Cluster Info
+        type: array
+      endpoint:
+        description: 主机IP地址
+        title: Endpoint
+        type: string
+      error_duplicate_ip:
+        default: Unknown
+        description: 注册主机时已存在的重复IP地址
+        title: Error Duplicate Ip
+        type: string
+      extend_db:
+        default: {}
+        description: 数据库信息
+        title: Extend Db
+        type: object
+      host_id:
+        description: 主机ID
+        title: Host Id
+        type: string
+      is_cluster:
+        default: false
+        description: 是否集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        default: Unknown
+        description: 主机状态
+        title: Link Status
+        type: string
+      name:
+        description: 主机名称
+        minLength: 1
+        title: Name
+        type: string
+      os_type:
+        description: 主机操作系统类型
+        title: Os Type
+        type: string
+      port:
+        description: 主机端口号
+        title: Port
+        type: string
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+    required:
+      - name
+    title: HostDetail
+    type: object
+  UpdateClientQueryResponse:
+    properties:
+      host_infos:
+        description: 主机可升级信息列表
+        items:
+          $ref: '#/definitions/host_info'
+        title: Items
+        type: array
+    title: UpdateClientQueryResponse
+    required:
+      - host_infos
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+  client_update_count:
+    type: integer
+    format: int32
+    description: 可升级主机的数量
+  host_info:
+    properties:
+      uuid:
+        type: string
+        description: 主机uuid
+      currentVersion:
+        type: string
+        description: 当前版本
+      upgradeable:
+        type: boolean
+        description: 是否可升级
+      upgradeableVersion:
+        type: string
+        description: 可升级的版本
+    description: 主机升级信息
+  HostMigrationReq:
+    description: 迁移主机信息
+    properties:
+      hostId:
+        type: string
+        description: 主机ID
+      hostUserName:
+        type: string
+        description: 主机用户名
+      hostPassword:
+        type: string
+        description: 主机密码
+      sshMacs:
+        type: string
+        description: 消息签名算法
+    required:
+      - hostId
+      - hostUserName
+      - hostPassword
+    type: object
+  MigrationReq:
+    description: 迁移主机请求体
+    properties:
+      targetClusterId:
+        type: integer
+        format: int32
+        description: 目标集群ID
+      hostMigrateReq:
+        type: array
+        items:
+          $ref: '#/definitions/HostMigrationReq'
+        description: 迁移主机请求体
+    required:
+      - targetClusterId
+      - hostMigrateReq
+    type: object
+x-components: {}

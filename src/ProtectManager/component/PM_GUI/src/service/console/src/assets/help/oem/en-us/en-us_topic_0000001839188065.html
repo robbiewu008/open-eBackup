@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Adding Object Storage (When the Archive Storage Is Object Storage)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839267981.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001839188065">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Adding Object Storage (When the Archive Storage Is Object Storage)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001839188065"></a><a name="EN-US_TOPIC_0000001839188065"></a>
+  <h1 class="topictitle1">Adding Object Storage (When the Archive Storage Is Object Storage)</h1>
+  <div>
+   <p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_p52126361762">This section describes how to add the object storage to the <span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text6373157110">product</span> when the archive storage is object storage. If the archive storage is not the object storage, skip this section.</p>
+   <div class="section" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_section095013491921">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_ul178191952428">
+     <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_li14575162214910">An object storage platform for storing archive copies is ready.</li>
+     <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_li481975212211">The archive network of the <span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text665316153118">product</span> has been configured and is properly connected to the object storage network.<p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_p384812502382">If the archive network is not configured, configure it by referring to "Configuring the Archive Network" in the <em id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_i1235312617150">Administrator Guide</em>.</p></li>
+     <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_li1131331410417">You have obtained the access address and AK/SK of the object storage platform.</li>
+     <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_li77996192310">You have created a data bucket for storing archived data and an index bucket for storing index data on the object storage platform.<p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_p32071347111"><a name="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_li77996192310"></a><a name="en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_li77996192310"></a>To ensure data security, create a private bucket that can be used only by the <span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text12943166117">product</span>. Otherwise, archived data may be illegally intercepted or tampered with.</p></li>
+    </ul>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_section75671340155713">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_p8402653814">When OceanStor Pacific 8.1.0, 8.1.1, or 8.1.2, is used as the archive storage or when OceanStor Pacific 8.1.3 or later is used as the archive storage and copies are archived to a protocol-interworking bucket of OceanStor Pacific, the following restrictions exist:</p>
+    <ul id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_ul573914291315">
+     <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_li139357464311">If the <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b642012497103">/index</strong> directory exists in a copy, the copy cannot be archived.</li>
+     <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_li77082168420">If a copy contains directories and files with the same name, the copy cannot be archived.</li>
+    </ul>
+    <div class="note" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_note20972934371">
+     <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+     <div class="notebody">
+      <p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_p1497273419714">The preceding restrictions do not apply when the archive storage is OceanStor Pacific 8.1.3 or later and data is archived to native buckets of OceanStor Pacific.</p>
+     </div>
+    </div>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_section52524211528">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_ol283013814525">
+     <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_li1570821013536"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_uicontrol123381932135316"><b><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_text3591711162920">System</span> &gt; <span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_text134875310309">Infrastructure</span> &gt; <span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text102788238478"><strong>Archive Storage Library</strong></span></b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_li12591123311535"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_uicontrol1645154510534"><b><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_text86201938181211"><strong>Add Archive Storage</strong></span></b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_li1610184685311"><span>Set archive storage parameters.</span><p></p><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p12530163195410"><a href="#EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_table882518171549">Table 1</a> describes the related parameters.</p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_table882518171549"></a><a name="en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_table882518171549"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_table882518171549" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Archive storage parameters
+        </caption>
+        <colgroup>
+         <col style="width:28.060000000000002%">
+         <col style="width:71.94%">
+        </colgroup>
+        <thead align="left">
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_row6825101755413">
+          <th align="left" class="cellrowborder" valign="top" width="28.060000000000002%" id="mcps1.3.4.2.3.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p1882561745418">Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="71.94%" id="mcps1.3.4.2.3.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p138251617165410">Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_row0825717175418">
+          <td class="cellrowborder" valign="top" width="28.060000000000002%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p182501711541"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_text19417155115434"><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.94%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p188251417125412">Name of an archive storage, which is customized.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_row9825817155415">
+          <td class="cellrowborder" valign="top" width="28.060000000000002%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p982514173546"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_text1019519984413"><strong>Type</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.94%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_p78135111238">Type of the archive storage.</p>
+           <div class="note" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_note779155122314">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_p1779165119232">For 1.5.0 and earlier versions, only S3-compliant object storage is supported.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_row14825181765414">
+          <td class="cellrowborder" valign="top" width="28.060000000000002%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p10825117195414"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_text1243112110499"><strong>Object Storage Product</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.94%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p923516500567">Object storage product connected to the <span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text79171016611">product</span>.</p> <p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p12825171719548">OceanStor Pacific, OceanStor 100D (FusionStorage OBS), Huawei Cloud OBS, and AWS S3 are supported.</p>
+           <div class="note" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_note1974231411323">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_p67421714193211">If OceanStor Pacific is selected, you need to log in to DeviceManager of OceanStor Pacific by referring to <a href="en-us_topic_0000001913343113.html">Logging In to DeviceManager</a> and perform the following operations to enable V2 authentication: choose <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b6878426463">Settings</strong> &gt; <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b1287812104613">Object Service Settings</strong> &gt; <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b1087952144612">Security Settings</strong>, and on the displayed <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b1987914212464">Security Access Policy</strong> tab page, click <span><img id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_image15526238163619" src="en-us_image_0000001913326545.png"></span> to the right of <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b1487916210462">Enable V2 Authentication</strong>.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_row198254170544">
+          <td class="cellrowborder" valign="top" width="28.060000000000002%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p168252017125411"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_text29903204512"><strong>Endpoint</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.94%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p128251917185412">Access address of an archive storage.</p> <p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p173071017581">Address format: domain name or service plane IP address of an archive storage.</p>
+           <div class="note" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_note1925515466491">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_p9811174714918">If the access address of archive storage is in domain name format, configure the DNS service by referring to "(Optional) Configuring DNS" in the <em id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_i378763311614">Installation Guide</em> to support domain name resolution.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_row1382591720548">
+          <td class="cellrowborder" valign="top" width="28.060000000000002%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p12825217115410"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_text18645172214519"><strong>Protocol</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.94%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p125736161155">Protocol used for data transmission between the <span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text204859171314">product</span> and archive storage.</p>
+           <ul id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_ul5259155791216">
+            <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_li457514241144">When HTTPS is used, ensure that the imported CA certificate is a complete certificate chain file. For details, see "Creating a Certificate Chain File" in the <em id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_i134428532151">Security Configuration Guide</em>.</li>
+            <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_li132592572127">When HTTPS is used, import a valid certificate so that the <span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text0616181116">product</span> can verify the archive storage information. Obtain the certificate from the archive storage administrator in advance.<p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_p7259257161217">For details about how to import a certificate, see <span class="parmvalue" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_parmvalue159703379417"><b>Importing a Certificate</b></span> in the <em id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_i68980064217"></em><em id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_i15301346111612">Security Configuration Guide</em>.</p></li>
+            <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_li725917571122">When HTTP is used, the <span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text962916181513">product</span> cannot verify the archive storage environment information, which poses security risks. You are advised to select <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_b171271641182415">HTTPS</strong> for security purposes.</li>
+           </ul>
+           <div class="note" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_note639016213711">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_p163906212371">If <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b591882513466">HTTP</strong> is selected, you need to log in to DeviceManager of OceanStor Pacific by referring to <a href="en-us_topic_0000001913343113.html">Logging In to DeviceManager</a> and perform the following operations to enable HTTP: choose <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b1791852544610">Settings</strong> &gt; <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b3918102512462">Object Service Settings</strong> &gt; <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b39191125164613">Security Settings</strong>, and on the displayed <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b1991972514614">Security Access Policy</strong> tab page, click <span><img id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_image1983429173713" src="en-us_image_0000001913630121.png"></span> to the right of <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b6919132519462">Enable HTTP</strong>.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_row1519712471274">
+          <td class="cellrowborder" valign="top" width="28.060000000000002%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_p141981447142712"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text1949283213281"><strong>Certificate</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.94%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_p414974813258">If HTTPS is used, select a certificate whose <span class="parmname" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_parmname1565451813310"><b><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text1965471817339"><strong>Type</strong></span></b></span> is <span class="parmvalue" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_parmvalue126551318153318"><b><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text365501843314"><strong>Object Storage</strong></span></b></span> for verifying archive storage environment information.</p>
+           <div class="note" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_note1234045574316">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_p83404556439">You can view the certificate <span class="parmname" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_parmname187619304617"><b><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text376133204613"><strong>Type</strong></span></b></span> in <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b2297155652818"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text0962112614619"><strong>System</strong></span></strong> &gt; <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b15704205422817"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text48221738104613"><strong>Security</strong></span></strong> &gt; <strong id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_b68055313281"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text951845174610"><strong>Certificate</strong></span></strong>.</p>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_row382513179543">
+          <td class="cellrowborder" valign="top" width="28.060000000000002%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p158251817175415"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_text933693974517"><strong>AK</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.94%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p17825111718547">Access certificate for accessing the object storage.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_row16825317165419">
+          <td class="cellrowborder" valign="top" width="28.060000000000002%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p198251217185417"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_text4956173184617"><strong>SK</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.94%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p28251917125419">Security certificate for accessing the object storage.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_row062236145512">
+          <td class="cellrowborder" valign="top" width="28.060000000000002%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p662315615557"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_text106678506497"><strong>Data bucket</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.94%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p1562320617552">Name of the bucket that stores archived data.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_row18517121212557">
+          <td class="cellrowborder" valign="top" width="28.060000000000002%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p1751712122551"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_text15666191165019"><strong>Index bucket</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.94%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p7231042134010">Name of the bucket that stores index data.</p></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_row171331019155511">
+          <td class="cellrowborder" valign="top" width="28.060000000000002%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p81331619135516"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_text71101614155010"><strong>Use Proxy Server</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.94%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p1613351925514">When the <span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_text817911913117">product</span> uses an agent server to access the archive storage, configure the address, username, and password of the agent server.</p>
+           <div class="note" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_note7274112919359">
+            <span class="notetitle"> NOTE: </span>
+            <div class="notebody">
+             <ul id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_ul1978153911371">
+              <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_li1576175218284">If an agent server is required, ensure that the maximum size of the request body allowed by the agent server is greater than 100 MB.</li>
+              <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_li79785398379">The agent server supports only the HTTP protocol. The address format is http://<em id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_i4493125681117">Agent server IP address</em>:<em id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_i1130830181211">Port number</em>.</li>
+             </ul>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_row178881731125511">
+          <td class="cellrowborder" valign="top" width="28.060000000000002%" headers="mcps1.3.4.2.3.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p588833115555"><span id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_text955612110513"><strong>Capacity Alarm Threshold</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="71.94%" headers="mcps1.3.4.2.3.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_p456631810516">Upper threshold of the used capacity of a bucket. When the used capacity reaches the threshold, an alarm is reported.</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_en-us_topic_0000001125223205_li177221337123417"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001839188065__en-us_topic_0000001839223177_en-us_topic_0000001132896521_uicontrol1158714461270"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001839267981.html">Step 1: Adding Archive Storage</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

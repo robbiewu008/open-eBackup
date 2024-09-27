@@ -1,0 +1,54 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Performing Periodic Backup">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001851882641.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001851802709">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Performing Periodic Backup</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001851802709"></a><a name="EN-US_TOPIC_0000001851802709"></a>
+
+<h1 class="topictitle1">Performing Periodic Backup</h1>
+<div><p>After the clusters, hosts, or VMs to be protected are associated with a specified SLA, the system periodically backs up the clusters, hosts, or VMs based on the SLA.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>If a VM whose SLA is inconsistent with that of the cluster or host, the VM will not initiate a backup job.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001851802709__en-us_topic_0000001839142377_uicontrol14456431877"><b><span id="EN-US_TOPIC_0000001851802709__en-us_topic_0000001839142377_text134457431679"><strong>Protection</strong></span> &gt; Virtualization &gt; CNware</b></span>.</span></li></ol><ol start="2"><li><span>Select the clusters, VMs, or hosts to be protected.</span><p><ol type="a"><li>In the left pane, select the registered CNware virtualization platform.</li><li>In the right pane, click the <span class="uicontrol"><b><span><strong>Clusters</strong></span></b></span>, <span class="uicontrol"><b><span><strong>Hosts</strong></span></b></span>, or <span class="uicontrol"><b><span><strong>VMs</strong></span></b></span> tab, and select one or more clusters, hosts, or VMs to be protected.<ul><li>If you select a host, the system will protect all VMs on the host.</li><li>If you select a cluster, the system will protect all VMs in the cluster.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>A maximum of 1,000 CNware VMs can be protected in a batch.</p>
+</div></div>
+</li></ul>
+</li></ol>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>Protect</strong></span></b></span>.</span></li><li><span>If you select a VM, you can determine whether to enable automatic protection for disks. If automatic protection for disks is enabled, all disks (including newly detected disks) of the VM will be protected. If automatic protection for disks is disabled, manually select disks to be protected.</span></li><li><span>Choose a preset or user-defined SLA.</span><p><p>You can also click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> to create an SLA.</p>
+</p></li><li><span>Configure advanced settings based on the protected object.</span><p><ul><li>If you select one or more VMs to protect, select an agent host. The system automatically selects an agent host by default.</li><li>If you select one or multiple hosts or clusters to protect, you can view or configure the following parameters:<ol type="a"><li>Choose whether to overwrite the existing VM SLAs.<ul><li><span class="uicontrol"><b><span><strong>Overwrite existing VM SLAs</strong></span></b></span>: If this option is selected, VMs in a cluster or host use the same SLA as the cluster or host.</li><li><span class="uicontrol"><b><span><strong>Do not overwrite existing VM SLAs</strong></span></b></span>: This option is selected by default. If this option is selected, the existing SLAs of VMs in a cluster or host will not be overwritten.</li></ul>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>You can configure an SLA overwriting policy only when you create protection for a cluster or host for the first time. The policy cannot be modified later.</p>
+</div></div>
+</li><li>You can choose one or more options from the following to apply the SLA:<ul><li>Applies the SLA policy to all VMs without SLA associated on the selected host.</li><li>Applies the SLA policy to newly created VMs.<p>After the virtualization environment is scanned, the newly discovered VMs are associated with the same SLA as the host.</p>
+</li></ul>
+</li><li>You can specify the VMs to be excluded or included in the protection plan.<p>You can specify the VMs to be excluded or included based on VM names.</p>
+<p>The option supports exact match and fuzzy match of VM names. Fuzzy match rules include prefix match (for example, abc*), suffix match (for example, *abc), and middle match (for example, *abc*).</p>
+</li></ol>
+</li></ul>
+</p></li><li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001851802709__en-us_topic_0000001792503842_uicontrol196538515235"><b>OK</b></span>. </span><p><p id="EN-US_TOPIC_0000001851802709__en-us_topic_0000001792503842_p25041111535">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001851882641.html">Step 7: Performing Backup</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Installing ProtectAgent (Manual Mode, Applicable to the Windows OS)">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001839189353">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Installing ProtectAgent (Manual Mode, Applicable to the Windows OS)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001839189353"></a><a name="EN-US_TOPIC_0000001839189353"></a>
+  <h1 class="topictitle1">Installing ProtectAgent (Manual Mode, Applicable to the Windows OS)</h1>
+  <div>
+   <p>You need to install the ProtectAgent software on agent hosts. ProtectAgent functions as the agent between the <span id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189365_text1368810101119">product</span> and protected resources to back up and restore data. This section describes how to log in to the background of the agent host and install ProtectAgent on it.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p>The language for installing ProtectAgent, OceanProtect, and the agent host OS must be the same. Otherwise, information may be displayed in multiple languages or as garbled characters on ProtectAgent or OceanProtect. In this case, reinstall ProtectAgent and OceanProtect with the same language or change the OS language.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Download the ProtectAgent software package.</span><p></p>
+      <ol type="a">
+       <li>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839142377_uicontrol08941439165212"><b><span id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839142377_text22651956143811"><strong>Protection</strong></span> &gt; Clients</b></span>.</li>
+       <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_li16856140134313"><a name="EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_li16856140134313"></a><a name="en-us_topic_0000001143474500_li16856140134313"></a>Click <span class="uicontrol"><b><span><span><strong>ProtectAgent Package Management</strong></span></span></b></span> and set related parameters.<p><a href="#EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_table9849105916553">Table 1</a> describes the parameters.</p>
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_table9849105916553"></a><a name="en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_table9849105916553"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_table9849105916553" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 1 </b>Parameters related to ProtectAgent
+          </caption>
+          <colgroup>
+           <col style="width:33.57%">
+           <col style="width:66.43%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="33.57%" id="mcps1.3.3.2.1.2.1.2.3.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="66.43%" id="mcps1.3.3.2.1.2.1.2.3.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="33.57%" headers="mcps1.3.3.2.1.2.1.2.3.2.3.1.1 "><p><span><strong>Mode</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="66.43%" headers="mcps1.3.3.2.1.2.1.2.3.2.3.1.2 "><p>Choose <span class="uicontrol"><b><span>Download</span></b></span>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="33.57%" headers="mcps1.3.3.2.1.2.1.2.3.2.3.1.1 "><p><span><strong>Agent Type</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="66.43%" headers="mcps1.3.3.2.1.2.1.2.3.2.3.1.2 "><p>Choose <span class="uicontrol"><b><span><strong>General backup agent</strong></span></b></span>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="33.57%" headers="mcps1.3.3.2.1.2.1.2.3.2.3.1.1 "><p><span><strong>OS</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="66.43%" headers="mcps1.3.3.2.1.2.1.2.3.2.3.1.2 "><p>Choose <span class="uicontrol"><b><span>Windows</span></b></span>.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="33.57%" headers="mcps1.3.3.2.1.2.1.2.3.2.3.1.1 "><p><span><strong>Application Type</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="66.43%" headers="mcps1.3.3.2.1.2.1.2.3.2.3.1.2 "><p>Select an application type that can be protected by the agent host.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="33.57%" headers="mcps1.3.3.2.1.2.1.2.3.2.3.1.1 "><p><span><strong>Private Key Password</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="66.43%" headers="mcps1.3.3.2.1.2.1.2.3.2.3.1.2 "><p>User-defined private key password. Enter a password according to the complexity requirements prompted.</p> <p>The private key password is used to encrypt the private key file in the ProtectAgent software package. The private key file is used for authentication between the agent host and <span>product</span>. Keep the private key password secure for future use during installation.</p>
+             <div class="note">
+              <span class="notetitle"> NOTE: </span>
+              <div class="notebody">
+               <p>After you enter the private key password, the <span>product</span> uses the password to encrypt the private key file in the ProtectAgent software package.</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="33.57%" headers="mcps1.3.3.2.1.2.1.2.3.2.3.1.1 "><p><span><strong>Confirm Private Key Password</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="66.43%" headers="mcps1.3.3.2.1.2.1.2.3.2.3.1.2 "><p>Enter the private key password again.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>Click <span class="uicontrol"><b><span>OK</span></b></span>.<p>Obtain the downloaded ProtectAgent software package.</p> <p>If you fail to download the ProtectAgent package using Internet Explorer 11 on the Windows Server, refer to <a href="en-us_topic_0000001792550016.html">What If I Failed to Download ProtectAgent Using Internet Explorer 11 on the Windows Server?</a>.</p></li>
+      </ol> <p></p></li>
+     <li><span>Ensure that the time on the hosts is consistent with that on the <span>product</span>. </span></li>
+     <li><span>Install ProtectAgent. </span><p></p>
+      <ol type="a">
+       <li>Log in to the host where ProtectAgent needs to be installed as <strong>Administrator</strong>.</li>
+       <li>Upload the ProtectAgent software package to the host and decompress it.
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>The software package name must not contain any space. Otherwise, ProtectAgent installation will fail.</p>
+         </div>
+        </div></li>
+       <li>Go to the software package directory and install the software.
+        <ol class="substepthirdol">
+         <li>To specify the service IP address used for registration, perform this step. Otherwise, go to <a href="#EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_li14880301717">3.c.ii</a>.
+          <ol>
+           <li>Go to the <strong>..\DataProtect_</strong><strong><em>xxx</em></strong><strong>_client_general_windows\DataProtect_</strong><strong><em>xxx</em></strong><strong>_client_general_windows\conf</strong> directory, where <em>xxx</em> indicates the ProtectAgent version.</li>
+           <li>Open the <strong>client.conf</strong> file and add <strong>eip=</strong><strong><em>XXX.XXX.XXX.XXX</em></strong> to the end of the file, where <em>XXX.XXX.XXX.XXX</em> is the service IP address used for registration.</li>
+          </ol></li>
+         <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_li14880301717"><a name="EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_li14880301717"></a><a name="en-us_topic_0000001143474500_en-us_topic_0000001142182722_en-us_topic_0000001084775528_li14880301717"></a>Install the software.
+          <ol>
+           <li>Go to the <strong>..\DataProtect_</strong><strong><em>xxx</em></strong><strong>_client_general_windows\DataProtect_</strong><strong><em>xxx</em></strong><strong>_client_general_windows</strong> directory, where <em>xxx</em> indicates the ProtectAgent version.</li>
+           <li>Double-click <span class="uicontrol"><b>install.bat</b></span> and install the software as prompted.
+            <ol type="a">
+             <li>When the following information is displayed, enter the installation directory of the ProtectAgent software as prompted: If you press <span class="uicontrol"><b>Enter</b></span> without entering any information, the software is installed in <span class="filepath"><b>C:</b></span> by default.<pre class="screen">"You need to enter the installation path (directly press 'Enter' use default installation path C:)."
+Please enter custom install path:</pre></li>
+             <li>If information similar to the following is displayed, ensure that the host time is the same as the <span>product</span> device time and enter <span class="parmvalue"><b>y</b></span>:<pre class="screen">The current host time and time zone are Thu 08/17/2023 17:17:34.87. Check whether the time and time zone are the same as those on DataBackup time:(y|n):
+Your choice:</pre></li>
+             <li>When the following information is displayed, enter the private key password set in <a href="#EN-US_TOPIC_0000001839189353__en-us_topic_0000001143474500_li16856140134313">1.b</a>:<pre class="screen">Please enter the private key password set on ProtectManager, you still have 3 chances:
+Enter password:</pre></li>
+             <li>When the following information is displayed, set the password of user <strong>rdadmin</strong>:<pre class="screen">Add User rdadmin Enter password:</pre></li>
+             <li>(For 1.6.0 and later versions) When the following information is displayed on, determine whether to enable source deduplication.<pre class="screen">Whether enable dataturbo service:(y|n):
+Your choice:</pre> <p>If you enter <span class="parmvalue"><b>y</b></span>, source deduplication is enabled. Ensure that the free memory of the agent host is greater than 2 GB. The system will automatically install the OceanStor DataTurbo client. For details about the OSs that support source deduplication, refer to <a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">Compatibility Query Tool</a>.</p> <p>If you enter <span class="parmvalue"><b>n</b></span>, source deduplication is disabled. You can also manually install the OceanStor DataTurbo client after ProtectAgent is installed. For details, see <a href="en-us_topic_0000001936780456.html">Installing the OceanStor DataTurbo Client (Applicable to 1.6.0 and Later Versions)</a>.</p>
+              <div class="note">
+               <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+               <div class="notebody">
+                <p id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001936780456_p1942121419116">After source deduplication is enabled, add the source deduplication user to <strong id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001936780456_b13787183405016">sudoers</strong> before the first backup. For details, see <a href="en-us_topic_0000001792390228.html">How Should I Add a Source Deduplication User to sudoers?</a>.</p>
+               </div>
+              </div></li>
+            </ol> <p>If the following command output is displayed, ProtectAgent is installed successfully:</p> <pre class="screen">The DataBackup ProtectAgent has been installed successfully.</pre></li>
+          </ol></li>
+        </ol></li>
+      </ol> <p></p></li>
+     <li><span>After ProtectAgent is installed on the host, OceanProtect automatically discovers the host. Perform the following steps to check the result. </span><p></p>
+      <ol type="a">
+       <li>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839142377_uicontrol08941439165212_1"><b><span id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839142377_text22651956143811_1"><strong>Protection</strong></span> &gt; Clients</b></span>.</li>
+       <li>Check whether the host where ProtectAgent has been installed is available on OceanProtect.</li>
+      </ol> <p></p></li>
+    </ol>
+    <ol start="5">
+     <li><span>Repeat the preceding steps to install the ProtectAgent software on other agent hosts.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189313_ul123173916548">
+         <li id="EN-US_TOPIC_0000001839189353__en-us_topic_0000001839189313_li323123995417">After the agent host is registered successfully, wait for 5 minutes and then use the agent host.</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

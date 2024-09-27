@@ -1,0 +1,260 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ 'protection_instance_type_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="type" [lvGroupName]="'typeGroup'">
+                <lv-group [lvGutter]="'24px'">
+                    <lv-radio [lvValue]="dataMap.Resource_Type.MongodbSingleInstance.value" [lvDisabled]="!!rowItem">
+                        {{ 'protection_single_instance_label' | i18n }}
+                    </lv-radio>
+                    <lv-radio [lvValue]="dataMap.Resource_Type.MongodbClusterInstance.value" [lvDisabled]="!!rowItem">
+                        {{ 'protection_cluster_instance_label' | i18n }}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ 'common_name_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input type="text" formControlName="name" />
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.type === dataMap.Resource_Type.MongodbSingleInstance.value; else elseTemplate">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_host_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="agent" [lvOptions]="proxyOptions" lvValueKey="value"
+                    [lvDisabled]="!!rowItem" lvShowFilter lvFilterKey='label' lvFilterMode='contains'>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_port_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="portErrorTip">
+                <input lv-input type="text" formControlName="port" placeholder="1~65535" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'protection_auth_method_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="authMethod" [lvOptions]="authOptions" lvValueKey="value">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="formGroup.value.authMethod === dataMap.Postgre_Auth_Method.db.value">
+            <lv-form-item>
+                <lv-form-label lvRequired>
+                    {{'common_database_user_name_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="dbErrorTip">
+                    <input lv-input type="text" formControlName="databaseUsername" autocomplete="new-password" />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label lvRequired>
+                    {{ 'common_database_password_label' | i18n }}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="dbErrorTip">
+                    <aui-inupt-with-eye formControlName="databasePassword"></aui-inupt-with-eye>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_db_install_path_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_db_install_path_help_label' | i18n}}"
+                    lvTooltipTheme="light" lvColorState='true' class="configform-constraint"></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="pathErrorTip">
+                <input lv-input type="text" formControlName="binPath" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_db_tool_install_path_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_db_tool_install_path_help_label' | i18n}}"
+                    lvTooltipTheme="light" lvColorState='true' class="configform-constraint"></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="pathErrorTip">
+                <input lv-input type="text" formControlName="mongodumpBinPath" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_log_backup_label' | i18n }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_mongo_register_single_type_tips_label' | i18n}}"
+                   lvTooltipTheme="light" lvColorState='true' class="configform-constraint"></i>
+            </lv-form-label>
+            <lv-form-control>
+                <lv-switch formControlName="logBackup" [lvControl]="true" (click)="switchLogBackupStatus()"></lv-switch>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-template #elseTemplate>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'protection_cluster_type_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="clusterType" [lvOptions]="clusterTypeOptions" lvValueKey="value"
+                    [lvDisabled]="!!rowItem">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-group [lvGutter]="'4px'" class="add-node aui-gutter-column-sm">
+            <span class="required">*</span>
+            <h3>{{'protection_statefulset_node_label' | i18n}}</h3>
+        </lv-group>
+        <div class="node-add-container">
+            <lv-group lvGutter='8px' class="aui-gutter-column-md">
+                <button lv-button [disabled]="!nodesConfig.length" (click)="batchPath(configPathEnum.dbPath)">
+                    {{'protection_batch_config_db_install_path_label' | i18n}}
+                </button>
+                <button lv-button [disabled]="!nodesConfig.length" (click)="batchPath(configPathEnum.dbToolPath)">
+                    {{'protection_batch_config_db_tool_install_path_label' | i18n}}
+                </button>
+            </lv-group>
+            <div formArrayName="nodesConfig" class="node-panel-container">
+                <lv-collapse>
+                    <ng-container *ngFor="let item of nodesConfig; let i=index">
+                        <lv-collapse-panel [lvId]="i" [lvTitle]="titleTpl" [lvExtra]="opTpl"
+                            [lvExpanded]="!rowItem?.uuid">
+                            <div [formGroupName]="i">
+                                <lv-form-item>
+                                    <lv-form-label lvRequired>
+                                        {{ 'common_host_label' | i18n }}
+                                    </lv-form-label>
+                                    <lv-form-control>
+                                        <lv-select formControlName="nodeHost" [lvOptions]="nodeProxyOptions"
+                                            [lvDisabled]="rowItem?.uuid" lvValueKey="value" lvShowFilter
+                                            lvFilterKey='label' lvFilterMode='contains'>
+                                        </lv-select>
+                                    </lv-form-control>
+                                </lv-form-item>
+                                <lv-form-item>
+                                    <lv-form-label lvRequired>
+                                        {{ 'common_port_label' | i18n }}
+                                    </lv-form-label>
+                                    <lv-form-control [lvErrorTip]="portErrorTip">
+                                        <input lv-input type="text" formControlName="nodePort" placeholder="1~65535" />
+                                    </lv-form-control>
+                                </lv-form-item>
+                                <lv-form-item>
+                                    <lv-form-label lvRequired>
+                                        {{ 'protection_auth_method_label' | i18n }}
+                                    </lv-form-label>
+                                    <lv-form-control>
+                                        <lv-select formControlName="nodeAuth" [lvOptions]="authOptions"
+                                            lvValueKey="value">
+                                        </lv-select>
+                                    </lv-form-control>
+                                </lv-form-item>
+                                <ng-container
+                                    *ngIf="item.get('nodeAuth').value === dataMap.Postgre_Auth_Method.db.value">
+                                    <lv-form-item>
+                                        <lv-form-label lvRequired>
+                                            {{'common_database_user_name_label' | i18n}}
+                                        </lv-form-label>
+                                        <lv-form-control [lvErrorTip]="dbErrorTip">
+                                            <input lv-input type="text" formControlName="nodeDatabaseUsername"
+                                                autocomplete="new-password" />
+                                        </lv-form-control>
+                                    </lv-form-item>
+                                    <lv-form-item>
+                                        <lv-form-label lvRequired>
+                                            {{ 'common_database_password_label' | i18n }}
+                                        </lv-form-label>
+                                        <lv-form-control [lvErrorTip]="dbErrorTip">
+                                            <aui-inupt-with-eye
+                                                formControlName="nodeDatabasePassword"></aui-inupt-with-eye>
+                                        </lv-form-control>
+                                    </lv-form-item>
+                                </ng-container>
+                                <lv-form-item>
+                                    <lv-form-label>
+                                        {{'protection_db_install_path_label' | i18n}}
+                                        <i lv-icon="aui-icon-help"
+                                            lv-tooltip="{{'protection_db_install_path_help_label' | i18n}}"
+                                            lvTooltipTheme="light" lvColorState='true'
+                                            class="configform-constraint"></i>
+                                    </lv-form-label>
+                                    <lv-form-control [lvErrorTip]="pathErrorTip">
+                                        <input lv-input type="text" formControlName="nodeBinPath" />
+                                    </lv-form-control>
+                                </lv-form-item>
+                                <lv-form-item>
+                                    <lv-form-label>
+                                        {{'protection_db_tool_install_path_label' | i18n}}
+                                        <i lv-icon="aui-icon-help"
+                                            lv-tooltip="{{'protection_db_tool_install_path_help_label' | i18n}}"
+                                            lvTooltipTheme="light" lvColorState='true'
+                                            class="configform-constraint"></i>
+                                    </lv-form-label>
+                                    <lv-form-control [lvErrorTip]="pathErrorTip">
+                                        <input lv-input type="text" formControlName="nodeMongodumpBinPath" />
+                                    </lv-form-control>
+                                </lv-form-item>
+                            </div>
+                        </lv-collapse-panel>
+                        <ng-template #titleTpl>
+                            <lv-group lvGutter='8px' [lvColumns]='["60px", "220px", "auto"]' class="group-title">
+                                <span class="node-name">{{'protection_node_label' | i18n}}#{{i+1}}</span>
+                                <lv-group lvGutter='4px'>
+                                    <span class="collapse-custom-title">{{ 'common_host_label' | i18n }}:</span>
+                                    <span lv-overflow class="node-host-warp collapse-custom-title">
+                                        {{_find(nodeProxyOptions, {value: item.get('nodeHost').value})?.endpoint
+                                        | nil}}
+                                    </span>
+                                </lv-group>
+                                <lv-group lvGutter='4px'>
+                                    <span class="collapse-custom-title">{{ 'common_port_label' | i18n }}:</span>
+                                    <span lv-overflow class="node-port-warp collapse-custom-title">
+                                        {{item.get('nodePort').value | nil}}
+                                    </span>
+                                </lv-group>
+                            </lv-group>
+                        </ng-template>
+                        <ng-template #opTpl>
+                            <lv-group lvGutter='8px'>
+                                <span class="title-auth" lv-overflow *ngIf="item.get('nodeAuth').value !== ''">
+                                    {{item.get('nodeAuth').value | textMap: 'Postgre_Auth_Method'}}
+                                </span>
+                                <span class="aui-link" (click)="deleteNode(i)" *ngIf="!rowItem?.uuid">
+                                    {{'common_delete_label' | i18n}}
+                                </span>
+                            </lv-group>
+                        </ng-template>
+                    </ng-container>
+                </lv-collapse>
+            </div>
+            <lv-group lvGutter='8px' class="add-group aui-link" (click)="addNode()" *ngIf="!rowItem?.uuid">
+                <i lv-icon="aui-icon-add-enable"></i>
+                <span class="text-middle">{{'common_add_label' | i18n}}</span>
+            </lv-group>
+        </div>
+    </ng-template>
+</lv-form>

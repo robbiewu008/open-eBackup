@@ -1,0 +1,152 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+  <div class="aui-header-1">
+    <lv-group lvGutter='8px'>
+      <h1>{{'common_management_data_backup_label' | i18n}}</h1>
+      <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+    </lv-group>
+  </div>
+  <div class="aui-block aui-paginator-container">
+    <div class="aui-header-2">
+      <h2>{{'common_backup_policy_label' | i18n}}</h2>
+    </div>
+    <p class="aui-text-help-sm aui-gutter-column-md">
+      <lv-group [lvGutter]="'8px'">
+        <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
+        <span>{{'system_backup_tip_label' | i18n}}</span>
+      </lv-group>
+    </p>
+
+    <lv-form class="aui-gutter-column-xl">
+      <lv-form-column>
+        <lv-form-item>
+          <lv-form-label>{{'system_backup_dest_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            <span lv-overflow class="sys-backup-path-warp">
+              {{policyData.destPath | nil}}
+            </span>
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form-column>
+      <lv-form-column lvWidth="20%">
+        <lv-form-item>
+          <lv-form-label>{{'system_launch_time_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            {{policyData.backupTime ? (policyData.backupTime | date: 'HH:mm') : '--' }}
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form-column>
+      <lv-form-column lvWidth="20%">
+        <lv-form-item>
+          <lv-form-label>{{'system_max_self_backup_label' | i18n}}</lv-form-label>
+          <lv-form-control>
+            {{!policyData.keepCount ? '--' : policyData.keepCount}}
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form-column>
+    </lv-form>
+
+    <div class="aui-operation">
+      <lv-group [lvGutter]="groupCommon.middleRowGutter">
+        <button lv-button lvType='primary' (click)="policyConfig()" pmpermission pmOperation='ModifyingBackupPolicy'>
+          {{'common_backup_policy_label' | i18n}}
+        </button>
+        <lv-tooltip [lvContent]="manualBackupBtnTip">
+          <button lv-button (click)="manualBackup()" pmpermission pmOperation='ManuallyBackup'
+            [disabled]="_isEmpty(policyData) || !(policyData.destPath && policyData.backupTime && !!policyData.keepCount)">
+            {{'common_manual_backup_label' | i18n}}
+          </button>
+        </lv-tooltip>
+        <button lv-button (click)="importBackup()" pmpermission pmOperation='ImportingBackup'>
+          {{'system_backup_import_label' | i18n}}
+        </button>
+        <button lv-button (click)="connectTest()" pmpermission pmOperation='ImportingBackup'
+          [disabled]="validConnectDisabled">
+          {{'protection_connectivity_test_label' | i18n}}
+        </button>
+      </lv-group>
+      <lv-group>
+        <button class="aui-button-icon" lv-button lvSize="auto" (click)="getBackupDatas()">
+          <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+        </button>
+      </lv-group>
+    </div>
+
+    <lv-datatable [lvData]='backupData' (lvSortChange)="sortChange($event)" [lvPaginator]="page" lvSort #lvTable lvAsync
+      [lvScroll]="{ x: '100%' }" lvResizeMode="expand" lvResize>
+      <thead>
+        <tr>
+          <ng-container *ngFor="let col of columns">
+            <th [lvShowFilter]="col.filter" (lvFilterChange)="filterChange($event)" [(lvFilters)]="col.filterMap"
+              lvCellKey="{{ col.key }}" [lvShowSort]="col.showSort" lvShowCustom lvFilterCheckAll>
+              {{col.label}}
+            </th>
+          </ng-container>
+          <th width='144px'>
+            {{'common_operation_label' | i18n}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of lvTable.renderData;trackBy:trackById">
+          <tr>
+            <ng-container *ngFor="let col of columns">
+              <td>
+                <ng-container [ngSwitch]="col.key">
+                  <ng-container *ngSwitchCase="'backupTime'">
+                    {{item.backupTime | date: 'yyyy-MM-dd HH:mm:ss'}}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'backupType'">
+                    {{item.backupType | textMap: 'System_Backup_Type'}}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'status'">
+                    <lv-group lvGutter="5px">
+                      <aui-status [value]='item.status' type='System_Backup_Status'></aui-status>
+                      <ng-container *ngIf="[backupStatus.backupFailed.value, backupStatus.restoreFailed.value
+                        , backupStatus.invalid.value].includes(item.status) && item.backupErrorcode">
+                        <i lv-icon="aui-icon-reasons" [lvColorState]="true" lvTooltipTheme="light"
+                          lvTooltipPosition="right" [lv-tooltip]="errorCodeTpl"></i>
+                        <ng-template #errorCodeTpl>
+                          <span
+                            [innerHTML]="item.backupErrorcode | i18n:[item.backupErrorcode === '1677934085' && _isArray(item.backupErrorParameter) ? item.backupErrorParameter.join(_isEn ? ',' : '，') : item.remotePath]"></span>
+                        </ng-template>
+                      </ng-container>
+                    </lv-group>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'backupSize'">
+                    {{item.backupSize | capacityCalculateLabel:'1.1-3':unitconst.BYTE: true}}
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <span lv-overflow>
+                      {{item[col.key] | nil}}
+                    </span>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </ng-container>
+            <td width='144px'>
+              <lv-operation-menu [lvItemsFn]="optsCallback" [lvData]="item"></lv-operation-menu>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </lv-datatable>
+    <div class="aui-paginator-wrap">
+      <lv-paginator [lvPageSizeOptions]='sizeOptions' [lvTotal]='total' [lvPageIndex]='startPage'
+        [lvPageSize]='pageSize' #page [hidden]='!total' (lvPageChange)="pageChange($event)">
+      </lv-paginator>
+    </div>
+  </div>
+</div>

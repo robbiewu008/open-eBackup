@@ -1,0 +1,113 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-alert lvType="info" lvClosable="false">
+  {{'protection_active_directory_object_restore_inline_tips_label'|i18n}}
+</lv-alert>
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_restore_to_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      {{ 'common_restore_to_origin_location_label' | i18n }}
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label class="input-label">
+      {{ 'common_location_label'|i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <input lv-input type="text" formControlName="location" class="input-width"/>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+<!-- 选择对象 -->
+<div style="margin:16px 0">
+  <h2>{{'protection_select_objects_label'|i18n}}</h2>
+</div>
+<lv-group [lvColumns]="['40%','auto']" lvGutter="16px" style="align-items: flex-start">
+  <div class="table-border" style="height: 68vh">
+    <lv-tree
+      #lvTree
+      style="width: 425px;padding-left: 4px"
+      [lvData]="treeData"
+      lvCompareWith="uuid"
+      lvShowLine
+      lvShowCheckbox
+      lvVirtualScroll
+      lvSelectionMode="multiple"
+      (lvExpandedChange)="expandTreeNode($event)"
+      [(lvSelection)]="treeSelection"
+      (lvSelectionChange)="treeSelectionChange($event)"
+      lvShowContentIcon
+      [lvScroll]="{y:'68vh'}"
+      [lvNodeTemplate]="nodeTpl"
+      [lvTrackBy]="trackByUuid"
+    >
+    </lv-tree>
+  </div>
+  <ng-template #nodeTpl let-item>
+    <div style="width: 300px;" lv-overflow>
+      <span *ngIf="!item.isMoreBtn">
+        {{item.label}}
+      </span>
+    </div>
+    <span class="aui-link" *ngIf="item.isMoreBtn"
+          (click)="queryTreeData(item?.parent,item.startPage)">{{item.label}}</span>
+  </ng-template>
+  <lv-group lvGutter="10px" lvDirection="vertical" class="table-container">
+    <lv-group lvGutter="20px" class="tree-header" style="width: 100%">
+      <lv-search (lvSearch)="treeSearch($event)" style="width: 50%"></lv-search>
+      <span>{{'common_selected_num_label'|i18n:[tableData.length]}}</span>
+      <span
+        class="aui-link"
+        (click)="clearSelection()"
+      >{{ 'protection_clear_all_label' | i18n }}</span
+      >
+    </lv-group>
+    <lv-datatable
+      [lvData]="tableData"
+      #lvTable
+      style="height: 58vh;"
+      [lvPaginator]="page"
+      [lvScroll]='{y: "53vh"}'
+      lvVirtualScroll
+      class="table-border"
+      [lvVirtualTrackBy]="trackByUuid"
+      lvResize
+    >
+    <thead>
+      <tr>
+        <th lvCellKey="name">{{'common_name_label'|i18n}}</th>
+        <th [width]="i18n.isEn? '80px':'64px'">{{'common_operation_label'|i18n}}</th>
+      </tr>
+    </thead>
+      <tbody>
+        <ng-template lv-virtual-scroll let-item>
+          <tr>
+            <td>{{item.label}}</td>
+            <td width="64px">
+              <span
+                class="aui-link"
+                (click)="deleteItem($event,item)"
+              >{{ 'common_delete_label' | i18n }}</span
+              >
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </lv-datatable>
+    <lv-paginator #page lvMode="simple" [lvPageSizeOptions]="pageSizeOptions" lvPageSize="200"></lv-paginator>
+  </lv-group>
+</lv-group>

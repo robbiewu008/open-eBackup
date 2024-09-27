@@ -1,0 +1,43 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <h1>{{ (isX3000? 'common_worm_policy_label':'common_anti_policy_setting_label') | i18n }}</h1>
+    </div>
+    <div class="aui-block aui-paginator-container">
+        <ng-container *ngIf="isX3000; else elseTemplate">
+            <aui-anti-policy></aui-anti-policy>
+        </ng-container>
+        <ng-template #elseTemplate>
+            <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+                <lv-tab [lvTitle]="(isX3000?'common_worm_policy_label' :'common_anti_policy_label') | i18n"
+                    [lvId]="'policy'">
+                    <ng-template lv-tab-lazy>
+                        <aui-anti-policy></aui-anti-policy>
+                    </ng-template>
+                </lv-tab>
+                <lv-tab [lvTitle]="'explore_detection_model_label' | i18n" [lvId]="'model'">
+                    <ng-template lv-tab-lazy>
+                        <aui-detection-model-list></aui-detection-model-list>
+                    </ng-template>
+                </lv-tab>
+                <lv-tab [lvTitle]="'explore_infected_copy_operation_limit_label' | i18n" [lvId]="'limit'">
+                    <ng-template lv-tab-lazy>
+                        <aui-infected-copy-limit></aui-infected-copy-limit>
+                    </ng-template>
+                </lv-tab>
+            </lv-tabs>
+        </ng-template>
+    </div>
+</div>

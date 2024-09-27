@@ -1,0 +1,27 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class = 'aui-gutter-column-md'>{{'nas_plugin_livemount_cyberengine_label'|i18n:time}}</div>
+<lv-form [formGroup]="formGroup" class="formGroup">
+      <lv-form-label>{{'protection_options_label'|i18n}}</lv-form-label>
+      <lv-form-control>
+      <lv-radio-group formControlName="status">
+                <lv-group [lvGutter]="'20px'" class="mgt-8">
+                    <lv-radio [lvValue]="dataMap.snapShotJobStatus.success.value">{{'common_job_result_succed_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="dataMap.snapShotJobStatus.failed.value">{{'common_job_result_failed_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+      </lv-form-control>
+</lv-form>

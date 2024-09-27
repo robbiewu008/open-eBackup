@@ -1,0 +1,59 @@
+.lv-pro-text {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  &.lv-pro-text-space-between {
+    justify-content: space-between;
+  }
+}
+
+.lv-pro-link {
+  cursor: pointer;
+  color: #5b7ede;
+}
+
+.lv-pro-text-icon {
+  flex: none;
+  display: block;
+  margin-right: 8px;
+  &.lv-pro-text-icon-right {
+    margin-left: 8px;
+    margin-right: 0;
+  }
+}
+
+.lv-pro-text-label {
+  display: block;
+  width: calc(100% - 20px);
+}
+
+.lv-pro-text-animate {
+  .lv-pro-text-icon {
+    animation: textRotation 2s linear infinite;
+  }
+}
+
+@keyframes textRotation {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes textRipple {
+  0% {
+    -webkit-transform: scale(0.8);
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  to {
+    -webkit-transform: scale(2.4);
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}

@@ -1,0 +1,79 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="tip-container aui-gutter-column-sm">
+    <span>{{'protection_hcs_cloud_disk_level_restore_tip_label' | i18n}}</span>
+</div>
+<div class="restore-tree">
+    <lv-form class="aui-gutter-column-md formGroup target-btn">
+        <lv-form-item>
+            <lv-form-label>{{'protection_selected_copy_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <span>{{rowCopy.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'protection_restore_target_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-group lvRowGutter="8px" [lvColumns]='["auto", "100px"]'>
+                    <input [ngModel]="inputTarget" lv-input readOnly
+                        placeholder="{{'protection_select_hcs_cloud_server_target_label' | i18n}}" />
+                    <button (click)="selectRecoveryTarget()" lv-button>
+                        {{'common_restore_select_label' | i18n}}
+                    </button>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+    <lv-group class="grid-position">
+        <div class="file-level-restore-tree hcs-restore-list-tree margin-space restore-lv-paginator-simple">
+            <ng-container *ngTemplateOutlet="allFileData">
+            </ng-container>
+        </div>
+        <div class="file-level-restore-tree hcs-restore-list-tree restore-lv-paginator-simple">
+            <ng-container *ngTemplateOutlet="selectedFileData">
+            </ng-container>
+        </div>
+    </lv-group>
+</div>
+
+<ng-template #allFileData>
+    <lv-pro-table #dataTable [config]="datasTableConfig" [data]="tableData"></lv-pro-table>
+</ng-template>
+
+<ng-template #selectedFileData>
+    <lv-pro-table #selectTable [config]="tableConfig" [data]="selectData"></lv-pro-table>
+</ng-template>
+
+<ng-template #deskDeviceTpl let-item>
+    <div *ngIf="_isEmpty(inputTarget)" class="no-disk-select"> -- </div>
+    <lv-select *ngIf="!_isEmpty(inputTarget)" class="disk-select" [lvOptions]="item.targetDiskOptions"
+        [(ngModel)]="item.targetDisk" lvShowFilter lvFilterMode="contains" lvFilterKey="label" lvShowCheckAll
+        lvMode="multiple" lvMaxTagCount="1" (ngModelChange)='diskChange($event, item)' lvValueKey='id'>
+    </lv-select>
+</ng-template>
+
+<ng-template #sizeTpl let-item>
+    {{item.size +'GB'}}
+</ng-template>
+
+<ng-template #diskHelpTpl>
+    <div class="custom-icon">
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_target_disk_help_label' | i18n}}"
+            lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
+    </div>
+</ng-template>
+
+<ng-template #encryptedTpl let-item>
+  <span>{{ item.systemEncrypted === '1' | textMap: 'passwordType' }}</span>
+</ng-template>

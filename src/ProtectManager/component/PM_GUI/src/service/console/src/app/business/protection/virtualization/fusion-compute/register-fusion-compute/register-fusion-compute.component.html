@@ -1,0 +1,163 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [lvLabelColon]="false" [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>{{ 'common_name_label' | i18n }}</lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>{{
+      'common_ip_address_label' | i18n
+    }}</lv-form-label>
+    <lv-form-control [lvErrorTip]="ipErrorTip">
+      <input *ngIf="!isModifyExist" lv-input type="text" formControlName="ip" />
+      <span *ngIf="isModifyExist">{{ formGroup.value.ip }}</span>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired
+      >{{ 'common_username_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ 'common_fc_user_name_tips_label' | i18n }}"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="userNameErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="userName"
+        autocomplete="new-password"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>{{
+      'common_password_label' | i18n
+    }}</lv-form-label>
+    <lv-form-control [lvErrorTip]="passwordErrorTip">
+      <aui-inupt-with-eye
+        formControlName="password"
+        [lvPasteAllowed]="false"
+      ></aui-inupt-with-eye>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>{{ 'common_port_label' | i18n }}</lv-form-label>
+    <lv-form-control [lvErrorTip]="portErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="port"
+        placeholder="1~65535"
+      />
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_proxy_host_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <aui-agent-select
+        [lvOptions]="proxyOptions"
+        formControlName="agents"
+        lvMode="multiple"
+      >
+      </aui-agent-select>
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_verify_cert_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-switch formControlName="cert"> </lv-switch>
+      <div *ngIf="formGroup.value.cert">
+        <lv-form-item>
+          <lv-form-label lvRequired>
+            {{ 'protection_fc_cert_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control>
+            <lv-upload
+              lvAccept=".pem"
+              lvShowUpload="false"
+              [lvFilters]="fcCertFilters"
+              [(lvFiles)]="certFiles"
+              (lvFilesChange)="certFilesChange($event)"
+              (lvChange)="cartChange($event)"
+            ></lv-upload>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>
+            {{ 'system_revocation_list_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control>
+            <lv-upload
+              lvAccept=".crl"
+              lvShowUpload="false"
+              [lvFilters]="revocationListFilters"
+              [(lvFiles)]="crlFiles"
+              (lvFilesChange)="crlFilesChange($event)"
+              (lvChange)="crlChange($event)"
+            ></lv-upload>
+          </lv-form-control>
+        </lv-form-item>
+      </div>
+      <div *ngIf="!formGroup.value.cert">
+        <i lv-icon="lv-icon-status-warning-info"></i>
+        <span class="aui-text-label">
+          {{
+            (resType === DataMap.Resource_Type.fusionOne.value
+              ? 'protection_register_fo_cert_tips_label'
+              : 'protection_register_fc_cert_tips_label'
+            ) | i18n
+          }}
+        </span>
+      </div>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+
+<!-- 存储资源 -->
+<ng-container *ngIf="resType !== DataMap.Resource_Type.fusionOne.value">
+  <div class="aui-gutter-column-xl"></div>
+  <h2 class="dataStore-position">
+    <lv-group [lvGutter]="'5px'">
+      {{ 'protection_storage_resource_label' | i18n }}
+    </lv-group>
+  </h2>
+  <div class="aui-operation">
+    <button lvType="primary" lv-button (click)="addStorage()" auiRolePermission
+    [rolePermission]="roleOperationMap.manageResource" [disabled]='tableData?.total === 32 || !isSupport'>
+      {{'common_add_label' | i18n}}
+    </button>
+  </div>
+  <span class="show-tips">
+    <i lv-icon="lv-icon-status-info" class="icon-info" lvColorState="true"></i>
+    {{ 'common_fc_add_data_store_label' | i18n }}
+  </span>
+  <lv-pro-table
+    #dataTable
+    [config]="tableConfig"
+    [data]="tableData"
+  ></lv-pro-table>
+</ng-container>

@@ -1,0 +1,57 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-operation" *ngIf="!isResourceSet">
+  <lv-group>
+    <lv-pro-button-group
+      [config]="optsConfig"
+      [maxDisplayItems]="3"
+      [bindData]="selectionData"
+    >
+    </lv-pro-button-group>
+  </lv-group>
+  <lv-group [lvGutter]="groupCommon.middleRowGutter">
+    <lv-search
+      [lvFocus]="true"
+      lvPlaceHolder="{{ 'common_search_airgap_name_label' | i18n }}"
+      (lvSearch)="search($event)"
+    >
+    </lv-search>
+    <button class="aui-button-icon" lv-button lvSize="auto" (click)="refresh()">
+      <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+    </button>
+  </lv-group>
+</div>
+<div class="aui-operation" *ngIf="!isDetail && isResourceSet">
+  <lv-group>
+      <lv-group lvGutter="8px">
+          <button lv-button (click)="allSelect(true)" [disabled]="allSelectDisabled">
+              {{buttonLabel}}
+          </button>
+      </lv-group>
+      <lv-group></lv-group>
+  </lv-group>
+</div>
+<div class="list-container">
+  <lv-pro-table
+    #dataTable
+    [config]="tableConfig"
+    [data]="tableData"
+  ></lv-pro-table>
+</div>
+
+<ng-template #timeTpl let-item>
+  <ng-container *ngFor="let time of item.airGapPolicyWindows">
+    <div>{{ time.startTime }} - {{ time.endTime }}</div>
+  </ng-container>
+</ng-template>

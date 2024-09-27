@@ -1,0 +1,42 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Manually Reclaiming Space">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792345226.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001792345322">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Manually Reclaiming Space</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001792345322"></a><a name="EN-US_TOPIC_0000001792345322"></a>
+
+<h1 class="topictitle1">Manually Reclaiming Space</h1>
+<div><p id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_p8060118">After all copies of a resource are deleted, the file system where the resource copies reside is also deleted. If the capacity of a deleted file system reaches a specified threshold, the system automatically reclaims the space of the file system. Otherwise, the automatic reclamation mechanism will not be triggered. As a result, the used capacity of the local storage may be inconsistent with the actual situation. In this case, you need to manually reclaim the space of deleted file systems.</p>
+<div class="section" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_section35295412417"><h4 class="sectiontitle">Precautions</h4><p id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_p6708714152412">Service performance may be affected during the execution of space reclamation jobs.</p>
+</div>
+<div class="section" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_section1823893602412"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_ol11430185918359"><li id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001188062683_en-us_topic_0000001149078659_li319522912350"><span>Log in to DeviceManager.</span><p><ol type="a" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001149078659_ol8463855369"><li id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001607531760_en-us_topic_0000001311295305_en-us_topic_0000001149078659_li929117916361">Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001839223165_en-us_topic_0000001839143213_en-us_topic_0000001311295305_en-us_topic_0000001149078659_uicontrol1098185683619"><b><span id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text157651936143415"><strong>System</strong></span> &gt; <span id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text49601653123416"><strong>Infrastructure</strong></span> &gt; <span id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text112401684352"><strong>Cluster Management</strong></span></b></span>.</li><li id="EN-US_TOPIC_0000001792345322__li19932939164117">In the <span class="uicontrol" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol1050641575312"><b><span id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text133861121163513"><strong>Local Cluster Nodes</strong></span></b></span> area of the <span class="uicontrol" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol13691645105219"><b><span id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text1763193125313"><strong>Backup Cluster</strong></span></b></span> tab page, click the node name.</li><li id="EN-US_TOPIC_0000001792345322__li1115217015589">In the <span class="uicontrol" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol1144724616332"><b><span id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text51761646203516"><strong>Node detail</strong></span></b></span> dialog box that is displayed, click <span class="uicontrol" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol1544714611335"><b><span id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text1624910583612"><strong>Open the device management platform</strong></span></b></span> to go to DeviceManager.</li></ol>
+</p></li><li id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_li174158432513"><span>Choose <span class="menucascade" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_menucascade711410119275"><b><span class="uicontrol" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_uicontrol1911481172712">System</span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_uicontrol14627201517279">Storage Pools</span></b></span>.</span></li><li id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_li1632142519277"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_uicontrol0738144315275"><b>More</b></span> on the right of the desired storage pool and choose <span class="uicontrol" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_uicontrol183765515273"><b>Reclaim Space</b></span>.</span><p><div class="note" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_note78359119289"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_p1835191112287">Alternatively, click the name of the desired storage pool. In the upper right corner of the page that is displayed, click <span class="uicontrol" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_uicontrol892515505288"><b>Operation</b></span> and choose <span class="uicontrol" id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_uicontrol1989225432818"><b>Reclaim Space</b></span>.</p>
+</div></div>
+</p></li><li id="EN-US_TOPIC_0000001792345322__en-us_topic_0000001839224829_li8256172020306"><span>Confirm your operation as prompted.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001792345226.html">Managing Local Storage</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

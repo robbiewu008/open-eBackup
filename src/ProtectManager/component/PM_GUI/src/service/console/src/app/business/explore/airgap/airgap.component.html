@@ -1,0 +1,66 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+  <ng-container *ngIf="isCyberEngine; else elseTemplate">
+    <div class="overview-tag">
+      <lv-group lvGutter="24px" class="title-group">
+        <img src="assets/img/airgap_brand.svg" class="logo">
+        <lv-group lvGutter="8px" lvDirection='vertical'>
+          <h1>{{ 'Air Gap' }}</h1>
+          <span class="aui-text-label desc-font">
+            {{'explore_airgap_help_label' | i18n}}
+          </span>
+        </lv-group>
+      </lv-group>
+      <lv-group lvGutter="56px" class="statistic-group">
+        <lv-group lvGutter="8px" lvDirection='vertical'>
+          <h1 class="summary-count">{{totalDevice}}</h1>
+          <span class="aui-text-label desc-font">
+            {{'protection_storage_devices_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_storage_device_tip_label' | i18n}}"
+            lvTooltipTheme="light" lvColorState='true'></i>
+          </span>
+        </lv-group>
+        <lv-group lvGutter="8px" lvDirection='vertical'>
+          <h1 class="summary-count">{{totalPolicy}}</h1>
+          <span class="aui-text-label desc-font">
+            {{'protection_airgap_tactics_label' | i18n}}
+          </span>
+        </lv-group>
+      </lv-group>
+    </div>
+  </ng-container>
+  <ng-template #elseTemplate>
+    <div class="aui-header-1">
+      <lv-group lvGutter="8px">
+        <h1>{{ 'Air Gap' }}</h1>
+        <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+      </lv-group>
+    </div>
+  </ng-template>
+  <div class="aui-block aui-paginator-container">
+    <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+      <lv-tab lvTitle="{{'protection_storage_devices_label' | i18n}}" lvId='storage'>
+        <ng-template lv-tab-lazy>
+          <aui-storage-device (refreshDevice)="refreshDevice()"></aui-storage-device>
+        </ng-template>
+      </lv-tab>
+      <lv-tab lvTitle="{{'protection_airgap_tactics_label' | i18n}}" lvId='tactics'>
+        <ng-template lv-tab-lazy>
+          <aui-airgap-tactics (refreshPolicy)="refreshPolicy()"></aui-airgap-tactics>
+        </ng-template>
+      </lv-tab>
+    </lv-tabs>
+  </div>
+</div>

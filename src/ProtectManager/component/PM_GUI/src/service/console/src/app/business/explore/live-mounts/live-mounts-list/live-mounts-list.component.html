@@ -1,0 +1,194 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-block aui-paginator-container">
+        <div class="aui-operation">
+            <lv-group [lvGutter]="groupCommon.middleRowGutter">
+                <button lvType="primary" lv-button (click)="create()" auiRolePermission
+                    [rolePermission]="roleOperationMap.livemount">
+                    {{'common_create_label' | i18n}}
+                </button>
+                <button lv-button (click)="destroy(this.selection)" [disabled]="!selection.length || destroyBtnDisabled"
+                    pmpermission pmOperation='DestroyLiveMount'>
+                    {{'explore_destroy_label' | i18n}}
+                </button>
+                <ng-container *ngIf="resourceType !== resourceTypeEnum.Storage">
+                    <button lv-button (click)="updateLatestCopyData(this.selection)"
+                        [disabled]="!selection.length || updateBtnDisabled" pmpermission
+                        pmOperation='UpdateLatestCopyLiveMount'>
+                        {{'explore_update_to_last_copy_label' | i18n}}
+                    </button>
+                </ng-container>
+            </lv-group>
+            <lv-group>
+                <button class="aui-button-icon" lv-button lvSize="auto" (click)="getMounts()">
+                    <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                </button>
+            </lv-group>
+        </div>
+        <div class="list-container">
+            <lv-datatable [lvData]='tableData' (lvSortChange)="sortChange($event)" [lvPaginator]="page" lvSort #lvTable
+                lvAsync class="aui-table-group" [(lvActiveSort)]='activeSort' lvSelectionMode='multiple'
+                [lvSelection]='selection' (lvSelectionChange)="selectionChange()" lvCompareWith='id'
+                lvResizeMode="expand">
+                <thead>
+                    <tr>
+                        <th rowspan="2" width="40px" lvShowCheckbox [lvRowsData]="lvTable.renderData"></th>
+                        <ng-container *ngFor="let item of columns">
+                            <th *ngIf="item.show" [attr.colspan]="filter(item.children, {'show': true}).length">
+                                {{item.label}}
+                            </th>
+                        </ng-container>
+                        <th rowspan="2" width='144px'>
+                            {{'common_operation_label' | i18n}}
+                        </th>
+                        <th rowspan="2" width="16px" style="padding: 0;" lvResizable="false">
+                            <i lv-icon='lv-icon-col-setting' #colPopover='lvPopover' lv-popover
+                                lvPopoverPosition='bottomRight' [lvPopoverContent]='colHideTpl' lvPopoverTheme='light'
+                                lvPopoverTrigger='click' style="cursor: pointer;">
+                            </i>
+                        </th>
+                    </tr>
+                    <tr>
+                        <ng-container *ngFor="let column of columns">
+                            <ng-container *ngIf="column.children">
+                                <ng-container *ngFor="let col of column.children">
+                                    <th *ngIf="col.show" [lvShowFilter]="col.filter"
+                                        (lvFilterChange)="filterChange($event)" [attr.class]="col.class"
+                                        [attr.width]="col.width" [(lvFilters)]="col.filterMap" lvCellKey="{{ col.key }}"
+                                        [lvShowSort]="col.showSort" lvShowCustom lvFilterCheckAll>
+                                        {{col.label}}
+                                        <div lvCustom *ngIf="col.key === 'target_resource_name'">
+                                            <aui-custom-table-search (search)="searchByTargetResourceName($event)"
+                                                [filterTitle]="col.label"></aui-custom-table-search>
+                                        </div>
+                                        <div lvCustom *ngIf="col.key === 'target_resource_path'">
+                                            <aui-custom-table-search (search)="searchByTargetResourcePath($event)"
+                                                [filterTitle]="col.label"></aui-custom-table-search>
+                                        </div>
+                                        <div lvCustom *ngIf="col.key === 'target_resource_ip'">
+                                            <aui-custom-table-search (search)="searchByTargetResourceIp($event)"
+                                                [filterTitle]="col.label"></aui-custom-table-search>
+                                        </div>
+                                        <div lvCustom *ngIf="col.key === 'resource_name'">
+                                            <aui-custom-table-search (search)="searchByResourceName($event)"
+                                                [filterTitle]="col.label"></aui-custom-table-search>
+                                        </div>
+                                        <div lvCustom *ngIf="col.key === 'resource_path'">
+                                            <aui-custom-table-search (search)="searchByResourcePath($event)"
+                                                [filterTitle]="col.label"></aui-custom-table-search>
+                                        </div>
+                                        <div lvCustom *ngIf="col.key === 'resource_ip'">
+                                            <aui-custom-table-search (search)="searchByResourceIp($event)"
+                                                [filterTitle]="col.label"></aui-custom-table-search>
+                                        </div>
+                                        <div lvCustom *ngIf="col.key === 'cluster_name'">
+                                            <aui-custom-table-search (search)="searchByClusterName($event)"
+                                                [filterTitle]="col.label"></aui-custom-table-search>
+                                        </div>
+                                        <div lvCustom *ngIf="col.key === 'policy_name'">
+                                            <aui-custom-table-search (search)="searchByPolicyName($event)"
+                                                [filterTitle]="col.label"></aui-custom-table-search>
+                                        </div>
+                                    </th>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor='let item of lvTable.renderData;trackBy:trackById'>
+                        <tr>
+                            <td lvShowCheckbox width="40px" [lvRowData]='item'></td>
+                            <ng-container *ngFor="let column of columns">
+                                <ng-container *ngIf="column.children">
+                                    <ng-container *ngFor="let col of column.children">
+                                        <ng-container *ngIf="col.show">
+                                            <td>
+                                                <ng-container [ngSwitch]="col.key">
+                                                    <ng-container *ngSwitchCase="'policy_name'">
+                                                        <ng-container *ngIf="item.policy_name">
+                                                            <span class="aui-link" lv-overflow id='outerClosable'
+                                                                (click)="getPolicyDetail(item)">
+                                                                {{item.policy_name}}
+                                                            </span>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="!item.policy_name">
+                                                            --
+                                                        </ng-container>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'status'">
+                                                        <aui-status [value]="item.status" type="LiveMount_Status">
+                                                        </aui-status>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'enable_status'">
+                                                        <aui-status [value]="item.enable_status"
+                                                            type="LiveMount_Activation_Status">
+                                                        </aui-status>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'resource_type'">
+                                                        {{item.resource_sub_type | textMap: 'Resource_Type'}}
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'mounted_copy_display_timestamp'">
+                                                        <ng-container *ngIf="item.mounted_copy_display_timestamp">
+                                                            {{ getMountedCopyTime(item.mounted_copy_display_timestamp)
+                                                            }}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="!item.mounted_copy_display_timestamp">
+                                                            --
+                                                        </ng-container>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'protocol_type'">
+                                                        <span lv-overflow>
+                                                            {{ getShare(item) | nil}}
+                                                        </span>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="'share_name'">
+                                                        <span lv-overflow>
+                                                            {{ getShareName(item) | nil}}
+                                                        </span>
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchDefault>
+                                                        <span lv-overflow>
+                                                            {{item[col.key] | nil}}
+                                                        </span>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </td>
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                            <td width='144px'>
+                                <lv-operation-menu [lvItemsFn]="optsCallback" [lvData]="item"></lv-operation-menu>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </lv-datatable>
+            <div class="aui-paginator-wrap">
+                <lv-paginator [lvPageSize]="size" [lvTotal]="total" [lvPageIndex]="page" #page
+                    [lvPageSizeOptions]="sizeOptions" (lvPageChange)="pageChange($event)" [hidden]="!total">
+                </lv-paginator>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #colHideTpl>
+    <lv-tree [lvData]='columns' [lvShowCheckbox]='true' [lvShowExpandedIcon]='false' lvSelectionMode='multiple'
+        [(lvSelection)]='columnSelection' (lvCheck)="columnCheck($event)">
+    </lv-tree>
+</ng-template>

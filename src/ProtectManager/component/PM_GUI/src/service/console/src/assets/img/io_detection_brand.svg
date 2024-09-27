@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="73px" height="82px" viewBox="0 0 73 82" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 124备份</title>
+    <defs>
+        <linearGradient x1="50.1641964%" y1="-0.344444444%" x2="50.1641964%" y2="97.6555556%" id="linearGradient-1">
+            <stop stop-color="#84C1FE" offset="0%"></stop>
+            <stop stop-color="#5F92F9" stop-opacity="0.1" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="101.375028%" y1="75.8767081%" x2="56.375028%" y2="42.3206737%" id="linearGradient-2">
+            <stop stop-color="#528BF3" offset="0%"></stop>
+            <stop stop-color="#8F9FBC" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="98.9102708%" y1="49.8653846%" x2="9.91027075%" y2="49.8653846%" id="linearGradient-3">
+            <stop stop-color="#4D86FC" offset="0%"></stop>
+            <stop stop-color="#9FBDFD" stop-opacity="0.05" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="52.1992554%" y1="41.8653846%" x2="49.0601713%" y2="35.8653846%" id="linearGradient-4">
+            <stop stop-color="#9FBDFD" stop-opacity="0.05" offset="0%"></stop>
+            <stop stop-color="#4D86FC" offset="100%"></stop>
+        </linearGradient>
+        <radialGradient cx="27.4132653%" cy="32.425%" fx="27.4132653%" fy="32.425%" r="80.0603687%" gradientTransform="translate(0.274133,0.324250),scale(1.000000,0.980000),rotate(10.278720),translate(-0.274133,-0.324250)" id="radialGradient-5">
+            <stop stop-color="#8DCEFF" offset="0%"></stop>
+            <stop stop-color="#4A77F5" offset="80%"></stop>
+            <stop stop-color="#568AFE" offset="92%"></stop>
+            <stop stop-color="#4D86FC" offset="100%"></stop>
+        </radialGradient>
+        <pattern id="pattern-6" width="100%" height="100%" patternUnits="objectBoundingBox">
+            <use xlink:href="#image-7"></use>
+        </pattern>
+        <image id="image-7" width="40" height="40" xlink:href="data:image/png;base64,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"></image>
+        <linearGradient x1="-6%" y1="49.898167%" x2="107%" y2="49.898167%" id="linearGradient-8">
+            <stop stop-color="#2EB6E6" offset="0%"></stop>
+            <stop stop-color="#3388FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="49.9229584%" y1="-7%" x2="49.9229584%" y2="106%" id="linearGradient-9">
+            <stop stop-color="#2EB6E6" offset="0%"></stop>
+            <stop stop-color="#3388FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50.1165501%" y1="-7%" x2="50.1165501%" y2="107%" id="linearGradient-10">
+            <stop stop-color="#2EB6E6" offset="0%"></stop>
+            <stop stop-color="#3388FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="38%" x2="50%" y2="62%" id="linearGradient-11">
+            <stop stop-color="#2EB6E6" offset="0%"></stop>
+            <stop stop-color="#3388FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50.1285347%" y1="-7%" x2="50.1285347%" y2="107%" id="linearGradient-12">
+            <stop stop-color="#2EB6E6" offset="0%"></stop>
+            <stop stop-color="#3388FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="32551%" y1="58.266129%" x2="32551%" y2="58.781362%" id="linearGradient-13">
+            <stop stop-color="#2EB6E6" offset="0%"></stop>
+            <stop stop-color="#3388FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="30119%" y1="-478.195489%" x2="30119%" y2="-449.874687%" id="linearGradient-14">
+            <stop stop-color="#2EB6E6" offset="0%"></stop>
+            <stop stop-color="#3388FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-1.25729681%" x2="50%" y2="101.279749%" id="linearGradient-15">
+            <stop stop-color="#2EB6E6" offset="0%"></stop>
+            <stop stop-color="#3388FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-0.402792696%" x2="50%" y2="100.402793%" id="linearGradient-16">
+            <stop stop-color="#2EB6E6" offset="0%"></stop>
+            <stop stop-color="#3388FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="49.8187108%" y1="-0.507942685%" x2="49.8187108%" y2="100.507404%" id="linearGradient-17">
+            <stop stop-color="#2EB6E6" offset="0%"></stop>
+            <stop stop-color="#3388FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="36.2680198%" y1="29.6233748%" x2="100%" y2="73.1888964%" id="linearGradient-18">
+            <stop stop-color="#2EB6E6" offset="0%"></stop>
+            <stop stop-color="#3388FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="23.0767068%" y1="50%" x2="100%" y2="67.3313101%" id="linearGradient-19">
+            <stop stop-color="#5BB3E1" offset="0%"></stop>
+            <stop stop-color="#4B85F7" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="品牌化" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="实时侦测_首页_文件系统0103" transform="translate(-346.000000, -133.000000)">
+            <g id="编组-124备份" transform="translate(347.000000, 135.000000)">
+                <g id="编组-22备份-4">
+                    <polygon id="路径" fill="url(#linearGradient-1)" opacity="0.3" points="34.8785047 5.23364486 63.8878505 22.0560748 63.8878505 55.7009346 34.8785047 72.5233645 5.87663551 55.7009346 5.87663551 22.0560748"></polygon>
+                    <polygon id="Combined-Shape" fill="url(#linearGradient-2)" opacity="0.2" points="68.2691589 19.5439252 71.9401869 21.682243 71.9401869 60.5607477 38.5271028 80 5.11401869 60.5607477 5.11401869 60.4785047 34.8560748 77.7794393 68.2691589 58.3401869"></polygon>
+                    <polyline id="Path" stroke="url(#linearGradient-3)" stroke-linecap="round" stroke-linejoin="round" points="34.8785047 0 68.2915888 19.4392523 68.2915888 58.317757 34.8785047 77.7570093"></polyline>
+                    <polyline id="Path-2" stroke="url(#linearGradient-4)" stroke-width="4" opacity="0.4" stroke-linecap="round" stroke-linejoin="round" points="34.8785047 77.7570093 1.46542056 58.317757 1.46542056 19.4392523 34.8785047 0"></polyline>
+                    <ellipse id="Oval-Copy-5" fill="url(#radialGradient-5)" fill-rule="nonzero" cx="1.46542056" cy="19.4392523" rx="1.46542056" ry="1.4953271"></ellipse>
+                </g>
+                <g id="编组-118" transform="translate(12.602235, 17.943925)">
+                    <g id="编组-37" opacity="0.4">
+                        <circle id="椭圆形" fill="url(#pattern-6)" transform="translate(21.470710, 22.461462) rotate(-90.000000) translate(-21.470710, -22.461462) " cx="21.4707096" cy="22.4614624" r="19.0966602"></circle>
+                        <g id="编组-32" opacity="0.6">
+                            <line x1="21.6505357" y1="4.23606797" x2="21.6505357" y2="0.203286083" id="路径" stroke="url(#linearGradient-8)" stroke-width="2"></line>
+                            <line x1="18.3141289" y1="0.410670253" x2="24.9869426" y2="0.410670253" id="路径" stroke="url(#linearGradient-9)" stroke-width="2"></line>
+                            <line x1="39.7775207" y1="22.4616138" x2="43.3010715" y2="22.4616138" id="路径" stroke="url(#linearGradient-10)" stroke-width="2"></line>
+                            <line x1="3.19501457" y1="22.4616138" x2="39.7775207" y2="22.4616138" id="路径" stroke="url(#linearGradient-11)" stroke-width="0.24"></line>
+                            <line x1="0" y1="22.4616138" x2="3.19501457" y2="22.4616138" id="路径" stroke="url(#linearGradient-12)" stroke-width="2"></line>
+                            <line x1="21.6505357" y1="40.8350009" x2="21.6505357" y2="4.17036073" id="路径" stroke="url(#linearGradient-13)" stroke-width="0.24"></line>
+                            <line x1="21.6505357" y1="44.1121495" x2="21.6505357" y2="40.8350009" id="路径" stroke="url(#linearGradient-14)" stroke-width="2"></line>
+                            <circle id="椭圆形" stroke="url(#linearGradient-15)" stroke-width="2" cx="21.4862676" cy="22.4616138" r="18.2912531"></circle>
+                            <path d="M21.4862676,37.754974 C13.039978,37.754974 6.19290742,30.9079034 6.19290742,22.4616138 C6.19290742,14.0153242 13.039978,7.16825357 21.4862676,7.16825357 C29.9325573,7.16825357 36.7796279,14.0153242 36.7796279,22.4616138 C36.7705742,30.9041504 29.9288043,37.7459204 21.4862676,37.754974 Z" id="路径" stroke="url(#linearGradient-16)" stroke-width="0.3"></path>
+                            <path d="M21.4862676,33.7879471 C15.2363288,33.7652381 10.1859883,28.6842967 10.2010484,22.434335 C10.216176,16.1843734 15.2909987,11.1278845 21.5409741,11.1354025 C27.7909494,11.1429373 32.8536202,16.2116339 32.8536202,22.4616138 C32.8514515,25.4719872 31.6518132,28.3578391 29.5193086,30.4826396 C27.386804,32.6074401 24.4966292,33.7966259 21.4862676,33.7879471 L21.4862676,33.7879471 Z" id="路径" stroke="url(#linearGradient-17)" stroke-width="0.28"></path>
+                        </g>
+                        <circle id="椭圆形备份-8" fill-opacity="0.9" fill="#FFFFFF" cx="16.5742857" cy="9.60223708" r="1"></circle>
+                        <circle id="椭圆形备份-10" fill-opacity="0.9" fill="#FFFFFF" cx="24.3473155" cy="33.5732863" r="1"></circle>
+                        <circle id="椭圆形备份-9" fill-opacity="0.8" fill="#FFFFFF" cx="8.10596759" cy="15.191014" r="1"></circle>
+                    </g>
+                    <g id="编组-117" transform="translate(6.685470, 11.463104)" fill-rule="nonzero">
+                        <g id="编组-127">
+                            <path d="M21.4265046,20.79069 C22.4194882,20.79069 28.7042231,20.79069 28.7042231,20.79069 C27.9426405,17.9499385 24.4341833,6.08933965 21.9270299,6.08933965 C20.8755628,6.08933965 20.4324806,6.52825887 19.6427446,6.78178745 C18.7893504,7.05575222 17.9828388,7.1459122 17.0597623,7.1459122 C15.2824655,7.1459122 14.6829971,4.93377438 14.2750908,3.94389971 C13.8671845,2.95402504 12.248186,0 10.3041407,0 C6.66923092,0 3.25935335,7.58585744 2.35271611,11.557792 C1.52508521,14.9686547 1.01997105,17.9499385 1.01997105,17.9499385 C1.01997105,17.9499385 0.199506294,20.6924818 1.01997105,20.6924818 L3.68231851,20.6924818 L21.4265046,20.79069 Z" id="路径" fill="url(#linearGradient-18)" opacity="0.4"></path>
+                            <path d="M0.271424284,19.5696448 C2.38885951,10.3402699 5.00596867,5.72558254 8.12275176,5.72558254 C9.77231513,5.72558254 11.2850254,7.30563189 11.7557753,8.16851572 C12.2265251,9.03139955 13.2060358,10.914174 14.3717163,10.8716469 C17.4595328,10.758995 17.192344,2.32489404 21.8689625,2.32489404 C24.8866146,2.32489404 27.3777142,8.09128026 29.3422612,19.6240527 C29.4352155,20.1684594 29.0684409,20.684574 28.5238913,20.7766841 C28.4693515,20.7859095 28.4141402,20.7905937 28.3588257,20.79069 L1.24568995,20.79069 C0.693405244,20.7904623 0.245874558,20.3425626 0.246102182,19.7902779 C0.246132796,19.716 0.254439037,19.6419568 0.271424284,19.5696448 Z" id="路径-9" fill="url(#linearGradient-19)" opacity="0.800000012"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

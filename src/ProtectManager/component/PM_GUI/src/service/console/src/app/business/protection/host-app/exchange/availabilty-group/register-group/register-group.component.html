@@ -1,0 +1,79 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <ng-container>
+        <lv-radio-group formControlName="type" [lvGroupName]="'exchangeType'" [lvDisabled]="isModify">
+          <lv-group [lvGutter]="'20px'">
+            <lv-radio [lvValue]="dataMap.Resource_Type.ExchangeSingle.value">
+              {{ 'protection_checkbox_single_node_system_label' | i18n }}
+            </lv-radio>
+            <lv-radio [lvValue]="dataMap.Resource_Type.ExchangeGroup.value">
+              {{ 'protection_checkbox_availability_group_label' | i18n }}
+            </lv-radio>
+          </lv-group>
+        </lv-radio-group>
+      </ng-container>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>{{ 'common_name_label' | i18n }}</lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name"/>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>{{ 'common_host_label' | i18n }}</lv-form-label>
+    <lv-form-control>
+      <ng-container *ngIf="formGroup.value.type === dataMap.Resource_Type.ExchangeSingle.value">
+        <lv-select [lvOptions]="singleAgentsOptions" [lvDisabled]="isModify" formControlName="single_agents"
+                   lvValueKey="value" lvFilterKey="label" lvShowFilter lvFilterMode="contains"></lv-select>
+      </ng-container>
+      <ng-container *ngIf="formGroup.value.type === dataMap.Resource_Type.ExchangeGroup.value">
+        <lv-select [lvOptions]="groupAgentOptions" lvMode="multiple" lvShowFilter lvShowCheckAll
+                   lvFilterKey="label" lvFilterMode="contains" formControlName="group_agents"
+                   lvValueKey="value"></lv-select>
+      </ng-container>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_exchange_register_username_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <input lv-input type="text" formControlName="userName"/>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_password_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="passwordErrorTip">
+      <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+    </lv-form-control>
+  </lv-form-item>
+  <!-- 并发数 -->
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_concurrency_number_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="concurrencyErrorTip">
+      <input lv-input type="text" formControlName="concurrency" placeholder="1-10"/>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>

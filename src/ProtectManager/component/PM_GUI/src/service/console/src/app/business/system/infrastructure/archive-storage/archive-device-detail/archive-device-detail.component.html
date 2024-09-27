@@ -1,0 +1,82 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-group class="group">
+    <lv-group class="left" lvDirection='vertical'>
+        <div class="library-container">
+            <ng-container *ngIf="libraryData.length;else noDataTpl">
+                <lv-menu [lvMenus]="libraries" [lvMode]="'icon'" [lvTheme]="'light'" [lvActiveItemId]="active"
+                    class="library-select"></lv-menu>
+            </ng-container>
+        </div>
+    </lv-group>
+    <div class="slip"></div>
+    <lv-group class="right aui-paginator-container">
+        <div class="info-container">
+            <lv-form class="info-form">
+                <h2 class="aui-gutter-column-md">{{ 'common_basic_info_label' | i18n }}</h2>
+                <lv-form-column lvWidth="50%">
+                    <lv-form-item *ngFor="let item of leftItems">
+                        <lv-form-label>
+                            {{ item.label}}
+                        </lv-form-label>
+                        <lv-form-control>
+                            {{item.value | nil}}
+                        </lv-form-control>
+                    </lv-form-item>
+                </lv-form-column>
+                <lv-form-column lvWidth="50%">
+                    <lv-form-item *ngFor="let item of rightItems">
+                        <lv-form-label>
+                            {{ item.label}}
+                        </lv-form-label>
+                        <ng-container [ngSwitch]="item.key">
+                            <ng-container *ngSwitchCase="'status'">
+                                <lv-form-control>
+                                    <aui-status [value]="item.value" type="Archive_Tape_Status"></aui-status>
+                                </lv-form-control>
+                            </ng-container>
+                            <ng-container *ngSwitchDefault>
+                                <lv-form-control>
+                                    {{item.value | nil}}
+                                </lv-form-control>
+                            </ng-container>
+                        </ng-container>
+                    </lv-form-item>
+                </lv-form-column>
+            </lv-form>
+            <lv-tabs [lvType]="'card'" [(lvActiveIndex)]="activeIndex"
+                (lvActiveIndexChange)="libraryIndexChange($event)">
+                <lv-tab lvTitle="{{'system_archive_drive_label'|i18n}}" [lvId]="'drive'">
+                    <lv-pro-table #driveTable [config]="driveTableConfig" [data]="driveTableData"></lv-pro-table>
+                </lv-tab>
+                <lv-tab lvTitle="{{'system_archive_tape_label'|i18n}}" [lvId]="'tape'">
+                    <div class="aui-operation">
+                        <lv-group lvGutter="8px">
+                            <button lv-button (click)="indentify()" [disabled]="indentifyBtnDisable">
+                                {{ 'system_archive_indentify_label' | i18n }}
+                            </button>
+                        </lv-group>
+                    </div>
+                    <lv-pro-table #tapeTable [config]="tapeTableConfig" [data]="tapeTableData"></lv-pro-table>
+                </lv-tab>
+            </lv-tabs>
+        </div>
+    </lv-group>
+</lv-group>
+<ng-template #noDataTpl>
+    <div class="library-no-data">
+        <i lv-icon="lv-icon-no-data"></i>
+        <div class="no-data-label">{{'common_no_data_label'|i18n}}</div>
+    </div>
+</ng-template>

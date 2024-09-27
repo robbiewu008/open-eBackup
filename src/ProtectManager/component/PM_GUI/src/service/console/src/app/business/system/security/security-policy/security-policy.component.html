@@ -1,0 +1,647 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage security-policy-page">
+  <div class="aui-header-1">
+    <lv-group lvGutter='8px'>
+      <h1>{{ 'system_security_policy_label' | i18n }}</h1>
+      <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+    </lv-group>
+  </div>
+  <lv-group [lvColumns]='["auto", "auto"]' lvRowGutter="16px" class="security-count-other-row">
+    <div>
+      <div class="aui-block aui-gutter-column-md">
+        <div class="aui-header-2">
+          <h2>{{ passwordPolicyLabel }}</h2>
+          <div>
+            <a style="margin-right:10px" *ngIf="!isViewPasswordPolicy" [ngClass]="{
+                'aui-link': this.pwdFormGroup.valid,
+                'aui-link-disabled': !this.pwdFormGroup.valid
+              }" (click)="savePasswordPolicy()">{{ 'common_save_label' | i18n }}</a>
+            <a *ngIf="!isViewPasswordPolicy" class="aui-link" (click)="cancelPasswordPolicy()">{{ 'common_cancel_label'
+              |
+              i18n }}</a>
+            <a *ngIf="isViewPasswordPolicy" class="aui-link" (click)="modifyPasswordPolicy()" pmpermission
+              pmOperation='ModifySecurityPolicy'>
+              {{ 'common_modify_label' | i18n }}</a>
+          </div>
+        </div>
+        <div class="dashed-line"></div>
+        <div *ngIf="isViewPasswordPolicy">
+          <lv-form [lvLabelColon]="false" lvLabelWidth="140px">
+            <lv-form-item>
+              <lv-form-label>{{ minLengthLabel }}</lv-form-label>
+              <lv-form-control>{{ passLenValLabel | nil }}</lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>{{ complexityLabel }}</lv-form-label>
+              <lv-form-control>{{ passComplexValLabel | nil }}</lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>
+                {{ 'system_recent_passwords_number_label' | i18n }}
+              </lv-form-label>
+              <lv-form-control>
+                {{policyData.passHistoryNum | nil}}
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>
+                {{ 'system_history_passwords_duration_label' | i18n }}
+              </lv-form-label>
+              <lv-form-control>
+                {{policyData.passHistoryDay ? policyData.passHistoryDay + dayLabel : '--'}}
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>{{ pwdStatusLabel }}</lv-form-label>
+              <lv-form-control>{{ passCtrlLabel | nil }}</lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="!policyData.passCtrl">
+              <div class='box-height'></div>
+            </ng-container>
+            <ng-container *ngIf="policyData.passCtrl">
+              <lv-form-item>
+                <lv-form-label>{{ pwdPeriodLabel }}</lv-form-label>
+                <lv-form-control>
+                  {{policyData.usefulLife ? policyData.usefulLife + dayLabel : '--' }}</lv-form-control>
+              </lv-form-item>
+              <lv-form-item>
+                <lv-form-label>{{ pwdSavePeriodLabel }}</lv-form-label>
+                <lv-form-control>
+                  {{policyData.minLifetime ? policyData.minLifetime + minuteLabel : '--'}}</lv-form-control>
+              </lv-form-item>
+            </ng-container>
+          </lv-form>
+        </div>
+        <div *ngIf="!isViewPasswordPolicy">
+          <lv-form [formGroup]="pwdFormGroup">
+            <lv-form-item>
+              <lv-form-label lvRequired>{{ minLengthLabel }}</lv-form-label>
+              <lv-form-control>
+                <lv-select formControlName="passLenVal" [lvOptions]="passLenValOptions" lvValueKey="passLenVal">
+                </lv-select>
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label lvRequired>
+                {{ complexityLabel}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_policy_complex_tip_label'|i18n }}"
+                  lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                  lvColorState='true'></i>
+              </lv-form-label>
+              <lv-form-control>
+                <lv-select formControlName="passComplexVal" [lvOptions]="passComplexOptions"
+                  lvValueKey="passComplexVal">
+                </lv-select>
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label lvRequired>
+                {{ 'system_recent_passwords_number_label' | i18n }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_recent_passwords_number_desc_label'|i18n }}"
+                  lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                  lvColorState='true'></i>
+              </lv-form-label>
+              <lv-form-control [lvErrorTip]="passwordsNumberErrorTip">
+                <input lv-input type="text" formControlName="passHistoryNum" placeholder="0~12" />
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label lvRequired>
+                {{ 'system_history_passwords_duration_label' | i18n }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_history_passwords_duration_desc_label'|i18n }}"
+                  lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                  lvColorState='true'></i>
+              </lv-form-label>
+              <lv-form-control [lvErrorTip]="passwordsDurationErrorTip">
+                <lv-group [lvColumns]='["auto", "30px"]' lvRowGutter="8px">
+                  <input lv-input type="text" formControlName="passHistoryDay" placeholder="0~365" />
+                  <span>{{ dayLabel }}</span>
+                </lv-group>
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>{{ pwdStatusLabel }}</lv-form-label>
+              <lv-form-control>
+                <lv-switch formControlName="passCtrl" (ngModelChange)="passCtrlChange($event)"></lv-switch>
+              </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf='this.pwdFormGroup.value.passCtrl'>
+              <lv-form-item>
+                <lv-form-label lvRequired="{{ this.pwdFormGroup.value.passCtrl }}">
+                  {{pwdPeriodLabel}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="usefulLifeErrorTip">
+                  <lv-group [lvColumns]='["auto", "30px"]' lvRowGutter="8px">
+                    <input lv-input type="text" formControlName="usefulLife" placeholder="60~360" />
+                    <span>{{ dayLabel }}</span>
+                  </lv-group>
+                </lv-form-control>
+              </lv-form-item>
+              <lv-form-item>
+                <lv-form-label lvRequired="{{ this.pwdFormGroup.value.passCtrl }}">
+                  {{ pwdSavePeriodLabel}}
+                  <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_policy_retaintime_tip_label'|i18n }}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="minLifeTimeErrorTip">
+                  <lv-group [lvColumns]='["auto", "30px"]' lvRowGutter="8px">
+                    <input lv-input type="text" formControlName="minLifetime" placeholder="1~9999" />
+                    <span>{{ minuteLabel }}</span>
+                  </lv-group>
+                </lv-form-control>
+              </lv-form-item>
+            </ng-container>
+          </lv-form>
+        </div>
+      </div>
+
+      <div class="aui-block aui-gutter-column-md"
+        [ngClass]="{' security-right-2-container': isCyberEngine || isDataBackup}">
+        <div class="aui-header-2">
+          <h2>{{ timeoutPolicyLabel }}</h2>
+          <div>
+            <a *ngIf="!isViewTimeoutPolicy" style="margin-right:10px" (click)="saveTimeoutPolicy()"
+              [ngClass]="{'aui-link': timeoutFormGroup.valid, 'aui-link-disabled': timeoutFormGroup.invalid}">{{
+              'common_save_label' | i18n }}</a>
+            <a *ngIf="!isViewTimeoutPolicy" class="aui-link" (click)="cancelTimeoutPolicy()">{{ 'common_cancel_label' |
+              i18n
+              }}</a>
+            <a *ngIf="isViewTimeoutPolicy" class="aui-link" (click)="modifyTimeoutPolicy()" pmpermission
+              pmOperation='ModifySecurityPolicy'>
+              {{ 'common_modify_label' | i18n }}</a>
+          </div>
+        </div>
+        <div class="dashed-line"></div>
+        <div *ngIf="isViewTimeoutPolicy">
+          <lv-form [lvLabelColon]="false" lvLabelWidth="140px">
+            <lv-form-item>
+              <lv-form-label>{{ 'system_policy_timeout_label' | i18n }}</lv-form-label>
+              <lv-form-control>{{ policyData.sessionTime}}{{minuteLabel}}</lv-form-control>
+            </lv-form-item>
+          </lv-form>
+        </div>
+        <div *ngIf="!isViewTimeoutPolicy">
+          <lv-form [lvLabelColon]="false" lvLabelWidth="140px" [formGroup]="timeoutFormGroup">
+            <lv-form-item>
+              <lv-form-label lvRequired>{{ 'system_policy_timeout_label' | i18n }} </lv-form-label>
+              <lv-form-control [lvErrorTip]="sessionTimeErrorTip">
+                <lv-group [lvColumns]='["auto", "30px"]' lvRowGutter="8px">
+                  <input lv-input type="text" placeholder="1~100" formControlName="sessionTime" />
+                  <span>{{minuteLabel}}</span>
+                </lv-group>
+              </lv-form-control>
+            </lv-form-item>
+          </lv-form>
+        </div>
+      </div>
+
+      <div class="aui-block aui-gutter-column-md"
+        [ngClass]="{'security-right-3-container': isDataBackup,'security-right-3-container-cyber':isCyberEngine}">
+        <div class="aui-header-2">
+          <h2>{{ loginPolicyLabel }}</h2>
+          <div>
+            <a style="margin-right:10px" *ngIf="!isViewLoginPolicy" [ngClass]="{
+                'aui-link': this.loginFormGroup.valid,
+                'aui-link-disabled': !this.loginFormGroup.valid
+              }" (click)="saveLoginPolicy()">{{ 'common_save_label' | i18n }}</a>
+            <a *ngIf="!isViewLoginPolicy" class="aui-link" (click)="cancelLoginPolicy()">{{ 'common_cancel_label' | i18n
+              }}</a>
+            <a *ngIf="isViewLoginPolicy" class="aui-link" (click)="modifyLoginPolicy()" pmpermission
+              pmOperation='ModifySecurityPolicy'>
+              {{ 'common_modify_label' | i18n }}</a>
+          </div>
+        </div>
+        <div class="dashed-line"></div>
+        <div *ngIf="isViewLoginPolicy">
+          <lv-form [lvLabelColon]="false" lvLabelWidth="140px">
+            <lv-form-item>
+              <lv-form-label>{{ errorCountLabel }}</lv-form-label>
+              <lv-form-control>{{ policyData.passErrNum }}</lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>{{ lockDurationLabel }}</lv-form-label>
+              <lv-form-control>{{policyData.passLockTime}}{{minuteLabel}}</lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="isCyberEngine">
+              <lv-form-item>
+                <lv-form-label>
+                  {{'system_policy_login_info_label'| i18n}}
+                  <ng-container *ngTemplateOutlet="logInfoTipsTpl"></ng-container>
+                </lv-form-label>
+                <lv-form-control>
+                  {{!!policyData?.isEnableLoginNotes|textMap:'Switch_Status'}}
+                </lv-form-control>
+              </lv-form-item>
+              <lv-form-item>
+                <lv-form-label>
+                  {{'system_policy_user_defined_info_label'|i18n}}
+                  <ng-container *ngTemplateOutlet="userDefInfoTipsTpl"></ng-container>
+                </lv-form-label>
+                <lv-form-control>
+                  {{!!policyData?.isEnableUserDefNotes|textMap:'Switch_Status'}}
+                </lv-form-control>
+              </lv-form-item>
+              <lv-form-item *ngIf="!!policyData?.isEnableUserDefNotes">
+                <lv-form-label>
+                  {{'common_alarms_info_label'|i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                  <div [innerHTML]="policyData.userDefNodes" class="user-def-notes"></div>
+                </lv-form-control>
+              </lv-form-item>
+            </ng-container>
+          </lv-form>
+        </div>
+        <div *ngIf="!isViewLoginPolicy">
+          <lv-form [formGroup]="loginFormGroup" [lvLabelColon]="false" lvLabelWidth="140px">
+            <lv-form-item>
+              <lv-form-label lvRequired>
+                {{ errorCountLabel}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_policy_error_tip_label'|i18n }}"
+                  lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                  lvColorState='true'></i>
+              </lv-form-label>
+              <lv-form-control [lvErrorTip]="passErrNumErrorTip">
+                <input lv-input type="text" formControlName="passErrNum" placeholder="1~9" />
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label lvRequired>
+                {{ lockDurationLabel }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_policy_lock_tip_label'|i18n }}"
+                  lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                  lvColorState='true'></i>
+              </lv-form-label>
+              <lv-form-control [lvErrorTip]="passLockTimeErrorTip">
+                <lv-group [lvColumns]='["auto", "40px"]' lvRowGutter="8px">
+                  <input lv-input type="text" formControlName="passLockTime" placeholder="3~2000" />
+                  <span>{{ minuteLabel }}</span>
+                </lv-group>
+              </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="isCyberEngine">
+              <lv-form-item>
+                <lv-form-label lvRequired>
+                  {{'system_policy_login_info_label'| i18n}}
+                  <ng-container *ngTemplateOutlet="logInfoTipsTpl"></ng-container>
+                </lv-form-label>
+                <lv-form-control>
+                  <lv-switch formControlName="isEnableLoginNotes"></lv-switch>
+                </lv-form-control>
+              </lv-form-item>
+              <lv-form-item>
+                <lv-form-label lvRequired>
+                  {{'system_policy_user_defined_info_label'|i18n}}
+                  <ng-container *ngTemplateOutlet="userDefInfoTipsTpl"></ng-container>
+                </lv-form-label>
+                <lv-form-control>
+                  <lv-switch formControlName="isEnableUserDefNotes"></lv-switch>
+                </lv-form-control>
+              </lv-form-item>
+              <lv-form-item *ngIf="loginFormGroup.get('isEnableUserDefNotes').value">
+                <lv-form-label lvRequired>
+                  {{'common_alarms_info_label'|i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="customTipsErrorTip">
+                 <textarea
+                   lv-input
+                   formControlName="userDefNodes"
+                   [placeholder]= "userDefinedInfoPlaceholder"
+                   maxlength="511"
+                   rows="4"
+                 ></textarea>
+                </lv-form-control>
+              </lv-form-item>
+            </ng-container>
+          </lv-form>
+        </div>
+      </div>
+      <ng-template #logInfoTipsTpl>
+        <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_policy_login_info_tips_label' | i18n }}" lvTooltipTheme="light"
+           class="configform-constraint" lvColorState='true'></i>
+      </ng-template>
+      <ng-template #userDefInfoTipsTpl>
+        <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_policy_user_defined_info_tips_label' | i18n }}" lvTooltipTheme="light"
+           class="configform-constraint" lvColorState='true'></i>
+      </ng-template>
+      <div class="aui-block aui-gutter-column-md"
+        [ngClass]="{'security-right-4-container': isCyberEngine || isDataBackup}">
+        <div class="aui-header-2">
+          <h2>
+            {{ 'system_key_update_policy_label' | i18n }}
+            <span class="aui-link update-new" (click)="updatePolicyNow()" *ngIf="isViewKeyUpdatePolicy">
+              {{'system_update_new_label' | i18n}}
+            </span>
+          </h2>
+          <div>
+            <a *ngIf="!isViewKeyUpdatePolicy" style="margin-right:10px" (click)="saveKeyUpdatePolicy()"
+              [ngClass]="{'aui-link': keyUpdateFormGroup.valid, 'aui-link-disabled': keyUpdateFormGroup.invalid}">
+              {{ 'common_save_label' | i18n }}
+            </a>
+            <a *ngIf="!isViewKeyUpdatePolicy" class="aui-link" (click)="cancelKeyUpdatePolicy()">
+              {{ 'common_cancel_label' | i18n}}
+            </a>
+            <a *ngIf="isViewKeyUpdatePolicy" class="aui-link" (click)="modifyKeyUpdatePolicy()" pmpermission
+              pmOperation='ModifySecurityPolicy'>
+              {{ 'common_modify_label' | i18n }}
+            </a>
+          </div>
+        </div>
+        <div class="dashed-line"></div>
+        <div *ngIf="isViewKeyUpdatePolicy">
+          <lv-form [lvLabelColon]="false" lvLabelWidth="140px">
+            <lv-form-item>
+              <lv-form-label>{{ 'system_key_update_interval_label' | i18n }}</lv-form-label>
+              <lv-form-control>{{ keyUpdatePolicy.keyLifetime}}{{dayLabel}}</lv-form-control>
+            </lv-form-item>
+          </lv-form>
+        </div>
+        <div *ngIf="!isViewKeyUpdatePolicy">
+          <lv-form [lvLabelColon]="false" lvLabelWidth="140px" [formGroup]="keyUpdateFormGroup">
+            <lv-form-item>
+              <lv-form-label lvRequired>{{ 'system_key_update_interval_label' | i18n }} </lv-form-label>
+              <lv-form-control [lvErrorTip]="keyPolicyErrorTip">
+                <lv-group [lvColumns]='["auto", "30px"]' lvRowGutter="8px">
+                  <input lv-input type="text" placeholder="30~180" formControlName="keyLifetime" />
+                  <span>{{dayLabel}}</span>
+                </lv-group>
+              </lv-form-control>
+            </lv-form-item>
+          </lv-form>
+        </div>
+      </div>
+
+
+      <ng-container *ngIf="!isCyberEngine && !isDataBackup">
+        <div class="aui-block aui-gutter-column-md update-storage-password-container">
+          <div class="aui-header-2">
+            <h2>
+              {{ 'common_local_storage_password_update_label' | i18n }}
+            </h2>
+            <div>
+              <a class='aui-link' (click)="updateStoragePwd()">
+                {{ 'common_update_label' | i18n }}
+              </a>
+            </div>
+          </div>
+          <div class="dashed-line"></div>
+          <div>
+            <span [innerHTML]="'common_local_storage_password_update_tips_label' | i18n"></span>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+
+
+
+    <div>
+      <div class="aui-block  aui-gutter-column-md security-password-container">
+        <div class="aui-header-2">
+          <h2>
+            {{'system_weak_password_manage_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'system_weak_password_help_label' | i18n}}"
+              lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+          </h2>
+        </div>
+        <div class="dashed-line"></div>
+        <div class="weak-password-container">
+          <div class="aui-operation">
+            <lv-group>
+              <button lvType="primary" [disabled]="!addPasswordEnable" lv-button (click)="addTableData()">
+                {{ 'common_add_label' | i18n }}
+              </button>
+            </lv-group>
+            <lv-group>
+              <button class="aui-button-icon" lv-button lvSize="auto" (click)="getWeakPasswords()">
+                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+              </button>
+            </lv-group>
+          </div>
+          <lv-datatable [lvData]='passwordData' #passwordTable [lvPaginator]='page' lvSize="small">
+            <thead>
+              <tr>
+                <th>
+                  {{'system_weak_password_label' | i18n}}
+                  <i #weakPassowrdPopover="lvPopover" lv-icon="lv-icon-search" [lvColorState]="true"
+                    [ngClass]="{ active: !!weakPassowrd }" lv-popover [lvPopoverContent]="nameFilterTpl"
+                    lvPopoverTheme="light" lvPopoverPosition="bottom" lvPopoverTrigger="click"></i>
+                </th>
+                <th width="250px">
+                  {{'common_operation_label'|i18n }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let item of passwordTable.renderData">
+                <tr>
+                  <ng-container
+                    *ngTemplateOutlet="item?.isEditing ? editSimpleViewTpl : textSimpleViewTpl; context: { $implicit: item }">
+                  </ng-container>
+                </tr>
+              </ng-container>
+            </tbody>
+          </lv-datatable>
+          <div class="aui-paginator-wrap">
+            <lv-paginator [lvTotal]="passwordTotal" lvPageSize="5" #page [hidden]="!passwordTotal"
+              [lvPageSizeOptions]='sizeOptions' lvMode="simple"></lv-paginator>
+          </div>
+        </div>
+        <ng-template #textSimpleViewTpl let-item>
+          <td><span lv-overflow>
+              <span lv-overflow>{{item.password}}</span>
+            </span></td>
+          <td width="250px">
+            <span class="aui-link" (click)='deleteRow(item)'>{{'common_delete_label' | i18n}}</span>
+          </td>
+        </ng-template>
+        <ng-template #editSimpleViewTpl let-item>
+          <td class="add-input-container">
+            <lv-form [formGroup]="formGroupMap[item.id]" [lvLabelColon]='false'>
+              <lv-form-control #lvFormControl>
+                <lv-group lvGutter='6px'>
+                  <input lv-input class="notify-tb-input" formControlName="password" (ngModelChange)="focus(item)" />
+                  <i *ngIf="visiblePasswordErrorTip" [lv-tooltip]="currentErrorTip" [lvTooltipVisible]="true"
+                    lvTooltipPosition="right" lv-icon="lv-icon-status-failed"></i>
+                </lv-group>
+              </lv-form-control>
+            </lv-form>
+          </td>
+          <td width="250px">
+            <lv-group [lvGutter]="'24px'">
+              <a (click)='saveData(item)' [ngClass]="{'aui-link': formGroupMap[item.id] && formGroupMap[item.id].valid,
+                            'aui-link-disabled': formGroupMap[item.id] && formGroupMap[item.id].invalid}">
+                {{'common_save_label' | i18n}}
+              </a>
+              <a (click)='deleteRow(item)'>{{'common_cancel_label' | i18n}}</a>
+            </lv-group>
+          </td>
+        </ng-template>
+        <ng-template #nameFilterTpl>
+          <lv-search [(ngModel)]="weakPassowrd" (lvSearch)="searchByName($event)" [lvFocus]="true"></lv-search>
+        </ng-template>
+      </div>
+
+      <div class="aui-block aui-gutter-column-md "
+        [ngClass]="{'security-access-container-cyber': isCyberEngine,'security-access-container':!isCyberEngine && !isDataBackup,'security-access-container-data-backup': isDataBackup}">
+        <div class="aui-header-2">
+          <h2>
+            <span class="header-container">
+              {{'system_access_control_label' | i18n}}
+            </span>
+            <lv-tooltip lvContent="{{!ipData.length ? ('system_control_ip_save_desc_label' | i18n) : ''}}">
+              <lv-switch (ngModelChange)="accessControlChange($event)" [(ngModel)]="enableCtrl" *ngIf="isViewSecurityIp"
+                [lvDisabled]="!ipData.length">
+              </lv-switch>
+            </lv-tooltip>
+          </h2>
+
+          <div>
+            <lv-tooltip
+              lvContent="{{!ipData.length && enableCtrl ? ('system_control_ip_save_desc_label'|i18n): ipData.length > 32 ? ('system_control_max_ip_label'|i18n): ''}}">
+              <a style="margin-right:10px" *ngIf="!isViewSecurityIp"
+                [ngClass]="{'aui-link': ipData.length <=32 && addAccessIpEnable, 'aui-link-disabled': !(ipData.length <=32 && addAccessIpEnable)}"
+                (click)="saveSecurityIp()">
+                {{ 'common_save_label' | i18n }}
+              </a>
+            </lv-tooltip>
+            <a *ngIf="!isViewSecurityIp" class="aui-link" (click)="cancelSecurityIp()">
+              {{ 'common_cancel_label' | i18n }}
+            </a>
+            <a *ngIf="isViewSecurityIp" class="aui-link" (click)="modifySecurityIp()" pmpermission
+              pmOperation='ModifySecurityPolicy'>
+              {{ 'common_modify_label' | i18n }}</a>
+          </div>
+        </div>
+        <div class="dashed-line"></div>
+        <div class="weak-password-container" *ngIf="!isViewSecurityIp">
+          <div class="aui-operation">
+            <lv-group>
+              <button lvType="primary" [disabled]="!addAccessIpEnable" lv-button (click)="addIpTableData()">
+                {{ 'common_add_label' | i18n }}
+              </button>
+            </lv-group>
+          </div>
+          <div class='access-ctrl-container'>
+            <lv-datatable [lvData]='ipData' [lvScroll]='ipTableScroll.edit' #ipTable [lvPaginator]='page2' lvSize="small">
+              <thead>
+                <tr>
+                  <th>
+                    {{'system_control_ip_label' | i18n}}
+                  </th>
+                  <th width="144px">
+                    {{'common_operation_label'|i18n }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let item of ipTable.renderData">
+                  <tr>
+                    <ng-container
+                      *ngTemplateOutlet="item?.isEditing ? ipEditSimpleViewTpl : ipTextSimpleViewTpl; context: { $implicit: item }">
+                    </ng-container>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </lv-datatable>
+          </div>
+          <div class="aui-paginator-wrap">
+            <lv-paginator lvPageSize="10" #page2 [hidden]="!ipTable.renderData.length" [lvPageSizeOptions]='sizeOptions'
+              lvMode="simple"></lv-paginator>
+          </div>
+        </div>
+
+        <div class="weak-password-container" *ngIf="isViewSecurityIp">
+          <lv-datatable [lvData]='ipData' [lvScroll]='ipTableScroll.view' #ipTable [lvPaginator]='page2' lvSize="small">
+            <thead>
+              <tr>
+                <th>
+                  {{'system_control_ip_label' | i18n}}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let item of ipTable.renderData">
+                <tr>
+                  <td>
+                    <span lv-overflow>{{item.securityIp}}</span>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </lv-datatable>
+          <div class="aui-paginator-wrap">
+            <lv-paginator lvPageSize="10" #page2 [hidden]="!ipTable.renderData.length" [lvPageSizeOptions]='sizeOptions'
+              lvMode="simple"></lv-paginator>
+          </div>
+        </div>
+
+        <ng-template #ipTextSimpleViewTpl let-item>
+          <td>
+            <span lv-overflow>{{item.securityIp}}</span>
+          </td>
+          <td width="160px">
+            <span class="aui-link" (click)='deleteIpRow(item)'>{{'common_delete_label' | i18n}}</span>
+          </td>
+        </ng-template>
+
+        <ng-template #ipEditSimpleViewTpl let-item>
+          <td class="add-input-container">
+            <lv-form [formGroup]="ipFormGroupMap[item.id]" [lvLabelColon]='false'>
+              <lv-form-control #lvFormControl>
+                <lv-group lvGutter='6px'>
+                  <input lv-input class="ip-tb-input" formControlName="securityIp" (ngModelChange)="ipFocus(item)" />
+                  <i *ngIf="visibleIpErrorTip" [lv-tooltip]="currentIpErrorTip" [lvTooltipVisible]="true"
+                    lvTooltipPosition="right" lv-icon="lv-icon-status-failed"></i>
+                </lv-group>
+              </lv-form-control>
+            </lv-form>
+          </td>
+          <td width="160px">
+            <lv-group [lvGutter]="'24px'">
+              <a (click)='saveIpData(item)' [ngClass]="{'aui-link': ipFormGroupMap[item.id] && ipFormGroupMap[item.id].valid,
+                  'aui-link-disabled': ipFormGroupMap[item.id] && ipFormGroupMap[item.id].invalid}">
+                {{'common_save_label' | i18n}}
+              </a>
+              <a (click)='deleteIpRow(item)'>{{'common_cancel_label' | i18n}}</a>
+            </lv-group>
+          </td>
+        </ng-template>
+
+        <ng-template #ipFilterTpl>
+          <lv-search [(ngModel)]="securityIp" (lvSearch)="searchByIp($event)" [lvFocus]="true"></lv-search>
+        </ng-template>
+      </div>
+
+      <div class="aui-block aui-gutter-column-md">
+        <div class="aui-header-2">
+          <h2>
+            {{ 'system_internal_components_policy_label' | i18n }}
+          </h2>
+          <div>
+            <a class='aui-link' (click)="updateComponentPwd()">
+              {{ 'common_update_label' | i18n }}
+            </a>
+          </div>
+        </div>
+        <div class="dashed-line"></div>
+        <div>
+          <span>{{updatePwdTip}}</span>
+        </div>
+      </div>
+    </div>
+  </lv-group>
+</div>

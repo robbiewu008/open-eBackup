@@ -1,0 +1,266 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 系统管理接口
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: ${system-api}
+paths:
+  /v1/system/service-status-info:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-rd-admin-role: 'Y'
+      tags:
+        - ${system-api}
+      summary: 查询服务进度
+      description: |-
+        查询服务进度:
+        查询标准备份服务或者SFTP服务的安装进度
+      operationId: ListServiceStatusInfo
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: serviceType
+          in: query
+          required: true
+          description: 查询服务请求枚举
+          type: string
+          enum:
+            - SFTP
+            - STANDARD
+          x-impact-subsystem: 不影响
+          x-access-port: 25081
+          x-auth-required: 'Y'
+          x-public-api: 'Y'
+      responses:
+        '200':
+          description: 需要返回的Ip个数
+          schema:
+            $ref: '#/definitions/ConfigStatus'
+  /v2/system/ports:
+    post:
+      x-product: OceanProtect X
+      x-dm-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-rd-admin-role: 'Y'
+      tags:
+        - ${system-api}
+      summary: 获取容器端口
+      description: |-
+        获取容器端口;
+        获取当前应用的所有以太网端口,绑定端口,逻辑端口
+      operationId: ListAllPortUsingPOST
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: ListAllPortUsingPOSTRequestBody
+          in: body
+          required: true
+          description: 存储用户名、密码
+          schema:
+            $ref: '#/definitions/StorageAuth'
+      responses:
+        '200':
+          description: '所有端口列表集合:'
+          schema:
+            $ref: '#/definitions/AllPortsResponse'
+definitions:
+  ConfigStatus:
+    description: 开启标准备份服务状态
+    required:
+      - status
+    properties:
+      status:
+        type: integer
+        format: int32
+        description: 执行状态
+      code:
+        type: string
+        description: 错误码
+      desc:
+        type: string
+        description: 错误描述
+      rate:
+        type: integer
+        format: int32
+        description: 进入比率
+      params:
+        type: array
+        items:
+          type: string
+        description: 错误参数
+  StorageAuth:
+    type: object
+    description: 用户名和密码body体
+    required:
+      - password
+      - username
+    properties:
+      password:
+        type: string
+        description: 密码
+      username:
+        type: string
+        description: 用户名
+  BondPortDto:
+    type: object
+    description: 绑定端口组列表
+    required:
+      - name
+      - runningStatus
+      - owningController
+    properties:
+      name:
+        type: string
+        description: 名称
+      portIdList:
+        type: array
+        items:
+          type: string
+        description: 以太网端口Id列表名称
+      runningStatus:
+        type: string
+        description: 运行状态 0/10/11/33 未知/已连接/未连接/待恢复
+      owningController:
+        type: string
+        description: 端口归属控制器
+  EthPortDto:
+    type: object
+    description: 以太网端口列表
+    required:
+      - name
+      - runnintStatus
+      - owningController
+      - macAddress
+      - healthStatus
+    properties:
+      name:
+        type: string
+        description: 以太网端口名称
+      runnintStatus:
+        type: string
+        description: 运行状态 0/10/11/33 未知/已连接/未连接/待恢复
+        default: ''
+        enum:
+          - '0'
+          - '10'
+          - '11'
+          - '33'
+      owningController:
+        type: string
+        description: 端口归属控制器
+      macAddress:
+        type: string
+        description: 以太网Mac地址
+      healthStatus:
+        type: string
+        description: 健康状态
+      id:
+        type: string
+        description: 以太网端口id
+      location:
+        type: string
+        description: 以太网端口位置
+      mtu:
+        type: integer
+        format: int64
+        description: 最大传输单元
+      maxSpeed:
+        type: string
+        description: 最大工作效率
+  LogicPortDto:
+    type: object
+    description: 逻辑端口列表
+    required:
+      - name
+      - homePortName
+      - homePortType
+      - ip
+      - mask
+      - ipType
+      - supportPortocol
+    properties:
+      name:
+        type: string
+        description: 名称
+      homePortName:
+        type: string
+        description: 主端口名称
+      homePortType:
+        type: string
+        description: 父端口类型，1/7 以太网端口/绑定端口
+        enum:
+          - '1'
+          - '7'
+      ip:
+        type: string
+        description: IPV4/IPV6
+      mask:
+        type: string
+        description: 子网掩码
+      gateWay:
+        type: string
+        description: 网关
+      ipType:
+        type: string
+        description: ip类型， IPv4/IPv6
+        enum:
+          - IPV4
+          - IPV6
+      supportPortocol:
+        type: string
+        description: 支持协议，3/1024/0 NFS+CIFS/DataTurbo/无协议
+        enum:
+          - '3'
+          - '01024'
+      role:
+        type: string
+        description: 角色 ， 2/4 数据/复制
+        enum:
+          - '2'
+          - '4'
+  AllPortsResponse:
+    type: object
+    description: |-
+      所有端口列表集合:
+      以太网端口列表,逻辑端口列表,绑定端口列表
+    required:
+      - bondPortList
+      - ethPortList
+      - logicPortList
+    properties:
+      bondPortList:
+        items:
+          $ref: '#/definitions/BondPortDto'
+        description: 绑定端口组列表
+        type: array
+      ethPortList:
+        items:
+          $ref: '#/definitions/EthPortDto'
+        description: 以太网端口列表
+        type: array
+      logicPortList:
+        items:
+          $ref: '#/definitions/LogicPortDto'
+        description: 逻辑端口列表
+        type: array

@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Performing Periodic Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839274597.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792395516">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Performing Periodic Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792395516"></a><a name="EN-US_TOPIC_0000001792395516"></a>
+  <h1 class="topictitle1">Performing Periodic Backup</h1>
+  <div>
+   <p>The project/resource set or ECS to be protected needs to be associated with a specified SLA. The system periodically performs backup based on the SLA.</p>
+   <div class="section" id="EN-US_TOPIC_0000001792395516__section592472483112">
+    <h4 class="sectiontitle">Precautions</h4>
+    <ul id="EN-US_TOPIC_0000001792395516__ul11489174014141">
+     <li id="EN-US_TOPIC_0000001792395516__li15489104013147">Ensure that the production storage has reserved snapshot space for backup. Reserved snapshot space = Data volume of the source LUN x Percentage of data changes in the backup period. By default, you are advised to reserve 20% of the source LUN capacity for creating snapshots.</li>
+     <li id="EN-US_TOPIC_0000001792395516__li753614613148">An ECS can be backed up only when it is in the following states: <strong id="EN-US_TOPIC_0000001792395516__b1315603085514">Running</strong>, <strong id="EN-US_TOPIC_0000001792395516__b328618330554">Starting</strong>, <strong id="EN-US_TOPIC_0000001792395516__b13184103617556">Stopping</strong>, <strong id="EN-US_TOPIC_0000001792395516__b4161173925518">Stopped</strong>, <strong id="EN-US_TOPIC_0000001792395516__b42828439551">Reinstalling OS</strong>, <strong id="EN-US_TOPIC_0000001792395516__b5147647155510">Reinstalling OS failed</strong>, <strong id="EN-US_TOPIC_0000001792395516__b8531750105513">Changing OS</strong>, and <strong id="EN-US_TOPIC_0000001792395516__b15116105395513">OS Change failed</strong>.</li>
+     <li id="EN-US_TOPIC_0000001792395516__li3646173183411">The default number of concurrent backup jobs on each ProtectAgent is 20. You are advised not to change the number. Otherwise, disk scanning may fail, causing backup failures.</li>
+     <li id="EN-US_TOPIC_0000001792395516__li1469271831514">If ECSs or EVS disks on Huawei scale-out block storage are migrated to SAN storage, you must register SAN storage resources with the <span id="EN-US_TOPIC_0000001792395516__text62648572215">product</span> before backing up ECSs or EVS disks.</li>
+     <li id="EN-US_TOPIC_0000001792395516__li999215138588">Before the first backup, complete resource scanning so that the latest ECS information can be displayed. For details, see "Managing an Agent Host" in the <em id="EN-US_TOPIC_0000001792395516__i9578113116710">ProtectAgent Installation Guide</em>.</li>
+     <li id="EN-US_TOPIC_0000001792395516__li412153019411">If a snapshot fails to be deleted due to a backup job exception, the system automatically deletes unnecessary snapshots when the next full backup job is performed.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Periodically Backing Up Projects or Resource Sets</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792395516__en-us_topic_0000001839194633_en-us_topic_0000001839142377_uicontrol23517341412"><b><span id="EN-US_TOPIC_0000001792395516__en-us_topic_0000001839194633_en-us_topic_0000001839142377_text635183444114"><strong>Protection</strong></span> &gt; Cloud Platforms &gt; Huawei Cloud Stack</b></span>.</span></li>
+     <li><span>Click the <span><strong>Project/Resource Set</strong></span> tab and select the project or resource set to be protected.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>If the project/resource set to be protected is not displayed, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Resource Scan</strong></span></b></span> in the left pane to update resource information.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Protect</strong></span></b></span> above the list.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul>
+         <li>The system backs up all ECSs in the project/resource set.</li>
+         <li>You can also locate the row that contains the project/resource set to be protected and choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Protect</strong></span> </b></span>.</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792395516__li343674154015"><span>Select a preset or user-defined SLA.</span><p></p><p id="EN-US_TOPIC_0000001792395516__p33248794210">You can also click <span class="uicontrol" id="EN-US_TOPIC_0000001792395516__uicontrol1895252122618"><b><span id="EN-US_TOPIC_0000001792395516__text159521921122614"><strong>Create</strong></span></b></span> to create an SLA.</p> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792395516__li1316316472413"><span>Select an agent host. If you do not select an agent host, the system randomly selects an agent host when executing the job.</span></li>
+     <li><span>Set the parameters as follows:</span><p></p>
+      <ol type="a">
+       <li>Choose whether to overwrite the existing SLA of the ECS.
+        <div class="p">
+         The default value is <span class="uicontrol"><b><span><strong>Retain existing SLAs of the cloud server</strong></span></b></span>.
+         <div class="note">
+          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <p>If you choose <span class="uicontrol"><b><span><strong>Retain existing SLAs of the cloud server</strong></span></b></span> when modifying the SLA associated with the project or resource set, the ECS SLA will be overwritten if the SLA of the ECS is the same as that of the project or resource set.</p>
+          </div>
+         </div>
+        </div></li>
+       <li>You can select one or more of the following options for SLA application at a time:
+        <ul>
+         <li><span><strong>Apply the project/resource set SLA to all unassociated cloud servers</strong></span></li>
+         <li><span><strong>Apply the project/resource set SLA to newly created cloud servers</strong></span><p>After Huawei Cloud Stack is scanned, the newly discovered ECS is associated with the same SLA as the project or resource set.</p></li>
+        </ul></li>
+       <li>Specify ECSs to be excluded or included in the protection plan.<p>You can specify ECSs to be excluded or included based on ECS names.</p> <p>Exact match and fuzzy match of ECS names are supported. Fuzzy match rules include prefix match (for example, abc*), suffix match (for example, *abc), and middle match (for example, *abc*).</p></li>
+      </ol> <p></p></li>
+     <li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001792395516__en-us_topic_0000001607841256_uicontrol196538515235"><b>OK</b></span>. </span><p></p><p id="EN-US_TOPIC_0000001792395516__en-us_topic_0000001607841256_p25041111535">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p> <p></p></li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Periodically Backing Up ECSs</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792395516__en-us_topic_0000001839194633_en-us_topic_0000001839142377_uicontrol23517341412_1"><b><span id="EN-US_TOPIC_0000001792395516__en-us_topic_0000001839194633_en-us_topic_0000001839142377_text635183444114_1"><strong>Protection</strong></span> &gt; Cloud Platforms &gt; Huawei Cloud Stack</b></span>.</span></li>
+     <li><span>Click the <strong><span><strong>Cloud Server</strong></span></strong> tab. Select the ECS to be protected.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>If the ECS to be protected is not displayed, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Resource Scan</strong></span></b></span> in the left pane to update resource information.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Protect</strong></span></b></span> above the list.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>You can also locate the row that contains the ECS to be protected and choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Protect</strong></span> </b></span>.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Select the EVS disk to be backed up.</span><p></p><p><strong><span><strong>Automatic EVS Disk Protection</strong></span></strong> is enabled by default to back up all EVS disks of an ECS. You can disable <strong><span><strong>Automatic EVS Disk Protection</strong></span></strong> and click <strong><span><strong>Please select</strong></span></strong> to manually select some EVS disks for backup.</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>After some EVS disks are selected for backup, the generated copies support only EVS disk-level restoration but not ECS-level restoration.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Select a preset or user-defined SLA.</span><p></p><p id="EN-US_TOPIC_0000001792395516__en-us_topic_0000001792395516_p33248794210">You can also click <span class="uicontrol" id="EN-US_TOPIC_0000001792395516__en-us_topic_0000001792395516_uicontrol1895252122618"><b><span id="EN-US_TOPIC_0000001792395516__en-us_topic_0000001792395516_text159521921122614"><strong>Create</strong></span></b></span> to create an SLA.</p> <p></p></li>
+     <li><span>Select an agent host. If you do not select an agent host, the system randomly selects an agent host when executing the job.</span></li>
+     <li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001792395516__en-us_topic_0000001607841256_uicontrol196538515235_1"><b>OK</b></span>. </span><p></p><p id="EN-US_TOPIC_0000001792395516__en-us_topic_0000001607841256_p25041111535_1">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001839274597.html">Step 7: Performing Backup</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

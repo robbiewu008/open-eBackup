@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="手动执行备份">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839145169.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001792345994">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>手动执行备份</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001792345994"></a><a name="ZH-CN_TOPIC_0000001792345994"></a>
+  <h1 class="topictitle1">手动执行备份</h1>
+  <div>
+   <p>当您需要立即执行一次备份任务时，可以通过手动备份实现。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <ul>
+     <li>手动备份时，SLA中定义的参数（<span class="uicontrol">“<span>失败后自动重试</span>”</span>除外）会应用到手动备份任务中。</li>
+     <li>手动备份产生的副本保留时长按照SLA中定义的保留时长进行保留。<p>如果手动备份时选择的保护策略未在SLA中定义，则产生的备份副本保留时长为永久保留。如SLA中未定义全量备份，而手动备份时选择的是全量备份，则本次手动全量备份产生的副本保留时长为永久保留。</p></li>
+     <li>如果SLA定义了复制策略或归档策略，则执行手动备份时，系统会按照SLA的定义执行一次复制或归档。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792346046_p18932191911200">对于1.5.0版本，日志备份与下一次数据备份间会存在空洞区域，该区域的数据文件不保留。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792346046_ul1696571551317">
+     <li id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792346046_li2034121133520">仅当数据库状态<span class="uicontrol" id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792346046_uicontrol144732052173016">“正常”</span>或<span class="uicontrol" id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792346046_uicontrol197313495305">“降级”</span>时，可进行备份操作。数据库状态为<span class="uicontrol" id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792346046_uicontrol43607103118">“降级”</span>时，仅可进行全量备份或增量备份。</li>
+     <li id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792346046_li3624153115373">更换代理主机或修改项目信息后，需要重新进行资源扫描。</li>
+     <li id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792346046_li53411598230">对于OLTP OPS，发起备份前，确保在OLTP OPS管理界面已配置实例的备份默认根路径。</li>
+     <li id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792346046_li75616518302">对于OLTP OPS，发起备份前，确保被OLTP OPS纳管的实例已打开监控。</li>
+     <li id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792346046_li447154971420">执行备份前，需在代理主机中启动backUpAgent。启动方法请参见《ProtectAgent安装指南》中的“启动backUpAgent”章节。</li>
+     <li id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792346046_li122821411717">发起备份前，确保TPOPS上开启了XBSA备份的白名单，开启方法请参见<a href="zh-cn_topic_0000001839145089.html">步骤1：在TPOPS节点上开启XBSA备份的白名单</a>。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001839225093_zh-cn_topic_0000001839142377_uicontrol932712545121">“<span id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001839225093_zh-cn_topic_0000001839142377_text49391010171710">保护</span> &gt; 数据库 &gt; GaussDB”</span>。</span><p></p>
+      <div class="note" id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001839225093_zh-cn_topic_0000001839142377_note62461853660">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001839225093_zh-cn_topic_0000001839142377_p141794599612">对于1.5.0版本，请选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001839225093_zh-cn_topic_0000001839142377_uicontrol1294410117713">“<span id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001839225093_zh-cn_topic_0000001839142377_text1894431114714">保护</span> &gt; 云平台 &gt; GaussDB”</span>。</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>选择“<span id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792346046_text1245710348415">实例</span>”页签。</span></li>
+     <li><span>在需要备份的实例所在行右侧，单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792503838_p870125314544">支持选择多个资源批量进行手动备份。勾选多个资源，在页面左上角选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792503838_uicontrol14182155715711">“<span id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792503838_text662114113158">更多</span> &gt; <span id="ZH-CN_TOPIC_0000001792345994__zh-cn_topic_0000001792503838_text1068159191519">手动备份</span>”</span>。</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>设置手动备份产生的副本名称。</span><p></p><p>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p> <p></p></li>
+     <li><span>选择保护策略：<span>全量备份</span>、<span>增量备份</span>或<span>日志备份</span>。</span></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001839145169.html">步骤9：执行备份</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

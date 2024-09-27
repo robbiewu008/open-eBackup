@@ -1,0 +1,47 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_openstack_quota_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="" lvTooltipTheme="light" class="configform-constraint"
+                lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="quota"></lv-switch>
+            <lv-radio-group formControlName="quota" [lvGroupName]="'quotaGroup'">
+                <lv-group [lvGutter]="'24px'">
+                    <lv-radio [lvValue]="'1'">
+                        {{ 'protection_unlimited_quota_label' | i18n }}
+                    </lv-radio>
+                    <lv-radio [lvValue]="'2'">
+                        {{ 'protection_quota_capacity_label' | i18n }}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+            <div>
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'protection_quota_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <lv-group lvGutter="8px">
+                            <input lv-input formControlName="size" type="text" />
+                            <lv-select [lvOptions]="sizeUnitOptions" formControlName="unit" lvValueKey="value">
+                            </lv-select>
+                        </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+            </div>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

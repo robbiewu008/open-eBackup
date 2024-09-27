@@ -1,0 +1,69 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="sub-body">
+    <div class="aui-gutter-column-sm">
+        <lv-group lvGutter='8px' [ngClass]="{'kerberos-group': showKerberos}">
+            <h1>{{typeTitle}}</h1>
+            <ng-container *ngIf="isEmpty(routerType)">
+                <a [href]="helpUrl" target="_blank" lv-link [lvIcon]="true">{{'common_help_word_label' | i18n}}</a>
+            </ng-container>
+            <lv-group lvGutter='4px' *ngIf="showKerberos" class="aui-link" (click)="gotoKerberos()">
+                <img src="assets/img/setting.svg" />
+                <span>{{'Kerberos' | i18n}}</span>
+            </lv-group>
+        </lv-group>
+    </div>
+    <section class="content-section-column">
+        <lv-tabs [lvType]="'panel'" [(lvActiveIndex)]="activeId" (lvActiveIndexChange)="checked($event)">
+            <lv-tab *ngFor="let app of subApp; let i = index" [lvTitle]="tabTitle" [lvDropdownLabel]="dropdownTpl"
+                [lvId]="app.id">
+                <ng-template #tabTitle>
+                    <div class="tab-header" [ngClass]="{'max-width': subApp.length < 3, 'min-width':subApp.length >= 3}"
+                        (mouseenter)="hoveredItem = app" (mouseleave)="hoveredItem = null">
+                        <lv-group lvGutter='8px' class="app-titile-group">
+                            <lv-group *ngIf="isSort" lvGutter='4px'>
+                                <div class="app-logo-container" [style.backgroundColor]="app.color">
+                                    {{app.prefix}}
+                                </div>
+                                <lv-group>
+                                    <span lv-overflow
+                                        [ngClass]="{'min-warp': subApp.length >= 3, 'max-warp': subApp.length < 3}">
+                                        {{app.label}}
+                                    </span>
+                                    <i *ngIf="app.tooltip" lv-icon="aui-icon-help" lv-tooltip="{{ app.tooltip }}"
+                                        lvTooltipTheme="light" class="tooltip-mgl" lvColorState='true'></i>
+                                </lv-group>
+                            </lv-group>
+                            <i [lv-icon]="backToTopIcon(app)" class="backToTopIcon" [lv-tooltip]="toTopIconToolTip(app)"
+                                (click)="iconBackToTopClicked($event, app)"></i>
+                        </lv-group>
+                        <div class="count-label" *ngIf="!['livemount','anti'].includes(routerType)">{{app.count}}</div>
+                    </div>
+                </ng-template>
+                <!-- 右侧更多展开 -->
+                <ng-template #dropdownTpl>
+                    <lv-group lvGutter='8px' class="app-more-titile-group">
+                        <div class="app-logo-container" [style.backgroundColor]="app.color">
+                            {{app.prefix}}
+                        </div>
+                        <lv-group>
+                            <span>{{app.label}}</span>
+                            <span>({{app.count}})</span>
+                        </lv-group>
+                    </lv-group>
+                </ng-template>
+            </lv-tab>
+        </lv-tabs>
+    </section>
+</div>

@@ -1,0 +1,307 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.nameErrorTip">
+            <input lv-input type="text" formControlName="name" />
+        </lv-form-control>
+    </lv-form-item>
+    <h2 class="mgt-50 aui-gutter-column-lg">{{'explore_detection_policy_config_label' | i18n}}</h2>
+    <lv-tabs formArrayName="backupTeams" [lvType]="'card'" [lvTabBarExtraContent]="extraTpl" lvClosable
+        [(lvActiveIndex)]="activeIndex" (lvTabRemove)="removeBackupTeam($event)">
+        <lv-tab *ngFor="let item of formGroup.get('backupTeams')?.controls; let teamIndex = index"
+            [formGroupName]="teamIndex"
+            lvTitle="{{ item.get('name').value || ('common_policy_params_label' | i18n :['0'+(teamIndex+1)])}}"
+            [lvId]="teamIndex">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'explore_detecte_mode_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select [lvOptions]="detectionOptions" formControlName="need_detect" lvValueKey="value">
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="item.get('need_detect').value === dataMap.detectionMethod.auto.value">
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'explore_depth_detection_label' | i18n}}
+                        <i lv-icon="aui-icon-help"
+                            lv-tooltip="{{'explore_backup_policy_depth_backup_detect_label' | i18n}}"
+                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                            lvColorState='true'></i>
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="is_backup_detect_enable"></lv-switch>
+                        <!-- 敏感度调节 -->
+                        <ng-container *ngIf="item.get('is_backup_detect_enable').value">
+                            <aui-detect-upper-bound [formGroup]="item"></aui-detect-upper-bound>
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_lock_no_anti_data_label' | i18n}}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_anti_lock_enable_tip_label' | i18n}}"
+                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                            lvColorState='true'></i>
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="is_security_snap"></lv-switch>
+                        <ng-container *ngIf="item.get('is_security_snap').value">
+                            <span class="aui-text-help mgl-4">{{'protection_anti_lock_enable_tip_label' | i18n}}</span>
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+            <h3 class="aui-gutter-column-md mgt-30">{{'explore_ransomware_detection_snapshot_label' | i18n}}</h3>
+            <div class="policy-container">
+                <lv-radio-group formControlName="trigger_action" [lvGroupName]="'group'" class="mgl-24">
+                    <lv-group [lvGutter]="'24px'">
+                        <lv-radio [lvValue]="triggerType.year">
+                            {{'common_by_year_label' | i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="triggerType.month">
+                            {{'common_by_month_label' | i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="triggerType.week">
+                            {{'common_by_week_label' | i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="triggerType.day">
+                            {{'common_by_day_label' | i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="triggerType.hour">
+                            {{'common_by_hour_label' | i18n}}
+                        </lv-radio>
+                    </lv-group>
+                </lv-radio-group>
+                <div class="date-container mgt-10">
+                    <lv-group class="aui-gutter-column-lg">
+                        <!-- 按小时/天 -->
+                        <ng-container
+                            *ngIf="item.get('trigger_action').value === triggerType.day || item.get('trigger_action').value === triggerType.hour">
+                            <lv-group>
+                                <lv-form-label>{{'common_from_label' | i18n}}</lv-form-label>
+                                <lv-form-control [lvErrorTip]="startTimeErrorTip">
+                                    <lv-date-picker formControlName="start_time" class="start-time">
+                                    </lv-date-picker>
+                                </lv-form-control>
+                                <lv-form-label>{{'common_start_label' | i18n}}{{'common_comma_label' | i18n}}
+                                </lv-form-label>
+                            </lv-group>
+                            <lv-group>
+                                <lv-form-label>{{'common_every_label' | i18n}}</lv-form-label>
+                                <lv-form-control [lvErrorTip]="intervalErrorTip" class="groupInControl">
+                                    <lv-group class="lv-group-flex-start">
+                                        <input lv-input type="text" formControlName="interval" class="interval"
+                                            placeholder="{{item.get('trigger_action').value === triggerType.day ? '1~365' : '1~23'}}" />
+                                        <lv-form-label>
+                                            {{(item.get('trigger_action').value === triggerType.day ?
+                                            'common_days_label' :
+                                            'common_hours_label') | i18n}}
+                                            {{'protection_execute_once_label' | i18n}}
+                                            {{'common_comma_label' | i18n}}
+                                        </lv-form-label>
+                                    </lv-group>
+                                </lv-form-control>
+                            </lv-group>
+                        </ng-container>
+                        <!-- 按年 -->
+                        <ng-container *ngIf="item.get('trigger_action').value === triggerType.year">
+                            <lv-group>
+                                <lv-form-label>{{'common_every_year_label' | i18n}}</lv-form-label>
+                                <lv-form-control [lvErrorTip]="daysOfYearErrorTip" class="groupInControl">
+                                    <lv-date-picker formControlName="days_of_year" class="start-time" lvFormat="MM-dd"
+                                        [lvCalendarYearOperate]="{ show: false }" lvShowNowButton="false">
+                                    </lv-date-picker>
+                                </lv-form-control>
+                                <lv-form-label>{{'protection_execute_once_label' | i18n}}{{'common_comma_label' | i18n}}
+                                </lv-form-label>
+                            </lv-group>
+                        </ng-container>
+                        <!-- 按月 -->
+                        <ng-container *ngIf="item.get('trigger_action').value === triggerType.month">
+                            <lv-group>
+                                <lv-form-label>{{'common_every_month_label' | i18n}}</lv-form-label>
+                                <lv-group lvGutter="8px" class="lv-group-flex-start">
+                                    <lv-select [lvOptions]="daysOfMonthOptions" formControlName="days_of_month_type"
+                                        lvValueKey="value" class="day-of-month-type"></lv-select>
+                                    <ng-container
+                                        *ngIf="item.get('days_of_month_type').value === daysOfMonthType.specifiedDate.value">
+                                        <lv-form-control [lvErrorTip]="daysOfMonthErrorTip"
+                                            class="groupInControl daysOfMonthGroup">
+                                            <lv-input-group [lvSuffix]="suffixTpl" #popover="lvPopover" lv-popover
+                                                [lvPopoverContent]="daysOfMonthTpl" lvPopoverTheme="light"
+                                                readonly="readonly" lvPopoverPosition="bottom" lvPopoverTrigger="click"
+                                                lvPopoverShowArrow="false" lvPopoverBackdrop="true"
+                                                lvPopoverMaskTransparent="true" lvPopoverClassName="customer-popover"
+                                                lvDisabled>
+                                                <input lv-input formControlName="days_of_month"
+                                                    placeholder="{{'protection_select_date_label'|i18n}}" />
+                                            </lv-input-group>
+                                        </lv-form-control>
+                                        <ng-template #suffixTpl>
+                                            <i lv-icon="lv-icon-triangle-down"></i>
+                                        </ng-template>
+                                        <ng-template #daysOfMonthTpl>
+                                            <lv-group lvDirection='vertical'>
+                                                <lv-checkbox-group #daysOfMonthGroup formControlName="days_of_months">
+                                                    <ng-container *ngFor="let data of monthDaysItems">
+                                                        <lv-group [lvGutter]="'16px'" class="month-day">
+                                                            <ng-container *ngFor="let d of data.key">
+                                                                <lv-checkbox [lvViewType]="'custom'" [lvValue]="d">
+                                                                    <div class="month-card"
+                                                                        [ngClass]="{'select': daysOfMonthGroup.isChecked(d)}">
+                                                                        {{d}}
+                                                                    </div>
+                                                                </lv-checkbox>
+                                                            </ng-container>
+                                                        </lv-group>
+                                                    </ng-container>
+                                                </lv-checkbox-group>
+                                                <div class="aui-text-help solid-line">
+                                                    {{'protection_days_of_month_desc_label'|i18n}}
+                                                </div>
+                                            </lv-group>
+                                        </ng-template>
+                                    </ng-container>
+                                </lv-group>
+                                <lv-form-label>{{'protection_execute_once_label' | i18n}}{{'common_comma_label' | i18n}}
+                                </lv-form-label>
+                            </lv-group>
+                        </ng-container>
+                        <!-- 按周 -->
+                        <ng-container *ngIf="item.get('trigger_action').value === triggerType.week">
+                            <lv-group>
+                                <lv-form-label>{{'common_every_week_label' | i18n}}</lv-form-label>
+                                <div class="day-of-week-container">
+                                    <lv-form-control [lvErrorTip]="daysOfWeekErrorTip" class="groupInControl">
+                                        <lv-select [lvOptions]="daysOfWeekOptions" formControlName="days_of_week"
+                                            lvValueKey="value" class="day-of-week" lvMode='multiple' lvShowFilter
+                                            lvShowCheckAll lvFilterKey="label" lvFilterMode='contains'></lv-select>
+                                    </lv-form-control>
+                                </div>
+                                <lv-form-label>{{'protection_execute_once_label' | i18n}}{{'common_comma_label' | i18n}}
+                                </lv-form-label>
+                            </lv-group>
+                        </ng-container>
+                        <!-- 快照保留 -->
+                        <lv-group>
+                            <lv-form-label>{{'explore_snapshot_retention_label' | i18n}}</lv-form-label>
+                            <lv-form-control [lvErrorTip]="retentionErrorTip" class="groupInControl">
+                                <lv-group lvGutter="8px" class="lv-group-flex-start">
+                                    <input lv-input formControlName="retention_duration" type="text"
+                                        placeholder="{{item.get('duration_unit').value=='d'?'1~365':item.get('duration_unit').value=='w'?'1~54':item.get('duration_unit').value=='MO'?'1~24':item.get('duration_unit').value=='p' ? '':'1~10'}}"
+                                        class="retention" />
+                                    <lv-select [lvOptions]="durationUnitOptions" formControlName="duration_unit"
+                                        lvValueKey="value" class="retention-option">
+                                    </lv-select>
+                                </lv-group>
+                            </lv-form-control>
+                        </lv-group>
+                    </lv-group>
+                    <!-- 备份时间段 -->
+                    <lv-group class="lv-group-flex-start">
+                        <lv-form-label>{{'common_from_label' | i18n}}</lv-form-label>
+                        <lv-form-control [lvErrorTip]="windowStartTimeErrorTip">
+                            <lv-time-picker formControlName="window_start" lvPlaceholder="HH:mm:ss" class="start-time">
+                            </lv-time-picker>
+                        </lv-form-control>
+                        <lv-form-label>{{'common_to_label' | i18n}}</lv-form-label>
+                        <lv-form-control [lvErrorTip]="windowEndTimeErrorTip">
+                            <lv-time-picker formControlName="window_end" lvPlaceholder="HH:mm:ss" class="end-time">
+                            </lv-time-picker>
+                        </lv-form-control>
+                        <lv-form-label>{{'explore_allow_anti_snapshot_label' | i18n}}</lv-form-label>
+                    </lv-group>
+                </div>
+            </div>
+        </lv-tab>
+    </lv-tabs>
+    <div class="dashed-line aui-gutter-column-lg mgt-30"></div>
+    <!-- 高级配置 -->
+    <lv-collapse [lvType]="'simple'">
+        <lv-collapse-panel [lvTitle]="'common_advanced_label'|i18n" [lvExpanded]="false">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_job_failed_alarm_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_alarm_after_failure_help_label' | i18n}}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="alarm_after_failure"></lv-switch>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>{{'protection_auto_retry_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="auto_retry"></lv-switch>
+                    <ng-container *ngIf="formGroup.value.auto_retry">
+                        <div class="aui-gutter-column-md"></div>
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{'common_retry_times_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="retryTimesErrorTip" class="groupInControl">
+                                <lv-group lvGutter='8px' class="lv-group-flex-start">
+                                    <lv-group>
+                                        <input lv-input formControlName="auto_retry_times" type="text" lvSize="small"
+                                            placeholder="1~5" class="backup-for-text" />
+                                    </lv-group>
+                                    <lv-group>
+                                        <span class="configform-constraint">
+                                            {{'common_times_label' | i18n}}
+                                        </span>
+                                    </lv-group>
+                                </lv-group>
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{'common_waiting_time_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="waitTimesErrorTip" class="groupInControl">
+                                <lv-group lvGutter='8px' class="lv-group-flex-start">
+                                    <lv-group>
+                                        <input lv-input formControlName="auto_retry_wait_minutes" type="text"
+                                            lvSize="small" placeholder="1~30" class="backup-for-text" />
+                                    </lv-group>
+                                    <lv-group>
+                                        <span class="configform-constraint">
+                                            {{'common_minutes_label' | i18n}}
+                                        </span>
+                                    </lv-group>
+                                </lv-group>
+                            </lv-form-control>
+                        </lv-form-item>
+                    </ng-container>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-collapse-panel>
+    </lv-collapse>
+</lv-form>
+
+<ng-template #extraTpl>
+    <lv-group lvGutter='4px'
+        [ngClass]="{'aui-link': formGroup.get('backupTeams')?.controls?.length < 4,'aui-link-disabled': formGroup.get('backupTeams')?.controls?.length >= 4}"
+        class="aui-link" (click)="addBackupTeam()">
+        <i
+            lv-icon="{{formGroup.get('backupTeams')?.controls?.length < 4 ? 'aui-icon-add-enable' : 'lv-icon-create'}}"></i>
+        <span>{{'explore_add_policy_label' | i18n}}</span>
+    </lv-group>
+</ng-template>
