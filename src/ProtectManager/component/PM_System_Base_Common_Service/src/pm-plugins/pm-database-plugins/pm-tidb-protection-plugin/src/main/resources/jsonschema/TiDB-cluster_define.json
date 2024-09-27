@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "title",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "集群实例名称",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型"
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型"
+    },
+    "auth": {
+      "$ref": "classpath:jsonschema/TiDB-base.json#/auth"
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "tiupUuid": {
+          "type": "string",
+          "description": "tiup节点uuid",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "clusterName": {
+          "type": "string",
+          "description": "集群名字",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "logBackupPath": {
+          "type": "string",
+          "description": "logBackupPath",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "clusterInfoList": {
+          "type": "string",
+          "description": "集群配置信息",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "description": "集群版本",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "owner": {
+          "type": "string",
+          "description": "集群归属",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "tiupPath": {
+          "type": "string",
+          "description": "tiup安装路径",
+          "minLength": 1,
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "tiupUuid",
+        "clusterName",
+        "logBackupPath",
+        "clusterName",
+        "version",
+        "owner",
+        "tiupPath"
+      ]
+    },
+    "dependencies": {
+      "$ref": "classpath:jsonschema/TiDB-base.json#/agentDependencies"
+    }
+  },
+  "required": [
+    "subType",
+    "type",
+    "name",
+    "dependencies",
+    "auth",
+    "extendInfo"
+  ]
+}

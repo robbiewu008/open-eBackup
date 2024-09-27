@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "title",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "集群实例uuid"
+    },
+    "name": {
+      "type": "string",
+      "description": "集群实例名称"
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型"
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型"
+    },
+    "parentUuid": {
+      "type": "string",
+      "description": "实例所在集群uuid"
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "networkName": {
+          "type": "string"
+        }
+      }
+    },
+    "dependencies": {"$ref": "classpath:jsonschema/SQLServer-base.json#/agentDependencies"},
+    "auth": {"$ref": "classpath:jsonschema/SQLServer-base.json#/auth"}
+  },
+  "required": [
+    "subType",
+    "type",
+    "name",
+    "parentUuid",
+    "extendInfo",
+    "dependencies",
+    "auth"
+  ]
+}

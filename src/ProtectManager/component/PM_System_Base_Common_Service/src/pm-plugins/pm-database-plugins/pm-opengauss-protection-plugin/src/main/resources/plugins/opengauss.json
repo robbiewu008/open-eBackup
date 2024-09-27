@@ -1,0 +1,13 @@
+{
+  "type": "Database",
+  "subType": "OpenGauss",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "environment": "agents"
+        }
+      ]
+    }
+  }
+}

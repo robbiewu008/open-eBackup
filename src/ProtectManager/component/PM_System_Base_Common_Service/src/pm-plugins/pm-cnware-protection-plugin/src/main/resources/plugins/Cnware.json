@@ -1,0 +1,16 @@
+{
+  "type": "CNware",
+  "subType": "CNware",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "environment": "agents"
+        }
+      ]
+    },
+    "scan": {
+      "auto-scan": true
+    }
+  }
+}

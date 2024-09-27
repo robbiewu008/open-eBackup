@@ -1,0 +1,13 @@
+{
+  "type": "Database",
+  "subType": "Exchange-group",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "environment": "agents"
+        }
+      ]
+    }
+  }
+}

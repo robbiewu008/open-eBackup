@@ -1,0 +1,16 @@
+package openbackup.openstack.protection.access.keystone.dto;
+
+import lombok.Data;
+
+/**
+ * region结构体
+ *
+ * @author x30038064
+ * @version [OceanProtect X8000 1.3.0]
+ * @since 2022-12-26
+ */
+@Data
+public class RegionDto {
+    private String id;
+    private String description;
+}

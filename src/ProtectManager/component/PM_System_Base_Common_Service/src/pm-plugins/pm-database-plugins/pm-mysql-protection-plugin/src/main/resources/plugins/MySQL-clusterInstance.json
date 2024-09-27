@@ -1,0 +1,9 @@
+{
+  "type": "Database",
+  "subType": "MySQL-clusterInstance",
+  "functions": {
+    "scan": {
+      "auto-scan": true
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "base",
+  "agentDependencies": {
+    "type": "object",
+    "properties": {
+      "agents": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "uuid": {
+              "type": "string",
+              "description": "主机uuid"
+            }
+          },
+          "required": [
+            "uuid"
+          ]
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "agents"
+    ]
+  },
+  "clusterTypeExtendInfo": {
+    "type": "object",
+    "properties": {
+      "clusterType": {
+        "type": "string",
+        "description": "集群类型"
+      },
+      "isTopInstance": {
+        "type": "string"
+      },
+      "linkStatus": {
+        "type": "string"
+      },
+      "deployOperatingSystem": {
+        "type": "string",
+        "description": "部署的操作系统"
+      }
+    },
+    "required": [
+      "clusterType",
+      "isTopInstance",
+      "linkStatus",
+      "deployOperatingSystem"
+    ]
+  },
+  "auth": {
+    "type": "object",
+    "properties": {
+      "authType": {
+        "type": "integer",
+        "description": "认证类型"
+      },
+      "authKey": {
+        "type": "string",
+        "description": "认证用户名"
+      },
+      "authPwd": {
+        "type": "string",
+        "description": "认证密码"
+      },
+      "extendInfo": {
+        "type": "object",
+        "properties": {
+          "instancePort": {
+            "type": "string",
+            "description": "子实例端口"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "instancePort"
+        ]
+      }
+    },
+    "required": [
+      "authType",
+      "authPwd",
+      "authKey",
+      "extendInfo"
+    ]
+  }
+}

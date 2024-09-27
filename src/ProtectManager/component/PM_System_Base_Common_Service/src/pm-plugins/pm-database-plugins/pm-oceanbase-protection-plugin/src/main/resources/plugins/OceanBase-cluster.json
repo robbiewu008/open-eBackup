@@ -1,0 +1,19 @@
+{
+  "type": "Database",
+  "subType": "OceanBase-cluster",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "environment": "clientAgents"
+        },
+        {
+          "environment": "serverAgents"
+        }
+      ]
+    },
+    "scan": {
+      "auto-scan": false
+    }
+  }
+}

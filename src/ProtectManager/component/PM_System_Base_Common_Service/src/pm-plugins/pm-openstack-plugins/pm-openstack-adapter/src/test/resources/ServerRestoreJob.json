@@ -1,0 +1,7 @@
+{
+  "name": "backup1",
+  "description": "Backup VM1 weekly",
+  "type": "server",
+  "instance_id": "07eab57c-f7c2-42fb-998f-c6d884964c53",
+  "copy_id": "6883573e-ba4e-4fd5-8df5-f59b6c365b5b"
+}

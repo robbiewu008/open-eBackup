@@ -1,0 +1,17 @@
+package openbackup.openstack.protection.access.keystone.dto;
+
+import lombok.Data;
+
+/**
+ * User请求参数结构体
+ *
+ * @author x30038064
+ * @version [OceanProtect X8000 1.3.0]
+ * @since 2022-12-24
+ */
+@Data
+public class UserDto {
+    private DomainDto domain;
+    private String name;
+    private String password;
+}

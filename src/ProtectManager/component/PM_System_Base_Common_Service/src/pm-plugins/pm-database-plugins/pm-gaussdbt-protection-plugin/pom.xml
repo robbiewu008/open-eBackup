@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>pm-database-plugins</artifactId>
+    <groupId>com.huawei.oceanprotect</groupId>
+    <version>0.0.1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>pm-gaussdbt-protection-plugin</artifactId>
+
+  <properties>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>com.huawei.oceanprotect</groupId>
+      <artifactId>pm-access-provider-sdk</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.huawei.oceanprotect</groupId>
+      <artifactId>pm-resource-access-framework</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.huawei.oceanprotect</groupId>
+      <artifactId>pm-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.huawei.oceanprotect</groupId>
+      <artifactId>pm-database-base-plugin</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+
+    <!-- 测试用例类型，不对外发布 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- powermock依赖 -->
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.huawei.oceanprotect</groupId>
+      <artifactId>pm-kms-sdk</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.huawei.oceanprotect</groupId>
+      <artifactId>pm-host-app-backup-plugin</artifactId>
+    </dependency>
+  </dependencies>
+</project>

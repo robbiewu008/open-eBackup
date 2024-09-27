@@ -1,0 +1,9 @@
+{
+  "subTypes": ["GeneralDb"],
+  "queueTypes": [
+    {
+      "jobTypes": ["BACKUP", "RESTORE"],
+      "queueScope": "root_uuid"
+    }
+  ]
+}

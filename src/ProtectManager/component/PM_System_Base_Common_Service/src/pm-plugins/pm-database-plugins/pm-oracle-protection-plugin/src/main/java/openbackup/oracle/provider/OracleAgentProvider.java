@@ -1,0 +1,71 @@
+package openbackup.oracle.provider;
+
+import openbackup.data.access.framework.agent.DataBaseAgentSelector;
+import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
+import openbackup.data.protection.access.provider.sdk.base.Endpoint;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
+import openbackup.database.base.plugin.common.DatabaseConstants;
+import openbackup.oracle.service.OracleBaseService;
+import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * oracle的插件选择
+ *
+ * @author z30027603
+ * @version [OceanProtect DataBackup 1.5.0]
+ * @since 2023/7/17 16:13
+ */
+@Slf4j
+@Component
+public class OracleAgentProvider extends DataBaseAgentSelector {
+    private final OracleBaseService oracleBaseService;
+
+    public OracleAgentProvider(OracleBaseService oracleBaseService) {
+        this.oracleBaseService = oracleBaseService;
+    }
+
+    @Override
+    public List<Endpoint> getSelectedAgents(AgentSelectParam agentSelectParam) {
+        // 如果是数据库资源，根据数据库对应的单实例对应的Agent信息，设置到备份对象中
+        String parentUuid = agentSelectParam.getResource().getParentUuid();
+        if (ResourceSubTypeEnum.ORACLE.getType().equals(agentSelectParam.getResource().getSubType())) {
+            // 获取单实例对应的Agent信息
+            ProtectedEnvironment agentEnv = oracleBaseService.getAgentBySingleInstanceUuid(parentUuid);
+            // 将Agent信息，放置到备份对象中
+            Endpoint agentEndpoint = oracleBaseService.getAgentEndpoint(agentEnv);
+            List<Endpoint> endpointList = new ArrayList<>();
+            endpointList.add(agentEndpoint);
+            return endpointList;
+        }
+        // 针对集群，设置Agents信息
+        List<Endpoint> endpointList = new ArrayList<>();
+        // 从dependency里，获取集群实例下面的所有子实例
+        List<ProtectedEnvironment> agents =
+                oracleBaseService
+                        .getEnvironmentById(parentUuid)
+                        .getDependencies()
+                        .get(DatabaseConstants.AGENTS)
+                        .stream()
+                        .filter(resource -> resource instanceof ProtectedEnvironment)
+                        .map(resource -> (ProtectedEnvironment) resource)
+                        .collect(Collectors.toList());
+        for (ProtectedEnvironment agent : agents) {
+            endpointList.add(oracleBaseService.getAgentEndpoint(agent));
+        }
+        return endpointList;
+    }
+
+    @Override
+    public boolean applicable(AgentSelectParam agentSelectParam) {
+        return ResourceSubTypeEnum.ORACLE.equalsSubType(agentSelectParam.getResource().getSubType())
+                || ResourceSubTypeEnum.ORACLE_CLUSTER.equalsSubType(agentSelectParam.getResource().getSubType());
+    }
+}

@@ -1,0 +1,73 @@
+package openbackup.oceanbase.interceptor;
+
+import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
+import openbackup.data.protection.access.provider.sdk.copy.DeleteCopyTask;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.oceanbase.common.constants.OBConstants;
+import openbackup.system.base.sdk.copy.CopyRestApi;
+import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+/**
+ * 功能描述
+ *
+ * @author x30028756
+ * @since 2023-11-24
+ */
+@RunWith(PowerMockRunner.class)
+public class OceanBaseCopyDeleteInterceptorTest {
+    private OceanBaseCopyDeleteInterceptor copyDeleteInterceptor;
+
+    private CopyRestApi copyRestApi;
+
+    private ResourceService resourceService;
+
+    @Before
+    public void init() {
+        copyRestApi = Mockito.mock(CopyRestApi.class);
+        resourceService = Mockito.mock(ResourceService.class);
+        copyDeleteInterceptor = new OceanBaseCopyDeleteInterceptor(copyRestApi, resourceService);
+    }
+
+    /**
+     * 用例场景：OB 下发备份任务 applicable 校验
+     * 前置条件：无
+     * 检查点：类过滤成功或失败
+     */
+    @Test
+    public void check_applicable_success() {
+        boolean applicable = copyDeleteInterceptor.applicable(ResourceSubTypeEnum.OCEAN_BASE_CLUSTER.getType());
+        Assert.assertTrue(applicable);
+    }
+
+    /**
+     * 用例场景：初始化仓库成功
+     * 前置条件：OceanProtect服务正常
+     * 检查点：检查仓库类型
+     */
+    @Test
+    public void check_supply_backup_task_success() {
+        boolean shouldSupplyAgent = copyDeleteInterceptor.shouldSupplyAgent(new DeleteCopyTask(), new CopyInfoBo());
+        Assert.assertFalse(shouldSupplyAgent);
+    }
+
+    /**
+     * 用例场景：初始化仓库成功
+     * 前置条件：OceanProtect服务正常
+     * 检查点：检查仓库类型
+     */
+    @Test
+    public void check_supply_backup_taskd_success() {
+        DeleteCopyTask deleteCopyTask = new DeleteCopyTask();
+        copyDeleteInterceptor.handleTask(deleteCopyTask, new CopyInfoBo());
+        Assert.assertTrue(
+            StringUtils.equals(deleteCopyTask.getAdvanceParams().get(OBConstants.RESOURCE_EXISTS), "false"));
+    }
+}

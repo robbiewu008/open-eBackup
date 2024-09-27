@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "title",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "集群uuid"
+    },
+    "name": {
+      "type": "string",
+      "description": "集群名称"
+    },
+    "type": {
+      "type": "string",
+      "description": "Database"
+    },
+    "subType": {
+      "type": "string",
+      "description": "SQLServer-cluster"
+    },
+    "dependencies": {"$ref": "classpath:jsonschema/SQLServer-base.json#/agentDependencies"}
+  },
+  "required": [
+    "subType",
+    "type",
+    "name",
+    "dependencies"
+  ]
+}

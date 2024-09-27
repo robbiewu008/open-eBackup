@@ -1,0 +1,13 @@
+{
+  "type": "Database",
+  "subType": "Exchange-mailbox",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "environment": "agents"
+        }
+      ]
+    }
+  }
+}
