@@ -1,0 +1,15 @@
+#ebackup自定义配置
+dme:
+  ip: protectengine
+  proxyPort: 8089
+spring:
+  datasource:
+    url: jdbc:h2:mem:test
+    username:
+    password:
+    #driver-class-name: org.h2.Driver
+    driverClassName: org.h2.Driver
+    #userdb: test
+  sql:
+    init:
+      schema-locations: classpath:init_table.sql

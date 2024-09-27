@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="openbackup.access.framework.resource.persistence.dao.ResourceGroupMapper">
+    <resultMap id="BaseResultMap"
+        type="openbackup.access.framework.resource.persistence.model.ResourceGroupPo"
+        autoMapping="true">
+        <id column="UUID" property="uuid"/>
+        <id column="NAME" property="name"/>
+        <id column="PATH" property="path"/>
+        <id column="SOURCE_TYPE" property="sourceType"/>
+        <id column="SOURCE_SUB_TYPE" property="sourceSubType"/>
+        <id column="CREATED_TIME" property="createdTime"/>
+        <id column="EXTEND_STR" property="extendStr"/>
+        <id column="USER_ID" property="userId"/>
+        <id column="PROTECTION_STATUS" property="protectionStatus"/>
+        <id column="SCOPE_RESOURCE_ID" property="scopeResourceId"/>
+    </resultMap>
+    <select id="selectByScopeResourceIdAndName" resultMap="BaseResultMap">
+        select * from T_RESOURCE_GROUP
+        where SCOPE_RESOURCE_ID=#{scopeResourceId} and NAME=#{name}
+    </select>
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="openbackup.data.access.framework.core.dao.InitNetworkConfigMapper">
+
+    <resultMap type="openbackup.data.access.framework.core.dao.beans.InitConfigInfo"
+               id="InitConfigInfoResult">
+        <id property='initType' column='INITTYPE'/>
+        <result property='initValue' column='INITVALUE'/>
+        <result property='createTime' column='CREATE_TIME'/>
+        <result property='esn' column='ESN'/>
+    </resultMap>
+
+    <delete id="deleteInitConfig">
+        delete
+        from T_INIT_NETWORK_CONFIG
+        where INITTYPE = #{initType}
+    </delete>
+
+    <delete id="deleteInitConfigByEsnAndType">
+        delete
+        from T_INIT_NETWORK_CONFIG
+        where INITTYPE = #{initType}
+          and ESN = #{esn}
+    </delete>
+
+    <delete id="deleteInitConfigByEsn">
+        delete
+        from T_INIT_NETWORK_CONFIG
+        where ESN = #{esn}
+    </delete>
+
+    <select id="queryInitConfig" resultMap="InitConfigInfoResult">
+        select *
+        from T_INIT_NETWORK_CONFIG
+        where INITTYPE = #{initType}
+    </select>
+
+    <select id="queryInitConfigByEsnAndType" resultMap="InitConfigInfoResult">
+        select *
+        from T_INIT_NETWORK_CONFIG
+        where INITTYPE = #{initType}
+          and ESN = #{esn}
+    </select>
+
+    <update id="updateInitConfig"
+            parameterType="openbackup.data.access.framework.core.dao.beans.InitConfigInfo">
+        update T_INIT_NETWORK_CONFIG
+        SET INITVALUE = #{initValue}
+        where INITTYPE = #{initType}
+    </update>
+
+    <update id="updateInitConfigByEsnAndType"
+            parameterType="openbackup.data.access.framework.core.dao.beans.InitConfigInfo">
+        update T_INIT_NETWORK_CONFIG
+        SET INITVALUE = #{initValue}
+        where INITTYPE = #{initType}
+          and ESN = #{esn}
+    </update>
+
+    <insert id="insertInitConfig"
+            parameterType="openbackup.data.access.framework.core.dao.beans.InitConfigInfo">
+        insert into T_INIT_NETWORK_CONFIG(INITTYPE, INITVALUE, CREATE_TIME, ESN)
+        values (#{initType}, #{initValue}, #{createTime}, #{esn})
+    </insert>
+</mapper>

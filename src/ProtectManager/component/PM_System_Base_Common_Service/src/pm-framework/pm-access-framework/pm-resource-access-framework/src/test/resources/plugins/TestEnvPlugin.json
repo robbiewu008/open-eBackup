@@ -1,0 +1,34 @@
+{
+  "type": "Container",
+  "subType": "Kubernetes",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "environment": "agents"
+        }
+      ]
+    },
+    "scan": {
+      "auto-scan": false
+    },
+    "environments": {
+      "useUnifiedProvider": true,
+      "specification": 4
+    }
+  },
+  "children": [
+    {
+      "type": "Namespace",
+      "subType": "KubernetesNamespace",
+      "visible": true,
+      "children": [
+        {
+          "type": "StatefulSet",
+          "subType": "KubernetesStatefulSet",
+          "visible": true
+        }
+      ]
+    }
+  ]
+}
