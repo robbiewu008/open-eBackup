@@ -1,0 +1,75 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ */
+
+package openbackup.system.base.sdk.accesspoint.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * 初始化动作结果
+ *
+ * @author w00493811
+ * @since 2020-12-26
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class InitializeResult {
+    /**
+     * 初始化动作错误描述列表
+     */
+    private List<InitializeResultDesc> actionResults = new LinkedList<>();
+
+    /**
+     * 带错误码构造函数
+     *
+     * @param initializeResultDesc 动作结果描述
+     */
+    public InitializeResult(InitializeResultDesc initializeResultDesc) {
+        actionResults.add(initializeResultDesc);
+    }
+
+    /**
+     * 增加动作错误
+     *
+     * @param initializeResultDesc 动作结果描述
+     * @return 自身
+     */
+    public InitializeResult addActionResultDesc(InitializeResultDesc initializeResultDesc) {
+        actionResults.add(initializeResultDesc);
+        return this;
+    }
+
+    /**
+     * 增加动作结果
+     *
+     * @param initializeResult 动作结果
+     * @return 自身
+     */
+    public InitializeResult addActionError(InitializeResult initializeResult) {
+        actionResults.addAll(initializeResult.getActionResults());
+        return this;
+    }
+
+    /**
+     * 初始化是否OK
+     *
+     * @return 是否OK
+     */
+    public boolean isOk() {
+        for (InitializeResultDesc desc : actionResults) {
+            if (!desc.getCode().isOk()) {
+                return false;
+            }
+        }
+        return true;
+    }
+}

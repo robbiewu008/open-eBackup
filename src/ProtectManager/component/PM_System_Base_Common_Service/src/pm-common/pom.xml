@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.huawei.oceanprotect</groupId>
+        <artifactId>pm-system-base</artifactId>
+        <version>0.0.1</version>
+    </parent>
+
+    <artifactId>pm-common</artifactId>
+    <packaging>jar</packaging>
+    <version>0.0.1</version>
+    <name>${project.artifactId}</name>
+    <description>${project.artifactId}-${project.version}.${project.packaging}</description>
+
+    <properties>
+        <!-- 基础版本号 -->
+        <project.base.version>0.0.1</project.base.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.opengauss</groupId>
+            <artifactId>opengauss-jdbc</artifactId>
+        </dependency>
+        <!-- 开源软件 -->
+        <!-- spring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <!--{"Spring Boot": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+            <!--{"Spring Boot": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <!--{"Spring Boot": "开源软件"} -->
+        </dependency>
+        <!-- db -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <!--{"mybatis-plus": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <!--{"pagehelper-spring-boot": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <!--{"redisson": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>de.ruedigermoeller</groupId>
+            <artifactId>fst</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <!--{"jjwt": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <!--{"jjwt": "开源软件"} -->
+        </dependency>
+        <!-- timer -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <!--{"Quartz": "开源软件"} -->
+            <exclusions>
+                <exclusion>
+                    <groupId>com.mchange</groupId>
+                    <artifactId>mchange-commons-java</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- doc -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <!--{"Apache POI": "开源软件"} -->
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-collections4</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <!--{"Commons Compress": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <!--{"Commons CSV": "开源软件"} -->
+        </dependency>
+        <!--other tools-->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <!--{"gson": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <!--{"guava": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <!--{"Joda-Time": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <!--{"lombok": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <!--{"mapstruct": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <!--{"Apache Commons BeanUtils": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <!--{"Apache HttpComponents - HttpClient": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-hc5</artifactId>
+        </dependency>
+        <!--{"Feign - hc5": "开源软件"} -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <!--{"spring-cloud-openfeign": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <scope>compile</scope>
+            <!--{"fastjson": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>com.mikesamuel</groupId>
+            <artifactId>json-sanitizer</artifactId>
+            <!--{"json-sanitizer": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <!--{"Apache Commons IO": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <!--{"Apache Commons Lang": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <scope>compile</scope>
+            <!--{"Apache Curator": "开源软件"} -->
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <!--{"Apache ZooKeeper": "开源软件"} -->
+            <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper-jute</artifactId>
+        </dependency>
+        <!-- jackson引入  -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <!--{"jackson-core": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <!--{"jackson-databind": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <!--{"jackson-annotations": "开源软件"} -->
+        </dependency>
+        <dependency>
+            <groupId>org.everit.json</groupId>
+            <artifactId>org.everit.json.schema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit.ssh.apache</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>sshd-sftp</artifactId>
+                    <groupId>org.apache.sshd</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sshd</groupId>
+            <artifactId>sshd-sftp</artifactId>
+            <version>2.12.0</version>
+        </dependency>
+
+        <!-- 测试用例类型，不对外发布 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <!--{"Spring Boot": "开源软件"} -->
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.huawei.oceanprotect</groupId>
+            <artifactId>kmc_helper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

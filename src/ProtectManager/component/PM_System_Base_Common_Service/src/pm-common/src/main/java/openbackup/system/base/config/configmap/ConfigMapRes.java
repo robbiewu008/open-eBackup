@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2021. All rights reserved.
+ */
+
+package openbackup.system.base.config.configmap;
+
+import openbackup.system.base.common.model.storage.StorageError;
+import openbackup.system.base.common.utils.JSONArray;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
+
+/**
+ * 基础设施返回值
+ *
+ * @author y30000858
+ * @since 2021-01-22
+ */
+@Data
+public class ConfigMapRes {
+    @JsonProperty("data")
+    private JSONArray data;
+
+    @JsonProperty("error")
+    private StorageError error;
+}

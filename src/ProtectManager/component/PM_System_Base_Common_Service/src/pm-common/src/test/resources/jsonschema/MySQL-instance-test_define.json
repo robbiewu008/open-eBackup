@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "title",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "实例uuid"
+    },
+    "name": {
+      "type": "string",
+      "description": "实例名称",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型"
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型"
+    },
+    "parentUuid": {
+      "type": "string",
+      "description": "实例所在主机uuid"
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "hostId": {
+          "type": "string"
+        },
+        "instancePort": {
+          "type": "string"
+        },
+        "isTopInstance": {
+          "type": "string"
+        },
+        "linkStatus": {
+          "type": "string"
+        },
+        "deployOperatingSystem": {
+          "type": "string",
+          "description": "部署的操作系统"
+        },
+        "serviceName": {
+          "type": "string",
+          "description": "单节点服务启动名称"
+        },
+        "logBinIndexPath": {
+          "type": "string",
+          "description": "log bin文件夹路径"
+        }
+      },
+      "required": [
+        "hostId",
+        "instancePort",
+        "isTopInstance",
+        "linkStatus"
+      ]
+    },
+    "dependencies": {"$ref": "classpath:jsonschema/MySQL-base-test.json#/agentDependencies"},
+    "auth": {"$ref": "classpath:jsonschema/MySQL-base-test.json#/auth"}
+  },
+  "required": [
+    "subType",
+    "type",
+    "name",
+    "auth",
+    "dependencies",
+    "parentUuid",
+    "extendInfo"
+  ]
+}

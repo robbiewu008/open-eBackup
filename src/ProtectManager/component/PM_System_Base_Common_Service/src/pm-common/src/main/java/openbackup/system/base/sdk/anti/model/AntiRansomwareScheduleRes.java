@@ -1,0 +1,84 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ */
+
+package openbackup.system.base.sdk.anti.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
+
+import java.util.Objects;
+
+/**
+ * 防勒索调度计划
+ *
+ * @author nwx1077006
+ * @since 2021-11-16
+ */
+@Data
+public class AntiRansomwareScheduleRes {
+    // 间隔时间
+    private Integer interval;
+
+    // 间隔时间单位
+    private String intervalUnit;
+
+    // 调度计划
+    private String schedulePolicy;
+
+    // 仅检测该时间后的的副本
+    private String copyTime;
+
+    // 首次检测时间
+    private String startDetectionTime;
+
+    // 检测类型
+    private Integer detectionType;
+
+    // 是否设置防篡改
+    @JsonProperty("setWorm")
+    private boolean isSetWorm;
+
+    /**
+     * 是否进行防勒索检测
+     */
+    @JsonProperty("needDetect")
+    private boolean isNeedDetect;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        AntiRansomwareScheduleRes that = null;
+        if (obj instanceof AntiRansomwareScheduleRes) {
+            that = (AntiRansomwareScheduleRes) obj;
+        }
+
+        if (!Objects.equals(interval, that.interval)) {
+            return false;
+        }
+        if (!Objects.equals(intervalUnit, that.intervalUnit)) {
+            return false;
+        }
+        if (!Objects.equals(schedulePolicy, that.schedulePolicy)) {
+            return false;
+        }
+        if (!Objects.equals(copyTime, that.copyTime)) {
+            return false;
+        }
+        if (!Objects.equals(startDetectionTime, that.startDetectionTime)) {
+            return false;
+        }
+        return Objects.equals(detectionType, that.detectionType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(interval, intervalUnit, schedulePolicy, copyTime, startDetectionTime, detectionType);
+    }
+}
