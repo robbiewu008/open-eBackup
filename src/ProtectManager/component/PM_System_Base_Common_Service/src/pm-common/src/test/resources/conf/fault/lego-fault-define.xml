@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<trapcfg moMainType="lego.dic.legosystem.maintype" moSubType="lego.dic.legosystem.subtype">
+    <traps>
+        <trap ID="0x000803220001" TrapType="1" KeyIndexs="" Severity="3"/>
+        <!--登录-->
+        <trap ID="0x2064032B0001" TrapType="1" KeyIndexs="" Severity="0"/>
+        <!--登出-->
+        <trap ID="0x64032F0004" TrapType="1" KeyIndexs="" Severity="0"/>
+        <!--创建用户-->
+        <trap ID="0x2064032B0007" TrapType="1" KeyIndexs="" Severity="0"/>
+        <!--删除用户-->
+        <trap ID="0x2064032B0008" TrapType="1" KeyIndexs="" Severity="0"/>
+        <!--修改用户-->
+        <trap ID="0x2064032B0009" TrapType="1" KeyIndexs="" Severity="0"/>
+        <!--修改密码-->
+        <trap ID="0x2064032B000A" TrapType="1" KeyIndexs="" Severity="0"/>
+        <!--重置密码-->
+        <trap ID="0x2064032B000B" TrapType="1" KeyIndexs="" Severity="0"/>
+        <!--锁定用户-->
+        <trap ID="0x2064032B000C" TrapType="1" KeyIndexs="" Severity="0"/>
+        <!--连续多次输错密码锁定用户-->
+        <trap ID="0xF000B0052" TrapType="1" KeyIndexs="" Severity="0"/>
+    </traps>
+</trapcfg>
