@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <artifact>
+        <versionType>Component</versionType>
+        <repoType>Generic</repoType>
+        <id>
+            <offering>OceanProtect A8000</offering>
+            <componentName>ProtectAgent-Client</componentName>
+            <componentVersion>${componentVersion}</componentVersion>
+            <snapshot>Y</snapshot>
+        </id>
+        <isClear>N</isClear>
+        <copies>
+            <copy>
+                <source>DataProtect_${Version}_client*.zip</source>
+                <dest>/dorado/${AGENT_BRANCH}/${PKG_TYPE}/</dest>
+                <dest></dest>
+            </copy>
+        </copies>
+    </artifact>
+    <dependencies>
+        <dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>OceanProtect A8000</offering>
+                <componentName>ProtectAgent-Client</componentName>
+                <componentVersion>${componentVersion_fileclient}</componentVersion>
+            </id>
+            <according>Y</according>
+            <copies>
+                <copy>
+                    <source>/dorado/${AGENT_BRANCH}/${PKG_TYPE}/fileClient_aarch64.tar.gz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>/dorado/${AGENT_BRANCH}/${PKG_TYPE}/fileClient_x86_64.tar.gz</source>
+                    <dest>.</dest>
+                </copy>
+            </copies>
+        </dependency>
+    </dependencies>
+</project>

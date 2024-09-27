@@ -1,0 +1,87 @@
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ *
+ * @file
+ * @brief
+ * @version 1.0.0.0
+ * @date 2023-11-22
+ * @author
+ */
+
+#include <cstdio>
+#include <cstdlib>
+#include <unistd.h>
+#include <cerrno>
+#include <cstring>
+#include <ctime>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <uuid/uuid.h>
+#include <libgen.h>
+#ifdef NO_POSIX_MEMALIGN
+#include <malloc.h>
+#endif
+
+#include "dataprocess/ioscheduler/libvmfs/Vmfs.h"
+
+namespace Vmfs5IO {
+/* Allocate a buffer with alignment compatible for direct I/O */
+u_char *IOBufferAlloc(size_t len)
+{
+    size_t bufLen;
+    void *buffer;
+
+    bufLen = ALIGN_NUMBER(len, M_DIO_BLK_SIZE);
+#ifdef NO_POSIX_MEMALIGN
+    if (!(buffer = memalign(M_DIO_BLK_SIZE, bufLen))) {
+#else
+    if (posix_memalign((void **)&buffer, M_DIO_BLK_SIZE, bufLen)) {
+#endif
+        return nullptr;
+    }
+
+    return (u_char *)buffer;
+}
+
+/* Free a buffer previously allocated by IOBufferAlloc() */
+void IOBufferFree(u_char *buffer)
+{
+    if (buffer != NULL) {
+        free(buffer);
+    }
+}
+
+/* Read from file descriptor at a given offset */
+ssize_t PReadFromFD(int fd, void *buffer, size_t count, off_t offset)
+{
+    int maxRetries = 10;
+    u_char *ptr = (u_char *)buffer;
+    size_t hlen = 0;
+    ssize_t len;
+
+    while (hlen < count) {
+        len = pread(fd, ptr, count - hlen, offset + hlen);
+        if (len < 0) {
+            if (EIO == errno) {
+                if (maxRetries-- == 0) {
+                    return -1;
+                }
+                continue;
+            }
+
+            if (EINTR != errno) {
+                return -1;
+            }
+        } else {
+            if (len == 0) {
+                break;
+            }
+
+            hlen += len;
+            ptr += len;
+        }
+    }
+
+    return hlen;
+}
+}

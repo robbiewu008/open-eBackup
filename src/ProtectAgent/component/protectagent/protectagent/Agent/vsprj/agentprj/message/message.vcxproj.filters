@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="archivestream">
+      <UniqueIdentifier>{7bea620e-d549-484e-bb57-7e94820beb57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="curlclient">
+      <UniqueIdentifier>{a3136f67-51d4-493a-9704-6bdfcd324107}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rest">
+      <UniqueIdentifier>{d021e604-0d51-44e6-a971-b637e9603312}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tcp">
+      <UniqueIdentifier>{e35575cb-a15e-40c2-9f7c-a28236dba2c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thrift">
+      <UniqueIdentifier>{6f251e05-7baf-49b1-b5cd-1eb3cbf68acb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\src\message\curlclient\CurlHttpClient.cpp">
+      <Filter>curlclient</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\curlclient\DmeRestClient.cpp">
+      <Filter>curlclient</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\curlclient\PmRestClient.cpp">
+      <Filter>curlclient</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\curlclient\RestClientCommon.cpp">
+      <Filter>curlclient</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\curlclient\SSLHandle.cpp">
+      <Filter>curlclient</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\tcp\BusinessClient.cpp">
+      <Filter>tcp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\tcp\CConnection.cpp">
+      <Filter>tcp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\tcp\CDppMessage.cpp">
+      <Filter>tcp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\tcp\CSocket.cpp">
+      <Filter>tcp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\tcp\DppSocket.cpp">
+      <Filter>tcp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\tcp\MessageHandler.cpp">
+      <Filter>tcp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\tcp\TCPClientHandler.cpp">
+      <Filter>tcp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\rest\http_cgi.cpp">
+      <Filter>rest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\message\rest\message_process.cpp">
+      <Filter>rest</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\inc\message\curlclient\CurlHttpClient.h">
+      <Filter>curlclient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\curlclient\DmeRestClient.h">
+      <Filter>curlclient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\curlclient\PmRestClient.h">
+      <Filter>curlclient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\curlclient\HttpClientInterface.h">
+      <Filter>curlclient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\curlclient\RestClientCommon.h">
+      <Filter>curlclient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\curlclient\SSLHandle.h">
+      <Filter>curlclient</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\thrift\AppProtectFramework.h">
+      <Filter>thrift</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\thrift\AppProtectPluginClient.h">
+      <Filter>thrift</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\thrift\JobCenterClient.h">
+      <Filter>thrift</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\thrift\JobExecService.h">
+      <Filter>thrift</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\tcp\BusinessClient.h">
+      <Filter>tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\tcp\CConnection.h">
+      <Filter>tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\tcp\CDppMessage.h">
+      <Filter>tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\tcp\CSocket.h">
+      <Filter>tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\tcp\DppSocket.h">
+      <Filter>tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\tcp\MessageHandler.h">
+      <Filter>tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\tcp\MessageImpl.h">
+      <Filter>tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\tcp\TCPClientHandler.h">
+      <Filter>tcp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\rest\http_cgi.h">
+      <Filter>rest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\rest\http_status.h">
+      <Filter>rest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\rest\interfaces.h">
+      <Filter>rest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\rest\message_process.h">
+      <Filter>rest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\message\Message.h" />
+  </ItemGroup>
+</Project>

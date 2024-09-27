@@ -1,0 +1,75 @@
+
+[Version]
+Signature = "$Windows NT$"
+Class     = DRDriver
+ClassGUID = {99A4DCE1-9957-43BE-B587-1D55C8581571}
+Provider  = %hw%
+DriverVer = 11/01/2018,8.1.0000.0
+CatalogFile=%DriverName%.cat
+
+
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+[SourceDisksFiles]
+DRDriver.sys=1
+
+[SourceDisksNames]
+1 = %diskid1%,,,
+
+
+[ClassInstall32]
+Addreg=DRDriverClassReg
+
+[DRDriverClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+HKR,,DeviceCharacteristics,0x10001,0x100
+HKR,,Security,,"D:P(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;LS)"
+
+
+[Manufacturer]
+%hw%=Standard, NTamd64
+
+[Standard.NTamd64]
+%DeviceDesc%=DRDriverDevice, root\%DriverName%
+
+[DRDriverDevice.NT]
+CopyFiles = DRDriverFiles
+
+[DRDriverDevice.NT.HW]
+Addreg  = DRDriverDevice.NT.AddReg
+
+[DRDriverDevice.NT.AddReg]
+
+[DRDriverFiles]
+%DriverName%.sys
+
+[DRDriverDevice.NT.Services]
+AddService = %DriverName%, 0x00000002, DRDriverService, DRDriverEventLog
+
+[DRDriverService]
+DisplayName    = %service_desc%
+ServiceType    = 1
+StartType      = 0
+ErrorControl   = 1
+ServiceBinary  = %12%\%DriverName%.sys
+LoadOrderGroup = "PnP Filter"
+
+[DRDriverEventLog]
+Addreg  = DRDriverEventLog.AddReg
+
+[DRDriverEventLog.AddReg]
+HKR,,EventMessageFile,0x00020000,"%%SystemRoot%%\System32\IoLogMsg.dll;%%SystemRoot%%\System32\Drivers\DRDriver.sys"
+HKR,,TypesSupported,0x00010001,7
+
+
+
+[Strings]
+hw         = "Huawei Technologies Co.,Ltd."
+service_desc = "Disk Mirror Filter Driver"
+DeviceDesc = "Disk Mirror Filter Device"
+DriverName = "DRDriver"
+ClassName = "DRDriver"
+diskid1      = "HuaWei Technologies. Installation Disk #1 (DRDriver)"

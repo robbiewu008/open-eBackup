@@ -1,0 +1,53 @@
+{
+    "packageName": "DataProtect_<MS_IMAGE_TAG>_client.zip",
+    "packageDescription": "DataBackup DataProtect Agent Package Release.",
+    "releaseVersion": "<MS_IMAGE_TAG>",
+    "versionTimeStamp": "<TIMESTAMP_STARTTIME>",
+    "upgradeVersions": [
+        {version: "1.0.0", minBVesion: 88, maxBVesion: 88},
+        {version: "1.1.RC1", minBVesion: 503, maxBVesion: 503},
+        {version: "1.1.RC2", minBVesion: 1, maxBVesion: 999},
+        {version: "1.2.1RC1", minBVesion: 87, maxBVesion: 87},
+        {version: "1.2.1RC2", minBVesion: 1, maxBVesion: 999}
+    ],
+    "versionDependencyRegexp": "^1[.]1[.]",
+    "osDependencyRegexp": "^CENTOS(6\.[56789]|7\.[12345]).*$",
+    "userId": "",
+    "subFolderName": "DataProtect_<VERSION>_client",
+    "packages": {
+        "PackageScript" : {
+            "linux" : "package-like-unix.zip",
+            "windows" : "package-windows.zip"
+        },
+        "Plugins" : {
+            "cppframework_aarch64" : "cppframework-Linux_aarch64.tar.xz",
+            "cppframework_x86_64" : "cppframework-Linux_x86_64.tar.xz",
+            "cppframework_aix_ppc_64" : "cppframework-AIX_ppc_64.tar.xz",
+            "cppframework_sunos_sparc_64" : "cppframework-SunOS_sun4v.tar.gz",
+            "ElasticSearchPlugin" : "ElasticSearchPlugin.tar.gz",
+            "FilePlugin" : "FilePlugin.tar.xz",
+            "FilePlugin_aix_ppc_64" : "FilePlugin_ppc_64.tar.xz",
+            "FilePlugin_sunos" : "FilePlugin_sun4v.tar.gz",
+            "NasPlugin" : "NasPlugin.tar.xz",
+            "FusionComputePlugin" : "FusionComputePlugin.tar.xz",
+            "GeneralDBPlugin_linux" : "GeneralDBPlugin.tar.xz",
+            "GeneralDBPlugin_win" : "GeneralDBPlugin.zip",
+            "GeneralDBPlugin_aix_ppc_64" : "GeneralDBPlugin_ppc_64.tar.xz",
+            "HadoopPlugin" : "HadoopPlugin.tar.gz",
+            "VirtualizationPlugin" : "VirtualizationPlugin.tar.xz",
+            "BlockService" : "Block_Service.tar.xz"
+        },
+        "ProtectClient-e" : {
+            "AIX-ppc_64" : "protectclient-AIX-ppc_64.tar.xz",
+            "Linux-aarch64" : "protectclient-Linux-aarch64.tar.xz",
+            "Linux-x86_64" : "protectclient-Linux-x86_64.tar.xz",
+            "Windows-x64" : "protectclient-Windows-x64.zip",
+            "SanClient-x86_64" : "sanclient-Linux-x86_64.tar.xz",
+            "SunOS-sparc_64": "protectclient-SunOS-sparc_64.tar.gz"
+        },
+        "third_party_software" : {
+            "linux" : "3rd-linux.zip",
+            "windows" : "3rd-windows.zip"
+        }
+    }
+}

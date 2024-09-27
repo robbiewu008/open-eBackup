@@ -1,0 +1,19 @@
+From 181a542e1cd0c21e8b1fa76b8336f68112729e4d Mon Sep 17 00:00:00 2001
+From: lvhaoyu <lvhaoyu@huawei.com>
+Date: Thu, 4 Mar 2021 14:32:45 +0800
+Subject: [PATCH] [Huawei]add HUAWEI-RELEASE for curl
+---
+ HUAWEI-RELEASE | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 HUAWEI-RELEASE
+
+diff --git a/HUAWEI-RELEASE b/HUAWEI-RELEASE
+new file mode 100644
+index 0000000..be5b474
+--- /dev/null
++++ b/HUAWEI-RELEASE
+@@ -0,0 +1 @@
++RELEASE: h1
+-- 
+2.1.4
+

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 
+// LocationInfo   告警的定位信息，格式为：Name1=Value1,...,NameN=ValueN
+// Rectification  告警修复建议
+// FaultTitle     告警信息标题
+// FaultType      告警类型，其取值范围为： 告警类型：2-设备告警 3-事件告警
+// FaultLevel     告警级别，其取值范围为： 1-紧急告警 2-重要告警 3-次要告警 4-警告告警 5-事件告警
+// AlarmID        原始告警ID
+// FaultTtime     告警产生时间
+// SerialNo       告警流水号
+// AdditionInfo   告警原因描述
+// FaultCategory  告警类别，其取值范围为： 1－故障告警 2－恢复告警 3－事件告警
+-->
+<root>
+  <Alarm id="0x64032C0003">
+    <LocationInfo value="" />
+    <Rectification zh_CN="告警生成测试，手动恢复该告警。" 
+                   en_US="A user sends an alarm to test the alarm generation function and manually clears the alarm." />
+    <FaultTitle zh_CN="测试告警" en_US="Alarm Generation Test" />
+    <FaultType value="3" />
+    <FaultLevel value="5" />
+    <AlarmID value="0x64032C0003" />
+    <FaultTtime value="" />
+    <SerialNo value="" />
+    <AdditionInfo zh_CN="发送本条模拟告警，用于测试设备的告警功能是否正常。如果该模拟告警已经存在，再次发送该告警无效。
+                  测试前请先确认该模拟告警已经被手工清除。测试结束后，请手工清除该告警。" 
+                  en_US="This simulated alarm is sent to test whether the alarm generation function of the device is normal. 
+                  If the simulated alarm already exists, no alarm can be sent again. 
+                  Before the test, ensure that any previously sent simulated alarm has been manually cleared. 
+                  After the test is complete, manually clear the alarm." />
+    <FaultCategory value="3" />
+  </Alarm>
+  <Alarm id="0x6403400001">
+    <LocationInfo value="" />
+    <Rectification zh_CN="步骤1 登录告警信息中的数据库主机。
+                   步骤2 登录数据库（假设数据库实例名为orcl）。
+                   su - oracle
+                   export ORACLE_SID=orcl
+                   sqlplus / as sysdba
+                   步骤3 执行select DESTINATION from v$archive_dest where STATUS='VALID';查看归档日志目录。
+                   如果回显为USE_DB_RECOVERY_FILE_DEST表示归档日志生成在闪回区=>[步骤4]
+                   如果回显为一个目录，表示归档日志生成在自定义目录=>[步骤5]
+                   步骤4 查看闪回区目录，通过回显获取归档日志目录
+                   COL NAME FORMAT a100
+                   select SPACE_LIMIT/1024/1024, SPACE_USED/1024/1024, NAME from V$RECOVERY_FILE_DEST;
+                   步骤5 登录rman，删除归档日志（删除归档日志可能影响数据库，请根据实际情况删除）。
+                   su - oracle
+                   export ORACLE_SID=orcl
+                   rman target /
+                   crosscheck archivelog all;
+                   delete archivelog all completed before 'sysdate - 1';（此示例表示删除一天前的归档日志）
+                   步骤6 清理归档日志目录，删除不必要文件
+                   步骤7 等待大约10分钟后后查看告警是否已清除。
+                   是，处理结束。
+                   否，请联系技术支持工程师协助解决。"
+                   en_US="Step 1 Log in to the database host in the alarm information.
+                   Step 2 Log in to the database (assume that the database instance name is orcl).
+                   su - oracle
+                   export ORACLE_SID=orcl
+                   sqlplus / as sysdba
+                   Step 3 Run the (select DESTINATION from v$archive_dest where STATUS= 'VALID'); command. View the archive log directory.
+                   If USE_DB_RECOVERY_FILE_DEST is displayed in the command output, archive logs are generated in the flashback area=>[Step4].
+                   If only one directory is displayed in the command output, archive logs are generated in the customized directory=>[Step5].
+                   Step 4 View the directory in the flashback area and obtain the archive log directory from the command output.
+                   set linesize 999
+                   COL NAME FORMAT a100
+                   select SPACE_LIMIT/1024/1024, SPACE_USED/1024/1024, NAME from V$RECOVERY_FILE_DEST;
+                   Step 5 Log in to the RMAN and delete archive logs. (Deletion of archive logs may affect the database. Delete the archive logs based on the site requirements.)
+                   su - oracle
+                   export ORACLE_SID=orcl
+                   rman target /
+                   crosscheck archivelog all;
+                   delete archivelog all completed before 'sysdate - 1'; (This example indicates that archive logs generated one day ago are deleted.)
+                   Step 6 Clear the archive log directory and delete unnecessary files.
+                   Step 7 Wait for about 10 minutes and check whether the alarm is cleared.
+                   If yes, no further action is required.
+                   If no, contact technical support engineers." />
+    <FaultTitle zh_CN="Oracle数据库归档日志空间已满" en_US="The Archive Log Space Of The Oracle Database Is Full" />
+    <FaultType value="3" />
+    <FaultLevel value="5" />
+    <AlarmID value="0x6403400001" />
+    <FaultTtime value="" />
+    <SerialNo value="" />
+    <AdditionInfo zh_CN="Oracle数据库归档日志空间超过阈值。"
+                  en_US="The archive log space of the Oracle database is full." />
+    <FaultCategory value="3" />
+  </Alarm>
+  <Alarm id="0x106403400001">
+    <LocationInfo value="" />
+    <Rectification zh_CN="请检查应用插件管理服务端口是否被其他应用占用，若被其他应用占用，请释放该端口。" 
+                   en_US="Check whether the application plug-in management service port is occupied by another application. If yes, release the port." />
+    <FaultTitle zh_CN="	保护代理启动应用插件管理服务失败" en_US="ProtectAgent Failed To Start The Application Plug-In Management Service" />
+    <FaultType value="3" />
+    <FaultLevel value="5" />
+    <AlarmID value="0x106403400001" />
+    <FaultTtime value="" />
+    <SerialNo value="" />
+    <AdditionInfo zh_CN="应用插件管理服务端口已被其他应用占用。" 
+                  en_US="The application plug-in management service port is occupied by another application." />
+    <FaultCategory value="3" />
+  </Alarm>
+  <Alarm id="0x6403400002">
+    <LocationInfo value="" />
+    <Rectification zh_CN="步骤1 使用PuTTY，登录上报告警的代理主机，如果以非root用户登录，登录后还需要切换到root帐号。
+                                          步骤2 执行cd /opt/DataBackup/ProtectClient/Plugins/告警信息中的插件名称，进入插件目录。
+                                          步骤3 查看启动脚本start.sh是否存在。
+                                            如果是=>[步骤4]。
+                                            如果否=>重新安装ProtectAgent。
+                                          步骤4 执行ls -l start.sh命令，检查root用户和rdadmin用户组的用户是否有start.sh脚本的可执行权限。 
+                                            如果否=>[步骤5]。
+                                            如果是=>[步骤6]。 
+                                          步骤5 执行chmod 550 start.sh命令，给root用户和radmin用户组添加可执行权限。
+                                          步骤6 执行sh start.sh命令，启动插件。检查是否有失败的回显信息。
+                                            如果有=>请收集日志，联系技术支持工程师协助解决。
+                                            如果没有=>[步骤7]。
+                                          步骤7 重新执行数据保护任务，任务执行完成后，检查告警是否清除。
+                                            如果是=>处理结束。
+                                            如果否=>请收集日志，联系技术支持工程师协助解决。" 
+                   en_US="Step1 Possible cause 1: The startup script does not exist or the execution permission is not granted.
+                                      1.1 Use PuTTY to log in to the ProtectAgent host on which the alarm is generated.
+                                      1.2 Enter corresponding subdirectory of the plugin under /opt/DataBackup/ProtectClient/Plugins.
+                                      1.3 Check whether the startup script start.sh exists.
+                                          If yes=>[1.4].
+                                              If no, reinstall ProtectAgent.
+                                      1.4 Check whether the execution permission on the start.sh script is granted.
+                                          If yes=>[Step2].
+                                              If no, run the chmod 550 start.sh command to grant the execution permission.
+                                  Step2 Possible cause 2: The external plug-in process cannot run.
+                                      2.1 Enter corresponding subdirectory of the plugin under /opt/DataBackup/ProtectClient/Plugins.
+                                      2.2 Run the sh start.sh command to execute the script. Locate the failure cause based on the command output and rectify the fault." />
+    <FaultTitle zh_CN="	代理主机启动外部插件失败" en_US="The ProtectAgent Host Failed To Start The External Plug-in" />
+    <FaultType value="3" />
+    <FaultLevel value="5" />
+    <AlarmID value="0x6403400002" />
+    <FaultTtime value="" />
+    <SerialNo value="" />
+    <AdditionInfo zh_CN="1. 启动脚本不存在，或者没有执行权限。
+                                          2. 外部插件进程无法运行。" 
+                  en_US="1. The startup script does not exist or the execution permission is not granted.
+                                2. The external plug-in process cannot run." />
+    <FaultCategory value="3" />
+  </Alarm>
+  <Alarm id="0x6403400007">
+    <LocationInfo value="" />
+    <Rectification zh_CN="步骤1 登录上报告警的代理主机。
+                          步骤2 进入插件目录“C:\DataBackup\ProtectClient\Plugins\告警信息中的插件名称”。
+                          步骤3 查看启动脚本start.bat是否存在。
+                            如果是=>[步骤4]。
+                            如果否=>重新安装ProtectAgent。
+                          步骤4 双击执行start.bat脚本，启动插件。检查“C:\DataBackup\ProtectClient\ProtectClient-E\log\Plugins\告警信息中的插件名称”目录下的start.log中是否有失败日志信息。
+                            如果有=>请收集日志，联系技术支持工程师协助解决。
+                            如果没有=>[步骤5]。
+                          步骤5 重新执行数据保护任务，任务执行完成后，检查告警是否清除。
+                            如果是=>处理结束。
+                            如果否=>请收集日志，联系技术支持工程师协助解决。"
+                   en_US='Step1 Step1 Log in to the ProtectAgent host that reports the alarm.
+                          Step2 Go to the plug-in directory "C:\DataBackup\ProtectClient\Plugins\Plug-in name in alarm details".
+                          Step3 Check whether the start.bat script exists.
+                            If yes=>[Step4].
+                            If no, reinstall ProtectAgent.
+                          Step4 Double-click the start.bat script to start the plug-in. Check whether start.log in the "C:\DataBackup\ProtectClient\ProtectClient-E\log\Plugins\Plug-in name in alarm details" directory contains failure logs.
+                            If yes, collect logs and contact technical support engineers.
+                            If no=>[Step5].
+                          Step5 Execute data protection jobs again. After the jobs are complete, check whether the alarm is cleared.
+                            If yes, no further action is required.
+                            If no, collect logs and contact technical support engineers.' />
+    <FaultTitle zh_CN="Windows代理主机启动外部插件失败" en_US="The ProtectAgent Host Failed To Start The External Plug-in" />
+    <FaultType value="3" />
+    <FaultLevel value="5" />
+    <AlarmID value="0x6403400007" />
+    <FaultTtime value="" />
+    <SerialNo value="" />
+    <AdditionInfo zh_CN="1. 启动脚本不存在。
+                                2. 外部插件进程无法运行。" 
+                  en_US="1. The startup script does not exist.
+                                2. The external plug-in process cannot run." />
+    <FaultCategory value="3" />
+  </Alarm>
+</root>

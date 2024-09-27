@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="async">
+      <UniqueIdentifier>{d0ad9316-ef92-4827-bd7d-228de1a72bcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="server">
+      <UniqueIdentifier>{95d2e124-67c3-4dd9-8000-19835a30247a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="transport">
+      <UniqueIdentifier>{89be7b1f-77f8-45ba-a2af-768d45f17589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="windows">
+      <UniqueIdentifier>{6ea89856-794f-4f7a-b25d-e6d6b0f0339d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\async\TAsyncProtocolProcessor.cpp">
+      <Filter>async</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\async\TEvhttpClientChannel.cpp">
+      <Filter>async</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\async\TEvhttpServer.cpp">
+      <Filter>async</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\server\TNonblockingServer.cpp">
+      <Filter>server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\transport\TNonblockingServerSocket.cpp">
+      <Filter>transport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\transport\TNonblockingSSLServerSocket.cpp">
+      <Filter>transport</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\async\TAsyncProtocolProcessor.h">
+      <Filter>async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\async\TEvhttpClientChannel.h">
+      <Filter>async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\async\TEvhttpServer.h">
+      <Filter>async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\server\TNonblockingServer.h">
+      <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\transport\TNonblockingServerSocket.h">
+      <Filter>transport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\transport\TNonblockingServerTransport.h">
+      <Filter>transport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\transport\TNonblockingSSLServerSocket.h">
+      <Filter>transport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\open_src\thrift\lib\cpp\src\thrift\windows\config.h">
+      <Filter>windows</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

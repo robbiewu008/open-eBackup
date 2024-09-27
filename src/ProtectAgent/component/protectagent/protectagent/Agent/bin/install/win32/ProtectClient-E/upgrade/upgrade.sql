@@ -1,0 +1,1 @@
+ALTER TABLE 'PluginJobs' ADD 'RunEnable' INTEGER(4);

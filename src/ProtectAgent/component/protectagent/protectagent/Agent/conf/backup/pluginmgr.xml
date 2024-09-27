@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+    <PluginList>
+        <Plugin name="libhost" version="1.9.0" service="host" lazyload="0">
+        </Plugin>
+        <Plugin name="libapp" version="1.9.0" service="app" lazyload="0">
+        </Plugin>
+    </PluginList>
+</Config>

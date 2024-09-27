@@ -1,0 +1,376 @@
+rpc interface (v0.31); urgency=low
+
+ApplicationProtectPlugin.thrift
+  * add ProtectService.DeliverTaskStatus
+  * add ApplicationService.ListApplicationConfig
+
+-- lixilong/wx1101878  2022-12-20 11:00:00
+
+
+rpc interface (v0.30); urgency=low
+
+ApplicationProtectPlugin.thrift
+  * add ProtectService.AsyncCheckCopyGenerateSubJob and ProtectService.AsyncCheckCopySubJob for copy checksum scenario
+  * add struct CheckCopyJob for copy checksum scenario
+
+-- wangguitao/00510599  2022-08-01 18:00:00
+
+
+rpc interface (v0.29); urgency=low
+
+ApplicationProtectPlugin.thrift
+  * remove JobPermission
+ApplicationProtectBaseDataType.thrift
+  * add HostAddress.supportProtocol JobPermission
+ApplicationProtectFramework.thrift
+  * add PrepareRepositoryByPlugin MountRepositoryByPlugin UnMountRepositoryByPlugin
+
+-- liuliyue/00476956 2022-07-21 17:30:00
+
+
+rpc interface (v0.28); urgency=low
+
+ApplicationProtectPlugin.thrift
+  * add ProtectService.AllowBackupSubJobInLocalNode and ProtectService.AllowRestoreSubJobInLocalNode
+
+-- wangguitao/00510599  2022-07-18 22:30:00
+
+
+rpc interface (v0.27); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * add ActionResult.bodyErrParams
+
+-- wangguitao/00510599  2022-07-14 17:00:00
+
+
+rpc interface (v0.26); urgency=low
+
+ApplicationProtectPlugin.thrift
+  * remove RestoreJobParam.restoreMode
+
+-- wangguitao/00510599  2022-07-08 17:30:00
+
+
+rpc interface (v0.25); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * remove SubJobType.PREPARE_MEDIA_SUB_JOB and SubJobType.CLEAN_MEDIA_SUB_JOB
+
+-- wangguitao/00510599  2022-07-07 19:30:00
+
+
+rpc interface (v0.24); urgency=low
+
+ApplicationProtectPlugin.thrift
+  * add ProtectService.QueryJobPermission parameter 'appEnv'
+
+-- wangguitao/00510599  2022-07-04 11:30:00
+
+
+rpc interface (v0.23); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * remove ApplicationEnvironment.role
+  * remove enumerate type EnvironmentRole
+
+-- wangguitao/00510599  2022-07-01 16:30:00
+
+
+rpc interface (v0.22); urgency=low
+ApplicationProtectPlugin.thrift
+  * add JobPermission.extendInfo
+  * add SubJobType.PREPARE_MEDIA_SUB_JOB and SubJobType.CLEAN_MEDIA_SUB_JOB
+
+-- wangguitao/00510599  2022-06-29 16:00:00
+
+
+rpc interface (v0.21); urgency=low
+ApplicationProtectPlugin.thrift
+  * add ProtectService.AllowRestoreInLocalNode
+  * add enumerate type RepositoryRole
+  * add StorageRepository.role
+
+-- wangguitao/00510599  2022-06-28 22:00:00
+
+
+rpc interface (v0.20); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * add enumerate type EnvironmentRole for ApplicationEnvironment
+  * add ApplicationEnvironment.role
+  * add ExecutePolicy enumerated value: RETRY_OTHER_NODE_WHEN_FAILED(3), FIXED_NODE(4)
+  * add SubJob.execNodeId
+  * add RepositoryDataType.LOG_META_REPOSITORY
+  * add StorageRepository.id
+  * add struct QueryByPage for query application resource
+
+ApplicationProtectFramework.thrift
+  * add service FrameworkService
+
+ApplicationProtectPlugin.thrift
+  * add struct DelCopyJob
+  * add BackupLimit enumerate value: FIRST_MASTER(3), FIRST_SLAVE(4)
+  * add struct ResourceResultByPage for querying application resource
+  * add struct ListResourceRequest for querying application resource
+  * add struct JobPermission
+  * add ProtectService.QueryJobPermission
+  * add ProtectService.AsyncDelCopyGenerateSubJob and ProtectService.AsyncDelCopySubJob
+  * add ApplicationService.DiscoverHostCluster and ApplicationService.DiscoverAppCluster
+  * add ApplicationService.ListApplicationResourceV2, which support querying by page
+
+-- wangguitao/00510599  2022-06-20 11:00:00
+
+
+rpc interface (v0.14); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * add StorageRepository.extendAuth
+
+-- wangguitao/00510599  2022-03-16 16:00:00
+
+
+rpc interface (v0.13); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * add StorageRepository.remoteName
+ApplicationProtectFramework.thrift
+  * add service SecurityService
+  * add SecurityService.CheckCertThumbPrint interface
+
+-- tanwei/twx949498  2022-02-15 19:30:00
+
+
+rpc interface (v0.12); urgency=low
+
+ApplicationProtectFramework.thrift
+  * change type of SubJobDetails.dataSize to i64, unit of SubJobDetails.dataSize to KB
+  * add exception AppProtectFrameworkException
+
+ApplicationProtectPlugin.thrift
+  * add exception AppProtectPluginException
+
+ApplicationProtectBaseDataType.thrift
+  * remove exception AppProtectException
+  * add RepositoryDataType enumerated value, INDEX_REPOSITORY(4)
+
+-- wangguitao/00510599  2022-01-29 11:00:00
+
+
+rpc interface (v0.11); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * rename CopyType to CopyFormatType, and rename Copy.type to Copy.formatType
+  * add struct field Copy.dataType, which is CopyDataType type
+  * change type of Copy.snapshot to list<Snapshot>, and rename Copy.snapshot to Copy.snapshots
+
+-- wangguitao/00510599  2022-01-12 16:00:00
+
+
+rpc interface (v0.10); urgency=low
+
+ApplicationProtectFramework.thrift
+  * remove JobService.QueryPreviousCopy parameters optional or required
+  * rename JobService.QueryPreviousCopy parameter type to types, and change type to set<CopyDataType>
+  * update JobLogLevel enumerated value
+
+ApplicationProtectBaseDataType.thrift
+  * add struct Snapshot
+  * add struct field Copy.snapshot
+
+ApplicationProtectPlugin.thrift
+  * rename RestoreJob struct RestoreJob.copy to RestoreJob.copies, and change type to list<Copy>
+  * add function parameter jobId, appType in ProtectService.AsyncAbortJob, ProtectService.PauseJob interface
+  * add BuildIndexJob.copies
+
+-- wangguitao/00510599  2022-01-04 20:00:00
+
+
+rpc interface (v0.9); urgency=low
+
+ApplicationProtectFramework.thrift
+  * remove Resource.isShared and ResourceStatus.isLocked
+  * change Resource.scopeKey description
+  * remove parameter timeoutByMs in function ShareResource.LockResource
+  * change CancelLivemountJob.jobParam from required to optional
+
+ApplicationProtectPlugin.thrift
+  * add struct BuildIndexJobParam
+  * add parameter BuildIndexJob.BuildIndexJobParam
+
+-- wangguitao/00510599  2021-12-29 15:00:00
+
+
+rpc interface (v0.8); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * add enum CopyDataType
+  * change StorageRepository.path type to list<string>, struct 'StorageRepository' json example is as follows:
+      {
+          "repositoryType": DATA_REPOSITORY,
+          "isLocal":true,
+          "path":[
+              "/tmp/oceanprotect/ip1/data",
+              "/tmp/oceanprotect/ip2/data",
+              "/tmp/oceanprotect/ip3/data",
+              "/tmp/oceanprotect/ip4/data"
+          ],
+          "protocol": NFS,
+          "auth": {
+              "authType": NO_AUTHENTICATION
+          },
+          "endpoint": {
+              "ip":"xxx.xxx.xxx.xxx",
+              "port":8088
+          },
+          "remotePath": "/clone-xxxxxx-xxxxxx/"
+          "remoteHost": [
+              { "ip":"ip1", "port":111 },
+              { "ip":"ip2", "port":111 },
+              { "ip":"ip3", "port":111 },
+              { "ip":"ip4", "port":111 }
+          ],
+          "extendInfo":""
+      }
+
+ApplicationProtectFramework.thrift
+  * add JobService.QueryPreviousCopy interface, query previous most recent copy
+
+ApplicationProtectPlugin.thrift
+  * rename BackupJobType.CUMU_BACKUP to BackupJobType.DIFF_BACKUP
+  * add new backup type BackupJobType.PERMANENT_INCREMENTAL_BACKUP
+  * move BackupJobType to ApplicationProtectBaseDataType.thrift
+
+-- wangguitao/00510599  2021-12-23 23:30:00
+
+
+rpc interface (v0.7); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * add Copy.timestamp, Copy.transactionNo
+  
+ApplicationProtectFramework.thrift
+  * rename LogDetail.additionalParams to LogDetail.errorParams
+  * change LogDetail.errorCode to optional
+
+-- wangguitao/00510599  2021-12-21 11:00:00
+
+
+rpc interface (v0.6); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * add ExecutePolicy
+  * change SubJob.localNode type to ExecutePolicy and rename SubJob.localNode to SubJob.policy
+  
+ApplicationProtectFramework.thrift
+  * change SubJobStatus value
+
+-- wangguitao/00510599  2021-12-16 10:00:00
+
+
+rpc interface (v0.5); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * add ApplicationEnvironment.nodes
+
+ApplicationProtectPlugin.thrift
+  * rename BackupJobParam.extendInfo to BackupJobParam.advanceParams
+  * rename RestoreJobParam.extendInfo to RestoreJobParam.advanceParams
+  * rename LivemountJobParam.extendInfo to LivemountJobParam.advanceParams
+  * remove LivemountJobParam.qos
+  * rename CancleLivemountJob to CancelLivemountJob
+  * add struct CancelLivemountJobParam
+  * change CancelLivemountJob.jobParam type to CancelLivemountJobParam
+  * rename LivemountJob.restoreSubObjects to LivemountJob.targetSubObjects
+  * rename CancelLivemountJob.restoreSubObjects to CancelLivemountJob.targetSubObjects
+  * change some field description in LivemountJob and CancelLivemountJob
+
+-- wangguitao/00510599  2021-12-14 17:30:00
+
+
+rpc interface (v0.4); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * add Copy.extendInfo
+  * add RepositoryProtocolType.TAPE
+  * swap value of RepositoryDataType.CACHE_REPOSITORY and RepositoryDataType.LOG_REPOSITORY
+
+ApplicationProtectFramework.thrift
+  * add paramter jobId in JobService.ReportCopyAdditionalInfo
+
+ApplicationProtectPlugin.thrift
+  * remove parameter jobId in ProtectService.AsyncAbortJob and ProtectService.PauseJob
+
+-- wangguitao/00510599  2021-12-13 23:00:00
+
+
+
+rpc interface (v0.3); urgency=low
+ApplicationProtectBaseDataType.thrift
+  * add ActionResult.bodyErr
+  * rename AuthType.ASKS to AuthType.AKSK
+  * change struct Authentication description
+  * change struct StorageRepository.extendInfo description
+
+ApplicationProtectFramework.thrift
+  * add field SubJobDetails.speed
+
+ApplicationProtectPlugin.thrift
+  * add parameter subJob in ProtectService.AsyncBackupPostJob, ProtectService.AsyncRestorePostJob, ProtectService.AsyncInstantRestorePostJob
+  
+-- wangguitao/00510599  2021-12-11 20:00:00
+
+
+
+rpc interface (v0.2); urgency=low
+
+ApplicationProtectBaseDataType.thrift
+  * remove struct SupportApplication, ApplicationPlugin.applications, ApplicationPlugin.version
+  * rename ApplicationPlugin.pluginName to ApplicationPlugin.name
+  * remove struct HostAddress.id
+  * change description: StorageRepository.endpoint, StorageRepository.remotePath, StorageRepository.remoteHost
+  * rename JobService.ReportExternalCopy to JobService.ReportCopyAdditionalInfo
+  * change AuthType defined value
+  * change Copy.type, Copy.name to optional
+
+ApplicationProtectFramework.thrift
+  * remove JobService.RollbackDataAfterBackupFailed interface
+  * add JobService.ComputerFileLocationInMultiFileSystem interface
+  * change LogDetail field name
+  * change JobLogLevel defined value
+  
+ApplicationProtectPlugin.thrift
+  * change DataLayout.encryption, DataLayout.deduption, DataLayout.compression to required
+  * rename DataLayout.origin to DataLayout.nativeData, and change it to required
+  * change LivemountJob.jobParam to optional
+  * add struct BackupJob field copy
+  * change ProtectService.AbortJob to ProtectService.AsyncAbortJob, the function is converted to asynchronization mode,
+    and the aborting result will be reported by interface 'JobService.ReportJobDetails'
+  * add parameter subJobId in ProtectService.AsyncAbortJob
+  * add ProtectService.PauseJob interface
+  * change ProtectService.AsyncLivemountGenerateSubJob and ProtectService.AsyncExecuteLivemountSubJob interface, change type of job to LivemountJob
+  * add ProtectService.AsyncCancelLivemountGenerateSubJob and ProtectService.AsyncExecuteCancelLivemountSubJob
+  * add parameter appEnv in ApplicationService.CheckApplication, remove parameter auth in ApplicationService.CheckApplication
+  * remove parameter auth in ApplicationService.ListApplicationResource
+  * rename function name, and convert it to asynchronization mode, list as follow
+           ProtectService.BackupPrerequisite to ProtectService.AsyncBackupPrerequisite
+           ProtectService.BackupPostJob to ProtectService.AsyncBackupPostJob
+           ProtectService.RestorePrerequisite to ProtectService.AsyncRestorePrerequisite
+           ProtectService.RestorePostJob to ProtectService.AsyncRestorePostJob
+           ProtectService.InstantRestorePrerequisite to ProtectService.AsyncInstantRestorePrerequisite
+           ProtectService.InstantRestorePostJob to ProtectService.AsyncInstantRestorePostJob
+           ProtectService.BuildIndexSubJob to ProtectService.AsyncBuildIndexSubJob
+  * change parameter backupJobResult type in ProtectService.AsyncBackupPostJob
+           parameter restoreJobResult type in ProtectService.AsyncRestorePostJob
+           parameter restoreJobResult type in ProtectService.AsyncInstantRestorePostJob
+  * change RestoreJob.copy, LivemountJob.copy, CancleLivemountJob.copy to required
+
+-- wangguitao/00510599  2021-12-03 15:00:00
+
+
+
+rpc interface (v0.1); urgency=low
+
+  * first publish
+
+-- wangguitao/00510599  2021-12-01 00:00:00

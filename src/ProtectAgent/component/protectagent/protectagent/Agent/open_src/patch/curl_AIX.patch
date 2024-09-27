@@ -1,0 +1,11 @@
+--- lib/asyn-thread.c	2019-09-09 04:03:16.000000000 -0800
++++ fix/asyn-thread.c	2021-01-15 10:28:08.000000000 -0800
+@@ -245,7 +245,7 @@
+ 
+ #ifdef HAVE_SOCKETPAIR
+   /* create socket pair */
+-  if(socketpair(AF_LOCAL, SOCK_STREAM, 0, &tsd->sock_pair[0]) < 0) {
++  if(socketpair(AF_UNIX, SOCK_STREAM, 0, &tsd->sock_pair[0]) < 0) {
+     tsd->sock_pair[0] = CURL_SOCKET_BAD;
+     tsd->sock_pair[1] = CURL_SOCKET_BAD;
+     goto err_exit;

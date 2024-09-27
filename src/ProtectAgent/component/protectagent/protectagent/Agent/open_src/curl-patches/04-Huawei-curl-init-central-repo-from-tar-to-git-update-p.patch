@@ -1,0 +1,18 @@
+From dbd5575a84dbab0e0710d6358fea25fdd1d219d1 Mon Sep 17 00:00:00 2001
+From: <tianfengping@huawei.com>
+Date: Thu, 4 Mar 2021 14:36:04 +0800
+Subject: [PATCH] [Huawei]curl: init central repo from tar to git, update
+---
+ HUAWEI-RELEASE | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/HUAWEI-RELEASE b/HUAWEI-RELEASE
+index be5b474..7a7867f 100644
+--- a/HUAWEI-RELEASE
++++ b/HUAWEI-RELEASE
+@@ -1 +1 @@
+-RELEASE: h1
++RELEASE: h2
+-- 
+2.1.4
+

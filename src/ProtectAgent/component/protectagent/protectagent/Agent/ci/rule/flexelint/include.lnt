@@ -1,0 +1,60 @@
+//************************************start************************************************
+
+/usr1/flexelint/co-gcc.lnt
+
+-i"/usr/include"
+-i"/usr/include/c++/4.8"
+-i"/usr/include/linux"
+-i"/usr/include/c++/4.8/x86_64-suse-linux"
+-i"/usr/lib64/gcc/x86_64-suse-linux/4.8/include"
+
+-i"/usr1/workspace/Flexelint_Agent/Agent/src/inc"
+-i"/usr1/workspace/Flexelint_Agent/Agent/src/esn/inc"
+-i"/usr1/workspace/Flexelint_Agent/Agent/platform/kmc"
+-i"/usr1/workspace/Flexelint_Agent/Agent/platform/kmc/include"
+-i"/usr1/workspace/Flexelint_Agent/Agent/platform/securec/include"
+
+-i"/usr1/workspace/Flexelint_Agent/Agent/open_src"
+-i"/usr1/workspace/Flexelint_Agent/Agent/open_src/fcgi/include"
+-i"/usr1/workspace/Flexelint_Agent/Agent/open_src/jsoncpp/include"
+-i"/usr1/workspace/Flexelint_Agent/Agent/open_src/openssl/include"
+-i"/usr1/workspace/Flexelint_Agent/Agent/open_src/snmp++/include"
+-i"/usr1/workspace/Flexelint_Agent/Agent/open_src/snmp++"
+-i"/usr1/workspace/Flexelint_Agent/Agent/open_src/obj_snmp"
+-i"/usr1/workspace/Flexelint_Agent/Agent/open_src/fcgi/include"
+-i"/usr1/workspace/Flexelint_Agent/Agent/open_src/sqlite"
+-i"/usr1/workspace/Flexelint_Agent/Agent/open_src/tinyxml"
+
+-dLINUX
+-dSUSE
+
+// #error ...
+-e309
+// Ignoring return value of function 'Symbol'
+-e534
+// Converting enum to int 
+-e641
+// Warning 686: Option '-wlib(0)' is suspicious 
+// because of 'blanket suppression can hide configuration problems'
+-e686
+// Ignoring return value of function 'Symbol'
+-e537
+// Loss of precision (Context) (Type to Type)
+-e712
+// Location cited in prior message
+-e830
+// Reference cited in prior message
+-e831
+// Operator 'Name' followed by operator 'Name' is confusing
+-e834
+// Discarded instance of post decrement/increment
+-e1757
+// Variable 'Symbol' (Location) (type 'Name') is referenced only by its constructor or destructor
+-esym(1788,CLogGuard)
+-esym(1788,CThreadAutoLock)
+
+
+//屏蔽头文件中的错误
+-wlib(0)
+//************************************end************************************************
+

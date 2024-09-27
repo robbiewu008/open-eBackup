@@ -1,0 +1,94 @@
+/**
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2019. All rights reserved.
+ *
+ * @file TaskStepCheckDBClose.cpp
+ * @brief  Contains function declarations TaskStepCheckDBClose Operations
+ * @version 1.0.0
+ * @date 2020-08-01
+ * @author wangguitao 00510599
+ */
+#include "apps/oraclenative/TaskStepCheckDBClose.h"
+
+#include "common/ErrorCode.h"
+#include "common/Log.h"
+#include "common/JsonUtils.h"
+#include "securecom/RootCaller.h"
+#include "common/CSystemExec.h"
+#include "apps/oracle/OracleDefines.h"
+#include "securecom/SecureUtils.h"
+
+TaskStepCheckDBClose::TaskStepCheckDBClose(
+    const mp_string& id, const mp_string& taskId, const mp_string& name, mp_int32 ratio, mp_int32 order)
+    : TaskStepOracleNative(id, taskId, name, ratio, order)
+{}
+
+TaskStepCheckDBClose::~TaskStepCheckDBClose()
+{}
+
+mp_int32 TaskStepCheckDBClose::Init(const Json::Value& param)
+{
+    LOGGUARD("");
+    mp_int32 iRet = InitialDBInfo(param);
+    if (iRet != MP_SUCCESS) {
+        return iRet;
+    }
+
+    m_stepStatus = STATUS_INITIAL;
+    return MP_SUCCESS;
+}
+
+mp_int32 TaskStepCheckDBClose::Run()
+{
+    COMMLOG(OS_LOG_INFO, "taskid %s, Begin to check database %s close.", m_taskId.c_str(), dbName.c_str());
+    mp_string scriptParams;
+    BuildCheckDBScriptParam(scriptParams);
+
+#ifdef WIN32
+    mp_int32 iRet = SecureCom::SysExecScript(WIN_ORACLE_NATIVE_CHECKDB_STATUS, scriptParams, NULL);
+    ClearString(scriptParams);
+    if (iRet != MP_SUCCESS) {
+        mp_int32 iNewRet = ErrorCode::GetInstance().GetErrorCode(iRet);
+        COMMLOG(OS_LOG_ERROR,
+            "taskid %s, check database %s close failed, ret %d, tranformed return code is %d",
+            m_taskId.c_str(),
+            dbName.c_str(),
+            iRet,
+            iNewRet);
+        return iNewRet;
+    }
+#else
+    CRootCaller rootCaller;
+    mp_int32 iRet = rootCaller.Exec((mp_int32)ROOT_COMMAND_SCRIPT_ORACLENATIVE_CHECKDBSTASTUS,
+        scriptParams, NULL, UpdateInnerPIDCallBack, this);
+    ClearString(scriptParams);
+    TRANSFORM_RETURN_CODE(iRet, ERROR_AGENT_DB_ISRUNNING);
+    if (iRet != MP_SUCCESS) {
+        COMMLOG(
+            OS_LOG_ERROR, "taskid %s, check database %s close failed, ret %d.", m_taskId.c_str(), dbName.c_str(), iRet);
+        return iRet;
+    }
+#endif
+
+    COMMLOG(OS_LOG_INFO, "taskid %s, check database %s close succ.", m_taskId.c_str(), dbName.c_str());
+    return MP_SUCCESS;
+}
+
+mp_void TaskStepCheckDBClose::BuildCheckDBScriptParam(mp_string& strParam)
+{
+    strParam = ORACLE_SCRIPTPARAM_INSTNAME + instName + NODE_COLON +
+        ORACLE_SCRIPTPARAM_DBNAME + dbName + NODE_COLON +
+        ORACLE_SCRIPTPARAM_DBUSERNAME + dbUser + NODE_COLON +
+        ORACLE_SCRIPTPARAM_DBPASSWORD + dbPwd + NODE_COLON +
+        ORACLE_SCIPRTPARAM_CHECKTYPE + "0";
+    ClearString(dbPwd);
+}
+
+mp_int32 TaskStepCheckDBClose::Stop(const Json::Value& param)
+{
+    return MP_SUCCESS;
+}
+
+mp_int32 TaskStepCheckDBClose::Cancel()
+{
+    return MP_SUCCESS;
+}

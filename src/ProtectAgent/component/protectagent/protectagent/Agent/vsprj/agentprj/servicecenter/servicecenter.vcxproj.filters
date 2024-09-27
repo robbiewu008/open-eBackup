@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="certificateservice">
+      <UniqueIdentifier>{fb92806f-f18e-4f30-83ed-8320a0b697f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="messageservice">
+      <UniqueIdentifier>{946e177a-b002-4d03-a82c-8a44b20e0563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="servicefactory">
+      <UniqueIdentifier>{236497a8-fcbb-4ead-ba65-4a4b705c9e96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="services">
+      <UniqueIdentifier>{1229af73-7449-40f4-8279-1020b575b1d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thrift">
+      <UniqueIdentifier>{bed58403-a8f9-42b9-861e-cbaa76ae50c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thriftservice">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="timerservice">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="services\device">
+      <UniqueIdentifier>{abc0cb75-3373-4635-8dc8-b09ede33c3ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="services\jobservice">
+      <UniqueIdentifier>{ae47532c-ad97-47ca-8c31-fb1a9079e990}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\certificateservice\detail\CertificateHandler.h">
+      <Filter>certificateservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\certificateservice\detail\CertificateService.h">
+      <Filter>certificateservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\certificateservice\detail\NginxCertificatePathProxy.h">
+      <Filter>certificateservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\certificateservice\include\ICertificateComm.h">
+      <Filter>certificateservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\certificateservice\include\ICertificateHandler.h">
+      <Filter>certificateservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\certificateservice\include\ICertificatePathProxy.h">
+      <Filter>certificateservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\certificateservice\include\ICertificateService.h">
+      <Filter>certificateservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\messageservice\detail\MessageService.h">
+      <Filter>messageservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\messageservice\detail\Subject.h">
+      <Filter>messageservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\messageservice\include\IEvent.h">
+      <Filter>messageservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\messageservice\include\IMessageService.h">
+      <Filter>messageservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\messageservice\include\IObserver.h">
+      <Filter>messageservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\messageservice\include\ISubject.h">
+      <Filter>messageservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\messageservice\include\RpcPublishObserver.h">
+      <Filter>messageservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\servicefactory\detail\ServiceCenter.h">
+      <Filter>servicefactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\servicefactory\include\IService.h">
+      <Filter>servicefactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\servicefactory\include\IServiceCenter.h">
+      <Filter>servicefactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\servicefactory\include\ServiceFactory.h">
+      <Filter>servicefactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\services\device\PrepareFileSystem.h">
+      <Filter>services\device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\services\jobservice\detail\JobServer.h">
+      <Filter>services\jobservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\services\jobservice\detail\JobServerRpcPublishObserver.h">
+      <Filter>services\jobservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\services\jobservice\detail\JobServiceFactory.h">
+      <Filter>services\jobservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\services\jobservice\include\IJobServer.h">
+      <Filter>services\jobservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\thriftservice\detail\SslSocketPasswordFactory.h">
+      <Filter>thriftservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\thriftservice\detail\ThreadFactoryProxy.h">
+      <Filter>thriftservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\thriftservice\detail\ThreadProxy.h">
+      <Filter>thriftservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\thriftservice\detail\ThriftClient.h">
+      <Filter>thriftservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\thriftservice\detail\ThriftFactory.h">
+      <Filter>thriftservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\thriftservice\detail\ThriftServer.h">
+      <Filter>thriftservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\thriftservice\detail\ThriftService.h">
+      <Filter>thriftservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\thriftservice\detail\TServerEventHandlerImpl.h">
+      <Filter>thriftservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\thriftservice\include\IThriftClient.h">
+      <Filter>thriftservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\thriftservice\include\IThriftServer.h">
+      <Filter>thriftservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\thriftservice\include\IThriftService.h">
+      <Filter>thriftservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\thriftservice\JsonToStruct\trjsonandstruct.h">
+      <Filter>thriftservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\timerservice\detail\Timer.h">
+      <Filter>timerservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\timerservice\detail\TimerInfo.h">
+      <Filter>timerservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\timerservice\detail\TimerService.h">
+      <Filter>timerservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\timerservice\include\ITimer.h">
+      <Filter>timerservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\timerservice\include\ITimerService.h">
+      <Filter>timerservice</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\services\device\CacheRepository.h">
+      <Filter>services\device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\services\device\LogRepository.h">
+      <Filter>services\device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\services\device\Repository.h">
+      <Filter>services\device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\servicecenter\services\device\RepositoryFactory.h">
+      <Filter>services\device</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\src\servicecenter\certificateservice\CertificateHandler.cpp">
+      <Filter>certificateservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\certificateservice\CertificateService.cpp">
+      <Filter>certificateservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\certificateservice\NginxCertificatePathProxy.cpp">
+      <Filter>certificateservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\messageservice\MessageService.cpp">
+      <Filter>messageservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\messageservice\RpcPublishObserver.cpp">
+      <Filter>messageservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\messageservice\Subject.cpp">
+      <Filter>messageservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\servicefactory\IServiceCenter.cpp">
+      <Filter>servicefactory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\servicefactory\ServiceCenter.cpp">
+      <Filter>servicefactory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\servicefactory\ServiceFactory.cpp">
+      <Filter>servicefactory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\services\device\PrepareFileSystem.cpp">
+      <Filter>services\device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\services\jobservice\JobServer.cpp">
+      <Filter>services\jobservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\services\jobservice\JobServerRpcPublishObserver.cpp">
+      <Filter>services\jobservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\services\jobservice\JobServiceFactory.cpp">
+      <Filter>services\jobservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\thriftservice\SslSocketPasswordFactory.cpp">
+      <Filter>thriftservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\thriftservice\ThreadFactoryProxy.cpp">
+      <Filter>thriftservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\thriftservice\ThreadProxy.cpp">
+      <Filter>thriftservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\thriftservice\ThriftClient.cpp">
+      <Filter>thriftservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\thriftservice\ThriftFactory.cpp">
+      <Filter>thriftservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\thriftservice\ThriftServer.cpp">
+      <Filter>thriftservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\thriftservice\ThriftService.cpp">
+      <Filter>thriftservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\thriftservice\TServerEventHandlerImpl.cpp">
+      <Filter>thriftservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\timerservice\Timer.cpp">
+      <Filter>timerservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\timerservice\TimerService.cpp">
+      <Filter>timerservice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\services\device\CacheRepository.cpp">
+      <Filter>services\device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\services\device\LogRepository.cpp">
+      <Filter>services\device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\services\device\Repository.cpp">
+      <Filter>services\device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\servicecenter\services\device\RepositoryFactory.cpp">
+      <Filter>services\device</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\src\servicecenter\thrift\ApplicationProtectBaseDataType.thrift">
+      <Filter>thrift</Filter>
+    </None>
+    <None Include="..\..\..\src\src\servicecenter\thrift\ApplicationProtectFramework.thrift">
+      <Filter>thrift</Filter>
+    </None>
+    <None Include="..\..\..\src\src\servicecenter\thrift\ApplicationProtectPlugin.thrift">
+      <Filter>thrift</Filter>
+    </None>
+    <None Include="..\..\..\src\src\servicecenter\thrift\changelog">
+      <Filter>thrift</Filter>
+    </None>
+    <None Include="..\..\..\src\src\servicecenter\thrift\readme">
+      <Filter>thrift</Filter>
+    </None>
+  </ItemGroup>
+</Project>

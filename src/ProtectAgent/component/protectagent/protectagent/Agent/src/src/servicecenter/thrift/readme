@@ -1,0 +1,28 @@
+RPC Interface Modification Rules
+---------------------------------------------
+To ensure the stability of the RPC interface between the Agent framework and plug-in and avoid function problems caused by interface changes, the interface mdification rules are defined as follows:
+
+1. The developer modifies the RPC interface based on the RPC_Publish branch. Before submitting the modification, ensure that the interface file is available.
+2. Submit the MR to RPC_Publish. Each business owner is the mandatory MR reviewer. Each owner needs to complete the MR review.
+3. After the MR is integrated, the Agent and business owner synchronize the latest RPC_Publish interface file to their code libraries to complete interface adaptation.
+
+RPC_Publish branch code repository
+https://codehub-y.huawei.com/dpa/protectagent/ProtectAgent_Framework/home
+
+Notice:
+1. When an interface uses excepion, the definition and usage must be in the same file. Otherwise, the member variable Exception of xxx_presult is a pointer, and no space is allocated when the client uses it. As a result, the client crashes.
+
+RPC接口修改规则
+---------------------------------------------
+为了保证Agent框架与插件的RPC接口的稳定，同时避免接口变化引发的功能问题，定义接口变化规则如下：
+
+1.开发人基于RPC_Publish分支修改RPC接口，提交前需要保证接口文件可用
+2.提交MR到RPC_Publish，各个业务责任人作为MR必选评审人，每个责任人都需要完成MR审核
+3.MR合入后，Agent和业务责任人使用RPC_Publish最新的接口文件同步到各自代码库，完成接口适配
+
+RPC_Publish分支代码库
+https://codehub-y.huawei.com/dpa/protectagent/ProtectAgent_Framework/home
+
+注意事项：
+1.接口使用excetpion时，定义和使用必须在同一个文件，否则产生xxx_presult的成员变量Exception是指针，并且client使用时并没有分配空间，客户端会崩溃
+

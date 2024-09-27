@@ -1,0 +1,60 @@
+#!/bin/bash
+PID=$1
+AGENT_ROOT_PATH=$2
+
+. "${AGENT_ROOT_PATH}/bin/agent_thirdpartyfunc.sh"
+. "${AGENT_ROOT_PATH}/bin/thirdparty/Oracle_AFD_Var.sh"
+. "${AGENT_ROOT_PATH}/bin/thirdparty/Oracle_AFD_Common.sh"
+
+LOG_FILE_NAME="${AGENT_THIRDPARTY_LOGPATH}/oracleAFD.log"
+
+# The related business script code need to be here.
+########Begin########
+Log "Begin to do plan." 
+
+# scan disk
+hot_add
+
+# exists situation, after hot_add, the disk is not exists, wait 10 seconds
+sleep 10
+if [ "${AFD_MODE}" = "0" ]
+then
+    SOURCE_LUNS=`echo ${SOURCE_LUN_LIST} | sed -e 's/;/ /g'`
+    # config lun information
+    for lunInfo in ${SOURCE_LUNS}
+    do
+        Log "LunInfo=${lunInfo}"
+        lunID=`echo ${lunInfo} | awk -F "-" '{print $1}'`
+        lunWWN=`echo ${lunInfo} | awk -F "-" '{print $2}'`
+        
+        configLun4NativePlan ${lunID} ${lunWWN}
+        lastErr=$?
+        if [ $lastErr -ne 0 ]
+        then
+            Exit 1 -log "config lun ${lunInfo} failed, code=${lastErr}."  -ret ${lastErr}
+            exit 1
+        fi
+    done
+fi
+    
+# scan afd disk
+scanAFDDisk
+Log "`su - ${ASM_USER} -c \"asmcmd afd_lsdsk\"`"
+
+# start cluster and DB
+startDB ${AGENT_ROOT_PATH}
+RSTCODE=$?
+
+Log "Finish doing plan." 
+########End#######
+
+# if the operation is successed, need to write blank string into the result file ${RSTFILE}. 
+# Otherwise please write material error infomation into the result file ${$RSTFILE}.
+# For example,
+# business code result
+if [ ${RSTCODE} -ne 0 ]
+then
+    Exit 1 -log "Here:record some error."  -ret ${RSTCODE}
+else
+    Exit 0 -log "Here:record success." 
+fi

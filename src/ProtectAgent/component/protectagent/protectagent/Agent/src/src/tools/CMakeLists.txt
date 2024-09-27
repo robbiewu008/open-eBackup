@@ -1,0 +1,6 @@
+add_subdirectory(agentcli)
+add_subdirectory(crypto)
+add_subdirectory(getinput)
+add_subdirectory(monitor)
+add_subdirectory(scriptsign)
+add_subdirectory(xmlcfg)

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <System>
+        <!-- Agent FastCGI listening port -->
+        <port value="8091"/>
+        <!-- Host Agent periodic report info to drm IP -->
+        <drm_ip value=""/>
+        <!-- Host Agent periodic report info to drm port -->
+        <drm_port value=""/>
+        <!-- how long (seconds) Host Agent report info to drm -->
+        <drm_period value="60"/>
+        <!-- Agent log level -->
+        <log_level value="1"/>
+        <!-- Agent log count -->
+        <log_count value="50"/>
+        <!-- Agent log cache threshold -->
+        <log_cache_threshold value="50"/>
+        <!-- Agent access user name -->
+        <name value=""/>
+        <!-- sl value -->
+        <sl value="2709023617"/>
+        <!-- hash value -->
+        <hash value=""/>
+        <!-- freeze interval time-->
+        <freeze_interval_time value="5"/>
+        <!-- auth_type value -->
+        <auth_type value="2"/>
+        <!-- ignore sign path -->
+        <sign_ignore value=""/>
+        <stop_rac value="0"/>
+        <userid value=""/>
+        <domain_name value="" />
+        <!-- the secure channel status,Default secure:1,no secure:0 -->
+        <secure_channel value="1" />
+        <algorithm_suite value="ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256" />
+        <!-- worker thread count -->
+        <taskpoll_worker_count value="30" />
+        <!-- timieout between rdagent and dataprocess -->
+        <thread_timeout value="600" />
+        <!-- check certificate validity cycle, unit:day, Default:1 -->
+        <check_cert_cycle value="1" />
+        <!-- to worning before certificate expired , unit:day, Default:30 -->
+        <warning_time value="30" />
+    </System>
+    <Security>
+        <alarm_id value ="0x106403310001" />
+        <ca_info value="bcmagentca.pem" />
+        <ssl_cert value="server.pem" />
+        <ssl_key value="server.key" />
+        <cert value="auto_match" />
+    </Security>
+    <Backup>
+        <link_ebk_server_nic value=""/>
+        <ebk_server_ip value="0.0.0.0"/>
+        <ebk_server_auth_port value="10000"/>
+        <ebk_server_port value="27008"/>
+        <ebk_server_user value=""/>
+        <ebk_server_pwd value=""/>
+        <protect_range value="NoLimited"/>
+        <!--backup proxy role 0:host 2:vmware-->
+        <backup_role value="0"/>
+        <!--if keep vm-snap while job failed 0: dont keep 1: keep -->
+        <if_keep_vmsnap_on_fail value="0"/>
+        <!-- update interval time ms -->
+        <check_conn_time value="60000"/>
+        <!--Progress Report Interval,Default value: 30000 ms-->
+        <progress_interval value="30000" />
+        <!--type  1:interactive,2:silent-->
+        <install_type value="2" />
+
+    </Backup>
+    <Monitor>
+        <retry_time value="3"/>
+        <monitor_interval value="30"/>
+        <rdagent value="1">
+            <!--thread count -->
+            <thread_count value="200"/>
+            <!--handler count -->
+            <handle_count value="1000"/>
+            <!--physical memory used in M unit-->
+            <pm_size value="6000"/>
+            <!--virtual memory used in M unit-->
+            <vm_size value="6000"/>
+            <!--CPU usage -->
+            <cpu_usage value="80"/>
+            <!--temp directory size in M unit-->
+            <tmpfile_size value="20"/>
+        </rdagent>
+        <dataprocess value="1">
+             <!--thread count -->
+            <thread_count value="200" />
+            <!--handler count -->
+            <handle_count value="1000" />
+            <!--physical memory used in M unit-->
+            <pm_size value="6000" />
+            <!--virtual memory used in M unit-->
+            <vm_size value="6000" />
+            <!--CPU usage -->
+            <cpu_usage value="80" />
+        </dataprocess>
+        <nginx value="1">
+            <!--thread count -->
+            <thread_count value="100"/>
+            <!--handler count -->
+            <handle_count value="1000"/>
+            <!--physical memory used in M unit -->
+            <pm_size value="1000"/>
+            <!--virtual memory used in M unit -->
+            <vm_size value="4000"/>
+            <!--CPU usage-->
+            <cpu_usage value="80"/>
+            <!--max nginx log size in M unit-->
+            <nginx_log_size value="3"/>
+            <!--nginx ssl certificate key password -->
+            <ssl_key_password value="000000010000000100000000000000050000000100000001b343ffca851b6d034c6bb7d445fd4af708a3ee07194e9743b540044239695b2b000000200000000000000000078c3a332e83382aae523e3a0c0b69bab0624250a72a5cb1655cab72e2f607860000000100000000000008040000000100000001410d4a21dd845af48ffb5e0ef920aece00000000000000001f63687345f329caacd70fc94b202ee87e4d5bd85385d0e971cafe26b31f841b"/>
+        </nginx>
+    </Monitor>
+    <DataProcess>
+        <max_pool_threads value="16" />
+        <max_backup_threads value="2" />
+        <max_restore_threads value="2" />
+        <chunkSize value = "262144" />
+        <isEnableSSL value = "1" />
+        <isEnableAdvanced value = "1" />
+        <dee_gid value = "10289" />
+        <vddkapi_timeout value = "7200" />
+        <api_invoking_time_interval value = "600"/>
+        <use_aio value="0"/>
+        <backup_segment_block_size value="15000"/>
+        <restore_segment_block_size value="15000"/>
+    </DataProcess>
+    <DataProcessDataMover>
+        <memory value="2048"/>
+        <threadNum value="4"/>
+    </DataProcessDataMover>
+</root>

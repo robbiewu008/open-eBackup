@@ -1,0 +1,36 @@
+if(LINUX_COMPILE)
+    file(GLOB SRC_LIST 
+        ${CMAKE_CURRENT_SOURCE_DIR}/externaljob/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/filter/*.cpp
+    )
+    add_library(taskmanagerobj
+        OBJECT
+        Task.cpp
+        TaskContext.cpp
+        TaskManager.cpp
+        TaskStepLinkTarget.cpp
+        TaskStepPrepareNasMedia.cpp
+        TaskStepPreSufScript.cpp
+        TaskStepScanDisk.cpp
+        TaskStepScript.cpp
+        ${SRC_LIST}
+    )
+else()
+    add_library(taskmanagerobj
+        OBJECT
+        Task.cpp
+        TaskContext.cpp
+        TaskManager.cpp
+        TaskStepLinkTarget.cpp
+        TaskStepPrepareNasMedia.cpp
+        TaskStepPreSufScript.cpp
+        TaskStepScanDisk.cpp
+        TaskStepScript.cpp
+    )
+endif()
+
+target_link_libraries(taskmanagerobj
+    PRIVATE
+    safe_cmplib
+    agent_platform
+)
