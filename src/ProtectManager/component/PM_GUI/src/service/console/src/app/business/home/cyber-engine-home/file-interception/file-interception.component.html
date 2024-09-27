@@ -1,0 +1,99 @@
+<div class="module-container title-progress-container">
+  <div>
+    <div class="aui-header-1">
+      <lv-group lvGutter="8px">
+        <h2 class="home-module-title">{{ 'explore_file_block_label' | i18n }}</h2>
+      </lv-group>
+    </div>
+    <div class="card-icon file-interception-card-icon"></div>
+    <div class="sub-line">
+      <div class="pairs">
+        <div (click)="gotoFileInterception()" class="link-block">
+          <span class="pairs-title">{{
+            'common_file_system_open_label' | i18n
+            }}</span>
+          {{ cyberEngineFileExtensionFilterEnabledCount }}/{{ cyberEngineFileExtensionFilterTotalCount }}
+          <div class="detection-type-label">
+            {{'protection_detect_type_cyber_engine_label' | i18n}}
+          </div>
+        </div>
+        <div>
+          <span class="pairs-title">{{
+            'common_file_system_open_label' | i18n
+            }}</span>
+          {{ indeviceFileExtensionFilterEnabledCount }}/{{indeviceFileExtensionFilterTotalCount}}
+          <div class="detection-type-label">
+            {{'protection_detect_type_indevice_label' | i18n}}
+          </div>
+        </div>
+      </div>
+      <div id="file-chart"></div>
+    </div>
+  </div>
+
+  <div class="aui-header-1 mt-32">
+    <lv-group lvGutter="8px">
+      <h2 class="home-module-title">
+        {{ 'explore_real_time_detection_new_label' | i18n }}
+      </h2>
+    </lv-group>
+  </div>
+  <div class="card-icon real-time-card-icon"></div>
+  <div class="sub-line">
+    <div class="pairs">
+      <div (click)="gotoIoDetection()" class="link-block">
+        <span class="pairs-title">{{
+          'common_file_system_open_label' | i18n
+          }}</span>
+        {{ cyberEngineIoDetectConfigEnabledCount }}/{{cyberEngineIoDetectConfigTotalCount}}
+        <div class="detection-type-label">
+          {{'protection_detect_type_cyber_engine_label' | i18n}}
+        </div>
+      </div>
+      <div>
+        <span class="pairs-title">{{
+          'common_file_system_open_label' | i18n
+          }}</span>
+        {{ indeviceIoDetectConfigEnabledCount }}/{{indeviceIoDetectConfigTotalCount}}
+        <div class="detection-type-label">
+          {{'protection_detect_type_indevice_label' | i18n}}
+        </div>
+      </div>
+    </div>
+    <div id="io-chart"></div>
+  </div>
+
+  <div>
+    <div class="aui-header-1 mt-32">
+      <lv-group lvGutter="8px">
+        <h2 class="home-module-title">
+          {{ 'explore_intelligent_detection_label' | i18n }}
+        </h2>
+      </lv-group>
+    </div>
+    <div class="card-icon intelligent-detection-card-icon"></div>
+    <div class="sub-line">
+      <div class="pairs">
+        <div (click)="gotoDetection($event,dataMap.Protection_Status.protected.value)" class="link-block">
+          <span class="pairs-title">
+            {{'common_file_system_open_label' | i18n}}
+          </span>
+          {{ cyberEngineCopyDetectConfigEnabledCount }}/{{cyberEngineCopyDetectConfigTotalCount}}
+          <div class="detection-type-label">
+            {{'protection_detect_type_cyber_engine_label' | i18n}}
+          </div>
+        </div>
+        <div>
+          <span class="pairs-title">
+            {{'common_file_system_open_label' | i18n}}
+          </span>
+          {{ indeviceCopyDetectConfigEnabledCount }}/{{indeviceCopyDetectConfigTotalCount}}
+          <div class="detection-type-label">
+            {{'protection_detect_type_indevice_label' | i18n}}
+          </div>
+        </div>
+      </div>
+      <div id="copy-chart"></div>
+    </div>
+  </div>
+</div>

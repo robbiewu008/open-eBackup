@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    emei_stor: 'True'
+    k8s-app: emeistor-gui
+  name: emeistor-gui-server
+spec:
+  ports:
+  - name: emeistor-gui-port
+    nodePort: 30001
+    port: {{ .Values.service.port }}
+    protocol: TCP
+    targetPort: 80
+  selector:
+    k8s-app: emeistor-gui
+  type: NodePort

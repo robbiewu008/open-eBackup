@@ -1,0 +1,84 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_replication_policy_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-select [lvOptions]="replicationPolicyOptions" formControlName="replication_policy" lvValueKey="uuid">
+            </lv-select>
+            <ng-container *ngIf="formGroup.value.replication_policy && replicationItem">
+                <div class="replication-policy-card">
+                    <div class="policy-name">{{replicationItem.name}}</div>
+                    <lv-form class="replication-policy-form">
+                        <lv-form-item>
+                            <lv-form-label>{{'common_replication_targer_cluster_label' | i18n}}</lv-form-label>
+                            <lv-form-control>
+                                {{externalSystems.length ? find(externalSystems, {clusterId:
+                                +replicationItem.external_system_id})
+                                ?
+                                find(externalSystems, {clusterId: +replicationItem.external_system_id})['clusterName']:
+                                '--':
+                                '--'}}
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item *ngIf="replicationItem.external_storage_name">
+                            <lv-form-label>{{'insight_repository_label' | i18n}}</lv-form-label>
+                            <lv-form-control>
+                                {{replicationItem.external_storage_name}}
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label>{{'protection_start_copy_time_label' | i18n}}</lv-form-label>
+                            <lv-form-control>
+                                <lv-group lvGutter='8px'>
+                                    <span>
+                                        {{'protection_copy_detail_label' | i18n:[replicationItem.start_replicate_time |
+                                        date: 'yyyy-MM-dd
+                                        HH:mm:ss']}}
+                                    </span>
+                                </lv-group>
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label>{{'common_retention_label' | i18n}}</lv-form-label>
+                            <lv-form-control>
+                                {{replicationItem.retention_duration}}{{replicationItem.duration_unit | textMap:
+                                'Interval_Unit'}}
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label>{{'protection_last_time_label' | i18n}}</lv-form-label>
+                            <lv-form-control>
+                                {{replicationItem.start_time | date: 'yyyy-MM-dd HH:mm:ss'}}
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label>{{'common_limit_rate_policy_label' | i18n}}</lv-form-label>
+                            <lv-form-control>
+                                {{qosNames.length ? find(qosNames, {uuid: replicationItem.qos_id}) ? find(qosNames,
+                                {uuid:
+                                replicationItem.qos_id})['name']: '--':'--'}}
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label>{{'protection_data_redelete_label' | i18n}}</lv-form-label>
+                            <lv-form-control>
+                                {{replicationItem.link_deduplication | textMap: 'Switch_Status'}}
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label>{{'system_data_compression_label' | i18n}}</lv-form-label>
+                            <lv-form-control>
+                                {{replicationItem.link_compression | textMap: 'Switch_Status'}}
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label>{{'protection_job_failed_alarm_label' | i18n}}</lv-form-label>
+                            <lv-form-control>
+                                {{replicationItem.alarm_after_failure | textMap: 'Switch_Status'}}
+                            </lv-form-control>
+                        </lv-form-item>
+                    </lv-form>
+                </div>
+            </ng-container>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

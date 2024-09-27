@@ -1,0 +1,228 @@
+<div
+  class="aui-gutter-column-md"
+  *ngIf="(!isModify || (isModify && modifying)) && !isLLD"
+>
+  <lv-group lvGutter="16px">
+    <button
+      lv-button
+      lvType="primary"
+      (click)="
+        operationCallBack(
+          'create',
+          data.controllerData,
+          null,
+          data.controllerName
+        )
+      "
+      [disabled]="data.controllerData.length === 20"
+    >
+      {{ 'common_create_port_label' | i18n }}
+    </button>
+    <button
+      lv-button
+      lvType="default"
+      lv-tooltip="{{ 'common_reuse_dm_port_tip_label' | i18n }}"
+      (click)="
+        operationCallBack(
+          'reuse',
+          data.controllerData,
+          null,
+          data.controllerName
+        )
+      "
+      *ngIf="isModify"
+    >
+      {{ 'common_reuse_dm_port_label' | i18n }}
+    </button>
+  </lv-group>
+</div>
+<lv-datatable
+  [lvData]="data.controllerData"
+  #lvTable
+  lvSize="small"
+  lvCompareWith="name"
+  lvResize
+  lvAsync="false"
+  [lvPaginator]="pageS"
+  lvFake
+  [lvScroll]="{ x: '100%' }"
+  lvResizeMode="expand"
+>
+  <thead>
+    <tr>
+      <ng-container *ngFor="let col of data.tableCols">
+        <th
+          *ngIf="col.isShow"
+          [lvShowFilter]="col.filter"
+          (lvFilterChange)="filterChange($event)"
+          [(lvFilters)]="col.filterMap"
+          lvCellKey="{{ col.key }}"
+          lvShowCustom
+          lvFilterCheckAll
+          [attr.width]="col.width"
+        >
+          <span lv-overflow *ngIf="col.key !== 'ip'">{{ col.label }}</span>
+          <span lv-overflow *ngIf="col.key === 'ip'">
+            {{ col.label }}
+            <i
+              lv-icon="lv-icon-search"
+              [lvColorState]="true"
+              lv-popover
+              [lvPopoverContent]="ipTpl"
+              lvPopoverTheme="light"
+              lvPopoverPosition="bottom"
+              lvPopoverTrigger="click"
+              #ipPopover="lvPopover"
+              [ngClass]="{ active: !!data.isSearch }"
+            ></i>
+          </span>
+          <ng-template #ipTpl>
+            <lv-search
+              [(ngModel)]="ip"
+              (lvSearch)="searchByIp($event, data)"
+              [lvFocus]="true"
+            ></lv-search>
+          </ng-template>
+        </th>
+      </ng-container>
+      <th width="20px" style="padding: 0;">
+        <i
+          lv-icon="lv-icon-col-setting"
+          #colPopover="lvPopover"
+          lv-popover
+          lvPopoverPosition="bottomRight"
+          [lvPopoverContent]="colSelectTp"
+          lvPopoverTheme="light"
+          lvPopoverTrigger="click"
+          style="cursor: pointer;"
+        >
+        </i>
+      </th>
+      <ng-template #colSelectTp>
+        <column-filter-tpl
+          [tableKey]="data.tableColsKey"
+          [columns]="data.tableCols"
+        ></column-filter-tpl>
+      </ng-template>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of lvTable.renderData; trackBy: trackById">
+      <ng-container *ngFor="let col of data.tableCols">
+        <ng-container *ngIf="col.isShow">
+          <td>
+            <ng-container [ngSwitch]="col.key">
+              <ng-container *ngSwitchCase="'id'">
+                {{ item.id | nil }}
+              </ng-container>
+              <ng-container *ngSwitchCase="'name'">
+                <input
+                  lv-input
+                  type="text"
+                  [(ngModel)]="item.name"
+                  (ngModelChange)="nameChange($event)"
+                  style="width:90%"
+                  *ngIf="isLLD"
+                />
+                <span lv-overflow style="max-width:160px" *ngIf="!isLLD">{{
+                  item.name
+                }}</span>
+              </ng-container>
+              <ng-container *ngSwitchCase="'role'">
+                {{ item.role | textMap: 'initRoleTable' }}
+              </ng-container>
+              <ng-container *ngSwitchCase="'portType'">
+                <span lv-overflow>{{
+                  item.homePortType | textMap: 'initHomePortType'
+                }}</span>
+              </ng-container>
+              <ng-container *ngSwitchCase="'vlan'">
+                {{ !!item.vlan | textMap: 'isBusinessOptions' }}
+              </ng-container>
+              <ng-container *ngSwitchCase="'mtu'">
+                {{ getMtu(item) }}
+              </ng-container>
+              <ng-container *ngSwitchCase="'route'">
+                <span
+                  lv-overflow
+                  [ngClass]="{
+                    'route-display': !!item.route && !!item.route?.length
+                  }"
+                  (click)="viewRoute(item.route)"
+                  >{{ getRoute(item.route) | nil }}</span
+                >
+              </ng-container>
+              <ng-container *ngSwitchCase="'ethernetPort'">
+                <span lv-overflow>{{ getPort(item) }}</span>
+              </ng-container>
+              <ng-container *ngSwitchCase="'operation'">
+                <lv-group lvGutter="16px">
+                  <span
+                    [ngClass]="{
+                      'aui-link': !item?.modifyDisabled,
+                      'aui-link-disabled': !!item?.modifyDisabled,
+                      'disabled': !!item?.modifyDisabled
+                    }"
+                    (click)="
+                      operationCallBack(
+                        'modify',
+                        data.controllerData,
+                        item,
+                        data.controllerName
+                      )
+                    "
+                    [lv-tooltip]="
+                      !!item?.modifyDisabled
+                        ? ('common_reuse_dm_port_modify_tip_label' | i18n)
+                        : ''
+                    "
+                    >{{ 'common_modify_label' | i18n }}</span
+                  >
+                  <span
+                    class="aui-link"
+                    (click)="operationCallBack('routeConfig', null, item, null)"
+                  >
+                    {{ 'common_config_route_label' | i18n }}
+                  </span>
+                  <span
+                    class="aui-link"
+                    (click)="
+                      operationCallBack(
+                        'delete',
+                        data.controllerData,
+                        item,
+                        data.controllerName
+                      )
+                    "
+                    >{{ 'common_delete_label' | i18n }}</span
+                  >
+                </lv-group>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <span lv-overflow>{{ item[col.key] | nil }}</span>
+              </ng-container>
+            </ng-container>
+          </td>
+        </ng-container>
+      </ng-container>
+      <td width="20px"></td>
+    </tr>
+  </tbody>
+</lv-datatable>
+<ng-container *ngIf="!data.controllerData.length">
+  <div class="no-data-container">
+    <span style="text-align: center;margin-top:20px">{{
+      'common_init_table_no_data_label' | i18n
+    }}</span>
+  </div>
+</ng-container>
+<lv-paginator
+  #pageS
+  [lvPageSize]="pageSize"
+  [lvTotal]="data.controllerData.length"
+  [lvPageIndex]="pageIndex"
+  (lvPageChange)="pageChange($event)"
+  [lvPageSizeOptions]="pageSizeOptions"
+  [hidden]="data.controllerData.length < 20"
+>
+</lv-paginator>

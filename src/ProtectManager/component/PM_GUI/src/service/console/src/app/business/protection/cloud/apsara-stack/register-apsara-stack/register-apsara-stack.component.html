@@ -1,0 +1,162 @@
+<lv-form class="formGroup lv-form-label-required" [formGroup]="formGroup">
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_management_control_endpoint_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="endpointErrorTip">
+      <input lv-input type="text" formControlName="endpoint" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_organization_ak_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="maxLengthErrorTip">
+      <input lv-input type="text" formControlName="ak" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_organization_sk_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="maxLengthErrorTip">
+      <aui-inupt-with-eye
+        formControlName="sk"
+        (focus)="clearSk($event)"
+        (blur)="skBlur()"
+      ></aui-inupt-with-eye>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_organization_id_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="idErrorTip">
+      <input lv-input type="text" formControlName="organizationId" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_region_id_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="idErrorTip">
+      <input lv-input type="text" formControlName="regionId" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_proxy_host_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        [lvOptions]="proxyOptions"
+        formControlName="agent"
+        lvValueKey="value"
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        lvShowFilter
+        lvMode="multiple"
+        lvShowCheckAll
+      ></lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'protection_register_vm_rescan_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tooltip="{{ 'protection_register_vm_rescan_help_label' | i18n }}"
+        lvTooltipPosition="rightTop"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="rescanIntervalErrorTip">
+      <lv-group [lvColumns]="['auto', '40px']">
+        <input lv-input type="text" formControlName="rescanIntervalInSec" />
+        <span class="alin-right">{{ 'common_hour_label' | i18n }}</span>
+      </lv-group>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+<div class="header">
+  <lv-group lvGutter="4px" lvDirection="vertical">
+    <lv-checkbox
+      [(ngModel)]="enableCert"
+      (ngModelChange)="enableCertChange($event)"
+      >{{ 'protection_cert_enable_label' | i18n }}</lv-checkbox
+    >
+    <span class="aui-text-desc">{{
+      'protection_cert_enable_tip_label' | i18n
+    }}</span>
+  </lv-group>
+</div>
+<lv-form class="formGroup" [formGroup]="formGroup">
+  <lv-form-item *ngIf="enableCert">
+    <lv-form-label lvRequired>
+      {{ 'protection_fc_cert_label' | i18n }}
+      <i
+        lv-icon="aui-icon-help"
+        lv-tool-tip="'shit'"
+        lvTooltipTheme="light"
+        class="configform-constraint"
+        lvColorState="true"
+      ></i>
+    </lv-form-label>
+    <lv-form-control>
+      <lv-upload
+        lvAccept=".pem"
+        lvShowUpload="false"
+        [lvFilters]="fcCertFilters"
+        [(lvFiles)]="certFiles"
+        (lvChange)="cartChange($event)"
+      ></lv-upload>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="enableCert">
+    <lv-form-label>
+      {{ 'system_revocation_list_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-upload
+        lvAccept=".crl"
+        lvShowUpload="false"
+        [lvFilters]="revocationListFilters"
+        [(lvFiles)]="crlFiles"
+        (lvChange)="crlChange($event)"
+      ></lv-upload>
+    </lv-form-control>
+  </lv-form-item>
+
+  <div class="advanced-container">
+    <lv-collapse lvType="simple">
+      <lv-collapse-panel
+        [lvTitle]="titleTpl"
+        [lvExpanded]="this.treeSelection[0]?.extendInfo?.proxy ? true : false"
+      >
+        <lv-form-item>
+          <lv-form-label>
+            {{ 'system_proxy_server_label' | i18n }}
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="urlErrorTip">
+            <input lv-input type="text" formControlName="proxy" />
+          </lv-form-control>
+        </lv-form-item>
+      </lv-collapse-panel>
+    </lv-collapse>
+  </div>
+</lv-form>
+
+<ng-template #titleTpl>
+  <span class="custom-collapse-title-text">{{
+    'common_advanced_label' | i18n
+  }}</span>
+</ng-template>

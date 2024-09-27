@@ -1,0 +1,112 @@
+<lv-collapse *ngIf="resourceData?.sub_type !== dataMap.Resource_Type.msVirtualMachine.value"
+    [lvMultiExpansion]="'false'" lvType="simple">
+    <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+        <lv-form [formGroup]='formGroup' class="formGroup" [lvLabelColon]='false'>
+            <lv-form-item *ngIf="showProxyHost">
+                <lv-form-label>
+                    {{'protection_proxy_host_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_proxy_host_help_label' | i18n}}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select lvShowClear [lvOptions]='proxyHost' formControlName='proxyHost' lvValueKey='key'
+                        lvMode="multiple" lvShowFilter lvShowCheckAll lvFilterKey="label" lvFilterMode="contains"
+                        [lvContentTemplate]="contentTpl"
+                        lvPlaceholder="{{'protection_agent_placeholder_label' | i18n}}">
+                    </lv-select>
+                    <ng-template #contentTpl let-item>
+                        <lv-group lvGutter="4px">
+                            <i lv-icon="{{
+                              item.link_status === dataMap.resource_LinkStatus.normal.value ? 'aui-host-online' : 'aui-host-offline'
+                            }}"></i>
+                            <span>{{ item.label }}</span>
+                        </lv-group>
+                    </ng-template>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 修改索引设置 -->
+            <ng-container *ngIf="isVirtualMachine">
+                <aui-update-index [formGroup]="formGroup" [extParams]="extParams"></aui-update-index>
+            </ng-container>
+            <lv-form-item *ngIf="false">
+                <lv-form-label>
+                    {{'protection_protect_pre_script_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]='baseUtilService.scriptNameErrorTip'>
+                    <input lv-input type='text' formControlName='preScript'
+                        placeholder="{{'common_script_linux_window_placeholder_label'|i18n}}" />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item *ngIf="false">
+                <lv-form-label>
+                    {{'protection_protect_post_script_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]='baseUtilService.scriptNameErrorTip'>
+                    <input lv-input type='text' formControlName='postScript'
+                        placeholder="{{'common_script_linux_window_placeholder_label'|i18n}}" />
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container *ngIf="!isVirtualMachine || resourceType===dataMap.Resource_Type.vmGroup.value">
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_concurrent_number_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]='concurrentErrorTip'>
+                        <input lv-input type='text' formControlName='concurrent' placeholder="1~10" />
+                    </lv-form-control>
+                </lv-form-item>
+                <ng-container *ngIf="!isVirtualMachine">
+                    <lv-form-item>
+                        <lv-form-label>
+                            {{'protection_overwrite_policy_label' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control>
+                            <lv-radio-group formControlName="slaOverwrite">
+                                <lv-group [lvGutter]="'8px'" lvDirection='vertical' class="mgt-8">
+                                    <lv-radio [lvValue]="true" [lvDisabled]="resourceData.ext_parameters">
+                                        {{'protection_overwrite_sla_label' | i18n}}
+                                    </lv-radio>
+                                    <lv-radio [lvValue]="false" [lvDisabled]="resourceData.ext_parameters">
+                                        {{'protection_not_overwrite_sla_label' | i18n}}
+                                        <i lv-icon="aui-icon-help"
+                                            lv-tooltip="{{'protection_not_overwrite_modify_sla_label' | i18n:[selectedTitle]}}"
+                                            lvTooltipTheme="light" style="vertical-align: sub;" lvColorState='true'></i>
+                                    </lv-radio>
+                                </lv-group>
+                            </lv-radio-group>
+                        </lv-form-control>
+                    </lv-form-item>
+                    <lv-form-item>
+                        <lv-form-label>
+                            {{'protection_apply_policy_label' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control>
+                            <lv-checkbox-group formControlName="slaPolicy" [lvDisabled]="disabled">
+                                <lv-group [lvGutter]="'8px'" lvDirection='vertical' class="mgt-8">
+                                    <lv-checkbox lvValue="APPLY_TO_ALL">
+                                        {{'protection_apply_sla_in_host_label' | i18n:[selectedTitle] }}
+                                    </lv-checkbox>
+                                    <lv-checkbox lvValue="APPLY_TO_NEW">
+                                        {{'protection_apply_sla_in_new_vm_label' | i18n:[selectedTitle]}}
+                                    </lv-checkbox>
+                                </lv-group>
+                            </lv-checkbox-group>
+                        </lv-form-control>
+                    </lv-form-item>
+                    <aui-protect-filter [formGroup]="formGroup" [valid$]="valid$" [resType]="resourceType">
+                    </aui-protect-filter>
+                </ng-container>
+            </ng-container>
+        </lv-form>
+        <!-- 防勒索副本设置参数 -->
+        <ng-container>
+            <aui-copy-limit-advanced-parameter [formGroup]="formGroup"
+                [data]="resourceData"></aui-copy-limit-advanced-parameter>
+        </ng-container>
+    </lv-collapse-panel>
+</lv-collapse>
+
+<ng-template #titleTpl>
+    <span class="aui-h3">{{'common_advanced_label'|i18n}}</span>
+</ng-template>

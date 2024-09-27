@@ -1,0 +1,33 @@
+<div>
+      <div class="aui-operation">
+            <lv-group>
+                  <lv-pro-button-group
+                          [config]="optsConfig"
+                          [bindData]="selectionData"
+                  >
+                  </lv-pro-button-group>
+            </lv-group>
+            <lv-group lvGutter="8px">
+                  <lv-group lvGutter="8px">
+                        <button
+                                class="aui-button-icon"
+                                lv-button
+                                lvSize="auto"
+                                (click)="dataTable.fetchData()"
+                        >
+                              <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                        </button>
+                  </lv-group>
+            </lv-group>
+      </div>
+      <lv-pro-table
+              #dataTable
+              [config]="userAuthTableConfig"
+              [data]="userAuthtableData"
+      ></lv-pro-table>
+</div>
+
+<ng-template #authStatusTpl let-item>
+      <lv-switch [(ngModel)]="item.authStatus" (ngModelChange)="AuthStatusChange(item)" [lvDisabled]="disableUserAuth(item)"></lv-switch>
+      {{item.authType | textMap: 'authType'}}
+</ng-template>

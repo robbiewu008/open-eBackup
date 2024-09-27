@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Enabling the Input and Output Functions of the Nginx Listening Port">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792390248">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Enabling the Input and Output Functions of the Nginx Listening Port</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792390248"></a><a name="EN-US_TOPIC_0000001792390248"></a>
+  <h1 class="topictitle1">Enabling the Input and Output Functions of the Nginx Listening Port</h1>
+  <div>
+   <p>This section describes how to enable the input and output functions of the Nginx listening port when the firewall is enabled on the agent host. The Nginx listening port is used for the communication between OceanProtect and the agent host. This section uses Red Hat Enterprise Linux Server release 7.2 as an example. Skip this section if the firewall is disabled or the protected resource is not the following: FusionCompute, Oracle, HDFS, HBase, Hive, Elasticsearch, ClickHouse, Redis, PostgreSQL, MySQL/MariaDB, GaussDB T, GaussDB(DWS), Huawei Cloud Stack GaussDB, openGauss, Dameng, object storage, NAS files, SAP HANA, Kingbase, MongoDB, TDSQL, GBase 8a, TiDB, GaussDB, OceanBase, Huawei Cloud Stack, Kubernetes FlexVolume, OpenStack, DB2, or filesets.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Use PuTTY to log in to the agent host.</span></li>
+     <li><span>Run the following command to check whether the firewall is enabled:</span><p></p><p><strong>systemctl status firewalld</strong></p> <p>If <strong>Active: active (running)</strong> is displayed in the command output, the firewall has been enabled. Go to the next step. Otherwise, no further action is required.</p> <p></p></li>
+     <li><span>Run the following command to check the Nginx listening port:</span><p></p><p><strong>netstat -anp | grep nginx</strong></p>
+      <div class="p">
+       In the following example, <span class="parmvalue"><b>59521</b></span> is the listening port of Nginx.
+       <pre class="screen">[root@localhost ~]# netstat -anp | grep nginx
+tcp        0      0 192.168.97.167:59521       0.0.0.0:*               LISTEN      2483/nginx: master
+unix  3      [ ]         STREAM     CONNECTED     20149    2483/nginx: master
+unix  3      [ ]         STREAM     CONNECTED     20148    2483/nginx: master</pre>
+      </div> <p></p></li>
+     <li><span>Run the following command to check whether the Nginx listening port is in the list of ports with the input and output function enabled:</span><p></p><p><strong>firewall-cmd --permanent --zone=public --list-ports</strong></p> <p>If the command output includes the Nginx listening port, no further action is required. Otherwise, go to the next step.</p> <p></p></li>
+     <li><span>Run the following command to enable the input and output functions of the Nginx listening port.</span><p></p><p>Port <span class="parmvalue"><b>59521</b></span> is used as an example.</p> <p><strong>firewall-cmd --zone=public --add-port=</strong><em>59521</em><strong>/tcp --permanent</strong></p> <p></p></li>
+     <li><span>Run the following command to restart the firewall:</span><p></p><p><strong>firewall-cmd --reload</strong></p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

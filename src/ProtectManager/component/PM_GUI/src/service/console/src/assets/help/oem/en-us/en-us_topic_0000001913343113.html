@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Logging In to DeviceManager">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001913343113">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Logging In to DeviceManager</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001913343113"></a><a name="EN-US_TOPIC_0000001913343113"></a>
+  <h1 class="topictitle1">Logging In to DeviceManager</h1>
+  <div>
+   <p>DeviceManager is a piece of integrated storage management software developed by Huawei. On any management terminal connected to the storage system, you can use a browser to log in to DeviceManager as a local user using the management network port IP address of the controller of the storage system.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p>Before using DeviceManager, check whether the management terminal meets the following requirements:</p>
+    <ul>
+     <li>Compatibility of the operating system and browser running on the management terminal<p>DeviceManager supports multiple operating systems and browsers. For details about the compatibility information, visit <a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">Compatibility Query</a>.</p></li>
+     <li>The communication between the management terminal and storage device is normal.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <ul>
+     <li>This section uses the Windows operating system as an example to describe how to log in to DeviceManager. The DeviceManager login operations on other operating systems need to be adjusted accordingly.</li>
+     <li>If the current user does not perform any operation within the session timeout period (30 minutes by default, which can be modified), the system automatically exits and the user needs to log in again.</li>
+     <li>If a non-super administrator has not logged in to the storage system for a period of time (60 days by default, which can be modified), the account will be locked and can be unlocked only by the super administrator. The unlocking method is as follows:<p>Log in to DeviceManager as the super administrator and choose <strong>Settings</strong> &gt; <strong>User and Security</strong> &gt; <strong>Users and Roles</strong> &gt; <strong>User Management</strong> to go to the <strong>User Management</strong> page. In the row where the name of the user to be unlocked resides, choose <strong>More</strong> &gt; <strong>Unlock</strong>.</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>If the super administrator chooses <strong>Settings</strong> &gt; <strong>User and Security</strong> &gt; <strong>Security Policies</strong> and selects <strong>Lock Account When Idle</strong>, a non-super administrator account will be locked only when the account has not logged in to the system for a specified period of time.</p>
+       </div>
+      </div></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Open a browser on the management terminal.</span></li>
+     <li><span>Type <strong>https://</strong><em>IPv4 address</em><strong>:8088</strong> or <strong>https://[</strong><em>IPv6 address</em><strong>]:8088</strong> in the address box and press <strong>Enter</strong>.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul>
+         <li><em>IPv4 address</em> and <em>IPv6 address</em> indicate the DeviceManager management IP address of the storage system.</li>
+         <li>If a firewall is configured, you must enable port <strong>8088</strong> for the system to provide web services.</li>
+         <li>The browser may prompt that the website has a security certificate issue. If the IP address is correct, you can neglect the prompt and continue accessing the storage system.</li>
+         <li>If you have an available security certificate, you are advised to run related commands to import the certificate to further improve system security.</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li><span>(Optional) Click the language switching button in the upper right corner to switch the language.</span><p></p><p>DeviceManager supports simplified Chinese and English.</p> <p></p></li>
+     <li><span>Select <strong>Local user</strong> or <strong>LDAP user</strong> in <strong>Authentication Mode</strong>, and enter the username and password in <strong>Username</strong> and <strong>Password</strong>.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul>
+         <li>The username and password are case-sensitive.</li>
+         <li>If the default password has been changed, use the new password to log in.</li>
+         <li>If <strong>Account Lockout</strong> is enabled (enabled by default) for an account in the security policy, the account will be locked if the number of consecutive incorrect password attempts (<strong>Lockout Threshold</strong>) reaches the upper limit (<strong>3</strong> by default) within 5 minutes. (By default, the account is automatically unlocked after being locked for 5 minutes.)</li>
+        </ul>
+       </div>
+      </div>
+      <div class="notice">
+       <span class="noticetitle"><img src="public_sys-resources/notice_3.0-en-us.png"> </span>
+       <div class="noticebody">
+        <p>To ensure security of a user account, you are advised to change the account password periodically. You can log in to DeviceManager, choose <strong>Settings</strong> &gt; <strong>User and Security</strong> &gt; <strong>Users and Roles</strong> &gt; <strong>User Management</strong>, and change the login password.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <strong>Log In</strong>.</span><p></p><p>The DeviceManager WebUI is displayed.</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul>
+         <li>When you log in to DeviceManager for the first time, you need to sign the Huawei Enterprise End User License Agreement (EULA) as a user with administrator permissions to access DeviceManager. When signing the agreement, select <strong>I have read and agree to sign the EULA</strong> and click <strong>OK</strong>. The agreement takes effect after you log in to DeviceManager for the first time.</li>
+         <li>After the operation, click the current login user in the upper right corner of the page, and then click <strong>Log Out</strong> in the drop-down list box to log out of DeviceManager.</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

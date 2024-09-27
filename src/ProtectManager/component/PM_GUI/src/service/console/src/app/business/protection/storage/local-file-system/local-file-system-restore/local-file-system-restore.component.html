@@ -1,0 +1,76 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <ng-container *ngIf="!isHyperdetect">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_restore_to_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-radio-group formControlName="restore_location" [lvGroupName]="'restoreGroup'">
+                    <lv-group [lvGutter]="'24px'">
+                        <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="disableOriginlocation"
+                            [lv-tooltip]="disableOriginlocation ? ('protection_cloud_origin_restore_disabled_label'| i18n) : ''">
+                            {{'common_restore_to_origin_location_label' | i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="restoreLocationType.NEW" [lvDisabled]="isHyperdetect">
+                            {{'common_restore_to_new_location_label' | i18n}}
+                        </lv-radio>
+                    </lv-group>
+                </lv-radio-group>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restore_location === restoreLocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_location_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                <input lv-input type="text" formControlName="location" />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <ng-container *ngIf="formGroup.value.restore_location === restoreLocationType.NEW">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_file_system_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                <lv-select formControlName="env_id" [lvOptions]='envIdOptions' lvValueKey='uuid' lvShowFilter
+                    lvFilterKey='label' lvFilterMode='contains' lvVirtualScroll>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'explore_share_name_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                <lv-select formControlName="share_name" [lvOptions]='shareNameOptions' lvValueKey='value'>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="!isHyperdetect">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_over_write_rule_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-radio-group formControlName="over_write_option">
+                    <lv-group [lvGutter]="'20px'" lvDirection='vertical' class="restore-options">
+                        <lv-radio [lvValue]="overWriteOption.Skip">
+                            {{'protection_skip_label' | i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="overWriteOption.Overwrite">
+                            {{'protection_overwrite_label' | i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="overWriteOption.Replace">
+                            {{'protection_restore_replace_older_label' | i18n}}
+                        </lv-radio>
+                    </lv-group>
+                </lv-radio-group>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>

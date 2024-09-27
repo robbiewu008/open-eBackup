@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Performing Periodic Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792395444.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001839194517">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Performing Periodic Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001839194517"></a><a name="EN-US_TOPIC_0000001839194517"></a>
+  <h1 class="topictitle1">Performing Periodic Backup</h1>
+  <div>
+   <p>The namespace or StatefulSet to be protected must be associated with a specified SLA. The system periodically performs backup based on the SLA. The name of a copy generated during periodic backup is <em>Resource name</em> <strong>_</strong> <em>Timestamp</em> by default.</p>
+   <div class="section" id="EN-US_TOPIC_0000001839194517__section592472483112">
+    <h4 class="sectiontitle">Precautions</h4>
+    <ul id="EN-US_TOPIC_0000001839194517__ul112694580218">
+     <li id="EN-US_TOPIC_0000001839194517__li0542152665720">Ensure that the production storage has reserved snapshot space for backup. Reserved snapshot space = Data volume of the source LUN x Percentage of data changes in the backup period. By default, you are advised to reserve 20% of the source LUN capacity for creating snapshots.</li>
+     <li id="EN-US_TOPIC_0000001839194517__li31561923235">To ensure data consistency during FlexVolume restoration, you can configure <span class="uicontrol" id="EN-US_TOPIC_0000001839194517__uicontrol14802202710489"><b>Script to Run Before Backup</b></span> and back up volumes of the FlexVolume type in the pod.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Periodically Backing Up a Namespace</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839194517__en-us_topic_0000001839274437_en-us_topic_0000001839142377_uicontrol84751741193812"><b><span id="EN-US_TOPIC_0000001839194517__en-us_topic_0000001839274437_en-us_topic_0000001839142377_text194759416387"><strong>Protection</strong></span> &gt; Containers &gt; Kubernetes FlexVolume</b></span>.</span></li>
+     <li><span>Click the <span><strong>Namespace</strong></span> and select the namespace to be protected.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Protect</strong></span></b></span>.</span></li>
+     <li><span>Select a preset or user-defined SLA.</span><p></p><p>You can also click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> to create an SLA.</p> <p></p></li>
+     <li id="EN-US_TOPIC_0000001839194517__li1316316472413"><span>Select the agent hosts.</span><p></p><p id="EN-US_TOPIC_0000001839194517__p979713913166">Select all agent hosts deployed on the Kubernetes cluster node where the resource is located.</p> <p></p></li>
+     <li><span>Set the parameters as follows:</span><p></p>
+      <ol type="a">
+       <li>Choose whether to replace the existing StatefulSet SLA.
+        <div class="p">
+         The default value is <span class="uicontrol"><b><span><strong>Retain the existing SLA of StatefulSet</strong></span></b></span>.
+         <div class="note">
+          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <p>If you choose <span class="uicontrol"><b><span><strong>Retain the existing SLA of StatefulSet</strong></span></b></span> when modifying the SLA associated with the namespace, the StatefulSet SLA will be replaced if the SLA of the StatefulSet is the same as that of the namespace.</p>
+          </div>
+         </div>
+        </div></li>
+       <li>You can choose one or more options from the following to apply SLA policies:
+        <ul>
+         <li><span><strong>Apply the namespace SLA to all StatefulSet resources that are not associated with any SLA</strong></span></li>
+         <li><span><strong>Apply the namespace SLA to new StatefulSet resources</strong></span><p>After the Kubernetes cluster is scanned, the newly discovered StatefulSet is associated with the same SLA as the namespace.</p></li>
+        </ul></li>
+       <li>Specify the StatefulSets to be excluded or included in the protection plan.<p>You can specify the StatefulSets to be excluded or included based on StatefulSet names.</p> <p>Exact match and fuzzy match of StatefulSet names are supported. Fuzzy match rules include prefix match (for example, abc*), suffix match (for example, *abc), and middle match (for example, *abc*).</p></li>
+      </ol> <p></p></li>
+     <li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001839194517__en-us_topic_0000001607841256_uicontrol196538515235"><b>OK</b></span>. </span><p></p><p id="EN-US_TOPIC_0000001839194517__en-us_topic_0000001607841256_p25041111535">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p> <p></p></li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Periodically Backing Up a StatefulSet</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839194517__en-us_topic_0000001839274437_en-us_topic_0000001839142377_uicontrol84751741193812_1"><b><span id="EN-US_TOPIC_0000001839194517__en-us_topic_0000001839274437_en-us_topic_0000001839142377_text194759416387_1"><strong>Protection</strong></span> &gt; Containers &gt; Kubernetes FlexVolume</b></span>.</span></li>
+     <li><span>Click the <span><strong>StatefulSet</strong></span> and select the StatefulSet to be protected.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Protect</strong></span></b></span>.</span></li>
+     <li><span>Remove volumes that do not need backup.</span><p></p><p><strong>Automatic Volume Protection</strong> is enabled by default to back up volumes of the FlexVolume type in the StatefulSet. You can disable <strong>Automatic Volume Protection</strong> and click <span><strong>Please select</strong></span> to manually select some volumes of the FlexVolume type for backup.</p> <p></p></li>
+     <li><span>Select a user-defined SLA.</span><p></p><p>You can also click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> to create an SLA.</p> <p></p></li>
+     <li><span>Select the agent hosts.</span><p></p><p id="EN-US_TOPIC_0000001839194517__en-us_topic_0000001839194517_p979713913166">Select all agent hosts deployed on the Kubernetes cluster node where the resource is located.</p> <p></p></li>
+     <li><span>Configure the customized script.</span><p></p>
+      <div class="p">
+       <a href="#EN-US_TOPIC_0000001839194517__table354613271506">Table 1</a> describes the related parameters. 
+       <div class="tablenoborder">
+        <a name="EN-US_TOPIC_0000001839194517__table354613271506"></a><a name="table354613271506"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839194517__table354613271506" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>Customized script parameters
+         </caption>
+         <colgroup>
+          <col style="width:22.11%">
+          <col style="width:77.89%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="22.11%" id="mcps1.3.4.2.7.2.1.2.2.3.1.1"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="77.89%" id="mcps1.3.4.2.7.2.1.2.2.3.1.2"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="22.11%" headers="mcps1.3.4.2.7.2.1.2.2.3.1.1 "><p><span><strong>Script to Run Before Backup</strong></span></p></td>
+           <td class="cellrowborder" rowspan="3" valign="top" width="77.89%" headers="mcps1.3.4.2.7.2.1.2.2.3.1.2 "><p>You can configure <strong>Script to Run Before Backup</strong>, <strong>Script to Run upon Backup Success</strong>, and <strong>Script to Run upon Backup Failure</strong> based on site requirements. When the message "ProtectAgent started executing the prerequisite task." is displayed during a backup job, the configured script is executed in the corresponding scenario.</p> <p id="EN-US_TOPIC_0000001839194517__p16797181010379">Enter the absolute path of the script, for example, <strong id="EN-US_TOPIC_0000001839194517__b358113136237">/opt/prescript.sh</strong>. Ensure that the script has been stored in the pod corresponding to the StatefulSet.</p> <p>For the script executed before the backup, the command output must contain any of the following items:</p> <p>[feedback]status=normal: Indicates that volumes of the FlexVolume type in the pod need backup.</p> <p>[feedback]status=ignore: Indicates that volumes of the FlexVolume type in the pod will not be backed up.</p> <p>[feedback]status=failed: Indicates that volumes of the FlexVolume type in the pod fail to be backed up.</p> <p>If the script executed before the backup is configured and any of the preceding information is not displayed, the backup fails.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.1.2.2.3.1.1 "><p><span><strong>Script to Run upon Backup Success</strong></span></p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.1.2.2.3.1.1 "><p><span><strong>Script to Run upon Backup Failure</strong></span></p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001839194517__en-us_topic_0000001607841256_uicontrol196538515235_1"><b>OK</b></span>. </span><p></p><p id="EN-US_TOPIC_0000001839194517__en-us_topic_0000001607841256_p25041111535_1">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001792395444.html">Step 6: Performing Backup</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

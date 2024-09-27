@@ -1,0 +1,1134 @@
+.aui-icon-large {
+  color: #9ea4b3;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  outline: none;
+}
+
+.aui-search-wrap {
+  display: block;
+  position: absolute;
+  top: 64px;
+  bottom: 0;
+}
+
+.aui-jobs-popover .lv-popover-inner {
+  padding: 0;
+}
+
+.aui-paginator-wrap {
+  margin-top: 16px;
+}
+
+.aui-paginator-container {
+  position: relative;
+}
+
+[hidden] {
+  display: none;
+}
+
+/* 穿梭框高度超出部分展示滚动 */
+.lv-transfer-panel-body {
+  overflow-y: auto !important;
+}
+
+/* 表单中的textarea标签不支持拖拽*/
+.lv-form textarea {
+  resize: none !important;
+}
+
+/* 首页所有资源和所有任务的下拉框背景色等样式修改 */
+.job-resource-dropdown.lv-dropdown-panel {
+  background-color: #282b33;
+  border-color: #545a67;
+}
+
+.job-resource-dropdown.lv-dropdown-panel li > .lv-dropdown-item {
+  color: #9ea4b3;
+}
+
+.job-resource-dropdown.lv-dropdown-panel li > .lv-dropdown-item:hover {
+  background-color: #202028;
+  color: #86a6fc;
+}
+
+/* 首页用户下拉框背景色等样式修改 */
+.user-dropdown {
+  margin-top: 20px;
+}
+
+.user-dropdown.lv-dropdown-panel {
+  background-color: #282b33;
+  border-color: #282b33;
+}
+
+.user-dropdown.lv-dropdown-panel li > .lv-dropdown-item {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.user-dropdown.lv-dropdown-panel li > .lv-dropdown-item:hover {
+  background-color: #282b33;
+  color: #fff;
+}
+
+/* sla创建时的tooltip样式自定义 */
+.sla-create.lv-tooltip .lv-tooltip-inner {
+  display: block;
+}
+
+/* 限制tooltip最大高度 */
+.lv-tooltip-inner {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+/* sla卡片的tip容器宽度和卡片宽度一致 */
+.card-tip .lv-tooltip-container {
+  max-width: 340px;
+}
+
+/* 适用详情页面，表单布局，每行之间间距20px */
+.form-gutter-md .lv-form-item:not(:last-of-type) > .lv-form-control,
+.form-gutter-md .lv-form-item:not(:last-of-type) > .lv-form-label {
+  padding-bottom: 0.05rem;
+}
+
+/* 适用弹窗页面，tab页和下面间距为32px */
+.lv-tabs.tabs-content-gutter-xl .lv-tabs-body > .lv-tab-content {
+  padding-top: 32px;
+}
+
+/* 适用弹窗页面，普通标题等页面效果为上间距32px,下间距20px */
+.title-md {
+  margin-top: 16px;
+  margin-bottom: 10px;
+}
+
+/* 适用弹窗页面，高级配置等页面效果为上间距56px，下间距20px  */
+.title-lg {
+  margin-top: 38px;
+  margin-bottom: 10px;
+}
+
+.lv-progress.lv-progress-success
+  > div
+  > .lv-progress-wraper
+  > .lv-progress-bg
+  > .lv-progress-handle,
+.lv-progress.lv-progress-success
+  > div
+  > .lv-progress-wraper
+  > .lv-progress-bg
+  > .lv-progress-handle-min {
+  background: #7adfa0;
+}
+
+.lv-progress.lv-progress-error
+  > div
+  > .lv-progress-wraper
+  > .lv-progress-bg
+  > .lv-progress-handle,
+.lv-progress.lv-progress-error
+  > div
+  > .lv-progress-wraper
+  > .lv-progress-bg
+  > .lv-progress-handle-min {
+  background: #f45c5e;
+}
+
+.aui-block div.dashed-line,
+div.dashed-line {
+  width: 100%;
+  border-bottom: 0.01rem dashed #d4d9e6;
+  margin-bottom: 32px;
+}
+
+.aui-block div.container-border,
+div.container-border {
+  border: 1px solid #d9d9d9;
+  width: 100%;
+}
+
+.warning-checkbox {
+  margin-top: 24px;
+}
+
+.warning-checkbox .lv-checkbase .lv-checkbase-label {
+  color: #6c7280;
+}
+
+.configform-constraint {
+  margin-left: 2px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-table {
+  margin-bottom: 14px;
+}
+
+.sla-policy .lv-collapse-panel-simple .lv-collapse-panel > .lv-collapse-header {
+  display: flex !important;
+  margin-bottom: 15px;
+}
+
+.sla-policy .lv-collapse-panel > .lv-collapse-header > .lv-collapse-title {
+  justify-content: space-between !important;
+  width: 100% !important;
+}
+
+.taskPopoverClass .lv-popover-container .lv-popover-inner {
+  background-color: #282b33;
+  color: #ffffff;
+}
+
+.task-view-container .lv-tabs .lv-tabs-list > .lv-tab-item > span {
+  font-size: 0.14rem !important;
+}
+
+.task-view-container .lv-tabs-container {
+  position: relative;
+  top: 12px;
+}
+
+.notify-page .lv-table-tbody .add-input-container .lv-table-cell-content,
+.weak-password-container
+  .lv-table-tbody
+  .add-input-container
+  .lv-table-cell-content,
+.backup-network-config
+  .lv-table-tbody
+  .add-input-container
+  .lv-table-cell-content,
+.archive-network-config
+  .lv-table-tbody
+  .add-input-container
+  .lv-table-cell-content,
+.node-ip-container .lv-table-tbody .add-input-container .lv-table-cell-content {
+  overflow: inherit !important;
+  padding: 10px 0 10px 0;
+}
+
+.user-detail-header .lv-modal-header {
+  word-break: break-all;
+}
+
+.user-edit-container {
+  word-break: break-all;
+}
+
+input::-ms-reveal {
+  display: none;
+}
+
+.host-register-tabnav {
+  display: flex;
+  align-items: center;
+}
+
+.host-register-tabnav span {
+  display: block;
+}
+
+.host-register-tabnav-num {
+  height: 18px;
+  margin-left: 8px;
+  padding: 0 16px;
+  line-height: 18px;
+  background: #ccc;
+  border-radius: 21px;
+  color: #6c7280;
+  font-size: 14px;
+}
+
+.host-register-tabs.lv-tabs.lv-tabs-small
+  .lv-tabs-list
+  > .lv-tab-item.lv-tab-item-active
+  > span:not(.lv-tab-close)::after {
+  border-bottom: 0;
+}
+
+.lv-tabs
+  .lv-tabs-list
+  > .lv-tab-item.lv-tab-item-active
+  .host-register-tabnav
+  > span:not(.lv-tab-close) {
+  color: #6c7280;
+}
+
+.lv-tabs
+  .lv-tabs-list
+  > .lv-tab-item.lv-tab-item-active
+  .host-register-tabnav
+  > span:not(.lv-tab-close).host-register-tabnav-num {
+  background: #6c92fa;
+  color: #fff;
+}
+
+.sla-view .lv-button.lv-button-size-default,
+.copy-resource-view .lv-button.lv-button-size-default {
+  min-width: 0.32rem !important;
+  padding: 0 7px;
+  border-radius: 4px;
+}
+
+.sla-view .lv-button.lv-button-size-default .lv-icon-host,
+.copy-resource-view .lv-button.lv-button-size-default .lv-icon-host {
+  vertical-align: sub;
+}
+
+.simulation-desc.lv-tooltip .lv-tooltip-container {
+  max-width: none;
+  width: 600px;
+}
+
+.lv-table-thead > .live-mount-second-row > th:last-child .lv-table-th-deliver {
+  display: block;
+}
+
+.mount-bindWidth {
+  margin-top: 6px;
+}
+
+.netadapter-collapse .lv-collapse-panel > .lv-collapse-header {
+  width: 100%;
+}
+
+.netadapter-collapse .lv-collapse-panel > .lv-collapse-header span {
+  width: 100%;
+}
+
+.netadapter-collapse
+  .lv-collapse-panel
+  > .lv-collapse-header
+  > .lv-collapse-title {
+  width: 100%;
+}
+
+.list-container .lv-table-content {
+  height: 100%;
+  display: block;
+}
+
+.list-container .lv-table-placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.application-type-group .lv-button {
+  width: 180px;
+}
+
+.resource-sla-help {
+  display: inline-block;
+}
+
+.resource-sla-help i {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.job-filter-group {
+  width: 100%;
+}
+
+.job-filter-group .lv-group {
+  width: 0;
+  min-width: 100%;
+}
+
+.diskstore-panel {
+  max-width: 3rem;
+}
+
+.computer-location-show {
+  visibility: unset;
+}
+
+.computer-location-hidden {
+  visibility: hidden;
+}
+
+.computer-location-hidden.lv-form-item .lv-form-label,
+.computer-location-hidden.lv-form-item .lv-form-control {
+  padding-bottom: 0;
+}
+
+.computer-location-hidden.lv-form-item .lv-form-label-box,
+.computer-location-hidden.lv-form-item .lv-form-control > div {
+  height: 0;
+}
+
+.vm-location-placeHolder {
+  color: #b8becc;
+}
+
+.vmware-disk-container .lv-tabs-body,
+.vmware-disk-container .lv-tab-content {
+  height: 100%;
+}
+
+.selected-disk-title {
+  color: #6c7280;
+  margin-right: 16px;
+}
+
+.database-config-writeable .lv-form-control-has-error {
+  margin-bottom: 20px;
+}
+
+.database-config-writeable .lv-form-control-error-default {
+  position: relative;
+  top: -17px;
+}
+
+.agent-ip-height .lv-form-control-error-default {
+  height: 51px;
+}
+
+.agent-port-height .lv-form-control-error-default {
+  height: 55px;
+}
+
+.agent-ip-height .eye-input {
+  margin-top: 20px;
+}
+
+.tdsql-cluster-height .lv-form-control-error-default {
+  height: 55px;
+}
+
+.tdsql-instance-height .lv-form-control-error-default {
+  height: 55px;
+}
+
+.fileset-list-tree .lv-table table {
+  table-layout: auto !important;
+}
+
+.hcs-restore-list-tree .lv-table table {
+  table-layout: fixed !important;
+}
+
+.used-capactiy-percent-bar {
+  width: 100%;
+}
+
+.used-capactiy-percent-bar
+  .lv-progress.lv-progress-line
+  > div
+  > .lv-progress-wraper
+  .lv-progress-handle {
+  height: 32px;
+}
+
+.lv-date-picker-footer {
+  padding: 5px 0 8px;
+  border-bottom: 1px solid #d9d9d9;
+}
+
+.rule-table-container {
+  margin-top: 28px;
+}
+
+.file-download-completed {
+  color: #5b7ede;
+  text-decoration: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.init-process {
+  font-weight: bold;
+  font-size: 20px;
+  padding: 0 5px 0;
+}
+
+.lv-treenode-selected:not(.lv-treenode-checkbox)
+  > .lv-treenode-container
+  > .lv-treenode-wrap
+  .lv-treenode-content
+  .lv-treenode-content-label {
+  font-weight: bold;
+  color: #6c92fa;
+}
+
+.ie .lv-paginator .lv-select {
+  min-width: 1.15rem;
+}
+
+.lv-paginator-selection-simple .lv-paginator-number-select {
+  width: 0.72rem !important;
+}
+
+.lv-table .lv-table-body-default tbody > tr:last-of-type {
+  animation: none;
+}
+
+.file-level-tree-scroll .lv-table-body {
+  overflow-y: auto !important;
+}
+
+.ie .live-mount-advanced-container .lv-form-label {
+  display: inline-table;
+}
+
+.td-radio-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-input-container
+  .input
+  .lv-input-group
+  > .lv-input-suffix
+  .lv-search-button {
+  display: none;
+}
+
+.custom-collapse-title-text {
+  font-size: 0.16rem;
+  color: #282b33;
+  font-weight: bold;
+}
+
+.vmware-disk-container > .lv-tabs > .lv-tabs-body > .lv-tab-content {
+  padding-top: 14px !important;
+}
+
+.ie .desensitization-policy-container {
+  flex-shrink: 0;
+}
+
+.customer.lv-tooltip .lv-tooltip-container {
+  max-width: none;
+  width: 480px;
+}
+
+.file-level-restore-tree .lv-table-content {
+  border: 1px solid #b8becc;
+  height: 720px;
+}
+
+.kubs-container
+  .lv-collapse-panel.lv-collapse-panel-expanded
+  .lv-collapse-header {
+  border-left: 4px solid #5b7ede;
+}
+
+.kubs-container .lv-collapse-panel.lv-collapse-panel-expanded .cluster-active {
+  font-weight: bold;
+  color: #5b7ede;
+}
+
+.kubs-container .lv-collapse-panel .lv-collapse-header {
+  padding: 0 0.18rem;
+}
+
+.kubs-container .lv-collapse-panel > .lv-collapse-body > .lv-collapse-content {
+  margin-left: 0px;
+  padding: 0.12rem 0.18rem;
+  border-left: none;
+}
+
+.day-of-week-container .lv-select-multiple .lv-select-wrapper {
+  height: 32px;
+}
+
+.day-of-week-container
+  .lv-select-multiple
+  .lv-select-value
+  .lv-select-trigger-default {
+  overflow: hidden;
+}
+
+.month-card {
+  width: 24px;
+  height: 24px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.month-card.select {
+  border-color: #6c92fa;
+  background: #6c92fa;
+  color: #fff;
+}
+
+.month-card .check-box {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+}
+
+.month-day {
+  margin-bottom: 16px;
+}
+
+.customer-popover.lv-popover .lv-popover-inner {
+  width: 300px;
+}
+
+.post-rule-item-zh .lv-form-label .lv-form-label-box {
+  width: 133px;
+}
+
+.post-rule-item-en .lv-form-label .lv-form-label-box {
+  width: 182px;
+}
+
+.custom-icon {
+  display: inline-block;
+  margin-left: 2px;
+}
+
+.custom-icon i {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.backup-task-help {
+  display: inline-block;
+  margin-left: 4px;
+}
+
+.delete-index-warning-checkbox {
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+.delete-index-warning-checkbox .lv-checkbase .lv-checkbase-label {
+  color: #6c7280;
+  font-size: 0.12rem;
+}
+
+.register-nas-zh .lv-form-label-box {
+  width: 90px !important;
+}
+
+.register-nas-en .lv-form-label-box {
+  width: 145px !important;
+}
+
+.daysOfMonthGroup .lv-input:disabled,
+.daysOfMonthGroup .lv-input[disabled] {
+  border-color: #b8becc !important;
+  background: #fff !important;
+  color: #282b33 !important;
+}
+
+.fileset-template-host-tab .lv-tabs-container {
+  position: relative;
+  top: -6px;
+}
+
+.fileset-template-host-tab .lv-tabs .lv-tabs-body > .lv-tab-content {
+  padding-top: 12px;
+}
+
+.customer-cluster.lv-popover .lv-popover-inner {
+  width: 240px;
+  background-color: #282b33;
+  color: #fff;
+}
+
+.clusters-container .lv-table-thead > tr > th,
+.clusters-container .lv-table .lv-table-row > td,
+.clusters-container .lv-table-thead > tr > th:hover,
+.clusters-container .lv-table .lv-table-tbody > tr.lv-table-row:hover > td {
+  background-color: #282b33 !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
+.clusters-container .lv-table-small .lv-table-tbody > tr.lv-table-row > td {
+  padding-left: 0 !important;
+}
+
+.clusters-container .lv-table-header,
+.clusters-container .lv-table-thead > tr > th {
+  display: none !important;
+}
+
+.clusters-container .lv-table-tbody > tr > td {
+  border-bottom: 0 !important;
+  border-top: 0 !important;
+}
+
+.clusters-container .lv-table-body {
+  border-top: 0 !important;
+}
+
+.search-input-container .lv-select-wrapper {
+  height: 48px;
+  border-width: 0px;
+}
+
+.search-input-container .lv-search .lv-search-clear:after {
+  display: none;
+}
+
+.search-input-container .lv-search .lv-search-clear {
+  padding-right: 24px;
+}
+
+.migrate-host-container .lv-form-control-error-default {
+  padding: 5px 0 17px 0;
+}
+
+.template-select-sla-zh .sla-form-label .lv-form-label-box {
+  width: 62px !important;
+}
+
+.template-select-sla-en .sla-form-label .lv-form-label-box {
+  width: 96px !important;
+}
+
+.login-select .lv-select-wrapper {
+  border-style: none;
+  font-size: 18px;
+}
+
+.hive-all-table .lv-table-th-content,
+.hive-selected-table .lv-table-th-content,
+.vol-all-table .lv-table-th-content,
+.vol-selected-table .lv-table-th-content,
+.hbase-selected-table .lv-table-th-content {
+  width: 100% !important;
+}
+
+.aborting-progress .lv-progress-label-text {
+  color: #b8becc !important;
+}
+
+.replication-policy-card .lv-form-label,
+.replication-policy-card .lv-form-control {
+  padding-bottom: 2px !important;
+}
+
+.ie .ie-lv-sider {
+  position: relative;
+}
+
+.ie .security-count-other-row {
+  flex: 1;
+}
+
+.ransomware-resource-table .lv-table .lv-table-scroll .lv-table-header {
+  background: none !important;
+}
+
+.sys-backup-path-warp {
+  padding-right: 12px;
+  min-width: 200px;
+  max-width: 520px;
+}
+
+.openstack-restore-table .lv-table-tbody .lv-table-cell-container {
+  line-height: 32px;
+}
+
+.openstack-restore-panel {
+  max-width: 260px !important;
+}
+
+.resource-detail-job .aui-paginator-wrap {
+  bottom: 100px !important;
+}
+
+.lv-form-control-has-error .input-eye-valid-error {
+  border-color: #c63939 !important;
+}
+
+.timeline-container .lv-slider-rail {
+  cursor: default;
+}
+
+.timeline-container .lv-slider-rail .lv-slider-range-points,
+.timeline-container .lv-slider-rail .lv-slider-range-lines-horizontal {
+  cursor: pointer;
+}
+
+.resource-detail-job .lv-table-body {
+  position: inherit;
+}
+
+.vm-file-level-tree-table .lv-table-body {
+  position: inherit;
+}
+
+.migrate-host-container .eye-input {
+  width: 125px;
+}
+
+.lv-operation-menu-text-icon {
+  margin-bottom: 2px;
+}
+
+.app-logo-container {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+}
+
+.sub-card-container {
+  height: 65px;
+  border-radius: 10px;
+  line-height: 65px;
+  background: #ffffff;
+  margin: 0 20px 20px 0;
+  padding: 0 20px;
+  display: inline-block;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.app-card-more-container {
+  background: #f0f2f5;
+}
+
+.common-sub-aui-fullpage {
+  background: #f0f2f5;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.common-sub-content {
+  flex-grow: 1;
+}
+
+.common-sub-content .aui-fullpage {
+  padding: 0 24px 24px 24px !important;
+  box-sizing: border-box;
+}
+
+.collapsed-main .common-sub-content .aui-fullpage {
+  padding: 0 32px 24px 32px !important;
+  box-sizing: border-box;
+}
+
+.common-sub-content .aui-block {
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+}
+
+.protection-summary-container .lv-tabs-container {
+  border-bottom: 1px solid #e2e5ed;
+}
+
+.workload-container .lv-tabs .lv-tabs-list > .lv-tab-item {
+  height: 60px !important;
+}
+
+.workload-container .lv-tabs .lv-tabs-list > .lv-tab-item > span {
+  height: 60px !important;
+}
+
+.specify-destination-location .location-label-zh .lv-form-label-box {
+  margin-bottom: 18px;
+  width: 149px;
+}
+
+.vmAdvance .specify-destination-location .location-label-zh .lv-form-label-box {
+  width: 164px;
+}
+
+.specify-destination-location .location-label-en .lv-form-label-box {
+  margin-bottom: 18px;
+  width: 166px;
+}
+
+.vmAdvance .specify-destination-location .location-label-en .lv-form-label-box {
+  width: 367px;
+}
+
+.warning-class {
+  color: #aaafbc;
+  margin-right: 15px;
+}
+
+.text-middle {
+  vertical-align: middle;
+}
+
+.lv-menu-title-protection {
+  margin: 0.12rem 0.24rem 0 0.24rem;
+  padding-bottom: 0.12rem;
+  line-height: 0.42rem;
+  color: #282b33;
+  font-size: 0.18rem;
+  font-weight: 600;
+}
+
+.protection-sider-custom .lv-menu.lv-left-menu .lv-menu-title {
+  margin: 0.12rem 0.24rem 0.06rem 0.24rem;
+  padding-bottom: 0.12rem;
+  line-height: 0.14rem;
+  border-bottom: 1px dashed #e6ebf5;
+  color: #6c7280;
+  font-size: 0.14rem;
+  font-weight: 400;
+  margin-top: 20px;
+}
+
+.protection-summary-title {
+  width: 100%;
+  display: inline-block;
+  height: 100%;
+  line-height: 48px;
+  border-bottom: 1px dashed #e6ebf5;
+}
+
+.replica-sla-title {
+  color: #6c7280;
+  margin: 0 8px;
+}
+
+.file-interception-win-table .aui-paginator-wrap {
+  bottom: 100px !important;
+}
+
+.protection-sider-custom .mgt-menu {
+  margin-top: 10px;
+}
+
+.target-host-error-tip .lv-form-control-error-default span {
+  width: 90%;
+  float: left;
+  margin-bottom: 16px;
+}
+
+.openstak-list-table .lv-pro-table {
+  height: calc(100% - 32px);
+}
+
+.openstak-list-table .lv-pro-table .object-filter-pop {
+  width: 270px;
+}
+
+.red-object-bucket .lv-multi-autocomplete-wrapper {
+  border: 0.01rem solid #f45c5e !important;
+}
+
+.checkbox-job .lv-checkbase-label {
+  width: 112px;
+}
+
+.checkbox-job-en .lv-checkbase-label {
+  width: 169px;
+}
+
+.overview-tag {
+  height: 140px;
+  background-image: url('assets/img/drill-overview-bk.png');
+  background-repeat: no-repeat;
+  background-position: right -10px bottom -10px;
+  background-color: #f8fafe;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.overview-tag .logo {
+  width: 73px;
+  height: 82px;
+}
+
+.overview-tag .title-group {
+  margin-left: 32px;
+}
+
+.overview-tag .statistic-group {
+  margin-right: 32px;
+}
+
+.overview-tag .summary-count {
+  font-size: 28px;
+  line-height: 28px;
+}
+
+.total-count-summay {
+  color: #818384;
+  font-size: 22px;
+}
+
+.desc-font {
+  font-size: 12px;
+}
+
+.cyber-device-vstore {
+  display: inline-block;
+  white-space: nowrap;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  top: 5px;
+}
+
+.exchange-email-tree-table .lv-table-content {
+  border: 1px solid #b8becc;
+  border-radius: 1px;
+}
+
+::after,
+::before,
+.aui-page,
+.aui-block,
+.statistics,
+.aui-fullpage,
+.module-container,
+lv-layout > lv-header > div {
+  box-sizing: border-box;
+}
+
+.custom-operation-menu-dropdown-more {
+  width: 0.24rem;
+  height: 0.24rem;
+}
+
+.more-pro-button.lv-button-type-link:not(.lv-button-loading) {
+  color: #4d4d4d;
+}
+
+.more-pro-button {
+  min-width: 0.32rem !important;
+  padding: 0;
+}
+
+.global-search-container .lv-input-group.lv-input-group-default {
+  height: 0.48rem;
+}
+
+.edit-adfs-form .lv-input-group.lv-input-group-default {
+  width: 100% !important;
+}
+
+.custom-pro-table .lv-table-th-checkbox .lv-table-th-deliver {
+  display: none;
+}
+
+.custom-main-tab {
+  padding: 0 !important;
+}
+
+.custom-cluster-menus .lv-menu.lv-left-menu ul.level0 > li > .lv-menu-item {
+  height: 100% !important;
+}
+
+.collapsed-main .sub-body {
+  padding: 16px 32px 0 32px !important;
+  box-sizing: border-box;
+}
+
+.aui-button-icon .lv-icon-host {
+  width: 0.24rem;
+  height: 0.24rem;
+}
+
+.double-row-height .lv-table-tbody tr {
+  height: 56px;
+}
+
+.mgt-8 {
+  margin-top: 8px;
+}
+
+.mgb-8 {
+  margin-bottom: 8px;
+}
+
+.custom-simple-paginator {
+  padding: 0 20px;
+}
+
+.input-group-select-right {
+  padding-right: 0;
+}
+
+.line-height-h2 {
+  line-height: 0.16rem;
+}
+
+.edit-adfs-form .lv-input-group.lv-input-group-default {
+  width: 100% !important;
+}
+
+.aui-h3 {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.custom-table-header {
+  height: 33px;
+  background: #f7f7f7;
+  line-height: 33px;
+  padding-left: 16px;
+  font-size: 0.12rem;
+  color: #4d4d4d;
+}
+
+.hide-table-header-border-top .lv-table-header {
+  border-top: none !important;
+}
+
+.form-control-input {
+  width: 560px !important;
+}
+
+.sub-body .lv-tab-item-active .min-warp,
+.sub-body .lv-tab-item-active .max-warp {
+  color: #2673e5 !important;
+  font-weight: 600 !important;
+}
+
+.list-view-mgt {
+  margin-top: 4px;
+}
+
+.customer-guide-tip-bk .lv-popover-inner {
+  border-radius: 8px !important;
+  background-color: rgb(110, 110, 255) !important;
+  color: rgb(255, 255, 255) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  text-align: left !important;
+}
+
+.customer-guide-tip-bk .lv-popover-arrow {
+  border-bottom-color: rgb(110, 110, 255) !important;
+}
+
+.customer-guide-tip-bk .lv-popover-close {
+  color: rgb(255, 255, 255) !important;
+}
+
+.guide-recommend-label {
+  display: inline-block;
+  padding: 0 8px;
+  height: 18px;
+  text-align: center;
+  border: 1px solid #ffffff;
+  border-radius: 12px;
+  background: #2673e5;
+  color: #ffffff;
+  line-height: 16px;
+  font-size: 12px;
+}

@@ -1,0 +1,85 @@
+{
+  "type": "object",
+  "title": "受保护的HCS_GaussDB信息",
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "环境的类型"
+    },
+    "subType": {
+      "type": "string",
+      "description": "环境的子类型"
+    },
+    "name": {
+      "type": "string",
+      "description": "HCS_GaussDB项目的名称",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-zA-Z_\\u4e00-\\u9fa5]{1}[\\u4e00-\\u9fa5\\w-]*$"
+    },
+    "auth": {
+      "type": "object",
+      "properties": {
+        "authType": {
+          "type": "integer",
+          "description": "认证类型:0-NO_AUTH,1-OS_PASSWORD,2-APP_PASSWORD,3-LADP,4-AKSK,5-KERBEROS,6-TOKEN,7-OAUTH2,8-OTHER"
+        },
+        "authKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "description": "环境集群认证OS信息，用户名"
+        },
+        "authPwd": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "环境集群认证OS信息，用户密码"
+        }
+      }
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "pmAddress": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "://([\\w-]+\\.)+[\\w-]+:",
+          "description": "管控面地址"
+        },
+        "businessAddr": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "://([\\w-]+\\.)+[\\w-]+",
+          "description": "业务面地址"
+        },
+        "projectName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "description": "项目名称"
+        },
+        "projectId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "description": "项目id"
+        },
+        "iamAccountName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "description": "所属用户名"
+        }
+      }
+    }
+  },
+  "required": [
+    "subType",
+    "name",
+    "auth",
+    "extendInfo"
+  ]
+}

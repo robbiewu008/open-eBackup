@@ -1,0 +1,45 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤9：（可选）登录iSCSI启动器">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839266973.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839187021">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤9：（可选）登录iSCSI启动器</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001839187021"></a><a name="ZH-CN_TOPIC_0000001839187021"></a>
+
+<h1 class="topictitle1">步骤9：（可选）登录iSCSI启动器</h1>
+<div><p>在以太网组网场景下，如果想要使用SAN传输模式或基于OceanStor Dorado LUN建立的Datastore的虚拟机磁盘需要使用存储层备份模式时，请参考本章节在代理主机上登录iSCSI启动器。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><p>代理主机已安装iSCSI启动器（iscsi-initiator-utils）。具体操作请参见<span>《OceanProtect <span id="ZH-CN_TOPIC_0000001839187021__zh-cn_topic_0000001656567397_ph63182562312">备份一体机 1.5.0</span> ProtectAgent安装指南》</span>中的“安装iSCSI启动器”章节。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="ZH-CN_TOPIC_0000001839187021__li768819316116"><a name="ZH-CN_TOPIC_0000001839187021__li768819316116"></a><a name="li768819316116"></a><span>登录ESXi Datastore对应的生产存储设备，查询iSCSI逻辑端口，获取逻辑端口IP。</span><p><ol type="a"><li>登录DeviceManager。</li><li>选择“服务 &gt; 网络 &gt; 逻辑端口”。</li><li>在信息显示区，查询<span class="uicontrol">“数据协议”</span>为<span style="color:#282B33;">iSCSI</span>的逻辑端口，记录逻辑端口IP。</li></ol>
+</p></li><li><span>在代理主机上，依次执行以下命令，登录iSCSI启动器（“<em>IP</em>”为<a href="#ZH-CN_TOPIC_0000001839187021__li768819316116">1</a>获取的逻辑端口IP）。</span><p><pre class="screen">iscsiadm -m discovery -t st -p <em>IP</em>
+iscsiadm -m node -l -p <em>IP</em></pre>
+<p><span><img src="zh-cn_image_0000001839267077.png"></span></p>
+</p></li><li id="ZH-CN_TOPIC_0000001839187021__li88571715310"><a name="ZH-CN_TOPIC_0000001839187021__li88571715310"></a><a name="li88571715310"></a><span>在代理主机上，执行<strong>iscsiadm -m session</strong>命令查看session信息，获取IQN。</span><p><p><span><img src="zh-cn_image_0000001839187137.png"></span></p>
+</p></li><li><span>在ESXi Datastore对应的生产存储设备上确认IQN是否在线。</span><p><ol type="a"><li>登录DeviceManager。</li><li>选择“服务 &gt; 块服务 &gt; 主机组 &gt; 启动器 &gt; iSCSI”。</li><li>在<span class="uicontrol">“iSCSI”</span>页签，查询<a href="#ZH-CN_TOPIC_0000001839187021__li88571715310">3</a>获取的IQN，当IQN状态为在线时，表示IQN状态为正常。</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001839266973.html">备份VMware虚拟机</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

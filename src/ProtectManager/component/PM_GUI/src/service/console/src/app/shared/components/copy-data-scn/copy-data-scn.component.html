@@ -1,0 +1,12 @@
+<lv-form [formGroup]="formGroup">
+    <lv-form-item>
+        <lv-group lvGutter='24px'>
+            <lv-form-control [lvErrorTip]='scnErrorTip'>
+                <input class="control" formControlName='scn' lv-input placeholder='{{"protection_input_scn_label" | i18n}}' />
+            </lv-form-control>
+            <ng-container *ngIf="rowData.resourceType === dataMap.Resource_Type.oracle.value">
+                  <lv-operation-menu [lvItemsFn]="operationFn" lvMaxShowNum='4'></lv-operation-menu>
+            </ng-container>
+        </lv-group>
+    </lv-form-item>
+</lv-form>

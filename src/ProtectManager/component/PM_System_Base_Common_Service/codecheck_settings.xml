@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+  -->
+
+<project version="4">
+  <component name="CodeCheckSettings">
+    <option name="findBugsCommand" value="del findbugs-result.xml &gt;nul 2&gt;&amp;1&#10;%TOOLS%\findbugs\bin\findbugs -jvmArgs &quot;-Xms128m -Xmx1024m&quot; -home %TOOLS%\findbugs -effort:max -low -sortByClass -nested:false -xml:withMessages -output findbugs-result.xml -textui ." />
+    <option name="findBugsResultFile" value="findbugs-result.xml" />
+  </component>
+</project>

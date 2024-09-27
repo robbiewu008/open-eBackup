@@ -1,0 +1,89 @@
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+  <lv-form-item *ngIf="!isDrill">
+    <lv-form-label>
+      {{ 'protection_restore_to_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group
+        formControlName="restoreTo"
+        [lvGroupName]="'restoreToGroup'"
+      >
+        <lv-group [lvGutter]="'20px'">
+          <lv-radio
+            [lvValue]="restoreLocationType.ORIGIN"
+            [lvDisabled]="disableOriginLocation"
+            [lv-tooltip]="
+              disableOriginLocation
+                ? ('protection_cloud_origin_restore_disabled_label' | i18n)
+                : ''
+            "
+          >
+            {{ 'common_restore_to_origin_location_label' | i18n }}
+          </lv-radio>
+          <lv-radio
+            [lvValue]="restoreLocationType.NEW"
+            [lvDisabled]="!isFileLevelRestore || isFileLevelAndClusterRestore"
+          >
+            {{ 'common_restore_to_new_location_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+    <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'position'"></aui-select-tag>
+  </ng-container>
+  <lv-form-item>
+    <lv-form-label
+      [lvRequired]="formGroup.value.restoreTo === restoreLocationType.NEW"
+    >
+      {{ locationLabel }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select
+        formControlName="position"
+        [lvOptions]="options"
+        lvValueKey="key"
+        lvShowFilter
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        [lvDisabled]="formGroup.value.restoreTo === restoreLocationType.ORIGIN"
+      >
+      </lv-select>
+    </lv-form-control>
+    <div class="aui-tips">
+      <i
+        lv-icon="lv-icon-status-info"
+        lvColorState="true"
+        class="type-icon"
+      ></i>
+      <span class="form-tips">{{
+        'protection_close_database_tip_label' | i18n
+      }}</span>
+    </div>
+  </lv-form-item>
+  <ng-container
+    *ngIf="
+      formGroup.value.restoreTo === restoreLocationType.NEW &&
+      isFileLevelRestore &&
+      rowCopy.resource_sub_type !==
+        dataMap.Resource_Type.SQLServerInstance.value
+    "
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_destination_path_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lv-tooltip="{{ 'protection_target_path_tips_label' | i18n }}"
+          lvTooltipTheme="light"
+          class="configform-constraint"
+          lvColorState="true"
+        ></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="pathErrorTip">
+        <input lv-input type="text" formControlName="path" />
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>

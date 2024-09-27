@@ -1,0 +1,129 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'protection_archive_storage_type_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select [lvOptions]="protocolOptions" formControlName="protocol" lvValueKey="value">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value">
+        <lv-form-label lvRequired>
+            {{'protection_archive_storage_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-group [lvColumns]='["auto", "100px"]' lvRowGutter="12px">
+                <lv-select [lvOptions]="s3StorageNames" lvShowFilter lvFilterKey='label' lvFilterMode='contains'
+                    lvVirtualScroll formControlName="storage_id" lvValueKey='value'>
+                </lv-select>
+                <button lv-button (click)="addStorage(formGroup.get('protocol').value)" class="backup-time-unit-text">
+                    {{'common_add_label'|i18n}}
+                </button>
+            </lv-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.get('protocol').value === dataMap.Archival_Protocol.tapeLibrary.value">
+        <lv-form-label lvRequired>
+            {{'protection_archive_storage_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-group lvGutter="8px">
+                <lv-select [lvOptions]="clusterNodeNames" lvShowFilter lvFilterKey='label' lvFilterMode='contains'
+                    lvVirtualScroll formControlName="node_id" lvValueKey='value'>
+                </lv-select>
+            </lv-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.get('protocol').value === dataMap.Archival_Protocol.tapeLibrary.value">
+        <lv-form-label lvRequired>
+            {{'system_archive_storage_pool_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-group [lvColumns]='["auto", "100px"]' lvRowGutter="12px">
+                <lv-select [lvOptions]="mediaSetOptions[formGroup.get('node_id').value]" formControlName="mediaSet"
+                    lvValueKey='value' [lvContentTemplate]="tapeTpl">
+                </lv-select>
+                <ng-template #tapeTpl let-item>
+                    <lv-group lvGutter="4px" lvDirection="vertical">
+                        <span>{{item.label}}</span>
+                        <span class="aui-text-help-sm desc-text">{{item.retentionType | textMap:
+                            'Tape_Retention_Type'}}</span>
+                    </lv-group>
+                </ng-template>
+
+                <button lv-button (click)="addStorage(formGroup.get('protocol').value,null)"
+                    class="backup-time-unit-text" [disabled]="!formGroup.get('node_id').value">
+                    {{'common_add_label'|i18n}}
+                </button>
+            </lv-group>
+            <div *ngIf="!!formGroup.value.mediaSet" class="retentionTip">
+                <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                <span>
+                    {{getMediaRetentionTip(mediaSetOptions[formGroup.get('node_id').value],formGroup.value.mediaSet)}}
+                </span>
+            </div>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="formGroup.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value">
+        <lv-form-label lvRequired>
+            {{'common_retention_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="retentionDurationErrorTip" class="groupInControl">
+            <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right">
+                <input lv-input formControlName="retention_duration"
+                    placeholder="{{formGroup.get('duration_unit').value=='d'?'1~25550':formGroup.get('duration_unit').value=='w'?'1~3650':formGroup.get('duration_unit').value=='MO'?'1~840': formGroup.get('duration_unit').value=='p'?'':'1~70'}}" />
+            </lv-input-group>
+            <ng-template #unitTpl>
+                <lv-select [lvOptions]="retentionDurationUnit" formControlName="duration_unit" class="unit-inner-select"
+                    lvValueKey="value"
+                    (ngModelChange)="changeTimeUnits($event, 'retention_duration')"></lv-select>
+            </ng-template>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item
+        *ngIf="[applicationType.NASFileSystem,applicationType.NASShare,applicationType.HDFS,applicationType.ImportCopy,applicationType.Fileset].includes(application)">
+        <lv-form-label>
+            {{'protection_auto_indexing_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_auto_index_archive_tip_label' | i18n}}"
+                lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="auto_index">
+            </lv-switch>
+            <div *ngIf="formGroup.get('auto_index').value">
+                <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+                <span>
+                    {{'protection_sla_index_enable_label' | i18n}}
+                </span>
+            </div>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container
+        *ngIf="formGroup.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value && ![applicationType.CommonShare].includes(application)">
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_limit_rate_policy_single_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'common_limit_rate_policy_tip_label' | i18n}}"
+                    lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
+                    lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select [lvOptions]="qosNames" formControlName="qos_id" lvValueKey="uuid" lvShowClear>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <lv-form-item *ngIf="formGroup.get('protocol').value === dataMap.Archival_Protocol.objectStorage.value">
+        <lv-form-label lvRequired>
+            {{'protection_network_access_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_network_access_label_help_label' | i18n}}"
+                lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="network_access">
+            </lv-switch>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

@@ -1,0 +1,9 @@
+<ng-container *ngIf="isAllCluster">
+    <lv-group lvGutter='8px'>
+        <span class="dash-line"></span>
+        <span class="aui-text-label">{{'protection_cluster_label' | i18n}}</span>
+        <lv-select [lvOptions]='options' [(ngModel)]="cluster" (ngModelChange)='change($event)' lvShowFilter
+            lvFilterKey='label' lvFilterMode='contains'>
+        </lv-select>
+    </lv-group>
+</ng-container>

@@ -1,0 +1,47 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_username_label' | i18n }}
+      <i lv-icon="aui-icon-help" lv-tooltip="{{'common_input_operate_database_username_label' | i18n}}"
+        lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="usernameErrorTip">
+      <input lv-input type="text" formControlName="userName" autocomplete="new-password" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select formControlName="deployType" [lvOptions]="deployTypeOptions" lvValueKey="value">
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>{{
+      'protection_env_variate_file_path_label' | i18n
+      }}</lv-form-label>
+    <lv-form-control [lvErrorTip]="pathErrorTip">
+      <input lv-input formControlName="envPath" placeholder="{{'protection_opengauss_envpath_tip_label' | i18n}}" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'system_servers_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select [lvOptions]="proxyOptions" formControlName="agents" lvValueKey="value" [lvMode]="proxyMultiple"
+        lvShowFilter lvShowCheckAll lvFilterKey="label" lvFilterMode="contains">
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>

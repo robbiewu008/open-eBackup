@@ -1,0 +1,370 @@
+<lv-form [formGroup]="formGroup" class="formGroup" [ngClass]="{'limit-input-width':limitWidth}">
+  <!-- 恢复位置 -->
+  <lv-form-item *ngIf="!isDrill">
+    <lv-form-label lvRequired>
+      {{ 'protection_restore_to_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="restoreLocation">
+        <lv-group [lvGutter]="'24px'">
+          <lv-radio
+            [lvValue]="restoreLocationType.ORIGIN"
+            [lvDisabled]="disableOriginLocation"
+            [lv-tooltip]="
+              disableOriginLocation
+                ? ('protection_cloud_origin_restore_disabled_label' | i18n)
+                : ''
+            "
+          >
+            {{ 'common_restore_to_origin_location_label' | i18n }}
+          </lv-radio>
+          <lv-radio [lvValue]="restoreLocationType.NEW">
+            {{ 'common_restore_to_new_location_label' | i18n }}
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+
+  <!-- 目标单机/可用性组 -->
+  <ng-container
+    *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN"
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'protection_single_system_ang_dag_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <input lv-input type="text" formControlName="originLocation"/>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+
+  <!-- 新位置选择路径 -->
+  <ng-container
+    *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW"
+  >
+  <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'host'"></aui-select-tag>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'protection_single_system_ang_dag_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-select
+          lvShowFilter
+          lvFilterKey="label"
+          lvFilterMode="contains"
+          formControlName="host"
+          [lvOptions]="hostAndDAGOptions"
+          lvValueKey="value"
+          [ngClass]="{'input-width':limitWidth}"
+        >
+        </lv-select>
+      </lv-form-control>
+    </lv-form-item>
+
+    <!--  数据库文件路径  -->
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'protection_database_file_path_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lvTooltipTheme="light"
+          [lv-tooltip]="dbFilePathTips"
+          lvColorState="true"
+          class="configform-constraint"
+        >
+        </i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="pathErrorTip">
+        <input lv-input formControlName="target_db_data_path" [placeholder]="dbFilePathPlaceholder"/>
+      </lv-form-control>
+    </lv-form-item>
+
+    <!--  日志文件路径  -->
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'protection_log_file_path_label' | i18n }}
+        <i
+          lv-icon="aui-icon-help"
+          lvTooltipTheme="light"
+          [lv-tooltip]="logFilePathTips"
+          lvColorState="true"
+          class="configform-constraint"
+        >
+        </i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="pathErrorTip">
+        <input lv-input formControlName="target_db_log_path" [placeholder]="logFilePathPlaceholder"/>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+
+  <!-- 恢复前自动卸除数据库 -->
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{'protection_exchange_restore_auto_dismount_database_label'|i18n}}
+      <i lv-icon="aui-icon-help" [lv-tooltip]="autoMountTipTpl"
+         lvTooltipPosition="top" lvTooltipTheme="light" class="configform-constraint"
+         lvColorState='true'></i>
+    </lv-form-label>
+    <lv-form-control>
+      <lv-switch formControlName="auto_dismount"></lv-switch>
+    </lv-form-control>
+  </lv-form-item>
+
+  <ng-template #autoMountTipTpl>
+    <span [innerHTML]="'protection_exchange_restore_auto_dismount_database_tips_label' | i18n"> </span>
+  </ng-template>
+
+  <!-- 恢复后自动装入数据库 -->
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{'protection_exchange_restore_auto_mount_database_label'|i18n}}
+      <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_exchange_restore_auto_mount_database_tips_label' | i18n}}"
+         lvTooltipPosition="top" lvTooltipTheme="light" class="configform-constraint"
+         lvColorState='true'></i>
+    </lv-form-label>
+    <lv-switch formControlName="auto_mount"></lv-switch>
+  </lv-form-item>
+
+  <!-- 数据库名称(数据库恢复时显示)-->
+  <lv-form-item *ngIf="[dataMap.Resource_Type.ExchangeDataBase.value].includes(childResType)">
+    <lv-form-label lvRequired>
+      {{'protection_databasename_label'|i18n}}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="databaseNameErrorTip">
+      <input lv-input formControlName="new_db_name">
+    </lv-form-control>
+  </lv-form-item>
+
+  <ng-container *ngIf="[dataMap.Resource_Type.ExchangeSingle.value,dataMap.Resource_Type.ExchangeGroup.value].includes(childResType)">
+    <!-- 数据库名称前缀 prefix-->
+    <lv-form-item>
+      <lv-form-label>
+        {{'protection_databasename_prefix_label'|i18n}}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_databasename_prefix_tips_label' | i18n}}"
+           lvTooltipPosition="top" lvTooltipTheme="light" class="configform-constraint"
+           lvColorState='true'></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="databaseNameErrorTip">
+        <input lv-input formControlName="db_name_prefix">
+      </lv-form-control>
+    </lv-form-item>
+
+    <!-- 数据库名称后缀 suffix-->
+    <lv-form-item>
+      <lv-form-label>
+        {{'protection_databasename_suffix_label'|i18n}}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_databasename_suffix_tips_label' | i18n}}"
+           lvTooltipPosition="top" lvTooltipTheme="light" class="configform-constraint"
+           lvColorState='true'></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="databaseNameErrorTip">
+        <input lv-input formControlName="db_name_suffix">
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+
+  <!-- 选择需要恢复的数据库-->
+  <ng-container *ngIf="!hiddenDatabase">
+    <div style="margin:16px 0 8px 0">
+      <h2>{{'protection_exchange_restore_select_database_label'|i18n}}</h2>
+    </div>
+<!--  原数据库  -->
+    <lv-group class="database-title" [lvColumns]="['50%','auto%']">
+      <div>
+        {{'common_restore_select_database_label'|i18n}}
+      </div>
+      <div>
+        {{'common_restore_selected_database_label'|i18n }}
+      </div>
+    </lv-group>
+    <lv-group lvGutter="10px" class="database-group">
+   <div class="source-table">
+     <lv-datatable
+       #lvSourceTable
+       [lvData]="sourceData"
+       lvAsync="false"
+       lvCompareWith="key"
+       lvSelectionMode="multiple"
+       [lvSelection]="sourceSelection"
+       (lvSelectionChange)="selectionChange($event)"
+       [lvPaginator]="pageS"
+       lvVirtualScroll
+       [lvScroll]="{y:'48vh'}"
+     >
+       <thead>
+       <tr>
+         <th lvShowCheckbox width="64px" [lvRowsData]="lvSourceTable.renderData"></th>
+         <th lvCellKey="name" lvShowCustom>
+           {{'common_database_label'|i18n}}
+           <div lvCustom >
+             <i lv-icon="lv-icon-search" [lvColorState]="true" [ngClass]="{ active: !!querySourceName }" lv-popover
+                [lvPopoverContent]="sourceNameFilterTpl" lvPopoverTheme="light" lvPopoverPosition="bottom"
+                lvPopoverTrigger="click" #namePopover="lvPopover"></i>
+           </div>
+         </th>
+         <th lvCellKey="environment_name">{{'protection_single_node_system_group_tag_label'|i18n}}</th>
+       </tr>
+       </thead>
+       <tbody>
+       <ng-template *ngFor="let item of lvSourceTable.renderData" lv-virtual-scroll let-item>
+         <tr>
+           <td lvShowCheckbox [lvRowData]="item" width="64px"></td>
+           <td>
+              <span lv-overflow>
+                {{ item.name |nil }}
+              </span>
+          </td>
+           <td>
+              <span lv-overflow>
+                {{ item.environment_name|nil }}
+              </span>
+           </td>
+         </tr>
+       </ng-template>
+       </tbody>
+     </lv-datatable>
+     <lv-paginator #pageS [lvTotal]="sourceData.length" [hidden]="lvSourceTable.renderData.length<20" lvMode='simple' [lvPageSize]="pageSizeS" [lvPageIndex]="pageIndexS" (lvPageChange)="pageChangeS($event)"></lv-paginator>
+   </div>
+<!-- 恢复的目标数据库 -->
+    <div class="target-table">
+      <lv-datatable
+        #lvTargetTable
+        [lvData]="targetData"
+        lvAsync="false"
+        lvCompareWith="key"
+        [lvPaginator]="pageT"
+        lvVirtualScroll
+        [lvScroll]="{y:'48vh'}"
+      >
+        <thead>
+        <tr>
+          <th lvCellKey="name" lvShowCustom>
+            {{'common_database_label'|i18n}}
+            <div lvCustom >
+              <i lv-icon="lv-icon-search" [lvColorState]="true" [ngClass]="{ active: !!queryTargetName }" lv-popover
+                 [lvPopoverContent]="targetNameFilterTpl" lvPopoverTheme="light" lvPopoverPosition="bottom"
+                 lvPopoverTrigger="click" #namePopover="lvPopover"></i>
+            </div>
+          </th>
+          <th lvCellKey="new_db_name" lvShowCustom>
+            {{'protection_exchange_after_restore_database_label'|i18n}}
+            <i lv-icon="lv-icon-search" [lvColorState]="true" [ngClass]="{ active: !!queryTargetDBName }" lv-popover
+               [lvPopoverContent]="targetNameDBFilterTpl" lvPopoverTheme="light" lvPopoverPosition="bottom"
+               lvPopoverTrigger="click" #namePopover="lvPopover"></i>
+          </th>
+          <th width="64px"> {{'common_operation_label'|i18n}} </th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-template *ngFor="let item of lvTargetTable.renderData" lv-virtual-scroll let-item>
+          <tr>
+            <td>
+              <span lv-overflow>
+                {{ item.name |nil }}
+              </span>
+            </td>
+            <td>
+              <span lv-overflow>
+                {{item.new_db_name|nil}}
+              </span>
+            </td>
+            <td width="64px">
+              <span (click)="removeItem(item)" class="remove-icon">
+                <i lv-icon="lv-icon-remove"></i>
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+        </tbody>
+      </lv-datatable>
+      <lv-paginator #pageT [lvTotal]="targetData.length" [hidden]="lvTargetTable.renderData.length<20" lvMode='simple' [lvPageSize]="pageSizeT" [lvPageIndex]="pageIndexT" (lvPageChange)="pageChangeT($event)"></lv-paginator>
+    </div>
+    </lv-group>
+  </ng-container>
+
+
+  <!-- 高级配置 -->
+  <div class="advanced-container" *ngIf="!isDrill && !this.hideAdvanced">
+    <lv-collapse [lvType]="'simple'">
+      <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+        <lv-form-item>
+          <lv-form-label>
+            {{ 'protection_restore_pre_script_label' | i18n }}
+            <i lv-icon="aui-icon-help" lvTooltipTheme="light" class="configform-constraint"
+               [lv-tooltip]="scriptToolTip" lvColorState="true">
+            </i>
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="scriptErrorTip">
+            <input
+              formControlName="preScript"
+              [placeholder]="scriptPlaceholder"
+              lv-input
+            />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>
+            {{ 'protection_restore_post_script_label' | i18n }}
+            <i lv-icon="aui-icon-help" lvTooltipTheme="light" class="configform-constraint"
+               [lv-tooltip]="scriptToolTip" lvColorState="true">
+            </i>
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="scriptErrorTip">
+            <input
+              formControlName="postScript"
+              [placeholder]="scriptPlaceholder"
+              lv-input
+            />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-label>
+            {{ 'protection_restore_fail_script_label' | i18n }}
+            <i lv-icon="aui-icon-help" lvTooltipTheme="light" class="configform-constraint"
+               [lv-tooltip]="scriptToolTip" lvColorState="true">
+            </i>
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="scriptErrorTip">
+            <input
+              formControlName="executeScript"
+              [placeholder]="scriptPlaceholder"
+              lv-input
+            />
+          </lv-form-control>
+        </lv-form-item>
+      </lv-collapse-panel>
+    </lv-collapse>
+  </div>
+</lv-form>
+<!-- 左表搜索数据库 -->
+<ng-template #sourceNameFilterTpl>
+  <lv-search class="search-width-left" [(ngModel)]="querySourceName" (lvSearch)="searchByName(querySourceName,'name',lvSourceTable,pageS)" [lvFocus]="true"></lv-search>
+</ng-template>
+
+<!-- 右表搜索数据库 -->
+<ng-template #targetNameFilterTpl>
+  <lv-search class="search-width-right" [(ngModel)]="queryTargetName" (lvSearch)="searchByName(queryTargetName,'name',lvTargetTable,pageT)" [lvFocus]="true"></lv-search>
+</ng-template>
+
+<!-- 右表搜索恢复后的数据库 -->
+<ng-template #targetNameDBFilterTpl>
+  <lv-search [(ngModel)]="queryTargetDBName" (lvSearch)="searchByName(queryTargetDBName,'new_db_name',lvTargetTable,pageT)" [lvFocus]="true"></lv-search>
+</ng-template>
+
+<ng-template #titleTpl>
+  <lv-group lvGutter="8px">
+    <span class="custom-collapse-title-text">{{
+      'common_advanced_label' | i18n
+      }}</span>
+    <i
+      lv-icon="aui-icon-help"
+      lvTooltipTheme="light"
+      lv-tooltip="{{'protection_fileset_restore_script_windows_tips_label'|i18n}}"
+      lvColorState="true"
+    >
+    </i>
+  </lv-group>
+</ng-template>

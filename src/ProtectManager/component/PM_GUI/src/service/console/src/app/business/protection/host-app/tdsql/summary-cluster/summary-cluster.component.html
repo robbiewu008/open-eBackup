@@ -1,0 +1,49 @@
+<lv-form>
+  <div class="aui-gutter-column-xl">
+    <lv-form-column lvWidth="16%">
+      <ng-container
+        *ngIf="
+          data?.linkStatus === dataMap.resource_LinkStatus_Special.normal.value
+        "
+      >
+        <i lv-icon="aui-icon-instance-online" class="cluster-icon"></i>
+      </ng-container>
+      <ng-container
+        *ngIf="
+          data?.linkStatus !== dataMap.resource_LinkStatus_Special.normal.value
+        "
+      >
+        <i lv-icon="aui-icon-instance" class="cluster-icon"></i>
+      </ng-container>
+    </lv-form-column>
+    <lv-form-column *ngFor="let forms of formItems" lvWidth="32%">
+      <lv-form-item *ngFor="let item of forms">
+        <lv-form-label class="label">
+          {{ item.label | i18n }}
+        </lv-form-label>
+        <lv-form-control class="value">
+          <div lv-overflow style="width: 120px;">
+            {{ item.value | nil }}
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form-column>
+  </div>
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{ 'protection_oss_manage_node_label' | i18n }}</h2>
+  </div>
+  <lv-pro-table
+    #ossDataTable
+    [config]="ossTableConfig"
+    [data]="ossTableData"
+  ></lv-pro-table>
+  <div class="aui-gutter-column-xl"></div>
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{ 'protection_scheduler_node_label' | i18n }}</h2>
+  </div>
+  <lv-pro-table
+    #schedulerDataTable
+    [config]="schedulerTableConfig"
+    [data]="schedulerTableData"
+  ></lv-pro-table>
+</lv-form>

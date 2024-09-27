@@ -1,0 +1,308 @@
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <lv-group lvGutter='8px'>
+            <h1>{{ 'system_ldap_service_config_label' | i18n }}</h1>
+            <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+        </lv-group>
+    </div>
+    <div class="aui-block  aui-gutter-column-md">
+        <div class="aui-header-2">
+            <lv-group lvGutter='10px'>
+                <h2>{{ 'system_ldap_service_label' | i18n }}</h2>
+                <lv-switch [(ngModel)]="ldapServiceStatus" [lvControl]="true" (click)="ldapServiceChange()"></lv-switch>
+            </lv-group>
+            <div pmpermission pmOperation='ModifyLdapConfig'>
+                <lv-group lvGutter='10px' *ngIf="!viewSettingFlag">
+                    <span [ngClass]="{'aui-link': formGroup.valid, 'aui-link-disabled': !formGroup.valid}"
+                        (click)="test()">
+                        {{ 'common_test_label' | i18n }}
+                    </span>
+                    <span [ngClass]="{'aui-link': formGroup.valid, 'aui-link-disabled': !formGroup.valid || !hasTest}"
+                        (click)="save()">
+                        {{ 'common_save_label' | i18n }}
+                    </span>
+                    <span class="aui-link" (click)="cancel()">
+                        {{ 'common_cancel_label' | i18n }}
+                    </span>
+                </lv-group>
+                <span *ngIf="viewSettingFlag"
+                    [ngClass]="{'aui-link': ldapServiceStatus, 'aui-link-disabled': !ldapServiceStatus}"
+                    (click)="modify()">
+                    {{ 'common_modify_label' | i18n }}
+                </span>
+            </div>
+        </div>
+        <div class="dashed-line"></div>
+        <ng-container *ngIf="ldapServiceStatus; else elseTemplate">
+            <div *ngIf="viewSettingFlag">
+                <lv-form>
+                    <lv-form-column lvWidth="50%">
+                        <h2 class="aui-gutter-column-md">
+                            {{'system_ldap_service_bind_label' | i18n}}
+                        </h2>
+                        <lv-form-item *ngFor='let item of serviceItems'>
+                            <ng-container *ngIf="!item.hide && !item.key">
+                                <lv-form-label>{{item.label}}</lv-form-label>
+                                <lv-form-control>
+                                    <span lv-overflow class="widthMax">{{item.content | nil}}</span>
+                                </lv-form-control>
+                            </ng-container>
+                            <ng-container *ngIf="!item.hide && item.key === 'ladapCheckCn'">
+                                <lv-form-label>{{'system_ldap_check_cn_label' | i18n}}</lv-form-label>
+                                <lv-form-control>
+                                    <lv-switch [(ngModel)]="ladapCheckCn" lvDisabled></lv-switch>
+                                </lv-form-control>
+                            </ng-container>
+                        </lv-form-item>
+                    </lv-form-column>
+                    <lv-form-column lvWidth="50%">
+                        <h2 class="aui-gutter-column-md">
+                            {{'system_ldap_service_user_label' | i18n}}
+                        </h2>
+                        <lv-form-item *ngFor='let item of userItems'>
+                            <lv-form-label>{{item.label}}</lv-form-label>
+                            <lv-form-control>
+                                <span lv-overflow class="widthMax">{{item.content | nil}}</span>
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label>
+                                <h2>
+                                    {{'system_ldap_service_user_group_label' | i18n}}
+                                </h2>
+                            </lv-form-label>
+                            <lv-form-control>
+                                <lv-switch [(ngModel)]="userGroupOn" lvDisabled></lv-switch>
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item *ngFor='let item of userGroupItems'>
+                            <lv-form-label>{{item.label}}</lv-form-label>
+                            <lv-form-control>
+                                <span lv-overflow class="widthMax">{{item.content | nil}}</span>
+                            </lv-form-control>
+                        </lv-form-item>
+                    </lv-form-column>
+                </lv-form>
+            </div>
+            <div *ngIf="!viewSettingFlag">
+                <lv-form [formGroup]="formGroup">
+                    <lv-form-column>
+                        <h2 class="aui-gutter-column-md">
+                            {{'system_ldap_service_bind_label' | i18n}}
+                        </h2>
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{'system_service_type_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control>
+                                <lv-select formControlName="serviceType" [lvOptions]="serviceTypeOptions"
+                                    class="form-control-input" lvValueKey="value">
+                                </lv-select>
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{'common_protocol_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control>
+                                <lv-select formControlName="protocol" [lvOptions]="protocolOptions" lvValueKey="value"
+                                    class="form-control-input">
+                                </lv-select>
+                                <ng-container *ngIf="formGroup.value.protocol === dataMap.ldapProtocol.ldap.value">
+                                    <lv-group lvGutter='4px' class="mgt-10">
+                                        <i lv-icon="lv-icon-status-warning-info"></i>
+                                        <span class="aui-text-label">
+                                            {{'system_ldap_protocol_warn_label' | i18n}}
+                                        </span>
+                                    </lv-group>
+                                </ng-container>
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{'system_bind_dn_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="dnErrorTip" class="dn-form-control">
+                                <input lv-input type="text" formControlName="dn" class="form-control-input" />
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{'system_bind_password_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="passwordErrorTip">
+                                <aui-inupt-with-eye formControlName="password"
+                                    class="form-control-input"></aui-inupt-with-eye>
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item *ngIf="formGroup.value.protocol === dataMap.ldapProtocol.ldaps.value">
+                            <lv-form-label>
+                                {{'system_ldap_check_cn_label' | i18n}}
+                                <i lv-icon="aui-icon-help" lv-tooltip="{{'system_ldap_check_cn_tip_label'| i18n}}"
+                                    lvTooltipPosition="rightTop" class="configform-constraint" lvColorState='true'></i>
+                            </lv-form-label>
+                            <lv-form-control>
+                                <lv-switch formControlName="checkCN"></lv-switch>
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item *ngIf="!isCyberEngine">
+                            <lv-form-label lvRequired>
+                                {{'system_address_type_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control>
+                                <lv-radio-group formControlName="addressType">
+                                    <lv-group [lvGutter]="'20px'">
+                                        <lv-radio [lvValue]="dataMap.ldapAddressType.ip.value">
+                                            {{ 'common_ip_address_lower_label' | i18n }}
+                                        </lv-radio>
+                                        <lv-radio [lvValue]="dataMap.ldapAddressType.domain.value">
+                                            {{ 'common_domain_lower_label' | i18n }}
+                                        </lv-radio>
+                                    </lv-group>
+                                </lv-radio-group>
+                            </lv-form-control>
+                        </lv-form-item>
+                        <ng-container *ngIf="formGroup.value.addressType === dataMap.ldapAddressType.ip.value">
+                            <lv-form-item>
+                                <lv-form-label lvRequired>
+                                    {{'common_ip_address_label' | i18n}}
+                                </lv-form-label>
+                                <lv-form-control>
+                                    <div formArrayName="ips">
+                                        <div *ngFor="let ctrl of ctrls; let i=index" class="mgb-ip">
+                                            <lv-form-control [lvErrorTip]="ipErrorTip">
+                                                <lv-group [lvGutter]="'20px'">
+                                                    <input lv-input type="text" [formControlName]="i"
+                                                        placeholder="{{'common_ip4_ipv6_placeholder_label' | i18n}}"
+                                                        class="form-control-input" />
+                                                    <ng-container *ngIf="ctrls.length > 1">
+                                                        <i lv-icon="aui-icon-delete-enable" lvColorState="true"
+                                                            (click)="deleteIp(i)"
+                                                            lv-tooltip="{{ 'common_delete_label' | i18n }}"></i>
+                                                    </ng-container>
+                                                </lv-group>
+                                            </lv-form-control>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <span
+                                            [ngClass]="{'aui-link-disabled': ctrls.length >= 4, 'aui-link': ctrls.length < 4}"
+                                            (click)="addIp()">
+                                            <i lv-icon='aui-icon-create' class="add-ip-icon"></i>
+                                            {{'common_add_label' | i18n}}
+                                        </span>
+                                    </div>
+                                </lv-form-control>
+                            </lv-form-item>
+                        </ng-container>
+                        <ng-container *ngIf="formGroup.value.addressType === dataMap.ldapAddressType.domain.value">
+                            <lv-form-item>
+                                <lv-form-label lvRequired>
+                                    {{'common_domain_label' | i18n}}
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]="domainErrorTip">
+                                    <input lv-input type="text" formControlName="domain" class="form-control-input" />
+                                </lv-form-control>
+                            </lv-form-item>
+                        </ng-container>
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{'common_port_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="portErrorTip">
+                                <input lv-input type="text" formControlName="port" placeholder="1~65535"
+                                    class="form-control-input" />
+                            </lv-form-control>
+                        </lv-form-item>
+                    </lv-form-column>
+                    <lv-form-column class="form-column-mgl">
+                        <h2 class="aui-gutter-column-md">
+                            {{'system_ldap_service_user_label' | i18n}}
+                        </h2>
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{'system_belong_directory_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="directoryErrorTip">
+                                <input lv-input type="text" formControlName="directory" class="form-control-input" />
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{'system_name_attribute_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="nameAttributeErrorTip">
+                                <input lv-input type="text" formControlName="nameAttribute"
+                                    class="form-control-input" />
+                            </lv-form-control>
+                        </lv-form-item>
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{'system_project_type_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]="projectTypeErrorTip">
+                                <input lv-input type="text" formControlName="projectType" class="form-control-input" />
+                            </lv-form-control>
+                        </lv-form-item>
+                        <div class="aui-gutter-column-user-group"></div>
+                        <lv-form-item>
+                            <lv-form-label>
+                                <h2>
+                                    {{'system_ldap_service_user_group_label' | i18n}}
+                                </h2>
+                            </lv-form-label>
+                            <lv-form-control>
+                                <lv-switch formControlName="userGroup"></lv-switch>
+                            </lv-form-control>
+                        </lv-form-item>
+                        <ng-container *ngIf="formGroup.value.userGroup">
+                            <lv-form-item>
+                                <lv-form-label lvRequired>
+                                    {{'system_belong_directory_label' | i18n}}
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]="directoryErrorTip">
+                                    <input lv-input type="text" formControlName="groupDirectory"
+                                        class="form-control-input" />
+                                </lv-form-control>
+                            </lv-form-item>
+                            <lv-form-item>
+                                <lv-form-label lvRequired>
+                                    {{'system_name_attribute_label' | i18n}}
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]="nameAttributeErrorTip">
+                                    <input lv-input type="text" formControlName="groupNameAttribute"
+                                        class="form-control-input" />
+                                </lv-form-control>
+                            </lv-form-item>
+                            <lv-form-item>
+                                <lv-form-label lvRequired>
+                                    {{'system_member_attribute_label' | i18n}}
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]="memberAttributeErrorTip">
+                                    <input lv-input type="text" formControlName="memberAttribute"
+                                        class="form-control-input" />
+                                </lv-form-control>
+                            </lv-form-item>
+                            <lv-form-item>
+                                <lv-form-label lvRequired>
+                                    {{'system_project_type_label' | i18n}}
+                                </lv-form-label>
+                                <lv-form-control [lvErrorTip]="projectTypeErrorTip">
+                                    <input lv-input type="text" formControlName="groupProjectType"
+                                        class="form-control-input" />
+                                </lv-form-control>
+                            </lv-form-item>
+                        </ng-container>
+                    </lv-form-column>
+                </lv-form>
+            </div>
+        </ng-container>
+        <ng-template #elseTemplate>
+            <div class="no-ldap">
+                <i lv-icon="aui-icon-no-data"></i>
+                <div class="no-data-label">{{'system_no_ldap_data_label' |i18n}}</div>
+            </div>
+        </ng-template>
+    </div>
+</div>

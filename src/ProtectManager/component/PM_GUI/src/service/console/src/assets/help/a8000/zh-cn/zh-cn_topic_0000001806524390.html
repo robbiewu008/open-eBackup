@@ -1,0 +1,45 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="周期性执行备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001853083309.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001806524390">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>周期性执行备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001806524390"></a><a name="ZH-CN_TOPIC_0000001806524390"></a>
+
+<h1 class="topictitle1">周期性执行备份</h1>
+<div><p>将需要保护的邮箱关联到指定SLA，系统将对这些资源按照SLA的定义周期性执行备份。</p>
+<div class="section" id="ZH-CN_TOPIC_0000001806524390__section1432145615443"><h4 class="sectiontitle">前提条件</h4><p id="ZH-CN_TOPIC_0000001806524390__p17201613205718">执行备份前，请确保Exchange Server服务和相关的依赖服务正常运行。对应服务可参考<a href="https://learn.microsoft.com/zh-cn/exchange/plan-and-deploy/deployment-ref/services-overview" target="_blank" rel="noopener noreferrer">Exchange 服务器上的 Exchange 服务概述</a>。</p>
+
+</div>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><p>对于邮箱备份，需要注册的用户具有ApplicationImpersonation角色权限。首次进行邮箱备份时，代理主机将自动创建一个名为“Databackup”的用户组，该用户组具有ApplicationImpersonation角色的权限，并将注册的用户加入该用户组。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001806524390__zh-cn_topic_0000001839142377_uicontrol26447265316">“<span id="ZH-CN_TOPIC_0000001806524390__zh-cn_topic_0000001839142377_text8644926538">保护</span> &gt; <span id="ZH-CN_TOPIC_0000001806524390__zh-cn_topic_0000001839142377_text1310114196546">应用</span> &gt; <span id="ZH-CN_TOPIC_0000001806524390__zh-cn_topic_0000001839142377_text2114145125312">Exchange</span>”</span>。</span></li></ol><ol start="2"><li><span>在<span class="uicontrol">“<span>邮箱</span>”</span>页签，选择需要保护的邮箱，选择“更多”，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p><p>您也可以勾选多个邮箱进行批量保护。</p>
+</p></li><li><span>选择已创建的SLA。</span><p><p>您也可以单击<span class="uicontrol">“<span>创建</span>”</span>，创建新的SLA。</p>
+</p></li><li><span>选择邮件/文件夹备份失败后是否继续进行保护。</span></li><li><span>单击<span class="uicontrol">“确定”</span>。</span><p><p>如果当前系统时间已晚于该SLA首次备份的开始时间，则关联备份SLA后可以选择在当前立即执行备份或者根据SLA中设置的备份策略等待下次调度。</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001853083309.html">步骤4：执行备份</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

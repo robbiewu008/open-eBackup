@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>
+    <artifact>
+        <versionType>Component</versionType>
+        <repoType>Generic</repoType>
+        <id>
+            <offering>OceanProtect A8000</offering>
+            <componentName>ProtectManager</componentName>
+            <componentVersion>1.0.0</componentVersion>			
+            <snapshot>N</snapshot>
+        </id>
+        <isClear>N</isClear>
+        <copies>
+            <copy>
+                <source>*</source>
+                <dest>${PRODUCT}/${CODE_BRANCH}/${COMPONENT_TYPE}/${ARCH}</dest>
+            </copy>
+        </copies>
+    </artifact>
+</project>

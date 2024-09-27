@@ -1,0 +1,51 @@
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
+    <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+        <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_protect_pre_script_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lvTooltipTheme="light"
+                        lv-tooltip="{{ 'protection_protect_advance_script1_label' | i18n }}"
+                        class="configform-constraint" lvColorState='true'>
+                    </i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="scriptErrorTip">
+                    <input formControlName="before_protect_script" lv-input />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_protect_post_script_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lvTooltipTheme="light"
+                        lv-tooltip="{{ 'protection_protect_advance_script1_label' | i18n }}"
+                        class="configform-constraint" lvColorState='true'>
+                    </i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="scriptErrorTip">
+                    <input formControlName="after_protect_script" lv-input />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_protect_fail_script_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lvTooltipTheme="light"
+                        lv-tooltip="{{ 'protection_protect_advance_script1_label' | i18n }}"
+                        class="configform-constraint" lvColorState='true'>
+                    </i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="scriptErrorTip">
+                    <input formControlName="protect_failed_script" lv-input />
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form>
+    </lv-collapse-panel>
+</lv-collapse>
+
+<ng-template #titleTpl>
+    <lv-group lvGutter='8px'>
+        <span class="custom-collapse-title-text">{{'common_advanced_label'|i18n}}</span>
+        <i lv-icon="aui-icon-help" lvTooltipTheme="light"
+            lv-tooltip="{{ 'protection_fileset_protect_advance_params_label' | i18n }}" lvColorState='true'>
+        </i>
+    </lv-group>
+</ng-template>

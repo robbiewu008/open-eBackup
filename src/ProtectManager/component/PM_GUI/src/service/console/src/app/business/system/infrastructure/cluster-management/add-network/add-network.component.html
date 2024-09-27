@@ -1,0 +1,245 @@
+<lv-form class="formGroup aui-gutter-column-md" [formGroup]="formGroup">
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_ip_address_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-radio-group formControlName="ipType">
+        <lv-group lvGutter="16px">
+          <lv-radio [lvValue]="'0'">
+            IPV4
+          </lv-radio>
+          <lv-radio [lvValue]="'1'">
+            IPV6
+          </lv-radio>
+        </lv-group>
+      </lv-radio-group>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="formGroup.value.ipType === '0'">
+    <lv-form-label lvRequired>
+      {{ 'common_mask_ip_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="prefixErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="mask"
+        class="network-input"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="formGroup.value.ipType === '1'">
+    <lv-form-label lvRequired>
+      {{ 'common_subnet_prefix_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="prefixErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="prefix"
+        class="network-input"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_ip_address_label' | i18n }}1
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="ipErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="gaussIp"
+        class="network-input"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_ip_address_label' | i18n }}2
+    </lv-form-label>
+    <lv-form-control>
+      <lv-form-control [lvErrorTip]="ipErrorTip">
+        <input
+          lv-input
+          type="text"
+          formControlName="infraIp"
+          class="network-input"
+        />
+      </lv-form-control>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_gateway_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="ipErrorTip">
+      <input lv-input type="text" formControlName="gateway" class="network-input"/>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+<h2 class="top">
+  {{ 'common_config_ports_label' | i18n }}
+</h2>
+<div class="header">
+  <lv-group lvGutter="8px" lvDirection="vertical">
+    <lv-checkbox
+      [(ngModel)]="enableVlan"
+      (ngModelChange)="vlanChange($event)"
+      >{{ 'common_vlan_enable_label' | i18n }}</lv-checkbox
+    >
+    <span class="check-box-span aui-text-desc">{{
+      'common_vlan_tip_label' | i18n
+    }}</span>
+  </lv-group>
+</div>
+<lv-form [formGroup]="formGroup" class="header">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_ports_type_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select
+        formControlName="homePortType"
+        [lvOptions]="homePortTypeOptions"
+        lvValueKey="value"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item
+    *ngIf="
+      !(
+        formGroup.value.homePortType ===
+          dataMap.initHomePortType.ethernet.value && !enableVlan
+      )
+    "
+  >
+    <lv-form-label>
+      {{ 'common_port_choice_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-group lvGutter="8px" lvDirection="vertical" style="margin-top:8px">
+        <lv-radio-group formControlName="reuse">
+          <lv-group lvGutter="20px">
+            <lv-radio [lvValue]="false">
+              {{ 'common_create_new_port_label' | i18n }}
+            </lv-radio>
+            <lv-radio [lvValue]="true">
+              {{ 'common_reuse_port_label' | i18n }}
+            </lv-radio>
+          </lv-group>
+        </lv-radio-group>
+      </lv-group>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item
+    *ngIf="
+      formGroup.value.homePortType !==
+        dataMap.initHomePortType.ethernet.value &&
+      !(formGroup.value.reuse && enableVlan) &&
+      !isX9000
+    "
+  >
+    <lv-form-label>
+      {{ 'system_shared_port_label' | i18n }}
+      <i
+        lv-icon="aui-icon-notice"
+        [lv-tooltip]="'system_shared_port_tip_label' | i18n"
+        lvTooltipTheme="light"
+        lvColorState="true"
+        lv-overflow
+        style="margin-left:4px"
+      ></i>
+    </lv-form-label>
+    <lv-form-control>
+      <lv-switch formControlName="shareBondPort"></lv-switch>
+    </lv-form-control>
+  </lv-form-item>
+  <div [ngClass]="{ top: !enableVlan }">
+    <lv-alert lvType="info">{{ tips }}</lv-alert>
+  </div>
+  <div class="transfer" *ngIf="!formGroup.value.reuse">
+    <lv-transfer
+      [lvHeaders]="[sourceHeadTpl, targetHeadTpl]"
+      [lvSourceColumns]="source.cols"
+      [lvSourceData]="source.data"
+      [lvSourceSelection]="source.selection"
+      [lvTargetColumns]="target.cols"
+      lvColDisplayControl="false"
+      (lvSelectionChange)="selectionChange($event)"
+      [lvItemSize]="10"
+      lvDataKey="location"
+    ></lv-transfer>
+  </div>
+  <!-- 复用时使用新的表和变量 -->
+  <div class="transfer" *ngIf="formGroup.value.reuse">
+    <lv-transfer
+      [lvHeaders]="[sourceHeadTpl, targetHeadTpl]"
+      [lvSourceColumns]="oldSource.cols"
+      [lvSourceData]="oldSource.data"
+      [lvSourceSelection]="oldSource.selection"
+      [lvTargetColumns]="oldTarget.cols"
+      lvColDisplayControl="false"
+      (lvSelectionChange)="oldSelectionChange($event)"
+      [lvItemSize]="10"
+      lvDataKey="name"
+    ></lv-transfer>
+  </div>
+  <ng-container *ngIf="enableVlan && !formGroup.value.reuse">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'VLAN ID' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="vlanErrorTip">
+        <input lv-input type="text" formControlName="vlanID" />
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>
+
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
+  <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+    <lv-checkbox
+      [(ngModel)]="enableRoute"
+      (ngModelChange)="routeChange($event)"
+      class="aui-gutter-column-md"
+      >{{ 'system_route_config_label' | i18n }}</lv-checkbox
+    >
+    <aui-route-config
+      [isNetwork]="true"
+      [ipType]="formGroup.value.ipType"
+      (routeStatus)="routeStatusChange($event)"
+      [routeData]="routeData"
+      *ngIf="enableRoute"
+    ></aui-route-config>
+  </lv-collapse-panel>
+</lv-collapse>
+
+<ng-template #sourceHeadTpl>
+  <span>{{ 'system_select_port_label' | i18n }}</span>
+</ng-template>
+
+<ng-template #targetHeadTpl>
+  <lv-group class="selected-header">
+    <span>{{ 'system_selected_port_label' | i18n }}</span>
+    <span class="aui-link" (click)="clearSelected()">{{
+      'protection_clear_all_label' | i18n
+    }}</span>
+  </lv-group>
+</ng-template>
+
+<ng-template #titleTpl>
+  <lv-group lvGutter="8px">
+    <span class="custom-collapse-title-text">{{
+      'common_advanced_label' | i18n
+    }}</span>
+  </lv-group>
+</ng-template>
+
+<ng-template #linkStatusTpl let-item>
+  <span lv-overflow>{{
+    item.runningStatus | textMap: 'initRuningStatus'
+  }}</span>
+</ng-template>

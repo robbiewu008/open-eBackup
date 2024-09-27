@@ -1,0 +1,21 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-lg" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_resource_type_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select formControlName="resourceType" [lvOptions]='resourceTypeOptions' lvValueKey='value' lvShowFilter
+                lvFilterKey='label' lvFilterMode='contains'>
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+<ng-container *ngIf="formGroup.value.resourceType">
+    <lv-group lvGutter='8px' class="aui-gutter-column-md">
+        <h3>{{'explore_select_resource_label' | i18n}}</h3>
+        <span>{{'common_selected_num_label' | i18n:[selectionData.length]}}</span>
+    </lv-group>
+    <div class="restore-lv-paginator-simple">
+        <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+    </div>
+</ng-container>

@@ -1,0 +1,45 @@
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
+  <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+    <lv-form [formGroup]='formGroup' class="formGroup">
+      <lv-form-item>
+        <lv-form-label>
+          {{'protection_protect_pre_script_label' | i18n}}
+          <i lv-icon="aui-icon-help" [lv-tooltip]="scriptTooltip" lvTooltipTheme="light" class="configform-constraint"
+            lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="scriptErrorTip">
+          <input lv-input type='text' formControlName='pre_script' [placeholder]="scriptPlaceholder" />
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>
+          {{'protection_protect_post_script_label' | i18n}}
+          <i lv-icon="aui-icon-help" [lv-tooltip]="scriptTooltip" lvTooltipTheme="light" class="configform-constraint"
+            lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="scriptErrorTip">
+          <input lv-input type='text' formControlName='post_script' [placeholder]="scriptPlaceholder" />
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>
+          {{'protection_protect_fail_script_label' | i18n}}
+          <i lv-icon="aui-icon-help" [lv-tooltip]="scriptTooltip" lvTooltipTheme="light" class="configform-constraint"
+            lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="scriptErrorTip">
+          <input lv-input type='text' formControlName="failed_script" [placeholder]="scriptPlaceholder" />
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form>
+  </lv-collapse-panel>
+</lv-collapse>
+
+<ng-template #titleTpl>
+  <lv-group lvGutter='8px'>
+    <span class="custom-collapse-title-text">{{'common_advanced_label'|i18n}}</span>
+    <i lv-icon="aui-icon-help" lvTooltipTheme="light"
+      lv-tooltip="{{ 'protection_protect_advance_params_desc2_label' | i18n }}" lvColorState='true'>
+    </i>
+  </lv-group>
+</ng-template>

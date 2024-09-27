@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="手动执行备份">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001792360682.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001792360698">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>手动执行备份</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001792360698"></a><a name="ZH-CN_TOPIC_0000001792360698"></a>
+  <h1 class="topictitle1">手动执行备份</h1>
+  <div>
+   <p>当您需要立即执行一次备份任务时，可以通过手动备份实现。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <ul>
+     <li>手动备份时，SLA中定义的参数（<span class="uicontrol" id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839239769_uicontrol1201136142020">“<span id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839239769_text15553125114208">失败后自动重试</span>”</span>除外），如<span class="uicontrol" id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839239769_uicontrol69418101243">“<span id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839239769_text9181141134816">限速策略</span>”</span>会应用到手动备份任务中。</li>
+     <li>手动备份产生的副本保留时长按照SLA中的定义进行保留。</li>
+     <li>如果SLA中定义了复制策略或归档策略，则执行手动备份时，<span id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001792503838_text5659141105915">本产品</span>会按照SLA的定义执行一次复制或归档。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <ul id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839159869_ul4258175217589">
+     <li id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839159869_li4259195214589">对于通过设备注册发现的NAS共享，如果NAS共享有认证信息，已参考<a href="zh-cn_topic_0000001792520466.html">步骤3：配置NAS共享信息</a>完成配置，否则将导致备份失败。</li>
+     <li id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839159869_li13259752185815"><span style="color:#282B33;">对于NFS共享，请确认当前设备具备NFS共享目录的读写权限，并且开启了no_root_squash选项。</span>配置NFS共享访问权限的详细操作，请参见<a href="zh-cn_topic_0000001839239777.html">步骤5：配置访问权限</a>。</li>
+     <li id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839159869_li14971124445917">对于CIFS共享，请确认当前设备具备CIFS共享目录的读写权限，推荐使用Administrator组中的用户进行备份，否则只能备份具有读写权限的文件和目录。配置CIFS共享访问权限的详细操作，请参见<a href="zh-cn_topic_0000001839239777.html">步骤5：配置访问权限</a>。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839142377_uicontrol79081114124111">“<span id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839142377_text99081414144119">保护</span> &gt; 文件系统 &gt; NAS共享”</span>。</span><p></p>
+      <div class="note" id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839142377_note397892312184">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839142377_p5978112341818">对于1.5.0版本，请选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839142377_uicontrol129783237180">“<span id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001839142377_text10978172391818">保护</span> &gt; 文件服务 &gt; NAS共享”</span>。</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>在需要保护的NAS共享所在行，单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span> ”</span>。</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001792503838_p870125314544">支持选择多个资源批量进行手动备份。勾选多个资源，在页面左上角选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001792503838_uicontrol14182155715711">“<span id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001792503838_text662114113158">更多</span> &gt; <span id="ZH-CN_TOPIC_0000001792360698__zh-cn_topic_0000001792503838_text1068159191519">手动备份</span>”</span>。</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>设置手动备份产生的副本名称。</span><p></p><p>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p> <p></p></li>
+     <li><span>选择保护策略。</span><p></p>
+      <ul>
+       <li>如果NAS共享保护未配置“<span>小文件聚合</span>”，保护策略可设置为：<span>全量备份</span>或<span>永久增量（合成全量）备份</span>。</li>
+       <li>如果NAS共享保护已设置“<span>小文件聚合</span>”，保护策略可设置为：<span>全量备份</span>或<span>增量备份</span>。</li>
+      </ul> <p></p></li>
+     <li><span>单击<span class="uicontrol">“确定”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001792360682.html">步骤9：执行备份</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

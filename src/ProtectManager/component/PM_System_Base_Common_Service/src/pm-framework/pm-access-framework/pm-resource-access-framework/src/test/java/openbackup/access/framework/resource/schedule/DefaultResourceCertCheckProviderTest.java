@@ -1,0 +1,42 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ */
+
+package openbackup.access.framework.resource.schedule;
+
+import openbackup.access.framework.resource.schedule.DefaultResourceCertCheckProvider;
+import openbackup.data.protection.access.provider.sdk.base.Authentication;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.system.base.common.constants.Constants;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.util.HashMap;
+
+/**
+ * DefaultResourceCertCheckProvider Test
+ *
+ * @author fwx1022842
+ * @version [OceanProtect X8000 1.2.1]
+ * @since 2022/10/14
+ */
+public class DefaultResourceCertCheckProviderTest {
+    /**
+     * 用例名称：获取默认资源的证书和吊销列表。
+     * 前置条件：资源不是vmware。
+     * check点：证书和吊销列表内容符合预期。
+     */
+    @Test
+    public void get_cert_and_crl_content_success() {
+        ProtectedResource protectedResource = new ProtectedResource();
+        final Authentication auth = new Authentication();
+        final HashMap<String, String> map = new HashMap<>();
+        map.put(Constants.CERT_KEY, "111");
+        map.put(Constants.CRL_KEY, "222");
+        auth.setExtendInfo(map);
+        protectedResource.setAuth(auth);
+        DefaultResourceCertCheckProvider defaultResourceCertCheckProvider = new DefaultResourceCertCheckProvider();
+        Assert.assertEquals("111", defaultResourceCertCheckProvider.getCertContent(protectedResource).get());
+        Assert.assertEquals("222", defaultResourceCertCheckProvider.getCrlContent(protectedResource).get());
+    }
+}

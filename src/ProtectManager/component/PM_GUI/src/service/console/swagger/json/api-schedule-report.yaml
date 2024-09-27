@@ -1,0 +1,573 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: schedule_report
+    description: 周期报表
+paths:
+  /v1/report-policies/{policy_id}/action/run-once:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - schedule_report
+      operationId: RunReportSubscriptionPolicyUsingGost
+      summary: 立即执行一次周期报表任务
+      description: 立即执行一次周期报表任务
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: policy_id
+          in: path
+          required: true
+          type: string
+          description: 策略id
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: X-Auth-Token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      x-order: 0
+  /v1/report-policies/{policy_id}:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - schedule_report
+      summary: 查询任务详情
+      description: 查询任务详情
+      operationId: ListReportSubscriptionPolicyDetailUsingGet
+      parameters:
+        - name: policy_id
+          in: path
+          required: true
+          type: string
+          description: 策略id
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: X-Auth-Token
+          type: string
+      responses:
+        '200':
+          description: 任务信息
+          schema:
+            $ref: '#/definitions/ReportTaskVo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - schedule_report
+      operationId: DeleteReportSubscriptionPolicyUsingDelete
+      summary: 删除报表任务
+      description: 删除报表任务
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: policy_id
+          in: path
+          required: true
+          type: string
+          description: 策略id
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: X-Auth-Token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      x-order: 3
+  /v1/report-policies:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - schedule_report
+      operationId: CreateReportSubscriptionPolicyUsingPost
+      summary: 创建周期报表任务
+      description: 创建周期报表任务
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: CreateReportSubscriptionPolicyUsingPostRequestBody
+          description: 创建周期报表任务所需参数
+          required: true
+          schema:
+            $ref: '#/definitions/TaskRequestParam'
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: X-Auth-Token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: Created
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+      x-order: 0
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - schedule_report
+      operationId: ModifyReportSubscriptionPolicyUsingPut
+      summary: 更新周期报表任务
+      description: 更新周期报表任务
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: ModifyReportSubscriptionPolicyUsingPutRequestBody
+          description: 更新周期报表任务所需参数
+          required: true
+          schema:
+            $ref: '#/definitions/TaskRequestParam'
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: X-Auth-Token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '404':
+          description: Not Found
+          schema:
+            type: string
+      x-order: 1
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - schedule_report
+      summary: 查询任务列表
+      description: 查询任务列表
+      operationId: ListReportSubscriptionPoliciesUsingPost
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: X-Auth-Token
+          type: string
+        - name: name
+          in: query
+          required: false
+          description: 用来搜索
+          type: string
+        - name: pageNo
+          in: query
+          required: false
+          description: 当前页从1开始
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          description: 页面大小20-200
+          type: integer
+          format: int32
+        - name: sortBy
+          in: query
+          required: false
+          description: 按xx排序，默认create_time
+          type: string
+        - name: isAsc
+          in: query
+          required: false
+          description: 默认true
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IPage'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+definitions:
+  TaskRequestParam:
+    type: object
+    required:
+      - policyName
+      - policyType
+      - execTime
+      - intervalUnit
+      - createTime
+      - reportParam
+    properties:
+      policyId:
+        type: string
+        description: 周期任务uuid
+      policyName:
+        type: string
+        description: 周期任务名称
+        pattern: '[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$'
+        minLength: 1
+        maxLength: 40
+      policyType:
+        type: string
+        description: 周期任务的类型(single单次,period周期)
+        enum:
+          - PERIOD
+          - SINGLE
+      execTime:
+        type: integer
+        format: int64
+        description: 任务执行时间
+      execInterval:
+        type: integer
+        format: int32
+        description: 执行频率(对应天)
+        minimum: 1
+        maximum: 365
+      daysOfWeek:
+        type: array
+        description: List<Integer>类型，每周哪几天执行
+        items:
+          type: string
+        minItems: 1
+        maxItems: 7
+      daysOfMonth:
+        type: array
+        description: List<Integer>类型，每个月哪几天执行
+        items:
+          type: string
+        minItems: 1
+        maxItems: 31
+      intervalUnit:
+        type: string
+        description: 执行频率的单位(天 , 周  ,  月)
+        enum:
+          - DAILY
+          - WEEKLY
+          - MONTHLY
+      createTime:
+        type: integer
+        format: int64
+        description: 创建时间
+      reportParam:
+        description: 任务涵盖的报表以及报表相关参数
+        $ref: '#/definitions/BaseReportParam'
+  BaseReportParam:
+    description: 创建具体报表的参数
+    required:
+      - name
+      - type
+      - fileFormat
+      - lang
+    properties:
+      name:
+        type: string
+        description: 报表名称
+        minLength: 1
+        maxLength: 64
+        example: MyDemo
+      type:
+        type: array
+        items:
+          type: string
+        description: 任务包含哪几种报表，List<ReportTypeEnum>
+        example: this is a demo
+        enum:
+          - BACKUP
+          - RESTORE
+          - EXERCISE
+          - STORAGE
+          - AGENT
+          - RESOURCE
+          - TAPE
+      fileFormat:
+        type: string
+        description: 生成的文件格式
+        enum:
+          - XLS
+          - PDF
+      reportDataSources:
+        type: array
+        items:
+          type: string
+        description: 报表数据源，List<ReportDataSource>
+      externalClusterName:
+        type: string
+        description: 根据数据源查询到的集群名称
+      timeRange:
+        type: string
+        description: 统计时间范围，如最近1周、最近1个月、最近3个月、自定义时间范围
+        enum:
+          - LAST_WEEK，LAST_MONTH，LAST_THREE_MONTH，CUSTOMIZATION
+      timeUnit:
+        type: string
+        description: 统计频率，1天、5天、10天或30天
+        enum:
+          - ONE_DAY，FIVE_DAYS，TEN_DAYS，THIRTY_DAYS
+      lang:
+        type: string
+        description: 语言
+        enum:
+          - EN
+          - zh_CN
+      emails:
+        type: array
+        items:
+          type: string
+        description: 收件人邮箱，List<String>
+      isSend:
+        type: boolean
+        description: 是否邮件发送
+      startTime:
+        type: integer
+        format: int64
+        description: 非自定义时统计时间范围的开始时间
+      endTime:
+        type: integer
+        format: int64
+        description: 非自定义时统计时间范围的结束时间
+      recentDays:
+        type: integer
+        format: int32
+        description: 最近xx天的信息
+        minimum: 1
+        maximum: 365
+    type: object
+  IPage:
+    type: object
+    properties:
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/ReportTaskVo'
+        description: 任务记录
+      total:
+        type: integer
+        format: int32
+        description: 总数
+      size:
+        type: integer
+        format: int32
+        description: 每页显示个数
+      current:
+        type: integer
+        format: int32
+        description: 当前页码
+      pages:
+        type: integer
+        format: int32
+        description: 总页数
+      countId:
+        type: integer
+        format: int32
+        description: 自定义count的列
+      maxLimit:
+        type: integer
+        format: int32
+        description: 每页显示记录数的最大限制
+      searchCount:
+        type: boolean
+        description: 是否查询总记录条数
+      optimizeCountSql:
+        type: boolean
+        description: 优化Count SQL，默认true
+      orders:
+        type: array
+        items:
+          type: string
+        description: 排序信息
+    description: 任务列表查询的返回值
+  ReportTaskVo:
+    type: object
+    required:
+      - policyId
+      - policyName
+      - policyType
+      - ExecTime
+      - intervalUnit
+      - createTime
+      - reportParam
+      - preExecTime
+      - nextExecTime
+    properties:
+      policyId:
+        type: string
+        description: 周期任务uuid
+        pattern: \w{8}(-\w{4}){3}-\w{12}
+      policyName:
+        type: string
+        description: 周期任务名称
+      policyType:
+        type: string
+        description: 周期任务的类型(single单次,period周期)
+      ExecTime:
+        type: integer
+        format: int64
+        description: 任务执行时间
+      execInterval:
+        type: integer
+        format: int32
+        description: 执行频率(对应天)
+        minimum: 1
+        maximum: 365
+      daysOfWeek:
+        type: array
+        description: List<Integer>类型，每周哪几天执行
+        items:
+          type: integer
+          format: int32
+        minItems: 1
+        maxItems: 7
+      daysOfMonth:
+        type: array
+        description: List<Integer>类型，每个月哪几天执行
+        items:
+          type: integer
+          format: int32
+        minItems: 1
+        maxItems: 31
+      intervalUnit:
+        type: string
+        description: 执行频率的单位(天 , 周  ,  月)
+        enum:
+          - DAILY
+          - WEEKLY
+          - MONTHLY
+        minLength: 1
+        maxLength: 31
+      createTime:
+        type: integer
+        format: int64
+        description: 创建时间
+      reportParam:
+        description: 任务涵盖的报表以及报表相关参数
+        $ref: '#/definitions/BaseReportParam'
+      preExecTime:
+        type: integer
+        format: int64
+        description: 上一次执行的时间
+      nextExecTime:
+        type: integer
+        format: int64
+        description: 下一次执行的时间
+    description: 从数据库中查出来的任务信息

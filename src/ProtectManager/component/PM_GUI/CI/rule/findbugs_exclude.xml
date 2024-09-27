@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<FindBugsFilter>
+	<!-- 屏蔽包 -->
+	<Match>
+		<Package name="com.huawei.nce.analyzer.tinyf" />
+	</Match>
+
+	<!-- 屏蔽类 -->
+	<Match>
+		<Class name="com.huawei.cloudsop.anlymodelservice.model.MonitorTaskResult" />
+	</Match>
+
+	<!-- 屏蔽方法 -->
+	<Match>
+		<Class name="com.huawei.nce.analyzer.pipeline.builder.calculate.v1.ETLPipelineYamlGenerator" />
+		<Method name="generatePipeline"/>
+	</Match>
+
+	<!-- 屏蔽方法的指定检查项 -->
+	<Match>
+		<Class name="com.huawei.cloudsop.igproutecollectservice.collect.config.ConfigureService" />
+		<Method name="configure" />
+		<Bug pattern="DM_DEFAULT_ENCODING" />
+	</Match>
+	<Match>
+		<Class name="com.huawei.dpa.configbackup.importdata.GaussDbRestoreImpl" />
+		<Method name="getSaltAndIv" />
+	</Match>
+	<Match>
+		<Class name="com.huawei.dpa.configbackup.importdata.GaussDbRestoreImpl" />
+		<Method name="getSalt" />
+	</Match>
+	
+</FindBugsFilter>

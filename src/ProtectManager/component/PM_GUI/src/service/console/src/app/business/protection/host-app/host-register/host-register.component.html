@@ -1,0 +1,526 @@
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <lv-group lvGutter="8px">
+            <i lv-icon="aui-widget-datepicker-previous" [lvColorState]="true" (click)="gotoHost()"></i>
+            <h1>{{ 'common_register_label' | i18n }}</h1>
+        </lv-group>
+    </div>
+    <div class="aui-block">
+        <div class="form-container">
+            <lv-form [formGroup]="formGroup" class="formGroup">
+                <lv-form-item>
+                    <lv-form-label lvRequired>
+                        {{'protection_proxy_type_label' | i18n}}
+                        <ng-container *ngIf="formGroup.value.type === dataMap.Backup_Proxy.VMware.value">
+                            <i lv-icon="aui-icon-help" [lv-tooltip]="contentTemplate" lvTooltipPosition="rightTop"
+                                lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+                            <ng-template #contentTemplate>
+                                <span [innerHTML]="vmHelp"></span>
+                            </ng-template>
+                        </ng-container>
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-select [lvOptions]='typeOptions' lvValueKey='value' formControlName='type'
+                            class="register-control" [lvContentTemplate]="contentTpl">
+                        </lv-select>
+                        <ng-template #contentTpl let-item>
+                            <lv-group lvGutter='8px'>
+                                <span lv-overflow>{{item.label}}</span>
+                                <span class="guide-recommend-label" *ngIf="showTypeGuide(item)">
+                                    {{'protection_guide_recommended_label' | i18n}}
+                                </span>
+                            </lv-group>
+                        </ng-template>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label lvRequired>{{'protection_os_type_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <lv-select [lvOptions]='osTypeOptions' lvValueKey='value' formControlName='osType'
+                            class="register-control">
+                        </lv-select>
+                    </lv-form-control>
+                </lv-form-item>
+
+                <ng-container *ngIf="formGroup.value.type === dataMap.Proxy_Type_Options.remoteAgent.value">
+                    <lv-form-item>
+                        <lv-form-label lvRequired>
+                            {{'protection_host_applications_label' | i18n}}
+                        </lv-form-label>
+                        <lv-form-control>
+                            <lv-tree-select [lvTreeData]="treeData" lvTreeSelectionMode="multiple" lvTreeShowCheckbox
+                                lvTreeShowLine lvShowFilter lvFilterKey="label" lvFilterMode="contains"
+                                lvSelectedValueMode="parent" formControlName="applications" class="register-control"
+                                [lvTreeNodeTemplate]="nodeTpl"></lv-tree-select>
+                            <ng-template #nodeTpl let-item>
+                                <lv-group lvGutter='8px'>
+                                    <span lv-overflow>{{item.label}}</span>
+                                    <span class="guide-recommend-label" *ngIf="showAppTypeGuide(item)">
+                                        {{'protection_guide_recommended_label' | i18n}}
+                                    </span>
+                                </lv-group>
+                            </ng-template>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+
+                <ng-container
+                    *ngIf="[dataMap.OS_Type.Linux.value, dataMap.OS_Type.Unix.value, dataMap.OS_Type.solaris.value].includes(formGroup.value.osType)">
+                    <lv-form-item>
+                        <lv-form-label lvRequired>
+                            {{'common_message_signature_algorithm_label'|i18n}}
+                            <i lv-icon="aui-icon-help" lv-tooltip="{{ 'common_help_signature_algorithm_label' | i18n }}"
+                                lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
+                                lvColorState="true"></i>
+                        </lv-form-label>
+                        <lv-form-control>
+                            <lv-select [lvOptions]='thmsOptions' lvValueKey='value' formControlName='algorithms'
+                                class="register-control">
+                            </lv-select>
+                            <ng-container
+                                *ngIf="formGroup.value.algorithms === dataMap.hmacSignatureAlgorithm.compatible.value">
+                                <lv-group class="warn-tip-group" [lvColumns]='["16px", "auto"]'>
+                                    <i lv-icon="lv-icon-status-warning-info"></i>
+                                    <span class="aui-text-label algorithm-warn-label">
+                                        {{'common_message_algorithm_warn_label' | i18n}}
+                                    </span>
+                                </lv-group>
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+                <!-- 共享 -->
+                <ng-container
+                    *ngIf="!isHcsUser && (formGroup.value.type === dataMap.Proxy_Type_Options.remoteAgent.value) && formGroup.value.osType === dataMap.OS_Type.Linux.value">
+                    <lv-form-item>
+                        <lv-form-label>{{'protection_multi-tenant_sharing_label' | i18n}}
+                            <i lv-icon="aui-icon-help"
+                                lv-tooltip="{{'protection_multi-tenant_sharing_tips_label' | i18n}}"
+                                lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
+                                lvColorState="true"></i>
+                        </lv-form-label>
+                        <lv-form-control>
+                            <lv-radio-group formControlName="isShared" [lvGroupName]="'shareGroup'"
+                                [lvDisabled]="shareDisabled">
+                                <lv-group [lvGutter]="'24px'">
+                                    <lv-radio lvValue="true">{{'switch_status_on_label' | i18n}}</lv-radio>
+                                    <lv-radio lvValue="false">{{'switch_status_off_label' | i18n}}</lv-radio>
+                                </lv-group>
+                            </lv-radio-group>
+                        </lv-form-control>
+                    </lv-form-item>
+                </ng-container>
+                <lv-form-item *ngIf="!isHcsUser">
+                    <lv-form-label>
+                        {{'common_ip_type_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-radio-group formControlName="ipType" [lvGroupName]="'ipTypeGroup'">
+                            <lv-group [lvGutter]="'24px'">
+                                <lv-radio lvValue="IPV4"> IPv4 </lv-radio>
+                                <lv-radio lvValue="IPV6"> IPv6 </lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item *ngIf="isHcsUser">
+                    <lv-form-label lvRequired>
+                        {{'protection_agent_location_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-select [lvOptions]='proxyTypeOptions' lvValueKey='value' formControlName='proxyType'
+                            class="register-control">
+                        </lv-select>
+                    </lv-form-control>
+                </lv-form-item>
+                <!-- 是否开启源端重删 -->
+                <lv-form-item *ngIf="!appUtilsService.isDistributed">
+                    <lv-form-label>
+                        {{'protection_sla_source_deduplication_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-radio-group formControlName="isEnableDataturbo">
+                            <lv-group [lvGutter]="'24px'">
+                                <lv-radio lvValue="true">{{'operation_open_dynamic_detect_label' | i18n}}</lv-radio>
+                                <lv-radio lvValue="false">{{'operation_close_dynamic_detect_label' | i18n}}</lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
+                        <lv-alert [hidden]="formGroup.get('isEnableDataturbo').value !== 'true'" lvType="warning"
+                            lvClosable="false" class="source-deduplication" [lvIcon]="sourceDeduplicationIconTpl">
+                            <span [innerHTML]="'protection_register_client_turbo_tips_label'|i18n"></span>
+                        </lv-alert>
+                    </lv-form-control>
+                </lv-form-item>
+                <ng-container *ngIf="formGroup.value.proxyType === dataMap.agentType.ecs.value; else elseTemplate">
+                    <div class="aui-gutter-column-xl">
+                        <button lv-button class="aui-gutter-column-md" [disabled]="!selectionEcs.length" lv-popover
+                            [lvPopoverContent]="batchUsernameTpl" lvPopoverTrigger="click" lvPopoverTheme="light"
+                            lvPopoverPosition="bottom" #batchUsernamePopover="lvPopover">
+                            {{'protection_batch_user_password_label' | i18n}}
+                        </button>
+                        <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+                    </div>
+                </ng-container>
+                <ng-template #elseTemplate>
+                    <lv-form-item>
+                        <lv-form-label lvRequired>{{'common_client_info_label' | i18n}}</lv-form-label>
+                    </lv-form-item>
+                    <div class="aui-gutter-column-md register-host-table">
+                        <lv-group lvGutter='16px' class="aui-gutter-column-md mgt-3">
+                            <button lv-button lvType="primary" (click)="addHost()">
+                                {{'common_add_label' | i18n}}
+                            </button>
+                            <button lv-button [disabled]="!selectionAgents.length" lv-popover
+                                [lvPopoverContent]="batchUsernameTpl" lvPopoverTrigger="click" lvPopoverTheme="light"
+                                lvPopoverPosition="bottom" #batchUsernamePopover="lvPopover">
+                                {{'protection_batch_user_password_label' | i18n}}
+                            </button>
+                        </lv-group>
+                        <div class="client-info-table">
+                            <lv-datatable [lvData]="ipData" lvSelectionMode='multiple' [lvSelection]='selectionAgents'
+                                #lvTable lvResize>
+                                <thead>
+                                    <tr>
+                                        <th lvShowCheckbox width='40px' [lvRowsData]='lvTable.renderData'>
+                                        </th>
+                                        <th lvCellKey="ip">
+                                            {{'common_ip_address_segment_label' | i18n}}
+                                        </th>
+                                        <th lvCellKey="port" width='120px'>
+                                            <span lv-overflow>
+                                                {{includes([dataMap.OS_Type.Linux.value,dataMap.OS_Type.Unix.value,dataMap.OS_Type.solaris.value],formGroup.value.osType)
+                                                ? ('protection_agent_ssh_port_label' | i18n)
+                                                : ('common_port_label' | i18n) }}
+                                                <i lv-icon="aui-icon-help" class="th-icon"
+                                                    lv-tooltip="{{'protection_register_agent_ports_label' | i18n}}"
+                                                    lvTooltipPosition="rightTop" lvTooltipTheme="light"
+                                                    lvColorState='true'></i>
+                                            </span>
+                                        </th>
+                                        <th width='180px' *ngIf="isHcsEnvir || isHcsUser">
+                                            {{'common_az_label' | i18n}}
+                                        </th>
+                                        <ng-container
+                                            *ngIf="includes([dataMap.OS_Type.Linux.value,dataMap.OS_Type.Unix.value,dataMap.OS_Type.solaris.value],formGroup.value.osType)">
+                                            <th lvCellKey="sftpPort" width='120px'>
+                                                {{'protection_agent_sftp_port_label' | i18n}}
+                                            </th>
+                                        </ng-container>
+                                        <ng-container *ngIf="formGroup.value.osType === dataMap.OS_Type.Windows.value">
+                                            <th lvCellKey="isBusinessIP" width='140px'>
+                                                {{'common_isbusiness_ip_label' | i18n}}
+                                                <i lv-icon="aui-icon-help"
+                                                    lv-tooltip="{{'common_isbusiness_ip_tips_label' | i18n}}"
+                                                    lvTooltipPosition="rightTop" lvTooltipTheme="light"
+                                                    lvColorState='true'></i>
+                                            </th>
+                                        </ng-container>
+                                        <ng-container *ngIf="isDistributed">
+                                            <th width='160px'>{{'protection_dpc_compute_node_label' | i18n}}</th>
+                                            <th>{{'protection_front_storage_ip_label' | i18n}}</th>
+                                            <th>{{'common_gateway_label' | i18n}}</th>
+                                        </ng-container>
+                                        <th width='140px'
+                                            *ngIf="includes([dataMap.OS_Type.Linux.value, dataMap.OS_Type.Unix.value], formGroup.value.osType)">
+                                            {{'common_user_type_label' | i18n}}
+                                            <i lv-icon="aui-icon-help" class="th-icon"
+                                                lv-tooltip="{{'common_user_type_help_label' | i18n}}"
+                                                lvTooltipPosition="rightTop" lvTooltipTheme="light"
+                                                lvColorState='true'></i>
+                                        </th>
+                                        <th width="140px"
+                                            *ngIf="includes([dataMap.OS_Type.Linux.value, dataMap.OS_Type.Unix.value], formGroup.value.osType)">
+                                            <span lv-overflow>
+                                                {{'common_sudo_no_pwd_label' | i18n}}
+                                                <i lv-icon="aui-icon-help" class="th-icon"
+                                                    lv-tooltip="{{'common_sudo_no_pwd_tip_label' | i18n}}"
+                                                    lvTooltipPosition="rightTop" lvTooltipTheme="light"
+                                                    lvColorState='true'></i>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span lv-overflow>{{'common_username_label' | i18n}}</span>
+                                        </th>
+                                        <th><span lv-overflow>{{'common_password_label' | i18n}}</span></th>
+                                        <th
+                                            *ngIf="includes([dataMap.OS_Type.Linux.value, dataMap.OS_Type.Unix.value], formGroup.value.osType)">
+                                            <span lv-overflow>{{'common_sudo_password_label' | i18n}}</span>
+                                        </th>
+                                        <th width='160px'>{{'common_operation_label'|i18n }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-container *ngFor="let item of lvTable.renderData;trackBy:trackByUuid"
+                                        style="margin-bottom: 20px;">
+                                        <tr>
+                                            <td width='40px' lvShowCheckbox [lvRowData]='item'></td>
+                                            <td>
+                                                <span lv-overflow>{{item.ip | nil}}</span>
+                                            </td>
+                                            <td>
+                                                <span lv-overflow>{{item.port}}</span>
+                                            </td>
+                                            <td *ngIf="isHcsEnvir || isHcsUser">
+                                                <span lv-overflow>{{item.az}}</span>
+                                            </td>
+                                            <ng-container
+                                                *ngIf="includes([dataMap.OS_Type.Linux.value,dataMap.OS_Type.Unix.value,dataMap.OS_Type.solaris.value],formGroup.value.osType)">
+                                                <td>
+                                                    <span lv-overflow>{{item.sftpPort | nil}}</span>
+                                                </td>
+                                            </ng-container>
+                                            <ng-container
+                                                *ngIf="formGroup.value.osType === dataMap.OS_Type.Windows.value">
+                                                <td>
+                                                    <span lv-overflow>{{item.businessIpFlags |
+                                                        textMap:'isBusinessOptions'}}</span>
+                                                </td>
+                                            </ng-container>
+                                            <ng-container *ngIf="isDistributed">
+                                                <td>
+                                                    <span lv-overflow>{{item.isDpcNode | textMap:'passwordType'}}</span>
+                                                </td>
+                                                <td>
+                                                    <span lv-overflow>{{getStorageFrontIp(item) | nil}}</span>
+                                                </td>
+                                                <td>
+                                                    <span lv-overflow>{{getStorageFrontGateWay(item) | nil}}</span>
+                                                </td>
+                                            </ng-container>
+                                            <td
+                                                *ngIf="includes([dataMap.OS_Type.Linux.value, dataMap.OS_Type.Unix.value], formGroup.value.osType)">
+                                                <span lv-overflow>{{item.userType | textMap:'userType'}}</span>
+                                            </td>
+                                            <td
+                                                *ngIf="includes([dataMap.OS_Type.Linux.value, dataMap.OS_Type.Unix.value], formGroup.value.osType)">
+                                                <span lv-overflow>{{item.passwordType | textMap:'passwordType'}}</span>
+                                            </td>
+                                            <td>
+                                                <span lv-overflow>{{item.username | nil}}</span>
+                                            </td>
+                                            <td>
+                                                <span lv-overflow>********</span>
+                                            </td>
+                                            <td
+                                                *ngIf="includes([dataMap.OS_Type.Linux.value, dataMap.OS_Type.Unix.value], formGroup.value.osType)">
+                                                <span lv-overflow>
+                                                    {{item.userType === dataMap.userType.common.value &&
+                                                    !item.passwordType ? '********' : '--'}}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <lv-group lvGutter='16px'>
+                                                    <span class='aui-link' (click)='modifyRow(item)'>
+                                                        {{'common_modify_label' | i18n}}
+                                                    </span>
+                                                    <span class='aui-link' (click)='removeRow(item)'>
+                                                        {{'common_delete_label' | i18n}}
+                                                    </span>
+                                                </lv-group>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                </tbody>
+                            </lv-datatable>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-container *ngIf="formGroup.value.osType">
+                    <lv-form-item>
+                        <lv-form-label>{{'protection_directory_label' | i18n}}
+                            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_directory_tips_label' | i18n}}"
+                                lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
+                                lvColorState="true"></i>
+                        </lv-form-label>
+                        <lv-form-control [lvErrorTip]="pathErrorTip">
+                            <input lv-input type="text" formControlName="installPath" class="register-control" />
+                        </lv-form-control>
+                    </lv-form-item>
+                    <ng-container *ngIf="formGroup.value.type === dataMap.Proxy_Type_Options.remoteAgentVmware.value">
+                        <lv-form-item>
+                            <lv-form-label>{{'common_auto_sync_host_name_label' | i18n}}
+                                <i lv-icon="aui-icon-help" [lv-tooltip]="autoSyncTipTpl" lvTooltipTheme="light"
+                                    lvTooltipPosition="right" class="configform-constraint" lvColorState="true"></i>
+                            </lv-form-label>
+                            <lv-form-control>
+                                <lv-switch formControlName="isAutoSynchronizeHostName"></lv-switch>
+                            </lv-form-control>
+                        </lv-form-item>
+                    </ng-container>
+                </ng-container>
+            </lv-form>
+        </div>
+        <div class="lv-modal-btns">
+            <lv-group lvGutter='16px'>
+                <button lv-button lvType='primary' (click)='testConnection()' [disabled]='getValidStatus()'
+                    [lvLoading]='testLoading'>
+                    {{ 'common_test_label' | i18n }}
+                </button>
+                <button lv-button lvType='primary' (click)='register()' [disabled]='getValidStatus() || !isTest'
+                    [lvLoading]='okLoading'>
+                    {{ 'common_ok_label' | i18n }}
+                </button>
+                <button lv-button (click)='gotoHost()'>
+                    {{ 'common_cancel_label' | i18n }}
+                </button>
+            </lv-group>
+        </div>
+    </div>
+</div>
+
+<ng-template #portTpl let-item>
+    <input [(ngModel)]="item.port" lv-input placeholder="{{portTips}}"
+        [ngClass]="{'error-input': !item.valid && item.focused && isHcsEcsChecked(item)}"
+        (ngModelChange)='portChange($event,item)' />
+    <ng-container *ngIf="!item.valid && item.focused && isHcsEcsChecked(item)">
+        <lv-group lvGutter='4px' class="port-error">
+            <i lv-icon="lv-icon-status-failed" class="icon-failed-width"></i>
+            <span class="error-text">{{'common_valid_rang_label' | i18n:[1, 65535]}}</span>
+        </lv-group>
+    </ng-container>
+</ng-template>
+
+<ng-template #userTypeTpl let-item>
+    <lv-select [lvOptions]='userTypeOptions' lvValueKey='value' [(ngModel)]="item.userType"
+        (ngModelChange)='userTypeChange()'>
+    </lv-select>
+</ng-template>
+
+<ng-template #passwordTypeTpl let-item>
+    <lv-select [lvOptions]="passwordTypeOptions" lvValueKey="value" [(ngModel)]="item.passwordType"
+        (ngModelChange)='passwordTypeChange()' *ngIf="item.userType === dataMap.userType.common.value">
+    </lv-select>
+</ng-template>
+
+<ng-template #usernameTpl let-item>
+    <input [(ngModel)]="item.username" lv-input
+        [ngClass]="{'error-input': !item.validName && item.focusedName && isHcsEcsChecked(item)}"
+        (ngModelChange)='usernameChange($event,item)' />
+    <ng-container *ngIf="!item.validName && item.focusedName && isHcsEcsChecked(item)">
+        <lv-group lvGutter='4px' class="port-error">
+            <i lv-icon="lv-icon-status-failed"></i>
+            <ng-container *ngIf="item.username; else elseEmptyTemplate">
+                <span class="error-text">{{'common_valid_maxlength_label' | i18n:[255]}}</span>
+            </ng-container>
+        </lv-group>
+    </ng-container>
+</ng-template>
+
+<ng-template #passwordTpl let-item>
+    <lv-input-group [lvSuffix]="eyeTpl"
+        [ngClass]="{'error-input': !item.validPwd && item.focusedPwd && isHcsEcsChecked(item)}"
+        class="agent-input-group">
+        <input lv-input [type]="item.coverPwd ? 'password' : 'text'" [(ngModel)]="item.password"
+            (ngModelChange)='passwordChange($event,item)' (copy)="copy()" (cut)="copy()" />
+    </lv-input-group>
+    <ng-container *ngIf="!item.validPwd && item.focusedPwd && isHcsEcsChecked(item)">
+        <lv-group lvGutter='4px' class="port-error">
+            <i lv-icon="lv-icon-status-failed"></i>
+            <ng-container *ngIf="item.password; else elseEmptyTemplate">
+                <span class="error-text">{{'common_valid_maxlength_label' | i18n:[255]}}</span>
+            </ng-container>
+        </lv-group>
+    </ng-container>
+    <ng-template #eyeTpl>
+        <i [lv-icon]="item.coverPwd ? 'aui-icon-eye-close' : 'aui-icon-eye-open'" [ngClass]="{'mgt-3': !item.coverPwd}"
+            (click)="coverPwd(item)" lvColorState="true"></i>
+    </ng-template>
+</ng-template>
+
+<ng-template #sudoPasswordTpl let-item>
+    <lv-input-group [lvSuffix]="eyeTpl" class="agent-input-group"
+        *ngIf="item.userType === dataMap.userType.common.value && !item.passwordType">
+        <input lv-input [type]="item.coverSudoPwd ? 'password' : 'text'" [(ngModel)]="item.sudoPassword"
+            (ngModelChange)='sudoPasswordChange($event,item)'
+            [ngClass]="{'error-input': !item.validSudoPwd && item.focusedSudoPwd && isHcsEcsChecked(item)}"
+            (copy)="copy()" (cut)="copy()" />
+    </lv-input-group>
+    <ng-container *ngIf="!item.validSudoPwd && item.focusedSudoPwd && isHcsEcsChecked(item) && !item.passwordType">
+        <lv-group lvGutter='4px' class="port-error">
+            <i lv-icon="lv-icon-status-failed"></i>
+            <ng-container *ngIf="item.sudoPassword; else elseEmptyTemplate">
+                <span class="error-text">{{'common_valid_maxlength_label' | i18n:[255]}}</span>
+            </ng-container>
+        </lv-group>
+    </ng-container>
+    <ng-template #eyeTpl>
+        <i [lv-icon]="item.coverSudoPwd ? 'aui-icon-eye-close' : 'aui-icon-eye-open'"
+            [ngClass]="{'mgt-3': !item.coverSudoPwd}" (click)="coverSudoPwd(item)" lvColorState="true"></i>
+    </ng-template>
+</ng-template>
+
+<ng-template #elseEmptyTemplate>
+    <span class="error-text">{{'common_required_label' | i18n}}</span>
+</ng-template>
+
+<!--LiveUI的lv-alert组件在form-control图标样式会错位，所以这里手动写一次-->
+<ng-template #sourceDeduplicationIconTpl>
+    <span class="special-icon-container">
+        <i lv-icon="lv-icon-status-warning-info"></i>
+    </span>
+</ng-template>
+
+<ng-template #batchUsernameTpl>
+    <lv-form [formGroup]="userFormGroup" class="formGroup">
+        <ng-container
+            *ngIf="formGroup.value.osType === dataMap.OS_Type.Linux.value || formGroup.value.osType === dataMap.OS_Type.Unix.value">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'common_user_type_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select [lvOptions]='userTypeOptions' lvValueKey='value' formControlName='userType'>
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item *ngIf="userFormGroup.value.userType === dataMap.userType.common.value">
+                <lv-form-label>
+                    {{'common_sudo_no_pwd_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select [lvOptions]="passwordTypeOptions" lvValueKey="value"
+                        formControlName="passwordType"></lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <ng-container
+                *ngIf="userFormGroup.value.userType === dataMap.userType.common.value && !userFormGroup.value.passwordType">
+                <lv-form-item>
+                    <lv-form-label lvRequired>
+                        {{'common_sudo_password_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="passwordErrorTip">
+                        <aui-inupt-with-eye formControlName="sudoPassword"></aui-inupt-with-eye>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
+        </ng-container>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_username_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="usernameErrorTip">
+                <input lv-input type="text" formControlName="username" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
+            <lv-form-control [lvErrorTip]="passwordErrorTip">
+                <aui-inupt-with-eye formControlName="password"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+    <div class="lv-modal-btns mgt-btns">
+        <lv-group lvGutter='16px'>
+            <button lv-button lvType='primary' (click)='batchUsername()' [disabled]='userFormGroup.invalid'>
+                {{ 'common_ok_label' | i18n }}
+            </button>
+            <button lv-button (click)='batchUsernamePopoverHide()'>
+                {{ 'common_cancel_label' | i18n }}
+            </button>
+        </lv-group>
+    </div>
+</ng-template>
+
+<ng-template #autoSyncTipTpl>
+    <span [innerHTML]="autoSyncTip"></span>
+</ng-template>

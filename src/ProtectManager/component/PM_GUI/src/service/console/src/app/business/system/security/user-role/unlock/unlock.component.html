@@ -1,0 +1,9 @@
+<p class="aui-text-help-sm aui-gutter-column-lg">{{'system_permission_auth_desc_label'|i18n}}</p>
+<lv-form [formGroup]="formGroup" [lvLabelColon]='false' class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_password_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="passwordErrorTip">
+            <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

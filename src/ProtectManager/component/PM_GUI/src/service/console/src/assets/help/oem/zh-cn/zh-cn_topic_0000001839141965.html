@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="备份存储单元升级为成员节点">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001792502674.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839141965">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>备份存储单元升级为成员节点</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001839141965"></a><a name="ZH-CN_TOPIC_0000001839141965"></a>
+  <h1 class="topictitle1">备份存储单元升级为成员节点</h1>
+  <div>
+   <p><span>本产品</span>支持将<span>本产品</span>对应的备份存储单元升级为成员节点。请参考本节操作。</p>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>主节点已添加内部通信网络平面，且待升级的备份存储单元至少预留2个IP地址。</li>
+     <li>待升级的备份存储单元对应<span>本产品</span>与主节点为相同版本。</li>
+     <li>待升级的备份存储单元对应<span>本产品</span>未被添加到其他复制集群/多域集群/备份存储单元中。</li>
+     <li>待升级的备份存储单元对应<span>本产品</span>的内部通信网络平面IP地址需要与主节点内部通信网络平面IP地址连通。</li>
+     <li>待升级的备份存储单元对应<span>本产品</span>上没有正在进行的任务。</li>
+     <li>已下载备份存储单元对应<span>本产品</span><span class="uicontrol">“<span>服务端证书</span>”</span>类型的CA证书，并导入主节点，类型选择为<span class="uicontrol">“备份集群/多域集群/复制集群”</span>。导入CA证书的操作请参见《安全配置指南》中的<span class="uicontrol">“下载证书”</span>和<span class="uicontrol">“导入证书”</span>章节。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <ul>
+     <li>只支持将<span>本产品</span>对应的备份存储单元升级为成员节点。</li>
+     <li>如果<span>本产品</span>上有需要运行的任务，或者保存有数据，将其对应的备份存储单元升级为成员节点后业务配置数据会被清除，请谨慎操作。</li>
+     <li>本产品部分型号之间不支持升级成员节点，详细的功能支持信息请参考技术支持网站发布的产品文档或咨询产品提供商。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="menucascade" id="ZH-CN_TOPIC_0000001839141965__zh-cn_topic_0000001792502634_menucascade31053579148">“<span class="uicontrol" id="ZH-CN_TOPIC_0000001839141965__zh-cn_topic_0000001792502634_uicontrol41059577142"><span id="ZH-CN_TOPIC_0000001839141965__zh-cn_topic_0000001792502634_text1054020121612">系统</span></span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000001839141965__zh-cn_topic_0000001792502634_uicontrol154661958121418"> <span id="ZH-CN_TOPIC_0000001839141965__zh-cn_topic_0000001792502634_text8757278167">基础设施</span></span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000001839141965__zh-cn_topic_0000001792502634_uicontrol54471544151"> <span id="ZH-CN_TOPIC_0000001839141965__zh-cn_topic_0000001792502634_text1631251418164">集群管理</span></span>”</span>。</span></li>
+     <li><span>单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839141965__zh-cn_topic_0000001839221909_uicontrol105271161558">“<span id="ZH-CN_TOPIC_0000001839141965__zh-cn_topic_0000001839221909_text1863743913218">备份存储单元组</span>”</span>。</span></li>
+     <li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839141965__zh-cn_topic_0000001839221909_uicontrol168521084511">“<span id="ZH-CN_TOPIC_0000001839141965__zh-cn_topic_0000001839221909_text12341345132119">备份存储单元</span>”</span>。</span></li>
+     <li><span>在某个备份存储单元所在行单击<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"> <span>升级为备份成员节点</span></span>”</span>。</span></li>
+     <li><span>在右侧弹出的窗口中填写成员节点的信息，参数说明请参见<a href="zh-cn_topic_0000001839142053.html#ZH-CN_TOPIC_0000001839142053__table4154132019214">表1</a>。</span></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+     <li><span>系统弹出<span class="uicontrol">“<span>危险</span>”</span>提示框，确认提示信息无误后，勾选<span class="uicontrol">“<span>我已阅读上述信息，了解执行此操作带来的后果</span>”</span>，单击<span class="uicontrol">“<span>确定</span>”</span>。</span><p></p><p><span><img src="zh-cn_image_0000001792343002.png"></span></p> <p></p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001792502674.html">管理备份存储单元（适用于1.5.0版本）</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

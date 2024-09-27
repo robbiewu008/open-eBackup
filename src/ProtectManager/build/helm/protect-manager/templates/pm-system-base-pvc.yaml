@@ -1,0 +1,61 @@
+{{- if eq .Values.global.environment "Dorado" }}
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d2") (eq $deploytype "d3") (eq $deploytype "d4") (eq $deploytype "d6") }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "pm-nas"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: dorado-vf-nas
+  resources:
+    requests:
+      storage: 10Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "pm-nas2"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: dorado-vf-nas
+  resources:
+    requests:
+      storage: 100Gi
+---
+{{- end }}
+{{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d2") (eq $deploytype "d6") }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "pm-nas3"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: dorado-vf-nas
+  resources:
+    requests:
+      storage: 50Gi
+---
+{{- end }}
+{{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d2") (eq $deploytype "d6") }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "pm-report"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: dorado-vf-nas
+  resources:
+    requests:
+      storage: 50Gi
+---
+{{- end }}
+{{- end }}

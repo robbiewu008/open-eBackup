@@ -1,0 +1,36 @@
+<lv-tabs>
+    <lv-tab lvTitle="{{'common_basic_info_label' | i18n}}">
+        <lv-group [lvColumns]='["70px", "auto"]' class="aui-gutter-column-xl">
+            <i lv-icon="{{data?.linkStatus === dataMap.resource_LinkStatus_Special.normal.value ? 'aui-icon-summary-cluster' : 'aui-icon-summary-cluster-offline'}}"
+                class="base-info-icon"></i>
+            <lv-form>
+                <lv-form-column *ngFor="let forms of formItems" lvWidth="50%">
+                    <lv-form-item *ngFor="let item of forms">
+                        <lv-form-label>
+                            {{item.label | i18n}}
+                        </lv-form-label>
+                        <lv-form-control>
+                            <ng-container [ngSwitch]="item.key">
+                                <ng-container *ngSwitchCase="'linkStatus'">
+                                    <aui-status [value]="item.value" type="resource_LinkStatus_Special"></aui-status>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    <div lv-overflow class='value'>
+                                        {{item.value | nil}}
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                        </lv-form-control>
+                    </lv-form-item>
+                </lv-form-column>
+            </lv-form>
+        </lv-group>
+    </lv-tab>
+    <lv-tab lvTitle="{{'common_fileset_label' | i18n}}">
+        <aui-filesets [isClusterDetail]="true" [data]="data"></aui-filesets>
+    </lv-tab>
+</lv-tabs>
+
+<ng-template #headerTpl>
+    <aui-custom-modal-operate [item]="data"></aui-custom-modal-operate>
+</ng-template>

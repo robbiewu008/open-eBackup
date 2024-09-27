@@ -1,0 +1,7 @@
+<ng-container *ngIf="!isDetail">
+    <p class="aui-text-help-sm aui-gutter-column-lg">
+        {{helpLabel}}
+    </p>
+</ng-container>
+<div class="aui-gutter-column-md"></div>
+<lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>

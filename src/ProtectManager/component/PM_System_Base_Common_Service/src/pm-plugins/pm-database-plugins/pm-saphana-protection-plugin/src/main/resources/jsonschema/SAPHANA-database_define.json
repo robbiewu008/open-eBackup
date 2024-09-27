@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "SAP HANA实例创建或修改请求体",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "数据库名称"
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型",
+      "enum": ["Database"]
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型",
+      "enum": ["SAPHANA-database"]
+    },
+    "parentUuid": {
+      "type": "string",
+      "description": "数据库所在实例资源UUID",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "sapHanaDbType": {
+          "type": "string",
+          "description": "数据库类型，SystemDatabase：系统数据库，TenantDatabase：租户数据库",
+          "enum": ["SystemDatabase", "TenantDatabase"]
+        },
+        "systemDbPort": {
+          "type": "string",
+          "description": "租户数据库端口",
+          "pattern": "^\\d$|^[1-9]\\d$|^[1-9]\\d{2}$|^[1-9]\\d{3}$|^[1-5]\\d{4}$|^6[0-4]\\d{3}$|^65[0-4]\\d{2}$|^655[0-2]\\d$|^6553[0-5]$"
+        }
+      },
+      "required": [
+        "sapHanaDbType"
+      ]
+    },
+    "dependencies": {
+      "type": ["null", "object"],
+      "properties": {
+        "agents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uuid": {
+                "type": "string",
+                "description": "主机UUID",
+                "minLength": 1,
+                "maxLength": 64
+              }
+            }
+          }
+        }
+      }
+    },
+    "auth": {
+      "type": "object",
+      "properties": {
+        "authType": {
+          "type": "integer",
+          "description": "认证模式",
+          "enum": [2, 8]
+        },
+        "authKey": {
+          "type": ["null", "string"],
+          "description": "租户数据库用户名"
+        },
+        "authPwd": {
+          "type": ["null", "string"],
+          "description": "租户数据库密码"
+        },
+        "extendInfo": {
+          "type": ["null", "object"],
+          "properties": {
+            "hdbUserStoreKey": {
+              "type": "string",
+              "description": "HdbUserStore认证KEY"
+            }
+          }
+        }
+      },
+      "required": [
+        "authType"
+      ]
+    }
+  },
+  "required": [
+    "name",
+    "type",
+    "subType",
+    "parentUuid",
+    "extendInfo"
+  ]
+}

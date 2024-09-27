@@ -1,0 +1,6 @@
+<lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+<ng-template #nameTpl let-item>
+    <ng-container *ngFor="let name of item.name">
+        <p lv-overflow>{{name}}</p>
+    </ng-container>
+</ng-template>

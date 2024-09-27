@@ -1,0 +1,67 @@
+<lv-datatable [lvData]='tableData' (lvSortChange)="sortChange($event)" [lvPaginator]="page" lvSize="small" lvSort
+    #lvTable lvAsync>
+    <thead>
+        <tr>
+            <th *ngFor="let col of columns" lvCellKey="{{ col.key }}" [lvShowSort]="col.showSort" lvShowCustom>
+                {{col.label}}
+            </th>
+            <th width="130px">
+                {{'common_operation_label' | i18n}}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor='let item of lvTable.renderData'>
+            <tr>
+                <ng-container *ngFor="let col of columns">
+                    <ng-container [ngSwitch]="col.key">
+                        <td>
+                            <ng-container *ngSwitchCase="'copy_count'">
+                                <span *ngIf="item.copy_count" class="aui-link" (click)="getCopyList(item)">
+                                    {{item.copy_count}}
+                                </span>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'nodeLastModifiedTime'">
+                                <span lv-overflow>
+                                    {{item[col.key] * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}
+                                </span>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'nodeType'">
+                                <ng-container [ngSwitch]="item.nodeType">
+                                    <ng-container *ngSwitchCase="nodeType.File">
+                                        <i lv-icon="aui-icon-file" lv-tooltip="{{'common_files_label' | i18n}}"></i>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="nodeType.Folder">
+                                        <i lv-icon="aui-icon-directory"
+                                            lv-tooltip="{{'common_directory_label' | i18n}}"></i>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="nodeType.Link">
+                                        <i lv-icon="aui-icon-link" lv-tooltip="{{'common_link_label' | i18n}}"></i>
+                                    </ng-container>
+                                    <ng-container *ngSwitchDefault>
+                                        --
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngSwitchDefault>
+                                <span lv-overflow>
+                                    {{item[col.key]}}
+                                </span>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                </ng-container>
+                <td>
+                    <lv-operation-menu [lvItemsFn]="optsCallback" [lvData]="item"></lv-operation-menu>
+                </td>
+            </tr>
+        </ng-container>
+    </tbody>
+</lv-datatable>
+<lv-paginator [lvPageSize]="pageSize" [lvTotal]="total" [lvPageIndex]="startIndex" #page [lvShowPageSizeOptions]="false"
+    [hidden]="!total" (lvPageChange)="pageChange($event)" lvMode='simple'>
+</lv-paginator>
+
+<ng-template #fileDownloadCompletedTpl>
+    <div id="file-download-completed" [innerHTML]="fileDownloadCompletedLabel"></div>
+</ng-template>

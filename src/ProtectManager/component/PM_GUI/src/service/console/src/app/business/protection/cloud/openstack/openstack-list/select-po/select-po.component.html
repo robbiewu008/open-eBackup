@@ -1,0 +1,60 @@
+<div class="aui-gutter-column-md" *ngIf="!modifyFlag && !singleSelectFlag">
+    <lv-collapse lvType="simple" [lvMultiExpansion]="'false'">
+        <lv-collapse-panel lvTitle="{{'common_selected_label' | i18n}}" [lvExpanded]="true">
+            <lv-tabs [(lvActiveIndex)]="activeIndex" [lvSize]="'small'">
+                <lv-tab [lvTitle]="totalTitleTpl" [lvId]="'total'">
+                    <ng-container *ngTemplateOutlet="totalTableTpl"> </ng-container>
+                </lv-tab>
+                <lv-tab [lvTitle]="selectedTitleTpl" [lvId]="'selected'">
+                    <ng-container *ngTemplateOutlet="selectTableTpl"> </ng-container>
+                </lv-tab>
+            </lv-tabs>
+            <ng-template #totalTitleTpl>
+                <div class="host-register-tabnav">
+                    <span>{{ 'common_total_label' | i18n }}</span>
+                    <span class="host-register-tabnav-num">{{ total }}</span>
+                </div>
+            </ng-template>
+            <ng-template #selectedTitleTpl>
+                <div class="host-register-tabnav">
+                    <span>{{ 'common_selected_label' | i18n }}</span>
+                    <span class="host-register-tabnav-num">{{ selectedDataNum }}</span>
+                </div>
+            </ng-template>
+            <ng-template #totalTableTpl>
+                <lv-pro-table #totalDataTable [config]="totalTableConfig" [data]="totalTableData"></lv-pro-table>
+            </ng-template>
+            <ng-template #selectTableTpl>
+                <lv-pro-table #selectDataTable [config]="selectTableConfig" [data]="selectTableData"></lv-pro-table>
+            </ng-template>
+        </lv-collapse-panel>
+    </lv-collapse>
+</div>
+
+<div *ngIf="modifyFlag || singleSelectFlag" class="aui-gutter-column-md">
+    <p class="modal-table aui-h3">{{'common_selected_label' | i18n}}</p>
+    <lv-pro-table #selectDataTable [config]="selectTableConfig" [data]="selectTableData"></lv-pro-table>
+</div>
+
+<ng-template #slaTpl let-item>
+    <span lv-overflow>
+        <sla-type [name]="item.sla_name"></sla-type>
+    </span>
+</ng-template>
+
+<ng-template #deskDeviceTpl let-item>
+    <lv-group lvGutter='8px'>
+        <lv-switch [(ngModel)]="item.enableSelectAll" (ngModelChange)="switchChange(item)"></lv-switch>
+        <span class="aui-link" (click)="selectDisk(item)" *ngIf="!item.enableSelectAll">
+            {{ (!!item.diskInfo?.length ? 'protection_selected_pvc_number_label' : 'common_select_label') |
+            i18n:[item.diskInfo?.length]}}
+        </span>
+    </lv-group>
+</ng-template>
+
+<ng-template #diskHelpExtraTpl>
+    <div class="custom-icon">
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'common_select_openstack_disk_help_label' | i18n}}"
+            lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
+    </div>
+</ng-template>

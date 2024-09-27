@@ -1,0 +1,113 @@
+<div class="list-container">
+    <lv-datatable [lvData]='tableData' (lvSortChange)="sortChange($event)" [lvPaginator]="page" lvSort #lvTable
+        class="aui-table-group" [lvScroll]="virtualScroll.scrollParamMap['search-file-table']" lvAsync>
+        <thead>
+            <tr>
+                <ng-container *ngFor="let item of columns">
+                    <th [attr.colspan]="item.children.length">
+                        {{item.label}}
+                    </th>
+                </ng-container>
+                <th rowspan="2" lvCellKey="copy_count" lvShowSort="false">
+                    {{'common_number_of_index_copy_label' | i18n}}
+                </th>
+                <th rowspan="2">
+                    {{'common_operation_label' | i18n}}
+                </th>
+            </tr>
+            <tr>
+                <ng-container *ngFor="let column of columns">
+                    <ng-container *ngIf="column.children">
+                        <ng-container *ngFor="let col of column.children">
+                            <th lvCellKey="{{ col.key }}" [lvShowSort]="col.showSort" class="aui-th-deliver"
+                                lvShowCustom>
+                                {{col.label}}
+                            </th>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor='let item of lvTable.renderData'>
+                <tr>
+                    <ng-container *ngFor="let column of columns">
+                        <ng-container *ngIf="column.children">
+                            <ng-container *ngFor="let col of column.children">
+                                <ng-container [ngSwitch]="col.key">
+                                    <td>
+                                        <ng-container *ngSwitchCase="'resourceName'">
+                                            <span
+                                                [ngClass]="{'aui-link': resourceTypeValues?.includes(item.resourceType),'aui-link-disabled': !resourceTypeValues?.includes(item.resourceType)}"
+                                                lv-overflow id='outerClosable' (click)="getResDetail(item)">
+                                                {{item[col.key]}}
+                                            </span>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'nodeLastModifiedTime'">
+                                            <span lv-overflow *ngIf="item[col.key] !== 0">
+                                                {{item[col.key] * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}
+                                            </span>
+                                            <span *ngIf="item[col.key] === 0">--</span>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'resourceType'">
+                                            <span lv-overflow>
+                                                {{ item[col.key] | textMap: 'Global_Search_Resource_Type'}}
+                                            </span>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'nodeType'">
+                                            <ng-container [ngSwitch]="item.nodeType">
+                                                <ng-container *ngSwitchCase="nodeType.File">
+                                                    <i lv-icon="aui-icon-file"
+                                                        lv-tooltip="{{'common_files_label' | i18n}}"></i>
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="nodeType.Folder">
+                                                    <i lv-icon="aui-icon-directory"
+                                                        lv-tooltip="{{'common_directory_label' | i18n}}"></i>
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="nodeType.Link">
+                                                    <i lv-icon="aui-icon-link"
+                                                        lv-tooltip="{{'common_link_label' | i18n}}"></i>
+                                                </ng-container>
+                                                <ng-container *ngSwitchDefault>
+                                                    --
+                                                </ng-container>
+                                            </ng-container>
+                                        </ng-container>
+                                        <ng-container *ngSwitchDefault>
+                                            <span lv-overflow>
+                                                {{item[col.key]}}
+                                            </span>
+                                        </ng-container>
+                                    </td>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                    <td>
+                        <ng-container *ngIf="item.copy_count; else elseTemplate">
+                            <span *ngIf="item.copy_count" [ngClass]="{'aui-link': item.copy_count !== '--'}"
+                                (click)="getCopyList(item)">
+                                {{item.copy_count}}
+                            </span>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                            <i lv-icon="aui-icon-loading"></i>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <lv-operation-menu [lvItemsFn]="optsCallback" [lvData]="item"></lv-operation-menu>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+    <div class="aui-paginator-wrap">
+        <lv-paginator [lvPageSize]="pageSize" [lvTotal]="total" [lvPageIndex]="startIndex" #page
+            [lvShowPageSizeOptions]="false" [hidden]="!total" (lvPageChange)="pageChange($event)">
+        </lv-paginator>
+    </div>
+</div>
+
+<ng-template #fileDownloadCompletedTpl>
+    <div id="file-download-completed" [innerHTML]="fileDownloadCompletedLabel"></div>
+</ng-template>

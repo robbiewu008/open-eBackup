@@ -1,0 +1,20 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if or (eq $deploytype "cloudbackup") (eq $deploytype "d3")}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: protect-manager-conf
+  namespace: dpa
+data:
+  RUNNING_JOB_LIMIT_COUNT_ONE_NODE: "20"
+  TOTAL_JOB_LIMIT_COUNT_ONE_NODE: "256"
+  HOST_REGISTER_JOB_LIMIT_COUNT_ONE_NODE: "10"
+  PROTECT_AGENT_UPDATE_JOB_LIMIT_COUNT_ONE_NODE: "10"
+  DATASOURCE_POOL_MINIMUM_IDLE: "20"
+  DATASOURCE_POOL_MAXIMUM_POOL_SIZE: "100"
+  MAX_AGENT_DOWNLOADING_NUM: "20"
+  RESOURCE_COPY_COUNT_LIMIT: "4096"
+  DATABASE_POOL_SIZE: "100"
+  NO_RETRY_READ_TIMEOUT: "30"
+  NO_RETRY_CONNECT_TIMEOUT: "30"
+{{- end }}

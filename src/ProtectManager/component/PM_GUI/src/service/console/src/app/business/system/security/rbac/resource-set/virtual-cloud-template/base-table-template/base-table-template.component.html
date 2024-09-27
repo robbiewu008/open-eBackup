@@ -1,0 +1,23 @@
+<div class="list-container" [ngClass]="{'width-limit': !isDetail}">
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>
+
+<ng-template #slaComplianceExtraTpl>
+    <div class="custom-icon">
+        <aui-sla-compliance-tooltip></aui-sla-compliance-tooltip>
+    </div>
+</ng-template>
+
+<ng-template #groupTipTpl>
+    <i lv-icon="aui-icon-help"
+        lv-tooltip="{{groupTipLabel}}" lvTooltipTheme="light" class="operation-help-icon"
+        lvColorState='true'></i>
+</ng-template>
+
+<ng-template #hypervStatusTpl let-item>
+  <aui-status [value]="item.extendInfo?.State" type="hypervStatus"></aui-status>
+</ng-template>
+
+<ng-template #rhvVersionTpl let-item>
+  <span lv-overflow>{{item.extendInfo?.version || item.extendInfo?.Version | nil}}</span>
+</ng-template>

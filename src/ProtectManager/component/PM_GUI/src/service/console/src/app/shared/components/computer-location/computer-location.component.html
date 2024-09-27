@@ -1,0 +1,12 @@
+<lv-select [lvOptions]='vCenterOptions' [(ngModel)]="selectedVCenter" (ngModelChange)='vCenterChange($event)'
+    lvValueKey="key" lvShowFilter lvFilterMode="contains" lvFilterKey='label'>
+</lv-select>
+<div [ngClass]="{'tree-container':treeData.length,'no-data':!treeData.length}">
+    <lv-tree [lvData]="treeData" lvShowLine lvSelectionMode="single" [(lvSelection)]="treeSelection" #resTree
+        (lvExpandedChange)="expandedChange($event)" (lvCheck)="nodeCheck($event)" lvShowContentIcon>
+    </lv-tree>
+</div>
+<div *ngIf="showErrorTip" lv-overflow style="width:711px">
+    <i lv-icon='lv-icon-status-failed' class="icon-failed"></i>
+    <span class="error-tip"> {{errorTipLabel}}</span>
+</div>

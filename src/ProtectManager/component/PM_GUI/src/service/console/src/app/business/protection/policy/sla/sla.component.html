@@ -1,0 +1,183 @@
+<div class="aui-fullpage">
+  <div class="aui-header-1">
+    <lv-group lvGutter='8px'>
+      <h2>{{'common_sla_label'|i18n}}</h2>
+      <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+    </lv-group>
+  </div>
+  <div class="aui-block aui-paginator-container">
+    <div class="aui-operation">
+      <lv-group [lvGutter]="groupCommon.middleRowGutter">
+        <ng-container
+          *ngIf="appUtilsService.isDataBackup || appUtilsService.isDistributed || appUtilsService.isDecouple; else elseSlaCreateTemplate">
+          <button lv-button lvType="primary" (click)="createSla()" auiRolePermission
+            [rolePermission]="roleOperationMap.sla" lv-popover [lvPopoverClosable]="true"
+            lvPopoverContent="{{'protection_guide_sla_tip_label' | i18n}}" lvPopoverPosition="bottom"
+            lvPopoverClassName="customer-guide-tip-bk" lvPopoverTrigger="customize"
+            [(lvPopoverVisible)]="registerTipShow" [lvPopoverBeforeClose]="lvPopoverBeforeClose">
+            {{'common_create_label'|i18n}}
+          </button>
+        </ng-container>
+        <ng-template #elseSlaCreateTemplate>
+          <button lv-button lvType="primary" (click)="createSla()" pmpermission pmOperation='CreateSLA'>
+            {{'common_create_label'|i18n}}
+          </button>
+        </ng-template>
+        <lv-tooltip [lvContent]="disableDeleteTip" lvPosition="right">
+          <button lv-button (click)="batchDelete()" pmpermission pmOperation='DeleteSLA' [disabled]="disableDelete">
+            {{'common_delete_label'|i18n}}
+          </button>
+        </lv-tooltip>
+      </lv-group>
+      <lv-group>
+        <button class="aui-button-icon" lv-button lvSize="auto" (click)="getSlaList()">
+          <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+        </button>
+      </lv-group>
+    </div>
+    <div class="list-container">
+      <lv-datatable [lvData]='slaData' #lvTable lvResize lvSort (lvSortChange)='sortData($event)'
+        lvSelectionMode='multiple' [(lvSelection)]='selection' (lvSelectionChange)="selectionChange()"
+        lvCompareWith="uuid" lvResizeMode="expand" [lvScroll]="{ x: '100%' }">
+        <thead>
+          <tr>
+            <th lvShowCheckbox width='40px' [lvRowsData]='lvTable.renderData'></th>
+            <th lvShowSort lvCellKey='name' lvShowCustom>
+              {{'common_name_label'|i18n}}
+              <div lvCustom>
+                <aui-custom-table-search (search)="searchByName($event)"
+                  filterTitle="{{'common_name_label'|i18n}}"></aui-custom-table-search>
+              </div>
+            </th>
+            <th *ngIf="!isHyperdetect" lvCellKey='appliation' lvShowFilter [(lvFilters)]='applicationFilterMap'
+              (lvFilterChange)='appliationFilterChange($event)' lvFilterCheckAll lvFilterSearch>
+              {{'common_application_type_label'|i18n}}
+            </th>
+            <th *ngIf="!isHyperdetect" width="22%" lvCellKey='actions' lvShowFilter [(lvFilters)]='actionsFilterMap'
+              (lvFilterChange)='actionFilterChange($event)' lvFilterCheckAll lvFilterSearch>
+              {{'protection_backup_mode_label'|i18n}}
+            </th>
+            <th *ngIf="isHyperdetect" lvCellKey='appliation' lvShowFilter [(lvFilters)]='applicationFilterMap'
+              (lvFilterChange)='appliationFilterChange($event)' lvFilterCheckAll lvFilterSearch>
+              {{'common_application_type_label'|i18n}}
+            </th>
+            <th *ngIf="isHyperdetect" width="21%" lvCellKey='actions'>
+              {{'protection_backup_mode_label'|i18n}}
+            </th>
+            <ng-container *ngIf="appUtilsService.isDistributed">
+              <th lvCellKey='appliation' lvShowFilter [(lvFilters)]='slaStatusMap'
+                (lvFilterChange)='slaStatusFilterChange($event)' lvFilterCheckAll lvFilterSearch>
+                {{'protection_sla_status_label' | i18n}}</th>
+            </ng-container>
+            <th lvShowSort lvCellKey='resource_count'>
+              <span lv-overflow>{{'common_associated_resource_label'|i18n}}</span>
+            </th>
+            <th *ngIf="!isHyperdetect && !isHcsUser" lvCellKey='archival_count'>
+              <span lv-overflow>{{(!cookieService.isCloudBackup ? 'protection_archival_target_counts_label':
+                'protection_backup_target_label')|i18n}}</span>
+            </th>
+            <th lvCellKey='replication_count' *ngIf="!cookieService.isCloudBackup && !isHcsUser">
+              <span lv-overflow>{{'protection_replication_target_counts_label'|i18n}}</span>
+            </th>
+            <th *ngIf="isOtherDeployType">{{'common_owned_user_label' | i18n}}</th>
+            <th width="144px" lvCellKey='opt'>{{'common_operation_label'|i18n}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor='let item of lvTable.renderData'>
+            <tr [ngClass]="{ 'lv-table-row-highlight': isActive(item) }">
+              <td lvShowCheckbox [lvRowData]='item'>
+              </td>
+              <td>
+                <lv-group lvGutter='8px'>
+                  <div lv-overflow>
+                    <span class="aui-link" id='outerClosable' (click)="getSlaDetail(item)">
+                      <sla-type [name]="item.name"></sla-type>
+                    </span>
+                  </div>
+                  <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
+                    {{'protection_guide_new_resource_label' | i18n}}
+                  </span>
+                </lv-group>
+              </td>
+              <td>
+                <span lv-overflow>
+                  {{item.application | textMap: 'Application_Type'}}
+                </span>
+              </td>
+              <td>
+                <span lv-popover [lvPopoverContent]="contentTemplate" lvPopoverTrigger="click"
+                  [lvPopoverClosable]="true" lvPopoverTheme="light" (click)="openPopover(item)" lv-overflow>
+                  {{item.backup_mode}}
+                </span>
+              </td>
+              <ng-container *ngIf="appUtilsService.isDistributed">
+                <td>{{item.enabled | textMap: 'slaStatus'}}</td>
+              </ng-container>
+              <td>
+                <ng-container *ngIf="!!item.resource_count">
+                  <a class="aui-link" id='outerClosable' (click)='getSlaDetail(item,true)'>
+                    {{item.resource_count}}
+                  </a>
+                </ng-container>
+                <ng-container *ngIf="!item.resource_count">
+                  {{item.resource_count | nil}}
+                </ng-container>
+              </td>
+              <td *ngIf="!isHyperdetect && !isHcsUser">
+                {{item.archival_count | nil}}
+              </td>
+              <td *ngIf="!cookieService.isCloudBackup && !isHcsUser">
+                {{item.replication_count | nil}}
+              </td>
+              <td *ngIf="isOtherDeployType">
+                <span lv-overflow>{{item.user_name | nil}}</span>
+              </td>
+              <td>
+                <lv-operation-menu [lvItemsFn]="optCallBack" [lvData]="item"></lv-operation-menu>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </lv-datatable>
+      <div class="aui-paginator-wrap">
+        <lv-paginator [lvPageSize]="pageSize" [lvTotal]="total" [lvPageIndex]="pageNo"
+          (lvPageChange)="pageChange($event)" [lvPageSizeOptions]="sizeOptions" [hidden]="!total"></lv-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #contentTemplate>
+  <div class="popover-container">
+    <lv-group lvDirection="vertical" lvGutter="12px">
+      <lv-group [lvColumns]="['240px', '80px']">
+        <span lv-overflow>{{'common_policy_label' | i18n}}</span>
+        <span lv-overflow>{{'protection_copies_retention_label' | i18n}}</span>
+      </lv-group>
+      <ng-container *ngFor="let item of durationTimeList">
+        <lv-group lvDirection="vertical" lvGutter="4px">
+          <div class="divide-line"></div>
+          <ng-container *ngIf="item.type === policyType.BACKUP">
+            <lv-group [lvColumns]="['240px', '80px']">
+              <span lv-overflow>{{item.name}}</span>
+              <span lv-overflow>{{item.durationTime}}</span>
+            </lv-group>
+          </ng-container>
+          <ng-container *ngIf="item.type !== policyType.BACKUP">
+            <lv-group [lvColumns]="['240px', '80px']">
+              <span lv-overflow>{{item.name}}</span>
+              <span lv-overflow></span>
+            </lv-group>
+            <ng-container *ngFor="let duration of item.durationTime">
+              <lv-group [lvColumns]="['240px', '80px']">
+                <span lv-overflow class="scope-text">{{duration.name}}</span>
+                <span lv-overflow>{{duration.durationTime}}</span>
+              </lv-group>
+            </ng-container>
+          </ng-container>
+        </lv-group>
+      </ng-container>
+    </lv-group>
+  </div>
+</ng-template>

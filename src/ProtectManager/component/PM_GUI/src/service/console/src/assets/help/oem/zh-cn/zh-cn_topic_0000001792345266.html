@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="配置管理数据备份">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001792345402.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001792345266">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>配置管理数据备份</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001792345266"></a><a name="ZH-CN_TOPIC_0000001792345266"></a>
+  <h1 class="topictitle1">配置管理数据备份</h1>
+  <div>
+   <p class="msonormal" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_zh-cn_topic_0219008867_zh-cn_topic_0171822343_p34341134">当您在进行例如升级或关键数据调整前，可以通过在<span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text18445308218">本产品</span>管理界面中备份管理数据，以便系统在因人为误操作将某些配置数据（如用户、SLA，资源、告警通知等等）删除时使用该备份数据及时恢复。</p>
+   <div class="section" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_zh-cn_topic_0219008867_section19325121814565">
+    <h4 class="sectiontitle">注意事项</h4>
+    <ul id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_zh-cn_topic_0219008867_ul914784413561">
+     <li id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_li144713543477">当<span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text111061656171217">本产品</span>上存在正在执行的任务时，建议不要发起管理数据备份。</li>
+     <li id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_li1383111372003">当存在正在执行的管理数据备份/恢复任务时，不允许再次执行管理数据备份/恢复任务。如果当前有手动任务正在执行时，计划触发的管理数据备份任务会取消执行。</li>
+     <li id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_li13910343192817">只有配置备份策略后，才能执行备份。</li>
+    </ul>
+   </div>
+   <div class="section" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_section1636356804">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_zh-cn_topic_0219008867_ol463515012542">
+     <li id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_zh-cn_topic_0219008867_li171816336243"><span>在菜单栏上，选择<span class="menucascade" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_zh-cn_topic_0219008867_menucascade1058020561147">“<span class="uicontrol" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_zh-cn_topic_0219008867_uicontrol122893146546"><span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text0883430881">系统</span></span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_zh-cn_topic_0219008867_uicontrol1163117171542"><span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text42989381385">设置</span></span>”</span>。</span></li>
+     <li id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_zh-cn_topic_0219008867_li7710556162219"><span>在导航栏上，单击<span class="wintitle" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_zh-cn_topic_0219008867_wintitle95551042112317">“<span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text1146744818810">管理数据备份</span>”</span>。</span></li>
+     <li id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_li12607758203511"><span>配置管理数据备份策略。</span><p></p>
+      <div class="p" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p4124851122713">
+       在<span class="wintitle" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_wintitle1360612232366">“<span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text6606202316360">管理数据备份</span>”</span>区域，单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_uicontrol1960752313361">“<span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text5607182314367">备份策略</span>”</span>。在<span class="uicontrol" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_uicontrol6267430112514">“<span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text226773019258">备份策略</span>”</span>页面设置备份策略信息，参数说明如<a href="#ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_table1444913416580">表1</a>所示。配置完成后，单击“确定”。 
+       <div class="tablenoborder">
+        <a name="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_table1444913416580"></a><a name="zh-cn_topic_0000001792345722_table1444913416580"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_table1444913416580" frame="border" border="1" rules="all">
+         <caption>
+          <b>表1 </b>备份策略参数说明
+         </caption>
+         <colgroup>
+          <col style="width:33.050000000000004%">
+          <col style="width:66.95%">
+         </colgroup>
+         <thead align="left">
+          <tr id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_row134507445811">
+           <th align="left" class="cellrowborder" valign="top" width="33.050000000000004%" id="mcps1.3.3.2.3.2.1.5.2.3.1.1"><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p945014445814">参数</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="66.95%" id="mcps1.3.3.2.3.2.1.5.2.3.1.2"><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p1845017425817">说明</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_row134507495810">
+           <td class="cellrowborder" valign="top" width="33.050000000000004%" headers="mcps1.3.3.2.3.2.1.5.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p31571742105813"><span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text19607132312364">备份时间</span></p></td>
+           <td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.3.3.2.3.2.1.5.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p9127121416115">设置按日备份的时间。</p> <p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p41231654141018">如果设置的时间点正在执行手动备份任务，本次自动备份任务将自动取消。</p></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_row44501243588">
+           <td class="cellrowborder" valign="top" width="33.050000000000004%" headers="mcps1.3.3.2.3.2.1.5.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p1045004105811"><span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text10705501192">备份保留数量</span></p></td>
+           <td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.3.3.2.3.2.1.5.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p884616199298">最新可用的管理数据备份数量。</p> <p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p144501445816">数值必须在3-20之间。</p> <p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p15200351111">默认值：7。</p></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_row20450646586">
+           <td class="cellrowborder" valign="top" width="33.050000000000004%" headers="mcps1.3.3.2.3.2.1.5.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p184501949586"><span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text19134175325813">SFTP IP地址</span></p></td>
+           <td class="cellrowborder" rowspan="4" valign="top" width="66.95%" headers="mcps1.3.3.2.3.2.1.5.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p28061237698">设置用于存储备份文件的SFTP服务器信息。</p> <p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p16351103820252">请确保SFTP用户具备读写/var目录的权限。</p> <p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p11412045113417">修改SFTP IP地址后，原SFTP服务器备份记录将无效。</p> <p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p1099210421111">SFTP端口默认为：22。</p></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_row24505410584">
+           <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.5.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p61500014594"><span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text17638720599">SFTP用户名</span></p></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_row215016018591">
+           <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.5.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p15450164125817"><span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text2641457185816">SFTP密码</span></p></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_row41501307595">
+           <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.5.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p1746310568320"><span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text8515173185918">SFTP端口</span></p></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_row6882185917194">
+           <td class="cellrowborder" valign="top" width="33.050000000000004%" headers="mcps1.3.3.2.3.2.1.5.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p108832599197"><span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text1583735617348">备份路径</span></p></td>
+           <td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.3.3.2.3.2.1.5.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p20883459191910">设置管理数据备份的路径。设置备份路径后，在SFTP服务器上会自动生成该路径。如果不填写，默认为/var/sysbackup。</p>
+            <div class="note" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_note168367919445">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p1183729184414">请确保该SFTP用户有您所设置的备份路径的执行权限。</p>
+             </div>
+            </div></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_row689471111593">
+           <td class="cellrowborder" valign="top" width="33.050000000000004%" headers="mcps1.3.3.2.3.2.1.5.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p17895811195917"><span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text148455211118">数据加密密码</span></p></td>
+           <td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.3.3.2.3.2.1.5.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p669281915177">请输入密码，该密码将用作系统管理数据加密保存，以确保备份数据的安全性。手动备份也使用该密码进行加密。同时，请妥善保存该密码，当系统故障恢复时，需使用该密码进行解密。</p></td>
+          </tr>
+          <tr id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_row3895611175915">
+           <td class="cellrowborder" valign="top" width="33.050000000000004%" headers="mcps1.3.3.2.3.2.1.5.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p3895111165920"><span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text174141282117">确认数据加密密码</span></p></td>
+           <td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.3.3.2.3.2.1.5.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p2895711185912">再次输入数据加密确认密码。</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_li957018972813"><span>单击<span class="parmvalue" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_parmvalue660716235368">“<span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text3607172311365">手动备份</span>”</span>，立即手动备份一次管理数据。</span><p></p>
+      <div class="note" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_note161401422103318">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_p7233218342">手动备份时，系统也会使用备份策略中设置的“<span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text322132193418">数据加密密码</span>”进行管理数据加密保存。当系统故障恢复时，也需使用数据加密密码进行解密。</p>
+       </div>
+      </div> <p></p></li>
+     <li id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_li1552629123110"><span>在<span class="parmvalue" id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_parmvalue112285283013">“<span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text81221252153011">手动备份</span>”</span>页面输入描述信息，单击“<span id="ZH-CN_TOPIC_0000001792345266__zh-cn_topic_0000001792345722_text13148165616208">确定</span>”。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001792345402.html">管理系统数据备份</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="安装OceanStor DataTurbo客户端（适用于1.6.0及后续版本）">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001936780456">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>安装OceanStor DataTurbo客户端（适用于1.6.0及后续版本）</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001936780456"></a><a name="ZH-CN_TOPIC_0000001936780456"></a>
+  <h1 class="topictitle1">安装OceanStor DataTurbo客户端（适用于1.6.0及后续版本）</h1>
+  <div>
+   <p>ProtectAgent安装完成后，如需开启源端重删功能时，可参考本章节安装OceanStor DataTurbo客户端，开启源端重删功能。</p>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>请确保代理主机空闲内存大于2GB。</li>
+     <li>请确保代理主机使用的操作系统支持源端重删功能。支持源端重删的操作系统请查看<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">兼容性查询工具</a>。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>下载ProtectAgent软件包，具体操作请参考<a href="zh-cn_topic_0000001839189405.html">下载ProtectAgent软件包</a>。</span></li>
+     <li><span>打开下载的ProtectAgent软件压缩包，在“..\DataProtect_<em>XXX</em>_client_general_<em>XXX</em>.zip\DataProtect_<em>XXX</em>_client_general_<em>XXX</em>\third_party_software”路径下，获取名为<strong>dataturbo.zip</strong>的OceanStor DataTurbo客户端安装包。</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="ZH-CN_TOPIC_0000001936780456__zh-cn_topic_0000001839189365_p1818285216413">不同的版本、代理类型、操作系统获取到的ProtectAgent软件包名可能会有差异，请以实际为准。</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>上传OceanStor DataTurbo客户端安装包至代理主机。</span></li>
+     <li><span>安装OceanStor DataTurbo客户端并启动服务，具体操作请参考对应版本的<a href="https://support.huawei.com/enterprise/zh/flash-storage/oceanprotect-x8000-pid-251807257?category=configuration-commissioning&amp;subcategory=configuration-guide" target="_blank" rel="noopener noreferrer">《源端重删用户指南》</a>中“安装”和“启动服务”章节。</span><p></p>
+      <div class="note" id="ZH-CN_TOPIC_0000001936780456__note1481014881116">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="ZH-CN_TOPIC_0000001936780456__p1942121419116">开启源端重删功能后，请在首次备份前将源端重删用户加到sudoers中，具体操作请参见<a href="zh-cn_topic_0000001792390228.html">添加源端重删用户到sudoers</a>。</p>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

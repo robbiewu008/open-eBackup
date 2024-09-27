@@ -1,0 +1,72 @@
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_restore_to_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
+                <lv-group [lvGutter]="'24px'">
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="restoreToNewLocationOnly"
+                        [lv-tooltip]="restoreToNewLocationOnly ? ('protection_cloud_origin_restore_disabled_label' | i18n) : ''">
+                        {{'common_restore_to_origin_location_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreLocationType.NEW">
+                        {{'common_restore_to_new_location_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label [lvRequired]="formGroup.value.restoreTo === restoreLocationType.NEW">
+            {{ (formGroup.value.restoreTo === restoreLocationType.ORIGIN ? 'common_location_label' :
+            'common_target_to_cluster_label') | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select formControlName="cluster" [lvOptions]='clusterOptions' lvValueKey='value'
+                [lvDisabled]='formGroup.value.restoreTo === restoreLocationType.ORIGIN'>
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="rowCopy.backup_type === dataMap.CopyData_Backup_Type.log.value">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_temporary_path_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_temporary_path_tip_label' | i18n}}"
+                    lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="directoryErrorTip">
+                <input lv-input formControlName='temporary_directory' />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_name_space_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="namespace" [lvOptions]='namespaceOptions' lvValueKey='value' lvShowFilter
+                    lvFilterKey='label' lvFilterMode='contains'>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <lv-form-item>
+        <lv-form-label>
+            {{'common_select_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="originalType">
+                <lv-group [lvGutter]="'20px'" lvDirection='vertical' class="restore-options">
+                    <lv-radio [lvValue]="filesetReplaceOptions.Skip">
+                        {{'protection_skip_table_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="filesetReplaceOptions.Overwrite">
+                        {{'protection_overwrite_table_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

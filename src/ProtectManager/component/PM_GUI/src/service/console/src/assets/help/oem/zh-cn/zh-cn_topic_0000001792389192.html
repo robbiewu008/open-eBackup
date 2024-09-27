@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="清理主机残留挂载信息">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001792389192">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>清理主机残留挂载信息</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001792389192"></a><a name="ZH-CN_TOPIC_0000001792389192"></a>
+  <h1 class="topictitle1">清理主机残留挂载信息</h1>
+  <div>
+   <p>当满足以下条件时，说明强制销毁挂载任务失败，Oracle主机上有挂载信息残留。请参考本节清理Oracle主机上的挂载信息：</p>
+   <ul>
+    <li>执行销毁挂载操作时，开启了<span class="uicontrol">“<span>销毁失败后强制删除即时挂载。</span>”</span>。</li>
+    <li>销毁挂载任务中存在提示信息类似：<span class="uicontrol">“挂载资源已被强制销毁，主机上可能存在残留的资源，请进行手工清理。”</span>。</li>
+   </ul>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>确认销毁挂载任务对应的文件系统是否残留在主机：</span><p></p>
+      <ol type="a">
+       <li>在管理界面上获取文件系统名称。
+        <ol class="substepthirdol">
+         <li>在销毁挂载任务中获取文件系统名称。<p>文件系统名称类似：RDcd58afd3daec45e5b545c07eb9a24663</p> <p>如果销毁挂载任务中未查询到文件系统名称，继续执行以下步骤。</p></li>
+         <li>查找与销毁挂载任务对应的即时挂载任务，在即时挂载任务中查询文件系统名称。</li>
+        </ol></li>
+       <li>检查该文件系统的挂载信息是否残留在主机。
+        <ol class="substepthirdol">
+         <li id="ZH-CN_TOPIC_0000001792389192__li14647185922920">使用PuTTY，登录Oracle数据库主机。</li>
+         <li id="ZH-CN_TOPIC_0000001792389192__li20329136566">执行以下命令，切换到<strong id="ZH-CN_TOPIC_0000001792389192__b1832916314567">oracle</strong>账户。<p id="ZH-CN_TOPIC_0000001792389192__p139165195318"><strong id="ZH-CN_TOPIC_0000001792389192__b86201184533">su - oracle</strong></p></li>
+         <li id="ZH-CN_TOPIC_0000001792389192__li15978143816593"><a name="ZH-CN_TOPIC_0000001792389192__li15978143816593"></a><a name="li15978143816593"></a>执行以下命令检查主机上是否存在该文件系统的挂载信息。<p><a name="ZH-CN_TOPIC_0000001792389192__li15978143816593"></a><a name="li15978143816593"></a><strong>df -h</strong></p> <p>回显显示文件系统的挂载信息，则说明存在挂载信息残留。</p> <p>如下回显，存在文件系统RDcd58afd3daec45e5b545c07eb9a24663的挂载信息。</p> <pre class="screen">[oracle@raca02 <font style="font-size:8pt" face="Courier New">~</font>]$ df -h
+Filesystem                                          Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root                                48G   34G   15G  70% /
+devtmpfs                                            3.9G     0  3.9G   0% /dev
+tmpfs                                               2.0G  1.1G  940M  55% /dev/shm
+tmpfs                                               3.9G  9.9M  3.9G   1% /run
+tmpfs                                               3.9G     0  3.9G   0% /sys/fs/cgroup
+/dev/sda1                                          1014M  177M  838M  18% /boot
+/dev/mapper/rhel-home                                24G   37M   24G   1% /home
+tmpfs                                               783M     0  783M   0% /run/user/54323
+tmpfs                                               783M   12K  783M   1% /run/user/42
+tmpfs                                               783M     0  783M   0% /run/user/54322
+[192.168.99.244]:/RDcd58afd3daec45e5b545c07eb9a24663/  400G  256K  400G   1% /mnt/c93e27aa-16f3-38ae-b54f-2253abaab16f
+[192.168.99.245]:/RDcd58afd3daec45e5b545c07eb9a24663/  400G  256K  400G   1% /mnt/c93e27aa-16f3-38ae-b54f-2253abaab16f</pre></li>
+        </ol></li>
+      </ol> <p></p></li>
+     <li><span>关闭挂载到主机上的数据库。</span><p></p>
+      <ol type="a">
+       <li>使用PuTTY，登录Oracle数据库主机。</li>
+       <li>执行以下命令，切换到<strong id="ZH-CN_TOPIC_0000001792389192__zh-cn_topic_0000001792389192_b1832916314567">oracle</strong>账户。<p id="ZH-CN_TOPIC_0000001792389192__zh-cn_topic_0000001792389192_p139165195318"><strong id="ZH-CN_TOPIC_0000001792389192__zh-cn_topic_0000001792389192_b86201184533">su - oracle</strong></p></li>
+       <li>执行以下命令，登录Oracle数据库实例。
+        <ul>
+         <li>OS认证执行以下命令：<p><strong>export ORACLE_SID=</strong><em>数据库实例名称</em></p> <p><strong>sqlplus / as sysdba</strong></p></li>
+         <li>数据库认证执行以下命令：<p><strong>export ORACLE_SID=</strong><em>数据库实例名称</em></p> <p><strong>sqlplus</strong></p> <p>根据提示输入具备<strong>sysdba</strong>权限的用户：</p> <pre class="screen"><em>username </em>as sysdba</pre> <p>根据提示输入密码。</p></li>
+        </ul></li>
+       <li>执行以下命令，关闭数据库。<p><strong>shutdown immediate;</strong></p></li>
+      </ol> <p></p></li>
+     <li><span>执行以下命令，卸载文件系统。</span><p></p><p><strong>umount -f </strong><em>文件系统挂载目录</em></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p><em>文件系统挂载路径</em>可从<a href="#ZH-CN_TOPIC_0000001792389192__li15978143816593">1.b.iii</a>中获取。</p>
+       </div>
+      </div> <p>示例：</p> <pre class="screen">umount -f /mnt/c93e27aa-16f3-38ae-b54f-2253abaab16f</pre> <pre class="screen">umount -f /mnt/c93e27aa-16f3-38ae-b54f-2253abaab16f</pre> <p></p></li>
+     <li><span>执行以下命令，删除挂载目录。</span><p></p><p><strong>rm -rf </strong><em>文件系统挂载目录</em></p> <p>示例：</p> <pre class="screen">rm -rf /mnt/c93e27aa-16f3-38ae-b54f-2253abaab16f</pre> <pre class="screen">rm -rf /mnt/c93e27aa-16f3-38ae-b54f-2253abaab16f</pre> <p></p></li>
+     <li><span>重新登录数据库后删除pfile参数文件，如initorcl.ora。</span><p></p>
+      <ol type="a">
+       <li>执行以下命令，进入pfile参数文件所在目录。<p><strong>cd ${ORACLE_HOME}/dbs</strong></p></li>
+       <li>执行以下命令，删除pfile参数文件。<p><strong>rm -rf </strong> <em>pfile参数文件名</em></p> <p>Oracle数据库的pfile参数文件命名规则为：init+数据库实例名称.ora。</p> <p>示例：</p> <pre class="screen"><strong>rm -rf </strong><strong>initorcl.ora</strong></pre></li>
+      </ol> <p></p></li>
+    </ol>
+    <ol start="6">
+     <li><span>删除对应的文件系统。</span><p></p>
+      <ul>
+       <li>
+        <ol type="a">
+         <li>登录DeviceManager。</li>
+         <li>选择<span class="uicontrol">“服务 &gt; 文件服务 &gt; 文件系统”</span>。</li>
+         <li>根据文件系统名称查找到文件系统后将其删除。</li>
+        </ol></li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

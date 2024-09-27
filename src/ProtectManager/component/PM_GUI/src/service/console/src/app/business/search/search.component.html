@@ -1,0 +1,250 @@
+<div class="global-search-container">
+  <div class="search-input-container">
+    <div class="video"></div>
+    <h1 class="title">{{ 'common_global_search_label' | i18n }}</h1>
+    <div class="input">
+      <lv-select [lvOptions]="searchTypeOptions" lvValueKey="value" [(ngModel)]="searchType"
+        class="search-type-container" (ngModelChange)="activeChange($event)"></lv-select>
+      <lv-search class="aui-inner-search" [lvType]="'inner'" [lvFocus]="true" [lvPlaceHolder]="searchPlaceHolder"
+        [(ngModel)]="searchKey" [lvMaxLength]="64" (lvSearch)="advanceSearch()">
+      </lv-search>
+      <div class="global-search-btn" (click)="advanceSearch()">
+        <i lv-icon="aui-icon-global-search"></i>
+      </div>
+      <i lv-icon="aui-icon-help" [lv-tooltip]="contentTemplate" lvTooltipTheme="light" lvTooltipPosition="right"
+        lvTooltipClassName="searchTool" class="configform-constraint search-help" lvColorState="true"></i>
+      <ng-template #contentTemplate>
+        <span style="width: 330px;">{{'search_tip_label' | i18n}}</span>
+      </ng-template>
+    </div>
+  </div>
+
+  <lv-tabs class="aui-tabs-block" [(lvActiveIndex)]="activeIndex">
+    <lv-tab [lvTitle]="'common_copy_data_label' | i18n" [lvId]="searchOptions.COPIES">
+      <lv-layout lvDirection="row">
+        <ng-container *ngTemplateOutlet="filterTpl;context: { $implicit: searchOptions.COPIES }"></ng-container>
+        <lv-content>
+          <ng-container *ngTemplateOutlet="copyListTpl"></ng-container>
+        </lv-content>
+      </lv-layout>
+    </lv-tab>
+    <lv-tab [lvTitle]="'common_resource_label' | i18n" [lvId]="searchOptions.RESOURCES">
+      <lv-layout lvDirection="row">
+        <ng-container *ngTemplateOutlet="filterTpl;context: { $implicit: searchOptions.RESOURCES }">
+        </ng-container>
+        <lv-content>
+          <ng-container *ngTemplateOutlet="resourceListTpl"></ng-container>
+        </lv-content>
+      </lv-layout>
+    </lv-tab>
+
+    <lv-tab [lvTitle]="'common_tag_label' | i18n" [lvId]="searchOptions.LABELS">
+      <lv-layout lvDirection="row">
+        <ng-container *ngTemplateOutlet="filterTpl;context: { $implicit: searchOptions.LABELS }">
+        </ng-container>
+        <lv-content>
+          <ng-container *ngTemplateOutlet="resourceListTpl"></ng-container>
+        </lv-content>
+      </lv-layout>
+    </lv-tab>
+  </lv-tabs>
+</div>
+
+<ng-template #filterTpl let-type>
+  <ng-container *ngIf="isSearched && !cookieService.isCloudBackup">
+    <lv-sider lvTrigger="inline" [(lvCollapsed)]="collapsed" [ngClass]="{ collapsed: collapsed }">
+      <div class="aui-search-section">
+        <ng-container *ngTemplateOutlet="formTpl; context: { $implicit: type }"></ng-container>
+      </div>
+      <div class="sider-trigger" (click)="toggleSider()">
+        <i class="icon" [ngClass]="{ left: !collapsed }" lv-icon="lv-icon-arrow-right"></i>
+      </div>
+    </lv-sider>
+  </ng-container>
+</ng-template>
+
+<ng-template #formTpl let-type>
+  <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+    <lv-collapse [lvType]="'simple'" class="global-search-title" *ngIf="!cookieService.isCloudBackup">
+      <lv-collapse-panel [lvTitle]="labelTitleTpl" [lvExpanded]="true" *ngIf="searchType === searchRange.RESOURCES && !isCloudBackup">
+        <lv-form-item>
+          <lv-form-control>
+            <lv-select [lvOptions]="labelOptions" lvValueKey="value" formControlName="labelList" lvMode="multiple"
+              lvShowFilter lvShowCheckAll lvFilterKey="label" lvFilterMode="contains">
+            </lv-select>
+          </lv-form-control>
+        </lv-form-item>
+      </lv-collapse-panel>
+      <lv-collapse-panel [lvTitle]="resourceTypeTitleTpl" [lvExpanded]="true" [lvExtra]="resourceTypeTpl" class="test">
+        <ng-template #resourceTypeTpl>
+          <span
+            [ngClass]="{
+              'aui-link':
+                type === searchOptions.COPIES
+                  ? formGroup.value.resourceType.length
+                  : formGroup.value.sub_type.length,
+              'link-disabled': !(type === searchOptions.COPIES
+                ? formGroup.value.resourceType.length
+                : formGroup.value.sub_type.length)
+            }"
+            (click)="clearResourceType(type, $event)"
+          >
+            {{ 'common_clear_label' | i18n }}
+          </span>
+        </ng-template>
+        <ng-template lv-collapse-lazy>
+          <lv-form-item>
+            <lv-form-control>
+              <div class="resource-checkbox-container">
+                <ng-container *ngIf="type === searchOptions.COPIES">
+                  <lv-checkbox-group #fileResourceTypeGroup formControlName="resourceType">
+                    <lv-group [lvColumns]="['auto']" lvRowGutter="10px" lvColumnGutter="15px">
+                      <lv-checkbox-all>
+                        {{ 'common_all_label' | i18n }}
+                      </lv-checkbox-all>
+                      <ng-container *ngFor="let item of resourceTypeOption">
+                        <lv-checkbox *ngIf="!item.hidden" [lvValue]="item.value">
+                          <span lv-overflow>{{ item.label }}</span>
+                        </lv-checkbox>
+                      </ng-container>
+                    </lv-group>
+                  </lv-checkbox-group>
+                </ng-container>
+                <ng-container *ngIf="type !== searchOptions.COPIES">
+                  <lv-checkbox-group #resourceTypeGroup formControlName="sub_type">
+                    <lv-group [lvColumns]="['auto']" lvRowGutter="10px" lvColumnGutter="15px">
+                      <lv-checkbox-all>
+                        {{ 'common_all_label' | i18n }}
+                      </lv-checkbox-all>
+                      <ng-container *ngFor="let item of resourceTypeOption">
+                        <lv-checkbox *ngIf="!item.hidden" [lvValue]="item.value">
+                          <span lv-overflow>{{ item.label }}</span>
+                        </lv-checkbox>
+                      </ng-container>
+                    </lv-group>
+                  </lv-checkbox-group>
+                </ng-container>
+              </div>
+            </lv-form-control>
+          </lv-form-item>
+        </ng-template>
+      </lv-collapse-panel>
+
+      <lv-collapse-panel [lvTitle]="fileTitleTpl" [lvExpanded]="true" *ngIf="searchType === searchRange.COPIES">
+        <ng-container>
+          <lv-form-item>
+            <lv-form-control>
+              <lv-checkbox-group formControlName="nodeType">
+                <lv-group [lvColumns]="['auto']" lvRowGutter="10px" lvColumnGutter="15px">
+                  <lv-checkbox-all>
+                    {{ 'common_all_label' | i18n }}
+                  </lv-checkbox-all>
+                  <lv-checkbox *ngFor="let item of nodeTypeOptions" [lvValue]="item.value">
+                    <span lv-overflow>{{ item.label | i18n }}</span>
+                  </lv-checkbox>
+                </lv-group>
+              </lv-checkbox-group>
+            </lv-form-control>
+          </lv-form-item>
+        </ng-container>
+      </lv-collapse-panel>
+      <lv-collapse-panel [lvTitle]="resourceTitleTpl" [lvExpanded]="true" *ngIf="searchType === searchRange.COPIES">
+        <lv-form-item>
+          <lv-form-control>
+            <input lv-input type="text" formControlName="resourceName" maxlength="64" class='search-key-container'
+              (keyup.enter)="advanceSearch()" />
+          </lv-form-control>
+        </lv-form-item>
+      </lv-collapse-panel>
+      <lv-collapse-panel [lvTitle]="filePathTitleTpl" [lvExpanded]="true" *ngIf="searchType === searchRange.COPIES">
+        <lv-form-item>
+          <lv-form-control>
+            <input lv-input type="text" formControlName="file_path" maxlength="64" class='search-key-container'
+              (keyup.enter)="advanceSearch()" />
+          </lv-form-control>
+        </lv-form-item>
+      </lv-collapse-panel>
+      <lv-collapse-panel [lvTitle]="protectTitleTpl" [lvExpanded]="true" *ngIf="includes([searchRange.RESOURCES, searchRange.LABELS],searchType)">
+        <lv-form-item>
+          <lv-form-control>
+            <lv-checkbox-group formControlName="protection_status">
+              <lv-group [lvColumns]="['auto']" lvRowGutter="10px" lvColumnGutter="15px">
+                <lv-checkbox-all>
+                  {{ 'common_all_label' | i18n }}
+                </lv-checkbox-all>
+                <lv-checkbox *ngFor="let item of protectOptions" [lvValue]="item.value">
+                  <span lv-overflow>{{ item.label | i18n }}</span>
+                </lv-checkbox>
+              </lv-group>
+            </lv-checkbox-group>
+          </lv-form-control>
+        </lv-form-item>
+      </lv-collapse-panel>
+      <lv-collapse-panel [lvTitle]="slaTitleTpl" [lvExpanded]="true" *ngIf="includes([searchRange.RESOURCES, searchRange.LABELS],searchType)">
+        <lv-form-item>
+          <lv-form-control>
+            <lv-checkbox-group formControlName="sla_compliance">
+              <lv-group [lvColumns]="['auto']" lvRowGutter="10px" lvColumnGutter="15px">
+                <lv-checkbox-all>
+                  {{ 'common_all_label' | i18n }}
+                </lv-checkbox-all>
+                <lv-checkbox *ngFor="let item of slaComplianceOptions" [lvValue]="item.value">
+                  <span lv-overflow>{{ item.label | i18n }}</span>
+                </lv-checkbox>
+              </lv-group>
+            </lv-checkbox-group>
+          </lv-form-control>
+        </lv-form-item>
+      </lv-collapse-panel>
+      <lv-collapse-panel [lvTitle]="locationTitleTpl" [lvExpanded]="true" *ngIf="includes([searchRange.RESOURCES, searchRange.LABELS],searchType)">
+        <lv-form-item>
+          <lv-form-control>
+            <input lv-input type="text" formControlName="path" maxlength="64" class='search-key-container'
+              (keyup.enter)="advanceSearch()" />
+          </lv-form-control>
+        </lv-form-item>
+      </lv-collapse-panel>
+    </lv-collapse>
+  </lv-form>
+</ng-template>
+
+<ng-template #copyListTpl>
+  <aui-file-list [resourceTypeValues]="resourceTypeValues" (calcTimeChange)="calcTimeChange($event)"></aui-file-list>
+</ng-template>
+
+<ng-template #resourceListTpl>
+  <aui-resource-list [resourceTypeValues]="resourceTypeValues" [searchType]="searchType" (calcTimeChange)="calcTimeChange($event)">
+  </aui-resource-list>
+</ng-template>
+
+<ng-template #labelTitleTpl>
+  <h3>{{ 'common_tag_label' | i18n }}</h3>
+</ng-template>
+
+<ng-template #resourceTypeTitleTpl>
+  <h3>{{ 'common_resource_type_label' | i18n }}</h3>
+</ng-template>
+
+<ng-template #fileTitleTpl>
+  <h3>{{ 'search_searched_object_type_label' | i18n }}</h3>
+</ng-template>
+
+<ng-template #resourceTitleTpl>
+  <h3>{{'protection_resource_name_label' | i18n}}</h3>
+</ng-template>
+
+<ng-template #filePathTitleTpl>
+  <h3>{{'search_absolute_path_file_label' | i18n}}</h3>
+</ng-template>
+
+<ng-template #protectTitleTpl>
+  <h3>{{ 'protection_protected_status_label' | i18n }}</h3>
+</ng-template>
+
+<ng-template #slaTitleTpl>
+  <h3>{{ 'common_sla_compliance_label' | i18n }}</h3>
+</ng-template>
+
+<ng-template #locationTitleTpl>
+  <h3>{{ 'search_resource_location_label' | i18n }}</h3>
+</ng-template>

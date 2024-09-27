@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "BackupExtParams",
+  "description": "Ext params of dws backup set sla",
+  "type": "object",
+  "properties": {
+    "name":  {
+      "type": "string"
+    },
+    "age": {
+      "type": "string"
+    },
+    "count": {
+      "type": "integer"
+    }
+  },
+  "required": ["name", "age", "count"]
+}

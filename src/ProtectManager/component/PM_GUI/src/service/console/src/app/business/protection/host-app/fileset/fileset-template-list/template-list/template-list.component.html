@@ -1,0 +1,129 @@
+<div class="aui-operation">
+    <lv-group [lvGutter]="groupCommon.middleRowGutter">
+        <button lv-button lvType="primary" (click)="createTemplate()" auiRolePermission
+            [rolePermission]="roleOperationMap.manageResource" lv-popover [lvPopoverClosable]="true"
+            lvPopoverContent="{{'protection_create_fileset_template_tip_label' | i18n}}" lvPopoverPosition="bottom"
+            lvPopoverClassName="customer-guide-tip-bk" lvPopoverTrigger="customize"
+            [(lvPopoverVisible)]="registerTipShow" [lvPopoverBeforeClose]="lvPopoverBeforeClose">
+            {{ 'common_create_label' | i18n }}
+        </button>
+        <button lv-button (click)="deleteTemplate(selection)" [disabled]="deleteBtnDisabled" pmpermission
+            pmOperation='DeleteHostFileset'>
+            {{ 'common_delete_label' | i18n }}
+        </button>
+        <button lv-button lv-dropdown [lvDropdownMenus]="moreMenus" *ngIf="moreMenus | find: 'hidden': false">
+            <span>{{'common_more_label' | i18n}}</span>
+            <i #lvDropdownTrigger lv-icon="lv-icon-triangle-down"></i>
+        </button>
+    </lv-group>
+    <lv-group [lvGutter]="groupCommon.middleRowGutter">
+        <lv-search [lvFocus]="true" (lvSearch)="searchFilesets($event)" [(ngModel)]="queryName"
+            lvPlaceHolder="{{'common_search_type_label'|i18n:['common_template_label'|i18n]}}">
+        </lv-search>
+        <button class="aui-button-icon" lv-button lvSize="auto" (click)="getTemplates()">
+            <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+        </button>
+    </lv-group>
+</div>
+<div class="list-container">
+    <lv-datatable [lvData]="tableData" lvSelectionMode='multiple' [lvSelection]='selection' [lvPaginator]="page"
+        #lvTable (lvSelectionChange)="selectionChange()" lvCompareWith="uuid" lvResizeMode="expand" lvResize lvAsync>
+        <thead>
+            <tr>
+                <th lvShowCheckbox width='40px' [lvRowsData]='lvTable.renderData'>
+                </th>
+                <ng-container *ngFor="let col of columns">
+                    <th *ngIf="col.isShow" [lvShowFilter]="col.filter" (lvFilterChange)="filterChange($event)"
+                        [(lvFilters)]="col.filterMap" lvCellKey="{{ col.key }}" lvShowCustom lvFilterCheckAll>
+                        {{ col.label}}
+                        <div lvCustom *ngIf="col.key === 'name'">
+                            <aui-custom-table-search (search)="searchByName($event)"
+                                [filterTitle]="col.label"></aui-custom-table-search>
+                        </div>
+                        <div lvCustom *ngIf="col.key === 'labelList'">
+                            <aui-custom-table-search (search)="searchByLabel($event)"
+                                [filterTitle]="col.label"></aui-custom-table-search>
+                        </div>
+                    </th>
+                </ng-container>
+                <th width='144px' lvShowCustom>
+                    {{'common_operation_label'|i18n }}
+                    <div lvCustom>
+                        <i lv-icon='lv-icon-col-setting' #colPopover='lvPopover' lv-popover
+                            lvPopoverPosition='bottomRight' [lvPopoverContent]='colSelectTp' lvPopoverTheme='light'
+                            lvPopoverTrigger='click' style="cursor: pointer;">
+                        </i>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of lvTable.renderData;">
+                <tr [ngClass]="{ 'lv-table-row-highlight': isActive(item) }">
+                    <td width='40px' lvShowCheckbox [lvRowData]='item'></td>
+                    <ng-container *ngFor="let col of columns">
+                        <ng-container *ngIf="col.isShow">
+                            <td>
+                                <ng-container [ngSwitch]="col.key">
+                                    <ng-container *ngSwitchCase="'name'">
+                                        <lv-group lvGutter='8px'>
+                                            <div lv-overflow>
+                                                <span class="aui-link" id='outerClosable' (click)="getDetail(item)">
+                                                    {{ item.name }}
+                                                </span>
+                                            </div>
+                                            <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
+                                                {{'protection_guide_new_resource_label' | i18n}}
+                                            </span>
+                                        </lv-group>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'osType'">
+                                        {{ item.osType | textMap: 'Fileset_Template_Os_Type' | nil}}
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'associatedFilesetsNum'">
+                                        <ng-container *ngIf="!!item.associatedFilesetsNum;else emptyTpl">
+                                            <span class="aui-link" id='outerClosable'
+                                                (click)="getAssociatedFileset(item)">{{item.associatedFilesetsNum}}
+                                            </span>
+                                        </ng-container>
+                                        <ng-template #emptyTpl>
+                                            0
+                                        </ng-template>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'labelList'">
+                                        <ng-container *ngIf="item?.labelList?.length; else emptyTpl">
+                                            <lv-tag [ngModel]="item?.showLabelList" [lv-tooltip]="TagTpl"></lv-tag>
+                                            <ng-template #TagTpl>
+                                                <lv-tag [ngModel]="item?.hoverLabelList"></lv-tag>
+                                            </ng-template>
+                                            <ng-template #emptyTpl>
+                                                --
+                                            </ng-template>
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-container *ngSwitchDefault>
+                                        <span lv-overflow>
+                                            {{item[col.key] | nil}}
+                                        </span>
+                                    </ng-container>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+                    </ng-container>
+                    <td width='144px'>
+                        <lv-operation-menu [lvItemsFn]="optsCallback" [lvData]="item"></lv-operation-menu>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+</div>
+<div class="aui-paginator-wrap">
+    <lv-paginator #page [lvPageSizeOptions]="sizeOptions" [lvPageSize]="pageSize" [lvTotal]="total"
+        [lvPageIndex]="pageIndex" (lvPageChange)="pageChange($event)" [hidden]="!total">
+    </lv-paginator>
+</div>
+
+<ng-template #colSelectTp>
+    <column-filter-tpl [tableKey]="tableColumnKey" [columns]="columns"></column-filter-tpl>
+</ng-template>

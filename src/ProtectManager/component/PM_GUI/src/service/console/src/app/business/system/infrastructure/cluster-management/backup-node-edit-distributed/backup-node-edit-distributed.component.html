@@ -1,0 +1,42 @@
+<lv-form [lvLabelColon]="false" class="formGroup">
+  <lv-form-column lvWidth="50%">
+    <lv-form-item>
+      <lv-form-label>{{ "system_node_id_label" | i18n }}</lv-form-label>
+      <lv-form-control>
+        {{ drawData.name }}
+      </lv-form-control>
+    </lv-form-item>
+  </lv-form-column>
+
+  <lv-form-column lvWidth="50%">
+    <lv-form-item>
+      <lv-form-label>{{ ipLabel }}</lv-form-label>
+      <lv-form-control>
+        {{ drawData.manageIp }}
+      </lv-form-control>
+    </lv-form-item>
+  </lv-form-column>
+</lv-form>
+
+
+<lv-collapse [lvType]="'simple'">
+  <lv-collapse-panel lvTitle="{{'system_service_network_label' | i18n}}" [lvExpanded]="true">
+    <lv-tabs [(lvActiveIndex)]="activeIndex" (lvActiveIndexChange)="selectIndexChange()" class="aui-tab">
+      <lv-tab lvTitle="{{'common_backup_network_config_label' | i18n}}" lvId='backup'>
+        <ng-template lv-tab-lazy>
+          <lv-pro-table #dataTableBackup [config]="tableConfig" [data]="tableDataBackup"></lv-pro-table>
+        </ng-template>
+      </lv-tab>
+      <lv-tab lvTitle="{{'common_replication_network_label' | i18n}}" lvId='replication' *ngIf="isDecouple">
+        <ng-template lv-tab-lazy>
+          <lv-pro-table #dataTableReplication [config]="tableConfig" [data]="tableDataReplication"></lv-pro-table>
+        </ng-template>
+      </lv-tab>
+      <lv-tab lvTitle="{{'common_archived_network_config_label' | i18n}}" lvId='archived'>
+        <ng-template lv-tab-lazy>
+          <lv-pro-table #dataTableArchived [config]="tableConfig" [data]="tableDataArchived"></lv-pro-table>
+        </ng-template>
+      </lv-tab>
+    </lv-tabs>
+  </lv-collapse-panel>
+</lv-collapse>

@@ -1,0 +1,23 @@
+<lv-form>
+    <div class="aui-gutter-column-xl">
+        <lv-form-column lvWidth="12%">
+            <i lv-icon="aui-icon-detail-cluster" class="cluster-icon"></i>
+        </lv-form-column>
+        <lv-form-column *ngFor="let forms of formItems" lvWidth="32%" style="position: relative;top: 24px;">
+            <lv-form-item *ngFor="let item of forms">
+                <lv-form-label class="label">
+                    {{ item.label | i18n }}
+                </lv-form-label>
+                <lv-form-control class="value">
+                    <div lv-overflow style="width: 200px;">
+                        {{ item.value | nil }}
+                    </div>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form-column>
+    </div>
+    <div class="aui-header-2 aui-gutter-column-md">
+        <h2>{{'system_servers_label' | i18n}}</h2>
+    </div>
+    <aui-proxy-host [data]='data'></aui-proxy-host>
+</lv-form>

@@ -1,0 +1,7 @@
+#老框架已经支持资源类型列表
+supported:
+    resources:
+        backup:
+            VMware,ms.VirtualMachine,vim.VirtualMachine,CloudBackupFileSystem
+        archive:
+            VMware,vim.VirtualMachine,ImportCopy

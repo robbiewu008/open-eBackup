@@ -1,0 +1,1545 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 任务管理接口
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: Job API
+    description: Job Controller
+paths:
+  /v1/jobs:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Job API
+      summary: 查询任务
+      operationId: queryJobsUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: copyId
+          in: query
+          description: 副本id
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 64
+        - name: fromCopyTime
+          in: query
+          description: 副本生成时间(按范围查询的开始时间)
+          required: false
+          type: integer
+          format: int64
+          minimum: 0
+        - name: fromEndTime
+          in: query
+          description: 任务结束时间(按范围查询的开始时间)
+          required: false
+          type: integer
+          format: int64
+          minimum: 0
+        - name: fromStartTime
+          in: query
+          description: 任务创建时间(按范围查询的开始时间)
+          required: false
+          type: integer
+          format: int64
+          minimum: 0
+        - name: isSystem
+          in: query
+          description: 是否为系统任务。是：true，不是：false
+          required: false
+          type: boolean
+        - name: isVisible
+          in: query
+          description: 是否展示任务
+          required: false
+          type: boolean
+        - name: jobId
+          in: query
+          description: 任务id
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 64
+        - name: orderBy
+          in: query
+          description: 排序字段
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 256
+        - name: orderType
+          in: query
+          description: 排序类型
+          required: false
+          type: string
+          x-example: asc
+          minLength: 0
+          maxLength: 64
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          maximum: 500
+          minimum: 0
+          format: int32
+          x-example: 10
+        - name: sourceId
+          in: query
+          description: 任务对象ID
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 64
+        - name: sourceLocation
+          in: query
+          description: 任务对象位置
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 1024
+        - name: sourceName
+          in: query
+          description: 任务对象名称
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 256
+        - name: sourceTypes
+          in: query
+          description: >-
+            资源子类型[取值范围]ABBackupClient:主机 Fileset:文件集 DB2:DB2
+            SQLServer:SQLServer  MySQL:MySQL GaussDB:GaussDB  Oracle:Oracle数据库
+            Volume:主机卷 VMWare:VMware虚拟化平台 vim.VirtualMachin:VMware虚拟机
+            vim.HostSystem:VMware主机系统 vim.ClusterComputeResource:集群
+            Hyper-V:Hyper-V虚拟化平台 ms.VirtualMachine:Hyper-V虚拟机
+            ms.HostSystem:Hyper-V主机系统
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+          minItems: 0
+          maxItems: 128
+        - name: startPage
+          in: query
+          description: 分页起始页面
+          required: false
+          type: integer
+          minimum: 0
+          format: int32
+          x-example: 0
+        - name: statusList
+          in: query
+          description: >-
+            ''任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
+            PARTIAL_SUCCESS:部分成功 ABORTED: 停止 ABORTING: 停止中 FAIL:失败 ABNORMAL:异常
+            CANCELLED:取消
+            ABORT_FAILED:停止失败''
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+          minItems: 0
+          maxItems: 16
+        - name: targetLocation
+          in: query
+          description: 任务目标结果位置
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 1024
+        - name: targetName
+          in: query
+          description: 任务目标结果对象
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 256
+        - name: toCopyTime
+          in: query
+          description: 副本生成时间(按范围查询的结束时间)
+          required: false
+          type: integer
+          format: int64
+          minimum: 0
+        - name: toEndTime
+          in: query
+          description: 任务结束时间(按范围查询的结束时间)
+          required: false
+          type: integer
+          format: int64
+          minimum: 0
+        - name: toStartTime
+          in: query
+          description: 任务创建时间(按范围查询的结束时间)
+          required: false
+          type: integer
+          format: int64
+          minimum: 0
+        - name: types
+          in: query
+          description: >-
+            任务类型[取值范围]BACKUP:备份 RESTORE:恢复 INSTANT_RESTORE:即时恢复 live_mount:即时挂载
+            copy_replication:副本复制 archive:归档 COPY_DELETE:副本删除 COPY_EXPIRE:副本过期
+            unmount:卸载 DB_IDENTIFICATION:敏感数据识别 DB_DESESITIZATION:数据脱敏
+            archive_import:副本导入 migrate:迁移 resource_scan:注册
+            resource_protection:资源保护 resource_protection_modify:修改保护
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+          minItems: 0
+          maxItems: 32
+        - name: excludeTypes
+          in: query
+          required: false
+          description: 是否需要排除掉传入的任务类型
+          type: boolean
+          default: false
+        - name: logLevels
+          in: query
+          required: false
+          description: 任务详情包含特定级别事件标志（使用整数的二进制形式表示多个标志位。目前表示3个标志位，从高位到低位分别表示 “是否包含警告事件”、“是否包含错误事件”、“是否包含严重事件”。）
+          type: integer
+          format: int32
+        - name: clusterName
+          in: query
+          required: false
+          description: 节点名称
+          type: string
+          minLength: 0
+          maxLength: 256
+        - name: extendStr
+          in: query
+          required: false
+          description: 扩展字段
+          type: string
+          minLength: 0
+          maxLength: 1024
+        - name: esn
+          in: query
+          required: false
+          description: esn
+          type: string
+          minLength: 0
+          maxLength: 256
+        - name: slaIds
+          in: query
+          required: false
+          description: sla id 数组
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse_jobBo'
+            originalRef: PageListResponse«JobBo»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/jobs/action/export:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Job API
+      summary: 导出任务
+      operationId: exportUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: copyId
+          in: query
+          description: 副本id
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 64
+        - name: fromCopyTime
+          in: query
+          description: 副本生成时间(按范围查询的开始时间)
+          required: false
+          type: integer
+          format: int64
+          minimum: 0
+        - name: fromEndTime
+          in: query
+          description: 任务结束时间(按范围查询的开始时间)
+          required: false
+          type: integer
+          format: int64
+          minimum: 0
+        - name: fromStartTime
+          in: query
+          description: 任务创建时间(按范围查询的开始时间)
+          required: false
+          type: integer
+          format: int64
+          minimum: 0
+        - name: isSystem
+          in: query
+          description: 是否为系统任务。是：true，不是：false
+          required: false
+          type: boolean
+        - name: isVisible
+          in: query
+          description: 是否展示任务
+          required: false
+          type: boolean
+        - name: jobId
+          in: query
+          description: 任务id
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 64
+        - name: lang
+          in: query
+          description: 语言，中文为zh_CN,英文为en
+          required: false
+          type: string
+          default: en
+          minLength: 0
+          maxLength: 64
+        - name: orderBy
+          in: query
+          description: 排序字段
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 256
+        - name: orderType
+          in: query
+          description: 排序类型
+          required: false
+          type: string
+          x-example: asc
+          minLength: 0
+          maxLength: 64
+        - name: sourceId
+          in: query
+          description: 任务对象ID
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 64
+        - name: sourceLocation
+          in: query
+          description: 任务对象位置
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 1024
+        - name: sourceName
+          in: query
+          description: 任务对象名称
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 256
+        - name: sourceTypes
+          in: query
+          description: >-
+            资源子类型[取值范围]ABBackupClient:主机 Fileset:文件集 DB2:DB2
+            SQLServer:SQLServer  MySQL:MySQL GaussDB:GaussDB  Oracle:Oracle数据库
+            Volume:主机卷 VMWare:VMware虚拟化平台 vim.VirtualMachin:VMware虚拟机
+            vim.HostSystem:VMware主机系统 vim.ClusterComputeResource:集群
+            Hyper-V:Hyper-V虚拟化平台 ms.VirtualMachine:Hyper-V虚拟机
+            ms.HostSystem:Hyper-V主机系统
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+          minItems: 0
+          maxItems: 128
+        - name: statusList
+          in: query
+          description: >-
+            ''任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
+            PARTIAL_SUCCESS:部分成功 ABORTED: 停止 ABORTING: 停止中 FAIL:失败 ABNORMAL:异常
+            CANCELLED:取消
+            ABORT_FAILED:停止失败''
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+          minItems: 0
+          maxItems: 16
+        - name: targetLocation
+          in: query
+          description: 任务目标结果位置
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 1024
+        - name: targetName
+          in: query
+          description: 任务目标结果对象
+          required: false
+          type: string
+          minLength: 0
+          maxLength: 256
+        - name: toCopyTime
+          in: query
+          description: 副本生成时间(按范围查询的结束时间)
+          required: false
+          type: integer
+          format: int64
+          minimum: 0
+        - name: toEndTime
+          in: query
+          description: 任务结束时间(按范围查询的结束时间)
+          required: false
+          type: integer
+          format: int64
+          minimum: 0
+        - name: toStartTime
+          in: query
+          description: 任务创建时间(按范围查询的结束时间)
+          required: false
+          type: integer
+          format: int64
+        - name: types
+          in: query
+          description: >-
+            任务类型[取值范围]BACKUP:备份 RESTORE:恢复 INSTANT_RESTORE:即时恢复 live_mount:即时挂载
+            copy_replication:副本复制 archive:归档 COPY_DELETE:副本删除 COPY_EXPIRE:副本过期
+            unmount:卸载 DB_IDENTIFICATION:敏感数据识别 DB_DESESITIZATION:数据脱敏
+            archive_import:副本导入 migrate:迁移 resource_scan:注册
+            resource_protection:资源保护 resource_protection_modify:修改保护
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+          minItems: 0
+          maxItems: 32
+        - name: logLevels
+          in: query
+          required: false
+          description: 任务详情包含特定级别事件标志（使用整数的二进制形式表示多个标志位。目前表示3个标志位，从高位到低位分别表示 “是否包含警告事件”、“是否包含错误事件”、“是否包含严重事件”。）
+          type: integer
+          format: int32
+        - name: excludeTypes
+          in: query
+          required: false
+          type: boolean
+        - name: clusterName
+          in: query
+          required: false
+          description: 节点名称
+          type: string
+          minLength: 0
+          maxLength: 256
+        - name: extendStr
+          in: query
+          required: false
+          description: 扩展字段
+          type: string
+          minLength: 0
+          maxLength: 1024
+        - name: esn
+          in: query
+          required: false
+          description: esn
+          type: string
+          minLength: 0
+          maxLength: 256
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/jobs/summary:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Job API
+      summary: 任务汇总
+      operationId: summaryUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: endTime
+          in: query
+          description: 结束时间
+          required: false
+          type: integer
+          format: int64
+        - name: startTime
+          in: query
+          description: 开始时间
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/TaskSummaryResponseBody'
+            originalRef: TaskSummaryResponseBody
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/jobs/{jobId}:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Job API
+      summary: 查询单个任务
+      operationId: queryJobUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: jobId
+          in: path
+          description: 任务id
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 0
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/JobBo'
+            originalRef: JobBo
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/jobs/{jobId}/action/stop:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Job API
+      summary: 停止任务
+      operationId: stopTaskUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: jobId
+          in: path
+          description: 任务id
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 0
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/jobs/{jobId}/logs:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-sysadmin-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-public-api: 'Y'
+      tags:
+        - Job API
+      summary: 查询任务日志
+      operationId: queryJobLogsUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: jobId
+          in: path
+          description: 任务id
+          required: true
+          type: string
+          maxLength: 64
+          minLength: 0
+        - name: orderBy
+          in: query
+          description: 排序字段
+          required: false
+          type: string
+        - name: orderType
+          in: query
+          description: 排序类型
+          required: false
+          type: string
+          x-example: asc
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          maximum: 200.0
+          minimum: 0.0
+          format: int32
+          x-example: 10
+        - name: startPage
+          in: query
+          description: 分页起始页面
+          required: false
+          type: integer
+          minimum: 0.0
+          format: int32
+          x-example: 0
+        - name: levels
+          in: query
+          required: false
+          description: 筛选日志等级
+          type: array
+          items:
+            enum:
+              - info
+              - warning
+              - error
+              - fatal
+            type: string
+          x-impact-subsystem: 不影响
+          x-access-port: 30081
+          x-auth-required: 'N'
+          x-public-api: 'N'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse«JobLogBo»'
+            originalRef: PageListResponse«JobLogBo»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+  /v1/jobs/{jobId}/tag:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Job API
+      summary: 设置任务备注信息
+      description: 在任务管理界面中，支持对运行中的任务和已完成的任务设置描述信息。
+      operationId: setJobTagUsingPUT
+      consumes:
+        - application/json
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          type: string
+          description: 任务id
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: tag
+          in: query
+          required: true
+          description: 任务备注信息（不为空，最大长度支持64）
+          type: string
+      responses:
+        '200':
+          description: OK
+  /v1/jobs/action/report:
+    post:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Job API
+      summary: 导出任务
+      description: 导出任务
+      operationId: queryReportJobsUsingPost
+      parameters:
+        - name: queryJobRequest
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/QueryReportJobsRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PageListResponse'
+  /v1/jobs/{jobId}/action/execute:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - Job API
+      summary: 执行指定任务
+      operationId: executeJobUsingPut
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          type: string
+          description: 任务ID
+          minLength: 0
+          maxLength: 64
+        - name: x-auth-token
+          in: header
+          required: true
+          type: string
+          description: Access token
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: Not found
+          schema:
+            type: string
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  CreateJobRequest:
+    type: object
+    properties:
+      copyId:
+        type: string
+        description: 副本id
+      copyTime:
+        type: integer
+        format: int64
+        description: 副本数据时间
+      data:
+        type: object
+        description: ${jobs.api.data}
+        additionalProperties:
+          type: object
+      detail:
+        type: string
+        description: 任务描述
+      detailPara:
+        type: array
+        description: 描述参数
+        items:
+          type: string
+      enableStop:
+        type: boolean
+        example: false
+        description: 任务能否被中止。能中止：true，不能中止：false
+      isSystem:
+        type: boolean
+        example: false
+        description: 是否为系统任务。是：true，不是：false
+      isVisible:
+        type: boolean
+        example: true
+        description: 是否展示任务
+      jobId:
+        type: string
+        description: 任务id
+      message:
+        description: 任务消息
+        $ref: '#/definitions/JobMessage'
+        originalRef: JobMessage
+      requestId:
+        type: string
+        description: 请求ID
+      sourceId:
+        type: string
+        description: 任务对象ID
+      sourceLocation:
+        type: string
+        description: 任务对象位置
+      sourceName:
+        type: string
+        description: 任务对象名称
+      sourceSubType:
+        type: string
+        description: >-
+          资源子类型[取值范围]ABBackupClient:主机 Fileset:文件集 DB2:DB2 SQLServer:SQLServer
+          MySQL:MySQL GaussDB:GaussDB  Oracle:Oracle数据库 Volume:主机卷
+          VMWare:VMware虚拟化平台 vim.VirtualMachin:VMware虚拟机
+          vim.HostSystem:VMware主机系统 vim.ClusterComputeResource:集群
+          Hyper-V:Hyper-V虚拟化平台 ms.VirtualMachine:Hyper-V虚拟机
+          ms.HostSystem:Hyper-V主机系统
+      sourceType:
+        type: string
+        description: >-
+          资源类型[取值范围]Host:主机 Fileset:文件集 DFSFileset:DFS文件集 Database:数据库
+          Application:Application VirtualPlatform:虚拟化 CloudPlatform:云平台 VM:虚拟机
+          BigData:大数据
+      status:
+        type: string
+        description: >-
+          任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
+          PARTIAL_SUCCESS:部分成功 ABORTED: 停止 ABORTING: 停止中 FAIL:失败 ABNORMAL:异常
+          CANCELLED:取消 ABORT_FAILED:停止失败
+        enum:
+          - PENDING
+          - READY
+          - RUNNING
+          - ABNORMAL
+          - FAIL
+          - CANCELLED
+          - SUCCESS
+          - PARTIAL_SUCCESS
+          - ABORTING
+          - ABORTED
+          - ABORT_FAILED
+      targetLocation:
+        type: string
+        description: 任务目标结果位置
+      targetName:
+        type: string
+        description: 任务目标结果对象
+      type:
+        type: string
+        description: >-
+          任务类型[取值范围]BACKUP:备份 RESTORE:恢复 INSTANT_RESTORE:即时恢复 live_mount:即时挂载
+          copy_replication:副本复制 archive:归档 COPY_DELETE:副本删除 COPY_EXPIRE:副本过期
+          unmount:卸载 DB_IDENTIFICATION:敏感数据识别 DB_DESESITIZATION:数据脱敏
+          archive_import:副本导入 migrate:迁移 resource_scan:注册
+          resource_protection:资源保护 resource_protection_modify:修改保护
+      userId:
+        type: string
+        description: 用户id
+    title: CreateJobRequest
+  JobBo:
+    properties:
+      associativeId:
+        type: string
+        description: 实例id
+      additionalStatus:
+        type: string
+        description: 任务附加状态[取值范围] Database Available:数据库可用；Virtual Machine Available：虚拟机可用
+      copyId:
+        type: string
+        description: 副本id
+      copyTime:
+        type: integer
+        format: int64
+        description: 副本数据时间
+      detail:
+        type: string
+        description: 任务描述
+      detailPara:
+        type: array
+        description: 描述参数
+        items:
+          type: string
+      detailParas:
+        type: string
+        description: 描述参数
+      enableStop:
+        type: boolean
+        description: 任务能否被中止。能中止：true，不能中止：false
+      endTime:
+        type: integer
+        format: int64
+        description: 结束时间
+      extendStr:
+        type: string
+        description: >-
+          ''扩展属性，格式为json字符串，不同的任务会有不同的数据；备份任务中，缩减前数据量字段名为dataBeforeRedutciton，缩减后数据量字段名为dataAfterReduction，sla名称字段名为slaName，备份任务的备份类型字段名为backupType，比如
+          {"dataBeforeReduction": "20 GB", "dataAfterRecution": "17 GB",
+          "slaName": "oracle_sla", "backupType":
+          "difference_increment"}。恢复任务中，恢复类型字段名为restoreType，比如{"restoreType":
+          "FLR"}（FLR表示文件级恢复）''
+      isSystem:
+        type: boolean
+        description: 是否为系统任务。是：true，不是：false
+      jobId:
+        type: string
+        description: 任务id
+      jobLogs:
+        type: array
+        description: 任务详情
+        items:
+          $ref: '#/definitions/JobLogBo'
+          originalRef: JobLogBo
+      lastUpdateTime:
+        type: integer
+        format: int64
+        description: 任务上次更新时间
+      progress:
+        type: integer
+        format: int32
+        description: 任务进度
+      sourceId:
+        type: string
+        description: 任务对象ID
+      sourceLocation:
+        type: string
+        description: 任务对象位置
+      sourceName:
+        type: string
+        description: 任务对象名称
+      sourceSubType:
+        type: string
+        description: >-
+          资源子类型[取值范围]ABBackupClient:主机 Fileset:文件集 DB2:DB2 SQLServer:SQLServer
+          MySQL:MySQL GaussDB:GaussDB  Oracle:Oracle数据库 Volume:主机卷
+          VMWare:VMware虚拟化平台 vim.VirtualMachin:VMware虚拟机
+          vim.HostSystem:VMware主机系统 vim.ClusterComputeResource:集群
+          Hyper-V:Hyper-V虚拟化平台 ms.VirtualMachine:Hyper-V虚拟机
+          ms.HostSystem:Hyper-V主机系统
+      sourceType:
+        type: string
+        description: >-
+          资源类型[取值范围]Host:主机 Fileset:文件集 DFSFileset:DFS文件集 Database:数据库
+          Application:Application VirtualPlatform:虚拟化 CloudPlatform:云平台 VM:虚拟机
+          BigData:大数据
+      speed:
+        type: string
+        description: 执行速度
+      startTime:
+        type: integer
+        format: int64
+        description: 开始时间
+      status:
+        type: string
+        description: >-
+          ''任务状态[取值范围]READY:准备中 PENDING排队中 RUNNING:运行中 SUCCESS:成功
+          PARTIAL_SUCCESS:部分成功 ABORTED: 停止 ABORTING: 停止中 FAIL:失败 ABNORMAL:异常
+          CANCELLED:取消
+          ABORT_FAILED:停止失败''
+      targetLocation:
+        type: string
+        description: 任务目标结果位置
+      targetName:
+        type: string
+        description: 任务目标结果对象
+      type:
+        type: string
+        description: >-
+          任务类型[取值范围]BACKUP:备份 RESTORE:恢复 INSTANT_RESTORE:即时恢复 live_mount:即时挂载
+          copy_replication:副本复制 archive:归档 COPY_DELETE:副本删除 COPY_EXPIRE:副本过期
+          unmount:卸载 DB_IDENTIFICATION:敏感数据识别 DB_DESESITIZATION:数据脱敏
+          archive_import:副本导入 migrate:迁移 resource_scan:注册
+          resource_protection:资源保护 resource_protection_modify:修改保护
+      userId:
+        type: string
+        description: 用户id
+      clusterName:
+        type: string
+        description: 集群名称
+      deviceEsn:
+        type: string
+        description: 设备ESN
+      logLevels:
+        type: string
+        description: 任务详情是否包含特定级别事件标志位
+      message:
+        type: string
+        description: 任务中的消息体信息
+    title: JobBo
+    type: object
+  JobLogBo:
+    type: object
+    properties:
+      endTime:
+        type: integer
+        format: int64
+        description: 结束时间
+      jobId:
+        type: string
+        description: 任务id
+      level:
+        type: string
+        description: 日志级别[取值范围]info:提示 warning:警告 error:错误 fatal:致命
+      logDetail:
+        type: string
+        description: "任务详情附加信息（失败时为错误码）\r\n\r\n"
+      logDetailInfo:
+        type: string
+        description: 任务详情补充说明
+      logDetailParam:
+        type: array
+        description: "任务详情附加信息参数\r\n\r\n"
+        items:
+          type: string
+      logInfo:
+        type: string
+        description: 日志信息
+      logInfoParam:
+        type: array
+        description: "任务详情参数\r\n"
+        items:
+          type: string
+      startTime:
+        type: integer
+        format: int64
+        description: 开始时间
+    title: JobLogBo
+  JobMessage:
+    type: object
+    properties:
+      abolish:
+        type: array
+        description: ${jobs.api.message.abolish}
+        items:
+          type: object
+      inContext:
+        type: boolean
+        description: ${jobs.api.message.in_context}
+      payload:
+        type: object
+        description: ${jobs.api.message.payload}
+        additionalProperties:
+          type: object
+      topic:
+        type: string
+        description: ${jobs.api.message.topic}
+      traffic:
+        type: object
+        description: ${jobs.api.message.traffic}
+        additionalProperties:
+          type: object
+    title: JobMessage
+  JobQueryBo:
+    type: object
+    properties:
+      source_ids:
+        type: array
+        items:
+          type: string
+      status_list:
+        type: array
+        items:
+          type: string
+      types:
+        type: array
+        items:
+          type: string
+    title: JobQueryBo
+  JobScheduleConfig:
+    type: object
+    properties:
+      jobType:
+        type: string
+      rules:
+        type: array
+        items:
+          $ref: '#/definitions/JobScheduleRule'
+          originalRef: JobScheduleRule
+    title: JobScheduleConfig
+  JobScheduleRule:
+    type: object
+    properties:
+      examine:
+        type: string
+      globalJobLimit:
+        type: object
+        additionalProperties:
+          type: integer
+          format: int32
+      majorPriority:
+        type: integer
+        format: int32
+      minorPriorities:
+        type: array
+        items:
+          type: string
+      pendingWindow:
+        type: integer
+        format: int64
+      resumeStatus:
+        type: string
+        enum:
+          - PENDING
+          - READY
+          - RUNNING
+          - ABNORMAL
+          - FAIL
+          - CANCELLED
+          - SUCCESS
+          - PARTIAL_SUCCESS
+          - ABORTING
+          - ABORTED
+          - ABORT_FAILED
+      scope:
+        type: object
+      scopeJobLimit:
+        type: integer
+        format: int32
+      strictScope:
+        type: boolean
+    title: JobScheduleRule
+  PageListResponse_jobBo:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 分页查询结果列表
+        items:
+          $ref: '#/definitions/JobBo'
+          originalRef: JobBo
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数
+      startIndex:
+        type: integer
+        format: int32
+        description: 开始位置
+      totalPages:
+        type: integer
+        format: int32
+        description: 总页数
+      pageSize:
+        type: integer
+        format: int32
+        description: 分页大小
+    title: PageListResponse«JobBo»
+  PageListResponse«JobLogBo»:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 分页查询结果列表
+        items:
+          $ref: '#/definitions/JobLogBo'
+          originalRef: JobLogBo
+      totalCount:
+        type: integer
+        format: int32
+        description: 总数
+    title: PageListResponse«JobLogBo»
+  TaskSummaryResponseBody:
+    type: object
+    properties:
+      aborted:
+        type: integer
+        format: int64
+        description: 终止任务数
+      fail:
+        type: integer
+        format: int64
+        description: 失败任务数
+      others:
+        type: integer
+        format: int64
+        description: 其他
+      pending:
+        type: integer
+        format: int64
+        description: 排队中任务数
+      ready:
+        type: integer
+        format: int64
+        description: 准备中
+      running:
+        type: integer
+        format: int64
+        description: 运行中任务数
+      success:
+        type: integer
+        format: int64
+        description: 成功任务数
+      total:
+        type: integer
+        format: int64
+        description: 总任务数
+      dispatching:
+        type: integer
+        format: int64
+        description: 分发中
+      aborting:
+        type: integer
+        format: int64
+        description: 停止中
+      abort_failed:
+        type: integer
+        format: int64
+        description: 停止失败
+      partial_success:
+        type: integer
+        format: int64
+        description: 部分成功
+      dispatch_failed:
+        type: integer
+        format: int64
+        description: 分发失败
+      abnormal:
+        type: integer
+        format: int64
+        description: 不正常
+      redispatch:
+        type: integer
+        format: int64
+        description: 重新分发
+    title: TaskSummaryResponseBody
+  UpdateJobRequest:
+    type: object
+    properties:
+      associativeId:
+        type: string
+      copyId:
+        type: string
+      copyTime:
+        type: integer
+        format: int64
+      data:
+        type: object
+        additionalProperties:
+          type: object
+      enableStop:
+        type: boolean
+      extendStr:
+        type: string
+      jobLogs:
+        type: array
+        items:
+          $ref: '#/definitions/JobLogBo'
+          originalRef: JobLogBo
+      progress:
+        type: integer
+        format: int32
+      speed:
+        type: string
+      status:
+        type: string
+        enum:
+          - PENDING
+          - READY
+          - RUNNING
+          - ABNORMAL
+          - FAIL
+          - CANCELLED
+          - SUCCESS
+          - PARTIAL_SUCCESS
+          - ABORTING
+          - ABORTED
+          - ABORT_FAILED
+    title: UpdateJobRequest
+  QueryJobRequest:
+    type: object
+    required:
+      - types
+      - isExcludeTypes
+      - sourceTypes
+    properties:
+      types:
+        type: array
+        items:
+          type: string
+        description: 类型
+      isExcludeTypes:
+        type: boolean
+      sourceTypes:
+        type: array
+        items:
+          type: string
+      statusList:
+        type: array
+        items:
+          type: string
+      fromStartTime:
+        type: integer
+        format: int64
+      toStartTime:
+        type: integer
+        format: int64
+      copyId:
+        type: string
+      fromCopyTime:
+        type: integer
+        format: int64
+      toCopyTime:
+        type: integer
+        format: int64
+      fromEndTime:
+        type: integer
+        format: int64
+      toEndTime:
+        type: integer
+        format: int64
+      sourceName:
+        type: string
+      sourceLocation:
+        type: string
+      sourceId:
+        type: string
+      targetName:
+        type: string
+      targetLocation:
+        type: string
+      isSystem:
+        type: boolean
+      isVisible:
+        type: boolean
+      jobId:
+        type: string
+      extendStr:
+        type: string
+      logLevels:
+        type: integer
+        format: int32
+  PagingParamRequest:
+    type: object
+    required:
+      - startPage
+      - pageSize
+    properties:
+      DEFAULT_START_PAGE:
+        type: integer
+        format: int32
+        description: 默认起始页为0
+      DEFAULT_PAGE_SIZE:
+        type: integer
+        format: int32
+        description: 默认页大小为10
+      startPage:
+        type: integer
+        format: int32
+        description: 起始页
+      pageSize:
+        type: integer
+        format: int32
+        description: 每页数据量
+  SortingParamRequest:
+    type: object
+    properties:
+      ASC:
+        type: string
+        description: 升序，"asc"
+      DES:
+        type: string
+        description: 降序，"desc"
+      START_TIME:
+        type: string
+        description: '"START_TIME"'
+      orderBy:
+        type: string
+      orderType:
+        type: string
+  QueryReportJobsRequest:
+    type: object
+    properties:
+      queryJobRequest:
+        $ref: '#/definitions/QueryJobRequest'
+      pagingParamRequest:
+        $ref: '#/definitions/PagingParamRequest'
+      sortingParamRequest:
+        $ref: '#/definitions/SortingParamRequest'
+  JobReportBo:
+    type: object
+    properties:
+      jobId:
+        type: string
+      type:
+        type: string
+      progress:
+        type: integer
+        format: int32
+      startTime:
+        type: string
+      endTime:
+        type: string
+      status:
+        type: string
+      speed:
+        type: string
+      dataBeforeReduction:
+        type: string
+      dataAfterReduction:
+        type: string
+      userId:
+        type: string
+      sourceName:
+        type: string
+        description: 保护对象名称
+      sourceLocation:
+        type: string
+        description: 保护对象位置
+      sourceSubType:
+        type: string
+        description: 保护对象子类型
+      targetName:
+        type: string
+        description: 目标名称
+      targetLocation:
+        type: string
+        description: 目标对象位置
+      duration:
+        type: string
+        description: 任务持续时间
+  PageListResponse:
+    type: object
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+      startIndex:
+        type: integer
+        format: int32
+      pageSize:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/JobReportBo'

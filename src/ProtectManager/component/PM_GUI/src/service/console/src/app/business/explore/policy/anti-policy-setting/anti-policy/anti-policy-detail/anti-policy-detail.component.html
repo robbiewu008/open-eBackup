@@ -1,0 +1,130 @@
+<lv-form class="formGroup">
+  <div class="aui-header-2 configuration-header mt-16">
+    <h2>{{ 'common_basic_info_label' | i18n }}</h2>
+  </div>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_name_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      {{ data.policyName | nil }}
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_desc_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      {{ data.description | nil }}
+    </lv-form-control>
+  </lv-form-item>
+  <div class="aui-header-2 configuration-header mt-16">
+    <h2>{{ (isX3000 ? 'common_worm_policy_label' : 'common_anti_policy_label') | i18n }}</h2>
+  </div>
+
+  <lv-form-item *ngIf="!isX3000">
+    <lv-form-label>
+      {{ 'operation_target_antiransomwarepolicy_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      {{
+        (!!needDetect ? 'common_enabled_label' : 'common_disabled_label') | i18n
+      }}
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="needDetect">
+    <lv-form-label></lv-form-label>
+    <lv-form-control>
+      <lv-form-item>
+        <lv-form-control>
+          {{ 'common_scheduled_label' | i18n }}：
+          {{ schedulePolicy | textMap: 'Scheduling_Plan' }}
+        </lv-form-control>
+      </lv-form-item>
+
+      <ng-container
+        *ngIf="schedulePolicy !== dataMap.Scheduling_Plan.immediately.value"
+      >
+        <lv-form-item>
+          <lv-form-control>
+            {{ 'explore_detected_frequency_label' | i18n }}：{{
+              'common_every_label' | i18n
+            }}{{ interval }}{{ intervalUnit | textMap: 'Interval_Unit'
+            }}{{ 'explore_detecte_label' | i18n }}
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-control>
+            {{ 'explore_detected_first_time_label' | i18n: []:true
+            }}{{ startDetectionTime }}
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+          <lv-form-control>
+            <ng-container
+              *ngIf="detectionType === dataMap.Detecting_Range.specified.value"
+            >
+              {{ 'explore_detect_range_label' | i18n }}：
+              {{ 'explore_only_detecte_label' | i18n }}{{ copyTime
+              }}{{ 'explore_after_copy_label' | i18n }}
+            </ng-container>
+            <ng-container
+              *ngIf="detectionType !== dataMap.Detecting_Range.specified.value"
+            >
+              {{ 'explore_detect_range_label' | i18n }}:
+              {{ 'explore_detecte_label' | i18n
+              }}{{ detectionType | textMap: 'Detecting_Range' }}
+            </ng-container>
+          </lv-form-control>
+        </lv-form-item>
+      </ng-container>
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'common_worm_policy_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      {{
+        (!!setWorm ? 'common_enabled_label' : 'common_disabled_label') | i18n
+      }}
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item *ngIf="setWorm">
+    <lv-form-label> </lv-form-label>
+    <lv-form-control>
+      <ng-container>
+        <lv-form-item>
+          <lv-form-label
+            >{{ 'explore_anti_tampering_setting_label' | i18n }}:</lv-form-label
+          >
+          <lv-form-control>
+            {{ antiTamperingSetting }}
+          </lv-form-control>
+        </lv-form-item>
+      </ng-container>
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <div class="aui-header-2 configuration-header mt-24">
+      <h2>{{ 'common_associated_resource_label' | i18n }}</h2>
+    </div>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label>
+      {{ 'explore_data_source_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control>
+      {{ data.dataSourceType | textMap: 'Detecting_Data_Source' }}
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+<lv-pro-table
+  #dataTable
+  [config]="tableConfig"
+  [data]="tableData"
+></lv-pro-table>

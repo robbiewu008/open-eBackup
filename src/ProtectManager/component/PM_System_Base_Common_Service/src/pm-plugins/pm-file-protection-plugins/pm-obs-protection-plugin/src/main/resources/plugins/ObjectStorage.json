@@ -1,0 +1,7 @@
+{
+  "type": "ObjectStorage",
+  "subType": "ObjectStorage",
+  "functions": {
+    "auto-scan": false
+  }
+}

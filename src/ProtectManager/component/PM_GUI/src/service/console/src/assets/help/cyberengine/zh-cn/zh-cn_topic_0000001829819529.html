@@ -1,0 +1,30 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="制作证书链文件">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001829819529">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>制作证书链文件</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001829819529"></a><a name="ZH-CN_TOPIC_0000001829819529"></a>
+
+<h1 class="topictitle1">制作证书链文件</h1>
+<div id="body0000001142385366"><p id="ZH-CN_TOPIC_0000001829819529__zh-cn_topic_0000001456305632_zh-cn_topic_0000001456489280_p17833131211519">当CA证书不是根CA证书时，导入的CA证书必须是一个完整的证书链文件。本文介绍如何制作证书链文件。</p>
+<div class="section" id="ZH-CN_TOPIC_0000001829819529__zh-cn_topic_0000001456305632_zh-cn_topic_0000001456489280_section1861462651819"><h4 class="sectiontitle">前提条件</h4><p id="ZH-CN_TOPIC_0000001829819529__zh-cn_topic_0000001456305632_zh-cn_topic_0000001456489280_p146318306180">已获取设备证书的多级CA证书文件。</p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000001829819529__zh-cn_topic_0000001456305632_zh-cn_topic_0000001456489280_section183923157221"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000001829819529__zh-cn_topic_0000001456305632_zh-cn_topic_0000001456489280_ol105646164186"><li id="ZH-CN_TOPIC_0000001829819529__zh-cn_topic_0000001456305632_zh-cn_topic_0000001456489280_li16564416121813"><span>在本地新建一个空白的文本文档，如certificate.txt。</span></li><li id="ZH-CN_TOPIC_0000001829819529__zh-cn_topic_0000001456305632_zh-cn_topic_0000001456489280_li185404529192"><span>按根证书、二级证书、三级证书...的顺序依次打开证书文件，并依次复制证书文件内容（从“-----BEGIN CERTIFICATE-----”到“-----END CERTIFICATE-----”）到新建的文本文档中。</span><p><p id="ZH-CN_TOPIC_0000001829819529__zh-cn_topic_0000001456305632_zh-cn_topic_0000001456489280_p15771614203216">下图以设备证书为三级CA证书的为例，完整的证书链内容示例如下。</p>
+<p id="ZH-CN_TOPIC_0000001829819529__zh-cn_topic_0000001456305632_zh-cn_topic_0000001456489280_p1223112129328"><span><img id="ZH-CN_TOPIC_0000001829819529__zh-cn_topic_0000001456305632_zh-cn_topic_0000001456489280_image129471453302" src="zh-cn_image_0000001783060446.png"></span></p>
+</p></li><li id="ZH-CN_TOPIC_0000001829819529__zh-cn_topic_0000001456305632_zh-cn_topic_0000001456489280_li16432153410213"><span>保存文件，修改后缀名称为pem。</span></li></ol>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

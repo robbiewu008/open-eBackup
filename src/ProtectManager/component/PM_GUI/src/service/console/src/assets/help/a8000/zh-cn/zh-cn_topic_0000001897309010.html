@@ -1,0 +1,101 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复NDMP NAS文件系统">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001897309098.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001897309010">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复NDMP NAS文件系统</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001897309010"></a><a name="ZH-CN_TOPIC_0000001897309010"></a>
+
+<h1 class="topictitle1">恢复NDMP NAS文件系统</h1>
+<div><p>当需要对已备份的NDMP NAS文件系统进行恢复时，可以参考本节恢复NDMP NAS文件系统至原位置或新位置。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><p><span>OceanProtect</span>支持使用备份副本进行恢复，支持恢复至原位置或新位置。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>如果将NDMP NAS文件系统恢复到新位置，需要先将新位置的存储设备添加到<span>OceanProtect</span>。添加存储设备的详细操作请参见<a href="zh-cn_topic_0000001937668485.html">步骤1：添加存储设备</a>。</li><li>恢复前请确认目标位置剩余空间大于待恢复的NDMP NAS文件系统，如果空间不足，请在目标位置扩容或释放足够的空间以完成恢复。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>当目标位置没有足够空间进行恢复时，NDMP NAS恢复任务部分成功，恢复失败的文件无法还原，恢复事件中存在以下类似消息：</p>
+<p>RESTORE: Warning: We recommend that 13547742 inodes and 6991617042 kbytes of disk space   be available on the target volume in order to restore this dump.        You have 8348418 inodes and 271447472 kbytes of disk space on volume ndmp_shu8t.</p>
+<p>RESTORE: Warning: This restore will proceed, but may fail when it runs out of inodes and/or disk space on this volume.</p>
+</div></div>
+</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><p>已被保护的NDMP NAS文件系统，在生产端上修改<span>OceanProtect</span>中的NDMP NAS文件系统名称后，重新进行资源扫描，<span>OceanProtect</span>会将该文件系统识别为新的资源，不会继承原文件系统的备份策略和备份副本。新名称的文件系统如需备份需重新进行保护配置。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001897309010__zh-cn_topic_0000001839142377_uicontrol209301891893">“<span id="ZH-CN_TOPIC_0000001897309010__zh-cn_topic_0000001839142377_text09301392911">数据利用</span> &gt; <span id="ZH-CN_TOPIC_0000001897309010__zh-cn_topic_0000001839142377_text149305915920">副本数据</span> &gt; 文件系统 &gt; <span id="ZH-CN_TOPIC_0000001897309010__zh-cn_topic_0000001839142377_text189301391992">NAS文件系统</span>”</span>。</span></li><li><span>支持以NDMP NAS文件系统资源维度或以副本维度查找副本，本节以NDMP NAS文件系统资源维度为例进行说明。</span><p><p>在“<span>资源</span>”页签，根据NDMP NAS文件系统名称查找到需要恢复的文件系统，并单击文件系统名称。</p>
+</p></li><li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页面，依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000001937668641.png"></span>，即表示该月、该天存在副本。</p>
+</p></li><li><span>在副本所在的行，单击<span class="uicontrol">“<span>更多</span> &gt; <span>恢复</span>”</span>。</span></li><li><span>恢复NDMP NAS文件系统至原位置或新位置。</span><p><ul><li>恢复至原位置。<p>相关参数说明如<a href="#ZH-CN_TOPIC_0000001897309010__table1452025982813">表1</a>所示。</p>
+
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000001897309010__table1452025982813"></a><a name="table1452025982813"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001897309010__table1452025982813" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复至原位置参数说明</caption><colgroup><col style="width:13.569999999999999%"><col style="width:86.42999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.5.2.5.2.1.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.5.2.5.2.1.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.1.2.2.3.1.1 "><p><span>位置</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.1.2.2.3.1.2 "><p>文件系统所在的位置，用户无法修改。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>恢复至新位置。<p>相关参数说明如<a href="#ZH-CN_TOPIC_0000001897309010__table1248313820599">表2</a>所示。</p>
+
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000001897309010__table1248313820599"></a><a name="table1248313820599"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001897309010__table1248313820599" frame="border" border="1" rules="all"><caption><b>表2 </b>恢复至新位置参数说明</caption><colgroup><col style="width:13.569999999999999%"><col style="width:86.42999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.5.2.5.2.1.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.5.2.5.2.1.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p><span>存储设备</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p>选择新位置所在的存储设备。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p><span>文件系统</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p>选择恢复目标文件系统。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p><span>FQDN/IP</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p>访问NAS共享的FQDN名称或者业务IP地址。</p>
+<p>FQDN名称格式为<em id="ZH-CN_TOPIC_0000001897309010__zh-cn_topic_0000001897469002_i1721710819358">NAS共享所在的存储设备名称</em>.<em id="ZH-CN_TOPIC_0000001897309010__zh-cn_topic_0000001897469002_i12733111103514">存储设备所加入域的域名</em>。如NAS共享所在的存储设备名称为Huawei.Storage，存储设备所加入域的域名为huawei.com，则FQDN名称为Huawei.Storage.huawei.com。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001897309010__zh-cn_topic_0000001897469002_p53320310365">如果需要填写FQDN名称，请在<span id="ZH-CN_TOPIC_0000001897309010__zh-cn_topic_0000001897469002_text45421758151311">OceanProtect</span>设备管理界面配置DNS服务，使<span id="ZH-CN_TOPIC_0000001897309010__zh-cn_topic_0000001897469002_text4110125920135">OceanProtect</span>可以访问外部域名地址。配置DNS服务的详细操作，请参见<a href="zh-cn_topic_0000001897309002.html">配置DNS服务</a>。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.1 "><p><span>覆盖规则</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.5.2.5.2.1.2.2.2.3.1.2 "><p>当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。</p>
+<p><span>直接替换已经存在的文件</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ul>
+</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001897309098.html">恢复</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

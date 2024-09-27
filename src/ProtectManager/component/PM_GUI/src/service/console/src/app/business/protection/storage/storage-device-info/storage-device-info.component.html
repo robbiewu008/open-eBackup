@@ -1,0 +1,34 @@
+<div class="aui-fullpage">
+    <div class="aui-block aui-paginator-container">
+        <div class="aui-operation">
+            <lv-group>
+                <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData" [maxDisplayItems]="maxDisplayItems">
+                </lv-pro-button-group>
+            </lv-group>
+            <lv-group [lvGutter]="groupCommon.middleRowGutter">
+                <lv-search [lvFocus]="true" [(ngModel)]="name" (lvSearch)="search()"
+                    lvPlaceHolder="{{'common_search_type_label'|i18n:['']}}">
+                </lv-search>
+                <button class="aui-button-icon" lv-button lvSize="auto" (click)="dataTable.fetchData()">
+                    <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                </button>
+            </lv-group>
+        </div>
+        <div class="list-container">
+            <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+        </div>
+    </div>
+</div>
+
+<ng-template #resourceTagTpl let-item>
+    <ng-container *ngIf="item?.labelList?.length; else emptyTpl">
+        <lv-tag [ngModel]="item?.showLabelList" [lv-tooltip]="TagTpl"></lv-tag>
+        <ng-template #TagTpl>
+            <lv-tag [ngModel]="item?.hoverLabelList"></lv-tag>
+        </ng-template>
+    </ng-container>
+</ng-template>
+
+<ng-template #emptyTpl>
+    --
+</ng-template>

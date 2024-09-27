@@ -1,0 +1,43 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+  <div>
+    <lv-form-item>
+      <lv-form-label lvRequired>{{nameLabel}}</lv-form-label>
+      <lv-form-control [lvErrorTip]="clusterNameErrorTip">
+        <input lv-input type="text" formControlName="clusterName"
+          placeholder="{{'system_backup_member_node_placeholder_label' | i18n }}" />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ipLabel}}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+        <input lv-input type="text" formControlName="ip" placeholder="{{'system_ip_placeholder_label'| i18n }}" />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{portLabel}}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="portErrorTip">
+        <input lv-input type="text" formControlName="port" placeholder='1~65535' />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="!modifyMemberNode">
+      <lv-form-label lvRequired>
+        {{userNameLabel}}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="usernameErrorTip">
+        <input lv-input type="text" formControlName="username" autocomplete="new-password"
+          placeholder="{{'system_node_username_placeholder_label' | i18n}}" />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="!modifyMemberNode">
+      <lv-form-label [lvRequired]="changedName">{{passwordLabel}}</lv-form-label>
+      <lv-form-control [lvErrorTip]="passwordErrorTip">
+        <aui-inupt-with-eye formControlName="password" placeholder="{{'system_node_passwd_placeholder_label' | i18n}}">
+        </aui-inupt-with-eye>
+      </lv-form-control>
+    </lv-form-item>
+  </div>
+</lv-form>

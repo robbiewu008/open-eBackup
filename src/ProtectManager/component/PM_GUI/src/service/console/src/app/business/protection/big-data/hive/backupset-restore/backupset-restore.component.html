@@ -1,0 +1,114 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_restore_to_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreLocation">
+                <lv-group [lvGutter]="'24px'">
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="restoreToNewLocationOnly"
+                        [lv-tooltip]="restoreToNewLocationOnly ? ('protection_cloud_origin_restore_disabled_label' | i18n) : ''">
+                        {{'common_restore_to_origin_location_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreLocationType.NEW">
+                        {{'common_restore_to_new_location_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_location_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <input lv-input type="text" formControlName="originCluster" />
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_target_to_cluster_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="cluster" [lvOptions]='clusterOptions' lvValueKey='value'>
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ 'protection_metadata_path_label' | i18n }}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_metadata_path_tips_label' | i18n }}"
+                lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-tree-select formControlName="metadataPath" [lvTreeData]="metadataPathData" lvTreeSelectionMode="single"
+                lvTreeAsync="true" (lvExpandedChange)="expandedChange($event)" [lvTreeNodeTemplate]="nodeTpl"
+                lvVirtualScroll lvTreeShowLine>
+            </lv-tree-select>
+            <ng-template #nodeTpl let-item>
+                <div style="width: 380px;" lv-overflow>
+                    <span *ngIf="!item.isMoreBtn">
+                        {{item.label}}
+                    </span>
+                </div>
+                <span class="aui-link" *ngIf="item.isMoreBtn"
+                    (click)="getClusterResource(item.parent,item.startPage)">{{item.label}}</span>
+            </ng-template>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>{{'protection_table_over_write_rule_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="overwriteType">
+                <lv-group [lvGutter]="'20px'" lvDirection='vertical' class="mgt-8">
+                    <lv-radio [lvValue]="fileReplaceStrategy.Skip">{{'protection_skip_table_label' | i18n}}</lv-radio>
+                    <lv-radio [lvValue]="fileReplaceStrategy.Overwrite">{{'protection_overwrite_table_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_table_file_over_write_rule_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_table_data_location_help_label' | i18n }}"
+                lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="tableFileOverwriteType">
+                <lv-group [lvGutter]="'20px'" lvDirection='vertical' class="mgt-8">
+                    <lv-radio [lvValue]="true">{{'protection_delete_table_data_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="false">{{'protection_save_table_data_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+            <div *ngIf="formGroup.value.tableFileOverwriteType === false" class="mgt-location">
+                <lv-form-item>
+                    <lv-form-label lvRequired>
+                        {{ 'protection_table_data_location_label' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-tree-select formControlName="tableNewLocationPath" [lvTreeData]="metadataPathData"
+                            lvTreeSelectionMode="single" lvTreeAsync="true" (lvExpandedChange)="expandedChange($event)"
+                            [lvTreeNodeTemplate]="nodeTpl" lvVirtualScroll lvTreeShowLine>
+                        </lv-tree-select>
+                        <ng-template #nodeTpl let-item>
+                            <div style="width: 380px;" lv-overflow>
+                                <span *ngIf="!item.isMoreBtn">
+                                    {{item.label}}
+                                </span>
+                            </div>
+                            <span class="aui-link" *ngIf="item.isMoreBtn"
+                                (click)="getClusterResource(item.parent,item.startPage)">{{item.label}}</span>
+                        </ng-template>
+                    </lv-form-control>
+                </lv-form-item>
+            </div>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

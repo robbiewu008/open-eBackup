@@ -1,0 +1,13 @@
+{
+  "name":"test-table",
+  "type":"Database",
+  "subType":"TiDB-table",
+  "uuid": "123123",
+  "parentUuid": "3242342",
+  "extendInfo":{
+    "tiupUuid":"c2f26f36-c4f9-43cc-8fdd-1a8ded788bf5",
+    "clusterName":"tidb-test",
+    "databaseName": "database1",
+    "tableName": "[\"table1\", \"table2\", \"table3\", \"table4\"]"
+  }
+}

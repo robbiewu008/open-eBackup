@@ -1,0 +1,49 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤4：获取VMware证书">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839266973.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839187061">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤4：获取VMware证书</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001839187061"></a><a name="ZH-CN_TOPIC_0000001839187061"></a>
+
+<h1 class="topictitle1">步骤4：获取VMware证书</h1>
+<div><p>注册VMware受保护环境时，建议导入受保护环境的CA证书，否则系统将无法验证其所访问设备的信息，安全性存在风险。本节介绍如何获取VMware受保护环境的CA证书。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ul><li>方式1：向VMware管理员获取。</li><li>方式2：自行下载：<ol><li>当为独立ESXi主机时，请执行该步骤，否则请跳过。<ul><li>当ESXi主机从未被vCenter Server管理过，请向VMware管理员获取CA证书，无需执行后续步骤。</li><li>当ESXi主机被vCenter Server管理过，则ESXi主机的证书由该vCenter Server颁发，下载证书前请先获取管理过该ESXi的vCenter Server。<div class="p">如果ESXi主机曾被vCenter Server管理过，但目前未被vCenter Server管理，请执行<a href="#ZH-CN_TOPIC_0000001839187061__li1935616258434">1.a</a>和<a href="#ZH-CN_TOPIC_0000001839187061__li138643525431">1.b</a>查询管理过该ESXi的vCenter Server的域名，操作以ESXi 6.0版本为例说明。否则，无需执行<a href="#ZH-CN_TOPIC_0000001839187061__li1935616258434">1.a</a>和<a href="#ZH-CN_TOPIC_0000001839187061__li138643525431">1.b</a>。<ol type="a"><li id="ZH-CN_TOPIC_0000001839187061__li1935616258434"><a name="ZH-CN_TOPIC_0000001839187061__li1935616258434"></a><a name="li1935616258434"></a>登录ESXi主机。</li><li id="ZH-CN_TOPIC_0000001839187061__li138643525431"><a name="ZH-CN_TOPIC_0000001839187061__li138643525431"></a><a name="li138643525431"></a>在<span class="uicontrol">“主机 &gt; 管理 &gt; 安全和用户 &gt; 证书”</span>中查看<span class="uicontrol">“颁发者”</span>参数。<p>从<span class="uicontrol">“颁发者”</span>参数中获取vCenter Server的域名，如以下示例中vCenter Server的域名为vcenter21.hw.com。</p>
+<pre class="screen">OU=VMware Engineering,O=vcenter21.hw.com,ST=California,C=US,DC=local,DC=vsphere,CN=CA</pre>
+</li></ol>
+</div>
+</li></ul>
+</li><li id="ZH-CN_TOPIC_0000001839187061__li2083185225310">使用浏览器，打开vCenter Server登录地址。<p id="ZH-CN_TOPIC_0000001839187061__p171383317558"><a name="ZH-CN_TOPIC_0000001839187061__li2083185225310"></a><a name="li2083185225310"></a>登录地址：<strong id="ZH-CN_TOPIC_0000001839187061__b1846275114553">https://</strong><em id="ZH-CN_TOPIC_0000001839187061__i849984595510">vcenter_server_ip_address</em></p>
+</li><li>在界面右侧单击“下载受信任的根CA证书”，下载证书压缩包至本地任意目录。<p>如果下载时浏览器出现乱码的情况，建议：</p>
+<ul><li>方式1：更换其他浏览器（如：Internet Explorer）尝试下载。</li><li>方式2：在乱码页面空白处单击鼠标右键，在弹出的菜单中选择“另存为”，将证书压缩包保存至本地。</li></ul>
+</li><li>解压证书压缩包，参考以下步骤修改证书文件的后缀：<ul><li>VMware vSphere 6.0版本，查找到<span class="uicontrol">“*.0”</span>格式的证书文件，修改证书格式为<span class="uicontrol">“.0.pem”</span>。</li><li>VMware vSphere 6.5，6.7，7.<em>x</em>或8.0版本，查找到<span class="uicontrol">“*.crt”</span>格式的证书文件，修改证书格式为<span class="uicontrol">“.pem”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>当存在多个<span class="uicontrol">“*.crt”</span>文件时，双击打开<span class="uicontrol">“*.crt”</span>文件，证书信息中<span class="uicontrol">“颁发给”</span>和<span class="uicontrol">“颁发者”</span>均为<span class="uicontrol">“CA”</span>时，即为要查找的<span class="uicontrol">“*.crt”</span>证书文件。</p>
+</div></div>
+</li></ul>
+</li></ol>
+</li></ul>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001839266973.html">备份VMware虚拟机</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

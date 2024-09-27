@@ -1,0 +1,154 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ */
+
+package openbackup.gaussdb.protection.access.constant;
+
+/**
+ * 功能描述: GaussDb模块的通用常量
+ *
+ * @author t30021437
+ * @version [OceanProtect x8000 1.3.0]
+ * @since 2022-02-06
+ */
+public class GaussDBConstant {
+    /**
+     * 允许接入的GaussDb集群规格上限
+     */
+    public static final int GAUSSDB_CLUSTER_MAX_COUNT = 8;
+
+    /**
+     * 常数项 0
+     */
+    public static final int INT_ZERO = 0;
+
+    /**
+     * 查询每页大小
+     */
+    public static final int QUERY_SIZE = 100;
+
+    /**
+     * GaussDB agents
+     */
+    public static final String GAUSSDB_AGENTS = "agents";
+
+    /**
+     * GaussDB agents
+     */
+    public static final String REGION = "region";
+
+    /**
+     * ens key 名称
+     */
+    public static final String REPOSITORIES_KEY_ENS = "esn";
+
+    /**
+     * repository role 角色 master
+     */
+    public static final int MASTER_ROLE = 0;
+
+    /**
+     * GaussDb集群的版本信息 扩展信息 extendInfo 中 version 的 Key 名称
+     */
+    public static final String EXTEND_INFO_KEY_VERSION = "clusterVersion";
+
+    /**
+     * GaussDb集群的版本信息 version
+     */
+    public static final String VERSION = "version";
+
+    /**
+     * GaussDb集群的使用状态 扩展信息 extendInfo 中 version 的 Key 名称
+     */
+    public static final String EXTEND_INFO_KEY_STATE = "status";
+
+    /**
+     * GaussDb 实例查询状态 表示实例正常
+     */
+    public static final String NORMAL_VALUE_STATE = "ACTIVE";
+
+    /**
+     * 在扩展信息中的extendInfo key 值 projectName
+     */
+    public static final String EXTEND_INFO_KEY_PROJECT_NAME = "projectName";
+
+    /**
+     * 在扩展信息中的extendInfo key 值 projectId
+     */
+    public static final String EXTEND_INFO_KEY_PROJECT_ID = "projectId";
+
+    /**
+     * 在扩展信息中的extendInfo key 值 iamAccountName
+     */
+    public static final String EXTEND_INFO_KEY_ACCOUNT_NAME = "iamAccountName";
+
+    /**
+     * 在扩展信息中的extendInfo key 值 pmAddress
+     */
+    public static final String EXTEND_INFO_KEY_PM_ADDRESS = "pmAddress";
+
+    /**
+     * 多文件系统key名称
+     */
+    public static final String REPOSITORIES_KEY_MULTI_FILE_SYSTEM = "multiFileSystem";
+
+    /**
+     * python 传递的key BACKUP_METADATA_PATH
+     */
+    public static final String ADVANCE_PARAMS_KEY_BACKUP_METADATA_PATH = "backup_metadata_path";
+
+    /**
+     * 传递给Agent的key METADATA_PATH
+     */
+    public static final String ADVANCE_PARAMS_KEY_METADATA_PATH = "metadataPath";
+
+    /**
+     * python 传递的key storage_id
+     */
+    public static final String ADVANCE_PARAMS_KEY_STORAGE_ID = "storage_id";
+
+    /**
+     * 数据库 在扩展信息中的extendInfo key 值 GAUSSDB_USER
+     */
+    public static final String EXTEND_INFO_KEY_GAUSSDB_USER = "gaussdbUser";
+
+    /**
+     * python 传递的key BACKUP_TOOL_TYPE
+     */
+    public static final String ADVANCE_PARAMS_KEY_BACKUP_TOOL_TYPE = "backup_tool_type";
+
+    /**
+     * 传递给Agent的key TOOL_TYPE
+     */
+    public static final String ADVANCE_PARAMS_KEY_TOOL_TYPE = "backupToolType";
+
+    /**
+     * 速率统计 1为ubc统计，2为应用统计
+     */
+    public static final String SPEED_STATISTICS = "speedStatistics";
+
+    /**
+     * 待恢复的子类型
+     */
+    public static final String EXTEND_INFO_KEY_SUB_TYPE = "resourceSubType";
+
+    /**
+     * 恢复位置 key 名称
+     */
+    public static final String EXTEND_INFO_KEY_TARGET_LOCATION = "targetLocation";
+
+    /**
+     * PM下发给agent的扩展字段，用于判断日志备份是否需要转全量
+     */
+    public static final String IS_CHECK_BACKUP_JOB_TYPE = "isCheckBackupJobType";
+
+    /**
+     * 前端下发给PM的扩展字段，用于判断日志备份是否需要转全量
+     */
+    public static final String AUTO_FULL_BACKUP = "autoFullBackup";
+
+    /**
+     * 日志备份类型
+     */
+    public static final String LOG_BACKUP_TYPE = "logBackup";
+}

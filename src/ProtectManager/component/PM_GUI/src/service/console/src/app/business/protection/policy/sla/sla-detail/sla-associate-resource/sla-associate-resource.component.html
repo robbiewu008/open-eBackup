@@ -1,0 +1,134 @@
+<ng-container *ngIf="!isReplica">
+    <lv-datatable [lvData]='tableData' (lvSortChange)="sortChange($event)" [lvPaginator]="page" lvSort #lvTable lvAsync
+        lvSize="small">
+        <thead>
+            <tr>
+                <ng-container *ngFor="let col of columns">
+                    <th [lvShowFilter]="col.filter" (lvFilterChange)="filterChange($event)"
+                        [(lvFilters)]="col.filterMap" lvCellKey="{{ col.key }}" [lvShowSort]="col.showSort" lvShowCustom
+                        lvFilterCheckAll lvFilterSearch>
+                        {{col.label}}
+                        <div lvCustom *ngIf="col.key === 'name'">
+                            <i #namePopover="lvPopover" lv-icon="lv-icon-search" [lvColorState]="true"
+                                [ngClass]="{ active: !!name }" lv-popover [lvPopoverContent]="nameFilterTpl"
+                                lvPopoverTheme="light" lvPopoverPosition="bottom" lvPopoverTrigger="click"></i>
+                        </div>
+                        <div lvCustom *ngIf="col.key === 'path'">
+                            <i #pathPopover="lvPopover" lv-icon="lv-icon-search" [lvColorState]="true"
+                                [ngClass]="{ active: !!path }" lv-popover [lvPopoverContent]="pathFilterTpl"
+                                lvPopoverTheme="light" lvPopoverPosition="bottom" lvPopoverTrigger="click"></i>
+                        </div>
+                    </th>
+                </ng-container>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of lvTable.renderData">
+                <tr>
+                    <ng-container *ngFor="let col of columns">
+                        <td>
+                            <ng-container [ngSwitch]="col.key">
+                                <ng-container *ngSwitchCase="'subType'">
+                                    {{item.sub_type | textMap: 'Job_Target_Type'}}
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'status'">
+                                    <aui-status [value]='item.status' type='resource_LinkStatus'></aui-status>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'slaCompliance'">
+                                    <aui-status [value]="item.sla_compliance" type="Sla_Compliance"></aui-status>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    <span lv-overflow>
+                                        {{item[col.key] | nil}}
+                                    </span>
+                                </ng-container>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+</ng-container>
+<ng-container *ngIf="isReplica">
+    <lv-datatable [lvData]="tableData" class="aui-table-group" [lvPaginator]="page" (lvSortChange)="sortChange($event)"
+        lvSort #lvTable lvAsync>
+        <thead>
+            <tr>
+                <ng-container *ngFor="let item of replicaColumns">
+                    <th *ngIf="item.show" [attr.colspan]="filter(item.children, {'show': true}).length">
+                        {{item.label}}
+                    </th>
+                </ng-container>
+            </tr>
+            <tr>
+                <ng-container *ngFor="let column of replicaColumns">
+                    <ng-container *ngIf="column.children">
+                        <ng-container *ngFor="let col of column.children">
+                            <th *ngIf="col.show" [attr.class]="col.class" [attr.width]="col.width"
+                                [lvShowFilter]="col.filter" (lvFilterChange)="filterChange($event)"
+                                [(lvFilters)]="col.filterMap" [lvCellKey]="col.key" [lvShowSort]="col.sort" lvShowCustom
+                                lvFilterCheckAll lvFilterSearch>
+                                {{col.label}}
+                                <div lvCustom *ngIf="col.key === 'resource_name'">
+                                    <i lv-icon="lv-icon-search" [lvColorState]="true" [ngClass]="{ active: !!name }"
+                                        lv-popover [lvPopoverContent]="nameFilterTpl" lvPopoverTheme="light"
+                                        lvPopoverPosition="bottom" lvPopoverTrigger="click"
+                                        #namePopover="lvPopover"></i>
+                                </div>
+                                <div lvCustom *ngIf="col.key === 'resource_location'">
+                                    <i lv-icon="lv-icon-search" [ngClass]="{ active: !!path }" lv-popover
+                                        [lvPopoverContent]="pathFilterTpl" lvPopoverTheme="light"
+                                        lvPopoverPosition="bottom" lvPopoverTrigger="click"
+                                        #pathPopover="lvPopover"></i>
+                                </div>
+                            </th>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of lvTable.renderData">
+                <tr>
+                    <ng-container *ngFor="let column of replicaColumns">
+                        <ng-container *ngIf="column.children">
+                            <ng-container *ngFor="let col of column.children">
+                                <ng-container *ngIf="col.show">
+                                    <td>
+                                        <ng-container [ngSwitch]="col.key">
+                                            <ng-container *ngSwitchCase="'resource_status'">
+                                                <aui-status [value]="item.resource_status" type="Resource_Status">
+                                                </aui-status>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'resource_sub_type'">
+                                                <span lv-overflow>{{item.resource_sub_type | textMap: 'Job_Target_Type'}}</span>
+                                            </ng-container>
+                                            <ng-container *ngSwitchDefault>
+                                                <span lv-overflow>
+                                                    {{item[col.key] | nil}}
+                                                </span>
+                                            </ng-container>
+                                        </ng-container>
+                                    </td>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+</ng-container>
+
+<lv-paginator [lvPageSizeOptions]='sizeOptions' [lvTotal]='total' [lvPageIndex]='startPage' [lvPageSize]='pageSize'
+    #page [hidden]='!total' (lvPageChange)="pageChange($event)" lvMode="simple" lvShowPageSizeOptions="false">
+</lv-paginator>
+
+<ng-template #nameFilterTpl>
+    <lv-search [(ngModel)]="name" (lvSearch)="searchByName()" [lvFocus]="true"></lv-search>
+</ng-template>
+
+<ng-template #pathFilterTpl>
+    <lv-search [(ngModel)]="path" (lvSearch)="searchByPath()" [lvFocus]="true"></lv-search>
+</ng-template>

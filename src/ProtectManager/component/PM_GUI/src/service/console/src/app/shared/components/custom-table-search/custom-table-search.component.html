@@ -1,0 +1,18 @@
+<i lvColorState lv-icon="lv-icon-search" [ngClass]="{ active: !!nameFilterTrueValue || nameSearchPanelVisible }"
+    #nameFilter="lvPopover" lv-popover [lvPopoverContent]="nameFilterTpl" lvPopoverTheme="light"
+    lvPopoverPosition="bottomRight" lvPopoverShowArrow="false" lvPopoverTrigger="customize"
+    [lvPopoverBeforeOpen]="popoverBeforeOpen" [(lvPopoverVisible)]="nameSearchPanelVisible"
+    (click)="openNameSearchPanel()"></i>
+
+<ng-template #nameFilterTpl>
+    <span class="name-filter-title" *ngIf="filterTitle" lv-overflow>{{filterTitle}}</span>
+    <input #nameFilterInput lv-input [(ngModel)]="nameFilterValue" class="name-filter-input" (keydown)="confirmName($event)" />
+    <div class="name-filter-operation">
+        <button lv-button (click)="reset()">
+            {{'common_reset_label' | i18n}}
+        </button>
+        <button #primaryButton lv-button lvType="primary" (click)="filterByName(nameFilterValue)">
+            {{'common_search_label' | i18n}}
+        </button>
+    </div>
+</ng-template>

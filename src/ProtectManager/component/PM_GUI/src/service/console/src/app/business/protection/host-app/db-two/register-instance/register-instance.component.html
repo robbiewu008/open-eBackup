@@ -1,0 +1,98 @@
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_type_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="type" [lvGroupName]="'typeGroup'" [lvDisabled]='item'>
+                <lv-group [lvGutter]="'24px'">
+                    <lv-radio [lvValue]="dataMap.Instance_Type.single.value">
+                        {{'protection_single_instance_label' | i18n}}
+                    </lv-radio>
+                    <lv-radio [lvValue]="dataMap.Instance_Type.cluster.value">
+                        {{'protection_cluster_instance_label' | i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input type="text" formControlName="name" [placeholder]="namePlaceholder" />
+        </lv-form-control>
+    </lv-form-item>
+
+    <ng-container *ngIf="formGroup.value.type === dataMap.Instance_Type.single.value">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_host_label' | i18n}}
+                <aui-agent-jumper-tips [type]="i18n.get('protection_database_instance_label')"></aui-agent-jumper-tips>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                <lv-select formControlName="agents" [lvOptions]='hostOptions' lvValueKey='value' [lvDisabled]='item'
+                    lvShowFilter lvFilterKey='label' lvFilterMode='contains' [lvContentTemplate]="contentTpl">
+                </lv-select>
+                <ng-template #contentTpl let-item>
+                    <lv-group lvGutter="4px">
+                        <span lv-overflow>{{ item.label }}</span>
+                        <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
+                            {{ 'protection_guide_new_resource_label' | i18n }}
+                        </span>
+                    </lv-group>
+                </ng-template>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_username_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="usernameErrorTip">
+                <input lv-input type="text" formControlName="userName" autocomplete="new-password"
+                    placeholder="{{ 'protection_database_username_placeholder_label' | i18n }}" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_password_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="passwordErrorTip">
+                <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <lv-form-item *ngIf="formGroup.value.type === dataMap.Instance_Type.cluster.value">
+        <lv-form-label lvRequired>
+            {{'common_cluster_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select formControlName="cluster" [lvOptions]='clusterOptions' lvValueKey='value' [lvDisabled]='item'
+                lvShowFilter lvFilterKey='label' lvFilterMode='contains' [lvContentTemplate]="clusterContentTpl">
+            </lv-select>
+            <ng-template #clusterContentTpl let-item>
+                <lv-group lvGutter="4px">
+                    <span lv-overflow>{{ item.label }}</span>
+                    <span class="guide-recommend-label" *ngIf="showClusterGuideNew(item)">
+                        {{ 'protection_guide_new_resource_label' | i18n }}
+                    </span>
+                </lv-group>
+            </ng-template>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+
+<ng-container *ngIf="formGroup.value.type === dataMap.Instance_Type.cluster.value">
+    <h3 class='aui-gutter-column-lg'>
+        <lv-group [lvGutter]="'5px'">
+            <span style="color: red;padding-right: 4px;">*</span>
+            {{'system_servers_label' | i18n}}
+        </lv-group>
+    </h3>
+    <div class="aui-operation">
+        <lv-pro-button-group [config]="optsConfig"></lv-pro-button-group>
+    </div>
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</ng-container>

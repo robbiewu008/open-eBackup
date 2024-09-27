@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <artifact>
+        <versionType>Component</versionType>
+        <repoType>Generic</repoType>
+        <id>
+            <offering>OceanProtect A8000</offering>
+            <componentName>ProtectManager</componentName>
+            <componentVersion>${componentVersion}</componentVersion>
+            <snapshot>N</snapshot>
+        </id>
+        <isClear>N</isClear>
+        <copies>
+            <copy>
+                <source></source>
+                <dest></dest>
+            </copy>
+        </copies>
+    </artifact>
+    <dependencies>
+        <dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>OceanProtect A8000</offering>
+                <componentName>ProtectAgent-Client</componentName>
+                <componentVersion>${componentVersion}</componentVersion>
+            </id>
+            <according>Y</according>
+            <copies>
+                <copy>
+                    <source>dorado/${AGENT_BRANCH}/mspkg/linux/DataProtect_${PMClientVersion}_client.zip</source>
+                    <dest>.</dest>
+                </copy>
+            </copies>
+        </dependency>
+    </dependencies>
+</project>

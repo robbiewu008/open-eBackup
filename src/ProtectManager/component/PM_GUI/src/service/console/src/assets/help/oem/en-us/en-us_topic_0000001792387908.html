@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Querying Information About the VMware Virtualization Environment">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839267013.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792387908">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Querying Information About the VMware Virtualization Environment</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792387908"></a><a name="EN-US_TOPIC_0000001792387908"></a>
+  <h1 class="topictitle1">Querying Information About the VMware Virtualization Environment</h1>
+  <div>
+   <p>After the VMware virtualization environment is registered with the <span>product</span>, you can view details about clusters, vCenter Servers or ESXi hosts, VMware VMs, or VM groups on the management page.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p id="EN-US_TOPIC_0000001792387908__en-us_topic_0000001835836232_p1941913481165">GUIs may vary with versions. The actual GUIs prevail.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol"><b><span id="EN-US_TOPIC_0000001792387908__en-us_topic_0000001839142377_text738292620372"><strong>Protection</strong></span> &gt; Virtualization &gt; VMware</b></span>.</span><p></p><p><a href="#EN-US_TOPIC_0000001792387908__fig13303182618258">Figure 1</a> shows the overall information about the VMware virtualization environment.</p>
+      <div class="fignone" id="EN-US_TOPIC_0000001792387908__fig13303182618258">
+       <a name="EN-US_TOPIC_0000001792387908__fig13303182618258"></a><a name="fig13303182618258"></a><span class="figcap"><b>Figure 1 </b>Overall information about the VMware virtualization environment</span><br><span><img class="eddx" src="en-us_image_0000001792547748.png"></span>
+      </div> <p></p> <p></p></li>
+     <li><span>On the left of the page, select the VMware virtualization environment to be viewed and choose <span class="menucascade"><b><span class="uicontrol"><span><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Environment Info</strong></span></span></b></span> to view the basic information of the VMware virtualization environment.</span></li>
+     <li><span>On the <span class="uicontrol"><b>Clusters</b></span> tab page, view the cluster information.</span><p></p>
+      <div class="p">
+       <a href="#EN-US_TOPIC_0000001792387908__table63208525418">Table 1</a> lists the details about the cluster. 
+       <div class="tablenoborder">
+        <a name="EN-US_TOPIC_0000001792387908__table63208525418"></a><a name="table63208525418"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792387908__table63208525418" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 1 </b>Cluster information
+         </caption>
+         <colgroup>
+          <col style="width:20.31%">
+          <col style="width:79.69000000000001%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="20.31%" id="mcps1.3.3.2.3.2.1.2.2.3.1.1"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="79.69000000000001%" id="mcps1.3.3.2.3.2.1.2.2.3.1.2"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p>Cluster name.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p><span><strong>SLAs</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p>If the entire cluster is associated with an SLA, the SLA name is displayed. Otherwise, <span class="uicontrol"><b>--</b></span> is displayed.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p><span><span><strong>Protection Status</strong></span></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p>Indicates whether a cluster is protected.</p>
+            <ul>
+             <li><span><strong>Unprotected</strong></span>: The cluster is not associated with an SLA, or the cluster is associated with an SLA but protection is disabled.</li>
+             <li><span><strong>Protected</strong></span>: The cluster is associated with an SLA and protection is activated.</li>
+             <li><span><strong>Creating</strong></span>: The cluster is associated with an SLA and protection is being created.</li>
+            </ul></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p><span><strong>VM Count</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p>Number of VMs in the current cluster.</p> <p>Click the number of VMs. The host list, VM list, and virtual device nodes in the cluster are displayed on the page.</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>Hosts</strong></span></b></span> tab page, view the ESXi host information.</span><p></p>
+      <div class="p">
+       <a href="#EN-US_TOPIC_0000001792387908__table664941173815">Table 2</a> lists the details about ESXi hosts. 
+       <div class="tablenoborder">
+        <a name="EN-US_TOPIC_0000001792387908__table664941173815"></a><a name="table664941173815"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792387908__table664941173815" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 2 </b>Host information
+         </caption>
+         <colgroup>
+          <col style="width:20.369999999999997%">
+          <col style="width:79.63%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="20.369999999999997%" id="mcps1.3.3.2.4.2.1.2.2.3.1.1"><p>Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="79.63%" id="mcps1.3.3.2.4.2.1.2.2.3.1.2"><p>Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="20.369999999999997%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.63%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>ESXi host name.</p> <p>Click the host name. The VM list and virtual device nodes are displayed.</p> <p>If the ESXi host belongs to a cluster, the VM list is not displayed.</p> <p>The virtual device node is the number of the slot where the virtual disk is located. It is represented in the format of "disk interface type (bus number: slot number)", for example, IDE(0:0).</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="20.369999999999997%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span><strong>Location</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.63%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>Path to the ESXi host.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="20.369999999999997%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span><strong>Status</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.63%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>ESXi host status, which can be <span class="uicontrol"><b><span><strong>Online</strong></span></b></span> or <span class="uicontrol"><b><span><strong>Offline</strong></span></b></span>.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="20.369999999999997%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span><strong>SLAs</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.63%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>If an SLA is associated with a host, the SLA name is displayed. Otherwise, <span class="uicontrol"><b>--</b></span> is displayed.</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="20.369999999999997%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span><span><strong>Protection Status</strong></span></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.63%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>Whether a host is protected.</p>
+            <ul>
+             <li><span><strong>Unprotected</strong></span>: The host is not associated with an SLA, or the host is associated with an SLA but protection is disabled.</li>
+             <li><span><strong>Protected</strong></span>: The host is associated with an SLA and protection is activated.</li>
+             <li><span><strong>Creating</strong></span>: The host is associated with an SLA and protection is being created.</li>
+            </ul></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="20.369999999999997%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span><strong>VM Count</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.63%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>Number of VMs on an ESXi host.</p> <p>If the host is a cluster member, the number of VMs on the host is displayed as 0. You need to view the number of VMs on the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab page.</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>On the <span class="uicontrol"><b><span><strong>VMs</strong></span></b></span> tab page, view the VM information.</span><p></p>
+      <ol type="a">
+       <li>View information about a VM. <a href="#EN-US_TOPIC_0000001792387908__table2382789197">Table 3</a> describes the information. 
+        <div class="tablenoborder">
+         <a name="EN-US_TOPIC_0000001792387908__table2382789197"></a><a name="table2382789197"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792387908__table2382789197" frame="border" border="1" rules="all">
+          <caption>
+           <b>Table 3 </b>VM information
+          </caption>
+          <colgroup>
+           <col style="width:20.31%">
+           <col style="width:79.69000000000001%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="20.31%" id="mcps1.3.3.2.5.2.1.1.2.2.3.1.1"><p>Parameter</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="79.69000000000001%" id="mcps1.3.3.2.5.2.1.1.2.2.3.1.2"><p>Description</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.2 "><p>Name of a VM.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.1 "><p><span><strong>Location</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.2 "><p>Path to a VM.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.1 "><p><span><strong>Status</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.2 "><p>VM status, which can be power-on or power-off.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.1 "><p><span><strong>OS</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.2 "><p>Operating system type of the host where the VM is located.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.1 "><p><span><strong>Mark</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.2 "><p>Mark of a VM.</p> <p>If you have set a mark for a VM in the VMware virtualization environment, the VM mark is displayed. Otherwise, <span class="uicontrol"><b>--</b></span> is displayed.</p> <p>You can filter VMs by mark.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.1 "><p><span><strong>SLAs</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.2 "><p>If an SLA is associated with a VM, the SLA name is displayed. Otherwise, <span class="uicontrol"><b>--</b></span> is displayed.</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.1 "><p><span><strong>SLA Compliance</strong></span></p></td>
+            <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.2 ">
+             <div class="p">
+              Whether a backup job is successfully executed based on the backup frequency or backup window set in the SLA.
+              <ul id="EN-US_TOPIC_0000001792387908__en-us_topic_0000001792344110_en-us_topic_0000001792344094_ul1823814519293">
+               <li id="EN-US_TOPIC_0000001792387908__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919">If the backup time of a backup job (except for the first full backup) meets the backup time window or backup interval requirements and the backup job is executed successfully, SLA compliance is met.</li>
+               <li id="EN-US_TOPIC_0000001792387908__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912">If the backup time does not meet the backup time window or backup frequency requirements, for example, if the backup frequency set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup frequency or backup window.</li>
+              </ul>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.1 "><p><span><span><strong>Protection Status</strong></span></span></p></td>
+            <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.2 "><p>Whether a VM is protected.</p>
+             <ul>
+              <li><span><strong>Unprotected</strong></span>: The VM is not associated with an SLA, or the VM is associated with an SLA but protection is disabled.</li>
+              <li><span><strong>Protected</strong></span>: The VM is associated with an SLA and protection is activated.</li>
+              <li><span><strong>Creating</strong></span>: The VM is associated with an SLA and protection is being created.</li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.1 "><p><strong>VM Group</strong></p></td>
+            <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.5.2.1.1.2.2.3.1.2 "><p>Name of the VM group to which the VM belongs.</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>Click the VM name to view the overall VM information, copy information, and related jobs.
+        <ul>
+         <li>VM overview<p>You can view information of a VM, such as the VM name, SLA information, job execution time, total number of copies, and disk information.</p></li>
+         <li>VM copy data<p>You can search for copies by year, month, or day.</p> <p>On the <strong>Year</strong> or <strong>Month</strong> tab page, <span><img src="en-us_image_0000001891618750.png"></span> indicates that copies exist at the corresponding time.</p></li>
+         <li>Jobs related to a VM<p>All jobs related to a VM, such as backup, restoration, archive, and live mount jobs, are displayed.</p></li>
+        </ul></li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000001792387908__li139622815266"><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000001792387908__uicontrol122833417219"><b>VM Groups</b></span> tab page, view VM group information.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000001792387908__note8808185313279">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000001792387908__p15809853202710">Only 1.6.0 and later versions support this function.</p>
+       </div>
+      </div>
+      <div class="p" id="EN-US_TOPIC_0000001792387908__p1639632816262">
+       <a href="#EN-US_TOPIC_0000001792387908__table9396162819261">Table 4</a> describes the information of VM groups. 
+       <div class="tablenoborder">
+        <a name="EN-US_TOPIC_0000001792387908__table9396162819261"></a><a name="table9396162819261"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792387908__table9396162819261" frame="border" border="1" rules="all">
+         <caption>
+          <b>Table 4 </b>VM group information
+         </caption>
+         <colgroup>
+          <col style="width:20.31%">
+          <col style="width:79.69000000000001%">
+         </colgroup>
+         <thead align="left">
+          <tr id="EN-US_TOPIC_0000001792387908__row73967284267">
+           <th align="left" class="cellrowborder" valign="top" width="20.31%" id="mcps1.3.3.2.6.2.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000001792387908__p6396162812619">Parameter</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="79.69000000000001%" id="mcps1.3.3.2.6.2.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000001792387908__p133969287265">Description</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr id="EN-US_TOPIC_0000001792387908__row163961928142612">
+           <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.6.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001792387908__p1539611284269"><span id="EN-US_TOPIC_0000001792387908__text20396628132610"><strong>Name</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.6.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001792387908__p17396142842613">VM group name.</p></td>
+          </tr>
+          <tr id="EN-US_TOPIC_0000001792387908__row65186112720">
+           <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.6.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001792387908__p755616279"><span id="EN-US_TOPIC_0000001792387908__text18782142214279"><strong>VM Count</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.6.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001792387908__p8656837298">Number of VMs in the current VM group.</p></td>
+          </tr>
+          <tr id="EN-US_TOPIC_0000001792387908__row12397132817268">
+           <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.6.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001792387908__p1439752816260"><span id="EN-US_TOPIC_0000001792387908__text103971128192617"><strong>SLAs</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.6.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001792387908__p1839772802613">If the entire VM group is associated with an SLA, the SLA name is displayed. Otherwise, <span class="uicontrol" id="EN-US_TOPIC_0000001792387908__uicontrol14397162852613"><b>--</b></span> is displayed.</p></td>
+          </tr>
+          <tr id="EN-US_TOPIC_0000001792387908__row277083519285">
+           <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.6.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001792387908__p2771183542819"><span id="EN-US_TOPIC_0000001792387908__text10772752132810"><strong>SLA Compliance</strong></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.6.2.2.2.2.3.1.2 ">
+            <div class="p" id="EN-US_TOPIC_0000001792387908__p53193917315">
+             Whether a backup job is successfully executed based on the backup frequency or backup window set in the SLA.
+             <ul id="EN-US_TOPIC_0000001792387908__en-us_topic_0000001792344110_en-us_topic_0000001792344094_ul1823814519293_1">
+              <li id="EN-US_TOPIC_0000001792387908__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919_1">If the backup time of a backup job (except for the first full backup) meets the backup time window or backup interval requirements and the backup job is executed successfully, SLA compliance is met.</li>
+              <li id="EN-US_TOPIC_0000001792387908__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912_1">If the backup time does not meet the backup time window or backup frequency requirements, for example, if the backup frequency set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup frequency or backup window.</li>
+             </ul>
+            </div></td>
+          </tr>
+          <tr id="EN-US_TOPIC_0000001792387908__row20397228162613">
+           <td class="cellrowborder" valign="top" width="20.31%" headers="mcps1.3.3.2.6.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000001792387908__p13397172862619"><span id="EN-US_TOPIC_0000001792387908__text93977288267"><span id="EN-US_TOPIC_0000001792387908__text2397428142612"><strong>Protection Status</strong></span></span></p></td>
+           <td class="cellrowborder" valign="top" width="79.69000000000001%" headers="mcps1.3.3.2.6.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000001792387908__p1639713287266">Whether a VM group is protected.</p>
+            <ul id="EN-US_TOPIC_0000001792387908__ul9397152862616">
+             <li id="EN-US_TOPIC_0000001792387908__li133971028152617"><span id="EN-US_TOPIC_0000001792387908__text7397152816269"><strong>Unprotected</strong></span>: The VM group is not associated with an SLA, or the VM group is associated with an SLA but protection is disabled.</li>
+             <li id="EN-US_TOPIC_0000001792387908__li173971928102615"><span id="EN-US_TOPIC_0000001792387908__text103971528102611"><strong>Protected</strong></span>: The VM group is associated with an SLA and protection is activated.</li>
+             <li id="EN-US_TOPIC_0000001792387908__li83971628142611"><span id="EN-US_TOPIC_0000001792387908__text1439714281267"><strong>Creating</strong></span>: The VM group is associated with an SLA and protection is being created.</li>
+            </ul></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001839267013.html">VMware Virtualization Environment</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

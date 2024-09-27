@@ -1,0 +1,43 @@
+<div class="aui-header-1 aui-gutter-column-md">
+  <h2>{{ 'common_basic_info_label' | i18n }}</h2>
+</div>
+<div class="aui-gutter-column-lg">
+  <resoure-base-info [source]="source" [sourceType]="type"></resoure-base-info>
+</div>
+
+<ng-container *ngIf="type === dataMap.Resource_Type.SQLServerGroup.value">
+  <div class="aui-header-1 aui-gutter-column-md">
+    <h2>{{ 'common_protected_object_label' | i18n }}</h2>
+  </div>
+  <div class="aui-gutter-column-lg">
+    <lv-pro-table
+      #dataTable
+      [config]="tableConfig"
+      [data]="tableData"
+    ></lv-pro-table>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="type === dataMap.Resource_Type.DWS_Table.value">
+  <div class="aui-header-1 aui-gutter-column-md">
+    <h2>{{ 'common_protected_object_label' | i18n }}</h2>
+  </div>
+  <div class="aui-gutter-column-lg">
+    <lv-pro-table
+      #dataTable
+      [config]="tableConfig"
+      [data]="tableData"
+    ></lv-pro-table>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="type === dataMap.Resource_Type.DWS_Schema.value">
+  <div class="aui-header-1 aui-gutter-column-md">
+    <h2>{{ 'common_protected_object_label' | i18n }}</h2>
+  </div>
+  <div class="tree-container">
+    <ng-container>
+      <aui-tables [isSummary]="true" [source]="source"></aui-tables>
+    </ng-container>
+  </div>
+</ng-container>

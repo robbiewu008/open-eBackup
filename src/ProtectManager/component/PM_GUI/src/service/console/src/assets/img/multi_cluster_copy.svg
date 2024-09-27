@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 23备份 4</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="79.956823%" id="linearGradient-1">
+            <stop stop-color="#A5C4FD" offset="0%"></stop>
+            <stop stop-color="#4C7BFB" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="19.8092638%" y1="20.6227496%" x2="65.6410932%" y2="65.7755886%" id="linearGradient-2">
+            <stop stop-color="#599AFC" stop-opacity="0" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="最终" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="首页（无业务分组）备份-3" transform="translate(-994.000000, -880.000000)">
+            <g id="编组-23备份-4" transform="translate(994.000000, 880.000000)">
+                <rect id="矩形" x="0" y="0" width="40" height="40"></rect>
+                <g id="编组-18" transform="translate(3.750000, 3.750000)">
+                    <rect id="矩形" fill="url(#linearGradient-1)" fill-rule="nonzero" x="6.96428571" y="6.96428571" width="25.5357143" height="25.5357143" rx="2"></rect>
+                    <path d="M30.5,6.96428571 C31.052777,6.96428571 31.553176,7.18854255 31.915181,7.5510402 L7.5510402,31.915181 C7.18854255,31.553176 6.96428571,31.052777 6.96428571,30.5 L6.96428571,8.96428571 C6.96428571,7.85971621 7.85971621,6.96428571 8.96428571,6.96428571 L30.5,6.96428571 Z" id="形状结合" fill="url(#linearGradient-2)" opacity="0.198226202"></path>
+                    <path d="M23.5357143,0 C24.6402838,-2.02906125e-16 25.5357143,0.8954305 25.5357143,2 L25.535,4.352 L6.35267857,4.35267857 C5.29831678,4.35267857 4.43451345,5.16855636 4.35816431,6.20341623 L4.35267857,6.35267857 L4.352,25.535 L2,25.5357143 C0.8954305,25.5357143 1.3527075e-16,24.6402838 0,23.5357143 L0,2 C-1.3527075e-16,0.8954305 0.8954305,2.02906125e-16 2,0 L23.5357143,0 Z" id="形状结合" fill="url(#linearGradient-1)" fill-rule="nonzero"></path>
+                    <g id="编组-14" transform="translate(13.928571, 13.928571)" stroke="#FFFFFF" stroke-linecap="round" stroke-width="2">
+                        <line x1="0" y1="5.80357143" x2="11.6071429" y2="5.80357143" id="路径-6"></line>
+                        <line x1="5.80357143" y1="11.6071429" x2="5.80357143" y2="0" id="路径-6"></line>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

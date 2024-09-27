@@ -1,0 +1,72 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+    <lv-form-item>
+        <lv-form-label>{{keyAlgorithmLabel}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="requiredErrorTip">
+            <lv-select formControlName="keyAlgorithm" [lvOptions]='algorithmOptions' lvValueKey="key">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <!-- oceancyber场景 -->
+    <div class="advanced-params" *ngIf="isCyberEngine">
+        <lv-collapse class="collapse-header" [lvMultiExpansion]="false" lvType="simple">
+            <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'Country' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="countryErrorTip">
+                        <input lv-input type="text" formControlName="country" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'State or Province' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="generalErrorTip">
+                        <input lv-input type="text" formControlName="state" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'City or Locality' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="generalErrorTip">
+                        <input lv-input type="text" formControlName="city" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'Organization' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="organizationErrorTip">
+                        <input lv-input type="text" formControlName="organization" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'Organization Unit' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="organizationErrorTip">
+                        <input lv-input type="text" formControlName="organizationUnit" />
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>
+                        {{ 'Common Name' | i18n }}
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="commonNameErrorTip">
+                        <input lv-input type="text" formControlName="commonName" />
+                    </lv-form-control>
+                </lv-form-item>
+            </lv-collapse-panel>
+        </lv-collapse>
+    </div>
+</lv-form>
+
+<ng-template #titleTpl>
+    <lv-group lvGutter='8px'>
+        <span class="custom-collapse-title-text">
+            {{'common_advanced_label'|i18n}}
+        </span>
+    </lv-group>
+</ng-template>

@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "title",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "实例uuid"
+    },
+    "name": {
+      "type": "string",
+      "description": "实例名称"
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型"
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型"
+    },
+    "parentUuid": {
+      "type": "string",
+      "description": "实例所在主机uuid"
+    },
+    "rootUuid": {
+      "type": "string",
+      "description": "实例根uuid"
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "hostId": {
+          "type": "string"
+        },
+        "networkName": {
+          "type": "string"
+        },
+        "next_backup_type": {
+          "type": ["null", "string"],
+          "description": "下次备份类型"
+        },
+        "next_backup_change_cause": {
+          "type": ["null", "string"],
+          "description": "下次备份类型改变的原因"
+        },
+        "connection_result": {
+          "type": ["null", "string"],
+          "description": "多集群场景下Agent与节点的连通状态"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "hostId"
+      ]
+    },
+    "dependencies": {"$ref": "classpath:jsonschema/SQLServer-base.json#/agentDependencies"},
+    "auth": {"$ref": "classpath:jsonschema/SQLServer-base.json#/auth"}
+  },
+  "required": [
+    "subType",
+    "type",
+    "name",
+    "auth",
+    "dependencies",
+    "parentUuid",
+    "rootUuid",
+    "extendInfo"
+  ]
+}

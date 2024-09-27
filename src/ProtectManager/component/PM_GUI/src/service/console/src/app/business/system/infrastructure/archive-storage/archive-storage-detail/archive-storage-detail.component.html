@@ -1,0 +1,12 @@
+<lv-form [lvLabelColon]='false' class="formGroup">
+    <ng-container *ngFor="let item of storageArgs">
+        <ng-container *ngIf="!item.hide">
+            <lv-form-item>
+                <lv-form-label>{{item.label}}</lv-form-label>
+                <lv-form-control>
+                    {{item.value}}
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </ng-container>
+</lv-form>

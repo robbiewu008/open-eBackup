@@ -1,0 +1,58 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <ng-container *ngIf="!isAutoAdded">
+    <lv-form-item>
+      <lv-form-label lvRequired>{{ 'common_name_label' | i18n }}</lv-form-label>
+      <lv-form-control [lvErrorTip]="nameErrorTip">
+        <input lv-input type="text" formControlName="name" />
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <ng-container *ngIf="!isEdit || formGroup.get('deviceType').value === dataMap.poolStorageDeviceType.Server.value">
+    <lv-form-item>
+      <lv-form-label lvRequired>{{
+        'common_equipment_type_label' | i18n
+        }}</lv-form-label>
+      <lv-form-control>
+        <lv-select [lvOptions]='deviceTypeOptions' formControlName="deviceType" lvValueKey="value"></lv-select>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>{{
+        'protection_storage_device_label' | i18n
+        }}</lv-form-label>
+      <lv-form-control [lvErrorTip]="ipErrorTip">
+        <lv-select [lvOptions]='deviceNameOptions' formControlName="deviceId" lvValueKey="value"></lv-select>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ (formGroup.get('deviceType').value === dataMap.poolStorageDeviceType.Server.value?'common_disk_label'
+        :'common_storage_pool_label' )| i18n }}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'system_backup_storage_unit_server_disk_tip_label' | i18n}}"
+          lvTooltipTheme="light" class="configform-constraint" lvColorState='true'
+          *ngIf="formGroup.get('deviceType').value === dataMap.poolStorageDeviceType.Server.value"></i>
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="portErrorTip">
+        <lv-select [lvOptions]='devicePoolNameOptions' formControlName="poolId" lvValueKey="value" lvShowFilter
+          lvFilterKey="label" lvFilterMode="contains" [lvContentTemplate]="contentTpl"></lv-select>
+        <ng-template #contentTpl let-item>
+          <lv-group lvDirection="vertical" lvGutter="2px">
+            <span>{{item.label}}</span>
+            <span class="aui-text-help-sm"
+              *ngIf="formGroup.get('deviceType').value === dataMap.poolStorageDeviceType.Server.value">{{item.value}}</span>
+          </lv-group>
+        </ng-template>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <ng-container *ngIf="isEdit">
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_alarm_threshold_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="thresholdErrorTip">
+        <input lv-input type="text" formControlName="threshold" />
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>

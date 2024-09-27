@@ -1,0 +1,27 @@
+<div class="top-failed-tasks-resource-objects">
+  <lv-datatable #lvTable [lvData]="data">
+    <thead>
+      <tr>
+        <th>{{ 'common_home_resource_object_label' | i18n }}</th>
+        <th width="110">{{ 'common_home_resource_type_label' | i18n }}</th>
+        <th width="100">{{ 'common_home_failed_jobs_count_label' | i18n }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of lvTable.renderData; index as i">
+        <td>
+          <div class="first-box">
+            <div lvOverflow>{{ data.resourceName }}</div>
+            <div *ngIf="i === 0" class="top">
+              TOP1
+            </div>
+          </div>
+        </td>
+        <td>
+          <div lvOverflow>{{ data.resourceType }}</div>
+        </td>
+        <td>{{ data.count }}</td>
+      </tr>
+    </tbody>
+  </lv-datatable>
+</div>

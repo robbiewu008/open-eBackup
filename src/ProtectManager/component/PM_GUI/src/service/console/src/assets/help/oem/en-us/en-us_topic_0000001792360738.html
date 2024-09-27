@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Periodically Executing Backup">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001839159809.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+  <meta name="DC.Publisher" content="20240608">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792360738">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Periodically Executing Backup</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000001792360738"></a><a name="EN-US_TOPIC_0000001792360738"></a>
+  <h1 class="topictitle1">Periodically Executing Backup</h1>
+  <div>
+   <p>Associate the NAS file system to be protected with a specified SLA. The system periodically backs up these resources based on the SLA definition.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792360738__en-us_topic_0000001839142377_uicontrol1247565664010"><b><span id="EN-US_TOPIC_0000001792360738__en-us_topic_0000001839142377_text847555644011"><strong>Protection</strong></span> &gt; File Systems &gt; NAS File Systems</b></span>.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000001792360738__en-us_topic_0000001839142377_note1911016143182">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000001792360738__en-us_topic_0000001839142377_p1811010145186">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000001792360738__en-us_topic_0000001839142377_uicontrol1211016146184"><b><span id="EN-US_TOPIC_0000001792360738__en-us_topic_0000001839142377_text51105144188"><strong>Protection</strong></span> &gt; File Services &gt; NAS File Systems</b></span>.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>In the row where a NAS file system to be protected resides, click <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Protect</strong></span> </b></span>.</span></li>
+     <li><span>Select the created SLA.</span><p></p><p>You can also click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> to create an SLA.</p> <p></p></li>
+     <li><span>Set the share protocol.</span><p></p><p>Specify the share protocol used for backing up a file system. Ensure that the share protocol selected during restoration is the same as that specified during backup. Otherwise, the metadata and permission information of the file system will be lost during restoration.</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>If a share protocol is set as the CIFS protocol, ensure that a NAS file system to be protected on the production storage is in the NTFS security mode. Otherwise, backup fails.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Select the agent host.</span><p></p><p>By default, the built-in agent is selected. If an external agent exists, you can also select the external agent.</p> <p></p></li>
+     <li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000001792360738__en-us_topic_0000001792503842_uicontrol196538515235"><b>OK</b></span>. </span><p></p><p id="EN-US_TOPIC_0000001792360738__en-us_topic_0000001792503842_p25041111535">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000001839159809.html">Step 6: Executing Backup</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

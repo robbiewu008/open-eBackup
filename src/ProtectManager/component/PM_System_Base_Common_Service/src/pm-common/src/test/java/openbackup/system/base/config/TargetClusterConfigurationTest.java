@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ */
+
+package openbackup.system.base.config;
+
+import static org.mockito.ArgumentMatchers.any;
+
+import openbackup.system.base.common.rest.FeignBuilder;
+import openbackup.system.base.config.DmaProxyProperties;
+import openbackup.system.base.config.TargetClusterConfiguration;
+import openbackup.system.base.sdk.cluster.TargetClusterRestApi;
+import openbackup.system.base.util.RequestUriUtil;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.net.Proxy;
+
+/**
+ * The TargetClusterConfigurationTest
+ *
+ * @author x30021699
+ * @since 2023-04-05
+ */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest( {TargetClusterConfiguration.class, FeignBuilder.class, RequestUriUtil.class})
+public class TargetClusterConfigurationTest {
+
+    @InjectMocks
+    private TargetClusterConfiguration targetClusterConfiguration;
+
+    @Mock
+    private TargetClusterRestApi targetClusterRestApi;
+
+    @Mock
+    private Proxy proxy;
+
+    @Before
+    public void init() {
+        PowerMockito.mockStatic(RequestUriUtil.class);
+        PowerMockito.when(RequestUriUtil.getDmeProxy(any())).thenReturn(proxy);
+
+        PowerMockito.mockStatic(FeignBuilder.class);
+        PowerMockito.when(FeignBuilder.buildDefaultTargetClusterClient(any(), any(), any()))
+            .thenReturn(targetClusterRestApi);
+    }
+
+    @Test
+    public void createTargetRequest() {
+        targetClusterConfiguration.createTargetRequestBean(new DmaProxyProperties());
+    }
+
+    @Test
+    public void createTargetApiWithDmeProxy() {
+        targetClusterConfiguration.createTargetApiWithDmeProxy();
+    }
+
+    @Test
+    public void createDefaultTargetApiWithDmeProxy() {
+        targetClusterConfiguration.createDefaultTargetApiWithDmeProxy();
+    }
+
+    @Test
+    public void targetClusterApiWithDmaProxyManagePort() {
+        targetClusterConfiguration.createTargetRequestBeanManagePort(new DmaProxyProperties());
+    }
+}

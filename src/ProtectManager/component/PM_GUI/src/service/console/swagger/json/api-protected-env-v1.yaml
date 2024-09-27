@@ -1,0 +1,622 @@
+swagger: '2.0'
+info:
+  title: 资源管理（受保护环境）
+  version: v1
+tags:
+  - name: environments
+  - name: Protected Environment
+paths:
+  /v1/environments:
+    get:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 分页页面编码
+          in: query
+          minimum: 0
+          name: page_no
+          required: true
+          type: integer
+        - description: 分页数据条数
+          in: query
+          maximum: 200
+          minimum: 0
+          name: page_size
+          required: true
+          type: integer
+        - collectionFormat: multi
+          description: 排序字段：
+          in: query
+          items:
+            type: string
+          name: orders
+          required: false
+          type: array
+        - description: 条件参数：
+          in: query
+          name: conditions
+          required: false
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+      responses:
+        '200':
+          description: Successful Response
+          schema:
+            $ref: '#/definitions/BasePage_EnvironmentSchema_'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - environments
+        - Protected Environment
+      operationId: query_resources_v1_environments_get
+      summary: 查询主机资源信息列表
+    post:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateEnvSchema'
+      responses:
+        '200':
+          description: The response is status code of the operation
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - Protected Environment
+      operationId: scan_env_v1_environments_post
+      summary: 注册资源
+  '/v1/environments/rescan/{env_id}':
+    put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 受保护环境的ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: env_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The response is status code of the operation
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - Protected Environment
+      operationId: rescan_env_v1_environments_rescan__env_id__put
+      summary: 重新扫描资源环境信息
+  '/v1/environments/{env_id}':
+    delete:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      produces:
+        - application/json
+      parameters:
+        - description: 受保护环境的ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: env_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The response is status code of the operation
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - Protected Environment
+      operationId: delete_env_v1_environments__env_id__delete
+      summary: 删除资源
+    put:
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - description: 受保护环境的ID
+          in: path
+          maxLength: 64
+          minLength: 1
+          name: env_id
+          required: true
+          type: string
+        - description: 访问令牌
+          in: header
+          name: X-Auth-Token
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateEnvSchema'
+      responses:
+        '200':
+          description: The response is status code of the operation
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/HTTPValidationError'
+      tags:
+        - Protected Environment
+      operationId: modify_env_v1_environments__env_id__put
+      summary: 修改资源注册信息
+definitions:
+  BasePage_EnvironmentSchema_:
+    properties:
+      items:
+        description: 数据列表
+        items:
+          $ref: '#/definitions/EnvironmentSchema'
+        title: Items
+        type: array
+      page_no:
+        description: 页面编号
+        title: Page No
+        type: integer
+      page_size:
+        description: 每页数据量
+        title: Page Size
+        type: integer
+      pages:
+        description: 总页数
+        title: Pages
+        type: integer
+      total:
+        description: 总的数据条数
+        title: Total
+        type: integer
+    required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+    title: 'BasePage[EnvironmentSchema]'
+    type: object
+  CreateEnvSchema:
+    properties:
+      endpoint:
+        description: 受保护环境地址
+        title: Endpoint
+        type: string
+      extend_context:
+        default: {}
+        description: 资源拓展内容
+        title: Extend Context
+        type: object
+      name:
+        description: 受保护环境名称
+        maxLength: 64
+        minLength: 1
+        title: Name
+        type: string
+      password:
+        description: 受保护环境密码
+        title: Password
+        type: string
+      port:
+        description: 受保护环境端口号
+        maximum: 65535
+        minimum: 0
+        title: Port
+        type: integer
+      rescan_interval_in_sec:
+        default: 5
+        description: 资源扫描间隔，单位秒
+        title: Rescan Interval In Sec
+        type: integer
+      sub_type:
+        $ref: '#/definitions/ResourceSubTypeEnum'
+      type:
+        $ref: '#/definitions/ResourceTypeEnum'
+      user_name:
+        description: 受保护环境用户名
+        title: User Name
+        type: string
+      uuid:
+        description: 环境ID
+        maxLength: 64
+        minLength: 1
+        title: Uuid
+        type: string
+      verify_cert:
+        description: 是否校验证书，0：不校验，1：校验
+        title: Verify Cert
+        type: integer
+    title: CreateEnvSchema
+    type: object
+  EnvironmentSchema:
+    properties:
+      agent_timestamp:
+        description: Agent时间戳
+        title: Agent Timestamp
+        type: string
+      agent_version:
+        description: Agent版本号
+        title: Agent Version
+        type: string
+      authorized_user:
+        description: 被授权用户
+        title: Authorized User
+        type: string
+      cert_name:
+        description: 证书路径
+        title: Cert Name
+        type: string
+      children_uuids:
+        description: 子资源ID列表
+        items: {}
+        title: Children Uuids
+        type: array
+      created_time:
+        description: 资源创建时间
+        format: date-time
+        title: Created Time
+        type: string
+      endpoint:
+        description: 受保护环境地址
+        title: Endpoint
+        type: string
+      environment_endpoint:
+        description: 环境IP
+        title: Environment Endpoint
+        type: string
+      environment_is_cluster:
+        description: 集群环境标识
+        title: Environment Is Cluster
+        type: string
+      environment_name:
+        description: 环境名称
+        title: Environment Name
+        type: string
+      environment_os_name:
+        description: 环境系统名称
+        title: Environment Os Name
+        type: string
+      environment_os_type:
+        description: 环境系统类型
+        title: Environment Os Type
+        type: string
+      environment_sub_type:
+        description: 环境资源子类型
+        title: Environment Sub Type
+        type: string
+      environment_type:
+        description: 环境资源大类型
+        title: Environment Type
+        type: string
+      environment_uuid:
+        description: 环境ID
+        title: Environment Uuid
+        type: string
+      ext_parameters:
+        description: 扩展属性
+        format: json-string
+        title: Ext Parameters
+        type: string
+      is_cluster:
+        description: 是否为集群
+        title: Is Cluster
+        type: boolean
+      link_status:
+        description: 连接状态
+        title: Link Status
+        type: integer
+      name:
+        description: 资源名称
+        title: Name
+        type: string
+      os_name:
+        description: 操作系统名称
+        title: Os Name
+        type: string
+      os_type:
+        description: 操作系统类型
+        title: Os Type
+        type: string
+      parent_name:
+        description: 父资源名称
+        title: Parent Name
+        type: string
+      parent_uuid:
+        description: 父资源ID
+        title: Parent Uuid
+        type: string
+      path:
+        description: 资源位置
+        title: Path
+        type: string
+      port:
+        description: 受保护环境端口号
+        title: Port
+        type: integer
+      protection_status:
+        description: 保护状态
+        title: Protection Status
+        type: integer
+      root_uuid:
+        description: 环境ID
+        title: Root Uuid
+        type: string
+      sla_compliance:
+        description: SLA遵从度
+        title: Sla Compliance
+        type: boolean
+      sla_id:
+        description: SLA ID
+        title: Sla Id
+        type: string
+      sla_name:
+        description: SLA名称
+        title: Sla Name
+        type: string
+      sla_status:
+        description: 保护激活状态
+        title: Sla Status
+        type: boolean
+      sub_type:
+        description: 资源子类型
+        title: Sub Type
+        type: string
+      type:
+        description: 资源类型
+        title: Type
+        type: string
+      user_id:
+        description: 用户ID
+        title: User Id
+        type: string
+      user_name:
+        description: 受保护环境用户名
+        title: User Name
+        type: string
+      uuid:
+        description: 环境ID
+        title: Uuid
+        type: string
+      version:
+        description: 资源版本号
+        title: Version
+        type: string
+    required:
+      - name
+      - endpoint
+      - os_type
+      - is_cluster
+    title: EnvironmentSchema
+    type: object
+  HTTPValidationError:
+    properties:
+      detail:
+        items:
+          $ref: '#/definitions/ValidationError'
+        title: Detail
+        type: array
+    title: HTTPValidationError
+    type: object
+  ResourceSubTypeEnum:
+    description: An enumeration.
+    enum:
+      - DBBackupAgent
+      - VMBackupAgent
+      - ABBackupClient
+      - DWSBackupAgent
+      - Fileset
+      - HDFSFileset
+      - DFSFileset
+      - Oracle
+      - OracleApp
+      - SQLServer
+      - DB2
+      - MySQL
+      - GaussDB
+      - SAP HANA
+      - Kingbase
+      - Sybase IQ
+      - Informix
+      - TimesTen
+      - GBase
+      - Dameng
+      - Cassandra
+      - OscarDB
+      - Exchange
+      - VMware vCenter Server
+      - VMware
+      - VMware ESX
+      - VMware ESXi
+      - Hyper-V
+      - HDFS
+      - ms.HostSystem
+      - FusionSphere
+      - vim.ClusterComputeResource
+      - vim.HostSystem
+      - vim.Folder
+      - vim.ResourcePool
+      - OpenStack
+      - HuaweiCloudStack
+      - vim.VirtualMachine
+      - ms.VirtualMachine
+      - Hadoop
+      - FusionInsight
+      - vim.VirtualApp
+      - vim.Datacenter
+      - Common
+      - Replica
+      - K8S-Common-dataset
+      - K8S-MySQL-dataset
+      - K8S-cluster
+      - K8S-namespace
+      - ImportCopy
+    title: ResourceSubTypeEnum
+    type: string
+  ResourceTypeEnum:
+    description: An enumeration.
+    enum:
+      - Host
+      - Fileset
+      - DFSFileset
+      - Database
+      - Application
+      - VirtualPlatform
+      - vSphere
+      - Cluster
+      - Folder
+      - ResourcePool
+      - CloudPlatform
+      - VM
+      - BigData
+      - Hyper-V
+      - DatabaseInstance
+      - K8S-dataset
+      - Kubernetes
+      - ImportCopy
+    title: ResourceTypeEnum
+    type: string
+  UpdateEnvSchema:
+    properties:
+      endpoint:
+        description: 受保护环境IP地址
+        title: Endpoint
+        type: string
+      extend_context:
+        default: {}
+        description: 资源拓展内容
+        title: Extend Context
+        type: object
+      name:
+        description: 受保护环境名称
+        maxLength: 64
+        minLength: 1
+        title: Name
+        type: string
+      password:
+        description: 受保护环境密码
+        title: Password
+        type: string
+      port:
+        description: 受保护环境端口号
+        maximum: 65535
+        minimum: 0
+        title: Port
+        type: integer
+      user_name:
+        description: 受保护环境用户名
+        title: User Name
+        type: string
+      uuid:
+        description: 环境ID
+        maxLength: 64
+        minLength: 1
+        title: Uuid
+        type: string
+      verify_cert:
+        description: 是否校验证书，0：不校验，1：校验
+        title: Verify Cert
+        type: integer
+    required:
+      - endpoint
+      - port
+    title: UpdateEnvSchema
+    type: object
+  ValidationError:
+    properties:
+      loc:
+        items:
+          type: string
+        title: Location
+        type: array
+      msg:
+        title: Message
+        type: string
+      type:
+        title: Error Type
+        type: string
+    required:
+      - loc
+      - msg
+      - type
+    title: ValidationError
+    type: object
+x-components: {}

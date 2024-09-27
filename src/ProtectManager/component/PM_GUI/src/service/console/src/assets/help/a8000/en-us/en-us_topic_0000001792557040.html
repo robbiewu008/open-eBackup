@@ -1,0 +1,163 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 3: Registering an HDFS Cluster">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792557044.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001792557040">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 3: Registering an HDFS Cluster</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001792557040"></a><a name="EN-US_TOPIC_0000001792557040"></a>
+
+<h1 class="topictitle1">Step 3: Registering an HDFS Cluster</h1>
+<div><p>Before the HDFS fileset backup and restoration, register the HDFS cluster with the <span>OceanProtect</span>.</p>
+<div class="section" id="EN-US_TOPIC_0000001792557040__section10758914153313"><a name="EN-US_TOPIC_0000001792557040__section10758914153313"></a><a name="section10758914153313"></a><h4 class="sectiontitle">Prerequisites</h4><p>You have obtained the <span class="filepath"><b>hdfs-site.xml</b></span> and <span class="filepath"><b>core-site.xml</b></span> files in the HDFS cluster by performing the following steps:</p>
+<ul><li>When the big data platform is Cloudera's Distribution Apache of Hadoop (CDH):<p>This part uses Cloudera Express 6.3.1 as an example. Operations may vary with versions. For details, see the CDH product documentation.</p>
+<ol><li>Use a browser to log in to Cloudera Manager.</li><li>Choose <span class="uicontrol"><b>Clusters &gt; HDFS</b></span>. </li><li>Choose <span class="uicontrol"><b>Actions &gt; Download Client Configuration</b></span> on the right of the page. </li><li>Obtain the <span class="filepath"><b>hdfs-site.xml</b></span> and <span class="filepath"><b>core-site.xml</b></span> files from the downloaded package.</li></ol>
+</li><li>When the big data platform is FusionInsight:<p>This part uses FusionInsight 6.5.1 as an example. Operations may vary with versions. For details, see the FusionInsight product documentation.</p>
+<ol><li>Log in to FusionInsight Manager using a browser.</li><li>Choose <span class="uicontrol"><b>Cluster &gt; HDFS</b></span>.</li><li>Choose <span class="uicontrol"><b>More &gt; Download Client</b></span> on the upper right of the page.</li><li>Obtain the <span class="filepath"><b>hdfs-site.xml</b></span> and <span class="filepath"><b>core-site.xml</b></span> files from the downloaded package.</li></ol>
+</li><li>When the big data platform is Transwarp Data Hub (TDH):<p>This part uses TDH 8.0.2 as an example. Operations may vary with versions. For details, see the Transwarp Data Hub product documentation.</p>
+<ol><li>Use a browser to log in to Transwarp Data Hub.</li><li>Choose <strong>Dashboard</strong> &gt; <strong>Cluster</strong> and click an HDFS cluster to go to the cluster page.</li><li>In the upper right corner of the HDFS cluster page, select the <span><img src="en-us_image_0000001839276425.png"></span> icon, and click <strong>Download Service Configurations</strong>.</li><li>Obtain the <strong>hdfs-site.xml</strong> and <strong>core-site.xml</strong> files from the downloaded package.</li><li>Delete the following information in the <strong>core-site.xml</strong> file:</li></ol>
+<pre class="screen">&lt;property&gt;
+    &lt;name&gt;hadoop.security.group.mapping.ldap.bind.password.file&lt;/name&gt;
+    &lt;value&gt;/etc/hdfs1/conf/ldap-conn-pass.txt&lt;/value&gt;
+&lt;/property&gt;</pre>
+</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="EN-US_TOPIC_0000001792557040__en-us_topic_0000001249935107_li1368863015381"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792557040__en-us_topic_0000001839142377_uicontrol1225102113916"><b><span id="EN-US_TOPIC_0000001792557040__en-us_topic_0000001839142377_text1125113213390"><strong>Protection</strong></span> &gt; Big Data &gt; HDFS</b></span>.</span></li><li><span>On the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> page, click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register an HDFS cluster.</span><p><p><a href="#EN-US_TOPIC_0000001792557040__table164432003147">Table 1</a> describes the HDFS cluster registration information.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001792557040__table164432003147"></a><a name="table164432003147"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792557040__table164432003147" frame="border" border="1" rules="all"><caption><b>Table 1 </b>HDFS cluster registration information</caption><colgroup><col style="width:35%"><col style="width:65%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="35%" id="mcps1.3.3.2.2.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="65%" id="mcps1.3.3.2.2.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Customize an HDFS cluster name.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><strong>hdfs-site.xml</strong></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="65%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Upload the <span class="filepath"><b>hdfs-site.xml</b></span> and <span class="filepath"><b>core-site.xml</b></span> files obtained in <a href="#EN-US_TOPIC_0000001792557040__section10758914153313">Prerequisites</a> to the management page.</p>
+<p>The files are used to configure HDFS cluster information, such as the cluster address and port number.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>The big data cluster supports only IPv4 addresses. IPv6 addresses are not supported. Check whether configurations in the configuration file are correct.</li><li>The configuration file uploaded to the management page must be the same as that in the big data cluster. Do not modify the configuration file locally.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><strong>core-site.xml</strong></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Authentication Mode</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Configure the authentication mode for communication between the HDFS cluster and the <span>OceanProtect</span>. Set this parameter based on the authentication mode configured for the HDFS cluster.</p>
+<ul><li><span><strong>Simple Authentication</strong></span>: Select this authentication mode when Kerberos authentication is disabled for the HDFS cluster. In this authentication mode, usernames are used for authentication, which is less secure.</li><li><span><strong>Kerberos Authentication</strong></span>: Select this authentication mode when Kerberos authentication is enabled for the HDFS cluster. The Kerberos protocol is used for identity authentication between the HDFS cluster and the <span>OceanProtect</span>.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Simple Authentication</strong></span></b></span>.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>The entered username must have the read and write permissions on the resources to be accessed.</li><li>If you need to restore HDFS ACL information during HDFS file restoration, the registered principal name must have HDFS super user permissions. For example, you can add the principal name to the supergroup on the big data platform so that the user has HDFS super user permissions.</li></ul>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Kerberos</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>This parameter is mandatory only when <span class="uicontrol"><b><span><strong>Authentication Mode</strong></span></b></span> is set to <span class="uicontrol"><b><span><strong>Kerberos Authentication</strong></span></b></span>.</p>
+<p>Select the created Kerberos authentication. When you register an HDFS cluster for the first time, click <span class="uicontrol"><b>Create</b></span> and configure Kerberos authentication parameters. <a href="#EN-US_TOPIC_0000001792557040__table93413354118">Table 2</a> describes the related parameters.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><span><strong>Agent Host</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Select the agent host for data protection.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>Do not allocate the same agent host to multiple big data clusters with different Kerberos authentication configurations or authentication modes. Otherwise, backup or restoration jobs will fail.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p><strong>ACL Backup</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>Whether to back up the ACL.</p>
+<p>The ACL is backed up only when both the HDFS ACL configuration (dfs.namenode.acls.enabled) on the big data platform and the current function are enabled.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Set Kerberos authentication parameters. For details about related parameters, see <a href="#EN-US_TOPIC_0000001792557040__table93413354118">Table 2</a>.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001792557040__table93413354118"></a><a name="table93413354118"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001792557040__table93413354118" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Kerberos authentication parameters</caption><colgroup><col style="width:35%"><col style="width:65%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000001792557040__row434173521115"><th align="left" class="cellrowborder" valign="top" width="35%" id="mcps1.3.3.2.2.2.4.2.3.1.1"><p id="EN-US_TOPIC_0000001792557040__p1134143591114">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="65%" id="mcps1.3.3.2.2.2.4.2.3.1.2"><p id="EN-US_TOPIC_0000001792557040__p1334163541111">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000001792557040__row123412358116"><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p id="EN-US_TOPIC_0000001792557040__p434935141114"><span id="EN-US_TOPIC_0000001792557040__text116228195434"><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p id="EN-US_TOPIC_0000001792557040__p334173518110">User-defined Kerberos authentication name.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001792557040__row83417352118"><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p id="EN-US_TOPIC_0000001792557040__p143513352112"><span id="EN-US_TOPIC_0000001792557040__text13420328134312"><strong>Principal Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p id="EN-US_TOPIC_0000001792557040__p16354357116">Principal name of Kerberos authentication.</p>
+<div class="note" id="EN-US_TOPIC_0000001792557040__note1997805374919"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="EN-US_TOPIC_0000001792557040__ul53571451001"><li id="EN-US_TOPIC_0000001792557040__li133577516015">Set this parameter to the principal name configured on the Kerberos server, and the principal name must have read and write permissions on the resources to be accessed.</li><li id="EN-US_TOPIC_0000001792557040__li17687183713589">If you need to restore HDFS ACL information during HDFS file restoration, the registered principal name must have HDFS super user permissions. Here are some examples:<ul id="EN-US_TOPIC_0000001792557040__ul10684153715580"><li id="EN-US_TOPIC_0000001792557040__li176852373586">If the big data platform is FusionInsight or CDH, you can add the principal name to the supergroup on the big data platform so that the principal name has HDFS super user permissions.</li><li id="EN-US_TOPIC_0000001792557040__li986445365918">If the big data platform is TDH, you can add the admin role to the principal name on the big data platform so that the principal name has HDFS super user permissions.</li></ul>
+</li></ul>
+</div></div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001792557040__row143514356116"><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p id="EN-US_TOPIC_0000001792557040__p0352355118"><span id="EN-US_TOPIC_0000001792557040__text872344194318"><strong>Configuration Mode</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><div class="p" id="EN-US_TOPIC_0000001792557040__p14335165565315">Kerberos authentication mode, which must be the same as that configured on the Kerberos server. Two authentication modes are available:<ul id="EN-US_TOPIC_0000001792557040__ul79681635144315"><li id="EN-US_TOPIC_0000001792557040__li1996820353434"><span id="EN-US_TOPIC_0000001792557040__text54429228440"><strong>Password</strong></span>: Use the principal name and password for identity authentication.</li><li id="EN-US_TOPIC_0000001792557040__li20858113704310"><span id="EN-US_TOPIC_0000001792557040__text126523418216"><strong>Keytab File</strong></span>: Use the principal and keytab file for identity authentication.</li></ul>
+</div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001792557040__row183523512112"><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p id="EN-US_TOPIC_0000001792557040__p15351835151118"><span id="EN-US_TOPIC_0000001792557040__text114821547144418"><strong>Config File</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p id="EN-US_TOPIC_0000001792557040__p1958995015013"><span class="filepath" id="EN-US_TOPIC_0000001792557040__filepath1558985065011"><b>.conf</b></span> configuration file used during Kerberos authentication (for example, <strong id="EN-US_TOPIC_0000001792557040__b9599151611589">krb5.conf</strong>). Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img id="EN-US_TOPIC_0000001792557040__image958945045017" src="en-us_image_0000001792397360.png"></span> to upload it to the management page.</p>
+<div class="p" id="EN-US_TOPIC_0000001792557040__p335113531110">Due to problems in Kerberos, if <span class="uicontrol" id="EN-US_TOPIC_0000001792557040__uicontrol1462119340419"><b>renew_lifetime</b></span> exists in the configuration file, comment it out. Otherwise, the registration may fail. For example:<pre class="screen" id="EN-US_TOPIC_0000001792557040__screen43313539415">#renew_lifetime = 7d</pre>
+</div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001792557040__row12351358112"><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p id="EN-US_TOPIC_0000001792557040__p53510353119"><span id="EN-US_TOPIC_0000001792557040__text132368547446"><strong>Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p id="EN-US_TOPIC_0000001792557040__p63573513114">This parameter is mandatory only when <span class="uicontrol" id="EN-US_TOPIC_0000001792557040__uicontrol10967144612199"><b><span id="EN-US_TOPIC_0000001792557040__text155548915452"><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol" id="EN-US_TOPIC_0000001792557040__uicontrol478945111911"><b><span id="EN-US_TOPIC_0000001792557040__text953102164617"><strong>Password</strong></span></b></span>.</p>
+<p id="EN-US_TOPIC_0000001792557040__p1477085011175">Set this parameter to the password of <span class="uicontrol" id="EN-US_TOPIC_0000001792557040__uicontrol763018714189"><b><span id="EN-US_TOPIC_0000001792557040__text1997411411465"><strong>Principal Name</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001792557040__row5425131213143"><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p id="EN-US_TOPIC_0000001792557040__p164257122145"><span id="EN-US_TOPIC_0000001792557040__text1522326164613"><strong>Confirm Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p id="EN-US_TOPIC_0000001792557040__p1042541281412">Confirm the password of <span class="uicontrol" id="EN-US_TOPIC_0000001792557040__uicontrol9284162064619"><b><span id="EN-US_TOPIC_0000001792557040__text14284102010469"><strong>Principal Name</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001792557040__row1728863716141"><td class="cellrowborder" valign="top" width="35%" headers="mcps1.3.3.2.2.2.4.2.3.1.1 "><p id="EN-US_TOPIC_0000001792557040__p112881037171415"><span id="EN-US_TOPIC_0000001792557040__text19503531104618"><strong>Keytab File</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="65%" headers="mcps1.3.3.2.2.2.4.2.3.1.2 "><p id="EN-US_TOPIC_0000001792557040__p374615219184"><span class="filepath" id="EN-US_TOPIC_0000001792557040__filepath19934532131518"><b>.keytab</b></span> file used during Kerberos authentication (for example, <strong id="EN-US_TOPIC_0000001792557040__b41921269182">krb5.keytab</strong>). This parameter is mandatory only when <span class="uicontrol" id="EN-US_TOPIC_0000001792557040__uicontrol6701435124612"><b><span id="EN-US_TOPIC_0000001792557040__text1170193513465"><strong>Configuration Mode</strong></span></b></span> is set to <span class="uicontrol" id="EN-US_TOPIC_0000001792557040__uicontrol67464241815"><b><span id="EN-US_TOPIC_0000001792557040__text8150194415468"><strong>Keytab File</strong></span></b></span>.</p>
+<p id="EN-US_TOPIC_0000001792557040__p1836535991910">Contact the Kerberos server administrator to obtain the file from the Kerberos server and click <span><img id="EN-US_TOPIC_0000001792557040__image2782840141712" src="en-us_image_0000001792557096.png"></span> to upload it to the management page.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001792557044.html">Backing Up HDFS Filesets</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

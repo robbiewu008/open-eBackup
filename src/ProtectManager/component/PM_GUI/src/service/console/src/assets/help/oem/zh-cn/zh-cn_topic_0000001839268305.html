@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="如何禁用Oracle数据库的krb trace">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839268305">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>如何禁用Oracle数据库的krb trace</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001839268305"></a><a name="ZH-CN_TOPIC_0000001839268305"></a>
+  <h1 class="topictitle1">如何禁用Oracle数据库的krb trace</h1>
+  <div>
+   <p>由于Oracle自身的原因，执行备份时会产生大量krb trace文件，而占用主机存储空间。因此，备份前建议禁用krb trace。</p>
+   <ol>
+    <li><span>登录Oracle数据库主机。</span><p></p>
+     <ul id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188401_zh-cn_topic_0000001839188333_ul1983714162204">
+      <li id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188401_zh-cn_topic_0000001839188333_li7258697580">如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行<strong id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188401_zh-cn_topic_0000001839188333_b119369483451">su - oracle</strong>命令，切换到<strong id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188401_zh-cn_topic_0000001839188333_b2486163014495">oracle</strong>账户。</li>
+      <li id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188401_zh-cn_topic_0000001839188333_li1366015032013">如果是Windows操作系统，请使用系统管理员登录Oracle数据库主机。</li>
+     </ul> <p></p></li>
+    <li><span>执行以下命令，登录Oracle数据库实例。</span><p></p>
+     <ul id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_ul7420345341">
+      <li id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_li15682124913711">OS认证：
+       <ul id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_ul89443983816">
+        <li id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_li18420124173415">如果是Linux操作系统，请执行以下命令：<p id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_p95148598366"><a name="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_li18420124173415"></a><a name="zh-cn_topic_0000001839188333_li18420124173415"></a><strong id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_b14236563719">export ORACLE_SID=</strong><em id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_i85144598369">数据库实例名称</em></p> <p id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_p145141259153613"><strong id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_b1597618293715">sqlplus / as sysdba</strong></p></li>
+        <li id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_li7402151163816">如果是Windows操作系统，请执行以下操作：
+         <ol type="a" id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_ol124110408264">
+          <li id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_li624120402267">在键盘上按<span class="uicontrol" id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_zh-cn_topic_0000001839188333_uicontrol11819941114510">“Win+R”</span>，打开运行窗口。</li>
+          <li id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_li161821338277">输入<span class="parmvalue" id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_parmvalue122291222476">“cmd”</span>，执行以下命令。<p id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_p1755152313372"><strong id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_b19591532143713">set ORACLE_SID=</strong><em id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_i16755423133718">数据库实例名称</em></p> <p id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_p1075515234379"><strong id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_b540852910371">sqlplus / as sysdba</strong></p></li>
+         </ol></li>
+       </ul></li>
+      <li id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_li105571236103417">数据库认证：
+       <ul id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_ul1136516538386">
+        <li id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_li1723334817382">如果是Linux操作系统，请执行以下命令：<p id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_p920984963717"><a name="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_li1723334817382"></a><a name="zh-cn_topic_0000001839188333_li1723334817382"></a><strong id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_b19174355163720">export ORACLE_SID=</strong><em id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_i1420924973715">数据库实例名称</em></p> <p id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_p182093496371"><strong id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_b034785743716">sqlplus</strong></p> <p id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_p17915722412">根据提示输入具备<strong id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_b1691518214115">sysdba</strong>权限的用户：</p> <pre class="screen" id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_screen9915112104114"><em id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_i1915102164113">username </em>as sysdba</pre> <p id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_p159150224117">根据提示输入密码。</p></li>
+        <li id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_li122822426407">Windows OS执行以下命令：
+         <ol type="a" id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_ol587720252273">
+          <li id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_li5168124414479">在键盘上按<span class="uicontrol" id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_zh-cn_topic_0000001839188333_uicontrol11819941114510_1">“Win+R”</span>，打开运行窗口。</li>
+          <li id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_li3877172517270">输入<span class="parmvalue" id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_parmvalue2059612503475">“cmd”</span>，执行以下命令。<p id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_p8745723103813"><strong id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_b9408122923816">set ORACLE_SID=</strong><em id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_i12745162318389">数据库实例名称</em></p> <p id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_p15745182333814"><strong id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_b11154427163811">sqlplus</strong></p> <p id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_p71274192512">根据提示输入具备<strong id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_b17349199162611">sysdba</strong>权限的用户：</p> <pre class="screen" id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_screen18896121620243"><em id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_i380114413256">username </em>as sysdba</pre> <p id="ZH-CN_TOPIC_0000001839268305__zh-cn_topic_0000001839188333_p15251105852511">根据提示输入密码。</p></li>
+         </ol></li>
+       </ul></li>
+     </ul> <p></p></li>
+    <li><span>依次执行以下命令禁用krb trace。</span><p></p><p><strong>alter system set events 'trace[krb.*] disk disable, memory disable';</strong></p> <p><strong>alter system set event='trace[krb.*] disk disable, memory disable' scope=spfile;</strong></p> <p>如果是Oracle数据库集群，在集群中任一节点执行该操作。</p> <p></p></li>
+   </ol>
+  </div>
+ </body>
+</html>

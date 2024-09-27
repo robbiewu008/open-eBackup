@@ -1,0 +1,32 @@
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>{{ 'common_name_label' | i18n }}</lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input lv-input type="text" formControlName="name" />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="!cookieService.isCloudBackup">
+    <lv-form-label lvRequired>{{ 'common_type_label' | i18n }}</lv-form-label>
+    <lv-form-control>
+      <lv-select
+        lvMode="multiple"
+        [lvOptions]="typeOptions"
+        lvValueKey="value"
+        formControlName="type"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>{{
+      'system_ca_certificate_label' | i18n
+    }}</lv-form-label>
+    <lv-form-control>
+      <lv-upload
+        lvAccept=".pem"
+        lvShowUpload="false"
+        [lvFilters]="filters"
+      ></lv-upload>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>

@@ -1,0 +1,342 @@
+.search-input-container {
+  padding-top: 72px;
+  padding-bottom: 40px;
+  position: relative;
+  .title {
+    text-align: center;
+    color: #fff;
+    font-size: 34px;
+    position: relative;
+  }
+  .input {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+    position: relative;
+  }
+  .video {
+    position: absolute;
+    top: 0px;
+    background: url('assets/img/bg_global_search.png');
+    width: 100%;
+    height: 400px;
+  }
+  button {
+    box-shadow: 0 0 20px 0 #2c58d0;
+    border-radius: 4px;
+    margin-left: 10px;
+    height: 48px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .input-desc {
+    color: #fff;
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+
+    div {
+      width: 7.9rem;
+    }
+  }
+
+  .global-search-btn {
+    cursor: pointer;
+
+    i {
+      height: 48px;
+      width: 48px;
+    }
+  }
+
+  .search-type-container {
+    width: 120px;
+    position: relative;
+    background-color: #fff;
+  }
+}
+
+.global-search-container {
+  height: calc(100% - 289px);
+  min-height: 960px;
+}
+
+:host ::ng-deep .global-search-container .lv-tabs-body {
+  background: #fff;
+  position: relative;
+  top: -5px;
+  height: calc(100% - 37px);
+}
+
+:host
+  ::ng-deep
+  .global-search-container
+  lv-layout.lv-layout-cross
+  > lv-sider
+  > div
+  .lv-sider-trigger-in {
+  display: none;
+}
+
+:host ::ng-deep .global-search-container .lv-tabs-body {
+  background: #fff;
+  position: relative;
+  top: -5px;
+  height: calc(100% - 37px);
+}
+
+:host ::ng-deep .global-search-container {
+  .lv-table-thead > tr:nth-child(2) > th:first-child {
+    padding-left: 24px;
+  }
+  .aui-tabs-block {
+    margin-left: 32px;
+    margin-right: 32px;
+  }
+  .lv-tabs .lv-tabs-body > .lv-tab-content {
+    padding: 0;
+  }
+  .lv-tabs .lv-tabs-bar > .lv-tabs-wrapper {
+    background: #fff;
+    position: relative;
+  }
+  .lv-tabs .lv-tabs-bar > .lv-tabs-wrapper > .lv-tabs-container {
+    background: transparent;
+    text-align: center;
+    position: relative;
+    top: -58px;
+    visibility: hidden;
+  }
+
+  .lv-tabs
+    .lv-tabs-list
+    > .lv-tab-item.lv-tab-item-active
+    > span:not(.lv-tab-close) {
+    color: #fff;
+  }
+
+  .lv-tabs.lv-tabs-small
+    .lv-tabs-list
+    > .lv-tab-item.lv-tab-item-active
+    > span:not(.lv-tab-close)::after {
+    border-bottom-color: #fff;
+  }
+
+  .aui-inner-search .lv-input {
+    height: 48px;
+    color: #282b33;
+  }
+
+  .aui-inner-search .lv-input-group {
+    border: none;
+  }
+
+  .search-help {
+    height: 48px !important;
+    width: 24px;
+    margin-left: 8px;
+  }
+
+  lv-layout.lv-layout-cross > lv-sider {
+    width: 380px !important;
+  }
+
+  lv-layout > lv-content {
+    background: #fff;
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  lv-layout.lv-layout-cross > lv-sider > div {
+    padding-left: 32px;
+    padding-right: 6px;
+    border-right: 1px solid #d4d9e6;
+    box-shadow: none;
+  }
+
+  .lv-input.ui-section-inputtext-sec {
+    width: 3.22rem;
+  }
+
+  .filter-type-title.more .lv-icon {
+    fill: #6c7280;
+  }
+
+  & lv-layout.lv-layout-cross > lv-sider.collapsed {
+    width: 0 !important;
+    > div {
+      padding: 0;
+    }
+    // 解决IE下侧边栏收起滚动条还在的问题
+    .aui-search-section {
+      overflow: hidden;
+    }
+  }
+}
+
+.aui-search-section {
+  position: relative;
+  width: 100%;
+  overflow: auto;
+  height: calc(100% - 10px);
+  &::-webkit-scrollbar-thumb {
+    width: 8px;
+    background: rgba(40, 43, 51, 0.2);
+    border-radius: 4px;
+  }
+  .filter-type-title {
+    margin-top: 16px;
+    &.more {
+      cursor: pointer;
+      margin-top: 56px;
+      font-size: 0.16rem;
+      color: #282b33;
+      font-weight: 600;
+    }
+    &:not(.checkbox-options):not(.more) {
+      padding-bottom: 16px;
+    }
+  }
+  .filter-type-options {
+    border-bottom: 1px dashed #d4d9e6;
+    padding-bottom: 16px;
+    margin-right: 8px;
+    &.more {
+      padding-bottom: 0;
+      border: none;
+    }
+  }
+}
+
+.sider-trigger {
+  position: absolute;
+  top: 50%;
+  right: -15px;
+  background: #d4d9e6;
+  width: 12px;
+  height: 80px;
+  cursor: pointer;
+  &::before {
+    display: inline-block;
+    content: '';
+    border-top: 16px solid #fff;
+    border-left: 12px solid #d4d9e6;
+  }
+  &::after {
+    display: inline-block;
+    content: '';
+    border-bottom: 16px solid #fff;
+    border-left: 12px solid #d4d9e6;
+    position: relative;
+    bottom: -22px;
+  }
+  .left {
+    transform: rotateZ(180deg);
+  }
+  .icon {
+    position: relative;
+    top: 8px;
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.aui-inner-search {
+  background: #fff;
+  width: 4.3rem;
+}
+
+.dashed-line {
+  padding-bottom: 24px;
+  margin-bottom: 0 !important;
+}
+
+.card-checkbox-footer {
+  position: absolute;
+  bottom: 0;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+}
+
+.card-checkbox-footer i {
+  margin-left: auto;
+}
+
+.card.select {
+  border-color: #6c92fa;
+  background: #eef7fd;
+}
+
+.card {
+  width: 70px;
+  height: 28px;
+  position: relative;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px 0;
+}
+
+.resource-checkbox-container {
+  width: 310px;
+}
+
+.more-container {
+  margin-top: 16px;
+  width: 100%;
+
+  .lv-form-control,
+  .lv-input,
+  .lv-select,
+  .lv-input-lint,
+  .lv-fileupload,
+  .lv-time-picker {
+    width: 310px !important;
+  }
+}
+
+div.dashed-lines {
+  width: 100%;
+  border-bottom: 0.01rem dashed #d4d9e6;
+  margin-bottom: 24px;
+}
+
+.link-disabled {
+  color: #b8becc;
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+.link-disabled:hover {
+  color: #b8becc;
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+.link-disabled:active {
+  color: #b8becc;
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+.cluster-count-label {
+  line-height: 0.25rem;
+  vertical-align: top;
+  float: right;
+}
+
+.cluster-line-container {
+  line-height: 10px;
+}
+
+.cluster-group {
+  width: 100%;
+}
+
+.search-key-container {
+  width: 300px !important;
+}

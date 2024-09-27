@@ -1,0 +1,3975 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: 告警管理接口
+  contact: {}
+  license: {}
+host: localhost
+basePath: /
+tags:
+  - name: alarm-and-event-api
+    description: Alarm Controller
+  - name: alarm-dump-api
+    description: Alarm Dump Controller
+  - name: alarm-email-notify-api
+    description: Email Controller
+  - name: snmp-api
+    description: Snmp Controller
+  - name: alarm-notify-rule-api
+    description: Notify Controller
+  - name: syslog-api
+    description: Syslog Controller
+paths:
+  /v1/alarms:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-and-event-api
+      summary: 批量查询告警
+      operationId: getAlarmListUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: alarmId
+          in: query
+          description: 告警ID
+          required: false
+          type: string
+          x-example: '0x123456'
+        - name: createTimeEnd
+          in: query
+          description: 创建时间（止）[取值范围]yyyy-MM-dd HH:mm:ss 或 1576058814000：时间戳
+          required: false
+          type: string
+          x-example: 2019-12-11 18:06:54 or 1576058814000
+        - name: createTimeStart
+          in: query
+          description: 创建时间（起）[取值范围]2019-12-11 18:06:54 或 1576058814000：时间戳
+          required: false
+          type: string
+          x-example: 2019-12-11 18:06:54 or 1576058814000
+        - name: language
+          in: query
+          description: 语言类型[取值范围]1：中文 2：英文
+          required: false
+          type: string
+          default: zh
+        - name: pageNum
+          in: query
+          description: 分页起始页码
+          required: false
+          type: integer
+          maximum: 60000.0
+          minimum: 1.0
+          format: int32
+          x-example: 1
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          maximum: 200.0
+          minimum: 5.0
+          format: int32
+          x-example: 20
+        - name: severities
+          in: query
+          description: >-
+            告警等级[取值范围] 1:警告告警[WARNING] 3:重要告警[MAJOR] 4:致命告警[CRITICAL]
+            (告警查询屏蔽INFO等级)
+          required: false
+          type: array
+          items:
+            type: integer
+            format: int32
+          collectionFormat: multi
+        - name: sortColumn
+          in: query
+          description: 分页排序字段
+          required: false
+          type: string
+          x-example: MODIFY_TIME
+          enum:
+            - SEVERITY
+            - SOURCE_TYPE
+            - ALARM_TYPE
+            - ALARM_ID
+            - MODIFY_TIME
+            - CREATE_TIME
+            - START_TIME
+        - name: sortType
+          in: query
+          description: 分页排序顺/逆序
+          required: false
+          type: string
+          enum:
+            - ASC
+            - DESC
+        - name: sourceTypes
+          in: query
+          description: >-
+            告警对象 [取值范围] User:用户 Alarm:告警 Cluster:集群 Repository:存储库
+            License:license KMS:秘钥管理 Certificate:证书 Resource:资源 SLA:SLA
+            ProtectedObject:受保护的对像 Protection:保护 Scheduler:调度器 LiveMount:及时挂载
+            Restore:恢复 CopyCatalog:副本目录 BackUpCluster:数据保护引擎 System:系统
+            Replication:复制 Localstorage:本地存储
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: entityIdList
+          in: query
+          required: false
+          type: array
+          description: 告警唯一标识列表
+          items:
+            minLength: 1
+            maxLength: 10240
+            type: string
+        - name: deviceNames
+          in: query
+          description: 一体机告警来源
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse«AlarmVO»'
+            originalRef: PageListResponse«AlarmVO»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v2/alarms:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-and-event-api
+      summary: 批量查询告警
+      operationId: findPageUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: alarmId
+          in: query
+          description: 告警ID
+          required: false
+          type: string
+          x-example: '0x123456'
+        - name: endTime
+          in: query
+          description: 创建时间（止）[取值范围]1576058814000：时间戳
+          required: false
+          type: int64
+          x-example: '1576058814000'
+        - name: startTime
+          in: query
+          description: 创建时间（起）[取值范围]1576058814000：时间戳
+          required: false
+          type: int64
+          x-example: '1576058814001'
+        - name: language
+          in: query
+          description: 语言类型[取值范围]ZH：中文 EN：英文
+          enum:
+            - ZH
+            - EN
+          required: false
+          type: string
+          default: ZH
+        - name: pageNo
+          in: query
+          description: 分页页码
+          required: false
+          type: integer
+          maximum: 60000.0
+          minimum: 1.0
+          format: int32
+          x-example: 1
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          maximum: 200.0
+          minimum: 5.0
+          format: int32
+          x-example: 20
+        - name: severity
+          in: query
+          description: >-
+            告警等级[取值范围] WARNING:警告告警[WARNING] MAJOR:重要告警[MAJOR] CRITICAL:致命告警[CRITICAL]
+            (告警查询屏蔽INFO等级)
+          enum:
+            - WARNING
+            - MAJOR
+            - CRITICAL
+          required: false
+          type: string
+          format: int32
+          x-example: WARNING
+        - name: objType
+          in: query
+          description: 告警对象类型
+          required: false
+          type: string
+          x-example: '244'
+        - name: sequence
+          in: query
+          description: 流水号
+          required: false
+          type: integer
+          maximum: 4294967295.0
+          minimum: 1.0
+          format: int32
+          x-example: 20
+        - name: shouldAllNodes
+          in: query
+          required: false
+          description: 是否查询全部节点
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse«AlarmDto»'
+            originalRef: PageListResponse«AlarmDto»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v2/alarms/objects:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-and-event-api
+      summary: 批量查询告警对象
+      operationId: findObjectsPageUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: language
+          in: query
+          description: 语言类型[取值范围]ZH：中文 EN：英文
+          enum:
+            - ZH
+            - EN
+          required: false
+          type: string
+          x-example: ZH
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AlarmObjDto'
+            originalRef: AlarmObjDto
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/alarms/action/clear:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-and-event-api
+      summary: 告警清除
+      operationId: clearAlarmsUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: alarmClearParam
+          description: 告警清除请求体
+          required: true
+          schema:
+            $ref: '#/definitions/AlarmClearParam'
+            originalRef: AlarmClearParam
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AlarmVO'
+            originalRef: AlarmVO
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v2/alarms/{sequence}/action/clear:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-and-event-api
+      summary: 告警清除
+      operationId: clearAlarmsBySequenceUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: path
+          name: sequence
+          description: 告警流水号
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/alarms/action/export:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-and-event-api
+      summary: 导出告警
+      operationId: exportAlarmsUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: entityIds
+          description: 导出告警请求体
+          required: true
+          schema:
+            $ref: '#/definitions/EntityID'
+            originalRef: EntityID
+        - name: lang
+          in: query
+          description: 语言类型[取值范围]1：中文 2：英文
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/alarms/action/test:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-and-event-api
+      summary: 发送模拟测试告警
+      operationId: sendTestAlarmUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v2/alarms/devices:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-and-event-api
+      summary: 批量查询告警来源设备
+      operationId: findPageCEDevUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: language
+          in: query
+          description: 语言类型[取值范围]ZH：中文 EN：英文
+          enum:
+            - ZH
+            - EN
+          required: false
+          type: string
+          x-example: ZH
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AlarmDevDto'
+            originalRef: AlarmDevDto
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/alarms/count:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-and-event-api
+      summary: 告警总数查询
+      operationId: queryAlarmCountBySeverityUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AlarmStatisticResponse'
+            originalRef: AlarmStatisticResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/alarms/detail:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-and-event-api
+      summary: 批量查询告警
+      operationId: getAlarmDetailListUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: alarmId
+          in: query
+          description: 告警ID
+          required: false
+          type: string
+          x-example: '0x123456'
+        - name: createTimeEnd
+          in: query
+          description: 创建时间（止）[取值范围]yyyy-MM-dd HH:mm:ss 或 1576058814000：时间戳
+          required: false
+          type: string
+          x-example: 2019-12-11 18:06:54 or 1576058814000
+        - name: createTimeStart
+          in: query
+          description: 创建时间（起）[取值范围]2019-12-11 18:06:54 或 1576058814000：时间戳
+          required: false
+          type: string
+          x-example: 2019-12-11 18:06:54 or 1576058814000
+        - name: language
+          in: query
+          description: 语言类型[取值范围]1：中文 2：英文
+          required: false
+          type: string
+          default: zh
+        - name: pageNum
+          in: query
+          description: 分页起始页码
+          required: false
+          type: integer
+          maximum: 60000.0
+          minimum: 1.0
+          format: int32
+          x-example: 1
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          maximum: 200.0
+          minimum: 5.0
+          format: int32
+          x-example: 20
+        - name: severities
+          in: query
+          description: >-
+            告警等级[取值范围] 1:警告告警[WARNING] 3:重要告警[MAJOR] 4:致命告警[CRITICAL]
+            (告警查询屏蔽INFO等级)
+          required: false
+          type: array
+          items:
+            type: integer
+            format: int32
+          collectionFormat: multi
+        - name: sortColumn
+          in: query
+          description: 分页排序字段
+          required: false
+          type: string
+          x-example: MODIFY_TIME
+          enum:
+            - SEVERITY
+            - SOURCE_TYPE
+            - ALARM_TYPE
+            - ALARM_ID
+            - MODIFY_TIME
+            - CREATE_TIME
+            - START_TIME
+        - name: sortType
+          in: query
+          description: 分页排序顺/逆序
+          required: false
+          type: string
+          enum:
+            - ASC
+            - DESC
+        - name: sourceTypes
+          in: query
+          description: >-
+            告警对象 [取值范围] User:用户 Alarm:告警 Cluster:集群 Repository:存储库
+            License:license KMS:秘钥管理 Certificate:证书 Resource:资源 SLA:SLA
+            ProtectedObject:受保护的对像 Protection:保护 Scheduler:调度器 LiveMount:及时挂载
+            Restore:恢复 CopyCatalog:副本目录 BackUpCluster:数据保护引擎 System:系统
+            Replication:复制 Localstorage:本地存储
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse«AlarmVO»'
+            originalRef: PageListResponse«AlarmVO»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-and-event-api
+      summary: 查询指定事件
+      operationId: getAlarmUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: perAlarmQueryParam
+          description: 查询指定事件请求体
+          required: true
+          schema:
+            $ref: '#/definitions/PerAlarmQueryParam'
+            originalRef: PerAlarmQueryParam
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AlarmVO'
+            originalRef: AlarmVO
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/alarms/dump/files/{fileId}:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-dump-api
+      summary: 导出告警转储文件
+      operationId: exportAlarmTransferStorageUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: fileId
+          in: path
+          description: 告警转储文件ID
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    delete:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 30081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-dump-api
+      summary: 删除告警转储文件
+      operationId: deleteTaskResultsUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: fileId
+          in: path
+          description: 告警转储文件ID
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/BatchOperationResult'
+            originalRef: BatchOperationResult
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/alarms/dump/files/{fileId}/action/upload:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-dump-api
+      summary: 上传告警转储文件到SFTP服务器
+      operationId: uploadAlarmTransferStorageFileToSftpUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: fileId
+          in: path
+          description: 上传的文件ID
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/alarms/dump/policy:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-dump-api
+      summary: 查询告警转储配置
+      operationId: queryAlarmTransferStorageCfgUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DumpRequest'
+            originalRef: DumpRequest
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-dump-api
+      summary: 更改告警转储配置
+      operationId: modfiyAlarmTransferStorageCfgUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: dumpRequestBase
+          description: 告警转储配置请求体
+          required: true
+          schema:
+            $ref: '#/definitions/DumpRequestBase'
+            originalRef: DumpRequestBase
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/alarms/dump/policy/files:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-dump-api
+      summary: 批量查询告警转储记录
+      operationId: queryAlarmDumpHisPageUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          maximum: 200.0
+          minimum: 5.0
+          format: int32
+          x-example: 10
+        - name: startIndex
+          in: query
+          description: 分页起始页面
+          required: false
+          type: integer
+          maximum: 60000.0
+          minimum: 0.0
+          format: int32
+          x-example: 1
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse«AlarmDumpTaskResponse»'
+            originalRef: PageListResponse«AlarmDumpTaskResponse»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/alarms/dump/sftp:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-dump-api
+      summary: 查询告警转储SFTP配置
+      operationId: queryAlarmSftpServerConfigUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AlarmSftpServerResponse'
+            originalRef: AlarmSftpServerResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-dump-api
+      summary: 修改告警转储SFTP配置
+      operationId: modifyAlarmSftpServerConfigUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: 修改告警转储SFTP配置请求体
+          required: true
+          schema:
+            $ref: '#/definitions/AlarmSftpServerModifyRequest'
+            originalRef: AlarmSftpServerModifyRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/alarms/dump/sftp/action/test:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-dump-api
+      summary: 测试告警转储SFTP服务器
+      operationId: checkIfAlarmSftpServerConnectivityUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: 修改告警转储SFTP配置请求体
+          required: true
+          schema:
+            $ref: '#/definitions/AlarmSftpServerTestRequest'
+            originalRef: AlarmSftpServerTestRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/alarms/{sequence}:
+    delete:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-and-event-api
+      summary: 告警清除
+      operationId: clearAlarmsBySequenceUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: sequence
+          in: path
+          description: 告警流水号
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/emails:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-email-notify-api
+      summary: 获取邮件通知配置
+      operationId: queryEmailServerUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/EmailServerQueryResponse'
+            originalRef: NotifyEmailServerRequest
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-email-notify-api
+      summary: 更改邮件通知配置
+      operationId: modifyEmailServerUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: notifyEmailServerRequest
+          description: 邮件通知配置请求体
+          required: true
+          schema:
+            $ref: '#/definitions/NotifyEmailServerRequest'
+            originalRef: NotifyEmailServerRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/emails/action/testServer:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-email-notify-api
+      summary: 测试邮件通知
+      operationId: testEmailServerUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: request
+          description: 邮件通知配置请求体
+          required: true
+          schema:
+            $ref: '#/definitions/NotifyEmailServerRequest'
+            originalRef: NotifyEmailServerRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/events:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-and-event-api
+      summary: 批量查询事件
+      operationId: getEventListUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: alarmId
+          in: query
+          description: 告警ID
+          required: false
+          type: string
+          x-example: '0x123456'
+        - name: confirmStatuses
+          in: query
+          description: 告警状态 [取值范围] 1:成功 0：失败 3:已恢复
+          required: false
+          type: array
+          items:
+            type: integer
+            format: int32
+          collectionFormat: multi
+        - name: createTimeEnd
+          in: query
+          description: 创建时间（止）[取值范围]yyyy-MM-dd HH:mm:ss 或 1576058814000：时间戳
+          required: false
+          type: string
+          x-example: 2019-12-11 18:06:54 or 1576058814000
+        - name: createTimeStart
+          in: query
+          description: 创建时间（起）[取值范围]2019-12-11 18:06:54 或 1576058814000：时间戳
+          required: false
+          type: string
+          x-example: 2019-12-11 18:06:54 or 1576058814000
+        - name: language
+          in: query
+          description: 语言类型[取值范围]1：中文 2：英文
+          required: false
+          type: string
+          default: zh
+        - name: pageNum
+          in: query
+          description: 分页起始页码
+          required: false
+          type: integer
+          maximum: 60000.0
+          minimum: 1.0
+          format: int32
+          x-example: 1
+        - name: pageSize
+          in: query
+          description: 分页数量
+          required: false
+          type: integer
+          maximum: 200.0
+          minimum: 5.0
+          format: int32
+          x-example: 20
+        - name: severities
+          in: query
+          description: >-
+            告警等级[取值范围] 1:警告告警[WARNING] 3:重要告警[MAJOR] 4:致命告警[CRITICAL]
+            (告警查询屏蔽INFO等级)
+          required: false
+          type: array
+          items:
+            type: integer
+            format: int32
+          collectionFormat: multi
+        - name: sortColumn
+          in: query
+          description: 分页排序字段
+          required: false
+          type: string
+          x-example: MODIFY_TIME
+          enum:
+            - SEVERITY
+            - SOURCE_TYPE
+            - ALARM_TYPE
+            - ALARM_ID
+            - MODIFY_TIME
+            - CREATE_TIME
+            - START_TIME
+        - name: sortType
+          in: query
+          description: 分页排序顺/逆序
+          required: false
+          type: string
+          enum:
+            - ASC
+            - DESC
+        - name: sourceTypes
+          in: query
+          description: >-
+            告警对象 [取值范围] User:用户 Alarm:告警 Cluster:集群 Repository:存储库
+            License:license KMS:秘钥管理 Certificate:证书 Resource:资源 SLA:SLA
+            ProtectedObject:受保护的对像 Protection:保护 Scheduler:调度器 LiveMount:及时挂载
+            Restore:恢复 CopyCatalog:副本目录 BackUpCluster:数据保护引擎 System:系统
+            Replication:复制 Localstorage:本地存储
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: types
+          in: query
+          description: 告警类型 [取值范围] 1:已恢复告警 5:运行日志 6:操作日志
+          required: false
+          type: array
+          items:
+            type: integer
+            format: int32
+          collectionFormat: multi
+        - name: deviceNames
+          in: query
+          description: 一体机告警来源
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: nodeName
+          in: query
+          required: false
+          description: 节点名称
+          type: string
+          maxLength: 256
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponse«AlarmVO»'
+            originalRef: PageListResponse«AlarmVO»
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/events/action/export:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-and-event-api
+      summary: 导出事件
+      operationId: exportEventsUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: entityIds
+          description: 导出告警请求体
+          required: true
+          schema:
+            $ref: '#/definitions/EntityID'
+            originalRef: EntityID
+        - name: lang
+          in: query
+          description: 语言类型[取值范围]1：中文 2：英文
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/snmp/config:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - snmp-api
+      summary: 查询SNMP配置
+      operationId: getTrapConfigUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SnmpTrapConfigQueryRes'
+            originalRef: SnmpTrapConfigQueryRes
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - snmp-api
+      summary: 更改SNMP配置
+      operationId: modifyTrapConfigUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: snmpRequest
+          description: SNMP配置请求体
+          required: true
+          schema:
+            $ref: '#/definitions/SnmpRequest'
+            originalRef: SnmpRequest
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/snmp/config/action/check:
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - snmp-api
+      summary: 检查SNMP参数配置是否正确
+      operationId: checkSnmpConfigUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: snmpRequest
+          description: 检查SNMP参数配置是否正确请求体
+          required: true
+          schema:
+            $ref: '#/definitions/CheckSnmpConfigRequest'
+            originalRef: CheckSnmpConfigRequest
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: boolean
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/snmp/security-engines:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - snmp-api
+      summary: 查询SNMP安全引擎标识
+      operationId: queryAllSnmpSecurityAgentUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SnmpSecurityAgentResponse'
+              originalRef: SnmpSecurityAgentResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/snmp/trap/addresses:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - snmp-api
+      summary: 批量查询SNMP Trap地址
+      operationId: queryTrapAddressListUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: orderBy
+          in: query
+          description: 排序字段名称
+          required: false
+          type: string
+          enum:
+            - IP
+            - PORT
+        - name: orderType
+          in: query
+          description: 排序的方式：asc：升序，desc：降序
+          required: false
+          type: string
+          enum:
+            - ASC
+            - DESC
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SnmpTrapAddress'
+              originalRef: SnmpTrapAddress
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    post:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - snmp-api
+      summary: 新增SNMP Trap地址
+      operationId: addTrapAddressUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: snmpTrapAddress
+          description: 新增SNMP Trap地址请求体
+          required: true
+          schema:
+            $ref: '#/definitions/SnmpTrapAddressBase'
+            originalRef: SnmpTrapAddressBase
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - snmp-api
+      summary: 修改SNMP Trap地址
+      operationId: modfiyTrapAddressUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - in: body
+          name: snmpTrapAddress
+          description: 修改SNMP Trap地址请求体
+          required: true
+          schema:
+            $ref: '#/definitions/SnmpTrapAddress'
+            originalRef: SnmpTrapAddress
+      responses:
+        '200':
+          description: OK
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/snmp/trap/addresses/{id}:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - snmp-api
+      summary: 查询SNMP Trap地址
+      operationId: queryTrapAddressUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: 上报ip地址ID
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SnmpTrapAddress'
+            originalRef: SnmpTrapAddress
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+    delete:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - snmp-api
+      summary: 删除SNMP Trap地址
+      operationId: deleteTrapAddressUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: 上报ip地址ID
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/notify/rules:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-notify-rule-api
+      summary: 查询邮件通知规则
+      operationId: getRemoteNotifyRuleUsingGET
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/NotifyRuleRequest'
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+      security:
+        - Authorization: []
+    put:
+      tags:
+        - alarm-notify-rule-api
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 更改邮件通知规则
+      operationId: modifyNotifyBaseInfoUsingPUT
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: notifyRuleRequest
+          in: body
+          required: true
+          description: 更改邮件通知规则请求体
+          schema:
+            $ref: '#/definitions/NotifyRuleRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+      security:
+        - Authorization: []
+  /v1/notify/emails:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-notify-rule-api
+      description: 批量查询通知邮箱地址
+      operationId: getEmailsUsingGET
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmailRequest'
+    post:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-notify-rule-api
+      description: 新增通知邮箱地址
+      operationId: addEmailsUsingPOST
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: emailRequest
+          in: body
+          required: true
+          description: 新增通知邮箱地址请求体
+          schema:
+            $ref: '#/definitions/EmailRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-notify-rule-api
+      description: 删除通知邮箱地址
+      operationId: deleteEmailUsingDELETE
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: emailRequests
+          in: body
+          required: true
+          description: 邮箱地址列表请求体
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmailRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-notify-rule-api
+      description: 修改收件人邮箱信息
+      operationId: modifyEmailUsingPUT
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: modifyEmailRequest
+          in: body
+          required: true
+          description: 修改邮件通知地址结构体
+          schema:
+            $ref: '#/definitions/ModifyEmailRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+        '201':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+  /v1/notify/action/test:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-notify-rule-api
+      description: 测试收件人邮箱
+      operationId: testEmailRecipientUsingPUT
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: emailRequest
+          in: body
+          required: true
+          description: 收件人邮箱信息
+          schema:
+            $ref: '#/definitions/EmailRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '201':
+          description: ''
+          schema:
+            type: string
+        '401':
+          description: ''
+          schema:
+            type: string
+        '403':
+          description: ''
+          schema:
+            type: string
+        '404':
+          description: ''
+          schema:
+            type: string
+  /v2/alarms/nodes/info:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - alarm-and-event-api
+      summary: 获取某个集群各个节点告警统计信息
+      operationId: getMultiClusterNodeAlarmsUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: nodeName
+          in: query
+          description: 节点名称
+          required: false
+          type: string
+          maxLength: 256
+          allowEmptyValue: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/NodeAlarmsSummaryResponse'
+            originalRef: PageListResponse«AlarmVO»
+            type: array
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v2/alarms/node/count:
+    get:
+      x-dr-role: 'N'
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      tags:
+        - alarm-and-event-api
+      summary: 单节点告警总数查询
+      operationId: queryNodeAlarmCountBySeverityUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AlarmStatisticResponse'
+            originalRef: AlarmStatisticResponse
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
+      deprecated: false
+  /v1/syslog/oceancyber/addip:
+    post:
+      x-request-examples-url-1: https://8.40.162.63:25081/v1/syslog/oceancyber/addip
+      x-request-examples-text-1:
+        ip: 50.64.158.111
+        port: 1023
+        protocol: 2
+        component_id: test
+        is_test_server: false
+      x-request-examples-1:
+        ip: 50.64.158.111
+        port: 1023
+        protocol: 2
+        component_id: test
+        is_test_server: false
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - syslog-api
+      description: 增加接收服务器地址。
+      operationId: addSyslogIpUsingPost
+      parameters:
+        - name: syslogIpParam
+          in: body
+          required: true
+          description: 增加接收服务器地址
+          schema:
+            $ref: '#/definitions/SyslogIpParam'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v1/syslog/oceancyber/ip:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - syslog-api
+      description: 查询接收服务器地址列表
+      operationId: getSyslogIpUsingGet
+      responses:
+        '200':
+          description: ''
+          schema:
+            items:
+              $ref: '#/definitions/SyslogIpResponse'
+            type: array
+          examples:
+            application/json:
+              - id: "1811225617064853500"
+                ip: "50.64.158.104"
+                port: 1023
+                protocol: 2
+                component_id: "test"
+              - id: "1811293504953737200"
+                ip: "111.64.158.104"
+                port: 1023
+                protocol: 2
+                component_id: "test"
+              - id: "1811237340773724200"
+                ip: "50.64.158.106"
+                port: 1023
+                protocol: 2
+                component_id: "test2"
+  /v1/syslog/oceancyber/removeip:
+    delete:
+      x-request-examples-url-1: https://8.40.162.63:25081/v1/syslog/oceancyber/removeip?id=102
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - syslog-api
+      description: 删除syslog服务器ip
+      operationId: deleteSyslogIpUsingDELETE
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: 服务器地址
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v1/syslog/oceancyber/modip:
+    put:
+      x-request-examples-url-1: https://8.40.162.63:25081/v1/syslog/oceancyber/modip
+      x-request-examples-text-1:
+        id: 1811385539027079200
+        ip: 50.64.158.115
+        port: 1023
+        protocol: 2
+        component_id: test2
+        is_test_server: false
+      x-request-examples-1:
+        id: 1811385539027079200
+        ip: 50.64.158.115
+        port: 1023
+        protocol: 2
+        component_id: test2
+        is_test_server: false
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - syslog-api
+      description: 修改syslog服务器ip
+      operationId: modifySyslogIpUsingPUT
+      parameters:
+        - name: syslogIpParam
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SyslogIpParam'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+  /v1/syslog/oceancyber:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - syslog-api
+      description: 查询syslog配置
+      operationId: getSyslogCfgUsingGET
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SyslogConfigResponse'
+          examples:
+            application/json:
+              language: 0
+              enable_syslog_cfg: true
+              alarm_syslog_severity: 2
+              send_alarm_type:
+                - 4
+                - 2
+                - 1
+              enable_send_device_name: true
+              user_def_device_name: te1111222st
+    put:
+      x-request-examples-url-1: /v1/syslog/oceancyber
+      x-request-examples-text-1:
+        enable_syslog_cfg: true
+        enable_send_device_name: true
+        user_def_device_name: te1111222st
+        alarm_syslog_severity: 2
+        send_alarm_type:
+          - 1
+          - 2
+          - 4
+        language: 0
+      x-request-examples-1:
+        enable_syslog_cfg: true
+        enable_send_device_name: true
+        user_def_device_name: te1111222st
+        alarm_syslog_severity: 2
+        send_alarm_type:
+          - 1
+          - 2
+          - 4
+        language: 0
+      x-dr-role: 'N'
+      x-product: OceanCyber
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - syslog-api
+      description: 修改syslog配置
+      operationId: modifySyslogCfgUsingPut
+      parameters:
+        - name: syslogConfigParam
+          in: body
+          required: true
+          description: 修改syslog配置请求体
+          schema:
+            $ref: '#/definitions/SyslogConfigParam'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+securityDefinitions:
+  Authorization:
+    type: apiKey
+    name: TOKEN
+    in: header
+definitions:
+  AlarmClearParam:
+    type: object
+    properties:
+      entityId:
+        type: string
+        description: 告警实体ID
+    title: AlarmClearParam
+    description: 告警清除请求体
+  AlarmDumpTaskResponse:
+    type: object
+    properties:
+      endTime:
+        type: string
+        description: '转储结束时间[取值范围]2020-06-29 20:22:04 UTC+08:00 : yyyy-MM-dd HH:mm:ss 时区时间'
+      result:
+        type: integer
+        format: int32
+        description: 转储结果 (1:成功，2:失败)
+      resultId:
+        type: integer
+        format: int64
+        description: 转储结果id (映射转储下载中fileId)
+      resultInfo:
+        type: string
+        description: 转储结果信息
+      resultLink:
+        type: string
+        description: 转储结果link
+      startTime:
+        type: string
+        description: '转储开始时间[取值范围]2020-06-29 20:22:04 UTC+08:00 : yyyy-MM-dd HH:mm:ss 时区时间'
+    title: AlarmDumpTaskResponse
+  AlarmSftpServerModifyRequest:
+    type: object
+    properties:
+      ipAddress:
+        type: string
+        example: 8.40.56.20
+        description: 告警转储SFTPip地址
+      password:
+        type: string
+        example: Test@123456
+        description: 告警转储SFTP密码
+      port:
+        type: integer
+        format: int32
+        example: 22
+        description: 告警转储SFTP端口
+        minimum: 1.0
+        maximum: 65535.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      uploadPath:
+        type: string
+        example: /usr/log
+        description: 告警转储SFTP上传路径
+      useEnable:
+        type: boolean
+        example: true
+        description: 告警转储SFTP开关
+      userName:
+        type: string
+        example: test
+        description: 告警转储SFTP用户名
+        pattern: ^[^':\?\\"<>\|\*;`\$&\-\(\)#\!]+$
+    title: AlarmSftpServerModifyRequest
+    description: 修改告警转储SFTP配置请求体
+  AlarmSftpServerResponse:
+    type: object
+    properties:
+      ipAddress:
+        type: string
+        description: 告警转储SFTPip地址
+      port:
+        type: integer
+        format: int32
+        description: 告警转储SFTP端口
+      uploadPath:
+        type: string
+        description: 告警转储SFTP上传路径
+      useEnable:
+        type: boolean
+        description: 告警转储SFTP开关
+      userName:
+        type: string
+        description: 告警转储SFTP用户名
+    title: AlarmSftpServerResponse
+  AlarmSftpServerTestRequest:
+    type: object
+    properties:
+      ipAddress:
+        type: string
+        example: 8.40.56.20
+        description: 告警转储SFTPip地址
+      password:
+        type: string
+        example: Test@123456
+        description: 告警转储SFTP密码
+      port:
+        type: integer
+        format: int32
+        example: 22
+        description: 告警转储SFTP端口
+        minimum: 1.0
+        maximum: 65535.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      uploadPath:
+        type: string
+        example: /usr/log
+        description: 告警转储SFTP上传路径
+      userName:
+        type: string
+        example: test
+        description: 告警转储SFTP用户名
+        pattern: ^[^':\?\\"<>\|\*;`\$&\-\(\)#\!]+$
+    title: AlarmSftpServerTestRequest
+    description: 修改告警转储SFTP配置请求体
+  AlarmStatisticResponse:
+    type: object
+    properties:
+      critical:
+        type: integer
+        format: int32
+        description: 危急告警数量
+      major:
+        type: integer
+        format: int32
+        description: 主要告警数量
+      minor:
+        type: integer
+        format: int32
+        description: 次要告警数量
+      warning:
+        type: integer
+        format: int32
+        description: 警告告警数量
+    title: AlarmStatisticResponse
+  AlarmVO:
+    type: object
+    properties:
+      advice:
+        type: string
+        description: 告警建议
+      alarmId:
+        type: string
+        example: '0x0013221'
+        description: 告警ID
+      alarmName:
+        type: string
+        example: Backup failed alarm
+        description: 告警名
+      alarmSource:
+        type: string
+        example: Oracle/Ebackup/AnyBackup/Fusionstorage
+        description: 告警来源
+      alarmTimeStr:
+        type: string
+        example: yyyy-MM-dd HH:mm:ss
+        description: '告警时间 [取值范围]2020-06-29 20:22:04 UTC+08:00 : yyyy-MM-dd HH:mm:ss 时区时间'
+      alarmType:
+        type: string
+        description: >-
+          告警类型[取值范围]invalid(0):无效告警 communication(1):通信告警
+          environment(2):环境告警device(3):设备告警 business(4):业务告警 operation(5):操作告警
+          security(6):安全告警
+        enum:
+          - INVALID
+          - COMMUNICATION
+          - ENVIRONMENT
+          - DEVICE
+          - BUSINESS
+          - OPERATION
+          - SECURITY
+      clearStatus:
+        type: string
+        example: invalid
+        description: 告警是否恢复[取值范围]invalid:无效 uncleared:未清除 cleared:清除
+        enum:
+          - '-1'
+          - '0'
+          - '1'
+      clearTimeStr:
+        type: string
+        description: '告警恢复时间[取值范围]2020-06-29 20:22:04 UTC+08:00 : yyyy-MM-dd HH:mm:ss 时区时间'
+      confirmStatus:
+        type: integer
+        format: int32
+        description: >-
+          告警确认状态[取值范围]-1:ILLEGAL(无效) 0:UNCONFIRMED(失败) 1:CONFIRMED(成功)
+          2:UNRECOVERY(未恢复) 3:RECOVERY(已恢复) 4:CLEAR(已清除)
+      desc:
+        type: string
+        description: 告警描述
+      effect:
+        type: string
+        description: 告警影响
+      entityId:
+        type: string
+        example: 0xf1223333dExnsd
+        description: 告警实体ID
+      firstTimeStr:
+        type: string
+        example: yyyy-MM-dd HH:mm:ss
+        description: >-
+          告警第一次产生时间[取值范围]2020-06-29 20:22:04 UTC+08:00 : yyyy-MM-dd HH:mm:ss
+          时区时间
+      location:
+        type: string
+        description: 告警产生根本[举例]eb.err.1073948959  lego.err.1033
+      params:
+        type: array
+        description: 告警参数
+        items:
+          type: string
+      sequence:
+        type: integer
+        format: int64
+        example: 123456789
+        description: 告警流水号
+      severity:
+        type: string
+        description: >-
+          告警等级[取值范围] 1:警告告警[WARNING] 3:重要告警[MAJOR] 4:致命告警[CRITICAL]
+          (告警查询屏蔽INFO等级)
+        enum:
+          - '-1'
+          - '0'
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+      sourceType:
+        type: string
+        description: >-
+          告警来源类型[取值范围]user:用户 alarm:三方告警 event:事件 notify:提醒
+          resource:资源proctection:保护 recovery:恢复 backup_cluster:备份集群
+          network_entity:网元实体
+      type:
+        type: integer
+        format: int32
+        description: >-
+          告警类型[取值范围]-1:INVALID(无效) 0:ALARM(告警) 1:RESTORE_ALARM(恢复告警)
+          2:MANUCLEAR_ALARM(手动恢复告警) 3:CONFIRM_ALARM(确认告警)
+          4:UNCONFIRM_ALARM(未确认告警) 5:EVENT(运行事件) 6:OPLOG(操作日志)
+    title: AlarmVO
+  AlarmDto:
+    type: object
+    properties:
+      suggestion:
+        type: string
+        description: 告警建议
+      alarmId:
+        type: string
+        example: '0x0013221'
+        description: 告警ID
+      name:
+        type: string
+        example: Backup failed alarm
+        description: 告警名
+      alarmTime:
+        type: int64
+        example: '1659988737'
+        description: 告警时间 [取值范围] 0~18446744073709551615
+      recoverTime:
+        type: int64
+        example: '1659988737'
+        description: 告警恢复时间[取值范围]0~18446744073709551615
+      description:
+        type: string
+        description: 告警描述
+      detail:
+        type: string
+        description: 告警详细描述
+      location:
+        type: string
+        description: 告警产生根本[举例]eb.err.1073948959  lego.err.1033
+      params:
+        type: array
+        description: 告警参数
+        items:
+          type: string
+      sequence:
+        type: integer
+        format: int64
+        example: 123456789
+        description: 告警流水号
+      severity:
+        type: string
+        description: >-
+          告警等级[取值范围] 1:警告告警[WARNING] 3:重要告警[MAJOR] 4:致命告警[CRITICAL]
+          (告警查询屏蔽INFO等级)
+        enum:
+          - '-1'
+          - '0'
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+      objType:
+        type: string
+        description: >-
+          告警对象
+      type:
+        type: integer
+        format: int32
+        description: >-
+          告警类型[取值范围]-1:INVALID(无效) 0:ALARM(告警) 1:RESTORE_ALARM(恢复告警)
+          2:MANUCLEAR_ALARM(手动恢复告警) 3:CONFIRM_ALARM(确认告警)
+          4:UNCONFIRM_ALARM(未确认告警) 5:EVENT(运行事件) 6:OPLOG(操作日志)
+      status:
+        type: integer
+        format: int32
+        description: >-
+          告警状态[取值范围]-1:ILLEGAL(无效) 0:UNCONFIRMED(失败) 1:CONFIRMED(成功)
+          2:UNRECOVERY(未恢复) 3:RECOVERY(已恢复) 4:CLEAR(已清除)
+      entity:
+        type: string
+        description: 告警唯一标识
+    title: AlarmDto
+  BatchOperation:
+    type: object
+    properties:
+      detailParam:
+        type: array
+        description: 详细参数
+        items:
+          type: string
+      errorCode:
+        type: integer
+        format: int64
+        description: 错误码
+      id:
+        type: object
+        description: 操作id
+      optDetail:
+        type: string
+        description: 操作选项
+      targetName:
+        type: string
+        description: 目标名称
+      targetNameParam:
+        type: array
+        description: 目标参数
+        items:
+          type: string
+      taskName:
+        type: string
+        description: 任务名
+    title: BatchOperation
+  BatchOperationResult:
+    type: object
+    properties:
+      failCount:
+        type: integer
+        format: int32
+        description: 失败总数
+      results:
+        type: array
+        description: 操作结果
+        items:
+          $ref: '#/definitions/BatchOperation'
+          originalRef: BatchOperation
+      succeedCount:
+        type: integer
+        format: int32
+        description: 成功总数
+      total:
+        type: integer
+        format: int32
+        description: 操作总数
+    title: BatchOperationResult
+    description: 操作结果
+  CheckSnmpConfigRequest:
+    type: object
+    required:
+      - version
+    properties:
+      authProtocol:
+        type: integer
+        format: int32
+        description: 认证协议(v3 协议必填，v2c协议不填写)
+      authPwd:
+        type: string
+        description: 认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
+      contextEngineId:
+        type: string
+        description: 引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下
+        pattern: ^$|^[0-9A-F]+$
+      contextName:
+        type: string
+        description: 环境名(v3)[取值范围]长度：32位以下
+        minLength: 0
+        maxLength: 64
+      encryptProtocol:
+        type: integer
+        format: int32
+        description: 加密协议(v3 协议必填，v2c协议不填写)
+      encryptPwd:
+        type: string
+        description: 加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
+      securityName:
+        type: string
+        description: 安全名(v3)
+        minLength: 0
+        maxLength: 64
+      securityNameV2C:
+        type: string
+        description: 安全名(V2C)
+        minLength: 0
+        maxLength: 64
+      version:
+        type: string
+        description: 版本[取值范围]V2C | V3
+        pattern: V2C|V3
+    title: CheckSnmpConfigRequest
+    description: 检查SNMP参数配置是否正确请求体
+  DumpRequest:
+    type: object
+    required:
+      - dataSavedTime
+      - fileType
+      - languageType
+      - period
+      - transferStartTime
+    properties:
+      baseTimeStr:
+        type: string
+        description: 告警转储下一次开始时间
+      dataSavedTime:
+        type: integer
+        format: int32
+        description: 保存时间（当前时间多少天以前）
+        minimum: 7.0
+        maximum: 120.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      fileType:
+        type: integer
+        format: int32
+        description: 文件类型[取值范围]1：csv 2：excel
+      languageType:
+        type: integer
+        format: int32
+        description: 语言类型[取值范围]1：中文 2：英文
+      period:
+        type: integer
+        format: int32
+        description: 周期数
+        minimum: 7.0
+        maximum: 120.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      transferStartTime:
+        type: string
+        description: '转储时间点[取值范围]20:22:04 : HH:mm:ss'
+    title: DumpRequest
+    description: 告警转储配置请求体
+  DumpRequestBase:
+    type: object
+    required:
+      - dataSavedTime
+      - fileType
+      - languageType
+      - period
+      - transferStartTime
+    properties:
+      dataSavedTime:
+        type: integer
+        format: int32
+        description: 保存时间（当前时间多少天以前）
+        minimum: 7.0
+        maximum: 120.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      fileType:
+        type: integer
+        format: int32
+        description: 文件类型[取值范围]1：csv 2：excel
+      languageType:
+        type: integer
+        format: int32
+        description: 语言类型[取值范围]1：中文 2：英文
+      period:
+        type: integer
+        format: int32
+        description: 周期数
+        minimum: 7.0
+        maximum: 120.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      transferStartTime:
+        type: string
+        description: '转储时间点[取值范围]20:22:04 : HH:mm:ss'
+    title: DumpRequestBase
+    description: 告警转储配置请求体
+  EmailRequest:
+    type: object
+    required:
+      - emailAddress
+    properties:
+      desc:
+        type: string
+        example: Test description.
+        description: 邮件通知描述
+      emailAddress:
+        type: string
+        example: test@dpa.com
+        description: 邮件通知地址
+        pattern: >-
+          ^[a-zA-Z0-9\.\-_\!\#\$\%\&\'\*\+\/\=\?\^\`\{\|\}\~]+@[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)+$
+    title: EmailRequest
+    description: 新增通知邮箱地址请求体
+  EntityID:
+    type: object
+    properties:
+      entityIdSet:
+        type: array
+        description: 告警实体ID列表
+        items:
+          type: string
+    title: EntityID
+    description: 导出告警请求体
+  LegoInternalAlarm:
+    type: object
+    required:
+      - alarmId
+      - alarmSource
+      - createTime
+      - sequence
+    properties:
+      advice:
+        type: string
+        description: 告警建议
+      alarmId:
+        type: string
+        description: 告警ID
+      alarmSource:
+        type: string
+        description: 告警来源描述
+      alarmType:
+        type: integer
+        format: int32
+        description: >-
+          告警类型 [取值范围]invalid(0):无效告警 communication(1):通信告警
+          environment(2):环境告警device(3):设备告警 business(4):业务告警 operation(5):操作告警
+          security(6):安全告警
+        minimum: 0.0
+        maximum: 9.223372036854776e18
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      createTime:
+        type: integer
+        format: int64
+        description: '告警创建时间[取值范围]2020-06-29 20:22:04 : yyyy-MM-dd HH:mm:ss'
+      desc:
+        type: string
+        description: 告警描述
+      effect:
+        type: string
+        description: 告警影响
+      location:
+        type: string
+        description: 告警产生根本
+      name:
+        type: string
+        description: 告警名
+      params:
+        type: string
+        description: 告警参数
+      resourceId:
+        type: string
+        description: 告警归属资源ID
+      sequence:
+        type: integer
+        format: int64
+        description: 告警流水号
+      severity:
+        type: integer
+        format: int32
+        description: 告警类型[取值范围]0:事件、日志 1:警告 2:次要 3:重要 4:紧急
+        minimum: 0.0
+        maximum: 9.223372036854776e18
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      sourceType:
+        type: string
+        description: >-
+          告警来源类型[取值范围]user:用户 alarm:三方告警 event:事件 notify:提醒
+          resource:资源proctection:保护 recovery:恢复 backup_cluster:备份集群
+          network_entity:网元实体
+      type:
+        type: integer
+        format: int32
+        description: 告警类型[取值范围]1：生成告警 2：恢复告警 3：生成事件
+        minimum: 0.0
+        maximum: 9.223372036854776e18
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      userId:
+        type: string
+        description: 告警归属用户ID
+    title: LegoInternalAlarm
+    description: 请求体
+  LegoInternalEvent:
+    type: object
+    required:
+      - eventId
+      - eventLevel
+      - eventSequence
+      - eventTime
+      - isSuccess
+      - sourceType
+    properties:
+      eventId:
+        type: string
+        description: 告警ID
+      eventLevel:
+        type: string
+        description: 告警等级
+        enum:
+          - '-1'
+          - '0'
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+      eventParam:
+        type: array
+        description: 告警参数
+        items:
+          type: string
+      eventSequence:
+        type: integer
+        format: int64
+        description: 告警流水号
+      eventTime:
+        type: integer
+        format: int64
+        description: 告警时间
+      isSuccess:
+        type: boolean
+        description: 是否执行成功
+      moIP:
+        type: string
+        description: 告警moIp
+      moId:
+        type: string
+        description: 告警moId
+      moName:
+        type: string
+        description: 告警moName
+      resourceId:
+        type: string
+        description: 告警归属资源ID
+      sourceId:
+        type: string
+        description: 告警对象ID
+      sourceType:
+        type: string
+        description: 告警对象
+      userId:
+        type: string
+        description: 告警归属用户ID
+    title: LegoInternalEvent
+  NotifyEmailServerRequest:
+    type: object
+    required:
+      - emailFrom
+      - port
+      - protocol
+      - server
+    properties:
+      emailFrom:
+        type: string
+        example: test@dpa.com
+        description: 发件箱
+        pattern: >-
+          ^[a-zA-Z0-9\.\-_\!\#\$\%\&\'\*\+\/\=\?\^\`\{\|\}\~]+@[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)+$
+      isSslEnable:
+        type: boolean
+        example: true
+        description: 当前邮件传输是否使用SSL加密
+      isTlsEnable:
+        type: boolean
+        example: true
+        description: 当前邮件传输是否使用Tls加密
+      password:
+        type: string
+        example: Test@123456
+        description: 密码
+      port:
+        type: string
+        example: 25
+        description: 邮件服务器端口
+      protocol:
+        type: integer
+        format: int32
+        example: 1
+        description: 通讯协议(0:不启用，1:启用SSL，2:启用TSL)
+        minimum: 0.0
+        maximum: 9.223372036854776e18
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      proxyEnable:
+        type: boolean
+        example: true
+        description: 是否启用代理
+      proxyPort:
+        type: string
+        example: 1080
+        description: 代理端口
+      proxyServer:
+        type: string
+        example: 8.40.25.33
+        description: 代理服务器地址
+      server:
+        type: string
+        example: 8.40.25.22
+        description: 邮件发送服务器地址
+      sslSmtpPort:
+        type: string
+        example: 465
+        description: 启用SSL SMTP服务器的端口号，默认端口（465）
+      testEmail:
+        type: string
+        description: 邮件测试收件箱
+        pattern: >-
+          ^[a-zA-Z0-9\.\-_\!\#\$\%\&\'\*\+\/\=\?\^\`\{\|\}\~]+@[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)+$
+      userName:
+        type: string
+        example: test
+        description: 用户名
+      validateEnable:
+        type: boolean
+        example: true
+        description: 校验是否启用
+    title: NotifyEmailServerRequest
+    description: 邮件通知配置请求体
+  NotifyRuleRequest:
+    type: object
+    required:
+      - alarmSeveritySet
+      - language
+      - useEnable
+    properties:
+      alarmSeveritySet:
+        type: array
+        description: 邮件通知告警等级[取值范围]warning:警告告警 major:主要告警 critical:危急告警
+        items:
+          type: string
+      language:
+        type: integer
+        format: int32
+        description: 邮件通知语言[取值范围]1:中文2:英文
+        minimum: 0.0
+        maximum: 9.223372036854776e18
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      useEnable:
+        type: boolean
+        description: 邮件通知是否启用
+    title: NotifyRuleRequest
+    description: 更改邮件通知规则请求体
+  PageListResponse«AlarmDumpTaskResponse»:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 分页查询结果列表
+        items:
+          $ref: '#/definitions/AlarmDumpTaskResponse'
+          originalRef: AlarmDumpTaskResponse
+      total:
+        type: integer
+        format: int32
+        description: 总数
+    title: PageListResponse«AlarmDumpTaskResponse»
+  PageListResponse«AlarmVO»:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 分页查询结果列表
+        items:
+          $ref: '#/definitions/AlarmVO'
+          originalRef: AlarmVO
+      total:
+        type: integer
+        format: int32
+        description: 总数
+    title: PageListResponse«AlarmVO»
+  PageListResponse«AlarmDto»:
+    type: object
+    properties:
+      records:
+        type: array
+        description: 批量查询结果列表
+        items:
+          $ref: '#/definitions/AlarmDto'
+          originalRef: AlarmDto
+      total:
+        type: integer
+        format: int32
+        example: 1
+        description: 总数
+    title: PageListResponse«AlarmDto»
+  PerAlarmQueryParam:
+    type: object
+    required:
+      - entityId
+    properties:
+      entityId:
+        type: string
+        description: 告警实体ID
+      language:
+        type: string
+        example: zh-cn
+        description: 语言类型[取值范围]1：中文 2：英文
+    title: PerAlarmQueryParam
+    description: 查询指定事件请求体
+  SnmpRequest:
+    type: object
+    required:
+      - version
+    properties:
+      authProtocol:
+        type: string
+        description: 认证协议(v3 协议必填，v2c协议不填写)
+      authPwd:
+        type: string
+        description: 认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
+      contextEngineId:
+        type: string
+        description: 引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下
+        pattern: ^$|^[0-9A-F]+$
+      contextName:
+        type: string
+        description: 环境名(v3)[取值范围]长度：32位以下
+        minLength: 0
+        maxLength: 64
+      encryptProtocol:
+        type: string
+        description: 加密协议(v3 协议必填，v2c协议不填写)
+      encryptPwd:
+        type: string
+        description: 加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
+      id:
+        type: integer
+        format: int64
+        description: snmp存储id(前端不展示)
+        minimum: 0.0
+        maximum: 2147483647
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      securityName:
+        type: string
+        description: 安全名(v3)
+        minLength: 0
+        maxLength: 64
+      securityNameV2C:
+        type: string
+        description: 安全名(V2C)
+        minLength: 0
+        maxLength: 64
+      version:
+        type: string
+        description: 版本[取值范围]V2C | V3
+        pattern: V2C|V3
+    title: SnmpRequest
+    description: SNMP配置请求体
+  SnmpSecurityAgentResponse:
+    type: object
+    properties:
+      engineId:
+        type: string
+        example: 2102353GTD10L90000070A
+        description: 控制器snmp代理engine ID
+      ipv4:
+        type: string
+        example: 8.40.99.124
+        description: 控制器IPv4地址
+      ipv6:
+        type: string
+        example: 2016:8:40:96:c11::115
+        description: 控制器IPv6地址
+      nodeName:
+        type: string
+        example: '0A'
+        description: 控制器名称
+      hexEngineId:
+        type: string
+        example: 32 31 30 32 33 35 33 47 54 44 31 30 4C 39 30 30 30 30 30 37 30 41
+        description: 控制器snmp代理16进制engine ID
+    title: SnmpSecurityAgentResponse
+    description: 查询各控制器安全代理信息响应
+  AlarmObjDto:
+    type: object
+    properties:
+      id:
+        type: string
+        example: '1'
+        description: 告警对象ID
+      type:
+        type: string
+        example: '244'
+        description: 告警对象类型
+      name:
+        type: string
+        example: license
+        description: 告警对象名称
+    title: AlarmObjDto
+    description: 查询各控制器安全代理信息响应
+  AlarmDevDto:
+    type: object
+    properties:
+      name:
+        type: string
+        example: OceanCyber
+        description: 告警来源设备名称
+    title: AlarmDevDto
+    description: 查询一体机告警的来源设备
+  SnmpTrapAddress:
+    type: object
+    required:
+      - port
+      - trapIp
+    properties:
+      description:
+        type: string
+        description: ip描述、备注
+      id:
+        type: integer
+        format: int64
+        description: 上报ip地址ID
+        minimum: 0.0
+        maximum: 9.223372036854776e18
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      port:
+        type: integer
+        format: int32
+        description: 上报端口[取值范围]0--65535
+        minimum: 1.0
+        maximum: 65535.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      trapIp:
+        type: string
+        description: 上报ip地址[取值范围]IP地址校验规则
+    title: SnmpTrapAddress
+    description: 修改SNMP Trap地址请求体
+  SnmpTrapAddressBase:
+    type: object
+    required:
+      - port
+      - trapIp
+    properties:
+      description:
+        type: string
+        description: ip描述、备注
+      port:
+        type: integer
+        format: int32
+        description: 上报端口[取值范围]0--65535
+        minimum: 1.0
+        maximum: 65535.0
+        exclusiveMinimum: false
+        exclusiveMaximum: false
+      trapIp:
+        type: string
+        description: 上报ip地址[取值范围]IP地址校验规则
+    title: SnmpTrapAddressBase
+    description: 新增SNMP Trap地址请求体
+  SnmpTrapConfigQueryRes:
+    type: object
+    required:
+      - version
+    properties:
+      authProtocol:
+        type: string
+        description: 认证协议(v3 协议必填，v2c协议不填写)
+      authPwd:
+        type: string
+        description: 认证密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
+      contextEngineId:
+        type: string
+        description: 引擎ID(v3 协议选填，v2c协议不填写)[取值范围]长度：32位以下
+      contextName:
+        type: string
+        description: 环境名(v3)[取值范围]长度：32位以下
+      encryptProtocol:
+        type: string
+        description: 加密协议(v3 协议必填，v2c协议不填写)
+      encryptPwd:
+        type: string
+        description: 加密密码(v3 协议必填，v2c协议不填写)[取值范围]密码长度：8--64位
+      id:
+        type: integer
+        format: int64
+        description: snmp存储id(前端不展示)
+      securityName:
+        type: string
+        description: 安全名(v3)
+      securityNameV2C:
+        type: string
+        description: 安全名(V2C)
+      version:
+        type: string
+        description: 版本[取值范围]V2C | V3
+    title: SnmpTrapConfigQueryRes
+  EmailServerQueryResponse:
+    type: object
+    properties:
+      protocol:
+        type: integer
+        format: int32
+        description: 0:禁用安全协议，1：SSL/TLS认证，2：smartTLS认证
+      server:
+        type: string
+        description: 邮件服务器
+      port:
+        type: integer
+        format: int32
+        description: 服务器端口（默认为25）
+      emailFrom:
+        type: string
+        description: 发件箱
+      isValidateEnable:
+        type: boolean
+        description: 是否需要验证
+      userName:
+        type: string
+        description: 用户名
+      isProxyEnable:
+        type: boolean
+        description: 是否使用代理
+      proxyServer:
+        type: string
+        description: 代理服务器
+      proxyPort:
+        type: integer
+        format: int32
+        description: 端口（默认为1080）
+      testEmail:
+        type: string
+        description: 邮件测试收件箱
+      isSslEnable:
+        type: boolean
+        description: 当前邮件传输是否使用SSL加密
+      sslSmtpPort:
+        type: string
+        description: 启用SSL SMTP服务器的端口号，默认端口（465）
+      isTlsEnable:
+        type: boolean
+        description: 当前邮件传输是否使用Tls加密
+  ModifyEmailRequest:
+    type: object
+    description: 修改收件人邮箱结构体
+    required:
+      - emailAddress
+      - oldEmailAddress
+    properties:
+      emailAddress:
+        type: string
+        description: 修改后邮件通知地址
+      desc:
+        type: string
+        description: 修改后邮件通知描述
+      oldEmailAddress:
+        type: string
+        description: 被修改的邮件通知地址
+      oldDesc:
+        type: string
+        description: 被修改的邮件通知描述
+  NodeAlarmsSummaryResponse:
+    type: object
+    properties:
+      esn:
+        type: string
+        description: 节点esn
+      nodeId:
+        type: integer
+        format: int32
+        description: 节点id
+      nodeName:
+        type: string
+        description: 节点名称
+      nodeRole:
+        type: string
+        description: 节点角色
+      status:
+        type: integer
+        format: int32
+        description: 节点状态
+      critical:
+        type: integer
+        format: int32
+        description: 关键告警
+      warning:
+        type: integer
+        format: int32
+        description: 警告告警
+      major:
+        type: integer
+        format: int32
+        description: 主要告警
+      minor:
+        type: integer
+        format: int32
+        description: 次要告警
+  SyslogConfigResponse:
+    type: object
+    description: Syslog配置查询接口返回体
+    required:
+      - enable_syslog_cfg
+      - alarm_syslog_severity
+      - send_alarm_type
+      - enable_send_device_name
+      - language
+    properties:
+      enable_syslog_cfg:
+        type: boolean
+        description: 是否启用Syslog通知
+      alarm_syslog_severity:
+        type: integer
+        format: int32
+        description: 发送SYSLOG告警所要求的最低告警级别，2：提示，3：警告，5：重要，6：紧急
+      send_alarm_type:
+        type: array
+        items:
+          type: integer
+          format: int32
+        description: 发送告警类型
+      enable_send_device_name:
+        type: boolean
+        description: 是否启用发送设备名称功能
+      language:
+        type: string
+        description: 语言类型，0英语，1中文
+      user_def_device_name:
+        type: string
+        description: 设备名称
+  SyslogConfigParam:
+    type: object
+    description: |-
+      sendAlarmType
+      不发送NONE(0),
+      发送告警ALARM(1),
+      发送告警恢复RECOVERY(2),
+      发送事件EVENT(4);
+    required:
+      - enable_syslog_cfg
+      - alarm_syslog_severity
+      - send_alarm_type
+      - enable_send_device_name
+      - language
+    properties:
+      enable_syslog_cfg:
+        type: boolean
+        description: 是否启用Syslog通知
+      alarm_syslog_severity:
+        type: integer
+        format: int32
+        description: 发送SYSLOG告警所要求的最低告警级别
+      send_alarm_type:
+        type: array
+        items:
+          type: integer
+          format: int32
+        description: 发送告警类型
+      enable_send_device_name:
+        type: boolean
+        description: 是否启用发送设备名称功能。
+      user_def_device_name:
+        type: string
+      language:
+        type: integer
+        format: int32
+        description: 语言类型，0英语，1中文
+  SyslogIpParam:
+    type: object
+    description: Syslog添加ip请求体
+    required:
+      - ip
+      - port
+      - protocol
+    properties:
+      ip:
+        type: string
+        description: 接收服务器地址
+      port:
+        type: integer
+        format: int32
+        description: 端口号
+        minimum: 1
+        maximum: 65536
+      protocol:
+        type: integer
+        format: int32
+        description: 传输协议* 1：UDP* 2：TCP* 3：TCP+SSL/TLS
+        minimum: 1
+        maximum: 3
+      component_id:
+        type: string
+        description: 证书componentID
+      is_test_server:
+        type: boolean
+        description: 是否测试连通性
+  SyslogIpResponse:
+    type: object
+    description: 查询Syslog 服务器ip 响应
+    properties:
+      ip:
+        type: string
+        description: 接收服务器地址
+      port:
+        type: integer
+        format: int32
+        description: 端口号     * 1：UDP     * 2：TCP     * 3：TCP+SSL/TLS
+      protocol:
+        type: integer
+        format: int32
+        description: 传输协议
+      component_id:
+        type: string
+        description: 证书componentID
+      id:
+        type: string
+        description: ip id
+  SyslogIpResponseList:
+    type: array
+    items:
+      $ref: '#/definitions/SyslogIpResponse'

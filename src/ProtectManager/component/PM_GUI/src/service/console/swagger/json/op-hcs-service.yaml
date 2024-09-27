@@ -1,0 +1,511 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: op-hcs-service-api
+paths:
+  /v1/hcs/projects:
+    get:
+      tags:
+        - op-hcs-service-api
+      summary: hcs用户创建复制sla时，查询该租户下全部 project信息。
+      x-dr-role: 'N'
+      x-product: OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: hcs用户创建复制sla时，查询该租户下全部 project信息。
+      operationId: getHcsUserProjectsHaveOp
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/HcsProjectsPageResponse'
+    post:
+      tags:
+        - op-hcs-service-api
+      x-dr-role: 'N'
+      x-product: OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 查询HCS用户全部project信息
+      operationId: getHcsUserProjectsHaveOpForHcsCopy
+      parameters:
+        - name: param
+          in: body
+          required: true
+          description: 查询参数
+          schema:
+            $ref: '#/definitions/QueryHcsProjectsParam'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/HcsProjectsPageResponse'
+  /v2/resources/{projectId}/hcs/action/scan:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - op-hcs-service-api
+      summary: 扫描云服务器。
+      description: 扫描云服务器。
+      operationId: scanHcsActionResources
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          type: string
+          maxLength: 128
+          minLength: 1
+        - name: projectName
+          in: query
+          required: true
+          type: string
+          description: 项目名字
+          maxLength: 128
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access Token
+          type: string
+      responses:
+        '200':
+          description: ''
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /v2/resources/init/storage:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - op-hcs-service-api
+      summary: HCCI初始化存储设备参数。
+      description: HCCI初始化存储设备参数。
+      operationId: initStorageResources
+      parameters:
+        - name: storageList
+          in: body
+          required: false
+          description: 存储设备列表
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Storage'
+            maxItems: 32
+            minItems: 0
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access Token
+          type: string
+      responses:
+        '200':
+          description: ''
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /v2/hcs/availablezones:
+    get:
+      tags:
+        - op-hcs-service-api
+      summary: 获取可用分区信息。
+      x-dr-role: 'N'
+      x-product: OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 获取可用分区信息。
+      operationId: getAvailableZones
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ResponseBodyForAz'
+  /v2/resources/hcs/storages:
+    get:
+      tags:
+        - op-hcs-service-api
+      summary: 获取HCS存储资源。
+      x-dr-role: 'N'
+      x-product: OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      description: 获取HCS存储资源。
+      operationId: getAllStorageForHcs
+      parameters:
+        - name: pageNo
+          in: query
+          required: false
+          description: 页数
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          description: 每页数量
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: object
+          examples:
+            application/json:
+              totalCount: 2
+              records:
+                - username: admin
+                  password: null
+                  ip: 33.3.100.100
+                  ipList: null
+                  port: 8088
+                  enableCert: '0'
+                  certification: null
+                  revocationList: null
+                  certName: ''
+                  certSize: ''
+                  crlName: ''
+                  crlSize: ''
+                  sn: null
+                  storageType: '0'
+                - username: admin
+                  password: null
+                  ip: 22.3.100.100
+                  ipList: null
+                  port: 8088
+                  enableCert: '0'
+                  certification: null
+                  revocationList: null
+                  certName: ''
+                  certSize: ''
+                  crlName: ''
+                  crlSize: ''
+                  sn: null
+                  storageType: '0'
+  /v1/hcs/vdcs:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - op-hcs-service-api
+      summary: 查询hcs的顶层vdc-租户
+      operationId: getHcsVdc
+      parameters:
+        - name: start
+          in: query
+          required: true
+          description: 开始页
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          required: true
+          description: 每页的数量
+          type: integer
+          format: int32
+        - name: clusterId
+          in: query
+          required: true
+          description: 复制集群id
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/VdcResponse'
+definitions:
+  HcsUserRegionName:
+    type: object
+    properties:
+      zhCn:
+        type: string
+      enUs:
+        type: string
+  HcsUserRegion:
+    type: object
+    description: region信息
+    properties:
+      region_id:
+        type: string
+      region_status:
+        type: string
+      region_name:
+        $ref: '#/definitions/HcsUserRegionName'
+  HcsUserProjectInfo:
+    type: object
+    properties:
+      regions:
+        type: array
+        items:
+          $ref: '#/definitions/HcsUserRegion'
+        description: region信息
+      id:
+        type: string
+      name:
+        type: string
+        description: 资源集名称
+      iam_project_name:
+        type: string
+        description: 资源集名称
+      display_name:
+        type: string
+        description: 展示名称
+      description:
+        type: string
+      domain_id:
+        type: string
+      tenant_id:
+        type: string
+      tenant_name:
+        type: string
+      level:
+        type: string
+      role_id:
+        type: string
+      role_name:
+        type: string
+      is_shared:
+        type: string
+      enabled:
+        type: string
+  HcsProjectsPageResponse:
+    type: object
+    properties:
+      projects:
+        type: array
+        items:
+          $ref: '#/definitions/HcsUserProjectInfo'
+      total:
+        type: integer
+        format: int32
+  Storage:
+    type: object
+    properties:
+      username:
+        type: string
+        maxLength: 128
+        minLength: 1
+        description: 用户名
+      password:
+        type: string
+        minLength: 1
+        maxLength: 128
+        description: 密码
+      ip:
+        type: string
+        minLength: 1
+        maxLength: 32
+        description: ip
+      port:
+        type: integer
+        format: int32
+        description: 端口
+      enableCert:
+        type: string
+        maxLength: 1
+        minLength: 0
+        description: 默认为0
+      certification:
+        type: string
+        minLength: 0
+        maxLength: 128
+        description: 默认为空
+      revocationList:
+        type: string
+        minLength: 0
+        maxLength: 128
+        description: 默认为空
+      certName:
+        type: string
+        minLength: 0
+        maxLength: 128
+        description: 默认为空
+      certSize:
+        type: string
+        minLength: 0
+        maxLength: 128
+        description: 默认为空
+      crlName:
+        type: string
+        minLength: 0
+        maxLength: 128
+        description: 默认为空
+      crlSize:
+        type: string
+        description: 默认为空
+      sn:
+        type: string
+        minLength: 0
+        maxLength: 128
+        description: 默认为空
+      storageType:
+        type: string
+        minLength: 0
+        maxLength: 128
+        description: 默认为空
+  ResponseBodyForAz:
+    type: object
+    description: 可用分区信息
+    properties:
+      total:
+        type: integer
+        format: int32
+        example: 4
+        description: 总数
+      records:
+        items:
+          properties:
+            azId:
+              type: string
+              example: az0.dc0
+              description: 可用分区ID
+            regionId:
+              type: string
+              example: sa-fb-1
+              description: Region ID
+            name:
+              type: string
+              example: 北京
+              description: 可用分区名称
+            status:
+              type: string
+              example: normal
+              description: 可用分区状态
+            extendParam:
+              type: string
+              example:
+                cloud_location: localcloud
+              description: 可用分区属性
+            type:
+              type: string
+              example: KVM
+              description: 可用分区类型
+            cloudInfraId:
+              type: string
+              example: FUSION_CLOUD_sa-fb-1
+              description: 云资源池id
+        type: array
+  QueryHcsProjectsParam:
+    type: object
+    required:
+      - username
+      - password
+      - clusterId
+      - tenantName
+      - tenantId
+    properties:
+      username:
+        type: string
+        example: username_97a5225add60
+        description: vdc管理员用户名
+      password:
+        type: string
+        example: password_0bcb0bd426c9
+        description: vdc管理员密码
+      clusterId:
+        type: integer
+        format: int32
+        example: 0
+        description: hcs复制集群id
+      tenantName:
+        type: string
+        example: tenantName_0793a4ca4019
+        description: 租户名称
+      tenantId:
+        type: string
+        example: tenantId_1e683b4f7ee7
+        description: 租户id
+  Vdc:
+    type: object
+    properties:
+      id:
+        type: string
+        example: id_9f533282f9d6
+        description: vdc的id
+      name:
+        type: string
+        example: name_d52655763619
+        description: vdc名称
+      upper_vdc_name:
+        type: string
+        example: upper_vdc_name_7aef5790aa60
+        description: 上级vdc名称
+  VdcResponse:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int32
+        example: 0
+      vdcs:
+        items:
+          $ref: '#/definitions/Vdc'
+        type: array

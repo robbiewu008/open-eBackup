@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "BackupExtParams",
+  "description": "Ext params of common sla",
+  "type": "object",
+  "properties": {
+    "qos_id": {
+      "description": "限速策略id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "auto_retry": {
+      "description": "是否开启自动重试",
+      "type": "boolean"
+    },
+    "auto_retry_times": {
+      "description": "自动重试次数",
+      "type": [
+        "null",
+        "integer"
+      ],
+      "minimum": 1,
+      "maximum": 5
+    },
+    "auto_retry_wait_minutes": {
+      "description": "自动重试等待时间(分钟)",
+      "type": [
+        "null",
+        "integer"
+      ],
+      "minimum": 1,
+      "maximum": 30
+    },
+    "source_deduplication": {
+      "description": "源端重复数据删除",
+      "type": "boolean"
+    },
+    "alarm_after_failure": {
+      "description": "任务失败告警",
+      "type": "boolean"
+    },
+    "alarm_over_time_window": {
+      "description": "任务超过时间窗告警",
+      "type": "boolean"
+    },
+    "storage_info": {
+      "description": "存储单元/单元组",
+      "type": "object",
+      "properties": {
+        "storage_type": {
+          "description": "存储单元/单元组类型",
+          "type": "string"
+        },
+        "storage_id": {
+          "description": "存储单元/单元组id",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "auto_retry"
+  ]
+}

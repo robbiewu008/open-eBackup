@@ -1,0 +1,18 @@
+<div class="aui-fullpage">
+    <div class="aui-block aui-paginator-container">
+        <div class="aui-operation">
+            <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+                <lv-tab lvTitle="{{ 'common_object_storage_label' | i18n}}" lvId="object-storage">
+                    <ng-template lv-tab-lazy>
+                        <aui-object-storage></aui-object-storage>
+                    </ng-template>
+                </lv-tab>
+                <lv-tab lvTitle="{{ 'protection_object_set_label' | i18n}}" lvId="object">
+                    <ng-template lv-tab-lazy>
+                        <aui-database-template [configParams]="setConfig"></aui-database-template>
+                    </ng-template>
+                </lv-tab>
+            </lv-tabs>
+        </div>
+    </div>
+</div>

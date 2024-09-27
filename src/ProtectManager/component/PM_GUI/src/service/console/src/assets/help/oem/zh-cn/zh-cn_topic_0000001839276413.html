@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤2：创建归档SLA">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839276361.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839276413">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤2：创建归档SLA</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001839276413"></a><a name="ZH-CN_TOPIC_0000001839276413"></a>
+  <h1 class="topictitle1">步骤2：创建归档SLA</h1>
+  <div>
+   <p>如果您需要对生成的备份副本进行归档，请参考本节配置归档SLA。</p>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p>已创建备份策略的SLA，如果未创建请先参考<a href="zh-cn_topic_0000001792557076.html">步骤7：创建备份SLA</a>创建备份策略的SLA。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001839142377_uicontrol8111821122820">“<span id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001839142377_text71111921162814">保护</span> &gt; 保护策略 &gt; SLA”</span>。</span></li>
+     <li><span>查找到需要创建归档策略的SLA，单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_uicontrol577717611320">“<span id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text19646163524813">更多</span> &gt; <span id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text068935811482">修改</span>”</span>。</span><p></p><p id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_p1816920251869">系统预置的SLA不支持修改。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>归档策略</span>”</span>图标。</span></li>
+     <li><span>配置归档策略信息。</span><p></p><p>相关参数说明如<a href="#ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001188062717_zh-cn_topic_0000001091370109_table13531347181416">表1</a>。</p>
+      <div class="tablenoborder">
+       <a name="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001188062717_zh-cn_topic_0000001091370109_table13531347181416"></a><a name="zh-cn_topic_0000001188062717_zh-cn_topic_0000001091370109_table13531347181416"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001188062717_zh-cn_topic_0000001091370109_table13531347181416" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>归档参数说明
+        </caption>
+        <colgroup>
+         <col style="width:30.5%">
+         <col style="width:69.5%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="30.5%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="69.5%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>名称</span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>系统已设置默认的归档策略名称，用户也可以自定义归档策略名称。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>归档存储类型</span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>支持<span class="uicontrol">“<span>对象存储</span>”</span>或<span class="uicontrol">“<span>磁带库</span>”</span>作为归档存储。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>归档存储</span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>选择已添加的对象存储或磁带库，也可以单击<span class="uicontrol">“<span>添加</span>”</span>添加对象存储或磁带库。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>归档时间</span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 ">
+           <div class="p">
+            设置归档时间。
+            <ul>
+             <li><span>周期性归档</span>
+              <ul>
+               <li><span>频率</span>：每xx分钟/小时/天/周归档一次。</li>
+               <li><span>首次执行时间</span>：首次执行归档任务的具体时间。<p>如果设置的开始时间早于当前设备时间，则创建保护计划后立即执行归档任务。</p></li>
+              </ul></li>
+             <li><span>备份成功后立即执行</span><p>每次备份务执行成功后立即执行归档任务。</p></li>
+             <li><span>副本生成后的指定时间归档</span><p><span>时间</span>：副本生成后xx天后执行归档任务。</p></li>
+            </ul>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p>归档规则&amp;保留规则</p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 ">
+           <div class="p">
+            选择需要归档的备份副本并设置归档副本的保留时长。
+            <ul>
+             <li id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_li1815184993013"><span id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_text193951264318">指定副本归档</span>：指定归档策略并设置副本保留时长，归档策略说明如下：
+              <ul id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_ul1193014332306">
+               <li id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_li393063317305"><span id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_text1792918330303">仅归档最新的副本</span><p id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_p893019338306">每次归档任务仅归档最近一次备份任务产生的副本。</p></li>
+               <li id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_li10930203320309"><span id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_text17168339174311">归档所有未曾归档副本</span><p id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_p8930123320308">每次归档任务归档当前所有未曾归档的副本。</p></li>
+              </ul></li>
+             <li id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_li169914211296"><span id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_text876845119220">指定日期归档</span>：指定日期并设置副本保留时长，以下选项同时可选择多项：
+              <ul id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_ul15411165794010">
+               <li id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_li241110576407">选择每年的x月产生的备份副本进行归档，归档副本保留x年（支持保留1~70年）。</li>
+               <li id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_li156079239417">选择每月的第一个或最后一个备份副本进行归档，归档副本保留x个月（支持保留1~840个月）。</li>
+               <li id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_li7824743184118">选择每周的第x天产生的备份副本进行归档，归档副本保留x个周（支持保留1~3650个周）。
+                <div class="note" id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_note250102619369">
+                 <span class="notetitle"> 说明： </span>
+                 <div class="notebody">
+                  <p id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_p19502026133610">当归档存储类型选择为“<span id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_text290583517417">磁带库</span>”时，不能指定归档副本的保留时间，其保留时间以对应介质集的保留策略设置为准。</p>
+                 </div>
+                </div></li>
+              </ul></li>
+            </ul>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>限速策略</span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>归档任务平均每秒最大传输的数据量。当归档存储为磁带库时，不支持配置限速策略。</p> <p>选择已创建的限速策略。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>自动索引</span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>开启后支持选择副本中的单个或多个文件进行恢复，支持在管理界面上搜索副本中的文件、目录或链接。当归档存储为磁带库时，不支持对归档副本进行索引。</p> <p>开启后不支持关闭。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>网络加速</span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>开启后可使用BBR（Bottleneck Bandwidth and Round-trip propagation time）网络加速，网络时延≥20毫秒时建议启用该选项。当归档存储为磁带库时，不支持配置网络加速。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span id="ZH-CN_TOPIC_0000001839276413__zh-cn_topic_0000001792503806_text4798135584718">任务失败告警</span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>开启后，任务执行失败后自动发送告警，下次任务成功后告警自动清除。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>失败后自动重试</span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>开启后，归档任务失败后系统自动重试。</p> <p>支持重试次数为1~3次，等待时长为1~30分钟。如设置为重试3次，等待5分钟，即每5分钟后重试一次，总共重试3次。</p>
+           <div class="note">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p>自动重试时系统会创建一个新的归档任务。</p>
+            </div>
+           </div></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>添加</span>”</span>，配置多个归档策略。</span><p></p><p>单个副本支持归档到不同的归档存储，最多支持归档到4个归档存储，因此此处最多支持配置4个归档策略。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol">“确定”</span>。</span></li>
+     <li><span>关联资源到归档SLA，以对副本进行周期性归档。</span><p></p>
+      <ul>
+       <li>如果已有资源关联至该SLA策略，则系统将按照SLA策略的定义对资源进行保护。</li>
+       <li>如果该SLA策略未关联资源，则请关联资源至该SLA策略以对其进行保护。具体操作请参考<a href="zh-cn_topic_0000001792557056.html">周期性执行备份</a>。</li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001839276361.html">归档HDFS备份副本</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

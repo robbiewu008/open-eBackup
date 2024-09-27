@@ -1,0 +1,91 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring Hive Backup Sets">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792361470.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001839240501">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring Hive Backup Sets</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001839240501"></a><a name="EN-US_TOPIC_0000001839240501"></a>
+
+<h1 class="topictitle1">Restoring Hive Backup Sets</h1>
+<div><p>This section describes how to restore a Hive backup set that has been backed up to the original location or a new location.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>Backup copies, replication copies, archive copies, and imported copies can be used for restoration. Restoration to the original location or a new location is supported. Restoration to the original location using a replication copy is not supported. Restoration to the original location is not supported after a replication copy is archived.</p>
+</div>
+<div class="section" id="EN-US_TOPIC_0000001839240501__section410845171513"><h4 class="sectiontitle">Prerequisites</h4><p id="EN-US_TOPIC_0000001839240501__p16881165611516">During the backup set restoration, ensure that the registered user of the target cluster has been authorized to operate Hive database tables and the <strong id="EN-US_TOPIC_0000001839240501__b197061032143715">Location</strong> directory where the table data files reside.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001839240501__en-us_topic_0000001839240557_en-us_topic_0000001839142377_uicontrol11751516495"><b><span id="EN-US_TOPIC_0000001839240501__en-us_topic_0000001839240557_en-us_topic_0000001839142377_text1817513544919"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000001839240501__en-us_topic_0000001839240557_en-us_topic_0000001839142377_text141754534916"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000001839240501__en-us_topic_0000001839240557_en-us_topic_0000001839142377_text6965202616539"><strong>Big Data</strong></span> &gt; Hive</b></span>.</span></li><li><span>You can search for copies by Hive backup set resource or copy. This section describes how to search for copies by resource.</span><p><p>On the <strong>Resources</strong> tab page, locate the backup set to be restored based on the backup set name and click the backup set name.</p>
+</p></li><li><span>Click the <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> tab page and select the year, month, and day in sequence to locate the copy.</span><p><p>If <span><img src="en-us_image_0000001839160641.png"></span> is displayed below a month or day, a copy is generated in that month or day.</p>
+</p></li><li><span>In the row where the copy resides, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Restore</strong></span></b></span>.</span><p><p><a href="#EN-US_TOPIC_0000001839240501__table93951625101715">Table 1</a> describes related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839240501__table93951625101715"></a><a name="table93951625101715"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839240501__table93951625101715" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Backup set restoration parameters</caption><colgroup><col style="width:23.09%"><col style="width:76.91%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="23.09%" id="mcps1.3.4.2.4.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="76.91%" id="mcps1.3.4.2.4.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.4.2.4.2.2.2.3.1.1 "><p><span><strong>Restore To</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.4.2.4.2.2.2.3.1.2 "><p>The location to which the backup set is restored.</p>
+<ul><li><span><strong>Original location</strong></span>: Restore the backup set to the original Hive cluster.</li><li><span><strong>New location</strong></span>: Restore the backup set to a new location. You need to specify the target Hive cluster.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.4.2.4.2.2.2.3.1.1 "><p><span><strong>Target Cluster</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.4.2.4.2.2.2.3.1.2 "><p>When restoring the backup set to a new location, you need to specify the target Hive cluster.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>Encrypted Hive tables cannot be restored to a new location.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.4.2.4.2.2.2.3.1.1 "><p><span><strong>Metadata Storage Path</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.4.2.4.2.2.2.3.1.2 "><p>Select a path for storing metadata.</p>
+<p>This path is used to temporarily store table metadata. After the restoration is complete, the stored metadata is automatically deleted.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.4.2.4.2.2.2.3.1.1 "><p><strong>Table Overwriting Rule</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.4.2.4.2.2.2.3.1.2 "><p>If a table with the same name exists in the restoration path, you can select either of the following:</p>
+<ul><li><span><strong>Ignore the existing table</strong></span>: Tables with the same names are skipped and are not replaced.</li><li><span><strong>Replace the existing table</strong></span></li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.4.2.4.2.2.2.3.1.1 "><p><strong>Table Data File Overwriting Rule</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.4.2.4.2.2.2.3.1.2 "><p>You can choose to delete or retain all data files in Location during the restoration.</p>
+<ul><li><strong>Delete existing table data files</strong></li><li><strong>Retain existing table data files</strong></li></ul>
+<p>The option <strong>Delete existing table data files</strong> is selected by default. If the locations of multiple tables are the same, you are advised to select <strong>Retain existing table data files</strong> and select a data storage path for the table to be restored. Otherwise, all data files in the Location will be deleted during the restoration.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.4.2.4.2.2.2.3.1.1 "><p><strong>Table Data Storage Path</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.4.2.4.2.2.2.3.1.2 "><p>When <strong>Table Data File Overwriting Rule</strong> is set to <strong>Retain existing table data files</strong>, select a data storage path for the table to be restored.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001792361470.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="查看共享信息">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001869241825.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001822562216">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>查看共享信息</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001822562216"></a><a name="ZH-CN_TOPIC_0000001822562216"></a>
+  <h1 class="topictitle1">查看共享信息</h1>
+  <div>
+   <p>需要查看已配置的通用共享资源信息时，可以参考本节查看通用共享资源配置。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001822562216__zh-cn_topic_0000001839142377_uicontrol183221057151320">“<span id="ZH-CN_TOPIC_0000001822562216__zh-cn_topic_0000001839142377_text832245713139">数据利用</span> &gt; <span id="ZH-CN_TOPIC_0000001822562216__zh-cn_topic_0000001839142377_text432285701317">副本数据</span> &gt; 文件系统 &gt; 通用共享”</span>。</span></li>
+     <li><span>您可以以通用共享资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据资源名称查找到需要配置共享的资源，并单击资源名称。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>副本数据</span>”</span>，依次选择年、月、天找到副本。</span><p></p><p>当时间下方显示<span><img src="zh-cn_image_0000001822422018.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>在副本所在行，选择副本状态为“共享中”状态的副本，单击<span class="uicontrol">“<span>更多</span> &gt; 查看共享信息”</span>。</span><p></p><p>相关参数说明如<a href="#ZH-CN_TOPIC_0000001822562216__table93951625101715">表1</a>所示。</p>
+      <div class="tablenoborder">
+       <a name="ZH-CN_TOPIC_0000001822562216__table93951625101715"></a><a name="table93951625101715"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001822562216__table93951625101715" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>查看共享信息参数说明
+        </caption>
+        <colgroup>
+         <col style="width:23.09%">
+         <col style="width:76.91%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="23.09%" id="mcps1.3.2.2.4.2.2.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="76.91%" id="mcps1.3.2.2.4.2.2.2.3.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span>文件系统名称</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p><span style="color:#282B33;">通用共享在DeviceManager界面创建的文件系统名称。</span></p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span>共享路径</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>当共享协议选择NFS协议时展示该参数，文件系统挂载的路径。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span>共享客户端</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p><span style="color:#282B33;">当共享协议选择NFS协议时展示该参数，输入共享客户端业务IP地址、共享客户端业务IP地址段或使用“*”表示全部共享客户端业务IP地址。IP地址支持IPv4、IPv6地址或者两者的混合IP地址。</span></p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span>共享名称</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>当共享协议选择CIFS协议时展示该参数，自定义CIFS共享名称。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span>类型</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>当共享协议选择CIFS协议时展示该参数，访问CIFS共享的用户类型。</p>
+           <ul>
+            <li>Everyone</li>
+            <li>Windows本地认证用户</li>
+            <li>Windows本地认证用户组</li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span>共享IP</span></p></td>
+          <td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>访问共享的IP地址。</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“关闭”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001869241825.html">管理共享信息</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

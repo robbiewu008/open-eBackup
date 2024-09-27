@@ -1,0 +1,80 @@
+<div class="report-card-container">
+  <div class="report-card-header">
+    <span
+      [ngClass]="{
+        'report-card-header-icon': !item?.infected,
+        'report-card-header-icon-abnormal': item?.infected
+      }"
+    ></span>
+    <div class="report-card-header-title">
+      <div class="report-card-header-first-line" lv-overflow>
+        {{ item?.reportName }}
+      </div>
+      <div class="report-card-header-sub-line">
+        {{ 'insight_report_create_time_label' | i18n }} :
+        {{ item?.addReportTime | date: 'yyyy/MM/dd HH:mm:ss' }}
+      </div>
+    </div>
+  </div>
+  <div class="progress-container" *ngIf="showProgress">
+    <lv-progress
+      [lvValue]="progressValue"
+      [lvShowLabel]="false"
+      [lvColors]="[
+        [0, '#84e0aa'],
+        [50, '#84e0aa'],
+        [100, '#84e0aa']
+      ]"
+    ></lv-progress>
+  </div>
+  <div class="report-card-content">
+    <div class="pair" *ngFor="let _item of contentItems">
+      <lv-group lvGutter="8px">
+        <span
+          [ngClass]="{ 'pair-label': !_isEn, 'pair-label-en': _isEn }"
+          lv-overflow
+        >
+          {{ _item.label | i18n }}
+        </span>
+        <span class="pair-value" lv-overflow>{{ _item.value }}</span>
+      </lv-group>
+    </div>
+  </div>
+  <div class="report-card-footer">
+    <div class="checkbox-container">
+      <label
+        pmpermission
+        pmOperation="DeleteReport"
+        lv-checkbox
+        [(ngModel)]="checked"
+        [lvDisabled]="showProgress"
+      ></label>
+    </div>
+    <div class="op-container">
+      <i
+        class="op-icon"
+        [lv-icon]="
+          showProgress ? 'aui-report-card-view' : 'aui-report-card-view-active'
+        "
+        [ngStyle]="{ cursor: showProgress ? 'not-allowed' : 'pointer' }"
+        [lv-tooltip]="
+          (!showProgress ? 'insight_look_out_report_label' : '') | i18n
+        "
+        lvTooltipPosition="bottom"
+        (click)="viewItem()"
+      ></i>
+      <i
+        pmpermission
+        pmOperation="DeleteReport"
+        class="op-icon"
+        [lv-icon]="
+          showProgress ? 'aui-report-card-del' : 'aui-report-card-del-active'
+        "
+        [ngStyle]="{ cursor: showProgress ? 'not-allowed' : 'pointer' }"
+        [lv-tooltip]="(!showProgress ? 'insight_del_report_label' : '') | i18n"
+        lvTooltipPosition="bottom"
+        (click)="removeItem()"
+      ></i>
+    </div>
+  </div>
+</div>

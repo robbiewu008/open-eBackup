@@ -1,0 +1,21 @@
+<p class="aui-text-desc aui-gutter-column-md">
+    {{'explore_associate_file_system_select_label' | i18n}}
+</p>
+<div class="aui-gutter-column-md">
+    {{'common_selected_num_label' | i18n:[selectionData?.length || 0]}}
+</div>
+<div class="file-system-container file-interception-win-table restore-lv-paginator-simple">
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>
+
+<ng-template #nameTpl let-item>
+    <span lv-overflow>
+        {{item.fileSystemInfo?.fsName || item.fsName | nil}}
+    </span>
+</ng-template>
+
+<ng-template #storageDeviceTpl let-item>
+    <span lv-overflow>
+        {{item.fileSystemInfo?.deviceName || item.deviceName | nil}}
+    </span>
+</ng-template>

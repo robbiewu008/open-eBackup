@@ -1,0 +1,132 @@
+<div>
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{ 'common_basic_info_label' | i18n }}</h2>
+  </div>
+  <div>
+    <lv-group class="aui-gutter-column-xxl">
+      <lv-group>
+        <img
+          class="base-info-icon"
+          [src]="
+            isOnline
+              ? 'assets/img/airgap_device1.svg'
+              : 'assets/img/airgap_device2.svg'
+          "
+        />
+      </lv-group>
+      <lv-group class="label_width">
+        <lv-form [lvLabelColon]="false" class="label_width">
+          <lv-form-column *ngFor="let column of formItems" lvWidth="50%">
+            <lv-form-item *ngFor="let item of column">
+              <lv-form-label><span>{{ item.label }}</span></lv-form-label>
+              <lv-form-control>
+                <ng-container *ngIf="'status' === item.key">
+                  <aui-status
+                    [value]="item.content"
+                    type="airgapDeviceStatus"
+                  ></aui-status>
+                </ng-container>
+                  <ng-container *ngIf="'policyStatus' === item.key">
+                  <aui-status
+                    [value]="item.content"
+                    type="airgapPolicyStatus"
+                  ></aui-status>
+                </ng-container>
+                <ng-container *ngIf="'status' !== item.key && 'policyStatus' !== item.key">
+                  <span lv-overflow class="widthMax"> {{ item.content }}</span>
+                </ng-container>
+              </lv-form-control>
+            </lv-form-item>
+          </lv-form-column>
+        </lv-form>
+      </lv-group>
+    </lv-group>
+  </div>
+</div>
+
+<div class="box">
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{ 'protection_logical_port_label' | i18n }}</h2>
+  </div>
+
+  <ng-container *ngIf="portsArray">
+    <div>
+      <lv-group
+        [lvColumns]="['auto', 'auto', 'auto', 'auto', 'auto']"
+        lvRowGutter="10px"
+        lvColumnGutter="15px"
+      >
+        <ng-container *ngFor="let item of portsArray">
+          <lv-group>
+            <aui-status
+              [value]="item.status"
+              type="airGapPortStatus"
+            ></aui-status>
+            <span>{{ item.ip }}</span>
+          </lv-group>
+        </ng-container>
+      </lv-group>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="portsArray?.length === 0">
+    <span>--</span>
+  </ng-container>
+</div>
+
+<div class="box">
+  <div class="aui-header-2 aui-gutter-column-md">
+    <h2>{{ 'common_replication_time_window_label' | i18n }}</h2>
+  </div>
+  <div class="box2">
+    <div class="aui-text-help-sm right">
+      {{ 'protection_frequency_label' | i18n }}
+      <span class="colon">:</span>
+      <span>{{ data.frequency }}</span>
+    </div>
+  </div>
+
+  <div class="gutter airgap-time-slider box2"  >
+    <lv-slider
+      lvTooltipTheme="light"
+      [lvPoints]="points"
+      [lvLines]="lines"
+      [lvMin]="minTime"
+      [lvMax]="maxTime"
+      [lvHoverShowTooltip]="false"
+      [(ngModel)]="timeValue"
+      lvDisabled
+    ></lv-slider>
+  </div>
+
+  <ng-container *ngIf="timePeriod.length !== 0">
+    <div class="top">
+      <div class="gutter airgap-time-slider">
+        <lv-group lvGutter="8px">
+          <lv-group *ngFor="let item of timePeriod" class="gutter-top">
+            <i
+              lv-icon="lv-icon-to-be-closed"
+              [lvColorState]="true"
+              class="aui-gutter-row-xs"
+              class="right"
+            ></i>
+            <span>{{ item }}</span>
+          </lv-group>
+        </lv-group>
+      </div>
+
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #headerTpl>
+    <div class="aui-operation aui-custom-modal-container">
+        <div class="aui-custom-modal-title">
+            <span lv-overflow class="name-warp">{{data?.name}}</span>
+        </div>
+        <div class="aui-custom-modal-operate" *ngIf="!!this.optItems">
+            <lv-operation-menu [lvItemsFn]="optCallback" [lvData]="data"
+                lvMenuText="{{'common_operation_label'|i18n}}">
+            </lv-operation-menu>
+        </div>
+    </div>
+</ng-template>

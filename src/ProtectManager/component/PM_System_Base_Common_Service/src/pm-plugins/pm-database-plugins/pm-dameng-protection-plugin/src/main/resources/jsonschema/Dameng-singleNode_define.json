@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "title",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "实例uuid"
+    },
+    "name": {
+      "type": "string",
+      "description": "实例名称",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "description": "资源类型"
+    },
+    "subType": {
+      "type": "string",
+      "description": "资源子类型"
+    },
+    "dependencies": {"$ref": "classpath:jsonschema/Dameng-base.json#/agentDependencies"},
+    "auth": {"$ref": "classpath:jsonschema/Dameng-base.json#/auth"},
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "port": {
+          "type": "string",
+          "description": "子实例端口",
+          "minLength": 1,
+          "maxLength": 5
+        },
+        "isTopInstance": {
+          "type": "string",
+          "enum": ["0", "1"]
+        }
+      },
+      "required": [
+        "port",
+        "isTopInstance"
+      ]
+    }
+  },
+  "required": [
+    "subType",
+    "type",
+    "name",
+    "dependencies",
+    "auth",
+    "extendInfo"
+  ]
+}

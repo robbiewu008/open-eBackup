@@ -1,0 +1,12 @@
+<lv-tabs class="aui-tab">
+    <lv-tab lvTitle="{{'common_basic_info_label' | i18n}}">
+        <ng-template lv-tab-lazy>
+            <aui-postgre-basic-info [data]="data"></aui-postgre-basic-info>
+        </ng-template>
+    </lv-tab>
+    <lv-tab lvTitle="{{'protection_database_instance_label' | i18n}}">
+        <ng-template lv-tab-lazy>
+            <aui-postgre-instance-database-list [data]="data"></aui-postgre-instance-database-list>
+        </ng-template>
+    </lv-tab>
+</lv-tabs>

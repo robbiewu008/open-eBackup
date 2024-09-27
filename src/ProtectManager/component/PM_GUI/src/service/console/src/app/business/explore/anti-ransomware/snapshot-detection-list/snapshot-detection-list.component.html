@@ -1,0 +1,29 @@
+<h2 class='aui-gutter-column-md'>{{ 'explore_snapshot_detection_label' | i18n }}</h2>
+<div class="list-container">
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>
+<ng-template #statisticsTpl let-item>
+    <span class="statistics-tag protected-background"
+        (click)="getRepicasDetail(item)">
+        <span class="statistics-label">{{'common_protected_label' | i18n}}</span>
+        <span class='count-label'>{{item.protectedCount}}</span>
+    </span>
+    <span class="statistics-tag unprotected-background"
+        (click)="getRepicasDetail(item)">
+        <span class="statistics-label">{{'common_unprotected_label' | i18n}}</span>
+        <span class='count-label'>{{item.unprotectedCount}}</span>
+    </span>
+</ng-template>
+
+<ng-template #lunStatisticsTpl let-item>
+    <span class="statistics-tag protected-background"
+        (click)="getRepicasDetail(item)">
+        <span class="statistics-label">{{'common_protected_label' | i18n}}</span>
+        <span class='count-label'>{{item.protectedCount}}</span>
+    </span>
+    <span class="statistics-tag unprotected-background"
+        (click)="getRepicasDetail(item)">
+        <span class="statistics-label">{{'common_unprotected_label' | i18n}}</span>
+        <span class='count-label'>{{item.unprotectedCount}}</span>
+    </span>
+</ng-template>

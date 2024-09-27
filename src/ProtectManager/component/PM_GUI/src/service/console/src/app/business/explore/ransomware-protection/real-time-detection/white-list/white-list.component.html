@@ -1,0 +1,22 @@
+<div class="aui-operation">
+    <lv-group>
+        <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData" [maxDisplayItems]="2">
+        </lv-pro-button-group>
+    </lv-group>
+    <lv-group lvGutter="8px">
+        <lv-group lvGutter="8px">
+            <button class="aui-button-icon" lv-button lvSize="auto" (click)="dataTable.fetchData()">
+                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+            </button>
+        </lv-group>
+    </lv-group>
+</div>
+<div class="list-container">
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>
+
+<ng-template #policyTpl let-item>
+    <span lv-overflow class="aui-link" (click)="associatePolicy(item,false,true)">
+        {{item.associationPolicyNum}}
+    </span>
+</ng-template>

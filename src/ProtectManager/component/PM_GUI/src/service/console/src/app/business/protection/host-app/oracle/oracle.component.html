@@ -1,0 +1,16 @@
+<div class="aui-fullpage">
+  <div class="aui-block aui-paginator-container">
+    <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+      <lv-tab lvTitle="{{'common_cluster_label' | i18n}}" [lvId]="resourceType.HOST">
+        <ng-template lv-tab-lazy>
+          <aui-host-cluster-list></aui-host-cluster-list>
+        </ng-template>
+      </lv-tab>
+      <lv-tab lvTitle="{{'common_database_label' | i18n}}" [lvId]="resourceType.DATABASE">
+        <ng-template lv-tab-lazy>
+          <aui-database-list></aui-database-list>
+        </ng-template>
+      </lv-tab>
+    </lv-tabs>
+  </div>
+</div>

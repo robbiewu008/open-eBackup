@@ -1,0 +1,85 @@
+<ng-container *ngIf="isNoXSeries; else elseTemplate">
+  <old-home></old-home>
+</ng-container>
+<ng-template #elseTemplate>
+  <div class="aui-fullpage">
+    <div class="home" id="homeCpt">
+      <ng-container *ngFor="let card of getShowCardList(); let i = index">
+        <card [cardInfo]="card" [class]="'card card' + card.index">
+          <div class="header-slot" header [ngSwitch]="card.index">
+            <ng-container *ngSwitchCase="1">
+              <lv-select [lvOptions]="clusterOption" [(ngModel)]="card.selectcluster"
+                (ngModelChange)="refresh(card.name)" lvValueKey="value" lvSimple></lv-select>
+
+              <lv-select [lvOptions]="missionOverviewTimeOption" [(ngModel)]="card.selectTime"
+                (ngModelChange)="refresh('missionOverview')" lvValueKey="value" lvSimple lvPosition="bottomRight"
+                lvPanelClass="customize-panel"></lv-select>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="6">
+              <lv-cascader class="ui-cascader" [lvOptions]="clusterNodesOption" lvShowTrigger="false"
+                [(ngModel)]="card.selectNode" (lvSelectionChange)="
+                  clusterNodesSelectionChange($event, 'performance')
+                ">
+                <span *ngIf="performanceSelectClusterNodes" class="cascader-label">{{ performanceSelectClusterNodes
+                  }}({{
+                  'common_home_node_name_label' | i18n
+                  }})&nbsp;<svg width="16" height="16" style="fill:#808080">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lv-icon-list-unfold"></use>
+                  </svg></span>
+              </lv-cascader>
+
+              <lv-select [lvOptions]="performanceTimeOption" [(ngModel)]="card.selectTime"
+                (ngModelChange)="refresh(card.name)" lvValueKey="value" lvSimple lvPosition="bottomRight"
+                lvPanelClass="customize-panel"></lv-select>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="7">
+              <lv-cascader class="ui-cascader" [lvOptions]="clusterNodesOption" lvShowTrigger="false"
+                [(ngModel)]="card.selectNode" (lvSelectionChange)="
+                  clusterNodesSelectionChange($event, 'capacityDiction')
+                ">
+                <span *ngIf="capacityDictionSelectClusterNodes" class="cascader-label">{{
+                  capacityDictionSelectClusterNodes }}({{
+                  'common_home_node_name_label' | i18n
+                  }})&nbsp;<svg width="16" height="16" style="fill:#808080">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lv-icon-list-unfold"></use>
+                  </svg></span>
+              </lv-cascader>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="11">
+              <lv-select [lvOptions]="topTimeOption" [(ngModel)]="card.selectTime"
+                (ngModelChange)="refresh('topFailedTasksSlaProtectionPolicy')" lvValueKey="value" lvSimple
+                lvPosition="bottomRight" lvPanelClass="customize-panel"></lv-select>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="12">
+              <lv-select [lvOptions]="topTimeOption" [(ngModel)]="card.selectTime"
+                (ngModelChange)="refresh('topFailedTasksResourceObjects')" lvValueKey="value" lvSimple
+                lvPosition="bottomRight" lvPanelClass="customize-panel"></lv-select>
+            </ng-container>
+          </div>
+
+          <ng-container [ngSwitch]="card.index">
+            <mission-overview #missionOverview *ngSwitchCase="1" [cardInfo]="card"></mission-overview>
+            <capacity *ngSwitchCase="2" [cardInfo]="card"></capacity>
+            <alarm *ngSwitchCase="3" [cardInfo]="card"></alarm>
+            <protection-situation *ngSwitchCase="4" [cardInfo]="card"></protection-situation>
+            <anti-ransomware *ngSwitchCase="5" [cardInfo]="card"></anti-ransomware>
+            <performance #performance *ngSwitchCase="6" [cardInfo]="card"></performance>
+            <capacity-diction #capacityDiction *ngSwitchCase="7" [cardInfo]="card"></capacity-diction>
+            <reduction-rate *ngSwitchCase="8" [cardInfo]="card"></reduction-rate>
+            <resource-access *ngSwitchCase="9" [cardInfo]="card"></resource-access>
+            <sla-compliance *ngSwitchCase="10" [cardInfo]="card"></sla-compliance>
+            <top-failed-tasks-sla-protection-policy #topFailedTasksSlaProtectionPolicy *ngSwitchCase="11"
+              [cardInfo]="card"></top-failed-tasks-sla-protection-policy>
+            <top-failed-tasks-resource-objects #topFailedTasksResourceObjects *ngSwitchCase="12"
+              [cardInfo]="card"></top-failed-tasks-resource-objects>
+          </ng-container>
+        </card>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+

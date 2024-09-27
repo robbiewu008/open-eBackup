@@ -1,0 +1,75 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤2：（可选）生成并获取证书">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839160609.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001792521262">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤2：（可选）生成并获取证书</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001792521262"></a><a name="ZH-CN_TOPIC_0000001792521262"></a>
+
+<h1 class="topictitle1">步骤2：（可选）生成并获取证书</h1>
+<div><p>当大数据平台为Cloudera CDH，您可以导入Cloudera CDH的证书到<span>OceanProtect</span>，以实现<span>OceanProtect</span>与大数据平台的安全通信。本节介绍如何在Cloudera CDH生成并获取证书。非该场景请忽略本节。以下以Cloudera CDH 6.3版本为例说明，不同版本操作略有差异，请参考大数据平台对应版本的产品文档。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="ZH-CN_TOPIC_0000001792521262__li5631235132010"><a name="ZH-CN_TOPIC_0000001792521262__li5631235132010"></a><a name="li5631235132010"></a><span>使用PuTTY，登录大数据集群中的任意节点。</span></li><li id="ZH-CN_TOPIC_0000001792521262__li19992695227"><a name="ZH-CN_TOPIC_0000001792521262__li19992695227"></a><a name="li19992695227"></a><span>检查Cloudera CDH平台是否已配置TLS/SSL，执行以下命令创建证书存放路径。</span><p><ul><li>如果未配置TLS/SSL，执行以下命令创建证书存放路径并执行<a href="#ZH-CN_TOPIC_0000001792521262__li6528173201712">3</a>~<a href="#ZH-CN_TOPIC_0000001792521262__li26041510201017">12</a>。<pre class="screen">mkdir -p /opt/cloudera/security/pki</pre>
+</li><li>如果已配置TLS/SSL。<ul><li>如果不需要重新生成或配置证书，可向环境管理员获取相关文件与密码。</li><li>如果需要重新生成并配置证书，请参照以下步骤备份相关文件并执行<a href="#ZH-CN_TOPIC_0000001792521262__li6528173201712">3</a>~<a href="#ZH-CN_TOPIC_0000001792521262__li26041510201017">12</a>。<ol type="a"><li>获取<span class="parmname">“hive.server2.keystore.path”</span>配置路径，备份路径下所有文件，以下按照<a href="#ZH-CN_TOPIC_0000001792521262__li19992695227">2</a>相关配置举例。<pre class="screen">mkdir -p /opt/cloudera/security/pki_bak; 
+cp -r /opt/cloudera/security/pki/* /opt/cloudera/security/pki_bak</pre>
+</li><li>获取<span class="parmname">“HiveServer2 TLS/SSL 证书信任存储库文件”</span>配置路径，备份路径下所有文件，以下按照<a href="#ZH-CN_TOPIC_0000001792521262__li19992695227">2</a>相关配置举例 。<pre class="screen">mkdir -p $JAVA_HOME/jre/lib/security_bak; 
+cp -r $JAVA_HOME/jre/lib/security/* $JAVA_HOME/jre/lib/security_bak</pre>
+</li></ol>
+</li></ul>
+</li></ul>
+</p></li><li id="ZH-CN_TOPIC_0000001792521262__li6528173201712"><a name="ZH-CN_TOPIC_0000001792521262__li6528173201712"></a><a name="li6528173201712"></a><span>执行以下命令进入相应目录。</span><p><pre class="screen">cd /opt/cloudera/security/pki</pre>
+</p></li><li id="ZH-CN_TOPIC_0000001792521262__li15931291246"><a name="ZH-CN_TOPIC_0000001792521262__li15931291246"></a><a name="li15931291246"></a><span>执行以下命令生成JKS证书。</span><p><div class="p">命令执行过程中请设置keystore的密码。生成的JKS证书保存在当前节点的<span class="uicontrol">“/opt/cloudera/security/pki”</span>目录。<pre class="screen">$JAVA_HOME/bin/keytool -genkeypair -alias $(hostname -f) -keyalg RSA -keystore /opt/cloudera/security/pki/$(hostname -f).jks -keysize 2048 -dname "CN=$(hostname -f),OU=Engineering,O=Cloudera,L=Palo Alto,ST=California,C=US" -ext san=dns:$(hostname -f)</pre>
+</div>
+<p><span><img src="zh-cn_image_0000001792361546.png"></span></p>
+</p></li><li><span>执行以下命令生成CSR证书。</span><p><pre class="screen">$JAVA_HOME/bin/keytool -certreq -alias $(hostname -f) -keystore /opt/cloudera/security/pki/$(hostname -f).jks -file /opt/cloudera/security/pki/$(hostname -f).csr -ext san=dns:$(hostname -f) -ext EKU=serverAuth,clientAuth</pre>
+<p><span><img src="zh-cn_image_0000001792521290.png"></span></p>
+</p></li><li><span>依次执行以下命令生成PEM证书。</span><p><pre class="screen">keytool -export -alias $(hostname -f) -keystore $(hostname -f).jks -file server.cer</pre>
+<pre class="screen">openssl x509 -inform DER -outform PEM -text -in server.cer -out server.pem</pre>
+<p><span><img src="zh-cn_image_0000001839240597.png"></span></p>
+</p></li><li><span>执行以下命令校验证书。</span><p><pre class="screen">openssl x509 -in /opt/cloudera/security/pki/server.pem -noout -text</pre>
+</p></li><li><span>执行以下命令将keystore的密码增加到Java安全库。</span><p><pre class="screen">sudo cp $JAVA_HOME/jre/lib/security/cacerts $JAVA_HOME/jre/lib/security/jssecacerts</pre>
+<pre class="screen">$JAVA_HOME/bin/keytool -storepasswd -keystore $JAVA_HOME/jre/lib/security/cacerts</pre>
+<pre class="screen">$JAVA_HOME/bin/keytool -storepasswd -keystore $JAVA_HOME/jre/lib/security/jssecacerts</pre>
+<p>初始密码为<span class="uicontrol">“changeit”</span>，按照回显提示修改密码为<a href="#ZH-CN_TOPIC_0000001792521262__li15931291246">4</a>中设置的密码。</p>
+</p></li><li><span>执行以下命令将证书增加到Java安全库。</span><p><pre class="screen">sudo $JAVA_HOME/bin/keytool -importcert -alias $(hostname -f) -keystore</pre>
+<pre class="screen">$JAVA_HOME/jre/lib/security/jssecacerts -file /opt/cloudera/security/pki/server.pem</pre>
+<p><span><img src="zh-cn_image_0000001792361542.png"></span></p>
+</p></li><li id="ZH-CN_TOPIC_0000001792521262__li11362958912"><a name="ZH-CN_TOPIC_0000001792521262__li11362958912"></a><a name="li11362958912"></a><span>依次执行以下命令创建集群节点到证书的软连接。</span><p><pre class="screen">sudo ln -s /opt/cloudera/security/pki/$(hostname -f).pem /opt/cloudera/security/pki/agent.pem</pre>
+<pre class="screen">sudo ln -s /opt/cloudera/security/pki/$(hostname -f).jks /opt/cloudera/security/pki/server.jks</pre>
+</p></li><li><span>请依次登录其他Hive集群节点，重复执行<a href="#ZH-CN_TOPIC_0000001792521262__li5631235132010">1</a>~<a href="#ZH-CN_TOPIC_0000001792521262__li11362958912">10</a>。</span></li><li id="ZH-CN_TOPIC_0000001792521262__li26041510201017"><a name="ZH-CN_TOPIC_0000001792521262__li26041510201017"></a><a name="li26041510201017"></a><span>使用浏览器，登录Cloudera Manager修改Hive集群配置。</span><p><ol type="a"><li>选择<span class="uicontrol">“群集 &gt; Hive &gt; 配置”</span>。</li><li>依次单击<span class="uicontrol">“Hive(服务范围)”</span>、<span class="uicontrol">“安全性”</span>，配置以下参数。配置示例如<a href="#ZH-CN_TOPIC_0000001792521262__fig1519418412433">图1</a>所示。<ul><li>勾选<span class="uicontrol">“Hive（服务范围）”</span></li><li><span class="parmname">“hive.server2.keystore.path”</span>配置为<span class="parmvalue">“/opt/cloudera/security/pki/server.jks”</span></li><li><span class="parmname">“hive.server2.keystore.password”</span>配置为<a href="#ZH-CN_TOPIC_0000001792521262__li15931291246">4</a>设置的密码。</li><li><span class="parmname">“HiveServer2 TLS/SSL 证书信任存储库文件”</span>配置为<span class="parmvalue">“/usr/java/jdk1.8.0_171/jre/lib/security/jssecacerts”</span>，其中，<span class="parmvalue">“jdk1.8.0_171”</span>为Java版本号，请根据实际情况替换。</li></ul>
+<div class="fignone" id="ZH-CN_TOPIC_0000001792521262__fig1519418412433"><a name="ZH-CN_TOPIC_0000001792521262__fig1519418412433"></a><a name="fig1519418412433"></a><span class="figcap"><b>图1 </b>Hive集群配置</span><br><span><img src="zh-cn_image_0000001839240601.png"></span></div>
+</li><li>在Cloudera Manager首页，单击<span class="uicontrol">“Cloudera Manager Service”</span>。</li><li>单击<span class="uicontrol">“配置 &gt; 安全性”</span>，配置以下参数。配置示例如<a href="#ZH-CN_TOPIC_0000001792521262__fig1519418412433">图1</a>所示。<ul><li><span class="parmname">“ssl.client.truststore.location”</span>配置为<span class="parmvalue">“/usr/java/jdk1.8.0_171/jre/lib/security/jssecacerts”</span>。其中，<span class="parmvalue">“jdk1.8.0_171”</span>为Java版本号，请根据实际情况替换。</li><li><span class="parmname">“ssl.client.truststore.password”</span>配置为<a href="#ZH-CN_TOPIC_0000001792521262__li15931291246">4</a>设置的密码。<p><span><img src="zh-cn_image_0000001839160649.png"></span></p>
+</li></ul>
+</li><li>在<span class="uicontrol">“实例”</span>页面，同步以上配置至各集群节点。</li><li>使用PuTTY，登录Hive集群管理节点，执行以下命令重启管理服务。<pre class="screen">sudo systemctl restart cloudera-scm-server</pre>
+</li><li>使用浏览器，登录Cloudera Manager重启集群和管理服务。<ol class="substepthirdol"><li>选择<span class="uicontrol">“群集 &gt; Hive”</span>，在<span class="uicontrol">“操作”</span>下重启Hive集群。</li><li>在首页，选择<span class="uicontrol">“Cloudera Management Service”</span>，在<span class="uicontrol">“操作”</span>下重启管理服务。</li></ol>
+</li><li>如果Hive集群中包括多个节点，需要将所有节点生成的JKS文件合并成一个JKS文件。否则请忽略该步骤。<ol class="substepthirdol"><li>把所有节点上<span class="uicontrol">“/opt/cloudera/security/pki”</span>目录下的JKS文件，汇总在同一个节点上的该目录。</li><li>进入<span class="uicontrol">“/opt/cloudera/security/pki”</span>目录，执行以下命令把所有节点上生成的JKS合并成一个证书。<div class="p">以下命令表示把证书2合并到证书1，如果有多个节点，需要依次执行以下命令，把所有证书合并到同一个证书下。<pre class="screen">keytool -importkeystore -srckeystore <em>证书1</em>.jks -destkeysore <em>证书2</em>.jks</pre>
+</div>
+<p></p>
+</li></ol>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001839160609.html">备份Hive备份集</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

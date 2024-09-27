@@ -1,0 +1,57 @@
+<h2 class="aui-gutter-column-md">{{ 'common_available_capacity_label' | i18n }}</h2>
+
+<lv-form-column lvWidth="33.333%">
+    <lv-form-item>
+        <lv-form-label>
+            {{'system_sftp_quota_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{ limitSpaceQuota | capacityCalculateLabel:'1.1-3':unitconst.BYTE: true }}
+        </lv-form-control>
+    </lv-form-item>
+</lv-form-column>
+<lv-form-column lvWidth="33.333%">
+    <lv-form-item>
+        <lv-form-label>
+            {{'system_used_percentage_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{spaceUsedRate ? spaceUsedRate : '--'}}
+        </lv-form-control>
+    </lv-form-item>
+</lv-form-column>
+
+<lv-form-column lvWidth="100%" class="form-column-mt">
+    <div class='used-capactiy-percent-bar'>
+        <lv-progress [lvValue]="sizePercent" [lvColors]='progressBarColor' lvShowLabel="false" lvDecimals="3">
+        </lv-progress>
+    </div>
+</lv-form-column>
+
+<lv-form-column lvWidth="50%" class="form-column-mt">
+    <div class="status">
+        <i [ngStyle]="{ background: usedSizeColor }"></i>
+        <span>
+            {{ usedSpaceQuota | capacityCalculateLabel:'1.1-3':unitconst.BYTE: true}}
+        </span>
+    </div>
+    <div>
+        <span class="aui-text-help-sm used-capacity-desc">
+            {{'common_used_capacity_label' | i18n}}
+        </span>
+    </div>
+</lv-form-column>
+
+<lv-form-column lvWidth="50%" class="form-column-mt">
+    <div class="status">
+        <i [ngStyle]="{ background: '#e6ebf5' }"></i>
+        <span>
+            {{ unusedSpaceQuota | capacityCalculateLabel:'1.1-3':unitconst.BYTE: true }}
+        </span>
+    </div>
+    <div>
+        <span class="aui-text-help-sm unused-capacity-desc">
+            {{'common_unused_capacity_label' | i18n}}
+        </span>
+    </div>
+</lv-form-column>

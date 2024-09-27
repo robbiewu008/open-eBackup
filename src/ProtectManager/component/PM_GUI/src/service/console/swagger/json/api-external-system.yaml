@@ -1,0 +1,483 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: external-system
+paths:
+  /v1/external-system:
+    post:
+      tags:
+        - external-system
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: AddExternalSystem
+      summary: 保存外部系统信息
+      description: 保存外部系统信息
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: AddExternalSystemRequestBody
+          description: AddExternalSystem
+          required: true
+          schema:
+            $ref: '#/definitions/AddExternalSystem'
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+    put:
+      tags:
+        - external-system
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: UpdateExternalSystem
+      summary: 修改外部系统信息
+      description: 修改外部系统信息
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: UpdateExternalSystemRequestBody
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateExternalSystem'
+          description: UpdateExternalSystem
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+    get:
+      tags:
+        - external-system
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: ShowExternalSystemInfo
+      summary: 查看外部系统信息
+      description: 查看外部系统信息
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: pageNo
+          in: query
+          required: false
+          type: integer
+          format: int32
+          description: pageNo
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+          description: pageSize
+          minimum: 0
+          maximum: 20
+        - name: name
+          in: query
+          required: false
+          description: name
+          type: string
+        - name: type
+          in: query
+          required: false
+          description: type
+          type: string
+        - name: endpoint
+          in: query
+          required: false
+          description: endpoint
+          type: string
+        - name: username
+          in: query
+          required: false
+          description: username
+          type: string
+        - name: port
+          in: query
+          required: false
+          description: port
+          type: integer
+          format: int32
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: 查看外部系统信息
+          schema:
+            $ref: '#/definitions/ListExternalSystem'
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+  /v1/external-system/{uuid}:
+    delete:
+      tags:
+        - external-system
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: DeleteExternalSystem
+      summary: 删除外部系统信息
+      description: 删除外部系统信息
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          type: string
+          description: uuid
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: Delete result
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+  /v1/external-system/jump:
+    get:
+      tags:
+        - external-system
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 获取外部系统token
+      description: 获取外部系统token
+      operationId: GenerateExternalSystemToken
+      parameters:
+        - name: uuid
+          in: query
+          required: true
+          type: string
+          description: uuid
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ExternalSystemToken'
+  /v1/external-system/status:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS,HyperDetect
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'N'
+      x-public-api: 'N'
+      x-sysadmin-role: 'Y'
+      tags:
+        - external-system
+      summary: 监控备份软件状态
+      description: 监控备份软件状态
+      operationId: GetExternalSystemStatus
+      parameters:
+        - name: limitTime
+          in: query
+          required: false
+          description: 1d,1w,1m 不填返回所有
+          type: string
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: Access token
+          type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+definitions:
+  AddExternalSystem:
+    description: externalSystem
+    required:
+      - type
+      - endpoint
+      - port
+      - name
+    properties:
+      uuid:
+        type: string
+        example: 0ecb2adb-c44e-4f64-b556-51e16f5e6f0b
+        description: uuid
+      type:
+        type: string
+        description: type
+      scope:
+        type: integer
+        format: int32
+        example: 0
+        description: scope
+      username:
+        type: string
+        example: admin
+        description: username
+      password:
+        type: string
+        example: Cloud12#$
+        description: password
+      endpoint:
+        type: string
+        example: 8.40.54.123
+        description: endpoint
+      port:
+        type: integer
+        format: int32
+        example: 8088
+        description: port
+      name:
+        type: string
+        example: abcd
+        description: name
+      ak:
+        type: string
+        description: dpa ak
+      sk:
+        type: string
+        description: dpa sk
+      location:
+        type: string
+        description: dpa location
+    type: object
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512
+  UpdateExternalSystem:
+    type: object
+    required:
+      - uuid
+    properties:
+      uuid:
+        type: string
+        example: 1d5eb0a9-9d19-44ae-8e11-0e57188717eb
+        description: uuid
+      scope:
+        type: integer
+        format: int32
+        example: 0
+        description: scope
+      username:
+        type: string
+        example: admin
+        description: username
+      password:
+        type: string
+        example: Cloud12#$
+        description: password
+      endpoint:
+        type: string
+        example: 8.40.54.123
+        description: endpoint
+      port:
+        type: integer
+        format: int32
+        example: 8088
+        description: port
+      name:
+        type: string
+        example: abcd
+        description: name
+      type:
+        type: string
+        description: type
+      ak:
+        type: string
+        description: ak
+      sk:
+        type: string
+        description: sk
+      location:
+        type: string
+        description: location
+  ExternalSystemToken:
+    type: object
+    properties:
+      token:
+        type: string
+        example: null
+        description: token
+      ip:
+        type: string
+        example: 8.40.54.123
+        description: ip
+      port:
+        type: integer
+        format: int32
+        example: 8088
+        description: port
+  ListExternalSystem:
+    type: object
+    required:
+      - totalCount
+      - records
+    properties:
+      totalCount:
+        type: integer
+        format: int32
+        example: 1
+        description: totalCount
+      records:
+        items:
+          properties:
+            uuid:
+              type: string
+              example: 8ef06167-5b42-4689-a54c-6e2e896b3d76
+              description: uuid
+            username:
+              type: string
+              example: admin
+              description: 用户名
+            password:
+              type: string
+              example: null
+              description: 密码
+            endpoint:
+              type: string
+              example: 8.40.54.123
+              description: ip
+            port:
+              type: integer
+              format: int32
+              example: 8088
+              description: 端口
+            scope:
+              type: integer
+              format: int32
+              example: 0
+              description: 用户组
+            name:
+              type: string
+              example: abcd
+              description: name
+            type:
+              type: string
+              example: eBackup
+              description: 类型
+            ak:
+              type: string
+              description: ak
+            sk:
+              type: string
+              description: sk
+            location:
+              type: string
+              description: location
+        description: 记录
+        type: array

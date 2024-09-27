@@ -1,0 +1,77 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+
+# dependencies
+/node_modules
+
+# api
+/src/app/shared/api
+/swagger/codegen/prepared_swagger.json
+/swagger/swagger.json
+/swagger/json/*.json
+
+
+
+# profiling files
+chrome-profiler-events.json
+speed-measure-plugin.json
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+
+##i18n util
+repeat-i18n.json
+code-sync.js
+
+##demo
+/src/app/shared/consts/data-collection.ts
+
+/alarm_中文_Report
+/errorCode_中文_Report
+
+errorCode.xls
+alarm.xls
+
+/src/assets/i18n/en-us/alarm/common.json
+/src/assets/i18n/en-us/error-code/common.json
+/src/assets/i18n/en-us/error-code/dorado_616.json
+/src/assets/i18n/en-us/error-code/pacific.json
+/src/assets/i18n/zh-cn/alarm/common.json
+/src/assets/i18n/zh-cn/error-code/common.json
+/src/assets/i18n/zh-cn/error-code/dorado_616.json
+/src/assets/i18n/zh-cn/error-code/pacific.json
+/src/service/console/swagger/json/*.json
+/src/assets/whitebox/resources/oem.js
+/src/assets/whitebox/resources/tool.ini

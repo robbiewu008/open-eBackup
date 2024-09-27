@@ -1,0 +1,44 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="添加普通用户至sudoers">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839189321">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>添加普通用户至sudoers</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001839189321"></a><a name="ZH-CN_TOPIC_0000001839189321"></a>
+
+<h1 class="topictitle1">添加普通用户至sudoers</h1>
+<div><p>通过自动推送方式安装ProtectAgent时，如果<span class="uicontrol">“用户类型”</span>配置为<span class="uicontrol">“普通用户”</span>，需要先将该普通用户添加到sudoers中，否则注册ProtectAgent将失败。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>使用<strong>root</strong>账户登录代理主机。</span></li><li><span>执行以下命令查找<span style="color:#121212;">sudoers配置文件的目录</span>。</span><p><pre class="screen">whereis sudoers</pre>
+</p></li><li><span><span style="color:#121212;">执行以下命令修改sudoers配置文件权限</span>。</span><p><pre class="screen">chmod u+w /etc/sudoers</pre>
+</p></li><li><span>备份源文件。</span><p><pre class="screen">mkdir /etc/backup_sudoers
+cp /etc/sudoers /etc/backup_sudoers</pre>
+</p></li><li id="ZH-CN_TOPIC_0000001839189321__li4145165012521"><a name="ZH-CN_TOPIC_0000001839189321__li4145165012521"></a><a name="li4145165012521"></a><span><span style="color:#121212;">执行以下命令打开/etc/sudoers配置文件</span>。</span><p><pre class="screen">vim /etc/sudoers</pre>
+</p></li><li><span>检查配置文件中是否存在<span class="parmname">“Defaults requiretty”</span>字段。如果存在，请删除该配置。</span></li><li id="ZH-CN_TOPIC_0000001839189321__li188920444274"><a name="ZH-CN_TOPIC_0000001839189321__li188920444274"></a><a name="li188920444274"></a><span>增加以下内容到配置文件，修改完成后保存并退出。</span><p><div class="p">以普通用户<strong>common_user</strong>为例，实际请根据安装ProtectAgent时的普通用户名替换。<ul><li>如果采用sudo非免密方式，请增加以下内容到配置文件：<pre class="screen"><em>common_user</em>    ALL=(ALL)       /bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre>
+<p>示例如下：</p>
+<p><span><img src="zh-cn_image_0000001941788145.png"></span></p>
+</li><li>如果采用sudo免密方式，请增加以下内容到配置文件：<pre class="screen"><em>common_user</em>    ALL=(ALL)       NOPASSWD:/bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre>
+</li></ul>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>增加的以上内容为一整行分三列，第一列与第二列间隔4个字符，第二列与第三列间隔7个字符。如果拷贝以上内容至配置文件中存在换行时，请手动删除换行。</p>
+</div></div>
+</div>
+</p></li><li><span>查看配置文件，确认<span class="parmname">“Defaults requiretty”</span>字段是否删除，以及<a href="#ZH-CN_TOPIC_0000001839189321__li188920444274">7</a>中添加的用户是否存在。</span><p><pre class="screen">cat /etc/sudoers</pre>
+<ul><li>如果修改失败，请回退配置文件，确认回退成功后，重新执行<a href="#ZH-CN_TOPIC_0000001839189321__li4145165012521">5</a>~<a href="#ZH-CN_TOPIC_0000001839189321__li188920444274">7</a>。<pre class="screen">cp /etc/backup_sudoers/sudoers /etc/sudoers
+cat /etc/sudoers</pre>
+</li><li>如果修改成功，请删除备份文件。<pre class="screen">rm -fr /etc/backup_sudoers</pre>
+</li></ul>
+</p></li></ol>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

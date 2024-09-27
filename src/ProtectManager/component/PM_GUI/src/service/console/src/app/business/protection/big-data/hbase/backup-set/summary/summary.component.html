@@ -1,0 +1,23 @@
+<div class="aui-header-1 aui-gutter-column-md">
+    <h2>{{'common_basic_info_label' | i18n}}</h2>
+</div>
+<div class="aui-gutter-column-lg">
+    <resoure-base-info [source]="source" [sourceType]="source.sub_type"></resoure-base-info>
+</div>
+
+<div class="aui-header-1 aui-gutter-column-md">
+    <h2>{{'common_protected_object_label' | i18n}}</h2>
+</div>
+<div class="aui-gutter-column-lg">
+    <div class="tree-container" *ngIf="showTree; else database">
+        <ng-container>
+            <aui-tables [isSummary]="true" [source]="source"></aui-tables>
+        </ng-container>
+    </div>
+</div>
+
+<ng-template #database>
+    <div style="position: relative; height: 720px;">
+        <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+    </div>
+</ng-template>

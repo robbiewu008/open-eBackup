@@ -1,0 +1,204 @@
+<h2 class="aui-gutter-column-md">{{'common_basic_info_label' | i18n}}</h2>
+<lv-group [lvColumns]='["100px", "auto"]' class="aui-gutter-column-xl">
+  <div>
+    <i lv-icon='aui-icon-summary-host' class="base-info-icon"></i>
+  </div>
+  <lv-form [lvLabelColon]='false'>
+    <lv-form-column lvWidth="25%">
+      <lv-form-item>
+        <lv-form-label>{{'common_name_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+          <span lv-overflow class="warp-name">{{source?.name | nil}}</span>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>{{'common_ip_address_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+          <ng-container
+            *ngIf="source.extendInfo?.subNetFixedIp && source.extendInfo?.subNetFixedIp !== source?.endpoint; else elseTemplate">
+            <span lv-overflow class="warp-name">
+              {{source?.endpoint | nil}}({{source?.extendInfo?.subNetFixedIp | nil}})
+            </span>
+          </ng-container>
+          <ng-template #elseTemplate>
+            <span lv-overflow class="warp-name">
+              {{source?.endpoint | nil}}
+            </span>
+          </ng-template>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>{{'common_remarks_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+          <span lv-overflow class="warp-name">{{source?.extendInfo?.tag | nil}}</span>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form-column>
+    <lv-form-column lvWidth="25%">
+      <lv-form-item>
+        <lv-form-label>{{'common_status_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+          <aui-status [value]="source.link_status" type="resource_Host_LinkStatus">
+          </aui-status>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>{{'protection_os_type_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+          <span class="warp-ip" lv-overflow>{{ source.os_type | textMap: 'Os_Type' | nil}}</span>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>{{'protection_host_cpu_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+          <span class="warp-ip" lv-overflow>{{ source.link_status === 1 && (source.protectedAgentExtend?.cpuRate ||
+            source.protectedAgentExtend?.cpuRate === 0) ? NumberToFixed(source.protectedAgentExtend?.cpuRate, 1) + '%' :
+            '--'}}</span>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form-column>
+    <lv-form-column lvWidth="25%">
+      <lv-form-item>
+        <lv-form-label>{{'protection_proxy_type_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+          <span class="warp-ip" lv-overflow>
+            {{ source.sub_type | textMap: 'Host_Proxy_Type' | nil}}
+          </span>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>{{'system_current_version_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+          <span class="warp-ip" lv-overflow>
+            <lv-group lvGutter="6px">
+              <span lv-overflow>
+                {{ source.version | nil}}
+              </span>
+              <span *ngIf="source.extendInfo?.agentUpgradeable === '1' && 1 === source.link_status">
+                <i lv-icon="aui-icon-version-update" [lvColorState]="true" class='version-update'
+                  [lv-tooltip]="'protection_host_upgradeable_label'|i18n"></i>
+              </span>
+            </lv-group>
+          </span>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>{{'protection_host_mem_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+          <span class="warp-ip" lv-overflow>{{ source.link_status === 1 && (source.protectedAgentExtend?.memRate ||
+            source.protectedAgentExtend?.memRate === 0) ? NumberToFixed(source.protectedAgentExtend?.memRate, 1) + '%' :
+            '--'}}</span>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form-column>
+    <lv-form-column lvWidth="25%" *ngIf="isHcsEnvir">
+      <lv-form-item>
+        <lv-form-label>
+          {{'protection_share_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+          <span lv-overflow>
+            {{(source.protectedAgentExtend?.isShared ?
+            'switch_status_on_label' : 'switch_status_off_label') | i18n}}
+          </span>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form-column>
+  </lv-form>
+</lv-group>
+
+<ng-container *ngIf="size(applicationList)">
+  <h2 class="aui-gutter-column-lg">{{'protection_host_applications_label' | i18n}}</h2>
+  <div class="resource-tree">
+    <lv-tree [lvData]='resourceData' class="tree"></lv-tree>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="isLanfree">
+  <lv-collapse lvType="simple">
+    <lv-collapse-panel lvTitle="{{'protection_lanfree_configuration_label' | i18n}}" lvExpanded>
+      <ng-container *ngIf="isLanfree && !isAix && !isSanclient">
+        <div class="aui-gutter-column-lg">
+          <lv-group lvGutter='24px'>
+            <span class="aui-text-label">{{'protection_statefulset_node_label' | i18n}}</span>
+            <span class="aui-text">{{ node.nodeName }}</span>
+          </lv-group>
+        </div>
+        <div class="header aui-text-label">{{'protection_client_wwpn_label' | i18n}}</div>
+        <div class="aui-gutter-column-lg">
+          <lv-pro-table #wwpnTable [config]="wwpnTableConfig" [data]="wwpnTableData"></lv-pro-table>
+        </div>
+        <div class="header aui-text-label">{{'protection_fc_port_label' | i18n}}</div>
+        <div class="aui-gutter-column-lg">
+          <lv-pro-table #fcPortTable [config]="fcPortTableConfig" [data]="fcPortTableData"></lv-pro-table>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="isAix">
+        <lv-group lvGutter='24px' class="aui-gutter-column-lg">
+          <span class="aui-text-label">{{ 'protection_data_protocol_label' | i18n }}</span>
+          <span class="aui-text">{{dataProtocol}}</span>
+        </lv-group>
+        <ng-container *ngIf="data?.dataProtocol === 'FC'">
+          <div class="header aui-text-label">{{'protection_sanclient_label' | i18n}}</div>
+          <div class="aui-gutter-column-lg">
+            <lv-pro-table #sanclientTable [config]="sanclientTableConfig" [data]="sanclientTableData"></lv-pro-table>
+          </div>
+          <div class="header aui-text-label">{{'protection_client_wwpn_label' | i18n}}</div>
+          <div class="aui-gutter-column-lg">
+            <lv-pro-table #wwpnTable [config]="wwpnTableConfig" [data]="wwpnTableData"></lv-pro-table>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="data?.dataProtocol === 'ISCSI'">
+          <div class="aui-gutter-column-lg">
+            <lv-group lvGutter='24px'>
+              <span class="aui-text-label">{{'protection_client_iqn_label' | i18n}}</span>
+              <span class="aui-text">********</span>
+            </lv-group>
+          </div>
+          <div class="header aui-text-label">{{'protection_sanclient_label' | i18n}}</div>
+          <div class="aui-gutter-column-lg">
+            <lv-pro-table #sanclientTable [config]="sanclientTableConfig" [data]="sanclientTableData"></lv-pro-table>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="isSanclient">
+        <div class="aui-gutter-column-lg">
+          <lv-group lvGutter='24px'>
+            <span class="aui-text-label">{{'protection_statefulset_node_label' | i18n}}</span>
+            <span class="aui-text">{{ node.nodeName }}</span>
+          </lv-group>
+        </div>
+        <div class="aui-gutter-column-lg">
+          <h3>{{ 'protectoin_sanclient_produce_connection_link_label' | i18n }}</h3>
+        </div>
+        <div class="aui-gutter-column-lg">
+          <lv-group lvGutter='24px'>
+            <span class="aui-text-label">{{'protection_sanclient_iqn_label' | i18n}}</span>
+            <span class="aui-text" *ngIf="isSanclientIqn">********</span>
+            <span class="aui-text" *ngIf="!isSanclientIqn">{{ 'common_none_label' | i18n }}</span>
+          </lv-group>
+        </div>
+        <div class="header aui-text-label">{{'protection_sanclient_wwpn_label' | i18n}}</div>
+        <div class="aui-gutter-column-lg">
+          <lv-pro-table #sanclientTable [config]="sanclientTableConfig" [data]="sanclientTableData"></lv-pro-table>
+        </div>
+
+        <div *ngIf="isSanclientFC">
+          <div class="aui-gutter-column-lg">
+            <h3>{{ 'protection_fc_store_connection_link_label' | i18n }}</h3>
+          </div>
+          <div class="header aui-text-label">{{'protection_sanclient_wwpn_label' | i18n}}</div>
+          <div class="aui-gutter-column-lg">
+            <lv-pro-table #wwpnTable [config]="wwpnTableConfig" [data]="wwpnTableData"></lv-pro-table>
+          </div>
+          <div class="header aui-text-label">{{'protection_fc_port_label' | i18n}}</div>
+          <div class="aui-gutter-column-lg">
+            <lv-pro-table #fcPortTable [config]="fcPortTableConfig" [data]="fcPortTableData"></lv-pro-table>
+          </div>
+        </div>
+      </ng-container>
+    </lv-collapse-panel>
+  </lv-collapse>
+</ng-container>

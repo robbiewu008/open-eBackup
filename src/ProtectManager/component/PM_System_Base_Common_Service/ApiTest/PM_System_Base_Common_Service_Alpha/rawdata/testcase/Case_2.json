@@ -1,0 +1,44 @@
+{
+  "version" : "2.0",
+  "setup" : [ {
+    "aw_name" : "sendTestAlarmUsingPUT",
+    "aw_source_info" : "PM_System_Base_Common_Service:master:Alpha",
+    "check_point_list" : [ {
+      "property" : "$code",
+      "comparison" : "==",
+      "value" : "200",
+      "description" : ""
+    } ],
+    "variable_list" : [ ],
+    "params_value" : {
+      "X_Auth_Token" : "$$${Token}",
+      "hostURL" : "$${host_test}"
+    },
+    "retry_times" : "0",
+    "retry_interval" : "0",
+    "unused" : false,
+    "relation_type" : 0
+  } ],
+  "teststep" : [ ],
+  "teardown" : [ ],
+  "tmss_property" : {
+    "name" : "TestAlarmGenerate",
+    "number" : "2",
+    "level" : 6,
+    "market" : "0",
+    "stage" : "1",
+    "test_type" : 1,
+    "env_type" : "PM_System_Base_Common_Service",
+    "exe_platform" : "apitest",
+    "auto_type" : "1",
+    "is_contract_testcase" : "0",
+    "last_modified" : "2020-12-17 11:38:00",
+    "last_modifier" : "y30000858",
+    "author" : "y30000858",
+    "creation_date" : "2020-12-16 16:10:48",
+    "activity_id" : "1",
+    "feature_path" : "/017sa3bqsh1/00esdutvjda1/"
+  },
+  "import_info" : [ ],
+  "case_variable_list" : [ ]
+}

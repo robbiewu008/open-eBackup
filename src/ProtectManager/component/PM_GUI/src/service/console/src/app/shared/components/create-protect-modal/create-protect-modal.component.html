@@ -1,0 +1,5 @@
+<ng-container *ngFor="let config of protectionConfig">
+    <aui-create-container-modal [resourceType]="type" [config]="config" [option]="option" [action]="action"
+        (onConfigChange)="onConfigChange($event)">
+    </aui-create-container-modal>
+</ng-container>

@@ -1,0 +1,45 @@
+<lv-group [lvGutter]="mode === 'button' ? '16px' : '24px'" *ngIf="isGroup">
+  <ng-container *ngFor="let button of buttons">
+    <lv-pro-button [mode]="mode" [config]="button" [bindData]="bindData"></lv-pro-button>
+  </ng-container>
+  <lv-pro-button *ngIf="totalButtons.length > (keepDropdown ? maxDisplayItems - 1 : maxDisplayItems)" [mode]="mode"
+    [config]="buttonMore" [bindData]="bindData"></lv-pro-button>
+</lv-group>
+
+<ng-container *ngIf="!isGroup">
+  <lv-tooltip [lvContent]="(_getDisableStatus(button) && button?.disabledTips) || ''" lvTooltipTheme="light">
+    <ng-container *ngIf="!button.items || button.items?.length === 0">
+      <button *ngIf="_getDisplayStatus(button)" lv-button
+        [ngClass]="{ 'lv-pro-button-progress': !button?.showLoading && isLoading }"
+        [lvType]="mode === 'button' ? button?.type : mode" [lvSize]="mode === 'button' ? button?.size : 'auto'"
+        [disabled]="_getDisableStatus(button)" [lvLoading]="button?.showLoading && isLoading"
+        [lvLoadingText]="loadingText" (click)="_buttonClick($event, bindData)" lv-popover [lvPopoverClosable]="true"
+        [lvPopoverContent]="button.popoverContent" lvPopoverPosition="bottom" lvPopoverClassName="customer-guide-tip-bk"
+        lvPopoverTrigger="customize" [(lvPopoverVisible)]="popoverShow" [lvPopoverBeforeClose]="lvPopoverBeforeClose">
+        <ng-container *ngTemplateOutlet="labelTpl; context: { $implicit: button }"></ng-container>
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="button.items && button.items?.length > 0">
+      <button *ngIf="_getDisplayStatus(button)" lv-button
+        [ngClass]="{ 'lv-pro-button-progress': !button?.showLoading && isLoading }"
+        [lvType]="mode === 'button' ? button?.type : mode" [lvSize]="mode === 'button' ? button?.size : 'auto'"
+        [disabled]="_getDisableStatus(button)" [lvLoading]="button?.showLoading && isLoading"
+        [lvLoadingText]="loadingText" lv-dropdown [lvDropdownMenus]="menus" (click)="_moreBtnClick($event, button)">
+        <ng-container *ngTemplateOutlet="labelTpl; context: { $implicit: button }"></ng-container>
+        <i #lvDropdownTrigger lv-icon="{{mode === 'button' ? 'lv-icon-triangle-down' : 'lv-icon-sort-desc'}}"></i>
+      </button>
+    </ng-container>
+  </lv-tooltip>
+</ng-container>
+
+<ng-template #labelTpl let-button>
+  <ng-container [ngSwitch]="true">
+    <ng-container *ngSwitchCase="typeUtils.isTemplateRef(button?.label)" [ngTemplateOutlet]="button?.label">
+    </ng-container>
+    <ng-container *ngSwitchCase="typeUtils.isRealString(button?.label)">
+      <i *ngIf="button?.icon" [lv-icon]="button.icon"></i>
+      <span>{{ button?.label }}</span>
+    </ng-container>
+  </ng-container>
+</ng-template>

@@ -1,0 +1,71 @@
+<div class="about-text" [innerHTML]="tagTipLabel"></div>
+<div class="aui-operation" *ngIf="isAdd">
+  <lv-group lvGutter='16px'>
+    <button lv-popover lv-button class="createBtn" lvType="primary" [lvPopoverHeader]="headerTemplate"
+      [lvPopoverContent]="contentTemplate" [lvPopoverFooter]="footerTemplate" lvPopoverPosition="bottomLeft"
+      lvPopoverTheme="light" (click)="createTag()" lvPopoverTrigger="customize" [(lvPopoverVisible)]="visible">
+      {{ 'common_create_label' | i18n }}
+    </button>
+  </lv-group>
+</div>
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+  <lv-form-item>
+    <lv-form-label></lv-form-label>
+    <lv-form-control>
+      <lv-transfer #transfer [lvSourceColumns]="sourceColumns" [lvSourceData]="sourceData"
+        [lvSourceSelection]="sourceSelection" [lvTargetColumns]="targetColumns" (lvStateChange)="stateChange($event)"
+        (lvSelectionChange)="change($event)" lvAsync="true" [lvTotal]="total" [lvItemSize]="20" [lvColDisplayControl]="false"
+        lvDataKey="uuid"></lv-transfer>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+
+
+<ng-template #headerTemplate>
+  <p>{{'system_tag_name_label' | i18n}}</p>
+</ng-template>
+
+<ng-template #contentTemplate let-item>
+  <lv-form [formGroup]="popFormGroup" class="contentTpl">
+      <lv-form-item>
+        <lv-form-label></lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.nameErrorTip">
+          <input lv-input type="text" formControlName="tagName" />
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form>
+</ng-template>
+
+<ng-template #footerTemplate let-data>
+  <lv-group lvGutter="16px" class="footerBtn">
+    <button lv-button (click)="cancel()">
+      {{ 'common_cancel_label' | i18n }}
+    </button>
+    <button lv-button [lvLoading]="loading" lvLoadingText="loading" lvType="primary" (click)="confirm()" [disabled]="popFormGroup.invalid">
+      {{ 'common_ok_label' | i18n }}
+    </button>
+  </lv-group>
+</ng-template>
+
+<ng-template #sourceOperateTpl let-data let-selecetd="selection" let-paginator="paginator" let-panel="panel">
+  <lv-group lvGutter="8px" class="file-header">
+    <button lv-button lvType="link" (click)="selectAll(data, panel)"></button>
+  </lv-group>
+</ng-template>
+
+<ng-template #targetOperateTpl let-data let-paginator="paginator" let-panel="panel">
+  <lv-group lvGutter="8px" class="file-header">
+    <button lv-button lvType="link" (click)="clearAll(data, panel)">{{'protection_clear_all_label' | i18n}}</button>
+  </lv-group>
+</ng-template>
+
+<ng-template #headerTpl>
+  <lv-group class="about-header">
+    <lv-group lvGutter='4px'>
+      <h2>{{ headerLabel }}</h2>
+    </lv-group>
+    <a class="aui-link" (click)="jumpTagUrl()">
+      {{'common_jump_tag_management_label' | i18n}}
+    </a>
+  </lv-group>
+</ng-template>

@@ -1,0 +1,13 @@
+{
+  "type": "Database",
+  "subType": "HCSGaussDBProject",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "environment": "agents"
+        }
+      ]
+    }
+  }
+}

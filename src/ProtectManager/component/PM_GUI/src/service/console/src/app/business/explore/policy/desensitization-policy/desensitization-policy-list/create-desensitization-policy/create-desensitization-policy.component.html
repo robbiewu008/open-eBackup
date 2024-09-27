@@ -1,0 +1,67 @@
+<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_name_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input formControlName='name' />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>{{'common_desc_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-input-lint>
+                <textarea formControlName="description" maxlength="1000" rows='6' lv-input
+                    style="resize: vertical;"></textarea>
+            </lv-input-lint>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+
+<h3 class="title-md chose-title">{{'explore_choose_identified_rule_label' | i18n}}</h3>
+<button class="title-md" lv-button lvType='primary' (click)="addRules()">{{'common_add_label' | i18n}}</button>
+<div>
+    <lv-datatable [lvData]='addRuleData' lvSelectionMode='multiple' [lvSelection]='addSelection'
+        (lvSelectionChange)="selectionChange($event)" lvCompareWith="id" lvSize="small" #addLvTable lvResize
+        lvResizeMode="expand" [lvScroll]="{ x: '100%' }">
+        <thead>
+            <tr>
+                <th lvShowCheckbox width='40px' [lvRowsData]='addLvTable.renderData'></th>
+                <th lvCellKey="name" lvShowCustom>
+                    {{'common_name_label' | i18n}}
+                    <div lvCustom>
+                        <aui-custom-table-search (search)="searchByName($event)"
+                            filterTitle="{{'common_name_label' | i18n}}"></aui-custom-table-search>
+                    </div>
+                </th>
+                <th lvCellKey="create_method" lvShowFilter (lvFilterChange)="filterChange($event)"
+                    [(lvFilters)]="filterMap" lvFilterCheckAll>{{'explore_anonymization_rule_mode_label' | i18n }}</th>
+                <th lvCellKey="expression">{{'explore_expression_label' | i18n }}</th>
+                <th lvCellKey="mask_name">{{'explore_desensitize_rule_label' | i18n }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of addLvTable.renderData">
+                <tr>
+                    <td lvShowCheckbox [lvRowData]='item'></td>
+                    <td>
+                        <span lv-overflow>{{item.name}}</span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.create_method | textMap: 'Senesitization_Create_Method'}}</span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.expression | nil}}</span>
+                    </td>
+                    <td>
+                        <span lv-overflow>{{item.mask_name | nil}}</span>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+    <div class="aui-paginator-wrap">
+        <lv-paginator lvMode="simple" [lvPageSize]="pageSize" [lvPageIndex]="pageIndex" [lvTotal]="total"
+            [lvShowPageSizeOptions]="false" (lvPageChange)="pageChange($event)" [lvPageSizeOptions]="sizeOptions"
+            [hidden]="!total">
+        </lv-paginator>
+    </div>
+</div>

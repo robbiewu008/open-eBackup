@@ -1,0 +1,11 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label>
+            {{'common_az_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-select [lvOptions]="azOptions" formControlName="az" lvValueKey="value" lvShowFilter lvFilterKey="label"
+                lvFilterMode="contains" lvShowClear></lv-select>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

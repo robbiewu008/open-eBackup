@@ -1,0 +1,156 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Managing Huawei Cloud Stack GaussDB Copies">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000001792383628.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
+<meta name="DC.Publisher" content="20240608">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000001839182729">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Managing Huawei Cloud Stack GaussDB Copies</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000001839182729"></a><a name="EN-US_TOPIC_0000001839182729"></a>
+
+<h1 class="topictitle1">Managing Huawei Cloud Stack GaussDB Copies</h1>
+<div><p>This section describes operations on copy data.</p>
+<p>Choose <span class="uicontrol"><b><span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839142377_text1879110428547"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839142377_text13791144225411"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839142377_text88961121031"><strong>Cloud Platforms</strong></span> &gt; <span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839142377_text13803615132619"><strong>Huawei Cloud Stack GaussDB</strong></span></b></span> to go to the Huawei Cloud Stack GaussDB copy page.</p>
+<ul><li>Click <span class="uicontrol" id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_uicontrol2899165220510"><b>Resources</b></span> to perform operations by resource. Operations on this page are performed on replication copies of the current resource. Perform the following operations in the cluster where the replication copies reside. <p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p1449155317445"><a href="#EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_table108701649347">Table 1</a> describes the related operations.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_table108701649347"></a><a name="en-us_topic_0000001839143185_table108701649347"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_table108701649347" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Operations related to replication copies</caption><colgroup><col style="width:21.32%"><col style="width:47.339999999999996%"><col style="width:31.34%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_row6870349042"><th align="left" class="cellrowborder" valign="top" width="21.32%" id="mcps1.3.3.1.3.2.4.1.1"><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p118701849749">Operation</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="47.339999999999996%" id="mcps1.3.3.1.3.2.4.1.2"><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p1387013498414">Description</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="31.34%" id="mcps1.3.3.1.3.2.4.1.3"><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p12870184910411">Navigation Path</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_row08701149540"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p48706491742">Creating protection for replication copies</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p1087015494412"><strong id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_b13871149741">Scenario</strong></p>
+<p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p270074703612">This operation enables you to periodically replicate or archive replication copies.</p>
+<p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p267094031613"><strong id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_b4978171851814">Note</strong></p>
+<p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p9670184021612">If no replication copy is generated for the selected resource, you cannot associate an SLA with the resource for protection.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p487194915415">In the row of the target resource, choose <span class="uicontrol" id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_uicontrol287116499413"><b><span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text987116491245"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text13521152634220"><strong>Protect</strong></span></b></span> and associate a replication SLA or an archive SLA to replicate or archive replication copies.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_row178717491342"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p18713493416">Modifying the SLA associated with replication copies</p>
+<p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p887110492414"></p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p987134915415"><strong id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_b168711049240">Scenario</strong></p>
+<p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p287104910419">This operation enables you to modify the SLA associated with replication copies.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p19871144910419">In the row of the target resource, choose <span class="uicontrol" id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_uicontrol3871749541"><b><span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text287118491849"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text125761634164320"><strong>Modify Protection</strong></span></b></span> and associate a new SLA with replication copies.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_row1987112491546"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p108711049749">Removing protection for replication copies</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p88711849945"><strong id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_b1787117491414">Scenario</strong></p>
+<p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p53695313586">You can remove the protection plan if the replication copies no longer need to be protected. After removal, the system cannot protect these replication copies.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p15871144920417">In the row of the target resource, choose <span class="uicontrol" id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_uicontrol1871114919419"><b><span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text387144911413"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text1571395216438"><strong>Remove Protection</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_row191077557610"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p136950484237">Activating protection for replication copies</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p86648169242"><strong id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_b4468151716249">Scenario</strong></p>
+<p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p10694948192314">After the protection plan for replication copies is disabled, you can enable it again. Then, the system protects replication copies based on the protection plan.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p61071551265">In the row of the target resource, choose <span class="uicontrol" id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_uicontrol06417191616"><b><span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text1631919168"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text36491201615"><strong>Activate Protection</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_row811414581465"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p71076551464">Disabling protection for replication copies</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p842845116222"><strong id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_b1797565114222">Scenario</strong></p>
+<p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p10107055766">You can disable the protection plan if the replication copies no longer require periodic protection. After the protection plan is disabled, the system does not execute automatic protection jobs of these replication copies.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p1111475810613">In the row of the target resource, choose <span class="uicontrol" id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_uicontrol1666398101615"><b><span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text366315891610"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text16638841619"><strong>Disable Protection</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_row153332773"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p43312218714">Performing manual replication for a replication copy</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p9940133218250"><strong id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_b109408327259">Scenario</strong></p>
+<p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p139401328256">This operation enables you to replicate a replication copy immediately.</p>
+<p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p6763172119279"><strong id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_b17763721122714">Note</strong></p>
+<p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p781862319279">Before performing this operation, ensure that an SLA based on replication copies has been created and used to create protection for the corresponding resource.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p1534321671">In the row of the target resource, choose <span class="uicontrol" id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_uicontrol1131310712817"><b><span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text1131315711814"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text3372133811441"><strong>Manually Replicate</strong></span></b></span>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ul>
+<ul><li>Click <span class="uicontrol"><b>Copy</b></span> to perform operations by copy.<div class="p"><a href="#EN-US_TOPIC_0000001839182729__table51069596392">Table 2</a> describes the related operations.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000001839182729__table51069596392"></a><a name="table51069596392"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000001839182729__table51069596392" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Operations related to Huawei Cloud Stack GaussDB copies</caption><colgroup><col style="width:21.32%"><col style="width:47.339999999999996%"><col style="width:31.34%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="21.32%" id="mcps1.3.4.1.2.2.2.4.1.1"><p>Operation</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="47.339999999999996%" id="mcps1.3.4.1.2.2.2.4.1.2"><p>Description</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="31.34%" id="mcps1.3.4.1.2.2.2.4.1.3"><p>Navigation Path</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.4.1.2.2.2.4.1.1 "><p>Modifying a copy retention policy</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.4.1.2.2.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to modify the retention period of a copy.</p>
+<p><strong>Note</strong></p>
+<p>The modified copy retention period is calculated from the current time.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.4.1.2.2.2.4.1.3 "><p>In the row that contains the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify Retention Policy</strong></span></b></span>.</p>
+<p>You can set the retention period to be permanent or to <em>XX</em> days, <em>XX</em> weeks, <em>XX</em> months, or <em>XX</em> years.</p>
+<p></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.4.1.2.2.2.4.1.1 "><p>Deleting a copy</p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.4.1.2.2.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>If a copy is not required or does not work, you can delete it to free up storage space.</p>
+<p><strong>Note</strong></p>
+<ul><li>Before deleting a copy, ensure that the copy is no longer used for restoration.</li><li>Only copies in the <span class="uicontrol"><b>Invalid</b></span> status can be deleted.</li><li>If a resource has multiple copies, the last copy cannot be deleted.</li><li>If a resource has multiple copies and only one full replication copy, the full replication copy cannot be deleted.</li><li>Copies undergoing ransomware detection cannot be deleted.</li><li>Log copies cannot be deleted. You can delete the latest full copy before the log copy is generated for associated deletion.</li></ul>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.4.1.2.2.2.4.1.3 "><p>In the row that contains the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Delete</strong></span></b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.4.1.2.2.2.4.1.1 "><p>Performing reverse replication or cascaded replication on replication copies</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.4.1.2.2.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enabled you to replicate a replication copy to the source end for data restoration or replicate a replication copy to another cluster for remote DR.</p>
+<p><strong>Note</strong></p>
+<p>When reverse replication is performed, the copy with the same name at the source end will be overwritten.</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.4.1.2.2.2.4.1.3 "><div class="p">In the row of the target replication copy, choose <span class="uicontrol" id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_uicontrol1262954116166"><b><span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text16291141191616"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_text132798260912"><strong>Replicate</strong></span></b></span>. Configure copy replication parameters.<ol id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_ol15113142311175"><li id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_li0113202310179">Select <span class="uicontrol" id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_uicontrol1611634014176"><b>Replication Target Cluster</b></span>.<ul id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_ul2991182216"><li id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_li3998812219">If <span class="uicontrol" id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_uicontrol630794164212"><b>Replication Target Cluster</b></span> is the source cluster, reverse replication is performed.</li><li id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_li1419217379216">If <span class="uicontrol" id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_uicontrol118058437428"><b>Replication Target Cluster</b></span> is another cluster, cascaded replication is performed.</li></ul>
+</li><li id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_li1564916443171">Set the copy retention period.</li><li id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_li6696135771714">Enable or disable data deduplication and compression.<p id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_p325810594214"><a name="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_li6696135771714"></a><a name="en-us_topic_0000001839143185_li6696135771714"></a>You are advised to enable these functions to improve replication efficiency.</p>
+</li><li id="EN-US_TOPIC_0000001839182729__en-us_topic_0000001839143185_li3458142216186">Enable or disable the job failure alarm function.</li></ol>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.4.1.2.2.2.4.1.1 mcps1.3.4.1.2.2.2.4.1.2 mcps1.3.4.1.2.2.2.4.1.3 "><p>Note: The configuration of the copy restoration is similar to <a href="en-us_topic_0000001792383572.html">Restoring Huawei Cloud Stack GaussDB Instances</a> and is not described in this section.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li></ul>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000001792383628.html">Copies</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

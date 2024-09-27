@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤3：注册集群">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001792381284.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001792381196">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤3：注册集群</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001792381196"></a><a name="ZH-CN_TOPIC_0000001792381196"></a>
+  <h1 class="topictitle1">步骤3：注册集群</h1>
+  <div>
+   <p>执行Kubernetes CSI备份恢复前，需要将Kubernetes集群注册至<span>本产品</span>。一套本产品最多支持8套Kubernetes集群。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li id="ZH-CN_TOPIC_0000001792381196__li0198134611381"><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001792381196__zh-cn_topic_0000001839142377_uicontrol846217343614">“<span id="ZH-CN_TOPIC_0000001792381196__zh-cn_topic_0000001839142377_text1046212303610">保护</span> &gt; 容器 &gt; <span id="ZH-CN_TOPIC_0000001792381196__zh-cn_topic_0000001839142377_text149606591485">Kubernetes CSI</span>”</span>。</span></li>
+     <li><span>选择<span class="uicontrol">“<span>集群</span>”</span>页签，单击<span class="uicontrol">“<span>注册</span>”</span>。</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>对于1.6.0及后续版本，注册可选择集群类型：<span style="color:#282B33;">通用Kubernetes集群</span>、<span style="color:#282B33;">CCE集群</span>和<span style="color:#282B33;">OpenShift集群</span>。</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>选择通过<span style="color:#282B33;">Token</span>认证或<span style="color:#282B33;">kubeconfig</span>认证注册集群。</span><p></p>
+      <div class="p">
+       Kubernetes集群注册信息如<a href="#ZH-CN_TOPIC_0000001792381196__table613227155112">表1</a>或<a href="#ZH-CN_TOPIC_0000001792381196__table191041022165015">表2</a>所示。 
+       <div class="tablenoborder">
+        <a name="ZH-CN_TOPIC_0000001792381196__table613227155112"></a><a name="table613227155112"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001792381196__table613227155112" frame="border" border="1" rules="all">
+         <caption>
+          <b>表1 </b>Kubernetes集群的Token认证注册信息
+         </caption>
+         <colgroup>
+          <col style="width:25.69%">
+          <col style="width:74.31%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="25.69%" id="mcps1.3.2.2.3.2.1.3.2.3.1.1"><p>参数</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="74.31%" id="mcps1.3.2.2.3.2.1.3.2.3.1.2"><p>说明</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.1 "><p><span>名称</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001792381196__p312142713516">用户自定义集群名称。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.1 "><p>IP地址</p></td>
+           <td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.2 "><p>Kubernetes的服务IP地址。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.1 "><p>端口</p></td>
+           <td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.2 "><p>Kubernetes的服务IP端口。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.1 "><p>Token信息</p></td>
+           <td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.2 "><p>Kubernetes的服务访问Token。为确保备份/恢复任务正常，需要<span>本产品</span>至少有最小权限的Token。可参见<a href="zh-cn_topic_0000001839180449.html">步骤2：（可选）生成最小权限Token</a>，生成最小权限Token。</p>
+            <div class="note">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <ul>
+               <li>对于FusionCompute，您也可以从kubeconfig配置文件获取“token”字段的值。该方式获取token更便捷，但是该Token具有所有权限。</li>
+               <li>对于OpenShift，请参考<a href="zh-cn_topic_0000001902918166.html">获取Token信息</a>获取管理员权限的Token。</li>
+              </ul>
+             </div>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.1 "><p>备份镜像名称和Tag</p></td>
+           <td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.2 "><p>执行PVC备份的Pod的镜像名称和标签。进行备份前，需要将备份软件的镜像文件上传至Kubernetes集群的镜像库，上传方式请参见<a href="zh-cn_topic_0000001839260277.html">上传Kubernetes安装包至镜像库</a>。</p> <p>上传镜像文件后，可通过以下方式获取对应的镜像名和Tag值：</p>
+            <ul>
+             <li>管理平台为FusionCompute时，可在容器管理界面中，依次选择“容器镜像 &gt; 本地仓库 &gt; library”，单击已上传的对应镜像文件名，在“镜像版本”页签中，单击对应的镜像版本所在行右侧的“复制拉取命令”，复制的命令中类似以下的内容则为“备份镜像名称和Tag”的值（回显以x86镜像文件为例）。<pre class="screen">192.168.1.1:7443/library/k8s_backup_image_x86:latest</pre></li>
+             <li>管理平台为CCE时，可在CCE管理界面选择<span class="uicontrol">“云容器引擎CCE &gt; 镜像仓库 &gt; 镜像”</span>，单击已上传的镜像文件名，在对应镜像版本的<span class="uicontrol">“下载指令”</span>列可查到镜像名和Tag值。</li>
+             <li>管理平台为OpenShift时，可参考<a href="zh-cn_topic_0000001940484365.html">上传Kubernetes安装包并获取镜像名和Tag信息</a>获取镜像名和Tag信息。</li>
+            </ul> <p>输入示例：</p> <p><em>镜像名</em>:<em>Tag值</em></p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.1 "><p>单个节点备份任务数</p></td>
+           <td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.2 "><p>单个节点支持并发的最大备份任务数量。默认值为4，最大值为8。请根据Kubernetes CSI的剩余空间设置合适的备份任务数。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.1 "><p><span>任务超时时间</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001792381196__p624916214445">备份或恢复任务的默认最长执行时间。当备份或恢复任务的执行时间超过设置的任务超时时间，任务将执行失败。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.1 "><p><span>校验证书</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.2 "><p>默认开启，Token认证时，需要输入证书的值。注册Kubernetes集群时会对其证书进行校验，确保<span>本产品</span>与外部设备交互的安全性。关闭后，系统与Kubernetes通信可能存在安全风险，请谨慎操作<span style="color:#6C7280;">。</span></p>
+            <div class="note">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <ul>
+               <li>管理平台为DCS-FusionCompute时，证书值为所注册Kubernetes集群配置文件的“certificate-authority-data”参数值。</li>
+               <li>管理平台为CCE时，获取证书值的操作请参见<a href="zh-cn_topic_0000001839260321.html">Token认证时获取证书值（适用于CCE）</a>。</li>
+               <li>管理平台为OpenShift时，可在Kubernetes集群后台界面执行以下命令，回显的中“certificate-authority-data”参数值即为证书值。<pre class="screen">oc config view --minify --flatten</pre></li>
+              </ul>
+             </div>
+            </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.1 "><p><span>节点选择器</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.2.2.3.2.1.3.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001792381196__p1716591412491">用于指定备份Pod的执行节点，可通过单击“添加”使用多个标签对节点进行指定。标签的查询方式请参见<a href="zh-cn_topic_0000001891609144.html">步骤1：（可选）查询Kubernetes集群的节点标签</a>。</p> <p id="ZH-CN_TOPIC_0000001792381196__p19822309268">标签的Key和Value关系示例：<strong id="ZH-CN_TOPIC_0000001792381196__b7865192202320">Key=Value,controller=CTE0.A</strong></p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div>
+      <div class="tablenoborder">
+       <a name="ZH-CN_TOPIC_0000001792381196__table191041022165015"></a><a name="table191041022165015"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001792381196__table191041022165015" frame="border" border="1" rules="all">
+        <caption>
+         <b>表2 </b>Kubernetes集群的kubeconfig认证注册信息
+        </caption>
+        <colgroup>
+         <col style="width:25.590000000000003%">
+         <col style="width:74.41%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="25.590000000000003%" id="mcps1.3.2.2.3.2.2.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.41%" id="mcps1.3.2.2.3.2.2.2.3.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>名称</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>用户自定义集群名称。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p>kubeconfig文件</p></td>
+          <td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>上传已获取的Kubernetes CSI的kubeconfig配置文件。</p>
+           <ul>
+            <li>对于CCE：可参考<a href="zh-cn_topic_0000001917330525.html">获取kubeconfig配置文件</a>。</li>
+            <li>对于FusionCompute：可参考<a href="zh-cn_topic_0000001839260265.html">获取kubeconfig配置文件</a>。</li>
+            <li>对于OpenShift：可参考<a href="zh-cn_topic_0000001903005022.html">获取kubeconfig配置文件</a>。</li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p>备份镜像名称和Tag</p></td>
+          <td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>执行PVC备份的Pod的镜像名称和Tag。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p>单个节点备份任务数</p></td>
+          <td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>单个节点支持并发的最大备份任务数量。默认值为4，最大值为8。请根据Kubernetes CSI的剩余空间设置合适的备份任务数。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>任务超时时间</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>备份或恢复任务的默认最长执行时间。当备份或恢复任务的执行时间超过设置的任务超时时间，任务将执行失败。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>校验证书</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>默认开启。注册Kubernetes集群时会对其证书进行校验，确保<span>本产品</span>与外部设备交互的安全性。关闭后，系统与Kubernetes通信可能存在安全风险，请谨慎操作<span style="color:#6C7280;">。</span></p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.590000000000003%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p><span>节点选择器</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.41%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p>用于指定备份Pod的执行节点，可通过单击“添加”使用多个标签对节点进行指定。标签的查询方式请参见<a href="zh-cn_topic_0000001891609144.html">步骤1：（可选）查询Kubernetes集群的节点标签</a>。</p> <p>标签的Key和Value关系示例：<strong id="ZH-CN_TOPIC_0000001792381196__zh-cn_topic_0000001792381196_b7865192202320">Key=Value,controller=CTE0.A</strong></p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span><p></p><p>注册成功后，已注册的Kubernetes CSI信息将在“<span>集群</span>”页签显示。系统将自动发现该Kubernetes集群下的命名空间，展示在“<span>命名空间</span>”页签。</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001792381284.html">备份命名空间/数据集</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

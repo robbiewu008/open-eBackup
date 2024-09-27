@@ -1,0 +1,69 @@
+<lv-collapse [lvMultiExpansion]="false" lvType="simple">
+    <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="true">
+        <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+          <lv-form-item>
+            <lv-form-label>
+              {{'protection_exchange_vss_copy_verify_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+              <lv-switch formControlName="copyVerify">
+                {{'protection_exchange_vss_copy_verify_label'|i18n}}
+              </lv-switch>
+            </lv-form-control>
+          </lv-form-item>
+          <!--只有DAG和DAG数据库展示'可用性组备份'-->
+          <lv-form-item *ngIf="showDAGBackUp">
+            <lv-form-label>
+              {{'protection_exchange_dag_backup_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+              <lv-select [lvOptions]="dagBackUpOpts" lvValueKey="value" formControlName="dagBackup">
+              </lv-select>
+            </lv-form-control>
+          </lv-form-item>
+          <!--只有单机和单机数据库展示'脚本'-->
+          <ng-container *ngIf="!showDAGBackUp">
+            <lv-form-item>
+              <lv-form-label>
+                {{'protection_protect_pre_script_label' | i18n}}
+                <i lv-icon="aui-icon-help" lvTooltipTheme="light" class="configform-constraint"
+                   [lv-tooltip]="scriptToolTip" lvColorState="true">
+                </i>
+              </lv-form-label>
+              <lv-form-control [lvErrorTip]="scriptErrorTip">
+                <input formControlName="before_protect_script" lv-input [placeholder]="scriptPlaceHolder"/>
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>
+                {{'protection_protect_post_script_label' | i18n}}
+                <i lv-icon="aui-icon-help" lvTooltipTheme="light" class="configform-constraint"
+                   [lv-tooltip]="scriptToolTip" lvColorState="true">
+                </i>
+              </lv-form-label>
+              <lv-form-control [lvErrorTip]="scriptErrorTip">
+                <input formControlName="after_protect_script" lv-input [placeholder]="scriptPlaceHolder"/>
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>
+                {{'protection_protect_fail_script_label' | i18n}}
+                <i lv-icon="aui-icon-help" lvTooltipTheme="light" class="configform-constraint"
+                   [lv-tooltip]="scriptToolTip" lvColorState="true">
+                </i>
+              </lv-form-label>
+              <lv-form-control [lvErrorTip]="scriptErrorTip">
+                <input formControlName="protect_failed_script" lv-input [placeholder]="scriptPlaceHolder"/>
+              </lv-form-control>
+            </lv-form-item>
+          </ng-container>
+        </lv-form>
+    </lv-collapse-panel>
+</lv-collapse>
+
+
+<ng-template #titleTpl>
+    <lv-group lvGutter='8px'>
+        <span class="aui-h3">{{'common_advanced_label'|i18n}}</span>
+    </lv-group>
+</ng-template>

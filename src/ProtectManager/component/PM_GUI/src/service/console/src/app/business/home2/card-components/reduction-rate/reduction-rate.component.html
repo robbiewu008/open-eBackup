@@ -1,0 +1,36 @@
+<div class="reduction-reate">
+  <div class="proportions">
+    <div class="ratios">
+      {{
+        reductionInfo.spaceReductionRate ||
+          ('common_home_calculating_label' | i18n)
+      }}
+    </div>
+    <div class="title">
+      {{ 'common_home_data_reduction_ratio_label' | i18n }}
+    </div>
+  </div>
+  <div class="container">
+    <div class="left-line"></div>
+    <div class="figures"></div>
+    <div class="right-line"></div>
+  </div>
+  <div class="footer">
+    <div class="logical-usage">
+      <div class="number">
+        {{ reductionInfo.writeCapacity }}
+        <span class="unit"> {{ reductionInfo.writeCapacityUnit | nil }}</span>
+      </div>
+      <div class="title">{{ 'common_home_logical_usage_label' | i18n }}</div>
+    </div>
+    <div class="physical-dosage">
+      <div class="number">
+        {{ reductionInfo.consumedCapacity }}
+        <span class="unit">
+          {{ reductionInfo.consumedCapacityUnit | nil }}</span
+        >
+      </div>
+      <div class="title">{{ 'common_home_physical_usage_label' | i18n }}</div>
+    </div>
+  </div>
+</div>

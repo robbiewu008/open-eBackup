@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤4：获取管理面地址和端口">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001839145161.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001839145157">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤4：获取管理面地址和端口</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000001839145157"></a><a name="ZH-CN_TOPIC_0000001839145157"></a>
+  <h1 class="topictitle1">步骤4：获取管理面地址和端口</h1>
+  <div>
+   <p>将GaussDB注册至<span>本产品</span>需要提前获取TPOPS对外提供服务的管理面地址和端口，以下为管理面地址和端口的获取方式。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ul>
+     <li><strong>当使用的管理平台为OLTP OPS</strong><strong>，通过以下步骤获取：</strong></li>
+    </ul>
+    <ol>
+     <li><span>使用root用户登录已安装TPOPS Server的节点。</span></li>
+     <li><span>依次执行以下命令切换至dmuser账号，并进入软件包目录。</span><p></p><pre class="screen">su - dmuser;
+cd <font style="font-size:8pt" face="Courier New">~</font>/dmpackage</pre> <p></p></li>
+     <li><span>执行以下命令查看管理面地址和端口。</span><p></p><pre class="screen">cat install-default.conf | grep "webui.listen"</pre> <p>回显示例如下（“webui.listen.ip”的值为管理面地址，“webui.listen.port”的值为管理面端口）：</p> <p><span><img src="zh-cn_image_0000001792346094.png"></span></p> <p></p></li>
+    </ol>
+    <p></p>
+    <ul>
+     <li><strong>当使用的管理平台为云数据库GaussDB管理平台</strong><strong>，通过以下步骤获取：</strong></li>
+    </ul>
+    <ol>
+     <li><span>登录云数据库GaussDB管理平台的任意节点的后台界面。</span></li>
+     <li id="ZH-CN_TOPIC_0000001839145157__li617145614412"><a name="ZH-CN_TOPIC_0000001839145157__li617145614412"></a><a name="li617145614412"></a><span>执行<strong>docker ps</strong>命令，查询带有“gaussdb-open-api”前缀的镜像名，记录对应的“CONTAINER ID”值。</span><p></p><p><span><img src="zh-cn_image_0000001948202973.png"></span></p> <p></p></li>
+     <li><span>执行以下命令，其中“CONTAINER_ID”为<a href="#ZH-CN_TOPIC_0000001839145157__li617145614412">2</a>记录的参数值。</span><p></p><pre class="screen">docker exec -it <em>CONTAINER_ID</em> /bin/bash</pre> <p></p></li>
+     <li><span>执行<strong>cd /opt/cloud/GaussDB-open-api/conf cat server.xml | grep "port"</strong>命令查看管理面地址和端口，示例图如下：</span><p></p><p><span><img src="zh-cn_image_0000001918405924.png"></span></p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="zh-cn_topic_0000001839145161.html">备份GaussDB实例</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

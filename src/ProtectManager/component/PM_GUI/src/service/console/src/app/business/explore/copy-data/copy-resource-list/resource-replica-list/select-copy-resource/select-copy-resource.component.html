@@ -1,0 +1,13 @@
+<div class="aui-gutter-column-lg">
+    <lv-form class="formGroup">
+        <ng-container *ngIf="disableSLA else replicaTpl">
+          <lv-alert lvType="info" lvClosable="false">{{'protection_empty_replicated_copy_label'|i18n}}</lv-alert>
+        </ng-container>
+    </lv-form>
+</div>
+
+<ng-template #replicaTpl>
+  <lv-form-item>
+    <div [innerHTML]="'protection_selected_replica_copy_label'|i18n:[resourceData.resource_name]"></div>
+  </lv-form-item>
+</ng-template>

@@ -1,0 +1,17 @@
+<div class='clusters-container'>
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>
+
+<ng-template #nameTpl let-item>
+    <div class='dashed' *ngIf="item.haveDashed"></div>
+    <lv-group lvGutter="8px">
+        <ng-container *ngIf="item.icon">
+            <i [lv-icon]="item.icon" [lvColorState]="true"></i>
+        </ng-container>
+        <span
+            [ngClass]="{'cluster': item.clusterId, 'category': !item.clusterId, 'aui-link-disabled': item.status === 28, 'actived':currentCluster?.clusterName === item.clusterName }"
+            (click)="reload(item)" lv-overflow>
+            {{item.clusterName}}
+        </span>
+    </lv-group>
+</ng-template>

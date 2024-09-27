@@ -1,0 +1,20 @@
+<div class="aui-fullpage">
+  <div class="aui-block aui-paginator-container">
+    <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+      <lv-tab lvTitle="{{ 'protection_database_instance_label' | i18n }}">
+        <ng-template lv-tab-lazy>
+          <aui-database-template
+            [configParams]="instanceConfig"
+          ></aui-database-template>
+        </ng-template>
+      </lv-tab>
+      <lv-tab lvTitle="{{ 'common_database_label' | i18n }}">
+        <ng-template lv-tab-lazy>
+          <aui-database-template
+            [configParams]="databaseConfig"
+          ></aui-database-template>
+        </ng-template>
+      </lv-tab>
+    </lv-tabs>
+  </div>
+</div>

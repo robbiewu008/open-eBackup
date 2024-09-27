@@ -1,0 +1,130 @@
+<lv-form class="formGroup aui-gutter-column-xxl" [formGroup]="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input type="text" formControlName="name">
+        </lv-form-control>
+    </lv-form-item>
+    <lv-wizard [lvMode]="'icon'" [lvStatus]="'process'" [lvActiveIndex]="activeIndex"
+        class="aui-gutter-column-lg tidb-process" [lvSize]="'small'" *ngIf="!rowData">
+        <lv-wizard-step>{{'protection_tidb_register_tiupnode_label' | i18n}}</lv-wizard-step>
+        <lv-wizard-step>{{'protection_selecting_cluster_label' | i18n}}</lv-wizard-step>
+        <lv-wizard-step>{{'system_add_node_label' | i18n}}</lv-wizard-step>
+    </lv-wizard>
+
+    <div [ngClass]="{'visible': activeIndex === 0, 'hidden': activeIndex !== 0}" *ngIf="!rowData">
+        <div class="header">
+            <h2>{{'protection_tidb_register_tiupnode_label' | i18n}}</h2>
+        </div>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_proxy_host_label' | i18n}}
+                <i lv-icon="aui-icon-help" [lv-tooltip]="infoTip" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState='true' (mouseenter)="helpHover()"></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                <aui-agent-select [lvOptions]="proxyOptions" formControlName="agent" lvValueKey="value" lvMode="multiple">
+                </aui-agent-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_tidb_tiup_path_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_tiup_path_info_label' | i18n}}"
+                    lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                <input lv-input formControlName="path" type="text">
+            </lv-form-control>
+        </lv-form-item>
+    </div>
+</lv-form>
+<div [ngClass]="{'visible': activeIndex === 1 || rowData, 'hidden': activeIndex !== 1 && !rowData}">
+    <div class="header">
+        <h2 *ngIf="!rowData">{{'protection_selecting_cluster_label' | i18n}}</h2>
+        <h2 *ngIf="rowData">{{'common_cluster_label' | i18n}}</h2>
+    </div>
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>
+<div [ngClass]="{'visible': activeIndex === 2 || rowData, 'hidden': activeIndex !== 2 && !rowData}">
+    <lv-form [formGroup]="nodeGroup" class="formGroup">
+        <div class="header">
+            <h2>{{'system_add_node_label' | i18n}}</h2>
+        </div>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_tidb_cluster_username_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="requiredErrorTip">
+                <input lv-input type="text" formControlName="name">
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'common_password_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="requiredErrorTip">
+                <aui-inupt-with-eye formControlName="password"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{'protection_logbackup_file_path_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="requiredErrorTip">
+                <input lv-input type="text" formControlName="location">
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+
+    <div class="aui-gutter-column-xl test">
+        <lv-datatable [lvData]="nodeData" lvNode #lvTable lvResize>
+            <thead>
+                <tr>
+                    <th width="200px">{{'ID' | i18n}}</th>
+                    <th width="110px">{{'common_role_label' | i18n}}</th>
+                    <th width="130px">{{'common_status_label' | i18n}}</th>
+                    <th width="400px">
+                        <span class="star">*</span>
+                        {{'protection_selecting_host_label' | i18n}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of lvTable.renderData">
+                    <td>{{item.id}}</td>
+                    <td>{{item.role}}</td>
+                    <td><aui-status [value]="item.status === 'up'?1:0" type="resource_LinkStatus"></aui-status></td>
+                    <td>
+                        <lv-select [lvOptions]="proxyData" lvValueKey="key" [(ngModel)]="item.hostManagerIp"
+                            lvFilterKey="label" lvFilterMode="contains" (ngModelChange)="hostChange($event)"
+                            lvShowFilter lvShowCheckAll>
+                        </lv-select>
+                    </td>
+                </tr>
+            </tbody>
+        </lv-datatable>
+    </div>
+</div>
+
+
+<ng-template #footerTpl>
+    <div class="lv-modal-btns">
+        <lv-group lvGutter='8px'>
+            <button *ngIf="activeIndex !== 0" lv-button (click)='previous()'>{{ 'common_previous_label' | i18n
+                }}</button>
+            <button *ngIf="activeIndex !== 2 && !rowData" lv-button lvType='primary' (click)='next()'
+                [disabled]="nextBtnDisabled">{{
+                'common_next_label' | i18n }}</button>
+            <button *ngIf="activeIndex === 2 || rowData" lv-button (click)='finish()' lvType='primary'
+                [lvLoading]='isLoading' [disabled]="nextBtnDisabled">{{
+                'common_finish_label' | i18n }} </button>
+            <button lv-button (click)='modal.close()'>{{ 'common_cancel_label' | i18n }}</button>
+        </lv-group>
+    </div>
+</ng-template>
+<ng-template #infoTip>
+    <span [innerHTML]="agentTip"></span>
+</ng-template>

@@ -1,0 +1,35 @@
+<lv-tabs>
+    <lv-tab lvTitle="{{'common_basic_info_label' | i18n}}">
+        <lv-group [lvColumns]='["100px", "auto"]' class="aui-gutter-column-xl">
+            <div>
+                <i *ngIf="rowItem?.linkStatus === dataMap.resource_LinkStatus_Special.normal.value"
+                    lv-icon='aui-sla-cloud-host-online' class="base-info-icon"></i>
+                <i *ngIf="rowItem?.linkStatus !== dataMap.resource_LinkStatus_Special.normal.value"
+                    lv-icon='aui-sla-cloud-host-offline' class="base-info-icon"></i>
+            </div>
+            <lv-form [lvLabelColon]='false'>
+                <lv-form-column lvWidth="35%">
+                    <lv-form-item>
+                        <lv-form-label>{{'common_name_label' | i18n}}</lv-form-label>
+                        <lv-form-control>
+                            <span lv-overflow class="warp-name">{{rowItem?.name | nil}}</span>
+                        </lv-form-control>
+                    </lv-form-item>
+                </lv-form-column>
+                <lv-form-column lvWidth="65%">
+                    <lv-form-item>
+                        <lv-form-label>{{'protection_keystone_adress_label' | i18n}}</lv-form-label>
+                        <lv-form-control>
+                            <span class="warp-ip" lv-overflow>{{rowItem?.endpoint | nil}}</span>
+                        </lv-form-control>
+                    </lv-form-item>
+                </lv-form-column>
+            </lv-form>
+        </lv-group>
+        <h3 class="aui-gutter-column-md">{{'protection_proxy_host_label' | i18n}}</h3>
+        <lv-pro-table #clusterNode [config]="nodeTableConfig" [data]="nodeTableData"></lv-pro-table>
+    </lv-tab>
+</lv-tabs>
+<ng-template #headerTpl>
+    <aui-custom-modal-operate [item]='rowItem'></aui-custom-modal-operate>
+</ng-template>

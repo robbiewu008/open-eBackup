@@ -1,0 +1,114 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ */
+
+package openbackup.gaussdbt.protection.access.provider.backup;
+
+import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
+import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
+import openbackup.data.protection.access.provider.sdk.enums.CopyFormatEnum;
+import openbackup.data.protection.access.provider.sdk.enums.MountTypeEnum;
+import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
+import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.util.TaskUtil;
+import openbackup.database.base.plugin.common.DatabaseConstants;
+import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
+import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
+import openbackup.gaussdbt.protection.access.provider.constant.GaussDBTConstant;
+import openbackup.gaussdbt.protection.access.provider.service.GaussDBTSingleService;
+import openbackup.system.base.common.constants.IsmNumberConstant;
+import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.util.BeanTools;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * GaussDBT单机版备份拦截器
+ *
+ * @author lWX776769
+ * @version [DataBackup 1.5.0]
+ * @since 2023/7/21
+ */
+@Slf4j
+@Component
+public class GaussDBTSingleBackupProvider extends AbstractDbBackupInterceptor {
+    private final GaussDBTSingleService gaussDBTSingleService;
+
+    public GaussDBTSingleBackupProvider(GaussDBTSingleService gaussDBTSingleService) {
+        this.gaussDBTSingleService = gaussDBTSingleService;
+    }
+
+    @Override
+    public BackupTask initialize(BackupTask backupTask) {
+        log.info("Start gaussdbt single interceptor set parameters. uuid: {}", backupTask.getTaskId());
+        // 设置保护环境扩展参数
+        setProtectEnvExtendInfo(backupTask);
+
+        // 设置副本格式
+        backupTask.setCopyFormat(CopyFormatEnum.INNER_DIRECTORY.getCopyFormat());
+
+        // 设置速度统计方式为UBC
+        TaskUtil.setBackupTaskSpeedStatisticsEnum(backupTask, SpeedStatisticsEnum.UBC);
+
+        // 设置存储仓
+        backupTask.setRepositories(buildRepositories(backupTask));
+
+        ProtectedResource resource = gaussDBTSingleService.getResourceById(backupTask.getProtectObject().getUuid());
+
+        // 设置环境nodes
+        backupTask.getProtectEnv().setNodes(gaussDBTSingleService.getEnvNodes(resource));
+
+        // 设置agents
+        backupTask.setAgents(gaussDBTSingleService.getAgents(resource));
+
+        // 设置高级参数
+        setAdvanceParams(backupTask);
+        log.info("End gaussdbt single interceptor set parameters. uuid: {}", backupTask.getTaskId());
+        return backupTask;
+    }
+
+    private void setProtectEnvExtendInfo(BackupTask backupTask) {
+        Map<String, String> envExtendInfo = Optional.ofNullable(backupTask.getProtectEnv().getExtendInfo())
+                .orElseGet(HashMap::new);
+        envExtendInfo.put(DatabaseConstants.DEPLOY_TYPE, DatabaseDeployTypeEnum.SINGLE.getType());
+        backupTask.getProtectEnv().setExtendInfo(envExtendInfo);
+    }
+
+    private List<StorageRepository> buildRepositories(BackupTask backupTask) {
+        List<StorageRepository> repositories = backupTask.getRepositories();
+        if (DatabaseConstants.LOG_BACKUP_TYPE.equals(backupTask.getBackupType())) {
+            StorageRepository logRepository = BeanTools.copy(repositories.get(IsmNumberConstant.ZERO),
+                    StorageRepository::new);
+            logRepository.setType(RepositoryTypeEnum.LOG.getType());
+            repositories.add(logRepository);
+        }
+        StorageRepository cacheRepository = BeanTools.copy(repositories.get(IsmNumberConstant.ZERO),
+                StorageRepository::new);
+        cacheRepository.setType(RepositoryTypeEnum.CACHE.getType());
+        repositories.add(cacheRepository);
+        return repositories;
+    }
+
+    private void setAdvanceParams(BackupTask backupTask) {
+        if (!DatabaseConstants.LOG_BACKUP_TYPE.equals(backupTask.getBackupType())) {
+            log.debug("This gaussdbt single job type is not log backup. uuid: {}.", backupTask.getTaskId());
+            return;
+        }
+        Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams()).orElse(new HashMap<>());
+        advanceParams.put(GaussDBTConstant.MOUNT_TYPE_KEY, MountTypeEnum.NON_FULL_PATH_MOUNT.getMountType());
+        backupTask.setAdvanceParams(advanceParams);
+    }
+
+    @Override
+    public boolean applicable(String resourceSubType) {
+        return ResourceSubTypeEnum.GAUSSDBT_SINGLE.equalsSubType(resourceSubType);
+    }
+}

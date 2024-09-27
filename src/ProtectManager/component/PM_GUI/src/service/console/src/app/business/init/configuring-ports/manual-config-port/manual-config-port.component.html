@@ -1,0 +1,27 @@
+<div class="title-top title-bottom">
+  <div class="aui-header-2">
+    <h2>{{ 'common_config_logical_port_network_label' | i18n }}</h2>
+  </div>
+</div>
+
+<lv-alert lvType="info" *ngIf="!(isModify && !modifying)">
+  {{ 'common_config_logical_port_tip_label' | i18n }}
+</lv-alert>
+<div class="controller-config">
+  <lv-collapse [lvType]="'simple'" class="panel-cluster">
+    <ng-container *ngFor="let control of controllers">
+      <lv-collapse-panel [lvTitle]="titleTpl" lvExpanded="true">
+        <aui-config-table [isModify]="isModify" [data]="control" [columns]="columns" [modifying]="modifying"
+          (onStatusChange)="tableStatusChange($event)"></aui-config-table>
+      </lv-collapse-panel>
+      <ng-template #titleTpl>
+        <lv-group lvGutter="4px">
+          <img src="assets/img/cpu.svg" />
+          <h2>
+            {{ 'common_controller_label' | i18n }}{{ control.controllerName }}
+          </h2>
+        </lv-group>
+      </ng-template>
+    </ng-container>
+  </lv-collapse>
+</div>

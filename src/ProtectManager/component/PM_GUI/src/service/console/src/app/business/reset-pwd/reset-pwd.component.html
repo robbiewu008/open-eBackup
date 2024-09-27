@@ -1,0 +1,78 @@
+<lv-layout>
+  <lv-header>
+    <lv-group [lvGutter]="groupOptions.largeRowGutter">
+      <aui-logo-title class="logo"></aui-logo-title>
+    </lv-group>
+    <lv-group [lvGutter]="groupOptions.largeRowGutter">
+      <div class="language" (click)="toggleLanguage()">{{ languageLabel }}</div>
+    </lv-group>
+  </lv-header>
+  <lv-content>
+    <div class="from-container">
+      <h1 class="aui-title">
+        {{ 'system_reset_password_label' | i18n }}
+      </h1>
+      <div class="tip-container">
+        <span [innerHTML]="vertifycodeTip"></span>
+      </div>
+      <div class="reset-container">
+        <lv-form [formGroup]="formGroup" class="formGroup">
+          <lv-form-item>
+            <lv-form-label></lv-form-label>
+            <lv-form-control [lvErrorTip]="nameErrorTip">
+              <input
+                lv-input
+                formControlName="userName"
+                placeholder="{{ 'common_username_label' | i18n }}"
+                class="reset-input"
+              />
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label> </lv-form-label>
+            <lv-form-control [lvErrorTip]="emailErrorTip">
+              <input
+                lv-input
+                formControlName="emailAdress"
+                placeholder="{{ 'common_email_label' | i18n }}"
+                class="reset-input"
+              />
+            </lv-form-control>
+          </lv-form-item>
+          <lv-form-item>
+            <lv-form-label> </lv-form-label>
+            <lv-form-control [lvErrorTip]="nameErrorTip">
+              <lv-input-group [lvSuffix]="includeSuffix" class="reset-input">
+                <input
+                  lv-input
+                  formControlName="verificationCode"
+                  placeholder="{{ 'common_verify_code_label' | i18n }}"
+                  class="reset-input"
+                />
+              </lv-input-group>
+              <ng-template #includeSuffix>
+                <span
+                  class="aui-link"
+                  (click)="checkVerifyCode()"
+                  *ngIf="!isSend"
+                  >{{ 'common_send_verify_code_label' | i18n }}</span
+                >
+                <span class="aui-link" *ngIf="isSend">{{
+                  countdownLabel
+                }}</span>
+              </ng-template>
+            </lv-form-control>
+          </lv-form-item>
+        </lv-form>
+        <lv-group lvDirection="vertical" lvGutter="12px" class="reset-group">
+          <button lv-button (click)="submit()" lvType="primary">
+            {{ 'common_submit_label' | i18n }}
+          </button>
+          <span class="aui-link" [routerLink]="['/login']">
+            {{ 'common_cancel_label' | i18n }}
+          </span>
+        </lv-group>
+      </div>
+    </div>
+  </lv-content>
+</lv-layout>

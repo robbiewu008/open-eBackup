@@ -1,0 +1,82 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_host_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="host"
+        [lvOptions]="hostOptions"
+        lvValueKey="value"
+        lvShowFilter
+        lvFilterKey="label"
+        lvFilterMode="contains"
+        [lvContentTemplate]="contentTpl"
+      >
+      </lv-select>
+      <ng-template #contentTpl let-item>
+        <lv-group lvGutter="4px">
+          <span lv-overflow>{{ item.label }}</span>
+          <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
+            {{ 'protection_guide_new_resource_label' | i18n }}
+          </span>
+        </lv-group>
+      </ng-template>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'common_port_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="portErrorTip">
+      <input
+        lv-input
+        type="text"
+        formControlName="port"
+        placeholder="1~65535"
+      />
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{ 'protection_auth_method_label' | i18n }}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+      <lv-select
+        formControlName="auth_method"
+        [lvOptions]="authOptions"
+        lvValueKey="value"
+      >
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+  <ng-container
+    *ngIf="
+      formGroup.value.auth_method === dataMap.Database_Auth_Method.db.value
+    "
+  >
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_database_user_name_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="usernameErrorTip">
+        <input lv-input type="text" formControlName="database_username" />
+      </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+      <lv-form-label lvRequired>
+        {{ 'common_database_password_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control [lvErrorTip]="passwordErrorTip">
+        <aui-inupt-with-eye
+          formControlName="database_password"
+          [lv-tooltip]="pwdComplexTipTpl"
+        ></aui-inupt-with-eye>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+</lv-form>
+
+<ng-template #pwdComplexTipTpl>
+  <span [innerHTML]="pwdComplexTipLabel"></span>
+</ng-template>

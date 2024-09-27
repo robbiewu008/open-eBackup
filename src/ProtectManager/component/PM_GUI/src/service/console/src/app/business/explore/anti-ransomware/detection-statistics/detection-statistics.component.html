@@ -1,0 +1,67 @@
+<lv-group [lvColumns]='["auto","auto","auto"]' lvRowGutter="0px" class="overview-top">
+    <div class="aui-block statistics-block" *ngIf="supportLicense.isFile">
+        <h2>{{ 'explore_blocking_files_label' | i18n }}</h2>
+        <lv-group [lvColumns]="['15%','auto','15%']" lvRowGutter="15px" lvColumnGutter="15px" (click)="getDetail()">
+            <div class='top-block'>
+                <i lv-icon="aui-icon-file-enable-detection"></i>
+            </div>
+            <lv-group lvGutter="8px" lvDirection='vertical'>
+                <p class="anti-count">
+                    {{ enableBlockCount > 999 ? '999+' : enableBlockCount }}<span
+                        class="total-count-summay">/{{fileTotalCount}}</span>
+                </p>
+                <p class="aui-text-help-sm">{{'explore_nas_detection_enabled_label' | i18n}}</p>
+            </lv-group>
+            <div class="slip"></div>
+        </lv-group>
+    </div>
+    <!-- 实时勒索检测 -->
+    <div class="aui-block statistics-block">
+        <h2>{{ 'explore_real_time_detection_label' | i18n }}</h2>
+        <lv-group [lvColumns]="['15%','auto','auto','15%']" lvRowGutter="15px" lvColumnGutter="15px"
+            (click)="getDetail()">
+            <div class='top-block'>
+                <i lv-icon="aui-icon-realtime-enable-detection"></i>
+            </div>
+
+            <lv-group lvGutter="8px" lvDirection='vertical' *ngIf="supportLicense.isFile">
+                <p class="anti-count">
+                    {{ enableDetectionCount > 999 ? '999+' : enableDetectionCount }}<span
+                        class="total-count-summay">/{{dectionTotalCount}}</span>
+                </p>
+                <p class="aui-text-help-sm">{{'explore_nas_detection_enabled_label' | i18n}}</p>
+            </lv-group>
+            <lv-group lvGutter="8px" lvDirection='vertical' *ngIf="supportLicense.isSan">
+                <p class="anti-count">
+                    {{ sanIoEnableCount > 999 ? '999+' : sanIoEnableCount }}<span
+                        class="total-count-summay">/{{sanIoTotalCount}}</span>
+                </p>
+                <p class="aui-text-help-sm">{{'explore_san_detection_enabled_label' | i18n}}</p>
+            </lv-group>
+            <div class="slip"></div>
+        </lv-group>
+    </div>
+    <!-- 智能勒索检测 -->
+    <div class="aui-block statistics-block">
+        <h2>{{ 'explore_snapshot_detection_label' | i18n }}</h2>
+        <lv-group [lvColumns]="['15%','auto','auto','15%']" lvRowGutter="15px" lvColumnGutter="15px" (click)="getDetail()">
+            <div class='top-block'>
+                <i lv-icon="aui-icon-intelligent-enable-detection"></i>
+            </div>
+            <lv-group lvGutter="8px" lvDirection='vertical'  *ngIf="supportLicense.isFile">
+                <p class="anti-count">
+                    {{ enableSnapshotCount > 999 ? '999+' : enableSnapshotCount }}<span
+                        class="total-count-summay">/{{snapshotTotalCount}}</span>
+                </p>
+                <p class="aui-text-help-sm">{{'explore_nas_detection_enabled_label' | i18n}}</p>
+            </lv-group>
+            <lv-group lvGutter="8px" lvDirection='vertical' *ngIf="supportLicense.isSan">
+                <p class="anti-count">
+                    {{ sanCopyEnableCount > 999 ? '999+' : sanCopyEnableCount }}<span
+                        class="total-count-summay">/{{sanCopyTotalCount}}</span>
+                </p>
+                <p class="aui-text-help-sm">{{'explore_san_detection_enabled_label' | i18n}}</p>
+            </lv-group>
+        </lv-group>
+    </div>
+</lv-group>

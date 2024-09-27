@@ -1,0 +1,102 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="导入证书">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000001633428473.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="防勒索">
+<meta name="DC.Publisher" content="20220629">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001583348548">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>导入证书</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001583348548"></a><a name="ZH-CN_TOPIC_0000001583348548"></a>
+
+<h1 class="topictitle1">导入证书</h1>
+<div id="body8662426"><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_p968319225509">证书导入功能可以实现证书更新。</p>
+<div class="section" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_section5166455152915"><h4 class="sectiontitle">背景信息</h4><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_p1418115589292">服务端证书用于保证<span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text20208120101514">存储系统云全栈备份服务</span>接受外部访问请求时的通信安全性。内部通信证书及内部数据库证书仅用于保证<span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text510410371520">存储系统云全栈备份服务</span>内部各组件之间的内部通信安全性。</p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_section19640436665"><h4 class="sectiontitle">注意事项</h4><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p1614312114711">为保证使用多个控制器管理IP或域名访问系统时的安全性，请确保证书请求文件中包含多个控制器的域名或管理IP信息。从CA机构获取证书文件后，在Windows操作系统中，打开证书文件，在“详细信息”页签，查看“使用者可选名称”是否包含了多个控制器的域名或管理IP信息。如下所示，表示thtest.spe02.com和thtest2.spe02.com可被安全访问。此处thtest.spe02.com和thtest2.spe02.com为示例，仅供参考。</p>
+<p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p122494559557"><span><img id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_image1667010556551" src="zh-cn_image_0000001505945161.png"></span></p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_section364572881212"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_zh-cn_topic_0223232411_ol48781090"><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_zh-cn_topic_0223232618_li3061316"><span>选择<span class="menucascade" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001456625300_zh-cn_topic_0000001263613156_menucascade8194162364916">“<span class="uicontrol" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001456625300_zh-cn_topic_0000001263613156_uicontrol91941523104915"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001456625300_zh-cn_topic_0000001263613156_text1761214215505">系统</span></span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001456625300_zh-cn_topic_0000001263613156_uicontrol18595152410491"> <span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001456625300_zh-cn_topic_0000001263613156_text1080662810507">安全</span></span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001456625300_zh-cn_topic_0000001263613156_uicontrol13841929154910"> <span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001456625300_zh-cn_topic_0000001263613156_text3285194545012">证书</span></span>”</span>。</span></li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_zh-cn_topic_0274211889_zh-cn_topic_0224938451_li18900716111720"><span>单击某个证书所在行右侧的<span class="uicontrol" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_uicontrol1288183253719">“<span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text14526153812368">更多</span>”</span>。</span><p><ul id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_ul3208960578"><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_li1820886135713"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text2646528134817">服务端证书</span>/<span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text18658439104812">内部通信证书</span>/<span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text113531147114812">内部数据库证书</span><ol type="a" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_ol964810142571"><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_li1648131485714">选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_uicontrol129843326381">“<span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text550113579267">导入证书</span>”</span>。</li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_li18950210145810">设置证书信息。<p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_p20950171095812"><a name="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_li18950210145810"></a><a name="zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_li18950210145810"></a>参数说明如<a href="#ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_table873512316535">表1</a>。</p>
+
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_table873512316535"></a><a name="zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_table873512316535"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_table873512316535" width="90%" frame="border" border="1" rules="all"><caption><b>表1 </b>证书参数说明</caption><colgroup><col style="width:14.299999999999999%"><col style="width:59.099999999999994%"><col style="width:26.6%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_row15736172345313"><th align="left" class="cellrowborder" valign="top" width="14.299999999999999%" id="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.1"><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p187361123105312">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="59.099999999999994%" id="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.2"><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p207361423165316">说明</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="26.6%" id="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.3"><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p13439721254">备注</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_row1173622315315"><td class="cellrowborder" valign="top" width="14.299999999999999%" headers="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_p421118911570"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text1433854010578">CA证书</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="59.099999999999994%" headers="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.2 "><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p197361423115314">单击<span><img id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_image6876143882219" src="zh-cn_image_0000001456305648.png"></span>，选择需要导入的证书对应的CA证书文件。</p>
+<div class="note" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_note1273618234537"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_ul1873642345318"><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li13736172365317">导入的CA证书文件大小不能超过1MB。</li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li47361923165315">导入的CA证书文件内容必须为x.509格式，且文件后缀必须为“.pem”。</li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li52941752152020">如果CA证书文件不是根CA证书文件，请添加证书链文件。制作证书链文件的详细操作，请参见<a href="zh-cn_topic_0000001636063505.html#ZH-CN_TOPIC_0000001636063505">制作证书链文件</a>。服务端证书最大支持3级CA。</li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li920514105222">内部通信证书/内部数据库证书仅支持1级CA。</li></ul>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="26.6%" headers="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.3 "><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p4615902714">适用的证书类型：</p>
+<ul id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_ul54671421673"><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_li1448718164118"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text750414914490">服务端证书</span></li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li74671121476"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text79981522194917">内部通信证书</span></li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li17134961573"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text20920162817495">内部数据库证书</span></li></ul>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_row14736192317537"><td class="cellrowborder" valign="top" width="14.299999999999999%" headers="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p1773672345313"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text129008714288">服务端证书</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="59.099999999999994%" headers="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.2 "><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p12736132395312">单击<span><img id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_image995599142611" src="zh-cn_image_0000001506026133.png"></span>，选择需要导入的服务端证书文件。</p>
+<div class="note" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_note147361323105317"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_ul773612395310"><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li073618232531">导入的证书文件大小不能超过1MB。</li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li77361723185318">导入的证书文件内容必须为x.509格式，且文件后缀必须为“.pem”。</li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li4296142914710">服务端证书CN（Common Name）不能与CA证书CN相同。<p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_p10463202015201"><a name="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li4296142914710"></a><a name="zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li4296142914710"></a>检查方法：打开CER格式的服务端证书，查看“常规”页签中的“颁发给”（即服务端证书CN）的值与“颁发者”（即CA证书CN）的值是否不同。</p>
+</li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_li19052315203">对于内部通信证书和内部数据库证书，服务端证书必须配置SAN（SubjectAltName），且SAN必须包含“DNS:*.dpa.svc.cluster.local”。</li></ul>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="26.6%" headers="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.3 "><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_p11689653504">适用的证书类型：</p>
+<ul id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_ul86891150500"><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_li168912515502"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text668915105015">服务端证书</span></li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_li5689185115017"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text6689755509">内部通信证书</span></li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_li568915115013"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text1568911512508">内部数据库证书</span></li></ul>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_row373617231534"><td class="cellrowborder" valign="top" width="14.299999999999999%" headers="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p173662317539"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text587115191289">服务端私钥</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="59.099999999999994%" headers="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.2 "><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p14736923185319">单击<span><img id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_image4943131772615" src="zh-cn_image_0000001506265061.png"></span>，选择需要导入的服务端证书文件对应的私钥文件。</p>
+<p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p71601758104914">如果服务端证书是通过从<span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text177635115318">存储系统云全栈备份服务</span>导出的请求文件在CA机构签发生成的证书，不需要配置该参数。</p>
+<div class="note" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_note187361123125313"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_ul773642311538"><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li9736112319533">私钥文件大小不能超过1MB。</li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li1573612311532">私钥文件后缀必须为“.pem”。</li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_li911154919211">私钥文件必须为加密私钥文件。如果您的私钥文件为明文私钥，请参见<a href="zh-cn_topic_0000001585623838.html#ZH-CN_TOPIC_0000001585623838">加密明文私钥文件</a>进行操作。</li></ul>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="26.6%" headers="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.3 "><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_p1047918287504">适用的证书类型：</p>
+<ul id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_ul2479162835019"><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_li1747910281506"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text154797284508">服务端证书</span></li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_li8479228185011"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text15479132817504">内部通信证书</span></li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_li1647932845020"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text1647932855010">内部数据库证书</span></li></ul>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_row77369237535"><td class="cellrowborder" valign="top" width="14.299999999999999%" headers="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.1 "><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p15736182385312"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text12260152742815">服务端私钥密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="59.099999999999994%" headers="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.2 "><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p2073632385316">导入服务端私钥文件对应的密码。</p>
+<p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p1958245195120">如果服务端证书是通过从<span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text422410467539">存储系统云全栈备份服务</span>导出的请求文件在CA机构签发生成的证书，不需要填写该参数。</p>
+<p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p873612315533">[取值范围]</p>
+<p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p873682385317">长度范围为1~512位。</p>
+<div class="note" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_note66988512353"><span class="notetitle"> 说明： </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_p156987520352">对于内部通信证书，要求密码长度为8~64位，包含数字、大写字母、小写字母和特殊字符。</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="26.6%" headers="mcps1.3.4.2.2.2.1.1.4.2.2.2.4.1.3 "><p id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_p3751736125014">适用的证书类型：</p>
+<ul id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_ul775183665013"><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_li117511736135016"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text37511336145015">服务端证书</span></li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_li2752113616506"><span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_text157521636185010">内部通信证书</span></li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ol>
+</li></ul>
+</p></li><li id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_zh-cn_topic_0267359412_li19950112183913"><span>单击<span class="uicontrol" id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_uicontrol531873373910">“<span id="ZH-CN_TOPIC_0000001583348548__zh-cn_topic_0000001506265021_zh-cn_topic_0000001311093369_text937941184019">确定</span>”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000001633428473.html">管理证书</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

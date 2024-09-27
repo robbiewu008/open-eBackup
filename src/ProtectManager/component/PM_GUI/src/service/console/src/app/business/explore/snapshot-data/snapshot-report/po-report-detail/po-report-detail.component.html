@@ -1,0 +1,77 @@
+<h3 class="aui-gutter-column-md">
+    {{'common_basic_info_label' | i18n}}
+</h3>
+<lv-form [lvLabelColon]='false' class="aui-gutter-column-xl">
+    <lv-form-item>
+        <lv-form-label>
+            {{'common_name_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{rowData?.protectedObjName | nil}}
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label>
+            {{ (rowData?.software === softwareType.CV ? 'explore_backup_files_label' : 'explore_backup_times_label') |
+            i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{rowData?.backupCount | nil}}
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+<h3 class="aui-gutter-column-md">
+    {{'explore_associated_snapshot_file_label' | i18n}}
+</h3>
+<div class="file-list">
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>
+
+<ng-template #dateTpl let-item>
+    <span lv-overflow [ngClass]="{'aui-link': rowData?.software !== softwareType.VEEAM && !isVMware(item)}"
+        (click)="fileDetail(item)">
+        {{item.backupTime}}
+    </span>
+</ng-template>
+
+<ng-template #copySizeTpl let-item>
+    <span lv-overflow>
+        {{item.backupCopySize | capacityCalculateLabel:'1.1-3':unitconst.BYTE:true:true}}
+    </span>
+</ng-template>
+
+<ng-template #backupTaskExtraTpl>
+    <div class="custom-icon backup-task-help">
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_backup_task_help_label' | i18n}}" lvColorState='true'></i>
+    </div>
+</ng-template>
+
+<ng-template #copyTypeTpl let-item>
+    <span lv-overflow>{{getCopyType(item)}}</span>
+</ng-template>
+
+<ng-template #fileCountExtraTpl>
+    <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_file_count_help_label' | i18n}}" lvColorState='true'
+        class="th-icon"></i>
+</ng-template>
+
+<ng-template #infectedFileCountExtraTpl>
+    <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_infected_file_count_help_label' | i18n}}" lvColorState='true'
+        class="th-icon"></i>
+</ng-template>
+
+<ng-template #fileCountTpl let-item>
+    <ng-container *ngIf="!isVMware(item) else elseTemplate">
+        <span lv-overflow>{{item.fileCount}}</span>
+    </ng-container>
+</ng-template>
+
+<ng-template #infectFileCountTpl let-item>
+    <ng-container *ngIf="!isVMware(item); else elseTemplate">
+        <span lv-overflow>{{item.abnormalFileCount}}</span>
+    </ng-container>
+</ng-template>
+
+<ng-template #elseTemplate>
+    --
+</ng-template>

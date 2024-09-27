@@ -1,0 +1,190 @@
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
+  <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+    <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+      <!-- 当前版本暂不支持多节点并行备份功能 -->
+      <lv-form-item  *ngIf="false">
+        <lv-form-label>
+          {{ 'protection_multi_node_parallel_backup_label' | i18n }}
+          <i
+            lv-icon="aui-icon-help"
+            lv-tooltip="{{
+              'protection_multi_node_parallel_backup_tip_label' | i18n
+            }}"
+            lvTooltipTheme="light"
+            class="configform-constraint"
+            lvColorState="true"
+          ></i>
+        </lv-form-label>
+        <lv-form-control>
+          <lv-switch formControlName="multiNodeBackupSwitch" [lvDisabled]="isAutoIndex"></lv-switch>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label>
+          {{ 'explore_acl_backup_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+          <lv-switch formControlName="isBackupAcl"></lv-switch>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item  *ngIf="isHCS">
+        <lv-form-label>
+          {{ 'protection_bucket_log_scan_label' | i18n }}
+          <i lv-icon="aui-icon-help" [lv-tooltip]="warningContentTpl" lvTooltipTheme="light"
+            class="configform-constraint" lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+          <lv-switch formControlName="useBucketLog" [lvDisabled]="isModified"></lv-switch>
+        </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+          <lv-form-label>
+             {{'explore_object_check_point_label' | i18n}}
+          </lv-form-label>
+          <lv-form-control>
+             <lv-switch formControlName="checkPoint"></lv-switch>
+             <ng-container *ngIf="!!formGroup.get('checkPoint').value">
+                 <lv-form-item>
+                     <lv-form-label>
+                        {{'explore_object_retry_label' | i18n}}
+                     </lv-form-label>
+                     <lv-form-control [lvErrorTip]="retryTimesErrorTip">
+                        <input style="width: 368px;" lv-input type="text" formControlName="retryNum">
+                     </lv-form-control>
+                 </lv-form-item>
+             </ng-container>
+          </lv-form-control>
+      </lv-form-item>
+      <lv-form-item>
+        <lv-form-label
+          >{{ 'protection_small_file_aggregation_label' | i18n }}
+          <i
+            lv-icon="aui-icon-help"
+            lv-tooltip="{{
+              'protection_object_small_file_tip_label' | i18n
+            }}"
+            lvTooltipTheme="light"
+            class="configform-constraint"
+            lvColorState="true"
+          ></i>
+        </lv-form-label>
+        <lv-form-control>
+          <lv-switch
+            formControlName="smallFile"
+            [lvDisabled]="isModified || disableSmallFile"
+          ></lv-switch>
+          <ng-container *ngIf="enableSmallFile">
+            <lv-form-item>
+              <lv-form-label>{{
+                'protection_small_file_size_label' | i18n
+              }}</lv-form-label>
+              <lv-form-control>
+                <ng-container *ngIf="isModified">
+                  <div>
+                    {{
+                      resourceData?.protectedObject?.extParameters
+                        ?.maxSizeAfterAggregate + ' KB' | nil
+                    }}
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="!isModified">
+                  <lv-radio-group
+                    formControlName="maxSizeAfterAggregate"
+                    [lvGroupName]="'fileSize'"
+                    [lvDisabled]="isModified"
+                  >
+                    <lv-group>
+                      <lv-radio
+                        [lvViewType]="'button'"
+                        [lvValue]="dataMap.Small_File_Size.small.value"
+                        >{{ dataMap.Small_File_Size.small.label }}</lv-radio
+                      >
+                      <lv-radio
+                        [lvViewType]="'button'"
+                        [lvValue]="dataMap.Small_File_Size.normal.value"
+                      >
+                        {{ dataMap.Small_File_Size.normal.label }}</lv-radio
+                      >
+                      <lv-radio
+                        [lvViewType]="'button'"
+                        [lvValue]="dataMap.Small_File_Size.large.value"
+                        >{{ dataMap.Small_File_Size.large.label }}</lv-radio
+                      >
+                      <lv-radio
+                        [lvViewType]="'button'"
+                        [lvValue]="dataMap.Small_File_Size.xlarge.value"
+                      >
+                        {{ dataMap.Small_File_Size.xlarge.label }}</lv-radio
+                      >
+                    </lv-group>
+                  </lv-radio-group>
+                </ng-container>
+              </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+              <lv-form-label>{{
+                'protection_file_max_size_label' | i18n
+              }}</lv-form-label>
+              <lv-form-control>
+                <ng-container *ngIf="isModified">
+                  <div>
+                    {{
+                      resourceData?.protectedObject?.extParameters
+                        ?.maxSizeToAggregate + ' KB' | nil
+                    }}
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="!isModified">
+                  <lv-radio-group
+                    formControlName="maxSizeToAggregate"
+                    [lvGroupName]="'maxFileSize'"
+                    [lvDisabled]="isModified"
+                  >
+                    <lv-group>
+                      <lv-radio
+                        [lvViewType]="'button'"
+                        [lvValue]="dataMap.Small_File_Size.small.value"
+                        >{{ dataMap.Small_File_Size.small.label }}</lv-radio
+                      >
+                      <lv-radio
+                        [lvViewType]="'button'"
+                        [lvValue]="dataMap.Small_File_Size.normal.value"
+                      >
+                        {{ dataMap.Small_File_Size.normal.label }}</lv-radio
+                      >
+                      <lv-radio
+                        [lvViewType]="'button'"
+                        [lvValue]="dataMap.Small_File_Size.large.value"
+                        >{{ dataMap.Small_File_Size.large.label }}</lv-radio
+                      >
+                      <lv-radio
+                        [lvViewType]="'button'"
+                        [lvValue]="dataMap.Small_File_Size.xlarge.value"
+                      >
+                        {{ dataMap.Small_File_Size.xlarge.label }}</lv-radio
+                      >
+                    </lv-group>
+                  </lv-radio-group>
+                </ng-container>
+              </lv-form-control>
+            </lv-form-item>
+          </ng-container>
+        </lv-form-control>
+      </lv-form-item>
+    </lv-form>
+    <!-- 修改索引 -->
+    <aui-update-index [formGroup]="formGroup" [extParams]="extParams"></aui-update-index>
+  </lv-collapse-panel>
+</lv-collapse>
+
+<ng-template #titleTpl>
+  <lv-group lvGutter="8px">
+    <span class="aui-h3">{{
+      'common_advanced_label' | i18n
+    }}</span>
+  </lv-group>
+</ng-template>
+
+<ng-template #warningContentTpl>
+  <p [innerHTML]="'protection_bucket_log_box_tip_label' | i18n"></p>
+</ng-template>

@@ -1,0 +1,60 @@
+<div class="aui-operation">
+  <lv-group lvGutter="16px">
+    <ng-container *ngIf="isSysAdmin">
+      <button lv-button lvType="primary" (click)="create()">
+        {{ 'common_create_label' | i18n }}
+      </button>
+      <button
+        lv-button
+        lvType="primary"
+        (click)="delete(selectionData)"
+        [disabled]="!selectionData.length || validDelete()"
+      >
+        {{ 'common_delete_label' | i18n }}
+      </button>
+    </ng-container>
+  </lv-group>
+  <lv-group lvGutter="8px">
+    <lv-group lvGutter="8px">
+      <lv-search [lvFocus]="true" [(ngModel)]="name" (lvSearch)="search()">
+      </lv-search>
+      <button
+        class="aui-button-icon"
+        lv-button
+        lvSize="auto"
+        (click)="dataTable.fetchData()"
+      >
+        <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+      </button>
+    </lv-group>
+  </lv-group>
+</div>
+
+<div class="list-container">
+  <lv-pro-table
+    #dataTable
+    [config]="tableConfig"
+    [data]="tableData"
+  ></lv-pro-table>
+</div>
+
+<ng-template #nameTpl let-item>
+  <lv-group lvGutter="8px">
+    <span
+      class="aui-link"
+      (click)="getDetail(item)"
+      lv-overflow
+      >{{ item.name }}</span
+    >
+    <lv-tag
+      *ngIf="item?.isDefault && !item?.isPublic"
+      [ngModel]="[{ label: i18n.get('system_default_label') }]"
+    ></lv-tag>
+    <lv-tag
+      *ngIf="item?.isDefault && item?.isPublic"
+      [ngModel]="[
+        { label: i18n.get('system_resourceset_default_public_label') }
+      ]"
+    ></lv-tag>
+  </lv-group>
+</ng-template>

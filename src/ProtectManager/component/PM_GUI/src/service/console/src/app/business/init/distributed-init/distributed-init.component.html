@@ -1,0 +1,151 @@
+<div [ngClass]="{
+    'container-visible2': activeIndex !== 3,
+    'container-hidden': activeIndex === 3}">
+  <div class="aui-header-5">
+    <h1>{{ 'common_init_config_label' | i18n }}</h1>
+  </div>
+  <div class="aui-block">
+    <div class="init-content">
+      <div class="header">
+        <div class="aui-gutter-column-md">
+          <h2>{{ 'common_config_mode_label' | i18n }}</h2>
+        </div>
+        <lv-radio-group #group [(ngModel)]="selected" [lvGroupName]="'configGroup'">
+          <lv-group lvGutter="16px" lvWrap="true">
+            <ng-container *ngFor="let item of cardData">
+              <lv-radio [lvViewType]="'custom'" [lvValue]="item.value">
+                <div class="card-box" [ngClass]="{ 'select': group.isChecked(item.value),'card-box-en':i18n.isEn }">
+                  <h3 class="box-title">{{item.label}}</h3>
+                  <div class="box-content">
+                    <p>{{ item.content }}</p>
+                  </div>
+                </div>
+              </lv-radio>
+            </ng-container>
+          </lv-group>
+        </lv-radio-group>
+      </div>
+      <div>
+        <ng-container *ngTemplateOutlet="storageAuthTpl"></ng-container>
+      </div>
+
+      <div *ngIf="isCertify && selected === 0">
+        <div class="header2">
+          <h2>{{'common_config_service_network_label' | i18n}}</h2>
+        </div>
+        <lv-tabs [(lvActiveIndex)]="selectedTabIndex">
+          <lv-tab [lvId]="'backup'" [lvTitle]="'common_backup_network_config_label' | i18n">
+            <aui-config-network-table serviceType="backup" [selectionData]="selectedData"></aui-config-network-table>
+          </lv-tab>
+          <lv-tab [lvId]="'archived'" [lvTitle]="'common_archived_network_config_label' | i18n">
+            <aui-config-network-table serviceType="archived" [selectionData]="selectedData"></aui-config-network-table>
+          </lv-tab>
+        </lv-tabs>
+      </div>
+
+      <div *ngIf="isCertify && selected === 1">
+        <div class="header-bottom">
+          <div class="aui-header-2">
+            <h2>{{ 'common_port_network_config_label' | i18n }}</h2>
+          </div>
+          <div>
+            <lv-group lvGutter="4px">
+              <i lv-icon="lv-icon-download" class="aui-link" lvColorState="true" (click)="getLld()"></i>
+              <span class="aui-link" (click)="getLld()">
+                {{ 'common_port_network_config_help_label' | i18n }}
+              </span>
+            </lv-group>
+          </div>
+        </div>
+        <div>
+          <lv-group lvGutter="16px">
+            <span>
+              {{ 'common_lld_config_file_label' | i18n }}
+            </span>
+            <lv-upload lvAccept=".xls" lvShowUpload="false" (lvChange)="uploadChange($event)" [lvFilters]="filters"
+              style="width:276px"></lv-upload>
+            <span>
+              <button lv-button (click)="upload()" [disabled]="!selectFile">
+                {{ 'common_upload_label' | i18n }}
+              </button>
+            </span>
+          </lv-group>
+        </div>
+
+        <div class="header2" *ngIf="fileReceive">
+          <h2>{{'common_config_service_network_label' | i18n}}</h2>
+        </div>
+        <lv-tabs [(lvActiveIndex)]="selectedTabIndex" *ngIf="fileReceive">
+          <lv-tab [lvId]="'backup'" [lvTitle]="'common_backup_network_config_label' | i18n">
+            <aui-config-network-table serviceType="backup" [selectionData]="selectedData" [isManual]="false"
+              [lldTableData]="rawData?.backupNetworkConfig"></aui-config-network-table>
+          </lv-tab>
+          <lv-tab [lvId]="'archived'" [lvTitle]="'common_archived_network_config_label' | i18n">
+            <aui-config-network-table serviceType="archived" [selectionData]="selectedData" [isManual]="false"
+              [lldTableData]="rawData?.archiveNetworkConfig"></aui-config-network-table>
+          </lv-tab>
+        </lv-tabs>
+      </div>
+    </div>
+
+    <lv-group lvGutter="16px" class="init-button">
+      <button lv-button lvType="primary" (click)="createInitConfig()"
+        [ngClass]="{ visible: activeIndex !== 2, hidden: activeIndex === 2}"
+        [disabled]="!(this.selectedData['backupValid'] && this.selectedData['archivedValid'])"
+        class="init-button-content">
+        {{ 'common_ok_label' | i18n }}
+      </button>
+    </lv-group>
+  </div>
+</div>
+<div [ngClass]="{
+        'container-visible2': activeIndex === 3,
+        'container-hidden': activeIndex !== 3
+      }">
+  <div class="aui-block">
+    <aui-init-config-process [componentData]="componentData" (onResetChange)="onResetChange($event)">
+    </aui-init-config-process>
+  </div>
+</div>
+
+<ng-template #storageAuthTpl>
+  <div class="header1">
+    <h2>{{ 'common_storage_auth_config_label' | i18n }}</h2>
+  </div>
+
+  <lv-form [formGroup]="formGroup">
+    <lv-group lvGutter="48px">
+      <lv-form-column class="right-interval-username" lvWidth="400px">
+        <lv-form-item>
+          <lv-form-label lvRequired>
+            {{ 'common_username_label' | i18n }}
+            <i lv-icon="aui-icon-help"
+              lv-tooltip="{{'common_storage_username_desc_label'| i18n: [baseUtilService.getProductName()]}}"
+              lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input type="text" formControlName="username" autocomplete="new-password" />
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form-column>
+      <lv-form-column class="right-interval-password" lvWidth="400px">
+        <lv-form-item>
+          <lv-form-label lvRequired>{{
+            'common_password_label' | i18n
+            }}</lv-form-label>
+          <lv-form-control [lvErrorTip]="pwdErrorTip">
+            <aui-inupt-with-eye formControlName="password" [lvDisabled]="isCertify" autocomplete="new-password"
+              [lvPasteAllowed]="false" (keyup.enter)="checkAuth()"></aui-inupt-with-eye>
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form-column>
+    </lv-group>
+    <lv-form-item style="margin-top:16px">
+      <lv-form-control>
+        <button lv-button (click)="checkAuth()" [disabled]="formGroup.invalid || isCertify">
+          {{ 'common_auth_label' | i18n }}
+        </button>
+      </lv-form-control>
+    </lv-form-item>
+  </lv-form>
+</ng-template>

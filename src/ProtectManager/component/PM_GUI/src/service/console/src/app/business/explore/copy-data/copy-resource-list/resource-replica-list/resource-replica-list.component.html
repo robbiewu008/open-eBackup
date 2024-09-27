@@ -1,0 +1,192 @@
+<lv-datatable [lvData]="tableData" class="aui-table-group" [lvPaginator]="page" (lvSortChange)="sortChange($event)"
+    lvSort #lvTable lvAsync>
+    <thead>
+        <tr>
+            <ng-container *ngFor="let item of columns">
+                <th *ngIf="item.show" [attr.colspan]="filter(item.children, {'show': true}).length">
+                    {{item.label}}
+                </th>
+            </ng-container>
+            <th rowspan="2" width="144px">
+                {{ 'common_operation_label' | i18n }}
+            </th>
+            <th rowspan="2" width="16px" style="padding: 0;" lvResizable="false">
+                <i lv-icon="lv-icon-col-setting" #colPopover="lvPopover" lv-popover lvPopoverPosition="bottomRight"
+                    [lvPopoverContent]="colHideTpl" lvPopoverTheme="light" lvPopoverTrigger="click"
+                    style="cursor: pointer;">
+                </i>
+            </th>
+        </tr>
+        <tr>
+            <ng-container *ngFor="let column of columns">
+                <ng-container *ngIf="column.children">
+                    <ng-container *ngFor="let col of column.children">
+                        <th *ngIf="col.show" [attr.class]="col.class" [attr.width]="col.width"
+                            [lvShowFilter]="col.filter" (lvFilterChange)="filterChange($event)"
+                            [(lvFilters)]="col.filterMap" [lvCellKey]="col.key" [lvShowSort]="col.sort" lvShowCustom
+                            lvFilterCheckAll>
+                            {{col.label}}
+                            <div lvCustom *ngIf="col.key === 'resourceId'">
+                                <i lv-icon="lv-icon-search" [lvColorState]="true" [ngClass]="{ active: !!resourceId }"
+                                    lv-popover [lvPopoverContent]="idFilterTpl" lvPopoverTheme="light"
+                                    lvPopoverPosition="bottom" lvPopoverTrigger="click"
+                                    #resourceIdPopover="lvPopover"></i>
+                            </div>
+                            <div lvCustom *ngIf="col.key === 'resourceName'">
+                                <aui-custom-table-search (search)="searchByName($event)"
+                                    [filterTitle]="col.label"></aui-custom-table-search>
+                            </div>
+                            <div lvCustom *ngIf="col.key === 'resourceLocation'">
+                                <aui-custom-table-search (search)="searchByLocation($event)"
+                                    [filterTitle]="col.label"></aui-custom-table-search>
+                            </div>
+                            <div lvCustom *ngIf="col.key === 'protectedSlaName'">
+                                <aui-custom-table-search (search)="searchByProtectedSlaName($event)"
+                                    [filterTitle]="col.label"></aui-custom-table-search>
+                            </div>
+                        </th>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor="let item of lvTable.renderData">
+            <tr [ngClass]="{ 'lv-table-row-highlight': isActive(item) }">
+                <ng-container *ngFor="let column of columns">
+                    <ng-container *ngIf="column.children">
+                        <ng-container *ngFor="let col of column.children">
+                            <ng-container *ngIf="col.show">
+                                <td>
+                                    <ng-container [ngSwitch]="col.key">
+                                        <ng-container *ngSwitchCase="'resourceName'">
+                                            <div lv-overflow>
+                                                <span (click)="getResourceDetail(item)" id='outerClosable'
+                                                    class="aui-link">
+                                                    {{ item.resourceName }}
+                                                </span>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'resourceSubType'">
+                                            <ng-container *ngIf="
+                                                [
+                                                  dataMap.Resource_Type.dbTwoDatabase.value,
+                                                  dataMap.Resource_Type.dbTwoTableSet.value
+                                                ].includes(item.resourceSubType)">
+                                                {{item.resourceSubType | textMap: 'copyDataDbTwoType'}}
+                                            </ng-container>
+                                            <ng-container *ngIf="
+                                                [
+                                                  dataMap.Resource_Type.DWS_Cluster.value,
+                                                  dataMap.Resource_Type.DWS_Database.value,
+                                                  dataMap.Resource_Type.DWS_Schema.value,
+                                                  dataMap.Resource_Type.DWS_Table.value
+                                                ].includes(item.resourceSubType)">
+                                                {{item.resourceSubType | textMap: 'CopyData_DWS_Type'}}
+                                            </ng-container>
+                                            <ng-container *ngIf="
+                                                [
+                                                  dataMap.Resource_Type.SQLServerCluster.value,
+                                                  dataMap.Resource_Type.SQLServerInstance.value,
+                                                  dataMap.Resource_Type.SQLServerGroup.value,
+                                                  dataMap.Resource_Type.SQLServerDatabase.value,
+                                                  dataMap.Resource_Type.SQLServerClusterInstance.value
+                                                ].includes(item.resourceSubType)">
+                                                {{item.resourceSubType | textMap: 'CopyData_SQL_Server_Type'}}
+                                            </ng-container>
+                                            <ng-container *ngIf="
+                                                [
+                                                  dataMap.Resource_Type.MySQLClusterInstance.value,
+                                                  dataMap.Resource_Type.MySQLInstance.value,
+                                                  dataMap.Resource_Type.MySQLDatabase.value
+                                                ].includes(item.resourceSubType)">
+                                                {{item.resourceSubType | textMap: 'copyDataMysqlType'}}
+                                            </ng-container>
+                                            <ng-container *ngIf="
+                                            [
+                                              dataMap.Resource_Type.OpenGauss_instance.value,
+                                              dataMap.Resource_Type.OpenGauss_database.value
+                                            ].includes(item.resourceSubType)">
+                                                {{item.resourceSubType | textMap: 'CopyDataOpengaussType'}}
+                                            </ng-container>
+
+                                            <ng-container *ngIf="
+                                            [
+                                              dataMap.Resource_Type.ClickHouse.value
+                                            ].includes(item.resourceSubType)">
+                                                {{item.resource_type | textMap: 'clickHouseResourceType'}}
+                                            </ng-container>
+                                            <ng-container *ngIf="
+                                                [
+                                                  dataMap.Resource_Type.OceanBaseCluster.value,
+                                                  dataMap.Resource_Type.OceanBaseTenant.value
+                                                ].includes(item.resourceSubType)">
+                                                {{item.resourceSubType | textMap: 'copyDataOceanBaseType'}}
+                                            </ng-container>
+                                            <ng-container *ngIf="
+                                                [
+                                                  dataMap.Resource_Type.tidbCluster.value,
+                                                  dataMap.Resource_Type.tidbDatabase.value,
+                                                  dataMap.Resource_Type.tidbTable.value
+                                                ].includes(item.resourceSubType)">
+                                                {{item.resourceSubType | textMap: 'tidbResourceType'}}
+                                            </ng-container>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'resourceStatus'">
+                                            <aui-status [value]="item.resourceStatus" type="Resource_Status">
+                                            </aui-status>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'protectedStatus'">
+                                            <ng-container
+                                                *ngIf="_isUndefined(item.protectedStatus) || _isNull(item.protectedStatus); else elseTemplate">
+                                                <aui-status [value]="false" type="Resource_Protected_Status">
+                                                </aui-status>
+                                            </ng-container>
+                                            <ng-template #elseTemplate>
+                                                <aui-status [value]="item.protectedStatus"
+                                                    type="Resource_Protected_Status">
+                                                </aui-status>
+                                            </ng-template>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="'protectedSlaName'">
+                                            <ng-container *ngIf="item.protectedSlaId;else emptyTpl">
+                                                <span class="aui-link" id='outerClosable' (click)="getSlaDetail(item)"
+                                                    lv-overflow>
+                                                    <sla-type [name]="item.protectedSlaName"></sla-type>
+                                                </span>
+                                            </ng-container>
+                                        </ng-container>
+                                        <ng-container *ngSwitchDefault>
+                                            <span lv-overflow>
+                                                {{item[col.key] | nil}}
+                                            </span>
+                                        </ng-container>
+                                    </ng-container>
+                                </td>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+                <td width="144px">
+                    <lv-operation-menu [lvItemsFn]="optsCallback" [lvData]="item">
+                    </lv-operation-menu>
+                </td>
+                <td></td>
+            </tr>
+        </ng-container>
+    </tbody>
+</lv-datatable>
+<div class="aui-paginator-wrap">
+    <lv-paginator [lvPageSize]="pageSize" [lvTotal]="total" [lvPageIndex]="pageIndex" #page
+        (lvPageChange)="pageChange($event)" [lvPageSizeOptions]="sizeOptions" [hidden]="!total">
+    </lv-paginator>
+</div>
+
+<ng-template #colHideTpl>
+    <lv-tree [lvData]="columns" [lvShowCheckbox]="true" [lvShowExpandedIcon]="false" lvSelectionMode="multiple"
+        [(lvSelection)]="columnSelection" (lvCheck)="columnCheck($event)"></lv-tree>
+</ng-template>
+
+<ng-template #emptyTpl>
+    --
+</ng-template>

@@ -1,0 +1,323 @@
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label>
+            {{ 'protection_restore_to_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
+                <lv-group [lvGutter]="'20px'">
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="disabledOrigin" [lv-tooltip]="rowCopy?.resource_status === 'NOT_EXIST' ?
+                        ('protection_cloud_origin_restore_disabled_label' | i18n) :
+                        restoreToNewLocationOnly ?
+                        ('protection_origin_restore_disabled_label'| i18n) :
+                        ''">
+                        {{ 'common_restore_to_origin_location_label' | i18n }}
+                    </lv-radio>
+                    <lv-radio [lvValue]="restoreLocationType.NEW">
+                        {{ 'common_restore_to_new_location_label' | i18n }}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.ORIGIN">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'common_target_compute_position_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                <input lv-input type="text" formControlName="originPosition" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_vm_rename_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-group lvDirection="vertical" style="margin-top: 5px;">
+                    <lv-switch formControlName="vm_rename" class="switch-position"
+                        [lvDisabled]="formGroup.value.rewriteVm"></lv-switch>
+                    <ng-container *ngIf="formGroup.value.vm_rename">
+                        <lv-form-item style="width: 100%;">
+                            <lv-form-label lvRequired>
+                                {{'protection_new_name_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>
+                                <input lv-input type="text" formControlName="vm_name" />
+                            </lv-form-control>
+                        </lv-form-item>
+                    </ng-container>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_rewrite_origin_vm_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-switch formControlName="rewriteVm" [lvDisabled]="formGroup.value.vm_rename"></lv-switch>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+
+    <ng-container *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+        <lv-form-item>
+            <lv-form-label lvRequired>
+                {{ 'common_target_compute_position_label' | i18n }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_computer_location_help_label' | i18n}}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control>
+                <lv-select formControlName="environment" [lvOptions]="environmentOptions" lvValueKey="key" lvShowFilter
+                    lvFilterKey="label" lvFilterMode="contains"
+                    lvPlaceholder="{{'common_select_virtual_environment_label'|i18n}}">
+                </lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label></lv-form-label>
+            <lv-form-control>
+                <lv-tree-select [lvTreeData]="treeData" lvTreeSelectionMode="single" formControlName="host" lvShowClear
+                    lvTreeShowContentIcon lvPlaceholder="{{'common_select_cluster_host_label'|i18n}}" lvVirtualScroll
+                    (lvExpandedChange)="expandedChange($event)">
+                </lv-tree-select>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'protection_storage_location_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_tagert_database_help_label' | i18n}}"
+                    lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                    lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control>
+                <lv-radio-group formControlName="storage">
+                    <lv-group [lvGutter]="'30px'">
+                        <lv-radio [lvValue]="DatastoreType.SAME">{{'protection_same_database_label' | i18n}}
+                        </lv-radio>
+                        <lv-radio [lvValue]="DatastoreType.DIFFERENT">{{'protection_diff_database_label' | i18n}}
+                        </lv-radio>
+                    </lv-group>
+                </lv-radio-group>
+                <ng-container *ngIf="formGroup.value.storage === DatastoreType.SAME">
+                    <lv-form [formGroup]="formGroup" class="formGroup store-position">
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{ 'common_datastore_label' | i18n }}
+                            </lv-form-label>
+                            <lv-form-control>
+                                <lv-select formControlName="dataStore" [lvOptions]="dataStoreOptions" lvValueKey="key"
+                                    lvShowFilter lvFilterKey="label" lvFilterMode="contains">
+                                </lv-select>
+                            </lv-form-control>
+                        </lv-form-item>
+                    </lv-form>
+                </ng-container>
+                <ng-container *ngIf="formGroup.value.storage === DatastoreType.DIFFERENT">
+                    <lv-form [formGroup]="formGroup" class="formGroup">
+                        <lv-form-item>
+                            <lv-form-label lvRequired>
+                                {{ 'protection_vm_disk_file_label' | i18n }}
+                            </lv-form-label>
+                            <div class="location-gutter">
+                                <lv-datatable lvSize="small" [lvPaginator]='page' [lvData]="storageDiskTableData"
+                                    formArrayName="diskStorage" #storageTable>
+                                    <thead>
+                                        <tr>
+                                            <th width="115px">{{'protection_fc_disk_name_label' | i18n}}</th>
+                                            <th width="85px">{{'common_slot_label' | i18n}}</th>
+                                            <th width="65px">{{'protection_fc_disk_capacity_label' | i18n}}</th>
+                                            <th width="170px" lvShowCustom>
+                                                {{'protection_tagert_database_label' | i18n}}
+                                                <div lvCustom class="resource-sla-help">
+                                                    <i lv-icon="aui-icon-help"
+                                                        lv-tooltip="{{'protection_tagert_database_type_help_label' | i18n}}"
+                                                        lvTooltipTheme="light" class="configform-constraint"
+                                                        lvColorState='true'></i>
+                                                </div>
+                                            </th>
+                                            <th width="125px" lvShowCustom>
+                                                {{'protection_tagert_database_capacity_label' | i18n}}
+                                                <div lvCustom class="resource-sla-help">
+                                                    <i lv-icon="aui-icon-help"
+                                                        lv-tooltip="{{'protection_tagert_database_capacity_help_label'| i18n}}"
+                                                        lvTooltipPosition="rightTop" class="configform-constraint"
+                                                        lvColorState='true'></i>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let item of storageTable.renderData;">
+                                            <tr [formGroupName]="item.id">
+                                                <td>
+                                                    <span lv-overflow>{{item.name}}</span>
+                                                </td>
+                                                <td>
+                                                    <span lv-overflow>{{item.slot}}</span>
+                                                </td>
+                                                <td>{{ formGroup.value.diskStorage[item.id]?.diskCapacity |
+                                                    capacityCalculateLabel:'1.1-3':unitconst.GB: true}}
+                                                </td>
+                                                <td>
+                                                    <lv-select lvAsync lvCompareWith="uuid"
+                                                        [lvOptions]='formGroup.value.diskStorage[item.id]?.options'
+                                                        formControlName="diskDatastore" lvPanelClass="diskstore-panel"
+                                                        [lvContentTemplate]='contentTpl'
+                                                        [lvPlaceholder]="(datastoreNoData?'protection_restore_new_datastore_placeholder_label' :
+                                                                                                                'common_select_label') | i18n">
+                                                        <lv-select-trigger>
+                                                            <span>
+                                                                <i [lv-tooltip]="formGroup.value.diskStorage[item.id]?.diskDatastore?.errorTip"
+                                                                    *ngIf="formGroup.value.diskStorage[item.id]?.diskDatastore?.errorTip"
+                                                                    lv-icon='lv-icon-status-warning-info'
+                                                                    class="icon-warning"></i>
+                                                                <ng-container
+                                                                    [ngSwitch]="formGroup.value.diskStorage[item.id]?.diskDatastore?.datastoreType">
+                                                                    <ng-container
+                                                                        *ngSwitchCase="dataMap.datastoreType.local.value">
+                                                                        <i lv-icon='aui-local-storage'
+                                                                            lv-tooltip="{{'protection_database_type_local_storage_label' | i18n}}"></i>
+                                                                    </ng-container>
+                                                                    <ng-container
+                                                                        *ngSwitchCase="dataMap.datastoreType.block.value">
+                                                                        <i lv-icon='aui-block-storage'
+                                                                            lv-tooltip="{{'protection_database_type_block_storage_label' | i18n}}"></i>
+                                                                    </ng-container>
+                                                                    <ng-container
+                                                                        *ngSwitchCase="dataMap.datastoreType.fusionOne.value">
+                                                                        <i lv-icon='aui-block-storage'
+                                                                            lv-tooltip="{{'protection_database_type_fusionone_label' | i18n}}"></i>
+                                                                    </ng-container>
+                                                                    <ng-container *ngSwitchDefault>
+                                                                        <i lv-icon='aui-unknown-storage'
+                                                                            lv-tooltip="{{'common_unknown_label' | i18n}}"></i>
+                                                                    </ng-container>
+                                                                </ng-container>
+                                                                <span class="datastore-label"
+                                                                    lv-overflow>{{formGroup.value.diskStorage[item.id]?.diskDatastore?.label}}</span>
+                                                            </span>
+                                                        </lv-select-trigger>
+                                                        <ng-template #contentTpl let-item>
+                                                            <div>
+                                                                <i *ngIf="item.errorTip" [lv-tooltip]="item?.errorTip"
+                                                                    lv-icon='lv-icon-status-warning-info'
+                                                                    class="icon-warning"></i>
+                                                                <ng-container [ngSwitch]="item.datastoreType">
+                                                                    <ng-container
+                                                                        *ngSwitchCase="dataMap.datastoreType.local.value">
+                                                                        <i lv-icon='aui-local-storage'
+                                                                            lv-tooltip="{{'protection_database_type_local_storage_label' | i18n}}"></i>
+                                                                    </ng-container>
+                                                                    <ng-container
+                                                                        *ngSwitchCase="dataMap.datastoreType.block.value">
+                                                                        <i lv-icon='aui-block-storage'
+                                                                            lv-tooltip="{{'protection_database_type_block_storage_label' | i18n}}"></i>
+                                                                    </ng-container>
+                                                                    <ng-container
+                                                                        *ngSwitchCase="dataMap.datastoreType.fusionOne.value">
+                                                                        <i lv-icon='aui-block-storage'
+                                                                            lv-tooltip="{{'protection_database_type_fusionone_label' | i18n}}"></i>
+                                                                    </ng-container>
+                                                                    <ng-container *ngSwitchDefault>
+                                                                        <i lv-icon='aui-unknown-storage'
+                                                                            lv-tooltip="{{'common_unknown_label' | i18n}}"></i>
+                                                                    </ng-container>
+                                                                </ng-container>
+                                                                <span class="datastore-label" lv-overflow>
+                                                                    {{item?.label}} </span>
+                                                            </div>
+                                                        </ng-template>
+                                                    </lv-select>
+                                                </td>
+                                                <td>{{ formGroup.value.diskStorage[item.id]?.diskDatastore ?
+                                                    (formGroup.value.diskStorage[item.id]?.diskDatastore?.freeSpace |
+                                                    capacityCalculateLabel:'1.1-3':unitconst.GB: true ) :'--' }}
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </lv-datatable>
+                                <lv-paginator #page lvMode="simple" [lvPageSize]="pageSize"
+                                    [lvShowPageSizeOptions]="false" [hidden]="!storageDiskTableData?.length">
+                                </lv-paginator>
+                            </div>
+                        </lv-form-item>
+                    </lv-form>
+                </ng-container>
+            </lv-form-control>
+        </lv-form-item>
+
+
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_vm_rename_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-group lvDirection="vertical" style="margin-top: 5px;">
+                    <lv-switch formControlName="vm_rename" class="switch-position"></lv-switch>
+                    <ng-container *ngIf="formGroup.value.vm_rename">
+                        <lv-form-item style="width: 100%;">
+                            <lv-form-label lvRequired>
+                                {{'protection_new_name_label' | i18n}}
+                            </lv-form-label>
+                            <lv-form-control [lvErrorTip]='baseUtilService.requiredErrorTip'>
+                                <input lv-input type="text" formControlName="vm_name" />
+                            </lv-form-control>
+                        </lv-form-item>
+                    </ng-container>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>
+
+<div class="aui-gutter-column-xl"></div>
+<lv-collapse [lvMultiExpansion]="'false'" lvType="simple">
+    <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+        <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_proxy_host_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select [lvOptions]="proxyOptions" formControlName="proxyHost" lvValueKey='value' lvShowCheckAll
+                        lvShowFilter lvFilterKey="label" lvFilterMode="contains" lvMode="multiple"
+                        lvPlaceholder="{{'protection_agent_placeholder_label' | i18n}}">
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item class="auto-power-switch-item">
+                <lv-form-label>
+                    <span [ngClass]="{'auto-power-switch-en-us': isEn, 'auto-power-switch-zh-cn': !isEn}" lv-overflow>
+                        {{'protection_auto_power_on_label' | i18n}}
+                    </span>
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_fc_vm_restore_power_on_tips_label' | i18n}}"
+                        lvTooltipTheme="light" class="configform-constraint" lvColorState='true'>
+                    </i>
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="power_on"></lv-switch>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>{{'common_restore_before_copy_verify_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protect_hcs_restore_before_copy_verify_label' | i18n}}"
+                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                        lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-switch formControlName="copyVerify"
+                        [lv-tooltip]="verifyStatus === CopyDataVerifyStatus.noGenerate.value ? copyVerifyDisableLabel : ''"
+                        [lvDisabled]="verifyStatus === CopyDataVerifyStatus.noGenerate.value"></lv-switch>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form>
+    </lv-collapse-panel>
+</lv-collapse>
+<ng-template #titleTpl>
+    <lv-group lvGutter='8px'>
+        <span class="custom-collapse-title-text">{{'common_advanced_label'|i18n}}</span>
+    </lv-group>
+</ng-template>

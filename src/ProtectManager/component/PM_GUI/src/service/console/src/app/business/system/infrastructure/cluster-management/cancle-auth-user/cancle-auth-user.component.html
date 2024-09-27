@@ -1,0 +1,9 @@
+<ng-container *ngIf="!rowItem.isView">
+    <h2>{{'common_user_label' | i18n}}</h2>
+    <div class="cancle-desc aui-text-help">
+        {{'system_cancel_auth_title_label' | i18n}}
+    </div>
+</ng-container>
+<div class="user-table">
+    <lv-pro-table #userTable [config]="userTableConfig" [data]="userTableData"></lv-pro-table>
+</div>

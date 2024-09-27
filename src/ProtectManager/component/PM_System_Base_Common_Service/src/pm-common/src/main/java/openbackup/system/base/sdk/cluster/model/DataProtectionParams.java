@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ */
+
+package openbackup.system.base.sdk.cluster.model;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * Data protection params
+ *
+ * @author p30001902
+ * @since 2020-12-17
+ */
+@Data
+@NoArgsConstructor
+public class DataProtectionParams {
+    private String engineType;
+
+    private String ipV4Address;
+
+    private String ipV6Address;
+
+    /**
+     * 构造器
+     *
+     * @param engineType 网络平面类型
+     * @param ip IPV4
+     */
+    public DataProtectionParams(String engineType, String ip) {
+        this(engineType, ip, null);
+    }
+
+    /**
+     * 构造器
+     *
+     * @param engineType 网络平面类型
+     * @param ipv4 IPV4
+     * @param ipv6 IPV6
+     */
+    public DataProtectionParams(String engineType, String ipv4, String ipv6) {
+        this.engineType = engineType;
+        this.ipV4Address = ipv4;
+        this.ipV6Address = ipv6;
+    }
+}

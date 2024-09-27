@@ -1,0 +1,36 @@
+<div class="capacity-diction">
+  <div class="header">
+    <div
+      [class]="{
+        num: true,
+        hidden: capacityDictionChart.reachTo80 < 0
+      }"
+    >
+      <span class="symbol">{{ capacityDictionChart.reachTo80Symbol }}</span
+      >{{ capacityDictionChart.reachTo80
+      }}<span class="text">
+        {{ 'common_home_to_label' | i18n
+        }}<span class="warning"> 80%</span></span
+      >
+    </div>
+    <div
+      [class]="{
+        num: true,
+        hidden: capacityDictionChart.reachTo100 < 0
+      }"
+    >
+      <span class="symbol">{{ capacityDictionChart.reachTo100Symbol }}</span
+      >{{ capacityDictionChart.reachTo100
+      }}<span class="text">
+        {{ 'common_home_to_label' | i18n
+        }}<span class="danger"> 100%</span></span
+      >
+    </div>
+  </div>
+  <div class="container">
+    <capacity-diction-chart
+      #capacityDictionChart
+      [cardInfo]="cardInfo"
+    ></capacity-diction-chart>
+  </div>
+</div>

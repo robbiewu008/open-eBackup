@@ -1,0 +1,28 @@
+<lv-tabs [(lvActiveIndex)]="activeIndex">
+    <lv-tab lvTitle="{{'common_basic_info_label' | i18n}}" [lvId]="'basic'">
+        <h3 class="aui-gutter-column-md">{{'common_desc_label' | i18n}}</h3>
+        <lv-form>
+            <lv-form-item *ngFor='let item of formItems'>
+                <lv-form-label>{{item.label}}</lv-form-label>
+                <lv-form-control>
+                    <ng-container *ngIf="['detection_status','alarm_analysis'].includes(item.key); else elseTemplate">
+                        {{item.content | textMap: 'switchStatus'}}
+                    </ng-container>
+                    <ng-template #elseTemplate>
+                        <span>{{item.content | nil}}</span>
+                    </ng-template>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form>
+    </lv-tab>
+    <lv-tab lvTitle="{{'explore_association_file_system_num_label' | i18n}}" [lvId]="'fileSystem'">
+        <ng-template lv-tab-lazy>
+            <aui-associated-file-system [rowData]="rowData"></aui-associated-file-system>
+        </ng-template>
+    </lv-tab>
+    <lv-tab lvTitle="{{'explore_associated_whitelist_count_label' | i18n}}" [lvId]="'whiteList'">
+        <ng-template lv-tab-lazy>
+            <aui-associated-white-list [rowData]="rowData"></aui-associated-white-list>
+        </ng-template>
+    </lv-tab>
+</lv-tabs>

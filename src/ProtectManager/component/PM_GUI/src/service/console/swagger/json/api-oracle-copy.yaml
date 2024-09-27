@@ -1,0 +1,68 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: Oracle副本相关接口
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: copy
+paths:
+  /v2/databases/oracle/copies/scn:
+    get:
+      tags:
+        - copy
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 根据scn查询Oracle副本信息
+      description: 根据scn查询Oracle副本信息
+      operationId: ListOracleCopiesByScn
+      parameters:
+        - name: resourceId
+          in: query
+          required: true
+          description: 资源id
+          type: string
+          minLength: 0
+          maxLength: 128
+        - name: filterValue
+          in: query
+          required: true
+          description: scn值
+          type: string
+          minLength: 0
+          maxLength: 15
+      responses:
+        '200':
+          description: ubc返回的oracle scn副本信息
+          schema:
+            $ref: '#/definitions/ScnCopy'
+definitions:
+  ScnCopy:
+    type: object
+    description: ubc返回的oracle scn副本信息
+    required:
+      - id
+      - timestamp
+    properties:
+      id:
+        type: string
+        description: 副本id
+        minLength: 0
+        maxLength: 128
+      timestamp:
+        type: integer
+        format: int64
+        description: 副本时间戳
+        exclusiveMinimum: true
+        exclusiveMaximum: true

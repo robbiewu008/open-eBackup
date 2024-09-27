@@ -1,0 +1,392 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: ApplicationTitle
+  description: GroupDesc
+schemes:
+  - https
+host: localhost.com
+basePath: /
+tags:
+  - name: label-api
+    description: label-api
+paths:
+  /v1/label/add:
+    post:
+      tags:
+        - label-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'Y'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      operationId: createLabelUsingPOST
+      summary: 创建标签
+      description: 创建标签
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: CreateOrUpdateLabelRequest
+          description: 创建标签请求体
+          required: true
+          schema:
+            $ref: '#/definitions/CreateOrUpdateLabelRequest'
+      responses:
+        '200':
+          description: Demo Information
+          schema:
+            type: object
+          headers:
+            UUID:
+              type: string
+              description: 标签生成的UUID
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+  /v1/label:
+    get:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - label-api
+      operationId: queryLabelUsingGET
+      summary: 分页查询标签
+      description: 分页查询标签
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: query
+          required: false
+          description: label名称
+          type: string
+        - name: startPage
+          in: query
+          required: true
+          description: 起始页
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          description: 页大小
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: label详细返回数据
+          schema:
+            $ref: '#/definitions/LabelPageResponseList'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+  /v1/label/update:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - label-api
+      operationId: modifyLabelUsingPUT
+      summary: 修改标签
+      description: 修改标签
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: CreateOrUpdateLabelRequest
+          description: 修改创建标签请求体
+          required: true
+          schema:
+            $ref: '#/definitions/CreateOrUpdateLabelRequest'
+      responses:
+        '200':
+          description: 无返回
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+  /v1/label/delete:
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - label-api
+      operationId: deleteLabelUsingDELETE
+      summary: 删除标签
+      description: 删除标签
+      x-is-registered: 'N'
+      x-support-sdk: 'N'
+      produces:
+        - application/json
+      parameters:
+        - name: DeleteLabelRequest
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DeleteLabelRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        '400':
+          description: Error response
+          schema:
+            $ref: '#/definitions/ErrorRsp'
+          headers:
+            X-request-id:
+              type: string
+              description: This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname.
+  /v1/label/label-resource-object:
+    post:
+      tags:
+        - label-api
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      summary: 资源设置标签
+      description: 资源设置标签
+      operationId: createResourceLabelUsingPOST
+      parameters:
+        - name: CreateLabelResourceObjectRequest
+          in: body
+          required: true
+          description: 资源设置标签请求体
+          schema:
+            $ref: '#/definitions/CreateLabelResourceObjectRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+    delete:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'Y'
+      x-dp-admin-role: 'Y'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - label-api
+      summary: 删除资源标签
+      description: 删除资源标签
+      operationId: deleteResourceLabelUsingDELETE
+      parameters:
+        - name: CreateLabelResourceObjectRequest
+          in: body
+          required: true
+          description: 资源设置标签请求体
+          schema:
+            $ref: '#/definitions/CreateLabelResourceObjectRequest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
+definitions:
+  DemoInfo:
+    description: This is a demo
+    required:
+      - name
+    properties:
+      id:
+        type: string
+        description: 唯一标识ID
+        minLength: 32
+        maxLength: 36
+        readOnly: true
+        example: 28f61af50fc9452aa0ed5ea25c3cc3d3
+      name:
+        type: string
+        description: 名称
+        minLength: 2
+        maxLength: 64
+        example: MyDemo
+      description:
+        type: string
+        description: 描述
+        minLength: 2
+        maxLength: 512
+        example: this is a demo
+  ErrorRsp:
+    description: 失败时返回的错误对象
+    required:
+      - error_code
+      - error_msg
+    properties:
+      error_code:
+        description: 错误码
+        type: string
+        minLength: 8
+        maxLength: 36
+      error_msg:
+        description: 错误描述
+        type: string
+        minLength: 2
+        maxLength: 512
+  CreateOrUpdateLabelRequest:
+    type: object
+    required:
+      - name
+    properties:
+      uuid:
+        type: string
+        description: 标签的UUID
+      name:
+        type: string
+        description: 标签的名字
+  DeleteLabelRequest:
+    type: object
+    required:
+      - uuidList
+    properties:
+      uuidList:
+        type: array
+        items:
+          type: string
+        description: 需要删除UUID list
+  LabelPageResponse:
+    type: object
+    properties:
+      uuid:
+        type: string
+        description: 标签UUID
+      name:
+        type: string
+        description: 标签名称
+      isBuilt:
+        type: boolean
+        description: 是否是手动创建的
+      aspect:
+        type: string
+        description: 所用项目
+      relatedResourceNum:
+        type: integer
+        format: int32
+        description: 关联资源数
+      builderName:
+        type: string
+        description: 创建者
+      createdTime:
+        type: string
+        format: date-time
+        description: 创建时间
+  CreateLabelResourceObjectRequest:
+    type: object
+    required:
+      - labelIdList
+      - ResourceObject
+    properties:
+      labelIdList:
+        type: array
+        items:
+          type: string
+        description: 标签UUID
+      ResourceObject:
+        description: 资源UUID list
+        $ref: '#/definitions/ResourceObject'
+  ResourceObject:
+    type: object
+    properties:
+      resourceObjectId:
+        type: array
+        items:
+          type: string
+        description: 资源ID_List
+      type:
+        type: string
+        description: 资源类型
+  LabelPageResponseList:
+    type: object
+    properties:
+      totalCount:
+        type: integer
+        format: int64
+        description: label总数
+      startIndex:
+        type: integer
+        format: int64
+        description: 开始页
+      pageSize:
+        type: integer
+        format: int64
+        description: 页数大小
+      totalPages:
+        type: string
+        description: 总页数
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/LabelPageResponse'
+        description: Label列表对象

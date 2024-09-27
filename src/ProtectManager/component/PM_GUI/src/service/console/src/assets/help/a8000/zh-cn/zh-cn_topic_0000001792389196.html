@@ -1,0 +1,181 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="即时挂载Oracle数据库">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000001792389196">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>即时挂载Oracle数据库</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000001792389196"></a><a name="ZH-CN_TOPIC_0000001792389196"></a>
+
+<h1 class="topictitle1">即时挂载Oracle数据库</h1>
+<div><p>当需要将数据库的副本挂载至一个新位置以快速启动一个新数据库时，可参考本节配置即时挂载。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><ul><li>支持使用备份副本、复制副本、即时挂载产生的副本进行即时挂载。</li><li>不支持挂载副本至原位置。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><p>挂载至的目标主机已安装ProtectAgent及其他相关软件。</p>
+<p>具体操作可参考<span>《OceanProtect <span id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792502994_ph19170214112011">备份一体机 1.5.0-1.6.0</span> ProtectAgent安装指南》</span>。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>如果存在同名数据库，请先关闭该同名数据库再执行挂载，否则会导致挂载失败。关闭数据库操作如下：</span><p><ol type="a"><li id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_li14647185922920">登录Oracle数据库主机。<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_p8360011829"><a name="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_li14647185922920"></a><a name="zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_li14647185922920"></a>请使用PuTTY登录Oracle数据库主机，并执行<strong id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_b14760136722">su - oracle</strong>命令，切换到<strong id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_b776016920">oracle</strong>账户。</p>
+</li><li id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_li14572194814339">执行以下命令，登录Oracle数据库实例。<ul id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_ul7420345341"><li id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li15682124913711">OS认证：<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p95148598366"><a name="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li15682124913711"></a><a name="zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li15682124913711"></a><strong id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_b14236563719">export ORACLE_SID=</strong><em id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_i85144598369">数据库实例名称</em></p>
+<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p145141259153613"><strong id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_b1597618293715">sqlplus / as sysdba</strong></p>
+</li><li id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li105571236103417">数据库认证：<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p920984963717"><a name="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li105571236103417"></a><a name="zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_li105571236103417"></a><strong id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_b19174355163720">export ORACLE_SID=</strong><em id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_i1420924973715">数据库实例名称</em></p>
+<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p182093496371"><strong id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_b034785743716">sqlplus</strong></p>
+<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p17915722412">根据提示输入具备<strong id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_b1691518214115">sysdba</strong>权限的用户：</p>
+<pre class="screen" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_screen9915112104114"><em id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_i1915102164113">username </em>as sysdba</pre>
+<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_zh-cn_topic_0000001656760969_p159150224117">根据提示输入密码。</p>
+</li></ul>
+</li><li id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_li198251911109">执行以下命令关闭同名数据库。<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_p96841918142516"><a name="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_li198251911109"></a><a name="zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_li198251911109"></a><strong id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656561309_b1025322122520">shutdown immediate;</strong></p>
+</li></ol>
+</p></li><li><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839142377_uicontrol137744685812">“<span id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839142377_text9893546125720">数据利用</span> &gt; <span id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839142377_text4550936154317">即时挂载</span> &gt; <span id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839142377_text1948813611581">Oracle</span>”</span>。</span></li><li><span>单击<span class="uicontrol">“<span>创建</span>”</span>。</span></li><li><span>在<span class="uicontrol">“<span>选择资源</span>”</span>页签，选择要挂载的副本对应的源数据库，单击<span class="uicontrol">“<span>下一步</span>”</span>。</span><p><ul><li>如果资源类型是集群，则此处仅展示集群的管理IP，集群成员不会展示。</li><li>如果主机或集群处于离线状态，则不会进行即时挂载，此处不展示离线状态的主机或集群。</li></ul>
+</p></li><li><span>在<span class="uicontrol">“<span>选择副本</span>”</span>页签：</span><p><ol type="a"><li>选择要挂载的副本。<p>创建即时挂载的副本必须是<span class="uicontrol">“<span>正常</span>”</span>状态。</p>
+</li><li>选择挂载更新策略。<p>如果未在此处选择挂载更新策略，后续可<a href="zh-cn_topic_0000001792548924.html">通过修改操作配置挂载更新策略</a>。</p>
+</li><li>单击<span class="uicontrol">“<span>下一步</span>”</span>。</li></ol>
+</p></li><li><span>在<span class="uicontrol">“<span>挂载选项</span>”</span>页签，配置挂载参数，单击<span class="uicontrol">“<span>下一步</span>”</span>。</span><p><ol type="a"><li>配置即时挂载基本参数和高级参数。<div class="p">相关参数说明如<a href="#ZH-CN_TOPIC_0000001792389196__table1896835815578">表1</a>所示。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>带宽与IOPS可以任意配置一个或者两个都配置，如果是带宽型业务，建议只配置带宽，如果是IOPS型业务，建议只配置IOPS，如果不确定或者有时是带宽型、有时是IOPS型，则建议两个都配置，此时流量控制以小的一个为准。</li><li>标准IOPS(8KB)与真实IO模型的换算关系可以通过界面上的换算表查看。</li><li>通过限制挂载副本的最大流量，以保证备份、恢复任务的性能；设置挂载副本的下限保障，以保证挂载副本的最低性能。</li></ul>
+</div></div>
+
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000001792389196__table1896835815578"></a><a name="table1896835815578"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000001792389196__table1896835815578" frame="border" border="1" rules="all"><caption><b>表1 </b>即时挂载参数说明</caption><colgroup><col style="width:16.45%"><col style="width:18.68%"><col style="width:64.87%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p>目标位置</p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.2 "><p>数据库副本挂载位置。</p>
+<p>您可以单击“添加目标位置”，同时挂载副本至多个主机或集群。</p>
+<p></p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>如果目标主机中存在同名数据库，但该数据库未处于运行状态，挂载后将覆盖原数据库。</li><li>如果挂载副本是由主机产生，则不支持挂载至集群。</li></ul>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><div class="p">原实例<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_p292039103511">仅1.6.0及后续版本存在此参数。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.2 "><p>选择恢复到目标位置的原实例。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><div class="p">目标实例<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_p292039103511_1">仅1.6.0及后续版本存在此参数。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.2 "><div class="p">支持配置恢复到目标位置的实例名，如不配置，则与恢复前的原实例名保持一致。<div class="note" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_note16724735153418"><span class="notetitle"> 说明： </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_p17724173583412">如果配置了目标实例名，恢复后请使用目标实例名登录数据库。</p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>启动数据库</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.2 "><p>即时挂载后是否启动数据库。</p>
+<p>如果选择不启动，当需要访问数据库时，请手动启动数据库。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>BCT功能</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.2 "><ul><li>如果选择开启BCT功能，即时挂载后会自动开启BCT功能。</li><li>如果选择关闭BCT功能，即时挂载后会自动关闭BCT功能。</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" rowspan="3" valign="top" width="16.45%" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>带宽（MB/s）</span></p>
+<p></p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="18.68%" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>Min</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="64.87%" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.2 "><p>即时挂载副本的最小带宽。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>Max</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p>即时挂载副本的最大带宽。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>Burst</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p>即时挂载副本的最大突发带宽，<span>Burst</span>的取值必须大于<span>Max</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" rowspan="3" valign="top" width="16.45%" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>标准IOPS（8KB）</span></p>
+<p></p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="18.68%" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>Min</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="64.87%" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.2 "><p>即时挂载副本平均每秒标准I/O的最小请求个数。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>Max</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p>即时挂载副本平均每秒标准I/O的最大请求个数。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>Burst</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p>即时挂载副本的最大突发IOPS，<span>Burst</span>的取值必须大于<span>Max</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>最大Burst时间(秒)</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.2 "><p>当设置了带宽或标准IOPS的<span>Burst</span>参数，才需要设置该参数。表示突发带宽或突发IOPS的最大持续时间。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="16.45%" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>标准化时延（8KB）</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="18.68%" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>Max</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="64.87%" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.2 "><p>在本地阵列的最大时延。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>挂载前执行脚本</span></p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.2 "><p><span>请输入脚本名称，脚本名称以</span><strong id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656441509_b1732018117386">.sh</strong><span>结尾。确保脚本已存放在数据库主机安装目录下的</span><span class="filepath" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656441509_filepath560914216351">“DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty”</span><span>目录中，且登录数据库主机的用户（默认为</span><strong id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001792389268_zh-cn_topic_0000001656441509_b95043281423">root</strong><span>）对该脚本有可执行权限。如果无执行权限请依次执行以下命令授权：</span></p>
+<p><strong>chown root:root</strong> <em>脚本名称</em></p>
+<p><strong>chmod 500</strong><strong> </strong><em>脚本名称</em></p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>当配置了<span class="uicontrol">“<span><span>挂载成功执行脚本</span></span>”</span>时，即使该脚本执行失败，管理界面上也会显示挂载任务的状态为<span class="uicontrol">“<span><span>成功</span></span>”</span>。请您留意任务详情中是否有后置脚本执行失败的相关提示，如有请及时修正脚本。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>挂载成功执行脚本</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>挂载失败执行脚本</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.1 "><p><span>修改数据库配置</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.4.2.6.2.1.1.1.3.2.4.1.2 "><p>根据挂载主机的实际配置修改数据库参数，参数错误将导致挂载失败。</p>
+<p>当Oracle集群的副本挂载至Oracle单机ASM时，请修改<span class="uicontrol" style="color:#282B33;">“*.cluster_database”</span>的配置值为<span class="uicontrol">“false”</span>。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_p182002046152413">恢复时，要求目标主机的空闲内存大小必须大于数据库SGA和PGA的大小总和，否则可能导致恢复失败。</p>
+<ol id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_ol1220294614243"><li id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_li192002046192416">查看目标主机空闲内存的大小。<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_p14200174614242"><a name="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_li192002046192416"></a><a name="zh-cn_topic_0000001839188281_li192002046192416"></a>具体操作可参考<a href="zh-cn_topic_0000001839188281.html#ZH-CN_TOPIC_0000001839188281__li17844445165619">2</a>。</p>
+</li><li id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_li1420174662413">开启<span class="uicontrol" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_uicontrol4200124632411">“<span id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_text6200164682413">修改数据库配置</span>”</span>开关后，搜索<span class="uicontrol" style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_uicontrol142004460245">“*.pga_aggregate_target”</span>和<span class="uicontrol" style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_uicontrol72001546142410">“*.sga_target”</span>参数。<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_p122019465249">检查空闲内存大小是否大于<span class="uicontrol" style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_uicontrol4201174662412">“*.pga_aggregate_target”</span><span style="color:#282B33;">与</span><span class="uicontrol" style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_uicontrol19201104615246">“*.sga_target”</span>的总和。</p>
+<ul id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_ul020117460245"><li id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_li020119461244">是，结束处理。</li><li id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_li172011746112414">否，执行<a href="#ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_li520219465244">3</a>。</li></ul>
+</li><li id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_li520219465244"><a name="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_li520219465244"></a><a name="zh-cn_topic_0000001839188281_li520219465244"></a>修改<span class="uicontrol" style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_uicontrol62011146162413">“*.pga_aggregate_target”</span><span style="color:#282B33;">与</span><span class="uicontrol" style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_uicontrol1120144682417">“*.sga_target”</span>其中一个参数或两个参数都修改，使得空闲内存大小大于<span class="uicontrol" style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_uicontrol82011846162413">“*.pga_aggregate_target”</span><span style="color:#282B33;">与</span><span class="uicontrol" style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_uicontrol420134616246">“*.sga_target”</span>的总和<strong id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_b7202746162413">。</strong><p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_p17202124615241">如果搜索到多个相同的参数，相同的参数均需修改。</p>
+</li><li id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_li3202154610247">如果修改了<span class="uicontrol" style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_uicontrol720216466245">“*.pga_aggregate_target”</span>，需要同步修改“<em style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_i8202134622420">实例名称</em><span style="color:#282B33;">.__pga_aggregate_target</span>”的值，修改<span style="color:#282B33;">“</span><em style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_i620264616246">实例名称</em><span style="color:#282B33;">.__pga_aggregate_target</span>”为：<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_p112021846192418"><em style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_i520234617241">实例名称</em><strong style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_b16202114622416">.__pga_aggregate_target = *.pga_aggregate_target * 1024 *1024</strong></p>
+<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_p12021146162417">如果修改了<span class="uicontrol" style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_uicontrol12202144662410">“*.sga_target”</span><span style="color:#282B33;">，需要同步修改“</span><em style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_i82021546122411">实例名称</em>.__sga_target”的值，修改<span style="color:#282B33;">“</span><em style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_i102021546172412">实例名称</em>.__sga_target”为：</p>
+<p id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_p72021446122418"><em style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_i8202546132411">实例名称</em><strong style="color:#282B33;" id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_b92024462249">.__sga_target = *.sga_target</strong><strong id="ZH-CN_TOPIC_0000001792389196__zh-cn_topic_0000001839188281_b1020234611248"> * 1024 *1024</strong></p>
+</li></ol>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li><li>单击<span class="uicontrol">“<span>下一步</span>”</span>。</li></ol>
+</p></li><li><span>预览挂载参数，确认无误后，单击<span class="uicontrol">“<span>完成</span>”</span>。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>如果需要对即时挂载的数据库进行远程访问，请先配置Oracle数据库的侦听参数。如：对即时挂载产生的副本进行数据脱敏前，需要先配置数据库的侦听参数。<p>具体操作请参考<a href="zh-cn_topic_0000001839188401.html">配置Oracle数据库侦听参数</a>。</p>
+</li><li>副本生成后立即用该副本执行即时挂载，可能会由于副本仍处于初始化状态而导致挂载任务失败，请3分钟后重试。</li><li>如果目标数据库版本高于副本数据库版本，即时挂载过程中会自动触发升级数据库，请确保目标数据库归档日志路径有剩余空间，否则挂载任务将无法运行。</li></ul>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

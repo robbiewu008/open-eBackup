@@ -1,0 +1,28 @@
+<lv-tabs>
+  <lv-tab lvTitle="{{'common_basic_info_label' | i18n}}">
+    <lv-group [lvColumns]='["110px", "auto", "auto"]' class="aui-gutter-column-xl">
+      <div>
+        <i lv-icon='aui-icon-summary-cluster' class="base-info-icon"></i>
+      </div>
+      <lv-group lvGutter='12px'>
+        <span class="aui-text-label">{{'common_name_label' | i18n}}</span>
+        <span class="cluster-name" lv-overflow>{{rowItem?.name | nil}}</span>
+      </lv-group>
+      <lv-group lvGutter='12px'>
+        <span class="aui-text-label">{{'common_type_label' | i18n}}</span>
+        <span>{{rowItem.extendInfo?.clusterType | textMap : 'oracleClusterType'}}</span>
+      </lv-group>
+    </lv-group>
+    <h3 class="aui-gutter-column-md">{{'protection_statefulset_node_label' | i18n}}</h3>
+    <lv-pro-table #clusterNode [config]="nodeTableConfig" [data]="nodeTableData"></lv-pro-table>
+  </lv-tab>
+  <lv-tab lvTitle="{{'common_database_label' | i18n}}">
+    <lv-pro-table #databaseTable [config]="databaseTableConfig" [data]="databaseTableData"></lv-pro-table>
+  </lv-tab>
+</lv-tabs>
+
+<ng-template #slaComplianceExtraTpl>
+  <div class="custom-icon">
+      <aui-sla-compliance-tooltip lvTooltipClassName=""></aui-sla-compliance-tooltip>
+  </div>
+</ng-template>

@@ -1,0 +1,118 @@
+{{/*
+   Get running environment
+  */}}
+  {{- $environment:= "" }}
+  {{- if .Values.global }}
+  {{- $environment = .Values.global.environment }}
+  {{- else }}
+  {{- $environment = .Values.local.environment }}
+  {{- end }}
+
+
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  labels:
+    app: pm-scheduler
+  name: pm-scheduler
+  namespace: dpa
+spec:
+  replicas: 1
+  serviceName: pm-scheduler
+  selector:
+    matchLabels:
+      app: pm-scheduler
+  template:
+    metadata:
+      labels:
+        app: pm-scheduler
+      annotations:
+        co.elastic.logs/processors.decode_json_fields.fields.1: message
+        co.elastic.logs/processors.decode_json_fields.target: ""
+        co.elastic.logs/processors.decode_json_fields.overwrite_keys: "true"
+    spec:
+      {{- if eq $environment "Dorado" }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      terminationGracePeriodSeconds: 0
+      securityContext:
+        {{- if eq $environment "Dorado" }}
+        seccompProfile:
+          type: RuntimeDefault
+        {{- end }}
+        fsGroup: 99
+      initContainers:
+        - name: init-infrastructure
+          image: docker.io/library/dme_initcontainer:{{ .Values.global.version }}
+          command: ['sh', '-c', 'until nslookup infrastructure; do echo waiting for infrastructure; sleep 1; done;']
+        - name: pm-database-version-migration
+          image: pm-database-version-migration:{{ .Values.global.version }}
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SERVICE_MODE
+              value: dev
+            - name: LOGLEVEL
+              value: DEBUG
+            - name: GAUSS_DB_SERVER
+              value: "gaussdb:6432"
+            - name: POSTGRES_PORT
+              value: "6432"
+            - name: POSTGRES_SERVER
+              value: "gaussdb"
+          volumeMounts:
+            - mountPath: /opt/config
+              name: common-volume
+              readOnly: true
+      containers:
+        - name: pm-scheduler
+          image: pm-scheduler:{{ .Values.global.version }}
+          ports:
+            - containerPort: 30096
+              name: pm-job-port
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SERVICE_MODE
+              value: dev
+            - name: LOGLEVEL
+              value: DEBUG
+            - name: GAUSS_DB_SERVER
+              value: "gaussdb:6432"
+            - name: REDIS_SENTINEL_HOST
+              value: "infrastructure"
+            - name: REDIS_SENTINEL_PORT
+              value: "6369"
+            - name: SCHEDULER_MISFIRE_GRACE_SEC
+              value: "300"
+            - name: SERVICE_PORT
+              value: "30096"
+          volumeMounts:
+            - mountPath: /opt/OceanProtect/
+              name: log-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
+            - mountPath: /opt/config
+              name: common-volume
+              readOnly: true
+      volumes:
+        {{- if eq $environment "Dorado" }}
+        - name: log-path
+          persistentVolumeClaim:
+            claimName: "comm-nas"
+        {{- else }}
+        - name: log-path
+          hostPath:
+            path: /opt/OceanProtect/logs/protectmanager
+        {{- end }}
+        - name: date-config-localtime
+          hostPath:
+            path: /etc/localtime
+        - name: common-volume
+          configMap:
+            name: common-conf

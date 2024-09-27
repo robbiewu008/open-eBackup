@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ */
+
+package com.huawei.emeistor.console.config.lock.impl;
+
+/**
+ * 保存锁的上下文，方便判断是否真的已获取锁
+ *
+ * @author w30042425
+ * @since 2023-06-12
+ */
+public class LockAssert {
+    private static final ThreadLocal<String> CURRENT_LOCK_NAME = ThreadLocal.withInitial(() -> null);
+
+    /**
+     * 锁开始
+     *
+     * @param name 锁名称
+     */
+    static void startLock(String name) {
+        CURRENT_LOCK_NAME.set(name);
+    }
+
+    /**
+     * 是否已经被锁住
+     *
+     * @param name 锁名称
+     * @return 是否已经被锁住
+     */
+    static boolean alreadyLockedBy(String name) {
+        return name.equals(CURRENT_LOCK_NAME.get());
+    }
+
+    /**
+     * 锁结束
+     */
+    static void endLock() {
+        CURRENT_LOCK_NAME.remove();
+    }
+
+    /**
+     * 断言当前线程已经获得锁
+     */
+    public static void assertLocked() {
+        if (CURRENT_LOCK_NAME.get() == null) {
+            throw new IllegalStateException("The task is not locked.");
+        }
+    }
+}

@@ -1,0 +1,74 @@
+<div class="aui-header-1 aui-gutter-column-md">
+    <h2>{{'common_basic_info_label' | i18n}}</h2>
+</div>
+<div class="aui-gutter-column-lg">
+    <resoure-base-info [source]="source" [sourceType]="source.sub_type"></resoure-base-info>
+</div>
+<ng-container *ngIf="source.sub_type === dataMap.Resource_Type.virtualMachine.value">
+    <div class="aui-header-1 aui-gutter-column-md">
+        <h2>{{'protection_disks_label' | i18n}}</h2>
+    </div>
+    <div class="modal-table">
+        <lv-datatable [lvData]='tableData' #lvTable lvSort lvSize="small" (lvSortChange)="sortChange($event)"
+            [lvPaginator]='page'>
+            <thead>
+                <tr>
+                    <th lvCellKey='name' lvShowCustom>
+                        {{'common_name_label' | i18n}}
+                        <div lvCustom>
+                            <aui-custom-table-search (search)="searchByName($event)"
+                                filterTitle="{{'common_name_label' | i18n}}"></aui-custom-table-search>
+                        </div>
+                    </th>
+                    <th lvCellKey='slot' lvShowCustom>
+                        {{'common_slot_label' | i18n}}
+                        <div lvCustom>
+                            <aui-custom-table-search (search)="searchByDeviceId($event)"
+                                filterTitle="{{'common_slot_label' | i18n}}"></aui-custom-table-search>
+                        </div>
+                    </th>
+                    <th lvCellKey='sla_name' lvShowCustom>
+                        {{'common_sla_label' | i18n}}
+                        <div lvCustom>
+                            <aui-custom-table-search (search)="searchBySlaName($event)"
+                                filterTitle="{{'common_sla_label' | i18n}}"></aui-custom-table-search>
+                        </div>
+                    </th>
+                    <th lvCellKey='capacity' lvShowSort lvAlign="right">{{'common_capacity_label' | i18n}}</th>
+                    <th lvCellKey='datastoreName' lvShowCustom>
+                        {{'common_datastore_label' | i18n}}
+                        <div lvCustom>
+                            <aui-custom-table-search (search)="searchByDatastore($event)"
+                                filterTitle="{{'common_datastore_label' | i18n}}"></aui-custom-table-search>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor='let item of lvTable.renderData'>
+                    <tr>
+                        <td>
+                            <span lv-overflow>{{item.name}}</span>
+                        </td>
+                        <td>
+                            {{item.slot}}
+                        </td>
+                        <td>
+                            <span lv-overflow>
+                                <sla-type [name]="item.sla_name"></sla-type>
+                            </span>
+                        </td>
+                        <td lvAlign="right">{{item.capacity | capacityCalculateLabel:'1.1-3':unitconst.KB: true}}</td>
+                        <td>
+                            <span lv-overflow>{{item.datastoreName}}</span>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </lv-datatable>
+    </div>
+</ng-container>
+<div class="aui-paginator-wrap">
+    <lv-paginator #page lvMode='simple' [lvShowPageSizeOptions]='false' [hidden]="!lvTable?.renderData?.length">
+    </lv-paginator>
+</div>

@@ -1,0 +1,69 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label>{{ 'common_selected_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            {{fileName}}
+        </lv-form-control>
+    </lv-form-item>
+    <lv-alert lvType="info" *ngIf="!isModify">
+        <span [innerHTML]="settingTip"></span>
+    </lv-alert>
+    <div>
+        <h2 class="header">{{'explore_honeypot_update_frequency_label' | i18n}}</h2>
+        <div class="day-selector">
+            <lv-datatable #dataTable lvSize="small" [lvData]="data" lvFake="true">
+                <thead>
+                    <tr>
+                        <th style="height: 32px; background-color: white;">
+                            <lv-radio-group formControlName="update">
+                                <lv-group lvGutter="10px">
+                                    <lv-radio [lvValue]="value1">{{'explore_honeypot_update_on_schedule_label' |
+                                        i18n}}</lv-radio>
+                                    <lv-radio [lvValue]="value2">{{'explore_honeypot_not_update_file_label' |
+                                        i18n}}</lv-radio>
+                                </lv-group>
+                            </lv-radio-group>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="formGroup.value?.update === value1">
+                        <td class="day-row">
+                            <lv-form [formGroup]="formGroup" class="migrate-host-container container">
+                                <lv-form-item *ngIf="!i18n.isEn">
+                                    <lv-form-label>{{'common_every_label' | i18n}}</lv-form-label>
+                                    <lv-form-control [lvErrorTip]="numErrorTip">
+                                        <input type="text" formControlName="dayNum" lv-input style="width: 150px;"
+                                            placeholder="1~30">
+                                    </lv-form-control>
+                                    <lv-form-label>{{'common_day_label' | i18n}}{{'common_update_once_label' |
+                                        i18n}}</lv-form-label>
+                                </lv-form-item>
+                                <lv-form-item *ngIf="i18n.isEn">
+                                    <lv-form-label>
+                                        {{'explore_honeypot_update_once_every_label' | i18n}}
+                                    </lv-form-label>
+                                    <lv-form-control [lvErrorTip]="numErrorTip">
+                                        <input type="text" formControlName="dayNum" lv-input style="width: 150px;"
+                                            placeholder="1~30">
+                                    </lv-form-control>
+                                    <lv-form-label>{{'common_day_label' | i18n}}(s)</lv-form-label>
+                                </lv-form-item>
+                            </lv-form>
+                        </td>
+                    </tr>
+                </tbody>
+            </lv-datatable>
+        </div>
+    </div>
+    <lv-form-item [ngClass]="{'lvm-warp-en-global': i18n.isEn}">
+        <lv-form-label>
+            <ng-container *ngIf="formGroup.value?.update === value1; else elseTemplate">
+                <span class="info">{{'explore_honeypot_update_info_label' | i18n}}</span>
+            </ng-container>
+            <ng-template #elseTemplate>
+                <span class="info">{{'explore_honeypot_no_update_info_label' | i18n}}</span>
+            </ng-template>
+        </lv-form-label>
+    </lv-form-item>
+</lv-form>

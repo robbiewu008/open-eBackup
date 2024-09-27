@@ -1,0 +1,35 @@
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <lv-group lvGutter='8px'>
+            <h1>{{'system_device_time_label' | i18n}}</h1>
+            <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+        </lv-group>
+    </div>
+    <div class="aui-block">
+        <div class="aui-header-2">
+            <h2>{{'system_device_time_label' | i18n}}</h2>
+        </div>
+        <div class="aui-operation" *ngIf="!isCyberengine">
+            <p class="aui-text-help-sm" [innerHTML]="desc" pmpermission pmOperation='ModifySystemTime'></p>
+            <a class="aui-link" *ngIf="false" (click)='modifyTime()' pmpermission pmOperation='ModifySystemTime'>
+                {{'common_modify_label' | i18n}}
+            </a>
+            <lv-group *ngIf="isModify" lvGutter="8px">
+                <a class="aui-link" (click)="saveTime()"
+                    [ngClass]="{'aui-link': this.formGroup.valid, 'aui-link-disabled': !this.formGroup.valid}">
+                    {{'common_save_label' | i18n}}
+                </a>
+                <a class="aui-link" (click)="cancelTime()">
+                    {{'common_cancel_label' | i18n}}
+                </a>
+            </lv-group>
+        </div>
+
+        <div class="dashed-line aui-gutter-column-md"></div>
+        <ng-container *ngIf="!isModify">
+            <aui-current-system-time [needLoading]="true"></aui-current-system-time>
+        </ng-container>
+        <ng-container *ngIf="isModify">
+        </ng-container>
+    </div>
+</div>

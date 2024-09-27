@@ -1,0 +1,53 @@
+<div class="vm-group">
+  <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
+    <lv-form-item>
+      <lv-form-label lvRequired>{{groupNameLabel}}</lv-form-label>
+      <lv-form-control [lvErrorTip]="baseUtilService.nameErrorTip">
+        <input lv-input type="text" formControlName="name" />
+      </lv-form-control>
+    </lv-form-item>
+
+  <div style="margin-top:20px">
+    <h2 style="margin-bottom:20px">
+      {{'protection_select_resource_label' | i18n}}<i lv-icon="aui-icon-help" lv-tooltip="{{'protection_select_resource_tips_label' | i18n}}"
+        lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+    </h2>
+    <ng-container
+      *ngIf="includes([dataMap.Resource_Type.virtualMachine.value,dataMap.Resource_Type.FusionCompute.value,dataMap.Resource_Type.cNwareVm.value, dataMap.Resource_Type.hyperVVm.value],subUnitType)">
+      <lv-form-item>
+        <lv-form-label>
+          {{'protection_computer_location_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+          <lv-select [lvOptions]='vCenterOptions' formControlName="selectedVCenter" lvValueKey="key" lvShowFilter
+            lvFilterMode="contains" lvFilterKey='label'>
+          </lv-select>
+          <div [ngClass]="{'tree-container':treeData.length,'no-data':!treeData.length}">
+            <lv-tree [lvData]="treeData" lvShowLine lvSelectionMode="single" [(lvSelection)]="treeSelection2" #resTree
+              (lvExpandedChange)="expandedChange($event)" (lvCheck)="nodeCheck($event)" lvShowContentIcon>
+            </lv-tree>
+          </div>
+        </lv-form-control>
+      </lv-form-item>
+    </ng-container>
+    <lv-form-item>
+      <lv-form-label></lv-form-label>
+      <lv-form-control>
+    <lv-transfer #transfer [lvHeaders]="[sourceOperateTpl, targetOperateTpl]" [lvSourceColumns]="sourceColumns"
+      [lvSourceData]="sourceData" [lvSourceSelection]="sourceSelection" [lvTargetColumns]="targetColumns"
+      (lvStateChange)="stateChange($event)" (lvSelectionChange)="change($event)" lvAsync="true" [lvTotal]="total" [lvItemSize]="20" lvDataKey="uuid"></lv-transfer>
+    <ng-template #sourceOperateTpl let-data let-selecetd="selection" let-paginator="paginator" let-panel="panel">
+      <lv-group lvGutter="8px" class="file-header">
+        <button lv-button lvType="link" (click)="selectAll(data, panel)"></button>
+      </lv-group>
+    </ng-template>
+
+    <ng-template #targetOperateTpl let-data let-paginator="paginator" let-panel="panel">
+      <lv-group lvGutter="8px" class="file-header">
+        <button lv-button lvType="link" (click)="clearAll(data, panel)">{{'protection_clear_all_label' | i18n}}</button>
+      </lv-group>
+    </ng-template>
+  </lv-form-control>
+</lv-form-item>
+  </div>
+</lv-form>

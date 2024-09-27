@@ -1,0 +1,93 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_name_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.nameErrorTip">
+            <input lv-input type="text" formControlName="name" class="name-text" />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_copy_data_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-select [lvOptions]="copyDataSelectionPolicys" lvValueKey="value"
+                formControlName="copyDataPolicy"></lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_scheduled_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="schedulePolicy" [lvGroupName]="'scheduledGroup'" class="container-width">
+                <lv-group [lvGutter]="'24px'" lvDirection='vertical' class="container-width">
+                    <lv-group class="container-width">
+                        <lv-radio [lvValue]="schedulePolicy.PeriodSchedule" class="period-schedule">
+                            {{'common_every_label'|i18n}}</lv-radio>
+                        <lv-form-control [lvErrorTip]="scheduleIntervalErrorTip">
+                            <lv-input-group [lvAddAfter]="scheduleUnitTpl" class="input-group-select-right"
+                                [lvDisabled]="scheduleIntervalUnitDisabled">
+                                <input lv-input formControlName="scheduleInterval"
+                                    placeholder="{{formGroup.value.scheduleIntervalUnit=='h'?'1~23':formGroup.value.scheduleIntervalUnit=='d'?'1~30':formGroup.value.scheduleIntervalUnit=='w'?'1~4':formGroup.value.scheduleIntervalUnit=='MO'?'1~12':''}}" />
+                            </lv-input-group>
+                            <ng-template #scheduleUnitTpl>
+                                <lv-select [lvOptions]="scheduleIntervalUnits" formControlName="scheduleIntervalUnit"
+                                    (ngModelChange)="changeTimeUnits($event, 'scheduleInterval')"
+                                    [lvDisabled]="scheduleIntervalUnitDisabled" class="unit-inner-select"
+                                    lvValueKey="value"></lv-select>
+                            </ng-template>
+                        </lv-form-control>
+                    </lv-group>
+                    <lv-group [lvGutter]="'10px'" class="container-width">
+                        <div class="first-execute">{{'explore_first_execute_label' | i18n}}</div>
+                        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                            <lv-date-picker formControlName="scheduleStartTime" lvShowTime="true"
+                                [lvDisabled]="scheduleStartTimeDisabled"
+                                lvPlaceholder="{{'protection_device_start_time_label' | i18n}}"
+                                [lvFooterExtra]="datePickerFooterTpl" lvShowNowButton="false">
+                            </lv-date-picker>
+                        </lv-form-control>
+                    </lv-group>
+                    <lv-radio [lvValue]="schedulePolicy.AfterBackupDone">{{'explore_after_backup_done_label'|i18n}}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_retention_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="retentionPolicy" [lvGroupName]="'retentionGroup'" class="container-width">
+                <lv-group [lvGutter]="'24px'" lvDirection='vertical' class="container-width">
+                    <lv-group class="lv-group-flex-start container-width">
+                        <lv-radio [lvValue]="retentionPolicy.FixedTime" class="fixed-time">
+                            {{'common_retention_label'|i18n}}</lv-radio>
+                        <lv-form-control [lvErrorTip]="retentionValueErrorTip">
+                            <lv-input-group [lvAddAfter]="retentionUnitTpl" class="input-group-select-right"
+                                [lvDisabled]="retentionUnitDisabled">
+                                <input lv-input formControlName="retentionValue"
+                                    placeholder="{{formGroup.value.retentionUnit=='d'?'1~365':formGroup.value.retentionUnit=='w'?'1~54':formGroup.value.retentionUnit=='MO'?'1~24':'1~10'}}" />
+                            </lv-input-group>
+                            <ng-template #retentionUnitTpl>
+                                <lv-select [lvOptions]="retentionUnits" formControlName="retentionUnit"
+                                    class="unit-inner-select"
+                                    (ngModelChange)="changeTimeUnits($event, 'retentionValue')"
+                                    [lvDisabled]="retentionUnitDisabled" lvValueKey="value"></lv-select>
+                            </ng-template>
+                        </lv-form-control>
+                    </lv-group>
+                    <lv-group>
+                        <lv-radio [lvValue]="retentionPolicy.Permanent">{{'explore_permanent_retention_label'|i18n}}
+                        </lv-radio>
+                    </lv-group>
+                    <lv-group>
+                        <lv-radio [lvValue]="retentionPolicy.LatestOne">{{'explore_always_latest_label'|i18n}}
+                        </lv-radio>
+                    </lv-group>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+
+<ng-template #datePickerFooterTpl>
+    <div class="lv-date-picker-cell lv-date-picker-footer">
+        <aui-current-system-time></aui-current-system-time>
+    </div>
+</ng-template>

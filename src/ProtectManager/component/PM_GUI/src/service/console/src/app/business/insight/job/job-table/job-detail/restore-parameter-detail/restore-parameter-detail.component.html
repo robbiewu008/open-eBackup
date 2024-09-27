@@ -1,0 +1,199 @@
+<lv-form class="formGroup">
+    <lv-form-item *ngIf="false">
+        <lv-form-label>
+            {{'protection_over_write_rule_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{data.restoreOption | textMap: 'fileReplaceType'}}
+        </lv-form-control>
+    </lv-form-item>
+
+    <lv-form-item *ngIf="isProxy">
+        <lv-form-label>
+            {{'protection_proxy_host_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{agentName | nil}}
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="isVirtualCloud">
+        <lv-form-item *ngIf="!hideAutoPowerOn">
+            <lv-form-label>
+                {{'protection_auto_power_on_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{(data.powerState === '1') | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="!hideRestoreBeforeVerify">
+            <lv-form-label>
+                {{'common_restore_before_copy_verify_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{(isString(data.copyVerify) ? data.copyVerify === 'true' : boolean(data.copyVerify)) | textMap: 'Switch_Status' }}
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <!-- 删除原机 -->
+    <lv-form-item *ngIf="false">
+        <lv-form-label>
+            {{'protection_delete_origin_vm_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            {{(data?.cleanOriginVM=== '1') | textMap: 'Switch_Status'}}
+        </lv-form-control>
+    </lv-form-item>
+    <!-- oracle -->
+    <ng-container
+        *ngIf="[dataMap.Resource_Type.oracle.value,dataMap.Resource_Type.oracleCluster.value].includes(job.sourceSubType)">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_disable_bct_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{_boolean(data?.bctStatus) | textMap: 'Switch_Status' }}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_channel_number_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.CHANNELS | nil}}
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <!-- tdsql分布式实例 -->
+    <ng-container *ngIf="job.sourceSubType === dataMap.Resource_Type.tdsqlDistributedInstance.value">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_machine_type_model_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{machineData?.machine | nil}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_cpu_core_number_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{machineData?.cpu | nil}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_memory_size_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{machineData?.cpu | nil}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_data_disk_size_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{machineData?.disk | nil}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_log_disk_size_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{machineData?.logDisk | nil}}
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <!-- Gaussdb for opengauss,这个没环境验-->
+    <ng-container *ngIf="job.sourceSubType === dataMap.Resource_Type.gaussdbForOpengaussInstance.value">
+        <!-- 基本信息里的-->
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'explore_main_available_id_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{(!!data?.masterAz ? data?.masterAz:'explore_no_order_label') | i18n}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'explore_arbitrament_available_id_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{(!!data?.arbitrationAz ? data?.arbitrationAz:'explore_no_order_label') | i18n}}
+            </lv-form-control>
+        </lv-form-item>
+        <!-- 数据库信息里的 -->
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'explore_params_group_id_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.configurationId | nil}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'explore_payment_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{(!!data?.chargeInfo?'explore_pay_as_you_go_label':'explore_no_order_label') | i18n}}
+            </lv-form-control>
+        </lv-form-item>
+        <!-- 后面两个不知道怎么展示 -->
+        <lv-form-item *ngIf="false">
+            <lv-form-label>
+                {{ 'explore_auto_backup_policy_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <!-- mongodb启动实例用户 -->
+    <lv-form-item *ngIf="[dataMap.Resource_Type.MongodbClusterInstance.value,
+                dataMap.Resource_Type.MongodbSingleInstance.value].includes(job.sourceSubType)">
+        <lv-form-label>
+            {{ 'protection_start_instance_user_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control>
+            {{data?.start_instance_user | nil}}
+        </lv-form-control>
+    </lv-form-item>
+    <ng-container *ngIf="isScript">
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'protection_restore_pre_script_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.preScript | nil}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'protection_restore_post_script_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.postScript | nil}}
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label>
+                {{ 'protection_restore_fail_script_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control>
+                {{data?.failPostScript | nil}}
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+</lv-form>
+
+<ng-template #titleTpl>
+    <lv-group lvGutter="8px">
+        <span class="custom-collapse-title-text">
+            {{'common_advanced_label' | i18n}}
+        </span>
+    </lv-group>
+</ng-template>

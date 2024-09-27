@@ -1,0 +1,17 @@
+<span [innerHTML]="feedbackTplLabel"></span>
+<div class="aui-gutter-column-md"></div>
+<lv-form-item>
+    <lv-form-label>
+        {{ 'protection_lock_no_anti_data_label' | i18n }}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_lock_no_anti_data_tip_label' | i18n}}" lvTooltipTheme="light"
+            class="configform-constraint" lvColorState='true'></i>
+    </lv-form-label>
+    <lv-form-control>
+        <lv-switch [(ngModel)]="isSecuritySnap"></lv-switch>
+    </lv-form-control>
+</lv-form-item>
+<div class="warning-checkbox">
+    <label lv-checkbox [(ngModel)]="status" (ngModelChange)="warningConfirmChange($event)">
+        {{ 'common_warning_confirm_label' | i18n }}
+    </label>
+</div>

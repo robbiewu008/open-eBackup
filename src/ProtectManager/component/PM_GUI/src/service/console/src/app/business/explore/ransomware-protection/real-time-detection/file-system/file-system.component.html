@@ -1,0 +1,42 @@
+<div class="aui-operation">
+    <lv-group>
+        <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData" [maxDisplayItems]="2">
+        </lv-pro-button-group>
+    </lv-group>
+    <lv-group lvGutter="8px">
+        <lv-group lvGutter="8px">
+            <button class="aui-button-icon" lv-button lvSize="auto" (click)="dataTable.fetchData()">
+                <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+            </button>
+        </lv-group>
+    </lv-group>
+</div>
+<div class="list-container double-row-height">
+    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+</div>
+
+<ng-template #storageDeviceTpl let-item>
+    <p lv-overflow>
+        {{item.deviceName | nil}}
+    </p>
+    <p lv-overflow class='aui-text-help-sm'>
+        {{item.deviceIp | nil}}
+    </p>
+</ng-template>
+
+<ng-template #honeypotTpl let-item>
+    <span lv-overflow class="aui-link" (click)="honeypotDetail(item)">
+        {{item.honeypotFileNum}}
+    </span>
+</ng-template>
+
+<ng-template #policyTpl let-item>
+    <ng-container *ngIf="item.policyName; else elseTemplate">
+        <span lv-overflow class="aui-link" (click)="policyDetail(item)">
+            {{item.policyName}}
+        </span>
+    </ng-container>
+</ng-template>
+<ng-template #elseTemplate>
+    --
+</ng-template>

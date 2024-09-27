@@ -1,0 +1,13 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pm-delete-rolebinding
+  namespace: dpa
+subjects:
+  - kind: ServiceAccount
+    name: pm-delete-sa
+    namespace: dpa
+roleRef:
+  kind: Role
+  name: pm-delete-sa-role
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,18 @@
+<div class="aui-fullpage">
+    <div class="aui-block aui-paginator-container">
+        <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+            <lv-tab lvTitle="{{'protection_cluster_label' | i18n}}"
+                [lvId]="dataMap.Resource_Type.KingBaseCluster.value">
+                <ng-template lv-tab-lazy>
+                    <aui-king-base-cluster></aui-king-base-cluster>
+                </ng-template>
+            </lv-tab>
+            <lv-tab lvTitle="{{'protection_database_instance_label' | i18n}}"
+                [lvId]="dataMap.Resource_Type.KingBaseInstance.value">
+                <ng-template lv-tab-lazy>
+                    <aui-king-base-instance-database [activeIndex]="'instance'"></aui-king-base-instance-database>
+                </ng-template>
+            </lv-tab>
+        </lv-tabs>
+    </div>
+</div>

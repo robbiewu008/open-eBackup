@@ -1,0 +1,19 @@
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label>{{ 'system_recipient_email_label' | i18n }}</lv-form-label>
+    <lv-form-control [lvErrorTip]="emailErrorTip">
+      <lv-input-group [lvSuffix]="includeSuffix">
+        <input
+          lv-input
+          formControlName="email"
+          class="reset-input"
+          type="text"
+          (blur)="emailBlur()"
+          (focus)="emailFocus()"
+        />
+      </lv-input-group>
+      <ng-template #includeSuffix>
+      </ng-template>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
