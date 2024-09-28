@@ -56,11 +56,11 @@ mp_int32 StubSuccess()
 }
 
 /*
-* 测试用例：调用VmnativeVmfsCheckTool
-* 前置条件：VmfsCheckTool调用失败
-* CHECK点：VmnativeVmfsCheckTool调用失败
-* 前置条件：VmfsCheckTool调用成功
-* CHECK点：VmnativeVmfsCheckTool调用成功
+* 锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷VmnativeVmfsCheckTool
+* 前锟斤拷锟斤拷锟斤拷锟斤拷VmfsCheckTool锟斤拷锟斤拷失锟斤拷
+* CHECK锟姐：VmnativeVmfsCheckTool锟斤拷锟斤拷失锟斤拷
+* 前锟斤拷锟斤拷锟斤拷锟斤拷VmfsCheckTool锟斤拷锟矫成癸拷
+* CHECK锟姐：VmnativeVmfsCheckTool锟斤拷锟矫成癸拷
 */
 TEST_F(VMwareNativeBackupPluginTest, VmnativeVmfsCheckTool)
 {
@@ -78,11 +78,11 @@ TEST_F(VMwareNativeBackupPluginTest, VmnativeVmfsCheckTool)
 }
 
 /*
-* 测试用例：调用VmnativeVmfsMount
-* 前置条件：VmfsMount调用失败
-* CHECK点：VmnativeVmfsMount调用失败
-* 前置条件：VmfsMount调用成功
-* CHECK点：VmnativeVmfsMount调用成功
+* 锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷VmnativeVmfsMount
+* 前锟斤拷锟斤拷锟斤拷锟斤拷VmfsMount锟斤拷锟斤拷失锟斤拷
+* CHECK锟姐：VmnativeVmfsMount锟斤拷锟斤拷失锟斤拷
+* 前锟斤拷锟斤拷锟斤拷锟斤拷VmfsMount锟斤拷锟矫成癸拷
+* CHECK锟姐：VmnativeVmfsMount锟斤拷锟矫成癸拷
 */
 TEST_F(VMwareNativeBackupPluginTest, VmnativeVmfsMount)
 {
@@ -100,11 +100,11 @@ TEST_F(VMwareNativeBackupPluginTest, VmnativeVmfsMount)
 }
 
 /*
-* 测试用例：调用VmnativeVmfsUmount
-* 前置条件：VmfsVmfsUmount调用失败
-* CHECK点：VmnativeVmfsUmount调用失败
-* 前置条件：VmfsUmount调用成功
-* CHECK点：VmnativeVmfsUmount调用成功
+* 锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷VmnativeVmfsUmount
+* 前锟斤拷锟斤拷锟斤拷锟斤拷VmfsVmfsUmount锟斤拷锟斤拷失锟斤拷
+* CHECK锟姐：VmnativeVmfsUmount锟斤拷锟斤拷失锟斤拷
+* 前锟斤拷锟斤拷锟斤拷锟斤拷VmfsUmount锟斤拷锟矫成癸拷
+* CHECK锟姐：VmnativeVmfsUmount锟斤拷锟矫成癸拷
 */
 TEST_F(VMwareNativeBackupPluginTest, VmnativeVmfsUmount)
 {

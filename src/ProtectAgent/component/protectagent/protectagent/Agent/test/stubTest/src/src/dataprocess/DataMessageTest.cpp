@@ -202,7 +202,7 @@ TEST_F(DataMessageTest, ReadPort) {
     mp_uint16 iRet = 0;
     mp_string file;
     StubClogToVoidLogNullPointReference();
-    //no file:ÓÐ·ûºÅÊý×ÖµÄ-1ÎªÎÞ·ûºÅÊýµÄ×î´óÖµ65535
+    //no file:ï¿½Ð·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½-1Îªï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ65535
     {
         iRet = om.ReadPort(file);
         EXPECT_EQ(65535, iRet);

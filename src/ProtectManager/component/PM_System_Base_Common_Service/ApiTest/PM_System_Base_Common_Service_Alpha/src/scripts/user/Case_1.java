@@ -47,20 +47,6 @@ import com.huawei.hutaf.apitest.aw.Reporter;
 import com.huawei.hutaf.apitest.aw.FileUtil;
 import com.huawei.hutaf.apitest.aw.DynamicGlobalVariable;
 
-/*descrip*/
-/**
-* @metadata serviceName:PM_System_Base_Common_Service,serviceId:7f8df2e6517b47719170472d37f28d83,branchName:master,branchUri:017sa3bqsh1,stageName:Alpha
-* @testCaseTitle TestGetToken
-* @testCaseNumber 1
-* @update y30000858 update at 2020-12-17 20:19:22
-* @author y30000858
-* @Description [Pretreatment Condition]
-* 
-* @Description [Test Steps]
-* 
-* @Description [Expected Result]
-* 
-*/
 public class Case_1 {
 
     private Map<String,List<String> > m_commonHeader=new HashMap<String,List<String> >();

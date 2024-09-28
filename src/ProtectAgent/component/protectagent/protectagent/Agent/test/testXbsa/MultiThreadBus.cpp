@@ -96,7 +96,7 @@ MultiThreadBus::~MultiThreadBus()
 
 void MultiThreadBus::startBackupBus(int num, const std::string &libPath)
 {
-    // 1. ´´½¨Ä¿Â¼´æ´¢±¸·ÝÔªÊý¾Ý
+    // 1. ï¿½ï¿½ï¿½ï¿½Ä¿Â¼ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½
     if (m_operateFile) {
         bool ret = CreateNewDir(TEST_BACKUP_DIR);
         if (!ret)
@@ -120,7 +120,7 @@ void MultiThreadBus::startBackupBus(int num, const std::string &libPath)
 
 void MultiThreadBus::startDeleteBus(int num, const std::string &libPath)
 {
-    // 1. ´´½¨ÓÃÓÚÉ¾³ý¹¦ÄÜµÄ´æ´¢±¸·ÝÔªÊý¾ÝÄ¿Â¼
+    // 1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ÜµÄ´æ´¢ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½ï¿½ï¿½Ä¿Â¼
     Log("m_operateFile:%d", m_operateFile);
     if (m_operateFile) {
         bool ret = CreateNewDir(TEST_DELETE_DIR);
@@ -145,7 +145,7 @@ void MultiThreadBus::startDeleteBus(int num, const std::string &libPath)
 
 void MultiThreadBus::startRecoverBus(int num, const std::string &libPath)
 {
-    // 1. ´´½¨ÓÃÓÚ»Ö¸´¹¦ÄÜµÄÄ¿Â¼
+    // 1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú»Ö¸ï¿½ï¿½ï¿½ï¿½Üµï¿½Ä¿Â¼
     if (m_operateFile)
     {
         bool ret = CreateNewDir(TEST_RECOVER_DIR);

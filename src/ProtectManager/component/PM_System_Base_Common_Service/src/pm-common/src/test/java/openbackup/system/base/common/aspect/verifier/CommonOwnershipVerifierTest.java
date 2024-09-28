@@ -22,12 +22,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 
-/**
- * Common Ownership Verifier Test
- *
- * @Since:2023-4-20
- * @Author:c30044692
- */
 @RunWith(SpringRunner.class)
 public class CommonOwnershipVerifierTest {
 

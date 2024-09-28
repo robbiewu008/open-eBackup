@@ -10,16 +10,6 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-/*
- * Copyright (c) Huawei Technologies Co., Ltd.2022-2022. All rights reserved.
- *
- * @file HcsApiTestData.h
- * @author l00601328
- * @brief 通用的常量或者函数。
- * @version 0.1
- * @date 2022/6/22
- */
-
  #include <string>
  #include "common/model/ModelBase.h"
 

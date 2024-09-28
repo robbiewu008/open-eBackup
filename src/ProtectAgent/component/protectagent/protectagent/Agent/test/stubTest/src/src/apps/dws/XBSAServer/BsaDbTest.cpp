@@ -27,9 +27,9 @@ mp_int32 StubFailed(mp_void *pvoid)
 }
 
 /*
-* ²âÊÔÓÃÀý£º´´½¨BsaObjTable±í
-* Ç°ÖÃÌõ¼þ£ºÎÞ
-* CHECKµã£º1.±í²»´æÔÚÊ±´´½¨³É¹¦£¬ÒÑ´æÔÚÊ±´´½¨³É¹¦
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BsaObjTableï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* CHECKï¿½ã£º1.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½
 */
 TEST_F(BsaDbTest, CreateBsaObjTableTest)
 {
@@ -38,16 +38,16 @@ TEST_F(BsaDbTest, CreateBsaObjTableTest)
     system("touch /tmp/BsaDbTest.db");
 
     BsaDb db("/tmp/BsaDbTest.db");
-    EXPECT_EQ(db.CreateBsaObjTable(), MP_SUCCESS); // ±í²»´æÔÚÊ±´´½¨³É¹¦
-    EXPECT_EQ(db.CreateBsaObjTable(), MP_SUCCESS); // ÒÑ´æÔÚÊ±´´½¨³É¹¦
+    EXPECT_EQ(db.CreateBsaObjTable(), MP_SUCCESS); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½
+    EXPECT_EQ(db.CreateBsaObjTable(), MP_SUCCESS); // ï¿½Ñ´ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½
 
     system("rm -f /tmp/BsaDbTest.db");
 }
 
 /*
-* ²âÊÔÓÃÀý£º²åÈëºÍ²éÑ¯BsaObjTable±í
-* Ç°ÖÃÌõ¼þ£ºÎÞ
-* CHECKµã£º1.±í²»´æÔÚÊ±²åÈëÊ§°Ü.2.´æÔÚÊ±²åÈë³É¹¦.3.²åÈëºó¿ÉÒÔ²éÑ¯
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í²ï¿½Ñ¯BsaObjTableï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* CHECKï¿½ã£º1.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½.2.ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½É¹ï¿½.3.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½Ñ¯
 */
 TEST_F(BsaDbTest, InsertBsaObjTest)
 {
@@ -76,9 +76,9 @@ TEST_F(BsaDbTest, InsertBsaObjTest)
     system("touch /tmp/BsaDbTest.db");
 
     BsaDb db("/tmp/BsaDbTest.db");
-    EXPECT_NE(db.InsertBsaObj(obj), MP_FAILED); // 1.±í²»´æÔÚÊ±²åÈëÊ§°Ü
+    EXPECT_NE(db.InsertBsaObj(obj), MP_FAILED); // 1.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
     EXPECT_EQ(db.CreateBsaObjTable(), MP_SUCCESS);
-    EXPECT_EQ(db.InsertBsaObj(obj), MP_SUCCESS); // ±í´æÔÚÊ±²åÈë³É¹¦
+    EXPECT_EQ(db.InsertBsaObj(obj), MP_SUCCESS); // ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½É¹ï¿½
 
     BsaObjInfo queryCond;
     BsaQueryPageInfo pageInfo;
@@ -87,7 +87,7 @@ TEST_F(BsaDbTest, InsertBsaObjTest)
     queryCond.copyType = obj.copyType;
     queryCond.objectType = obj.objectType;
     queryCond.objectStatus = obj.objectStatus;
-    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // ¶ÔÏóÃû³ÆÆ¥Åä
+    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½ï¿½
     EXPECT_EQ(objList.size(), 1);
     EXPECT_TRUE(obj.objectSpaceName == objList[0].objectSpaceName);
     EXPECT_TRUE(obj.bsaObjectOwner == objList[0].bsaObjectOwner);
@@ -109,43 +109,43 @@ TEST_F(BsaDbTest, InsertBsaObjTest)
     EXPECT_TRUE(obj.fsDeviceId == objList[0].fsDeviceId);
 
     queryCond.objectSpaceName = "*";
-    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // ¶ÔÏóÃû³ÆÆ¥Åä£¬Í¨Åä²éÑ¯
+    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½ä£¬Í¨ï¿½ï¿½ï¿½Ñ¯
     EXPECT_EQ(objList.size(), 1);
 
     queryCond.objectSpaceName = "";
     queryCond.bsaObjectOwner = "*";
-    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // ¶ÔÏóÃû³ÆÆ¥Åä£¬Í¨Åä²éÑ¯
+    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½ä£¬Í¨ï¿½ï¿½ï¿½Ñ¯
     EXPECT_EQ(objList.size(), 1);
 
     queryCond.objectSpaceName = "";
     queryCond.bsaObjectOwner = "";
     queryCond.appObjectOwner = "*";
-    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // ¶ÔÏóÃû³ÆÆ¥Åä£¬Í¨Åä²éÑ¯
+    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½ä£¬Í¨ï¿½ï¿½ï¿½Ñ¯
     EXPECT_EQ(objList.size(), 1);
 
     queryCond.objectSpaceName = "*";
     queryCond.bsaObjectOwner = "*";
     queryCond.appObjectOwner = "*";
-    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // ¶ÔÏóÃû³ÆÆ¥Åä£¬Í¨Åä²éÑ¯
+    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½ä£¬Í¨ï¿½ï¿½ï¿½Ñ¯
     EXPECT_EQ(objList.size(), 1);
 
     queryCond.objectName = "/opt/log1";
-    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // ¶ÔÏóÃû³Æ²»Æ¥Åä
+    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ²ï¿½Æ¥ï¿½ï¿½
     EXPECT_EQ(objList.size(), 0);
 
     queryCond.objectName = "/opt/log";
     pageInfo.limit = 10;
     pageInfo.offset = 2;
-    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // offset³¬³ö
+    EXPECT_EQ(db.QueryBsaObjs(queryCond, pageInfo, objList), MP_SUCCESS); // offsetï¿½ï¿½ï¿½ï¿½
     EXPECT_EQ(objList.size(), 0);
 
     system("rm -f /tmp/BsaDbTest.db");
 }
 
 /*
-* ²âÊÔÓÃÀý£ºBuildQueryCond½Ó¿Ú¹¦ÄÜ²âÊÔ
-* Ç°ÖÃÌõ¼þ£ºÎÞ
-* CHECKµã£º1.appObjectOwner,bsaObjectOwner,objectSpaceNameÎª¿Õ»òÕß"*"Ê±²»×÷Îª²éÑ¯Ìõ¼þ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BuildQueryCondï¿½Ó¿Ú¹ï¿½ï¿½Ü²ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* CHECKï¿½ã£º1.appObjectOwner,bsaObjectOwner,objectSpaceNameÎªï¿½Õ»ï¿½ï¿½ï¿½"*"Ê±ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(BsaDbTest, BuildQueryCondTest)
 {
@@ -179,9 +179,9 @@ TEST_F(BsaDbTest, BuildQueryCondTest)
 }
 
 /*
-* ²âÊÔÓÃÀý£ºBuildQueryCond½Ó¿Ú¹¦ÄÜ²âÊÔ2
-* Ç°ÖÃÌõ¼þ£ºÎÞ
-* CHECKµã£º1.copyType,objectType,objectStatusÎªANYÊ±²»×÷Îª²éÑ¯Ìõ¼þ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BuildQueryCondï¿½Ó¿Ú¹ï¿½ï¿½Ü²ï¿½ï¿½ï¿½2
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* CHECKï¿½ã£º1.copyType,objectType,objectStatusÎªANYÊ±ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(BsaDbTest, BuildQueryCondTest2)
 {
@@ -209,9 +209,9 @@ TEST_F(BsaDbTest, BuildQueryCondTest2)
 }
 
 /*
-* ²âÊÔÓÃÀý£ºDwsHost±í´´½¨ºÍÔö¡¢É¾¡¢²éÑ¯¹¦ÄÜ²âÊÔ
-* Ç°ÖÃÌõ¼þ£ºÎÞ
-* CHECKµã£º1.´´±í½Ó¿Ú¿ÉÒÔÖØ¸´µ÷ÓÃ.2.ÔöÉ¾ºÍ²éÑ¯·ûºÏÔ¤ÆÚ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½DwsHostï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½Ü²ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* CHECKï¿½ã£º1.ï¿½ï¿½ï¿½ï¿½Ó¿Ú¿ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½.2.ï¿½ï¿½É¾ï¿½Í²ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½
 */
 TEST_F(BsaDbTest, DwsHostTableTest)
 {
@@ -219,34 +219,34 @@ TEST_F(BsaDbTest, DwsHostTableTest)
     BsaDb db("/tmp/BsaDbTest.db");
     system("touch /tmp/BsaDbTest.db");
 
-    EXPECT_EQ(db.CreateDwsHostFilesystemTable(), MP_SUCCESS); // Ê×´Î´´½¨±í³É¹¦
-    EXPECT_EQ(db.CreateDwsHostFilesystemTable(), MP_SUCCESS); // ±íÒÑ´æÔÚ´´½¨Ò²ÊÇ³É¹¦
+    EXPECT_EQ(db.CreateDwsHostFilesystemTable(), MP_SUCCESS); // ï¿½×´Î´ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½
+    EXPECT_EQ(db.CreateDwsHostFilesystemTable(), MP_SUCCESS); // ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½Ú´ï¿½ï¿½ï¿½Ò²ï¿½Ç³É¹ï¿½
 
     DwsHostInfo hostInfo1("host1", "id1", "fs1", "esn1");
-    EXPECT_EQ(db.InsertDwsHost(hostInfo1), MP_SUCCESS); // ²åÈëhost1³É¹¦
+    EXPECT_EQ(db.InsertDwsHost(hostInfo1), MP_SUCCESS); // ï¿½ï¿½ï¿½ï¿½host1ï¿½É¹ï¿½
 
     DwsHostInfo hostInfo2("host2", "id2", "fs2", "esn1");
-    EXPECT_EQ(db.InsertDwsHost(hostInfo2), MP_SUCCESS); // ²åÈëhost2³É¹¦
+    EXPECT_EQ(db.InsertDwsHost(hostInfo2), MP_SUCCESS); // ï¿½ï¿½ï¿½ï¿½host2ï¿½É¹ï¿½
     {
         BsaQueryPageInfo pageInfo(100, 0);
         std::vector<DwsHostInfo> hostList;
-        EXPECT_EQ(db.QueryDwsHosts(pageInfo, hostList), MP_SUCCESS); // ²éÑ¯³É¹¦
-        EXPECT_EQ(hostList.size(), 2); // ²éÑ¯³ö2Ìõ¼ÇÂ¼
+        EXPECT_EQ(db.QueryDwsHosts(pageInfo, hostList), MP_SUCCESS); // ï¿½ï¿½Ñ¯ï¿½É¹ï¿½
+        EXPECT_EQ(hostList.size(), 2); // ï¿½ï¿½Ñ¯ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½Â¼
     }
 
-    EXPECT_EQ(db.DeleteDwsHost("host1"), MP_SUCCESS); // É¾³ýhost1³É¹¦
+    EXPECT_EQ(db.DeleteDwsHost("host1"), MP_SUCCESS); // É¾ï¿½ï¿½host1ï¿½É¹ï¿½
     {
         BsaQueryPageInfo pageInfo(100, 0);
         std::vector<DwsHostInfo> hostList;
-        EXPECT_EQ(db.QueryDwsHosts(pageInfo, hostList), MP_SUCCESS); // ²éÑ¯³É¹¦
-        EXPECT_EQ(hostList.size(), 1); // ²éÑ¯³ö1Ìõ¼ÇÂ¼£¬²éÑ¯½á¹ûÓë²åÈë¼ÇÂ¼µÄÖµÏàµÈ
+        EXPECT_EQ(db.QueryDwsHosts(pageInfo, hostList), MP_SUCCESS); // ï¿½ï¿½Ñ¯ï¿½É¹ï¿½
+        EXPECT_EQ(hostList.size(), 1); // ï¿½ï¿½Ñ¯ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½Öµï¿½ï¿½ï¿½
         EXPECT_EQ(hostList[0].hostname == "host2", true);
         EXPECT_EQ(hostList[0].fsId == "id2", true);
         EXPECT_EQ(hostList[0].fsName == "fs2", true);
         EXPECT_EQ(hostList[0].fsDeviceId == "esn1", true);
     }
 
-    system("rm -f /tmp/BsaDbTest.db"); // ÇåÀí×ÊÔ´
+    system("rm -f /tmp/BsaDbTest.db"); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´
 }
 
 TEST_F(BsaDbTest, DwsHostTest)
@@ -262,6 +262,6 @@ TEST_F(BsaDbTest, DwsHostTest)
     EXPECT_EQ(db.DeleteDwsHost(hostname), MP_FAILED); 
     
     stub.reset(ADDR(DWSDB, ExecSql));
-    system("rm -f /tmp/BsaDbTest.db"); // ÇåÀí×ÊÔ´
+    system("rm -f /tmp/BsaDbTest.db"); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´
 }
 

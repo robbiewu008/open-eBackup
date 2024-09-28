@@ -174,11 +174,11 @@ int setStubC(void *pOldFunc, void *pNewFunc)
 
 static void* findVirtualFuncAddr(long pOldFunc, const char *pObject)
 {
-	//Ðé±íµÄµØÖ·¾Í´æ·ÅÔÚ¶ÔÏóµÄÇ°sizeof(unsigned long)×Ö½ÚÖÐ
+	//ï¿½ï¿½ï¿½Äµï¿½Ö·ï¿½Í´ï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½Ç°sizeof(unsigned long)ï¿½Ö½ï¿½ï¿½ï¿½
     const unsigned long *pVirtualTableAddr = (const unsigned long*)*((const unsigned long*)pObject);
-	//pOldFuncÊµ¼ÊÉÏÊÇÒ»¸öÐòºÅ£¬ÔÚSUSE10_X64ÏµÍ³ÖÐ£¬
-	//µÚÒ»¸öÐéº¯ÊýµÄÐòºÅÎª1£¬µÚ¶þ¸öÐéº¯ÊýµÄÐòºÅÎª9£¬µÚÈý¸öÐéº¯ÊýµÄÐòºÅÎª17
-	long vtabIndex = (pOldFunc-1)/sizeof(char*);//µ±Ç°Òª»ñÈ¡µÄº¯ÊýÔÚvirtual tableÖÐµÄË÷ÒýºÅ
+	//pOldFuncÊµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Å£ï¿½ï¿½ï¿½SUSE10_X64ÏµÍ³ï¿½Ð£ï¿½
+	//ï¿½ï¿½Ò»ï¿½ï¿½ï¿½éº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª1ï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½éº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª9ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½éº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª17
+	long vtabIndex = (pOldFunc-1)/sizeof(char*);//ï¿½ï¿½Ç°Òªï¿½ï¿½È¡ï¿½Äºï¿½ï¿½ï¿½ï¿½ï¿½virtual tableï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if (pVirtualTableAddr != NULL)
     {
         void *funcAddr = (void *)pVirtualTableAddr[vtabIndex];

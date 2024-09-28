@@ -176,10 +176,7 @@ ul.simple {
 .sliexpand {
   margin-top: 1em;
   margin-bottom: 1em;
-} /*!
-@modify  section topic sectiontitle
-@author  2009-12-02
-*/
+}
 .sectiontitle2contents:link {
   color: #007af4;
 }

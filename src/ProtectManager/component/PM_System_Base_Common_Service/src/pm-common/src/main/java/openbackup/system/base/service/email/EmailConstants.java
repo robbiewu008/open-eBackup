@@ -15,9 +15,6 @@ package openbackup.system.base.service.email;
 /**
  * 邮件常量
  *
- * @author dwx1009286
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-22
  */
 public class EmailConstants {
     /**
