@@ -36,9 +36,6 @@ import java.util.Optional;
 /**
  * CommonResourceAccessController测试
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-19
  */
 public class CommonResourceAccessControllerTest {
     private final ResourceService resourceService = Mockito.mock(ResourceService.class, Mockito.RETURNS_DEEP_STUBS);

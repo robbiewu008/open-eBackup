@@ -26,8 +26,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * 功能描述
  *
- * @author c30058517
- * @since 2024-04-07
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {ExchangeAlarmProvider.class, ProtectedResourceServiceImpl.class})

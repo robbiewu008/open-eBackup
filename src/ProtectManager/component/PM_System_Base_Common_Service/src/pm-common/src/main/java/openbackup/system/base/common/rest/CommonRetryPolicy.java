@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Common Retry Policy
  *
- * @author l00272247
- * @since 2021-05-31
  */
 @Data
 public class CommonRetryPolicy {

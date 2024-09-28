@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 /**
  * Live Mount Feign Api
  *
- * @author m00576658
- * @since 2021-03-09
  */
 @FeignClient(name = "live-mount-internal-service", url = "${service.url.pm-live-mount}/v1/internal/live-mount",
         configuration = CommonFeignConfiguration.class)

@@ -32,8 +32,6 @@ import java.util.Objects;
 /**
  * 功能描述
  *
- * @author c00826511
- * @since 2023-07-28
  */
 @Slf4j
 @Component

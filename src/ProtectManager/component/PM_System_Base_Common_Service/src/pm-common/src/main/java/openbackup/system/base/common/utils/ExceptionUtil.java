@@ -32,9 +32,6 @@ import javax.naming.InsufficientResourcesException;
 /**
  * 异常工具类
  *
- * @author l90002863
- * @version [OceanStor ReplicationDirector V100R005C00, 2015-7-6]
- * @since 2019-11-01
  */
 public final class ExceptionUtil {
     /**

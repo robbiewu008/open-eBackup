@@ -21,8 +21,6 @@ import org.junit.Test;
 /**
  * DoradoFeignConfiguration test
  *
- * @author jwx701567
- * @since 2021-03-17
  */
 public class DoradoFeignConfigurationTest {
     @Test

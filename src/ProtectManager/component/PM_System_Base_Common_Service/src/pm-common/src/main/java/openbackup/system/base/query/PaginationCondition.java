@@ -21,8 +21,6 @@ import java.util.Collections;
 /**
  * 功能描述
  *
- * @author h30003246
- * @since 2021-06-04
  */
 public class PaginationCondition {
     private final JSONObject conditions;

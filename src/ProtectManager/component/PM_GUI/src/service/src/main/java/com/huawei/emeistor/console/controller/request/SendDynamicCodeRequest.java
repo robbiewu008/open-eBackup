@@ -23,8 +23,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 发送动态口令请求
  *
- * @author c00826511
- * @since 2022-12-28
  */
 @Getter
 @Setter

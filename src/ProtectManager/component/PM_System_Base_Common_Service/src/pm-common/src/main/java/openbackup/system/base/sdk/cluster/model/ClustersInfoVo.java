@@ -23,9 +23,6 @@ import java.util.List;
 /**
  * Clusters info vo
  *
- * @author p30001902
- * @version [版本号, 需求编号_需求名称]
- * @since 2020-06-08
  */
 @Data
 public class ClustersInfoVo {

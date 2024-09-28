@@ -48,8 +48,6 @@ import java.util.UUID;
 /**
  * Op服务化测试用例
  *
- * @author l30044826
- * @since 2023-07-14
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(OpServiceUtil.class)

@@ -36,9 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * TrustAspect llt
  *
- * @author g00500588
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/12/2
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {RequestContextHolder.class, ServletRequestAttributes.class})

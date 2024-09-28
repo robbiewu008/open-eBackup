@@ -65,9 +65,6 @@ import java.util.stream.Collectors;
 /**
  * 统一备份框架副本Provider
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-15
  */
 @Slf4j
 @Component("unifiedCopyProvider")

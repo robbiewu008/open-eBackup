@@ -16,9 +16,6 @@ package openbackup.data.access.framework.core.common.enums.v2.filter;
  * FilterRuleEnum
  *
  * @description: 资源过滤规则枚举类，表示资源按照什么规则进行匹配
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  **/
 public enum FilterRuleEnum {
     /**

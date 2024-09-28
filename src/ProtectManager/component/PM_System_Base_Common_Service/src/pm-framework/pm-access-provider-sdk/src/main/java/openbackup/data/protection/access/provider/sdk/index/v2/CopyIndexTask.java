@@ -22,9 +22,6 @@ import java.util.List;
 /**
  * 副本索引参数对象，索引时所需要的参数由该对象承载
  *
- * @author lWX776769
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-29
  */
 public class CopyIndexTask {
     // 索引请求ID

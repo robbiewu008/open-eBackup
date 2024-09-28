@@ -26,8 +26,6 @@ import java.util.List;
 /**
  * Sensitive Data Eliminate Service Test
  *
- * @author l00272247
- * @since 2021-03-06
  */
 public class SensitiveDataEliminateServiceTest {
     /**

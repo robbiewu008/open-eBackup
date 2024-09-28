@@ -26,8 +26,6 @@ import org.springframework.context.annotation.ScopedProxyMode;
 /**
  * 功能描述
  *
- * @author z00842230
- * @since 2023-10-13
  */
 @Slf4j
 @Configuration

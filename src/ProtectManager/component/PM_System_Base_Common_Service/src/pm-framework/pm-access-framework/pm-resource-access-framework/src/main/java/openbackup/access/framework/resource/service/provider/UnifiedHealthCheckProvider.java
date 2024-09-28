@@ -35,9 +35,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述: 默认健康检查 provider
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-23
  */
 @Slf4j
 @Component

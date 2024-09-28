@@ -19,9 +19,6 @@ import lombok.NoArgsConstructor;
 /**
  * 功能描述
  *
- * @author w00448845
- * @version [BCManager 8.0.0]
- * @since 2020-01-14
  */
 @Data
 @AllArgsConstructor

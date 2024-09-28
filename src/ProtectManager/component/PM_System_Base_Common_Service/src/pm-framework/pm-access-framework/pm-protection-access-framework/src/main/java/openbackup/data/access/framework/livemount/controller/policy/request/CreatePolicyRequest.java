@@ -27,8 +27,6 @@ import javax.validation.constraints.Size;
 /**
  * 创建更新策略
  *
- * @author h30003246
- * @since 2020-09-17
  */
 @Data
 public class CreatePolicyRequest {

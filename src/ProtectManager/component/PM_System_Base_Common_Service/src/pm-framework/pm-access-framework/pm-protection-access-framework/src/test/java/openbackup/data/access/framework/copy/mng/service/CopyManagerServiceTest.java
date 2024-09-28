@@ -39,9 +39,6 @@ import java.util.List;
 /**
  * CopyManagerServiceTest
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-07
  */
 public class CopyManagerServiceTest {
     private CopyManagerServiceImpl copyManagerService;

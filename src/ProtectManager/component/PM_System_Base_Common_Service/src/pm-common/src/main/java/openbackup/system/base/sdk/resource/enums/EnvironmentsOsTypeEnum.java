@@ -15,8 +15,6 @@ package openbackup.system.base.sdk.resource.enums;
 /**
  * 反向注册时前端显示agent操作系统类型和environments表中osType字段值
  *
- * @author z00613137
- * @since 2023-08-18
  */
 public enum EnvironmentsOsTypeEnum {
     /**

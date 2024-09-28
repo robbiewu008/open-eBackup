@@ -21,8 +21,6 @@ import javax.validation.constraints.Size;
 /**
  * 内部组件密码info类
  *
- * @author z00613137
- * @since 2023-05-22
  */
 @Data
 public class ClusterComponentPwdInfo {

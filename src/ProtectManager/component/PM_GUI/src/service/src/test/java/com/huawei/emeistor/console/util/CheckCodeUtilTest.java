@@ -18,9 +18,6 @@ import org.junit.Test;
 /**
  * CheckCodeUtil llt
  *
- * @author g00500588
- * @version: [OceanProtect X8000 1.2.1]
- * @since 2022/08/24
  */
 public class CheckCodeUtilTest {
 

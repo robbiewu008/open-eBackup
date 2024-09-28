@@ -23,8 +23,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 编号获取工具类
  *
- * @author w00607005
- * @since 2023-07-07
  */
 public class OrderNoUtil {
     /**

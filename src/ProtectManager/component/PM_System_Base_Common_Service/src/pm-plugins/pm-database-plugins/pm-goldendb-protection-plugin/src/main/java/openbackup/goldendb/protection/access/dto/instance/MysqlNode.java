@@ -18,8 +18,6 @@ import lombok.NoArgsConstructor;
 /**
  * 功能描述 mysql节点
  *
- * @author s30036254
- * @since 2023-02-14
  */
 @NoArgsConstructor
 @Data

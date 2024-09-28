@@ -28,9 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 资源锁接口
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/6/3
  */
 @Slf4j
 @RestController

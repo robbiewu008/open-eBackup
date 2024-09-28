@@ -25,9 +25,6 @@ import java.util.List;
 /**
  * 副本详情
  *
- * @author y00413474
- * @version [BCManager 8.0.0]
- * @since 2020-04-15
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)

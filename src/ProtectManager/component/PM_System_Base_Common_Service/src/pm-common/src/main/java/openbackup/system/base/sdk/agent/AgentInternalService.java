@@ -17,8 +17,6 @@ import java.util.List;
 /**
  * Agent服务
  *
- * @author w00504341
- * @since 2023-07-21
  */
 public interface AgentInternalService {
     /**

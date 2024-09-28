@@ -22,9 +22,6 @@ import java.lang.annotation.Target;
  * 暴露面标记注解
  * 无实现，只为平台扫描
  *
- * @author q00464130
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-19
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

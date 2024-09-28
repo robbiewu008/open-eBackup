@@ -24,8 +24,6 @@ import javax.annotation.Resource;
 /**
  * Date Converter Test
  *
- * @author c30044692
- * @since 2023-04-20
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DateConverter.class)

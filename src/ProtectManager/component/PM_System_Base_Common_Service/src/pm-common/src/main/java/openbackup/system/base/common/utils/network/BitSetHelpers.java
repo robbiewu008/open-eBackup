@@ -19,8 +19,6 @@ import java.util.BitSet;
  * These are generally not necessary in JDK7, since the BitSet.valueOf(long[])
  * method. However, for java-6 compatibility, we go this way.
  *
- * @author y00413474
- * @since 2020-07-01
  */
 class BitSetHelpers {
     static BitSet bitSetOf(long lowerBits, long upperBits) {

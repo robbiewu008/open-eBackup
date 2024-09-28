@@ -74,8 +74,6 @@ import javax.naming.AuthenticationException;
 /**
  * SSH客户端(非root用户待完善)
  *
- * @author w30042425
- * @since 2023-10-07
  */
 @Slf4j
 @Getter

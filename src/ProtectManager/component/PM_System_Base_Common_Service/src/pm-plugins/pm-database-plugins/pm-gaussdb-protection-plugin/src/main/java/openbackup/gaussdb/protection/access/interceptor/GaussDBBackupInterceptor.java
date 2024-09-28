@@ -36,9 +36,6 @@ import java.util.Map;
 /**
  * GaussDb环境注册提供者
  *
- * @author t30021437
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-02-10
  */
 
 @Component

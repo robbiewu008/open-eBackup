@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 目标集群告警信息查询数据返回模型
  *
- * @author dWX1009286
- * @since 2021-07-20
  */
 @Data
 public class ClusterAlarmsInfo {

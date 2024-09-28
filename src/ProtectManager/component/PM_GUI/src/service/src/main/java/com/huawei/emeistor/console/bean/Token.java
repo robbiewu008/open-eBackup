@@ -22,9 +22,6 @@ import java.io.Serializable;
 /**
  * 必须实现序列化才能写入redis
  *
- * @author lwx544155
- * @version [OceanStor DJ V100R003C00, 2020年03月05日]
- * @since 2020-11-30
  */
 @Getter
 @Setter

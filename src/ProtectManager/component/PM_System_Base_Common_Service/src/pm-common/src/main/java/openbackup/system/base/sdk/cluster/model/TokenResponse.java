@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Token Response
  *
- * @author l00272247
- * @since 2020-11-20
  */
 @Data
 public class TokenResponse {

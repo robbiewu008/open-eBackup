@@ -59,8 +59,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 功能描述 安全一体机受保护资源服务类
  *
- * @author s30031954
- * @since 2022-12-21
  */
 @Service
 @Slf4j

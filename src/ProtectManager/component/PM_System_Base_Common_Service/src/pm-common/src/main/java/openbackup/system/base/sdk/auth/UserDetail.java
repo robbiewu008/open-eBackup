@@ -19,9 +19,6 @@ import java.util.Set;
 /**
  * UserDetail from rest request
  *
- * @author dwx1009286
- * @version [OceanProtect 1.1.0]
- * @since 2022-02-24
  */
 @Data
 public class UserDetail {

@@ -15,9 +15,6 @@ package openbackup.system.base.ssh;
 /**
  * SSHService
  *
- * @author l30057246
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/6/19
  */
 public interface AgentRegisterService {
     /**

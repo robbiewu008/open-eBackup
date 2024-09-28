@@ -21,8 +21,6 @@ import org.junit.Test;
 /**
  * 功能描述
  *
- * @author z30047175
- * @since 2023-06-25
  */
 public class SchedulerNodeTest {
     /**

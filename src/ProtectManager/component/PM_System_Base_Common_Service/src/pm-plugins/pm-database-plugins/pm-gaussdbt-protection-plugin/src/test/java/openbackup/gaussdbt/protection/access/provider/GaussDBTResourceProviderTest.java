@@ -25,9 +25,6 @@ import org.powermock.api.mockito.PowerMockito;
 /**
  * GaussDBTResourceProvider测试类
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-13
  */
 public class GaussDBTResourceProviderTest {
     private final ProviderManager providerManager = PowerMockito.mock(ProviderManager.class);

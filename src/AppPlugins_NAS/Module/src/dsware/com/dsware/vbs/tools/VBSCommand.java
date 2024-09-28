@@ -24,8 +24,6 @@ import java.lang.reflect.Method;
 /**
  * <Description>
  * 
- * @author  j55771
- * @version  [V100R001C00, 2012-7-26]
  */
 public class VBSCommand
 {

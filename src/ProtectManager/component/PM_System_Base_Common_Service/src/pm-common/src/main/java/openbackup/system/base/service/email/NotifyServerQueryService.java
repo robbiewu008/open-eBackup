@@ -17,9 +17,6 @@ import openbackup.system.base.service.email.entity.RemoteNotifyServer;
 /**
  * 邮箱服务器查询服务
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-14
  */
 public interface NotifyServerQueryService {
     /**

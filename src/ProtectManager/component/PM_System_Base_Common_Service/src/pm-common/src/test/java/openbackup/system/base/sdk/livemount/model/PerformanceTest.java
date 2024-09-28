@@ -25,8 +25,6 @@ import java.util.stream.Stream;
 /**
  * Performance Test
  *
- * @author l00272247
- * @since 2021-12-20
  */
 public class PerformanceTest {
     private static Performance create(JSONObject data) {

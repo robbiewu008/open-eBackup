@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * DME Delete Cloud Archive request
  *
- * @author d00512967
- * @since 2020-12-12
  */
 @Data
 public class DmeDelCloudArchiveCopyRequest {

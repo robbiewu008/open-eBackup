@@ -18,8 +18,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 /**
  * Copy Resource Summary
  *
- * @author l00272247
- * @since 2020-11-09
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CopyResourceSummaryBo extends CopyResourceBase {

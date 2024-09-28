@@ -27,8 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * qos调用的api
  *
- * @author twx1009756
- * @since 2020-12-26
  */
 @FeignClient(name = "qos-common-rest-api", url = "${pm-data-protection-service.url}/v1",
     configuration = CommonFeignConfiguration.class)

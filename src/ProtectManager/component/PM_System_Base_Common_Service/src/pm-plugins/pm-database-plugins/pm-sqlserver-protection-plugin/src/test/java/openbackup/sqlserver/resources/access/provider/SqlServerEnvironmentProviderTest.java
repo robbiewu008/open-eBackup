@@ -43,9 +43,6 @@ import java.util.Optional;
 /**
  * SQL Server环境扫描测试类
  *
- * @author xWX1016404
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-15
  */
 public class SqlServerEnvironmentProviderTest {
     private SqlServerEnvironmentProvider sqlServerEnvironmentProvider;

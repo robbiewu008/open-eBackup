@@ -53,9 +53,6 @@ import java.util.Optional;
 /**
  * GeneralDbBackupInterceptor测试类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-30
  */
 @SpringBootTest(classes = {GeneralDbBackupInterceptor.class, GeneralDbProtectAgentService.class})
 @RunWith(SpringRunner.class)

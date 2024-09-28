@@ -43,8 +43,6 @@ import java.util.Optional;
 /**
  * NdmpAgentSelectorTest
  *
- * @author c30035089
- * @since 2024-08-30
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({EnvironmentLinkStatusHelper.class})

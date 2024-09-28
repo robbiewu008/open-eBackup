@@ -28,9 +28,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述 fc配置工具类
  *
- * @author t30028453
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-02-14
  */
 public class FibreUtil {
     /**

@@ -15,8 +15,6 @@ package openbackup.tdsql.resources.access.constant;
 /**
  * 功能描述 TDSQL常量
  *
- * @author z30047175
- * @since 2023-05-24
  */
 public class TdsqlConstant {
     /**

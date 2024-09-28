@@ -17,9 +17,6 @@ import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvide
 /**
  * 副本索引的provider,该类定义资源副本是否支持索引的接口。不用的应用根据需要创建
  *
- * @author lWX776769
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-01-14
  */
 public interface CopyIndexProvider extends DataProtectionProvider<String> {
     /**

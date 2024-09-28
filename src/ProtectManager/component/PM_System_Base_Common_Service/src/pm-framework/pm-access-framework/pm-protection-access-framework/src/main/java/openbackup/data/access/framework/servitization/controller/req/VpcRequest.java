@@ -24,8 +24,6 @@ import javax.validation.constraints.NotBlank;
 /**
  * VpcRequest
  *
- * @author l30044826
- * @since 2023-08-11
  */
 @Getter
 @Setter

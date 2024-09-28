@@ -19,8 +19,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 /**
  * Storage Client Rest Api
  *
- * @author l00272247
- * @since 2020-1130
  */
 @FeignClient(name = "storage-client", url = "${service.url.pm-system-base}/v1",
     configuration = CommonFeignConfiguration.class)

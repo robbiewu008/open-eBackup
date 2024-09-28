@@ -27,9 +27,6 @@ import java.util.regex.Pattern;
 /**
  * 检查环境名称工具类
  *
- * @author x30038064
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/12/13
  */
 @Slf4j
 public class EnvironmentParamCheckUtil {

@@ -27,9 +27,6 @@ import org.springframework.stereotype.Component;
 /**
  * db2主机上表空间浏览
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-04
  */
 @Component
 @Slf4j

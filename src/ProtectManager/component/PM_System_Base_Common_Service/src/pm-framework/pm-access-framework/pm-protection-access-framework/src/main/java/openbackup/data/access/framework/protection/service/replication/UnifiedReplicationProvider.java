@@ -33,8 +33,6 @@ import java.util.stream.Collectors;
 /**
  * Unified Replication Provider
  *
- * @author l00272247
- * @since 2022-01-30
  */
 @Slf4j
 @Component

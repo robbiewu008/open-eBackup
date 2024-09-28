@@ -37,9 +37,6 @@ import java.util.Objects;
 /**
  * 恢复任务校验工具类，负责静态校验逻辑，此类不需要依赖外部服务
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/25
  **/
 @Slf4j
 public abstract class RestoreValidator {

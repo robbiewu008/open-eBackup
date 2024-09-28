@@ -44,8 +44,6 @@ import java.util.Objects;
 /**
  * 功能描述
  *
- * @author w00616953
- * @since 2021-10-20
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {ResourceSchemaValidatorController.class})

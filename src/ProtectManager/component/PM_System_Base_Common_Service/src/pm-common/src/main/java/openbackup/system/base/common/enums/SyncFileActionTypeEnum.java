@@ -17,9 +17,6 @@ import lombok.Getter;
 /**
  * 同步文件到所有节点的动作枚举类
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2024-07-29
  */
 @Getter
 public enum SyncFileActionTypeEnum {

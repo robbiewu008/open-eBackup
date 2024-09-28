@@ -18,9 +18,6 @@ import lombok.Getter;
 /**
  * 认证方式枚举类
  *
- * @author swx1010572
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-03-28
  */
 @AllArgsConstructor
 @Getter

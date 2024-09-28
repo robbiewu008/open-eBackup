@@ -24,8 +24,6 @@ import java.lang.annotation.Target;
 /**
  * 校验部署方式注解
  *
- * @author c30035089
- * @since 2023-01-30
  */
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

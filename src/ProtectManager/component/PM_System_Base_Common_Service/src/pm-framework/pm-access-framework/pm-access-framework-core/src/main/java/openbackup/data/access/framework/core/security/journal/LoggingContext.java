@@ -19,8 +19,6 @@ import java.util.Map;
 /**
  * Logging Context
  *
- * @author l00272247
- * @since 2021-12-17
  */
 public class LoggingContext {
     /**

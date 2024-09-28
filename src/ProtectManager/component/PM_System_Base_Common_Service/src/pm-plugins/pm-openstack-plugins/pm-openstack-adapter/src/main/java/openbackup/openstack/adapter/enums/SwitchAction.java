@@ -17,9 +17,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * 开关任务动作枚举
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-22
  */
 public enum SwitchAction {
     START("start"),

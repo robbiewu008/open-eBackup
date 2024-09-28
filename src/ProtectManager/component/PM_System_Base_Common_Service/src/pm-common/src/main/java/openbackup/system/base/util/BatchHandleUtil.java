@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * 批处理工具类
  *
- * @author w00607005
- * @since 2023-07-24
  */
 public class BatchHandleUtil {
     /**

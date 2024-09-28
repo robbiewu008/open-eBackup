@@ -27,9 +27,6 @@ import java.util.Map;
 /**
  * MongoDB 工具构造类
  *
- * @author swx1010572
- * @version [DataBackup 1.5.0]
- * @since 2023-04-27
  */
 public class MongoDBMockBean {
     public ProtectedEnvironment getMongoDBProtectedEnvironment() {

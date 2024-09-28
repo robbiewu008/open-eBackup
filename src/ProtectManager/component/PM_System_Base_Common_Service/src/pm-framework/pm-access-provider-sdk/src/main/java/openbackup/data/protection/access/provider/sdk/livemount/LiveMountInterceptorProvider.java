@@ -18,8 +18,6 @@ import openbackup.system.base.common.constants.LegoNumberConstant;
 /**
  * Live Mount Interceptor Provider
  *
- * @author l00272247
- * @since 2021-12-29
  */
 public interface LiveMountInterceptorProvider extends DataProtectionProvider<String> {
     /**

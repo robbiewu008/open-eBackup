@@ -17,8 +17,6 @@ import lombok.Getter;
 /**
  * redis类型类
  *
- * @author t00482481
- * @since 2020-07-05
  */
 @Getter
 public enum RedisTypeEnum {

@@ -42,8 +42,6 @@ import java.util.UUID;
 /**
  * RestoreTaskCompleteHandler LLT
  *
- * @author m00576658
- * @since 2021-03-26
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(RestoreTaskCompleteHandler.class)

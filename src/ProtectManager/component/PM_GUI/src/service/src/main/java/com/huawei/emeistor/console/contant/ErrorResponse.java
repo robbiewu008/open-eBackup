@@ -22,9 +22,6 @@ import lombok.Setter;
 /**
  * 异常对象类
  *
- * @author zKF66175
- * @version [V100R002C00, 2013-2-5]
- * @since 2019-10-25
  */
 @NoArgsConstructor
 @AllArgsConstructor

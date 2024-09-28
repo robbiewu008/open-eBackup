@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * 存储单元接口响应返回类
  *
- * @author w00639094
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-06
  */
 @Setter
 @Getter

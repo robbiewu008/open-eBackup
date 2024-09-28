@@ -22,9 +22,6 @@ import lombok.Setter;
 /**
  * 功能描述: FileSystemScrubResponse
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-27
  */
 @Getter
 @Setter

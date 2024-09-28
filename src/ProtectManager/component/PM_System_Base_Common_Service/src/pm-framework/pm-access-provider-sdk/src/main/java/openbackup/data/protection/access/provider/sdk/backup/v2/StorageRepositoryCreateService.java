@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * 构造存储仓（下发给UBC的参数），通过存储单元（组）
  *
- * @author w30044259
- * @since 2024-03-26
  */
 public interface StorageRepositoryCreateService {
     /**

@@ -20,8 +20,6 @@ import lombok.NoArgsConstructor;
 /**
  * 存储池参数
  *
- * @author w00493811
- * @since 2021-01-12
  */
 @Data
 @NoArgsConstructor

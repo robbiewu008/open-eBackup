@@ -24,9 +24,6 @@ import org.hibernate.validator.constraints.Length;
 /**
  * 受保护环境DTO对象
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-14
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

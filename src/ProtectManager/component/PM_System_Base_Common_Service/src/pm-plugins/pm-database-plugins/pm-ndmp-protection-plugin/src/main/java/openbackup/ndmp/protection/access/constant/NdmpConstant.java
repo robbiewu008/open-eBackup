@@ -15,8 +15,6 @@ package openbackup.ndmp.protection.access.constant;
 /**
  * NDMP 常数类
  *
- * @author t30021437
- * @since 2023-05-06
  */
 public class NdmpConstant {
     /**

@@ -38,9 +38,6 @@ import java.util.stream.Collectors;
 /**
  * GaussDb SLA校验器
  *
- * @author t30021437
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-02-13
  */
 
 @Slf4j

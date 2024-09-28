@@ -17,9 +17,6 @@ import java.util.Map;
 /**
  * 认证信息
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-19
  */
 public class Authentication {
     /**

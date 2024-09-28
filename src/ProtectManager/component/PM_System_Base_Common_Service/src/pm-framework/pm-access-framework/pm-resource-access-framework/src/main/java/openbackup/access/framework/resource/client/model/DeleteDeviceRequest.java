@@ -20,8 +20,6 @@ import lombok.NoArgsConstructor;
 /**
  * 删除设备请求体
  *
- * @author s30031954
- * @since 2022-12-29
  */
 @Data
 @Builder

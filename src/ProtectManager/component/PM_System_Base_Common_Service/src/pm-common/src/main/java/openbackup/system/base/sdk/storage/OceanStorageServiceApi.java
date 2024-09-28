@@ -40,8 +40,6 @@ import java.util.List;
 /**
  * dorado 服务接口定义
  *
- * @author p00511147
- * @since 2020/10/29
  */
 public interface OceanStorageServiceApi {
     /**

@@ -29,8 +29,6 @@ import java.util.stream.Stream;
 /**
  * Data Source Config Test
  *
- * @author l00650874
- * @since 2022-05-05
  */
 public class DataSourceConfigTest {
     /**

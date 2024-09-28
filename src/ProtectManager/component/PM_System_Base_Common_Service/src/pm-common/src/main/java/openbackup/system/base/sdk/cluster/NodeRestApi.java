@@ -26,9 +26,6 @@ import java.net.URI;
 /**
  * 给所有节点发消息
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-05
  */
 public interface NodeRestApi {
     /**

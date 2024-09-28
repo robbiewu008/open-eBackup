@@ -19,8 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 文件校验接口
  *
- * @author w00607005
- * @since 2023-09-21
  */
 public interface FileCheckInterface {
     /**

@@ -37,8 +37,6 @@ import java.util.Set;
 /**
  * GoldenDB任务排队规则
  *
- * @author c30035089
- * @since 2024-07-24
  */
 @Component
 @AllArgsConstructor

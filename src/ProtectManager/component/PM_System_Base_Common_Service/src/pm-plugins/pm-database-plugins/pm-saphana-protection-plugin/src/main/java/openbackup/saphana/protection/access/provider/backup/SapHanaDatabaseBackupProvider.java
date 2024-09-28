@@ -45,9 +45,6 @@ import java.util.Optional;
 /**
  * SAP HANA数据库备份Provider
  *
- * @author wWX1013713
- * @version [DataBackup 1.5.0]
- * @since 2023-05-16
  */
 @Component
 @Slf4j

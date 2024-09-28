@@ -60,9 +60,6 @@ import java.util.Set;
 /**
  * dameng查询、校验接口的测试类
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-16
  */
 @RunWith(PowerMockRunner.class)
 public class DamengServiceTest {

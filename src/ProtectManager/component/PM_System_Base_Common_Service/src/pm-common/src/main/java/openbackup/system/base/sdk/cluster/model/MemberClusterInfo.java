@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * member cluster vo
  *
- * @author w00607005
- * @since 2023-06-19
  */
 @Data
 public class MemberClusterInfo {

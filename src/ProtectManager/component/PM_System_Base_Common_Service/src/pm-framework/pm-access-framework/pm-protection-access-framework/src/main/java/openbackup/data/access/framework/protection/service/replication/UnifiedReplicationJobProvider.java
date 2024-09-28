@@ -32,8 +32,6 @@ import org.springframework.stereotype.Component;
 /**
  * Unified Replication job provider
  *
- * @author m00576658
- * @since 2021-01-04
  */
 @Slf4j
 @Component

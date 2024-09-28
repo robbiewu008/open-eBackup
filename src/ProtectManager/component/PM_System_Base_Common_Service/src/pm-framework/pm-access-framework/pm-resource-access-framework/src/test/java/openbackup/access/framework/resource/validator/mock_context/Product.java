@@ -17,8 +17,6 @@ import java.util.Arrays;
 /**
  * 功能描述
  *
- * @author w00616953
- * @since 2021-10-12
  */
 public class Product {
 

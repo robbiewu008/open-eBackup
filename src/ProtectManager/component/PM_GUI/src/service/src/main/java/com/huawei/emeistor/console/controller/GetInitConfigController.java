@@ -42,9 +42,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * GetInitConfig Controller
  *
- * @author l00557046
- * @version [OceanStor 100 8.1]
- * @since 2020-06-16
  */
 @RestController
 @RequestMapping(ConfigConstant.CONSOLE + "/v2/system")

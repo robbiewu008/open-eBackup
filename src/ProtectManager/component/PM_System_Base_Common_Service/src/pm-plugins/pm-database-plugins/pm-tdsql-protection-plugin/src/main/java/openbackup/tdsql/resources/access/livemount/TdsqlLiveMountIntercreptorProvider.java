@@ -51,9 +51,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述 Tdsql即时挂载provider
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-06-01
  */
 @Slf4j
 @Component

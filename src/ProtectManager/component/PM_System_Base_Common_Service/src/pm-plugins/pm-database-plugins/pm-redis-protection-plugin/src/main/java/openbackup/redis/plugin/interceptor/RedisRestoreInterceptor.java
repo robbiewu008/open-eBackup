@@ -57,8 +57,6 @@ import java.util.stream.Collectors;
 /**
  * Redis 数据库备份拦截器实现类
  *
- * @author w00504341
- * @since 2022-06-28
  */
 @Slf4j
 @Component

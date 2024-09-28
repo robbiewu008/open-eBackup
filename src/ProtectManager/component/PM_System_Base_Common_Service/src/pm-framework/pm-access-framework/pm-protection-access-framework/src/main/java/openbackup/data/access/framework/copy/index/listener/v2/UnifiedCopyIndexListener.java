@@ -33,9 +33,6 @@ import org.springframework.stereotype.Component;
 /**
  * 统一框架副本索引开始监听器
  *
- * @author lWX776769
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-29
  */
 @Component
 @Slf4j

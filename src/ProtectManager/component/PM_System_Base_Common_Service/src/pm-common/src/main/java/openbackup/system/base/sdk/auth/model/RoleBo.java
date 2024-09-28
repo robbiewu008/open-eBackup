@@ -27,9 +27,6 @@ import java.util.Set;
 /**
  * Role
  *
- * @author c00106403
- * @version [Lego V100R002C10, 2011-1-7]
- * @since 2018-10-30
  */
 @Setter
 @Getter

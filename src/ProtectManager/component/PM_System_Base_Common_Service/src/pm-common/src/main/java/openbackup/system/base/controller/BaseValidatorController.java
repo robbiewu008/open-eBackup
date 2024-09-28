@@ -25,9 +25,6 @@ import java.util.Map;
 /**
  * 基本的controller校验器
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/3/5
  **/
 public class BaseValidatorController {
     private static final HashMap<Class<?>, BaseParamValidator<T>> VALIDATOR_MAP = new HashMap<>();

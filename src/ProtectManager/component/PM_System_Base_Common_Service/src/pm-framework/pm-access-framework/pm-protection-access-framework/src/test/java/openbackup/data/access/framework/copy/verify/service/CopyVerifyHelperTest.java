@@ -44,9 +44,6 @@ import java.util.UUID;
 /**
  * 副本校验辅助类单元测试集合
  *
- * @author: y00559272
- * @version: [OceanProtect X8000 1.2.1]
- * @since: 2022/8/5
  **/
 public class CopyVerifyHelperTest {
 

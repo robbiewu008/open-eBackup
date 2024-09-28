@@ -40,8 +40,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 功能描述
  *
- * @author w00504341
- * @since 2021-03-15
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {CaptchaController.class, CaptchaServiceImpl.class,File.class})

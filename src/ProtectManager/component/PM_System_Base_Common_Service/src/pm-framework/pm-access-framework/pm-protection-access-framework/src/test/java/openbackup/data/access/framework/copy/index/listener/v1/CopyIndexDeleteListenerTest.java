@@ -34,8 +34,6 @@ import org.springframework.kafka.support.Acknowledgment;
 /**
  * CopyIndexListenerTest LLT
  *
- * @author m00576658
- * @since 2021-03-22
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(CopyIndexDeleteListener.class)

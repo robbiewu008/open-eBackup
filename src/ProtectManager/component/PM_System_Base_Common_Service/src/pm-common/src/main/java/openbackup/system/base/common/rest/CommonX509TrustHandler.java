@@ -22,8 +22,6 @@ import java.security.cert.CertificateException;
 /**
  * SSL证书校验handler类
  *
- * @author p30001902
- * @since 2021-05-11
  */
 @Slf4j
 public class CommonX509TrustHandler implements IBcmX509TrustHandler {

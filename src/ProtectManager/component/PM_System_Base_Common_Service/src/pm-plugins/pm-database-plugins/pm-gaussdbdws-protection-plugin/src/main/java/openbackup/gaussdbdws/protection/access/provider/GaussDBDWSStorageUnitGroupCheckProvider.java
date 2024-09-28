@@ -22,9 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * GaussDBDWSStorageUnitGroupCheckProvider
  *
- * @author l00853347
- * @version [DataBackup 1.6.0]
- * @since 2024-04-02
  */
 @Component
 public class GaussDBDWSStorageUnitGroupCheckProvider implements StorageUnitGroupCheckProvider {

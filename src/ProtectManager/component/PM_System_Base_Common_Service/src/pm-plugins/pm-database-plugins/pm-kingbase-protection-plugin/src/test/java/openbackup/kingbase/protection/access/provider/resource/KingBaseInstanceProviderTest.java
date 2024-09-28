@@ -42,9 +42,6 @@ import java.util.UUID;
 /**
  * {@link KingBaseInstanceProvider} 测试类
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-25
  */
 public class KingBaseInstanceProviderTest {
     private final ProviderManager providerManager = PowerMockito.mock(ProviderManager.class);

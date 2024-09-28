@@ -24,9 +24,6 @@ import java.util.Map;
 /**
  * InformixService
  *
- * @author zwx951267
- * @version [DataBackup 1.5.0]
- * @since 2023-05-09
  */
 public interface InformixService {
     /**

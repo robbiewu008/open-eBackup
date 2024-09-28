@@ -27,8 +27,6 @@ import java.util.List;
 /**
  * Live Mount Provider
  *
- * @author l00272247
- * @since 2020-09-17
  */
 public interface LiveMountProvider extends DataProtectionProvider<String> {
     /**

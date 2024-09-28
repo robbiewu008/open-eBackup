@@ -19,9 +19,6 @@ import java.util.List;
 /**
  * Oracle副本服务
  *
- * @author c30038333
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-04-04
  */
 public interface OracleCopyService {
     /**

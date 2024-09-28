@@ -28,8 +28,6 @@ import java.util.regex.Pattern;
 /**
  * 存储卷配置
  *
- * @author w00493811
- * @since 2021-02-02
  */
 public class StorageVolumeConfig {
     /**

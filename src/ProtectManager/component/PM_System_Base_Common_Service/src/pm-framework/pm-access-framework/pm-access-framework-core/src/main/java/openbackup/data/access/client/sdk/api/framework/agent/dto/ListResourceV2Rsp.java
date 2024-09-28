@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * PM向Agent查询应用详细信息(V2接口)后的返回对象
  *
- * @author 30009433
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-19
  */
 @Setter
 @Getter

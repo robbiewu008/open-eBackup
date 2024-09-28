@@ -22,8 +22,6 @@ import lombok.Data;
 /**
  * Storage user info
  *
- * @author p30001902
- * @since 2020-12-11
  */
 @Data
 public class StorageUserInfo {

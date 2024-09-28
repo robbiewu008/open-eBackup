@@ -64,9 +64,6 @@ import java.util.stream.Collectors;
 /**
  * OracleClusterDatabaseProvider
  *
- * @author l00570077
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-28
  */
 @Slf4j
 @Component

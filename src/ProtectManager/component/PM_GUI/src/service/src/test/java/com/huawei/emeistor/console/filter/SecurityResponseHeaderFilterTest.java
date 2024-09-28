@@ -40,9 +40,6 @@ import java.net.URL;
 /**
  * 回复添加统一的header 测试
  *
- * @author t30028453
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-28
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {SecurityResponseHeaderFilter.class})

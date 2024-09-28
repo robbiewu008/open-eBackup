@@ -29,8 +29,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 /**
  * Message Template Test
  *
- * @author twx1009756
- * @since 2021-03-17
  */
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest(classes = {MessageTemplate.class, KafkaTemplate.class, MessageCallback.class})

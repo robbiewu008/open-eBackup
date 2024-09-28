@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * dme delete cloud backup copy request
  *
- * @author g00500588
- * @since 2021/12/8
  */
 @Data
 public class DmeDelCloudBackupCopyRequest extends DmeDelCloudArchiveCopyRequest {

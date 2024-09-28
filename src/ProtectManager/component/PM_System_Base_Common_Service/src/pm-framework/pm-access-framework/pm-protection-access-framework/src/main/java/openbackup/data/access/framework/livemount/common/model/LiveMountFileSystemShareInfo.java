@@ -19,8 +19,6 @@ import java.util.Map;
 /**
  * Live Mount File System Share Info
  *
- * @author l00272247
- * @since 2022-01-05
  */
 @Data
 public class LiveMountFileSystemShareInfo {

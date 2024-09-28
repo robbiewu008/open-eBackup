@@ -22,8 +22,6 @@ import javax.validation.constraints.Pattern;
 /**
  * LAN-FREE配置页面WWPN信息
  *
- * @author hwx1164326
- * @since 2023-08-22
  */
 @Getter
 @Setter

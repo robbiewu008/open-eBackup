@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * Stringify Converter Test
  *
- * @author l00272247
- * @since 2021-02-26
  */
 public class StringifyObjectTest {
     @Test

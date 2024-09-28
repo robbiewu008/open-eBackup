@@ -24,9 +24,6 @@ import org.springframework.stereotype.Service;
 /**
  * 描述
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-08
  */
 @Service
 public class ProtectedEnvironmentListenerWrapper extends ProtectedEnvironmentListener {

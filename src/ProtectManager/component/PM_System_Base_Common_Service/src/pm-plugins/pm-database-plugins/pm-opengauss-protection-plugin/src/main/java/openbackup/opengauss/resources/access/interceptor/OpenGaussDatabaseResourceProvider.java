@@ -23,9 +23,6 @@ import java.util.Arrays;
 /**
  * OpenGauss资源类提供者
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-12
  */
 @Component
 public class OpenGaussDatabaseResourceProvider implements ResourceProvider {

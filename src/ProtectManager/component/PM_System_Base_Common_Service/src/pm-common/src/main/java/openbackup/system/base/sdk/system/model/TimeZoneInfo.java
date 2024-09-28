@@ -21,8 +21,6 @@ import lombok.Data;
 /**
  * DM时区信息
  *
- * @author z00445440
- * @since 2023-03-03
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

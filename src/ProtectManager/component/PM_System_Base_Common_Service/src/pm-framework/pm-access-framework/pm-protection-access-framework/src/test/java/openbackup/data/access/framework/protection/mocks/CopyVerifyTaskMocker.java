@@ -20,9 +20,6 @@ import org.assertj.core.util.Lists;
 /**
  * 副本校验任务数据构造器
  *
- * @author: y00559272
- * @version: [OceanProtect X8000 1.2.1]
- * @since: 2022/8/6
  **/
 public class CopyVerifyTaskMocker {
     public static CopyVerifyTask mockTask(String mockRequestId, String copyId) {

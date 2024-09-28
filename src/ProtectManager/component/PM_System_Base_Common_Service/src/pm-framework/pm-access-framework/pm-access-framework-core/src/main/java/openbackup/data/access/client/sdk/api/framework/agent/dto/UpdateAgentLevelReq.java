@@ -18,8 +18,6 @@ import lombok.Data;
 /**
  * The UpdateAgentConfigReq
  *
- * @author w00504341
- * @since 2023-01-19
  */
 @Builder
 @Data

@@ -37,9 +37,6 @@ import java.net.ConnectException;
 /**
  * ErrorDecoder
  *
- * @author dWX1009286
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-09
  */
 @Slf4j
 public class CommonDecoder {

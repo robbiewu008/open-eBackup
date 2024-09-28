@@ -32,8 +32,6 @@ import java.util.Optional;
 /**
  * type util
  *
- * @author l00272247
- * @since 2019-11-07
  */
 public class TypeUtil {
     /**

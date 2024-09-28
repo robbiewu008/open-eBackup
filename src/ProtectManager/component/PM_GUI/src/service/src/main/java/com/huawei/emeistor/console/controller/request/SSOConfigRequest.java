@@ -22,9 +22,6 @@ import javax.validation.constraints.NotNull;
 /**
  * SSO保存配置请求体
  *
- * @author w30042425
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-08
  */
 @Data
 public class SSOConfigRequest {

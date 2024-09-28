@@ -63,8 +63,6 @@ import java.util.Optional;
 /**
  * 实现类测试
  *
- * @author x30021699
- * @since 2023-05-09
  */
 @RunWith(SpringRunner.class)
 @PrepareForTest(TpopsGaussDBService.class)

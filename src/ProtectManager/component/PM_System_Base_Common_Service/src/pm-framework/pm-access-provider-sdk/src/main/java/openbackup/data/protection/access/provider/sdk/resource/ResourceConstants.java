@@ -21,7 +21,6 @@ import java.util.List;
 /**
  * 资源常量
  *
- * @since 2022-05-23
  */
 public class ResourceConstants {
     /**

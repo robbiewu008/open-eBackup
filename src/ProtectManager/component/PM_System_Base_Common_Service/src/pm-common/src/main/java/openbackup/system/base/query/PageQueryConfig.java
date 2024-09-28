@@ -22,8 +22,6 @@ import java.lang.annotation.Target;
 /**
  * Page Query Config
  *
- * @author l00272247
- * @since 2020-09-24
  */
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

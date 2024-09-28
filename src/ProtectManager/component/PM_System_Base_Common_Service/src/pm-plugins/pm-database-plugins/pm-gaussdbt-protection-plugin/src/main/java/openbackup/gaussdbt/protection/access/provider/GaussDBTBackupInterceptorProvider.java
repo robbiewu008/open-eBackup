@@ -44,9 +44,6 @@ import java.util.stream.Collectors;
 /**
  * GaussDBT备份任务下发Provider
  *
- * @author mwx776342
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-20
  */
 @Component
 @Slf4j

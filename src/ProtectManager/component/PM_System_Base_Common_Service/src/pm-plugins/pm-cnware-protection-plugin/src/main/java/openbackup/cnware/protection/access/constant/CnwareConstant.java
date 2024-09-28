@@ -15,9 +15,6 @@ package openbackup.cnware.protection.access.constant;
 /**
  * CNware插件常量
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-12-11
  */
 public class CnwareConstant {
     /**

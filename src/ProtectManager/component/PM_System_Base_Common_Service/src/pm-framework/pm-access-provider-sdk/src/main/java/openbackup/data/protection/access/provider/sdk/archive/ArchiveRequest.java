@@ -17,9 +17,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * 副本归档请求体
  *
- * @author y00490893
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-19
  */
 public class ArchiveRequest {
     // 副本Id

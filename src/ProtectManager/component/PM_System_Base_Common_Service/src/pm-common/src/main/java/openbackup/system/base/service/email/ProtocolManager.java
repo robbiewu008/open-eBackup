@@ -31,9 +31,6 @@ import javax.net.ssl.SSLSocket;
 /**
  * 协议管理，主要提供通信协议的设置
  *
- * @author l90005176
- * @version [OceanStor BCManager V200R001C00, 2016年2月16日]
- * @since 2018-01-01
  */
 @Slf4j
 public class ProtocolManager {

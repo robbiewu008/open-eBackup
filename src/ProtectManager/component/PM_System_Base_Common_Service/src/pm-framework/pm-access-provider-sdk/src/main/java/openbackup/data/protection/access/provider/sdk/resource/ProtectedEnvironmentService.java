@@ -19,9 +19,6 @@ import java.util.Optional;
 /**
  * 受保护环境服务接口定义
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-15
  */
 public interface ProtectedEnvironmentService {
     /**

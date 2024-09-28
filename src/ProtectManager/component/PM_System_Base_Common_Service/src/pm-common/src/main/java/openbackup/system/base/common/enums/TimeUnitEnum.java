@@ -19,9 +19,6 @@ import java.util.Arrays;
 /**
  * 周期类型时间枚举定义
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.0.0]
- * @since: 2020/10/9
  **/
 @Getter
 public enum TimeUnitEnum {

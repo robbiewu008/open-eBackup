@@ -18,9 +18,6 @@ import openbackup.system.base.sdk.auth.model.TokenParam;
 /**
  * op服务化，跨云复制服务类
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/7/26
  */
 public interface HcsOpService {
     /**

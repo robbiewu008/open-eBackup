@@ -61,9 +61,6 @@ import java.util.UUID;
 /**
  * {@link Db2BackupInterceptorProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-06
  */
 public class Db2BackupInterceptorProviderTest {
     private final ResourceService resourceService = PowerMockito.mock(ResourceService.class);

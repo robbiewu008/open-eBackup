@@ -24,9 +24,7 @@ import java.util.function.Consumer;
 /**
  * Pagination
  *
- * @author l00272247
  * @param <T> template type
- * @since 2021-06-01
  */
 @Data
 public class Pagination<T> {

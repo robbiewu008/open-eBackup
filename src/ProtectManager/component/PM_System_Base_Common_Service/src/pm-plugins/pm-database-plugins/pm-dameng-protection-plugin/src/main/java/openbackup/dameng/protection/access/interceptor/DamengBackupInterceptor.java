@@ -42,9 +42,6 @@ import java.util.Optional;
 /**
  * dameng备份任务拦截器
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-17
  */
 @Slf4j
 @Component

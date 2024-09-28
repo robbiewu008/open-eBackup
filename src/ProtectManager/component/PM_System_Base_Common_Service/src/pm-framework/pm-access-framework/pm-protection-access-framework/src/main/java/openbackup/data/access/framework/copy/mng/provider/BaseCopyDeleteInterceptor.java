@@ -58,9 +58,6 @@ import java.util.stream.Collectors;
 /**
  * 副本删除抽象类
  *
- * @author h30027154
- * @since 2022-06-15
- * @version OceanProtect X8000 1.2.1
  */
 @Slf4j
 public abstract class BaseCopyDeleteInterceptor implements CopyDeleteInterceptor {

@@ -33,7 +33,6 @@ import org.redisson.client.codec.StringCodec;
 /**
  * RestoreJobCallbackProvider 类测试
  *
- * @since 2022-09-12
  */
 @RunWith(PowerMockRunner.class)
 public class UnifiedReplicationJobCallbackProviderTest {

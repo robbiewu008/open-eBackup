@@ -20,8 +20,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * VpcEntityDao
  *
- * @author l30044826
- * @since 2023-08-14
  */
 @DbMangerMapper
 public interface VpcEntityDao extends BaseMapper<VpcInfoEntity> {

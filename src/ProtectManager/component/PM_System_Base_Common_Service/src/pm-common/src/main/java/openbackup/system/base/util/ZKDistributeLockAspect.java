@@ -29,8 +29,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * zk 分布式锁 切面
  *
- * @author s00574739
- * @since 2021/08/05
  */
 @Aspect
 @Component

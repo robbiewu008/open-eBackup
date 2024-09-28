@@ -15,9 +15,6 @@ package openbackup.system.base.service.email;
 /**
  * 邮件发送错误码
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-14
  */
 public class EmailCodes {
     /**

@@ -32,9 +32,6 @@ import java.util.List;
 /**
  * 处理升级问题，解决之前序列化到redis中的session数据，将其转换为json字符串保存
  *
- * @author hwx1144169
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-03-24
  */
 @Component
 @Slf4j

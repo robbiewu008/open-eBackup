@@ -15,9 +15,6 @@ package openbackup.data.access.framework.restore.constant;
 /**
  * RestoreConstant
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-12-20
  */
 public class RestoreConstant {
     /**

@@ -37,9 +37,6 @@ import java.util.UUID;
  * CreateRestoreTaskRequestMocker
  *
  * @description: CreateRestoreTaskRequest的Mock类，用于mock各种场景的对象
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  **/
 public class CreateRestoreTaskRequestMocker {
 

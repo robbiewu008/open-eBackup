@@ -19,9 +19,6 @@ import java.util.List;
 /**
  * 下载副本中的文件的请求体
  *
- * @author jwx701567
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-01-28
  */
 @Data
 public class DownloadFilesRequest {

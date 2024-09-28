@@ -30,9 +30,6 @@ import javax.validation.constraints.NotBlank;
 /**
  * 功能描述: AgentResourceQueryParam
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-01
  */
 @Data
 @NoArgsConstructor

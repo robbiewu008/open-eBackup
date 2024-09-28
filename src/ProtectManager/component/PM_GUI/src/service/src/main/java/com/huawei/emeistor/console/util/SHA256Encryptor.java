@@ -36,8 +36,6 @@ import javax.crypto.spec.PBEKeySpec;
 /**
  * sha256加密类
  *
- * @author jwx701567
- * @since 2021-09-22
  */
 @Component
 public class SHA256Encryptor {

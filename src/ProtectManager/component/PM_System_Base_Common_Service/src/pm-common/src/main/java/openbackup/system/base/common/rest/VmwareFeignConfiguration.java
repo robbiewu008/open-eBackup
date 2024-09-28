@@ -28,9 +28,6 @@ import org.springframework.context.annotation.Bean;
 /**
  * VMware Feign Configuration
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2024-01-12
  */
 @Slf4j
 public class VmwareFeignConfiguration implements RequestInterceptor {

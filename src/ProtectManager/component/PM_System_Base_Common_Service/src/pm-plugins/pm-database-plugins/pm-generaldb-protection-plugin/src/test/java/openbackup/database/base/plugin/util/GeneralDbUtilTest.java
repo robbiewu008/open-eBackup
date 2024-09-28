@@ -30,9 +30,6 @@ import java.util.List;
 /**
  * GeneralDbUtil测试类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-23
  */
 public class GeneralDbUtilTest {
     /**

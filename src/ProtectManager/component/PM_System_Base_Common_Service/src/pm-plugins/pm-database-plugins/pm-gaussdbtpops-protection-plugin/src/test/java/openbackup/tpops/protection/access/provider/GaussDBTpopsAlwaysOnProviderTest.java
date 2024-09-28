@@ -26,8 +26,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 /**
  * 功能描述 GaussDBTpopsAlwaysOnProvider用例
  *
- * @author s30031954
- * @since 2023-06-13
  */
 @RunWith(MockitoJUnitRunner.class)
 public class GaussDBTpopsAlwaysOnProviderTest extends TestCase {

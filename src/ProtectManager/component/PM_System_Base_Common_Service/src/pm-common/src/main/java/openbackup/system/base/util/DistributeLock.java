@@ -19,8 +19,6 @@ import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author g00500588
- * @since 2021/4/15
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

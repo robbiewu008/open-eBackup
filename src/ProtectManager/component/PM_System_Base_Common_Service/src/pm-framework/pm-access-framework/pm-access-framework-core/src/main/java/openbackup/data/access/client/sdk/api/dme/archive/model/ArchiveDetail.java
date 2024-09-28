@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 归档副本请求
  *
- * @author y00490893
- * @since 2020-12-16
  */
 @Data
 public class ArchiveDetail {

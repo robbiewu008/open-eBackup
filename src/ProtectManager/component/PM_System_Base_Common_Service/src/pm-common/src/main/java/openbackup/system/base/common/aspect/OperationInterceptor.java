@@ -22,8 +22,6 @@ import java.util.Map;
  * Operation Aspect
  *
  * @param <A> template type
- * @author l00272247
- * @since 2020-11-14
  */
 public interface OperationInterceptor<A extends Annotation> {
     /**

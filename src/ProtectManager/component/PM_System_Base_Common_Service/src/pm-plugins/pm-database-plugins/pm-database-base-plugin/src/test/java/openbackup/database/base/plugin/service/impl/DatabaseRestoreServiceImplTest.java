@@ -22,9 +22,6 @@ import org.junit.Test;
 /**
  * {@link DatabaseRestoreServiceImpl 测试类}
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-02-09
  */
 public class DatabaseRestoreServiceImplTest {
     private DatabaseRestoreServiceImpl databaseRestoreService = new DatabaseRestoreServiceImpl();

@@ -41,9 +41,6 @@ import java.util.Optional;
 /**
  * DEM feign configuration
  *
- * @author y00413474
- * @version [BCManager 8.0.0]
- * @since 2020-06-19
  */
 @Slf4j
 public class DmeArchiveFeignConfiguration {

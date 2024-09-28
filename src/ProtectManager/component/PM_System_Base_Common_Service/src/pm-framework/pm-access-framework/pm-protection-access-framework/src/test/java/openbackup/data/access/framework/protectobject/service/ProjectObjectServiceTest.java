@@ -40,9 +40,6 @@ import static org.mockito.ArgumentMatchers.anyMap;
 /**
  * ProjectObjectService测试类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023/11/13
  */
 public class ProjectObjectServiceTest {
     private ProjectObjectService projectObjectService;

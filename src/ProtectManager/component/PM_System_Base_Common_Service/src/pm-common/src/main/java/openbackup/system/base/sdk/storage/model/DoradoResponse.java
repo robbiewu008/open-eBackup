@@ -18,8 +18,6 @@ import lombok.Data;
  * 功能描述
  *
  * @param <T> 数据类型
- * @author y00413474
- * @since 2020-07-01
  */
 @Data
 public class DoradoResponse<T> {

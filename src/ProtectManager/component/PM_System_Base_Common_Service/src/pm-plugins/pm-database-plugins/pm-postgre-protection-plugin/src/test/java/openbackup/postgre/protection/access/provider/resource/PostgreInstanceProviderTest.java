@@ -41,9 +41,6 @@ import java.util.UUID;
 /**
  * postgre实例参数类
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-28
  */
 public class PostgreInstanceProviderTest {
     private final ProviderManager providerManager = PowerMockito.mock(ProviderManager.class);

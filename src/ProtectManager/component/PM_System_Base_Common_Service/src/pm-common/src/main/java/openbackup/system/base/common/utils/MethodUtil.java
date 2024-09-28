@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * method util
  *
- * @author l00272247
- * @since 2019-11-14
  */
 public class MethodUtil {
     /**

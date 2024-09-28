@@ -22,8 +22,6 @@ import java.util.Set;
 /**
  * 用户缓存相关信息
  *
- * @author l00422407
- * @since 2021-02-04
  */
 @Getter
 @Setter

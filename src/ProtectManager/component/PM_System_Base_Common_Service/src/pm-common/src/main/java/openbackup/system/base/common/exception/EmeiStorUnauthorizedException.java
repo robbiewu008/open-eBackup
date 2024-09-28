@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * 功能描述
  *
- * @author y00413474
- * @since 2020-07-01
  */
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class EmeiStorUnauthorizedException extends RuntimeException {

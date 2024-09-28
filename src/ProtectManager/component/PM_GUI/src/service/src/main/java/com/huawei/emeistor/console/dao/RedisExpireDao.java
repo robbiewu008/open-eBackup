@@ -23,9 +23,6 @@ import java.util.List;
 /**
  * redis过期数据库dao
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/5/24
  */
 public interface RedisExpireDao extends BaseMapper<RedisExpireEntity> {
     /**

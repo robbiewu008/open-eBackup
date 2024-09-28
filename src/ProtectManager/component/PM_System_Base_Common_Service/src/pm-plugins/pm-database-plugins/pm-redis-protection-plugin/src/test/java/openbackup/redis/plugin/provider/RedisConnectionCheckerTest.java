@@ -53,9 +53,6 @@ import java.util.UUID;
 /**
  * redis资源检查checker测试类
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-15
  */
 @RunWith(PowerMockRunner.class)
 public class RedisConnectionCheckerTest {

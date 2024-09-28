@@ -33,8 +33,6 @@ import java.io.InputStream;
 /**
  * Json Util
  *
- * @author l00272247
- * @since 2020-07-13
  */
 @Slf4j
 public class JsonUtil {

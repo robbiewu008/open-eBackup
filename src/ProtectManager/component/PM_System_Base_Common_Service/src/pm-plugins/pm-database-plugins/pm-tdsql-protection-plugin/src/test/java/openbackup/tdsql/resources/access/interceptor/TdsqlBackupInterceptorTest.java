@@ -51,8 +51,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author z30047175
- * @since 2023-06-27
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TdsqlBackupInterceptorTest {

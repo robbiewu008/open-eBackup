@@ -24,9 +24,6 @@ import java.util.List;
 /**
  * Sla REST调用接口
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 @FeignClient(
         name = "slaRestApiBase",

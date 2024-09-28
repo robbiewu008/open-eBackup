@@ -33,8 +33,6 @@ import java.util.stream.Collectors;
 /**
  * 验证部署形态的切面
  *
- * @author c30035089
- * @since 2023-01-05
  */
 @Aspect
 @Component

@@ -87,8 +87,6 @@ import java.util.Optional;
 /**
  * Live Mount Controller Test
  *
- * @author l00272247
- * @since 2021-01-16
  */
 @RunWith(SpringRunner.class)
 @PrepareForTest(LiveMountController.class)

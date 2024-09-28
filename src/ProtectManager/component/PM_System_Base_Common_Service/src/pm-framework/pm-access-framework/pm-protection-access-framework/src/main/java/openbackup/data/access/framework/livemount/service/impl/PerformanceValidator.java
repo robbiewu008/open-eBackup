@@ -32,8 +32,6 @@ import javax.validation.ValidatorFactory;
 /**
  * Performance Validator
  *
- * @author l00272247
- * @since 2020-10-15
  */
 @Component
 public class PerformanceValidator {

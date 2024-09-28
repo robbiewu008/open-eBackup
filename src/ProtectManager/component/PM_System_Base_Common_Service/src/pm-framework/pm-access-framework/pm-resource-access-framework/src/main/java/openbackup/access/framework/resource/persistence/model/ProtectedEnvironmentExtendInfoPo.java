@@ -23,8 +23,6 @@ import org.springframework.beans.BeanUtils;
 /**
  * Protected Environment Extend Info Po
  *
- * @author l00272247
- * @since 2021-10-18
  */
 @TableName("ENVIRONMENTS")
 public class ProtectedEnvironmentExtendInfoPo {

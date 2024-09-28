@@ -19,8 +19,6 @@ import java.util.Set;
 /**
  * 文件校验规则
  *
- * @author w00607005
- * @since 2023-10-05
  */
 @Data
 public class FileCheckRule {

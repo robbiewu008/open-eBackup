@@ -39,9 +39,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * InformixRestoreInterceptorTest
  *
- * @author zWX951267
- * @version [DataBackup 1.5.0]
- * @since 2023-06-06
  */
 public class InformixRestoreInterceptorTest {
     private static final InformixService informixService = PowerMockito.mock(InformixService.class);

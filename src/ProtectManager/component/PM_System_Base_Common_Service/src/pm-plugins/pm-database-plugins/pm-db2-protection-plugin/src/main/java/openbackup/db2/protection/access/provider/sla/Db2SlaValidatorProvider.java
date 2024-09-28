@@ -26,9 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * DB2的sla校验器provider
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-05
  */
 @Component
 public class Db2SlaValidatorProvider implements SlaValidateProvider {

@@ -21,9 +21,6 @@ import java.util.List;
 /**
  * VlanPortDto
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-04-11
  */
 @Data
 public class VlanPortDto {

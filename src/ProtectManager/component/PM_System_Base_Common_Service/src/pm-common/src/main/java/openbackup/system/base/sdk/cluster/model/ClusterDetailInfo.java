@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * Local cluster detail info
  *
- * @author p30001902
- * @since 2020-08-26
  */
 @Data
 public class ClusterDetailInfo {

@@ -26,9 +26,6 @@ import java.util.List;
 /**
  * 创建恢复任务v1内部接口
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-07-26
  */
 @FeignClient(name = "RestoreRestApi", url = "${pm-resource-manager.url}/v1",
     configuration = CommonFeignConfiguration.class)

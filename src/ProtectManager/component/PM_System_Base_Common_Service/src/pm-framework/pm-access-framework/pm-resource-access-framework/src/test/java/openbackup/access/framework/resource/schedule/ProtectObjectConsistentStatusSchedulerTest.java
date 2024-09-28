@@ -36,9 +36,6 @@ import org.mockito.Mockito;
 /**
  * 功能描述: ProtectObjectConsistentStatusSchedulerTest
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-01
  */
 
 @RunWith(SpringRunner.class)

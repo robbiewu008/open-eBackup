@@ -50,9 +50,6 @@ import java.util.Optional;
 /**
  * informix恢复拦截器
  *
- * @author zwx951267
- * @version [DataBackup 1.5.0]
- * @since 2023-05-26
  */
 @Component
 @Slf4j

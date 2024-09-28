@@ -24,9 +24,6 @@ import java.util.List;
 /**
  * 副本支持功能provider
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-20
  */
 @Component
 public class OracleCapabilityProvider implements CapabilityProvider {

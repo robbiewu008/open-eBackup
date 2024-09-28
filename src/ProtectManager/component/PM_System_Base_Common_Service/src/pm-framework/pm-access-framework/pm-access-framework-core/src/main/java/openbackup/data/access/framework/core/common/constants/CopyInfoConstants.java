@@ -21,9 +21,6 @@ import java.util.List;
 /**
  * 副本信息常量定义类
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-09
  */
 public final class CopyInfoConstants {
     /**

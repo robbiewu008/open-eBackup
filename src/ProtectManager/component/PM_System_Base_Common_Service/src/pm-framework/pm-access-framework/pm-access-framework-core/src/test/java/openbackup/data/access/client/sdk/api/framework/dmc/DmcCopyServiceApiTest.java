@@ -28,9 +28,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * DmcCopyServiceApi LLT
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023/4/20
  */
 
 @RunWith(PowerMockRunner.class)

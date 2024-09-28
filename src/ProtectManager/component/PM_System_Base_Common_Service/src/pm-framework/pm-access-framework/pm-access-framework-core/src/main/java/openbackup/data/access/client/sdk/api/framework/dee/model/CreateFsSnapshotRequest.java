@@ -18,9 +18,6 @@ import lombok.Data;
  * 创建快照请求参数
  * 支持Dorado/OceanProtect/Pacific设备
  *
- * @author q00564609
- * @since 2024-06-14
- * @version OceanCyber 300 1.2.0
  */
 @Data
 public class CreateFsSnapshotRequest {

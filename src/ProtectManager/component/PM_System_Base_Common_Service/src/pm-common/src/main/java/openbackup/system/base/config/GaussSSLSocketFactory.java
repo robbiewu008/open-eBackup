@@ -38,8 +38,6 @@ import javax.net.ssl.X509TrustManager;
 /**
  * GaussSSLSocketFactory
  *
- * @author dWX1009286
- * @since 2022-01-17
  */
 public class GaussSSLSocketFactory extends WrappedFactory {
     private static final Logger log = LoggerFactory.getLogger(GaussSSLSocketFactory.class);

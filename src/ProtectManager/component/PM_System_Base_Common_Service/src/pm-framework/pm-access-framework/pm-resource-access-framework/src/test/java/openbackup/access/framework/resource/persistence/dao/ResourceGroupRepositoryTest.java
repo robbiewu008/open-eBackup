@@ -46,8 +46,6 @@ import java.util.UUID;
 /**
  * ResourceGroupRepositoryImplTest
  *
- * @author c00631681
- * @since 2023-01-20
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

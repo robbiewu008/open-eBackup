@@ -35,9 +35,6 @@ import java.util.HashMap;
 /**
  * ClickHouseResourceProvider Test
  *
- * @author q00464130
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-13
  */
 @RunWith(PowerMockRunner.class)
 public class ClickHouseResourceProviderTest {

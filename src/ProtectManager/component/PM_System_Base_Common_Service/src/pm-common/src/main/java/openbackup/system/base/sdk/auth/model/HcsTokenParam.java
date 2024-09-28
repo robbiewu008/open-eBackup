@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * 获取hcs的token参数
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/7/27
  */
 @Getter
 @Setter

@@ -22,8 +22,6 @@ import java.util.Optional;
 /**
  * Optional Util Test
  *
- * @author l00650874
- * @since 2022-07-01
  */
 public class OptionalUtilTest {
     /**

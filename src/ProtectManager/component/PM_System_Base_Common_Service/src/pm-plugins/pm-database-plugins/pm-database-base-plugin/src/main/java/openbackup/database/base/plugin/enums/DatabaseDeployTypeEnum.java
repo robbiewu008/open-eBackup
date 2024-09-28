@@ -17,9 +17,6 @@ import openbackup.system.base.util.EnumUtil;
 /**
  * Database应用部署模式枚举
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 public enum DatabaseDeployTypeEnum {
     /**

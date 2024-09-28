@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Dme Mount Qos
  *
- * @author l00272247
- * @since 2022-01-07
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)

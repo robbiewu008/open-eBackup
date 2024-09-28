@@ -22,8 +22,6 @@ import java.util.NoSuchElementException;
  * An IPv6 network is also an IPv6 address range (but
  * not all ranges are valid networks).
  *
- * @author y00413474
- * @since 2020-07-01
  */
 public final class IPv6Network extends IPv6AddressRange {
     /**

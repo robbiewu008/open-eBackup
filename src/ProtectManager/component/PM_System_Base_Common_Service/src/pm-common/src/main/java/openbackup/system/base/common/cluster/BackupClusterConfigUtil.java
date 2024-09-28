@@ -26,8 +26,6 @@ import java.io.File;
 /**
  * 获取集群配置
  *
- * @author z00613137
- * @since 2023-05-26
  */
 @Slf4j
 public class BackupClusterConfigUtil {

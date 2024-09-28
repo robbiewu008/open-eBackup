@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 功能描述
  *
- * @author l30023229
- * @since 2023-11-24
  */
 @Getter
 @Setter

@@ -17,9 +17,6 @@ import openbackup.data.access.framework.protectobject.model.ProtectionExecuteChe
 /**
  * ProjectObjectService
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023/11/13
  */
 public interface ProjectObjectService {
     /**

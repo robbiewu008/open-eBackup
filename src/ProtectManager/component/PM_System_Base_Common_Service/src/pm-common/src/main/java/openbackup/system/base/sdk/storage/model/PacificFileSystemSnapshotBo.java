@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * pacific 文件系统快照模型
  *
- * @author j00619968
- * @since 2023-04-17
  */
 @Data
 public class PacificFileSystemSnapshotBo {

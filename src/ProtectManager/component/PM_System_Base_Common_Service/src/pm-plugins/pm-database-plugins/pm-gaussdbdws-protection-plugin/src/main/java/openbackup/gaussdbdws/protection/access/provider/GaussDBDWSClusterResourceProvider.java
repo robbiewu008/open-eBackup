@@ -27,9 +27,6 @@ import org.springframework.stereotype.Component;
  * GaussDBDWS DWS资源相关接口的具体实现类
  * 实现了：健康状态检查，环境信息检查相关等接口
  *
- * @author swx1010572
- * @version: [OceanProtect DataBackup 1.5.0]
- * @since 2023-02-22
  */
 @Slf4j
 @Component

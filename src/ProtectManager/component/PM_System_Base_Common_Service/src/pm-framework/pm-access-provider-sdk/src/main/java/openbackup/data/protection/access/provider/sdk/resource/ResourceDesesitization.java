@@ -18,9 +18,6 @@ import lombok.Setter;
 /**
  * 资源脱敏对象
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-04-08
  */
 @Getter
 @Setter

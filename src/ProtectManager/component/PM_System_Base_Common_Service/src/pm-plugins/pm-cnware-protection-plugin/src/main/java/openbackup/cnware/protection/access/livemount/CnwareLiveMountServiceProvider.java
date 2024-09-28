@@ -31,9 +31,6 @@ import java.util.List;
 /**
  * 功能描述 CnwareLiveMountServiceProvider
  *
- * @author q30048244
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-02-20 19:29
  */
 @Slf4j
 @Component

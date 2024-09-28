@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * 内部接口调用恢复接口参数
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-07-26
  */
 @Data
 public class RestoreRequestInternal {

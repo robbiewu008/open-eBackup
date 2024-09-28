@@ -51,9 +51,6 @@ import java.util.Set;
 /**
  * mysql单实例恢复任务下发provider
  *
- * @author xwx950025
- * @version [OceanProtect X8000 1.2.0]
- * @since 2022/7/11
  */
 @Component
 @Slf4j

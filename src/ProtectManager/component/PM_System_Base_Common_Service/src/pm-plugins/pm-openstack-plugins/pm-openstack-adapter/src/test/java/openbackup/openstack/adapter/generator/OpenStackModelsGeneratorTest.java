@@ -45,9 +45,6 @@ import java.util.Arrays;
 /**
  * {@link OpenStackModelsGenerator} 测试类
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-29
  */
 public class OpenStackModelsGeneratorTest {
     /**

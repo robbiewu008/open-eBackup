@@ -75,9 +75,6 @@ import java.util.stream.Collectors;
 /**
  * GaussDbDws 恢复任务基础数据Provider
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-01
  */
 @Slf4j
 @Component

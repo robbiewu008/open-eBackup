@@ -24,8 +24,6 @@ import lombok.Setter;
 /**
  * ProtectedAgentExtendPo
  *
- * @author z00613137
- * @since 2023-08-08
  */
 @Getter
 @Setter

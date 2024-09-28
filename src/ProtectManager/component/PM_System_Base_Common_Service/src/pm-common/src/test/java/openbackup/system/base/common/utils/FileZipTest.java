@@ -25,8 +25,6 @@ import java.io.FileNotFoundException;
 /**
  * 文件压缩测试类
  *
- * @author w00504341
- * @since 2023-03-25
  */
 public class FileZipTest {
     /**

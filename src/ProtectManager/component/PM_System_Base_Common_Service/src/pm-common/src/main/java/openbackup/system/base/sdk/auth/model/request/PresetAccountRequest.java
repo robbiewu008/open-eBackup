@@ -26,8 +26,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 预置账号request
  *
- * @author y30021475
- * @since 2023-08-07
  */
 @Getter
 @Setter

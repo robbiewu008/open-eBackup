@@ -65,8 +65,6 @@ import java.util.stream.Collectors;
 /**
  * TDSQL Cluster Provider
  *
- * @author w00426202
- * @since 2023-07-07
  */
 @Slf4j
 @Component

@@ -25,9 +25,6 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * 加解密
  *
- * @author p00511147
- * @version [CDM Integrated machine]
- * @since 2020-12-09
  */
 @Component
 public class EncryptorUtil implements KeyManagerService {

@@ -32,9 +32,6 @@ import java.util.List;
 /**
  * OpenGauss副本删除Provider
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-17
  */
 @Slf4j
 @Component

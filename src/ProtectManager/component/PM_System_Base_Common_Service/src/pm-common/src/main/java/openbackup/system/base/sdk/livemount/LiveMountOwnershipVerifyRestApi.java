@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * Live Mount Ownership Verify Rest Api
  *
- * @author l00272247
- * @since 2020-11-28
  */
 public interface LiveMountOwnershipVerifyRestApi {
     /**

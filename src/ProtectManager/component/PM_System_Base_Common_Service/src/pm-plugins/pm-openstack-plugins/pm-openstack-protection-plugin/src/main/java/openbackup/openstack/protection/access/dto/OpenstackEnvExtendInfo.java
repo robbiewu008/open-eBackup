@@ -18,9 +18,6 @@ import lombok.Setter;
 /**
  * OpenStack环境所需扩展字段
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-16
  */
 @Getter
 @Setter

@@ -24,8 +24,6 @@ import java.util.Map;
 /**
  * tidb service
  *
- * @author w00426202
- * @since 2023-07-06
  */
 public interface TidbService {
     /**

@@ -44,8 +44,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 转发license导入接口测试类
  *
- * @author w00574036
- * @since 2023-03-13
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {

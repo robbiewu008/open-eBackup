@@ -18,8 +18,6 @@ import openbackup.system.base.util.Applicable;
 /**
  * Task Complete Handler
  *
- * @author l00272247
- * @since 2020-12-18
  */
 public interface TaskCompleteHandler extends Applicable<String> {
     /**

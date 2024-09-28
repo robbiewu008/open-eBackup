@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 更新任务状态时，任务日志数据类型
  *
- * @author w00616953
- * @since 2021-12-02
  */
 @Data
 public class UpdateJobLogRequest {

@@ -20,8 +20,6 @@ import javax.validation.constraints.Pattern;
 /**
  * HA后置任务请求体
  *
- * @author w00607005
- * @since 2023-05-22
  */
 @Data
 public class PostHaRequest {

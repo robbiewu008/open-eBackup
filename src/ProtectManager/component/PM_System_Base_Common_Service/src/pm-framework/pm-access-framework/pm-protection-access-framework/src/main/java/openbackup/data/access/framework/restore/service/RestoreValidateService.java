@@ -22,9 +22,6 @@ import org.springframework.stereotype.Service;
 /**
  * 恢复任务校验服务
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/25
  **/
 @Service
 public class RestoreValidateService {

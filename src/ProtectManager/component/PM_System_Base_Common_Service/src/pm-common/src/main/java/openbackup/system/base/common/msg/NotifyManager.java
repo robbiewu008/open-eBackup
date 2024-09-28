@@ -26,8 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * all kafka message can use this method to send
  *
- * @author y30000858
- * @since 2020-07-30
  */
 @Slf4j
 @Component

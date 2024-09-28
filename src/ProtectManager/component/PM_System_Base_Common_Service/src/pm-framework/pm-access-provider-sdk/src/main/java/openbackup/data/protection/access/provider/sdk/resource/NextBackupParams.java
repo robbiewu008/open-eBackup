@@ -24,9 +24,6 @@ import java.util.Locale;
 /**
  * 资源扩展字段参数
  *
- * @author z30027603
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-04-04
  */
 @Getter
 @Setter

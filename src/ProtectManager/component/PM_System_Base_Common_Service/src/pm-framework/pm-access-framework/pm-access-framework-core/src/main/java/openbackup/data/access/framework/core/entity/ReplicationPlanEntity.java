@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Replication Plan Entity
  *
- * @author l00272247
- * @since 2021-02-08
  */
 @Data
 public class ReplicationPlanEntity {

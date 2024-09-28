@@ -17,8 +17,6 @@ import java.util.Locale;
 /**
  * SDK中使用的BackupType枚举类
  *
- * @author y00559272
- * @since 2021-10-11
  */
 public enum BackupTypeEnum {
     FULL(1, 0),

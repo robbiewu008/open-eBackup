@@ -27,9 +27,6 @@ import javax.validation.constraints.NotBlank;
 /**
  * 云核OpenStack备份任务Dto
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-05
  */
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)

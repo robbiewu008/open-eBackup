@@ -34,8 +34,6 @@ import java.util.stream.Collectors;
 /**
  * Protected Resource Decrypt Service
  *
- * @author l00272247
- * @since 2021-10-20
  */
 @Component
 public class ProtectedResourceDecryptService implements ProtectedResourceMonitor {

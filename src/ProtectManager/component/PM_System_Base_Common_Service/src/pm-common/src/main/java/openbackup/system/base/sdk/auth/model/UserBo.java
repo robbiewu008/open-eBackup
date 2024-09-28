@@ -30,9 +30,6 @@ import java.util.Set;
 /**
  * 前台用户对象
  *
- * @author t00104528
- * @version [Lego V100R002C10, 2010-8-30]
- * @since 2020-06-15
  */
 @JsonView(DataView.Normal.class)
 @Getter

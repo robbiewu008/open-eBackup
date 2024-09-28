@@ -26,8 +26,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 /**
  * GoldenDB自定义排队规则测试类
  *
- * @author c30035089
- * @since 2024-07-24
  */
 @RunWith(MockitoJUnitRunner.class)
 public class GoldenDBJobQueueProviderTest {

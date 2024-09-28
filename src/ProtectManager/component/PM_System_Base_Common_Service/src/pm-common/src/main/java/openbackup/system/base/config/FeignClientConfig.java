@@ -39,8 +39,6 @@ import javax.net.ssl.TrustManagerFactory;
 /**
  * Internal Client Https Config
  *
- * @author xwx1016404
- * @since 2022-01-04
  */
 @Slf4j
 @Component

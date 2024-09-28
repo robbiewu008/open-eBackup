@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 资源特性
  *
- * @author h30027154
- * @since 2022-07-04
  */
 @Data
 public class ResourceFeature {

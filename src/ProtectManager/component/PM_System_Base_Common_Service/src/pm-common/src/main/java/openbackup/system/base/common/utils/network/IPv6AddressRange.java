@@ -22,9 +22,6 @@ import java.util.NoSuchElementException;
 /**
  * IPv6AddressRange
  *
- * @author zKF66175
- * @version [V100R002C00, 2013-2-5]
- * @since 2019-10-25
  */
 public class IPv6AddressRange implements Comparable<IPv6AddressRange>, Iterable<IPv6Address> {
     private final IPv6Address first;

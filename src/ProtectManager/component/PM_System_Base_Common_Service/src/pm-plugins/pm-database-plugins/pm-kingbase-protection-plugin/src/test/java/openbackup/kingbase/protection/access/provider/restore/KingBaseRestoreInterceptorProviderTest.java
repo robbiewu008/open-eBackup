@@ -47,9 +47,6 @@ import java.util.UUID;
 /**
  * {@link KingBaseRestoreInterceptorProvider}测试类
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-21
  */
 public class KingBaseRestoreInterceptorProviderTest {
     private static final String kingBaseVersion = "V008R006C005B0054";

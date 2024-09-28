@@ -19,8 +19,6 @@ import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 /**
  * mount flow listener test
  *
- * @author h30003246
- * @since 2021-02-25
  */
 public class UnmountFlowListenerTestData extends LiveMountCommonTestData {
     /**

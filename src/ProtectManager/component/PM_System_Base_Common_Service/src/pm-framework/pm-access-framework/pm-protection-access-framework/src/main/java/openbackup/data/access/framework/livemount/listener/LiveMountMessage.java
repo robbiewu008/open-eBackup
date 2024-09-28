@@ -30,8 +30,6 @@ import java.lang.annotation.Target;
 /**
  * Live Mount Message
  *
- * @author l00272247
- * @since 2020-10-23
  */
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

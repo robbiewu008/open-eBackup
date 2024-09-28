@@ -84,8 +84,6 @@ import javax.net.ssl.TrustManager;
 /**
  * FeignBuilder
  *
- * @author l00272247
- * @since 2020-08-12
  */
 @Slf4j
 public class FeignBuilder extends Feign.Builder {

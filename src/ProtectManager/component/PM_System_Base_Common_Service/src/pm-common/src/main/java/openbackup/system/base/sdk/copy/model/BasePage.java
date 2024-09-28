@@ -35,8 +35,6 @@ import java.util.stream.Collectors;
  * Base Page
  *
  * @param <T> template type
- * @author l00272247
- * @since 2020-09-24
  */
 @Data
 public class BasePage<T> {

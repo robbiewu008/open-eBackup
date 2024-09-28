@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 存储设备信息
  *
- * @author c30058517
- * @since 2024-08-12
  */
 @Data
 public class StorageInfo {

@@ -46,8 +46,6 @@ import java.util.Optional;
 /**
  * 虚拟化应用细粒度恢复provider抽象类
  *
- * @author y30037959
- * @since 2023-06-12
  */
 public abstract class AbstractVmFileLevelRestoreProvider {
     private static final int MAX_TARGET_NAME_LENGTH = 80;

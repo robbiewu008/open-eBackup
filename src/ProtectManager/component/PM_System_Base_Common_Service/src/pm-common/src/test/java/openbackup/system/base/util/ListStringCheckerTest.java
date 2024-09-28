@@ -25,8 +25,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author w00426202
- * @since 2023-05-18
  */
 public class ListStringCheckerTest {
     /**

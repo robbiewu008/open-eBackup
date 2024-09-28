@@ -21,9 +21,6 @@ import org.junit.Test;
 /**
  * {@link DamengParamCheckUtil test}
  *
- * @author dwx1009286
- * @version [DataBackup 1.3.0]
- * @since 2023-05-29
  */
 public class DamengParamCheckUtilTest {
     /**

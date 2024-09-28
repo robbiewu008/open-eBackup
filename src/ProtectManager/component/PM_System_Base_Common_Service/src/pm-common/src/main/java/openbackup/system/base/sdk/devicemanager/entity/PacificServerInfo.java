@@ -21,8 +21,6 @@ import lombok.ToString;
 /**
  * pacific节点名称及其对应性能监控id
  *
- * @author x30046484
- * @since 2024-03-01
  */
 @Getter
 @Setter

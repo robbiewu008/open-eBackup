@@ -19,8 +19,6 @@ import java.math.BigDecimal;
 /**
  * 整系统存储信息
  *
- * @author h30003246
- * @since 2020-06-23
  */
 @Data
 public class ClusterStorageVo {

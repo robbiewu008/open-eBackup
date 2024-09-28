@@ -28,8 +28,6 @@ import org.springframework.context.annotation.Bean;
 /**
  * 功能描述
  *
- * @author y00413474
- * @since 2020-06-19
  */
 @Slf4j
 public class CommonFeignConfiguration implements RequestInterceptor {

@@ -50,8 +50,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 /**
  * ArchiveTaskCompleteHandler LLT
  *
- * @author m00576658
- * @since 2021-03-26
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ArchiveTaskCompleteHandler.class)

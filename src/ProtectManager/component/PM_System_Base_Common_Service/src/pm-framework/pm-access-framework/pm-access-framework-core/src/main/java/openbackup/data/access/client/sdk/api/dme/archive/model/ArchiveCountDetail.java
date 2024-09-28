@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 扫描归档副本总数 返回体详情
  *
- * @author z30009433
- * @since 2020-12-31
  */
 @Data
 public class ArchiveCountDetail {

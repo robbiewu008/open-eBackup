@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * 功能描述
  *
- * @author z30006621
- * @since 2021-02-04
  */
 @FeignClient(name = "InspectionBaseJobApi", url = "${pm-system-base.url}/v1",
         configuration = CommonFeignConfiguration.class)

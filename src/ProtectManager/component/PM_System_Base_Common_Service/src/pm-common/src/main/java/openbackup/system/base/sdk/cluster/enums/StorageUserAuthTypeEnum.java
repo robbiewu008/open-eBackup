@@ -17,9 +17,6 @@ import lombok.Getter;
 /**
  * 存储单元组用户授权类型枚举类
  *
- * @author w00639094
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-20
  */
 @Getter
 public enum StorageUserAuthTypeEnum {

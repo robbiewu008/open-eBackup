@@ -27,7 +27,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * RestoreJobCallbackProvider 类测试
  *
- * @since 2022-09-12
  */
 @RunWith(PowerMockRunner.class)
 public class RestoreJobCallbackProviderTest {

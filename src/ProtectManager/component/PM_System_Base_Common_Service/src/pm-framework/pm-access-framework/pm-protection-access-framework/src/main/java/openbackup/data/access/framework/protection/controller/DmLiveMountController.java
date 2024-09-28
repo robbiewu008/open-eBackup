@@ -38,8 +38,6 @@ import java.util.function.BiFunction;
 /**
  * Live Mount Controller
  *
- * @author l00272247
- * @since 2020-09-19
  */
 @Component
 public class DmLiveMountController implements LiveMountRestApi {

@@ -49,9 +49,6 @@ import java.util.Map;
 /**
  * mysql单实例注册provider
  *
- * @author xWX950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-01
  */
 @Component
 @Slf4j

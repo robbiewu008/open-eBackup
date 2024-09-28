@@ -18,9 +18,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * ResourceAppResource
  *
  * @description: 恢复任务中的应用资源信息
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  **/
 public class TaskResource extends TaskCommonResource {
     /**

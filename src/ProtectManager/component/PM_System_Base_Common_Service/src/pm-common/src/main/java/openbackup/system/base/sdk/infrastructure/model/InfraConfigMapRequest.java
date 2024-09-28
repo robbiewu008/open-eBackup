@@ -19,9 +19,6 @@ import lombok.NoArgsConstructor;
 /**
  * k8s configMap 对象
  *
- * @author fwx1022842
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023/2/7
  */
 @Data
 @AllArgsConstructor

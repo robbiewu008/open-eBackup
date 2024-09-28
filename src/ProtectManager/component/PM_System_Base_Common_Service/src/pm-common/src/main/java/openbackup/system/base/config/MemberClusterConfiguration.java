@@ -26,8 +26,6 @@ import org.springframework.context.annotation.ScopedProxyMode;
 /**
  * MemberClusterConfiguration
  *
- * @author y30046482
- * @since 2023-05-27
  */
 @Slf4j
 @Configuration

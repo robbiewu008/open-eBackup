@@ -21,8 +21,6 @@ import java.util.Date;
 /**
  * Schedule Rest Api
  *
- * @author l00272247
- * @since 2020-09-21
  */
 public interface ScheduleRestApi {
     /**

@@ -26,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * dee BaseParse
  *
- * @author jwx701567
- * @since 2022-01-28
  */
 @FeignClient(name = "deeBaseParseRest", url = "${protectengine-e-dee-base-parser.url}/v1/internal",
     configuration = CommonFeignConfiguration.class)

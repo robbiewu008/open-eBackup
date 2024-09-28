@@ -23,8 +23,6 @@ import lombok.NoArgsConstructor;
 /**
  * vip address info
  *
- * @author p30001902
- * @since 2021-02-03
  */
 @Data
 @AllArgsConstructor

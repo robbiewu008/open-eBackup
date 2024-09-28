@@ -40,9 +40,6 @@ import java.security.cert.X509Certificate;
 /**
  * KeyStore工具类
  *
- * @author xwx1016404
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-24
  */
 @Slf4j
 @Component
@@ -116,9 +113,6 @@ public class KeyToolUtil {
     /**
      * KeyStore操作公共接口
      *
-     * @author xwx1016404
-     * @version [OceanProtect A8000 1.1.0]
-     * @since 2021-11-24
      */
     private interface KeyStoreConsumer {
         /**

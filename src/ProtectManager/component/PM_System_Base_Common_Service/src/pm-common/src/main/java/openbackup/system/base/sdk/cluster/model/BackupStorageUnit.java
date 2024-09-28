@@ -23,8 +23,6 @@ import java.math.BigDecimal;
 /**
  * 备份存储单元信息
  *
- * @author y30046482
- * @since 2023-06-26
  */
 @Getter
 @Setter

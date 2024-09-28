@@ -35,10 +35,6 @@ import java.util.Map;
 /**
  * 功能描述
  *
- * @author y00413474
- * @author w00493811
- * @version [BCManager 8.0.0]
- * @since 2020-06-19
  */
 @FeignClient(name = "DoradoStorageService", url = "https://${repository.storage.ip}:${repository.storage.port}",
     configuration = DoradoFeignConfiguration.class)

@@ -43,9 +43,6 @@ import openbackup.system.base.service.DeployTypeService;
 /**
  * AgentBusinessService 测试类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-02
  */
 @SpringBootTest(classes = {AgentBusinessServiceImpl.class})
 @RunWith(SpringRunner.class)

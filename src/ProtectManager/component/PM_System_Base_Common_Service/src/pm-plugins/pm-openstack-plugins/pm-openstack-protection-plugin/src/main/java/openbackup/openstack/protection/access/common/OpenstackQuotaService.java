@@ -30,9 +30,6 @@ import java.util.Optional;
 /**
  * openstack 公共服务
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-14
  */
 @Slf4j
 @Component

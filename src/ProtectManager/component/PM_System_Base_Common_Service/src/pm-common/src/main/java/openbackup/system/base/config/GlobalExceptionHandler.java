@@ -66,9 +66,6 @@ import javax.validation.Path;
 /**
  * GlobalExceptionHandler
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-09
  */
 @Slf4j
 @RestControllerAdvice

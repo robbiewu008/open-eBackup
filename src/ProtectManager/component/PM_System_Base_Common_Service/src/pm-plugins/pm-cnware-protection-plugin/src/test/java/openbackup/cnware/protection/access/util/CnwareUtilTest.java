@@ -23,9 +23,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * 功能描述
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-12-21
  */
 @RunWith(PowerMockRunner.class)
 public class CnwareUtilTest {

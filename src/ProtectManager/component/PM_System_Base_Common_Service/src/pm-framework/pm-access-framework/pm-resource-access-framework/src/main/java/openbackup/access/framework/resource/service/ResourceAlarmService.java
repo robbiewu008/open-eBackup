@@ -17,8 +17,6 @@ import java.util.Set;
 /**
  * 资源警告类
  *
- * @author y30044273
- * @since 2023-06-06
  */
 public interface ResourceAlarmService {
     /**

@@ -18,8 +18,6 @@ import java.util.List;
 /**
  * 用户类型
  *
- * @author c00318653
- * @since 2022-12-15
  */
 public enum UserTypeEnum {
     /**

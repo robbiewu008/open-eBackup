@@ -69,9 +69,6 @@ import java.util.UUID;
 /**
  * sqlserver数据库恢复测试类
  *
- * @author xWX950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-20
  */
 @RunWith(SpringRunner.class)
 @ComponentScan("com.huawei.oceanprotect.sqlserver.protection.restore")

@@ -58,9 +58,6 @@ import static org.mockito.BDDMockito.given;
 /**
  * DME FeignClient客户端单元测试类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/6
  **/
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)

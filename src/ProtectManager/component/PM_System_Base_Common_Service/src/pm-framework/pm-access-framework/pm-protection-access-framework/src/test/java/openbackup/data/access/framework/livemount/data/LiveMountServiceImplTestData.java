@@ -40,8 +40,6 @@ import java.util.Map;
 /**
  * live mount service test
  *
- * @author h30003246
- * @since 2021-02-25
  */
 public class LiveMountServiceImplTestData extends LiveMountCommonTestData {
     private static final String LIVE_MOUNT_ID = "83445bf0-f601-4509-b6c1-05534318206d";

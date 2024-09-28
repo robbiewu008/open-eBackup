@@ -35,9 +35,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * 统一框架副本索引开始监听器测试类
  *
- * @author lWX776769
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-01-12
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {UnifiedCopyIndexListener.class})

@@ -25,9 +25,6 @@ import java.util.Optional;
 /**
  * 默认资源证书check provider
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/10/12
  */
 @Component
 public class DefaultResourceCertCheckProvider implements ResourceCertCheckProvider {

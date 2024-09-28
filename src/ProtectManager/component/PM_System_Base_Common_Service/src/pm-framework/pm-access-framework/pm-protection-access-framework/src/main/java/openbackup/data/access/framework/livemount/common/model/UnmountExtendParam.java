@@ -18,9 +18,6 @@ import lombok.Setter;
 /**
  * 挂载销毁扩展参数
  *
- * @author w30044259
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-11-22
  */
 @Setter
 @Getter

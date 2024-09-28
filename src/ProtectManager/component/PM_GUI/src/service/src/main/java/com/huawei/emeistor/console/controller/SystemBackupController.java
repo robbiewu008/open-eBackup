@@ -65,8 +65,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * System Backup Controller for download and upload
  *
- * @author t00508428
- * @since 2021-01-08
  */
 @Slf4j
 @RestController

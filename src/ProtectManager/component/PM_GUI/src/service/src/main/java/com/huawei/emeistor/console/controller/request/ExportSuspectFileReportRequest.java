@@ -22,9 +22,6 @@ import javax.validation.constraints.Pattern;
 /**
  * 导出可疑文件列表请求体
  *
- * @author f00809938
- * @version OceanCyber 300 1.2.0
- * @since 2024-02-23
  **/
 @Getter
 @Setter

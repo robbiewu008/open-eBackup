@@ -85,8 +85,6 @@ import javax.validation.Valid;
 /**
  * 资源注册内部接口
  *
- * @author w00616953
- * @since 2021-12-13
  */
 @Slf4j
 @RestController

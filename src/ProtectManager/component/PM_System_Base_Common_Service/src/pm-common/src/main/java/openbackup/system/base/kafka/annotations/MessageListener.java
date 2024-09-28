@@ -25,8 +25,6 @@ import java.lang.annotation.Target;
 /**
  * Kafka Listener
  *
- * @author l00272247
- * @since 2020-10-19
  */
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

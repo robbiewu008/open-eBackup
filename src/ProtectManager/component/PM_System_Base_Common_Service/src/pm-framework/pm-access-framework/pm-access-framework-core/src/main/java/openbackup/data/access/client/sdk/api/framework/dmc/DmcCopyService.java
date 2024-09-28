@@ -20,8 +20,6 @@ import org.springframework.context.annotation.Primary;
 /**
  * Dmc Copy Service
  *
- * @author l00272247
- * @since 2022-01-17
  */
 @FeignClient(
         name = "dmcCopyService",

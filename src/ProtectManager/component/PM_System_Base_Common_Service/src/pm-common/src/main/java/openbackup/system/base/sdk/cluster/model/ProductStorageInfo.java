@@ -29,8 +29,6 @@ import javax.validation.constraints.Size;
 /**
  * common模块ProductStorage类
  *
- * @author z00613137
- * @since 2023-05-22
  */
 @Data
 public class ProductStorageInfo {

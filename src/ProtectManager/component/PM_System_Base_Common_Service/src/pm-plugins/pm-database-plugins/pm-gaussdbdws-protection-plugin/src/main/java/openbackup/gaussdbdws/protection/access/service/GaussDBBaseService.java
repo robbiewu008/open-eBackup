@@ -79,9 +79,6 @@ import java.util.stream.Collectors;
 /**
  * DWS 应用基本的Service
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-05
  */
 @Slf4j
 @Service

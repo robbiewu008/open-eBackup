@@ -29,9 +29,6 @@ import java.util.Properties;
 /**
  * 系统配置工具类，负责系统配置的加载和初始化
  *
- * @author j00364432
- * @version [BCManager 8.0.0]
- * @since 2019-12-05
  */
 public class SystemConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfig.class);

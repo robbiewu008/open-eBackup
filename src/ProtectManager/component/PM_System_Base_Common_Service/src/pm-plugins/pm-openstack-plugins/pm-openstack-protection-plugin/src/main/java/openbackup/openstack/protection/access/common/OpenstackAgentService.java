@@ -38,9 +38,6 @@ import java.util.stream.Collectors;
 /**
  * OpenStack所需的agent公共服务
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-02
  */
 @Slf4j
 @Component

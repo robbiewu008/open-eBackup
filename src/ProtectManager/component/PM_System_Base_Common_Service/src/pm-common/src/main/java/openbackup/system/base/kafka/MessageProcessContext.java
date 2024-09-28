@@ -21,8 +21,6 @@ import java.util.Arrays;
 /**
  * Message Process Context
  *
- * @author l00272247
- * @since 2020-11-06
  */
 public class MessageProcessContext {
     private final MessageListener messageListener;

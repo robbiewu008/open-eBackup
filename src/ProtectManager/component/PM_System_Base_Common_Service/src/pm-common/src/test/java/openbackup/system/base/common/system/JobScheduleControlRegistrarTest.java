@@ -25,9 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * {@link JobScheduleControlRegistrar} 测试类
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-02
  */
 public class JobScheduleControlRegistrarTest {
     private final ConfigurableEnvironment environment = Mockito.mock(ConfigurableEnvironment.class);

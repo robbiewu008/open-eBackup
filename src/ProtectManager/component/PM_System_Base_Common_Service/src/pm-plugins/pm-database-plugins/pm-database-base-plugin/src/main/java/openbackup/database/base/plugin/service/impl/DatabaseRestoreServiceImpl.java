@@ -25,9 +25,6 @@ import java.util.Objects;
 /**
  * 数据库恢复服务
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-02-08
  */
 @Service
 @Slf4j

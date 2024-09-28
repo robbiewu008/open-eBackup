@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 任务进度
  *
- * @author w00607005
- * @since 2023-05-23
  */
 @Data
 public class JobLog {

@@ -25,9 +25,6 @@ import org.mockito.Mockito;
 /**
  * CopyVerifyJobCallbackProviderTest
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-07-11
  */
 public class CopyVerifyJobCallbackProviderTest {
     private final CopyRestApi copyRestApi = Mockito.mock(CopyRestApi.class);

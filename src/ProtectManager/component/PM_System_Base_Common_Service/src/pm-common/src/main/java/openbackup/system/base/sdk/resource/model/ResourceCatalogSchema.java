@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 应用目录类型
  *
- * @author l00347293
- * @since 2021-01-04
  */
 @Data
 public class ResourceCatalogSchema {

@@ -24,9 +24,6 @@ import java.util.List;
 /**
  * 随机生成密码
  *
- * @author l00557046
- * @version [OceanStor 100 8.1]
- * @since 2020-7-20
  */
 public class RandomPwdUtil {
     private static final StringBuffer LOWER_CASES = new StringBuffer(

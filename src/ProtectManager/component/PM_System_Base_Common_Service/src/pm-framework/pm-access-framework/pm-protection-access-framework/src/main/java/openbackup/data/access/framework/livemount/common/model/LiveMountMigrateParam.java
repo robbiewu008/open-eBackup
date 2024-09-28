@@ -24,8 +24,6 @@ import java.util.Map;
 /**
  * Live Mount Migrate Param
  *
- * @author h30003246
- * @since 2021-01-05
  */
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)

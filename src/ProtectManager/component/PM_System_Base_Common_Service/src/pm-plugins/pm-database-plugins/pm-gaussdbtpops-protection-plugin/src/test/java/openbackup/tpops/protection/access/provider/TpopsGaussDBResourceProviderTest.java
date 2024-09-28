@@ -45,8 +45,6 @@ import java.util.Map;
 /**
  * 功能描述
  *
- * @author x30021699
- * @since 2023-05-09
  */
 @RunWith(MockitoJUnitRunner.class)
 @PrepareForTest(TpopsGaussDBResourceProvider.class)

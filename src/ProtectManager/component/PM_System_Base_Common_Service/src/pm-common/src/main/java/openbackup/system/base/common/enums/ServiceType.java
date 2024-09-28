@@ -15,8 +15,6 @@ package openbackup.system.base.common.enums;
 /**
  * 服务类型
  *
- * @author xwx1016404
- * @since 2021-10-10
  */
 public enum ServiceType {
     /**

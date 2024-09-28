@@ -27,9 +27,6 @@ import java.util.Objects;
 /**
  * GaussDBT校验工具类
  *
- * @author mwx776342
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-19
  */
 @Slf4j
 public class GaussDBTValidator {

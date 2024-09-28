@@ -33,8 +33,6 @@ import java.util.Optional;
 /**
  * 资源util
  *
- * @author h30027154
- * @since 2022-06-27
  */
 public class ResourceUtil {
     /**

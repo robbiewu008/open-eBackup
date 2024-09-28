@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * OceanStorageLogincalPortRes
  *
- * @author p00511147
- * @since 2020-2-4
  */
 @Data
 public class OceanStorageLogincalPortRes {

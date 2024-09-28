@@ -42,9 +42,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 资源证书的定时调度
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/10/8
  */
 @Slf4j
 @Component

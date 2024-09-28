@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author s00455050
- * @since 2021-08-31
  */
 @Data
 public class AgentUpdateResultResponse {

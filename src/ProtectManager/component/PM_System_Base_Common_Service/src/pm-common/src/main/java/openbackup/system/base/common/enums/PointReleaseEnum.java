@@ -17,8 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * 版本
  *
- * @author w00607005
- * @since 2023-07-18
  */
 public enum PointReleaseEnum {
     /**

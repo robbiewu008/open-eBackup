@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * Paging Param Request
  *
- * @author l00272247
- * @since 2020/07/03
  */
 @Data
 public class PagingParamRequest {

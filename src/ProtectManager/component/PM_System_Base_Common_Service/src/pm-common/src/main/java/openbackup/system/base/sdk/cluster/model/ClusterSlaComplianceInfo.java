@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 目标集群Sla遵从数量信息查询数据返回模型
  *
- * @author dWX1009286
- * @since 2021-07-27
  */
 @Data
 public class ClusterSlaComplianceInfo {

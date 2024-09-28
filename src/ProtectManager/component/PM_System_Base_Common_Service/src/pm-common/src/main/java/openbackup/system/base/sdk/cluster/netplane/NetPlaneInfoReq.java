@@ -36,8 +36,6 @@ import javax.validation.constraints.Size;
 /**
  * 网络平面信息
  *
- * @author z00666391
- * @since 2023-05-30
  */
 @Getter
 @Setter

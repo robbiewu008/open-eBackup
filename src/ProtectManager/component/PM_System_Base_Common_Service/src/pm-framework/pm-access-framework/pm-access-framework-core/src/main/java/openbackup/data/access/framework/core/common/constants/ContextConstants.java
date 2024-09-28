@@ -15,8 +15,6 @@ package openbackup.data.access.framework.core.common.constants;
 /**
  * 任务（保护任务、恢复任务、liveMount任务等）的上下文
  *
- * @author y00280557
- * @since 2020-08-21
  */
 public final class ContextConstants {
     /**

@@ -37,9 +37,6 @@ import java.util.function.Supplier;
 /**
  * The easy key store file watcher. Autoloading key store while key store file changed.
  *
- * @author l00272247
- * @version V200R001C50+: 8.0.1
- * @since 2019-10-30
  */
 @Slf4j
 public class KeyStoreLoader extends Watcher {

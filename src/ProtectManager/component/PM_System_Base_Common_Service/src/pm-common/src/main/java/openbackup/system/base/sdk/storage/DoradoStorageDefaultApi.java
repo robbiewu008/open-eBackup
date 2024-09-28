@@ -26,8 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * 调用DM接口,不走dma转发
  *
- * @author y30021475
- * @since 2023-04-08
  */
 @FeignClient(name = "DoradoStorageDefaultApi", url = "https://${repository.storage.ip}:${repository.storage.port}",
     configuration = DoradoClusterFeignConfiguration.class)

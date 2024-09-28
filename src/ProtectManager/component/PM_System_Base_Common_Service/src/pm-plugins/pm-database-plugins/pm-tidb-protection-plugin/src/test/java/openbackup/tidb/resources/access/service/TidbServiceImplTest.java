@@ -52,8 +52,6 @@ import java.util.Optional;
 /**
  * tidb service 测试类
  *
- * @author w00426202
- * @since 2023-07-14
  */
 @RunWith(PowerMockRunner.class)
 public class TidbServiceImplTest {

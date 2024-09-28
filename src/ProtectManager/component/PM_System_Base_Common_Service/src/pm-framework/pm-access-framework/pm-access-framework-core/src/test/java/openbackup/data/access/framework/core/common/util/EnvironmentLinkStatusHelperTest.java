@@ -34,8 +34,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * AgentLinkStatusHelper 测试类
  *
- * @author y30044273
- * @since 2023-07-27
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

@@ -23,8 +23,6 @@ import java.util.Optional;
 /**
  * Live Mount Common Task Param
  *
- * @author l00272247
- * @since 2022-01-06
  */
 public class BaseTask {
     private static final String SECRET = "secret";

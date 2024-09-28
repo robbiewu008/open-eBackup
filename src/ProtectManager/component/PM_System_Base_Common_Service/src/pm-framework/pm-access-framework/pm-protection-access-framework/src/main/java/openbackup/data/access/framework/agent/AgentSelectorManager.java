@@ -39,9 +39,6 @@ import java.util.Map;
 /**
  * 代理选择管理器
  *
- * @author: y00559272
- * @version: [OceanProtect X8000 1.2.1]
- * @since: 2022/8/5
  **/
 @Slf4j
 @Component

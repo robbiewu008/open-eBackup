@@ -38,9 +38,6 @@ import java.util.Map;
 /**
  * 发送删除副本索引的消息
  *
- * @author zwx1010134
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-06-30
  */
 @Slf4j
 @Component

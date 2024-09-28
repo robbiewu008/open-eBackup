@@ -27,9 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * 功能描述: 访问本地 dorado 存储统一 RestApi
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-26
  */
 @FeignClient(name = "DoradoFileSystemRestApi", url = "https://${repository.storage.ip}:${repository.storage.port}",
         configuration = DoradoClusterFeignConfiguration.class)

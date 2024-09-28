@@ -33,8 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * TokenBo Entity
  *
- * @author y00407642
- * @since 2019-11-13
  */
 @Builder
 @AllArgsConstructor
@@ -89,8 +87,6 @@ public class TokenBo {
     /**
      * UserBo Entity
      *
-     * @author y00407642
-     * @since 2019-11-13
      */
     @Builder
     @Data
@@ -122,8 +118,6 @@ public class TokenBo {
     /**
      * UserInfo Entity
      *
-     * @author c30009520
-     * @since 2021-01-30
      */
     @Data
     public static class UserInfo extends UserBo {
@@ -137,8 +131,6 @@ public class TokenBo {
     /**
      * RoleBo Entity
      *
-     * @author y00407642
-     * @since 2019-11-13
      */
     @Builder
     @Data

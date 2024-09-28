@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 规格常量
  *
- * @author w00607005
- * @since 2023-08-04
  */
 public class SpecificationConstants {
     /**

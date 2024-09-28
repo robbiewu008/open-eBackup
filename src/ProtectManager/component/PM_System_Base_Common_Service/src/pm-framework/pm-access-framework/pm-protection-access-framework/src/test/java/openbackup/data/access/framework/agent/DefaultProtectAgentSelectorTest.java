@@ -54,9 +54,6 @@ import java.util.UUID;
 /**
  * agent选择器测试单元测试
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/26
  **/
 public class DefaultProtectAgentSelectorTest {
     private final ResourceService resourceService = Mockito.mock(ResourceService.class);

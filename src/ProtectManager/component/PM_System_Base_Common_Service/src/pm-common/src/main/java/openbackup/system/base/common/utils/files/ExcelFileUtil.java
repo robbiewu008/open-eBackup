@@ -39,9 +39,6 @@ import java.util.List;
 /**
  * Excel文件管理类
  *
- * @author 郝云峰 00004536
- * @version [Lego V100R002C10, 2014-12-18]
- * @since 2019-10-31
  */
 public class ExcelFileUtil extends AbstractFileUtil {
     /**
@@ -65,8 +62,6 @@ public class ExcelFileUtil extends AbstractFileUtil {
      * 构造函数<br>
      * <br>
      *
-     * @author 郝云峰 00004536
-     * @since 2019-10-31 Lego V1R1, Aug 26, 2010
      */
     ExcelFileUtil() {
         super();
@@ -104,8 +99,6 @@ public class ExcelFileUtil extends AbstractFileUtil {
      * 写文件 <br>
      *
      * @param dataLst 需要写入文件的数据
-     * @author 郝云峰 00004536
-     * @since 2019-10-31 Lego V1R1, Aug 26, 2010
      */
     @Override
     protected void writeToFile(List<List<String>> dataLst) {
@@ -218,8 +211,6 @@ public class ExcelFileUtil extends AbstractFileUtil {
      * <br>
      *
      * @throws IOException IOException
-     * @author 郝云峰 00004536
-     * @since 2019-10-31 Lego V1R1, Aug 30, 2010
      */
     @Override
     public void closeFile() throws IOException {
@@ -234,8 +225,6 @@ public class ExcelFileUtil extends AbstractFileUtil {
      *
      * @param file File
      * @return int
-     * @author q50016449
-     * @since 2020-09-04
      */
     @ExterAttack
     public static int readExcel(File file) {

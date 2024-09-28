@@ -20,8 +20,6 @@ import java.util.List;
  * Page List Response
  *
  * @param <T> template
- * @author l00272247
- * @since 2020-07-03
  */
 @Data
 public class PageListResponse<T> {

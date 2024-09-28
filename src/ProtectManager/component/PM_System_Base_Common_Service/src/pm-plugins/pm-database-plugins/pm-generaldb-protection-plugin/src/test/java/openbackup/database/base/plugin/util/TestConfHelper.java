@@ -33,9 +33,6 @@ import java.util.List;
 /**
  * 测试conf辅助类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-29
  */
 public class TestConfHelper {
     public static final String SAP_HANA = "hana";

@@ -19,8 +19,6 @@ import lombok.Setter;
 /**
  * The ResourceDependencyRelation
  *
- * @author g30003063
- * @since 2022/5/28
  */
 @Getter
 @Setter

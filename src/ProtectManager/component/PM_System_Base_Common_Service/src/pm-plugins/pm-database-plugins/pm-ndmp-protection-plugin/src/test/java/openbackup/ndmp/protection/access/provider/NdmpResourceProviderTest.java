@@ -23,8 +23,6 @@ import org.junit.Test;
 /**
  * 资源接入类实现
  *
- * @author t30021437
- * @since 2023-05-12
  */
 public class NdmpResourceProviderTest {
     private NdmpResourceProvider ndmpResourceProvider;

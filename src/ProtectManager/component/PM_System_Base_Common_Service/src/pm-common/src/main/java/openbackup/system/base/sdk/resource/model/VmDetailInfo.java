@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * VM hardware信息
  *
- * @author h30003246
- * @since 2020-12-04
  */
 @Data
 public class VmDetailInfo {

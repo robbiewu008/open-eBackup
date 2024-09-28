@@ -44,9 +44,6 @@ import java.util.List;
 /**
  * InformixBackupInterceptorProviderTest
  *
- * @author zWX951267
- * @version [DataBackup 1.5.0]
- * @since 2023-05-26
  */
 @Slf4j
 public class InformixBackupInterceptorProviderTest {

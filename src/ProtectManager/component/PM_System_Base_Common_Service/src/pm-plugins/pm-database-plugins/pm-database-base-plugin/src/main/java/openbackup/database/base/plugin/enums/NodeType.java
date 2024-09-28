@@ -15,9 +15,6 @@ package openbackup.database.base.plugin.enums;
 /**
  * 数据库节点类型
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/12
  */
 public enum NodeType {
     /**

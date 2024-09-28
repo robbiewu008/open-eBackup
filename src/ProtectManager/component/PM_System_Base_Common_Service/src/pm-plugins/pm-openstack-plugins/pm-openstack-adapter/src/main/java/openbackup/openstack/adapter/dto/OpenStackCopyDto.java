@@ -22,9 +22,6 @@ import lombok.Setter;
 /**
  * 云核OpenStack副本Dto
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-16
  */
 @Getter
 @Setter

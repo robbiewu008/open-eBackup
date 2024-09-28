@@ -21,9 +21,6 @@ import org.junit.Test;
 /**
  * SQL Server的SLA应用校验
  *
- * @author xWX950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-22
  */
 public class SqlServerSlaValidatorProviderTest {
     private SqlServerSlaValidatorProvider sqlServerSlaValidatorProvider = new SqlServerSlaValidatorProvider();

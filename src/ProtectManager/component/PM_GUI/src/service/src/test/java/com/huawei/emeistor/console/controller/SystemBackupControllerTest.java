@@ -57,8 +57,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 管理数据备份功能测试
  *
- * @author w00504341
- * @since 2021-03-15
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {SystemBackupController.class, SessionServiceImpl.class, RestTemplate.class,

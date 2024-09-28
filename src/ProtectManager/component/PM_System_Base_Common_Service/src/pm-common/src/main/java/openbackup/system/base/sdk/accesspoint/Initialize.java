@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 初始化
  *
- * @author w00493811
- * @since 2020-12-26
  */
 public interface Initialize {
     /**

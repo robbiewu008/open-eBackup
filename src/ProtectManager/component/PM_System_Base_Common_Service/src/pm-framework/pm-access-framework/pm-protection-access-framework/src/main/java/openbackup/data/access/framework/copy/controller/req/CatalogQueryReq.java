@@ -20,9 +20,6 @@ import javax.validation.constraints.NotBlank;
 /**
  * CatalogQueryReq
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-05-29
  */
 @Getter
 @Setter

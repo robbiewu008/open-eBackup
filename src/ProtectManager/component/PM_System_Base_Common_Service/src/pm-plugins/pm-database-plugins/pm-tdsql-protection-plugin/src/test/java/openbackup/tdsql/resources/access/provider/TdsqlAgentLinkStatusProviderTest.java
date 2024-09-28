@@ -31,8 +31,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author c00826511
- * @since 2023-08-14
  */
 @RunWith(PowerMockRunner.class)
 public class TdsqlAgentLinkStatusProviderTest {

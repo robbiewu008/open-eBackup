@@ -46,9 +46,6 @@ import java.util.Optional;
 /**
  * mongodb 实际业务service 测试类
  *
- * @author lwx1012372
- * @version [DataBackup 1.5.0]
- * @since 2023-04-07
  */
 public class MongoDBBaseServiceTest {
     private final ResourceService resourceService = Mockito.mock(ResourceService.class);

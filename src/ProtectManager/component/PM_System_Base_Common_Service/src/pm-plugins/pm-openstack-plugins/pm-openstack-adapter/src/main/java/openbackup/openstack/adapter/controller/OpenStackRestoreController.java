@@ -38,9 +38,6 @@ import javax.servlet.http.HttpServletRequest;
  *     提供第三方调用，不使用系统内部token校验机制
  * </p>
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-16
  */
 @Slf4j
 @RestController

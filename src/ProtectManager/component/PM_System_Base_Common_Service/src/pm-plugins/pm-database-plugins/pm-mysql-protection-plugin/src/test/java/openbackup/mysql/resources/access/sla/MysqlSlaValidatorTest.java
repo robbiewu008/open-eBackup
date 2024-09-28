@@ -48,9 +48,6 @@ import java.util.List;
  * 功能描述：
  * mysql的sla校验器
  *
- * @author wWX1146064
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-17
  */
 public class MysqlSlaValidatorTest {
     private final MysqlSlaValidator mysqlValidator = new MysqlSlaValidator();

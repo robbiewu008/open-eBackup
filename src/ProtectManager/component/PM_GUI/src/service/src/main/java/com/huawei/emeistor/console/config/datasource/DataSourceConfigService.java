@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * 数据库信息获取
  *
- * @author y30000858
- * @since 2021-01-22
  */
 @FeignClient(name = "dataSourceService", url = "${service.url.infra}", configuration = FeignClientConfiguration.class)
 public interface DataSourceConfigService {

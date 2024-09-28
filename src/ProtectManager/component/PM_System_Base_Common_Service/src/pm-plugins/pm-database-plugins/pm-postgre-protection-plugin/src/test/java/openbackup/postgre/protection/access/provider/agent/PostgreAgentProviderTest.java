@@ -35,9 +35,6 @@ import java.util.List;
 /**
  * {@link PostgreAgentProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/7/27
  */
 public class PostgreAgentProviderTest {
     private final PostgreInstanceService postgreInstanceService = PowerMockito.mock(PostgreInstanceService.class);

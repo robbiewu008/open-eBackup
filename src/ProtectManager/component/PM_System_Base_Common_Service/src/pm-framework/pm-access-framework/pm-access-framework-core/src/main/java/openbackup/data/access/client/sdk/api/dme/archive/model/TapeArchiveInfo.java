@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 介质集信息
  *
- * @author z00633516
- * @since 2022-01-29
  */
 @Data
 public class TapeArchiveInfo {

@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * JobCenter Client Service
  *
- * @author h30003246
- * @since 2020-07-16
  */
 @FeignClient(name = "PlanRestApi", url = "${service.url.pm-dm-access-point}/v1/internal/jobs",
     configuration = CommonFeignConfiguration.class)

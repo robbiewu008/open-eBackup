@@ -25,8 +25,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /**
  * 启动类
  *
- * @author t00482481
- * @since 2020-9-06
  */
 @EnableAsync
 @EnableRetry

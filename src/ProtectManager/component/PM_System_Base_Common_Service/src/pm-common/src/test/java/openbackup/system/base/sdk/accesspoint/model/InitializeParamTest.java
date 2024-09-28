@@ -28,8 +28,6 @@ import java.util.Map;
 /**
  * InitializeParam test
  *
- * @author jwx701567
- * @since 2021-03-16
  */
 public class InitializeParamTest {
     @Test

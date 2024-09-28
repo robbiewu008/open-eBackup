@@ -21,8 +21,6 @@ import java.util.Optional;
 /**
  * User Auth 本地调用API接口定义
  *
- * @author y00559272
- * @since 2021-10-22
  */
 public interface AuthNativeApi {
     /**

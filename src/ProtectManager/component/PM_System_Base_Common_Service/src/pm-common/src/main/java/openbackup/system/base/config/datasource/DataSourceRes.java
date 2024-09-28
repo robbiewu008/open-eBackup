@@ -22,8 +22,6 @@ import lombok.Data;
 /**
  * 基础设施返回值
  *
- * @author y30000858
- * @since 2021-01-22
  */
 @Data
 public class DataSourceRes {

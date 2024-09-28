@@ -25,9 +25,6 @@ import org.mockito.Mockito;
 /**
  * MongoDBBaseService 实现类测试类
  *
- * @author twx1009756
- * @version [DataBackup 1.5.0]
- * @since 2023-06-29
  */
 public class MongoDBBaseServiceImplTest {
     private final ResourceService resourceService = Mockito.mock(ResourceService.class);

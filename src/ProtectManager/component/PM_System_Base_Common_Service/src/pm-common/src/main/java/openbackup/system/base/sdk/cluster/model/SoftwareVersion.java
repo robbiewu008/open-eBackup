@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * 备份软件信息
  *
- * @author w00607005
- * @since 2023-07-18
  */
 @Data
 public class SoftwareVersion {

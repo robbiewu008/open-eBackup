@@ -24,8 +24,6 @@ import java.io.IOException;
 /**
  * 功能描述
  *
- * @author w30042425
- * @since 2023-09-22
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {

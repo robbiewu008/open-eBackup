@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * 资源删除参数
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-19
  */
 @Data
 public class ResourceDeleteParams {

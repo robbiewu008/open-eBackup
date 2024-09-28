@@ -17,9 +17,6 @@ import openbackup.system.base.common.utils.VerifyUtil;
 /**
  * MySQL子资源sub type
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/5/31
  */
 public enum MysqlResourceSubTypeEnum {
     /**

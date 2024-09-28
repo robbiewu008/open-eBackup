@@ -22,9 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * dma url配置
  *
- * @author g00500588
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-01
  */
 @Setter
 @Getter

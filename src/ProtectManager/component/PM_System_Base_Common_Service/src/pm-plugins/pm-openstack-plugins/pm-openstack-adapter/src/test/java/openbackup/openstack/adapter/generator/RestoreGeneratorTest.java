@@ -33,9 +33,6 @@ import java.util.Map;
 /**
  * {@link RestoreGenerator} 测试类
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-16
  */
 public class RestoreGeneratorTest {
     /**

@@ -32,8 +32,6 @@ import org.springframework.stereotype.Service;
 /**
  * 预置账号处理
  *
- * @author y30021475
- * @since 2023-08-07
  */
 @Slf4j
 @Service

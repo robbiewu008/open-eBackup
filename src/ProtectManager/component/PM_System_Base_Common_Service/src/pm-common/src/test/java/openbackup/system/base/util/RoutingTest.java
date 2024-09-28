@@ -39,8 +39,6 @@ import javax.net.ssl.SSLHandshakeException;
 /**
  * Routing Test
  *
- * @author twx1009756
- * @since 2021-03-17
  */
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest(classes = {

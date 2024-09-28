@@ -49,9 +49,6 @@ import java.util.zip.ZipOutputStream;
 /**
  * FileZip
  *
- * @author 郝云峰 00004536
- * @version [Lego V100R002C10, 2014-12-18]
- * @since 2019-10-31
  */
 public class FileZip implements FileCheckInterface {
     private static final Logger logger = LoggerFactory.getLogger(FileZip.class);
@@ -139,8 +136,6 @@ public class FileZip implements FileCheckInterface {
      * @param inputFilePath 需要压缩的文件夹或者文件路径
      * @param zipFilePath 保存的压缩包文件路径
      * @param baseName 保存的压缩包文件名
-     * @author c00107026
-     * @since 2019-10-31 IReport CBB V1R1, 2010-9-19
      */
     public static void zip(String inputFilePath, String zipFilePath, String baseName) {
         try (ZipOutputStream zOut = new ZipOutputStream(

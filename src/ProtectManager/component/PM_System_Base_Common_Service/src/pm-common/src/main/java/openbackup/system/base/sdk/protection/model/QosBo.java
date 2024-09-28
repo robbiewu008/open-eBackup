@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * replication qos返回类
  *
- * @author twx1009756
- * @since 2020-12-26
  */
 @Data
 public class QosBo {

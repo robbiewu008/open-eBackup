@@ -21,9 +21,6 @@ import java.util.Set;
 /**
  * 资源授权类
  *
- * @author z00842230
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2024-05-17
  */
 @Getter
 @Setter

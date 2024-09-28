@@ -49,9 +49,6 @@ import java.util.stream.Collectors;
 /**
  * SQL Server副本删除拦截器
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-04
  */
 @Slf4j
 @Component

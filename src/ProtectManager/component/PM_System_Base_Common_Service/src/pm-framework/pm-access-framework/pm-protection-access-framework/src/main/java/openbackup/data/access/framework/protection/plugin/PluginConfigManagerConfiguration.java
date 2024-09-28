@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 插件configurantion
  *
- * @since 2022-05-23
  */
 @Configuration
 public class PluginConfigManagerConfiguration {

@@ -21,8 +21,6 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 /**
  * 功能描述
  *
- * @author x30046484
- * @since 2024-05-16
  */
 public interface AuthValidator extends DataProtectionProvider<String> {
     /**

@@ -44,8 +44,6 @@ import java.util.stream.Collectors;
 /**
  * sla-cluster校验器provider
  *
- * @author w00426202
- * @since 2023-07-21
  */
 @Component
 @Slf4j

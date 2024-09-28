@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * 副本信息实体类
  *
- * @author y30037959
- * @since 2023-06-07
  */
 @Getter
 @Setter

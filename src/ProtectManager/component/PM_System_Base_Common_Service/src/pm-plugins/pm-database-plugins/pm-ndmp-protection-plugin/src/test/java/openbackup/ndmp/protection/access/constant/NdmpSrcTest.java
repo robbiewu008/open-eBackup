@@ -21,8 +21,6 @@ import org.junit.Test;
 /**
  * bean 测试
  *
- * @author t30021437
- * @since 2023-05-18
  */
 public class NdmpSrcTest {
     /**

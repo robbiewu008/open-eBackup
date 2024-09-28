@@ -24,8 +24,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * SlaValidator测试
  *
- * @author y00490893
- * @since 2022-06-27
  */
 @RunWith(PowerMockRunner.class)
 public class RedisSlaValidatorTest {

@@ -26,9 +26,6 @@ import java.util.Map;
 /**
  * 功能描述 fc配置工具类 测试类
  *
- * @author t30028453
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-02-24
  */
 public class FibreUtilTest {
     /**

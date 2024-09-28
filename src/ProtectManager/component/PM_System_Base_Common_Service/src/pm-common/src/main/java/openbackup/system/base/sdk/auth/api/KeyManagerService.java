@@ -15,8 +15,6 @@ package openbackup.system.base.sdk.auth.api;
 /**
  * 仅供token生成解密用
  *
- * @author twx1011919
- * @since 2021-05-10
  */
 public interface KeyManagerService {
     /**

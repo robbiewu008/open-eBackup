@@ -21,8 +21,6 @@ import java.util.Objects;
 /**
  * 防勒索调度计划
  *
- * @author nwx1077006
- * @since 2021-11-16
  */
 @Data
 public class AntiRansomwareScheduleRes {

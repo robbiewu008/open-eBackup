@@ -19,9 +19,6 @@ import java.util.Arrays;
 /**
  * SLA 备份策略类型
  *
- * @author y00559272
- * @version [A8000 1.0.0]
- * @since 2021-01-03
  */
 @Getter
 public enum SlaPolicyTypeEnum {

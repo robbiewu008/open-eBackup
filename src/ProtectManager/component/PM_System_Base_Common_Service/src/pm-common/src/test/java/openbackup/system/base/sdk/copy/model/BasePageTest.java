@@ -30,8 +30,6 @@ import java.util.*;
 /**
  * BasePage test
  *
- * @author jwx701567
- * @since 2021-03-16
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BasePage.class)

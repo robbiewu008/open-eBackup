@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * DME Response Error
  *
- * @author l00272247
- * @since 2020-04-03
  */
 @Data
 public class StorageCommonResError {

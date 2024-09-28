@@ -65,8 +65,6 @@ import java.util.Optional;
 /**
  * EnvironmentInternalController测试类
  *
- * @author w00616953
- * @since 2021-12-17
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

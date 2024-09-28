@@ -23,8 +23,6 @@ import javax.validation.constraints.Min;
 /**
  * 功能描述
  *
- * @author q00654632
- * @since 2023-07-12
  */
 @Data
 public class AirGapDeviceShowPageReq {

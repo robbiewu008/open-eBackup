@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 跨控制器转发http请求相关的常量
  *
- * @author z00850125
- * @since 2024-04-19
  */
 public class RequestForwardRetryConstant {
     /**

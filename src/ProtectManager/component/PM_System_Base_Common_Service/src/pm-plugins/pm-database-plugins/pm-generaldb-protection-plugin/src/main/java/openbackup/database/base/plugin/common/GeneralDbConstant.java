@@ -15,9 +15,6 @@ package openbackup.database.base.plugin.common;
 /**
  * 通用数据库常量
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-12
  */
 public class GeneralDbConstant {
     /**

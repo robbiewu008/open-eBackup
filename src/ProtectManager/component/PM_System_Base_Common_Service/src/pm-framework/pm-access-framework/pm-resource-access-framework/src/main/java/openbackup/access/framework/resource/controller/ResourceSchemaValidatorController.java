@@ -31,8 +31,6 @@ import java.util.List;
 /**
  * JsonSchema校验器REST API控制器，提供JsonSchema校验器相关REST接口
  *
- * @author w00616953
- * @since 2021-10-20
  */
 @RestController
 @RequestMapping("/v2/internal/jsonschemas")

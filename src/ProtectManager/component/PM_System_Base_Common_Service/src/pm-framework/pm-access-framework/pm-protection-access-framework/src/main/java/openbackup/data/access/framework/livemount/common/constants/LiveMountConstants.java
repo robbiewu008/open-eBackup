@@ -15,9 +15,6 @@ package openbackup.data.access.framework.livemount.common.constants;
 /**
  * LiveMountConstants LiveMount常量
  *
- * @author twx1009756
- * @version [OceanProtectA8000 1.1.0]
- * @since 2022.3.23
  */
 public class LiveMountConstants {
     /**

@@ -21,9 +21,6 @@ import java.util.List;
 /**
  * Job对象
  *
- * @author w00448845
- * @version [BCManager 8.0.0]
- * @since 2020-04-15
  */
 @Data
 public class JobBo {

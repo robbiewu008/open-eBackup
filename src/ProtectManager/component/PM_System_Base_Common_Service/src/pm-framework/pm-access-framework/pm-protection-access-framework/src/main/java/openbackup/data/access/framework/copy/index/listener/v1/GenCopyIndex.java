@@ -26,8 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * Copy index msg listener, this lister will consume the copy index msg
  *
- * @author zwx1010134
- * @since 2021-05-28
  */
 @Component
 @Slf4j

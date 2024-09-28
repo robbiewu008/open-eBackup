@@ -20,9 +20,6 @@ import lombok.Getter;
 /**
  * DMC Job状态枚举类
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-09-21
  */
 @Getter
 public enum DmcJobStatus {

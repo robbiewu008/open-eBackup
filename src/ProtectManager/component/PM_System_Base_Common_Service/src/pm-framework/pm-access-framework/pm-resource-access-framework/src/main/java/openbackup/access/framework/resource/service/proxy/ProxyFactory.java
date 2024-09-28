@@ -30,8 +30,6 @@ import java.util.stream.Stream;
  * Proxy Factory
  *
  * @param <T> template type
- * @author l00650874
- * @since 2022-06-07
  */
 public class ProxyFactory<T> {
     private static final ConcurrentHashMap<Class<?>, ProxyFactory<?>> CACHES = new ConcurrentHashMap<>();

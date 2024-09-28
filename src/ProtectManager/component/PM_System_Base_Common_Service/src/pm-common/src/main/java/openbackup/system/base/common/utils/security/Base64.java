@@ -15,9 +15,6 @@ package openbackup.system.base.common.utils.security;
 /**
  * Base64工具类
  *
- * @author j90001735
- * @version [UltraAPM V100R002C10, 2013-9-12]
- * @since 2019-10-25
  */
 public final class Base64 {
     private static final char[] INT_TO_BASE_64 = {

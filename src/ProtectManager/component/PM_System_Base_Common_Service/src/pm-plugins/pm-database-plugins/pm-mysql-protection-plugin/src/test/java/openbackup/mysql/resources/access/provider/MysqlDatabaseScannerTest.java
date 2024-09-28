@@ -57,9 +57,6 @@ import java.util.Optional;
 /**
  * 数据库扫描测试类
  *
- * @author xWX950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-18
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {FeignBuilder.class, DatabaseScannerUtils.class})

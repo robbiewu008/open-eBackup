@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * VMWare info
  *
- * @author h30003246
- * @since 2020-12-04
  */
 @Data
 public class VMWareDetailInfo {

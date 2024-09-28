@@ -15,9 +15,6 @@ package openbackup.opengauss.resources.access.constants;
 /**
  * OpenGauss相关错误码
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-21
  */
 public class OpenGaussErrorCode {
     /**

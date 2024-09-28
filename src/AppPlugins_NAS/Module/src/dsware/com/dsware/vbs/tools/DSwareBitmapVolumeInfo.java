@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 /**
  * DSwareBitmapVolumeInfo
  *
- * @since 2024-08-27
  */
 public class DSwareBitmapVolumeInfo {
     private static Method getVolNameMethod;

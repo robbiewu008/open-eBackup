@@ -20,8 +20,6 @@ import lombok.Data;
 /**
  * Live Mount Clone Request
  *
- * @author l00272247
- * @since 2021-04-12
  */
 @Data
 public class LiveMountCloneRequest {

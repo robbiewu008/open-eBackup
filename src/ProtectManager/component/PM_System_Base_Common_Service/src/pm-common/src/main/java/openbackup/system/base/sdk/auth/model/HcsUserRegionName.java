@@ -21,8 +21,6 @@ import lombok.Setter;
 /**
  * RegionName对象属性
  *
- * @author y30021475
- * @since 2023-07-27
  */
 @Getter
 @Setter

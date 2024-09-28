@@ -21,8 +21,6 @@ import org.junit.Test;
 /**
  * 功能描述
  *
- * @author s30036254
- * @since 2023-02-16
  */
 public class GoldenClusterTest {
     @Test

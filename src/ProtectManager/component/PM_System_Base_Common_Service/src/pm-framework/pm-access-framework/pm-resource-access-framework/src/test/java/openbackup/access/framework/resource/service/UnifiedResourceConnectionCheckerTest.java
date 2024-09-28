@@ -28,9 +28,6 @@ import org.mockito.Mockito;
 /**
  * UnifiedResourceConnectionChecker测试
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-04
  */
 public class UnifiedResourceConnectionCheckerTest {
     /**

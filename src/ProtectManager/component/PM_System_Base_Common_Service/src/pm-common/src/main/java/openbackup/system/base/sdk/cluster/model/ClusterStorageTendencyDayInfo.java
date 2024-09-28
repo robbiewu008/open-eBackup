@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 /**
  * 储容量百分比和颜色显示
  *
- * @author z00613137
- * @since 2023-05-11
  */
 @Data
 @NoArgsConstructor

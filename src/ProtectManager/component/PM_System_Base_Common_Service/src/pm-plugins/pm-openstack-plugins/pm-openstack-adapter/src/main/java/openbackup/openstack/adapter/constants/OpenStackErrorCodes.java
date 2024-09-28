@@ -15,9 +15,6 @@ package openbackup.openstack.adapter.constants;
 /**
  * OpenStack北向接口错误码
  *
- * @author w00616953
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-30
  */
 public final class OpenStackErrorCodes {
     /**

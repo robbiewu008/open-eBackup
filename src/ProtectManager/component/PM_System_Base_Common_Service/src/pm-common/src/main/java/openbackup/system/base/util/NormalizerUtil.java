@@ -19,8 +19,6 @@ import java.text.Normalizer;
 /**
  * 处理服务器注入风险Server-Side Request Forgery工具类
  *
- * @author l00422407
- * @since 2021-01-23
  */
 public class NormalizerUtil {
     /**

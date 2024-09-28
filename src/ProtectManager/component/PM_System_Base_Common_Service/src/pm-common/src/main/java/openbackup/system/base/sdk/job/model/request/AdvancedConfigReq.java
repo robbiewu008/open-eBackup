@@ -27,8 +27,6 @@ import javax.validation.constraints.Size;
 /**
  * 高级配置，k8s恢复才有
  *
- * @author y30046482
- * @since 2023-10-18
  */
 @Setter
 @Getter

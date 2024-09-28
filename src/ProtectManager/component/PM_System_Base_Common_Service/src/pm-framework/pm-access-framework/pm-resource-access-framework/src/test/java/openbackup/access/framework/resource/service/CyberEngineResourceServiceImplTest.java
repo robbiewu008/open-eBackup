@@ -49,8 +49,6 @@ import java.util.Optional;
 /**
  * CyberEngineResourceServiceImpl的测试类
  *
- * @author s30031954
- * @since 2022-12-25
  */
 @RunWith(PowerMockRunner.class)
 @NoArgsConstructor

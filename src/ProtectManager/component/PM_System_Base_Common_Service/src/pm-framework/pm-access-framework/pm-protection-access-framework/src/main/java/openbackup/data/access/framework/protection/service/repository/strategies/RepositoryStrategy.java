@@ -20,9 +20,6 @@ import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 /**
  * 存储库的策略接口类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/8
  **/
 public interface RepositoryStrategy {
     /**

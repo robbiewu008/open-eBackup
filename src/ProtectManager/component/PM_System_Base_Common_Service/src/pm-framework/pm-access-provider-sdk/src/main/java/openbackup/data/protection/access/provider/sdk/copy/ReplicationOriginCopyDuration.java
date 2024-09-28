@@ -19,7 +19,6 @@ import lombok.Data;
 /**
  * 复制原副本保留时间
  *
- * @since 2023-03-06
  */
 @Data
 public class ReplicationOriginCopyDuration {

@@ -38,9 +38,6 @@ import java.util.Optional;
 /**
  * dameng副本删除provider
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-16
  */
 @Slf4j
 @Component

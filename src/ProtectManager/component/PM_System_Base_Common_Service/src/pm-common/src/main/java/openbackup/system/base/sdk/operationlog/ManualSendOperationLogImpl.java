@@ -36,8 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 功能描述
  *
- * @author h30003246
- * @since 2021-05-21
  */
 @Component
 public class ManualSendOperationLogImpl implements ManualSendOperationLog {

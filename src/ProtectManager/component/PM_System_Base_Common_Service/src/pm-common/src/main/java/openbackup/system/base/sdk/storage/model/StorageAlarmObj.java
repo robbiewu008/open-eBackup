@@ -20,8 +20,6 @@ import lombok.Setter;
 /**
  * The StorageAlarmObj
  *
- * @author g30003063
- * @since 2022/8/11
  */
 @Getter
 @Setter

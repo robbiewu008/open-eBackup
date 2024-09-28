@@ -17,8 +17,6 @@ import java.util.List;
 /**
  * Page Query Param
  *
- * @author l00272247
- * @since 2020-09-24
  */
 public class PageQueryParam extends Pagination<String> {
     /**

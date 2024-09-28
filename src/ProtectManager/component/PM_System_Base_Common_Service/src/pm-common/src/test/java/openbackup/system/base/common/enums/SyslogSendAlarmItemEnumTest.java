@@ -24,9 +24,6 @@ import java.util.stream.IntStream;
 /**
  * {@link SyslogSendAlarmItemEnum} 测试类
  *
- * @author l00617376
- * @version OceanCyber 300 1.2.0
- * @since 2024-05-31
  */
 @RunWith(PowerMockRunner.class)
 class SyslogSendAlarmItemEnumTest {

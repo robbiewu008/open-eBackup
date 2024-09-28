@@ -24,8 +24,6 @@ import org.hibernate.validator.constraints.Length;
 /**
  * Clusters relation request
  *
- * @author p30001902
- * @since 2020-08-18
  */
 @Data
 @NoArgsConstructor

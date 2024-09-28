@@ -20,9 +20,6 @@ import java.util.List;
 /**
  * 数据库的实例保护服务
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-21
  */
 public interface InstanceProtectionService {
     /**

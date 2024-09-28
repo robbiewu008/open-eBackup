@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 /**
  * Abstract Converter
  *
- * @author l00272247
- * @since 2021-06-10
  */
 public abstract class AbstractConverter implements DataConverter {
     private final String name;

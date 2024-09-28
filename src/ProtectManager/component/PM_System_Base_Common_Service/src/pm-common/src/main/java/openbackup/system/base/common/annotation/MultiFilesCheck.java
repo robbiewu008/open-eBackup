@@ -22,9 +22,6 @@ import java.lang.annotation.Target;
 /**
  * 文件上传防护注解，适配多个类型的文件校验
  *
- * @author t30028453
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-27
  */
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

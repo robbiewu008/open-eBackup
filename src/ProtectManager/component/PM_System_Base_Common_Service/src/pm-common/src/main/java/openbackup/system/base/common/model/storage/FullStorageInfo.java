@@ -20,8 +20,6 @@ import lombok.EqualsAndHashCode;
 /**
  * 存储库全部信息
  *
- * @author w00504341
- * @since 2020-12-18
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

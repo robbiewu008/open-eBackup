@@ -23,9 +23,6 @@ import java.util.List;
 /**
  * The AdapterUtilsTest
  *
- * @author l50024885
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/19
  */
 class AdapterUtilsTest {
     /**

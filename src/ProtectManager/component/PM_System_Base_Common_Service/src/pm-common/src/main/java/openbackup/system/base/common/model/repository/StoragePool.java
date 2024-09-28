@@ -24,8 +24,6 @@ import java.math.BigDecimal;
 /**
  * 存储池
  *
- * @author w00493811
- * @since 2020-07-01
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

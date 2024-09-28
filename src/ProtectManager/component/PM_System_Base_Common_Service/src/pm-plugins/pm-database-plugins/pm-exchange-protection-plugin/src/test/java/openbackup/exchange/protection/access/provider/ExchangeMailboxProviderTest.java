@@ -35,8 +35,6 @@ import java.util.Map;
 /**
  * ExchangeMailboxProvider Test
  *
- * @author z00693144
- * @since 2024-01-31
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {ExchangeMailboxProvider.class, ExchangeServiceImpl.class})

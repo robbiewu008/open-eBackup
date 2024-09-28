@@ -57,9 +57,6 @@ import java.util.stream.Collectors;
 /**
  * informix备份拦截器
  *
- * @author zwx951267
- * @version [DataBackup 1.5.0]
- * @since 2023-05-19
  */
 @Slf4j
 @Component

@@ -56,9 +56,6 @@ import java.util.stream.Collectors;
 /**
  * SLA对象生成器
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-15
  */
 public final class SlaGenerator {
     private static final String NUMBER_FORMAT = "%02d";

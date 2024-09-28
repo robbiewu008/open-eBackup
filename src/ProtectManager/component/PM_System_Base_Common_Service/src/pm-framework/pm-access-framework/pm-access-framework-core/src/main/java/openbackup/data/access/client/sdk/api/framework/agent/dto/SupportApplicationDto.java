@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * Agent返回的支持的应用数据模型
  *
- * @author w00616953
- * @since 2021-12-03
  */
 @Data
 public class SupportApplicationDto {

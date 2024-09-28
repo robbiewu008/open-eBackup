@@ -21,9 +21,6 @@ import java.util.List;
 /**
  * 存储服务
  *
- * @author y00413474
- * @author w00493811
- * @since 2020-07-02
  */
 public interface StorageService {
     /**

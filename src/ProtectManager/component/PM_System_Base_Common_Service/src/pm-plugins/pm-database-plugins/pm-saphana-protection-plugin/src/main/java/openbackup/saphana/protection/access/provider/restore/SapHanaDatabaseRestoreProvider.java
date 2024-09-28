@@ -58,9 +58,6 @@ import java.util.Optional;
 /**
  * SAP HANA数据库恢复Provider
  *
- * @author wWX1013713
- * @version [DataBackup 1.5.0]
- * @since 2023-05-19
  */
 @Component
 @Slf4j

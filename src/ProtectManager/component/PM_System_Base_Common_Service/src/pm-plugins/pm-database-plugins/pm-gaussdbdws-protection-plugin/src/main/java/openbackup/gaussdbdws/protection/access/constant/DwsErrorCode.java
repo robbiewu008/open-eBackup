@@ -15,9 +15,6 @@ package openbackup.gaussdbdws.protection.access.constant;
 /**
  * 功能描述: DWS 错误码
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-23
  */
 public class DwsErrorCode {
     /**

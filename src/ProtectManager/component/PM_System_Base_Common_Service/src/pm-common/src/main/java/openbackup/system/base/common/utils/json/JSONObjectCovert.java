@@ -19,9 +19,6 @@ import com.google.common.base.CaseFormat;
 /**
  * JSONObject转换工具类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/28
  **/
 public class JSONObjectCovert {
     /**

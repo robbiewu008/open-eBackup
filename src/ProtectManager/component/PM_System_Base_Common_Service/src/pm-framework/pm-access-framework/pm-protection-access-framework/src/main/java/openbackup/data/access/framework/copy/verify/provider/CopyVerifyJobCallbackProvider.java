@@ -28,9 +28,6 @@ import org.springframework.stereotype.Component;
 /**
  * 副本校验长时间任务失败的回调
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-07-11
  */
 @Component
 @Slf4j

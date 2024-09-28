@@ -43,9 +43,6 @@ import java.util.Map;
 /**
  * GaussDBT副本删除Provider测试类
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-01
  */
 public class GaussDBTCopyDeleteInterceptorProviderTest {
     private final ProtectedEnvironmentService environmentService = PowerMockito.mock(ProtectedEnvironmentService.class);

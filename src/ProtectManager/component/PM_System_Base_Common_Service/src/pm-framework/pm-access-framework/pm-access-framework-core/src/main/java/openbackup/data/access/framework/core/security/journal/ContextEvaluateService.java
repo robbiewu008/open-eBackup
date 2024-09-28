@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 /**
  * Context Evaluate Service
  *
- * @author l00272247
- * @since 2022-01-07
  */
 @Component
 public class ContextEvaluateService implements EvaluateService<List<Context>> {

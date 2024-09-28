@@ -26,8 +26,6 @@ import javax.validation.constraints.Min;
 /**
  * 功能描述
  *
- * @author w00504341
- * @since 2020-12-18
  */
 @Data
 public class StorageRequest {

@@ -32,8 +32,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * Provider Registry Test
  *
- * @author twx1009756
- * @since 2021-03-17
  */
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest(classes = {

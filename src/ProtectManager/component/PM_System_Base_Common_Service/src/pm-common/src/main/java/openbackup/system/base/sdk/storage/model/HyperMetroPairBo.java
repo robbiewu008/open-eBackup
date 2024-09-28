@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 双活pairBO
  *
- * @author mwx776342
- * @since 2022/03/17
  */
 @Data
 public class HyperMetroPairBo {

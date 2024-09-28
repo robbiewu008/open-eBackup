@@ -39,9 +39,6 @@ import java.util.Optional;
 /**
  * KingBase备份拦截器
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-13
  */
 @Component
 @Slf4j

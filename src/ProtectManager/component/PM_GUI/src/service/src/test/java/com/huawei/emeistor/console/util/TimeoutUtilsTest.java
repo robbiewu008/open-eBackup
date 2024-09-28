@@ -24,8 +24,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 功能描述
  *
- * @author w00504341
- * @since 2021-07-21
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {TimeoutUtils.class})

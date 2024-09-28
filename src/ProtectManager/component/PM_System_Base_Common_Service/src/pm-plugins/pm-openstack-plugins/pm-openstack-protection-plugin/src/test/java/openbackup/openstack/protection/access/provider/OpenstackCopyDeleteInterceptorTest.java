@@ -32,9 +32,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 /**
  * 功能描述: OpenstackCopyDeleteInterceptorTest
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-12
  */
 public class OpenstackCopyDeleteInterceptorTest {
     private static OpenstackCopyDeleteInterceptor openstackCopyDeleteInterceptor;

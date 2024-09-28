@@ -18,8 +18,6 @@ package openbackup.system.base.common.utils.network;
  * starting from the most significant bit. A network mask can also be
  * represented as a prefix length, which is the count of these 1 bits.
  *
- * @author y00413474
- * @since 2020-07-01
  */
 public final class IPv6NetworkMask {
     private final int prefixLength;

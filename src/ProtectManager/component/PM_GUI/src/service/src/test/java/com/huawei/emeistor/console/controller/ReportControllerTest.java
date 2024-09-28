@@ -57,8 +57,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 功能描述
  *
- * @author w30042425
- * @since 2023-09-18
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {ReportController.class, RequestUtil.class, ContentDisposition.class})

@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * 功能描述: LockResource
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-07-07
  */
 @Getter
 @Setter

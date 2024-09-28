@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 /**
  * 功能描述
  *
- * @author w00504341
- * @since 2023-07-09
  */
 @Data
 @NoArgsConstructor

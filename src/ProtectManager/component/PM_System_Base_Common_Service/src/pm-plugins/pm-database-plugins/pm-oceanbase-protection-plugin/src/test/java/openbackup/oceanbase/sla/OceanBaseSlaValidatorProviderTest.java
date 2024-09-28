@@ -38,9 +38,6 @@ import java.util.Objects;
 /**
  * OceanBaseSlaValidatorProvider测试
  *
- * @author x30028756
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2024-01-07
  */
 public class OceanBaseSlaValidatorProviderTest {
     OceanBaseSlaValidatorProvider oceanBaseSlaValidatorProvider;

@@ -17,8 +17,6 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 /**
  * Data Mover Checked Exception
  *
- * @author l00272247
- * @since 2020-07-09
  */
 public class DataMoverCheckedException extends LegoCheckedException {
     /**

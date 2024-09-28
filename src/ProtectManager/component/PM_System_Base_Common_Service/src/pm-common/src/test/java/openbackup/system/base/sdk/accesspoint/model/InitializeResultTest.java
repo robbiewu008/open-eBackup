@@ -21,8 +21,6 @@ import org.junit.Test;
 /**
  * InitializeResult test
  *
- * @author jwx701567
- * @since 2021-03-15
  */
 public class InitializeResultTest {
 

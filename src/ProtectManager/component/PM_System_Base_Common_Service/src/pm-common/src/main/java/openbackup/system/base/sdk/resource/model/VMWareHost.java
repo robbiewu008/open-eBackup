@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * vmware runtime host info
  *
- * @author h30003246
- * @since 2020-12-22
  */
 @Data
 public class VMWareHost {

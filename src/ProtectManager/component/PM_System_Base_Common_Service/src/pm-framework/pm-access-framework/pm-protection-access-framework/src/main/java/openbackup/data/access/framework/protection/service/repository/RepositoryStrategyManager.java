@@ -26,9 +26,6 @@ import java.util.Map;
 /**
  * 认证信息的策略管理器，后续不同协议
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/8
  **/
 @Component
 public class RepositoryStrategyManager {

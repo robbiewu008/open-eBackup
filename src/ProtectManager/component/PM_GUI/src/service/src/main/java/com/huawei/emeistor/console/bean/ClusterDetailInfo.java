@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 本地集群详细信息
  *
- * @author g30003063
- * @since 2021-11-03
  */
 @Data
 public class ClusterDetailInfo {

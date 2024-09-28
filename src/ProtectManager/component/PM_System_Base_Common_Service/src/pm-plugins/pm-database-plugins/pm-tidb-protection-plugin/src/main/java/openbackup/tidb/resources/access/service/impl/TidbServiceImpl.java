@@ -65,8 +65,6 @@ import java.util.stream.Collectors;
 /**
  * TidbService 实现类
  *
- * @author w00426202
- * @since 2023-07-06
  */
 @Slf4j
 @Service

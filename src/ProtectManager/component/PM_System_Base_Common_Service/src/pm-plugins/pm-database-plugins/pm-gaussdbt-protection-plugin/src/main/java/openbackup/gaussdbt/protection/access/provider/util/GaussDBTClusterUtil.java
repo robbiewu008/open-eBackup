@@ -35,9 +35,6 @@ import java.util.stream.Collectors;
 /**
  * GaussDBTClusterUtil
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-06
  */
 public class GaussDBTClusterUtil {
     /**

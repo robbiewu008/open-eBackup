@@ -29,9 +29,6 @@ import javax.validation.constraints.Pattern;
 /**
  * 存储单元接口请求类
  *
- * @author w00639094
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-06
  */
 @Getter
 @Setter

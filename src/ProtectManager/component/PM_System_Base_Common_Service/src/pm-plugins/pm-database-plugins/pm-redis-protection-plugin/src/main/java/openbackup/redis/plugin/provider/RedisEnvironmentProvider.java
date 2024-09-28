@@ -46,9 +46,6 @@ import java.util.Optional;
 /**
  * 集群环境健康检查
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-25
  */
 @Component
 @Slf4j

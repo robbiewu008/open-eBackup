@@ -15,9 +15,6 @@ package openbackup.kingbase.protection.access.provider.common;
 /**
  * Kingbase相关错误码
  *
- * @author zwx1010134
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023/02/02
  */
 public class KingbaseErrorCode {
     /**

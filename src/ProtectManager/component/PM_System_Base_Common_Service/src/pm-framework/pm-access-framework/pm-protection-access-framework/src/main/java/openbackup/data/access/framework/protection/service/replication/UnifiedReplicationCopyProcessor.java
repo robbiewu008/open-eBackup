@@ -29,8 +29,6 @@ import java.util.stream.Stream;
 /**
  * Advance Replication Copy Processor
  *
- * @author l00272247
- * @since 2020-12-30
  */
 @Component
 public class UnifiedReplicationCopyProcessor implements ReplicationCopyProcessor {

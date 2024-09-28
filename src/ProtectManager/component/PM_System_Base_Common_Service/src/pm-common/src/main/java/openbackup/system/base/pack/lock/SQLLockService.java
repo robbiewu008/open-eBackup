@@ -47,9 +47,6 @@ import java.util.WeakHashMap;
 /**
  * 基于数据库的分布式锁服务
  *
- * @author w30042425
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-06-10
  */
 @Slf4j
 @Component

@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * 测试副本删除拦截器类
  *
- * @author h30027154
- * @since 2022-06-16
  */
 @Component
 public class TestBaseCopyDeleteInterceptor extends BaseCopyDeleteInterceptor {

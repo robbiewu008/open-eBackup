@@ -38,9 +38,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 /**
  * 功能描述: test OpenstackConnectionChecker
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-11
  */
 public class OpenstackConnectionCheckerTest {
     private static OpenstackConnectionChecker openstackConnectionChecker;

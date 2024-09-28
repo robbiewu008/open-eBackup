@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * ubc返回的oracle scn副本信息
  *
- * @author c30038333
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-04-06
  */
 @Data
 public class ScnCopy {

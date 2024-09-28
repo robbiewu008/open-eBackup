@@ -15,8 +15,6 @@ package openbackup.system.base.sdk.auth.model.request;
 /**
  * 来源枚举
  *
- * @author y30021475
- * @since 2023-08-07
  */
 public enum PresetAccountSourceTypeEnum {
     /**

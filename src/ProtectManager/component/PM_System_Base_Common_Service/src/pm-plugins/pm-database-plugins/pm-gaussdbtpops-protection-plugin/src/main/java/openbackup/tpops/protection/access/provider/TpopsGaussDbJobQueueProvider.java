@@ -43,8 +43,6 @@ import java.util.Set;
 /**
  * 功能描述 轻量化排队逻辑
  *
- * @author s30031954
- * @since 2024-01-07
  */
 @Component
 @AllArgsConstructor

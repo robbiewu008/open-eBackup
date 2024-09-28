@@ -28,8 +28,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 测试ProcessUtil
  *
- * @author w00493811
- * @since 2021-08-17
  */
 @RunWith(SpringRunner.class)
 public class ProcessUtilTest {

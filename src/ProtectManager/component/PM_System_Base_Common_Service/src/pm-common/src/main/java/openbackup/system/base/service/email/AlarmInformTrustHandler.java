@@ -22,8 +22,6 @@ import java.security.cert.CertificateException;
 /**
  * 告警通知的证书异常处理器
  *
- * @author g30003063
- * @since 2021-05-10
  */
 @Slf4j
 public class AlarmInformTrustHandler implements IBcmX509TrustHandler {

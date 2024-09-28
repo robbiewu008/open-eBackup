@@ -28,9 +28,6 @@ import java.util.stream.Collectors;
 /**
  * 数据备份插件通用功能,默认实现
  *
- * @author h30027154
- * @version OceanProtect X8000 1.2.1
- * @since 2022-05-25
  */
 @Component
 public class DefaultDbBackupInterceptor extends AbstractDbBackupInterceptor {

@@ -19,8 +19,6 @@ import lombok.Setter;
 /**
  * Scheduler节点
  *
- * @author z30047175
- * @since 2023-05-23
  */
 @Getter
 @Setter

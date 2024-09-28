@@ -21,8 +21,6 @@ import java.util.Date;
 /**
  * 防勒索检测入参对象
  *
- * @author nwx1077006
- * @since 2021/10/25
  */
 @Data
 public class CopyAntiRansomwareReq {

@@ -53,10 +53,6 @@ import java.util.stream.Collectors;
 /**
  * 数据备份插件通用功能
  *
- * @author h30027154
- * @version OceanProtect X8000 1.2.1
- * @version OceanProtect A8000 1.2.0
- * @since 2022-05-25
  */
 @Slf4j
 public abstract class AbstractDbBackupInterceptor implements BackupInterceptorProvider {

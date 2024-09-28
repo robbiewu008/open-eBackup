@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Filter Entity
  *
- * @author l00272247
- * @since 2020-07-14
  */
 @Data
 public class Filter {

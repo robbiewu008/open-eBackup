@@ -47,9 +47,6 @@ import java.util.Map;
 /**
  * 统一框架归档任务管理器
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/12
  **/
 @Slf4j
 @Component

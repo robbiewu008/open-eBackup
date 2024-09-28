@@ -33,8 +33,6 @@ import java.util.Optional;
 /**
  * Live Mount Service
  *
- * @author l00272247
- * @since 2020-09-18
  */
 public interface LiveMountService {
     /**

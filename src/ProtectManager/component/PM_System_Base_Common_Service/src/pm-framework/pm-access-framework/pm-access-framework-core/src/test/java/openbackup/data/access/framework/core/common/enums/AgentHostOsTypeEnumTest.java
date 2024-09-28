@@ -22,8 +22,6 @@ import org.junit.Test;
 /**
  * 功能描述
  *
- * @author l30023229
- * @since 2023-02-09
  */
 public class AgentHostOsTypeEnumTest {
     @Test

@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * dorado设备信息
  *
- * @author p00511147
- * @since 2020-11-10
  */
 @Data
 public class ProductStorageInfo {

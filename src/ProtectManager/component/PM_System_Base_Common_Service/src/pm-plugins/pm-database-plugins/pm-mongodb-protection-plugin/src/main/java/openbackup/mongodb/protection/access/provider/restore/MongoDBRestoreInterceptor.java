@@ -59,9 +59,6 @@ import java.util.stream.Collectors;
 /**
  * mongo集群恢复任务下发provider
  *
- * @author lWX1012372
- * @version [DataBackup 1.5.0]
- * @since 2023-04-24
  */
 @Slf4j
 @Component

@@ -31,8 +31,6 @@ import java.util.Collections;
 /**
  * Application Context Service Test
  *
- * @author twx1009756
- * @since 2021-03-17
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {ApplicationContextService.class})

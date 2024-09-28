@@ -47,8 +47,6 @@ import static org.mockito.Mockito.verify;
 /**
  * 功能描述
  *
- * @author w00504341
- * @since 2021-03-15
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {ComponentControllerTest.class, SessionServiceImpl.class, SecurityPolicyServiceImpl.class,

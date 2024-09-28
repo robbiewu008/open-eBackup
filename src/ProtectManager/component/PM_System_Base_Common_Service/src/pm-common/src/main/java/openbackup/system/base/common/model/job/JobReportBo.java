@@ -20,8 +20,6 @@ import lombok.NoArgsConstructor;
 /**
  * JobReport对象
  *
- * @author x30021699
- * @since 2023-01-17
  */
 @Data
 @NoArgsConstructor

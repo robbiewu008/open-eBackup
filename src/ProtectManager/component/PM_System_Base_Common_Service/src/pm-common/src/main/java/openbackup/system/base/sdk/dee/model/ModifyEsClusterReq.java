@@ -21,8 +21,6 @@ import javax.validation.constraints.Size;
 /**
  * 功能描述
  *
- * @author c30047317
- * @since 2023-08-12
  */
 @Data
 public class ModifyEsClusterReq {

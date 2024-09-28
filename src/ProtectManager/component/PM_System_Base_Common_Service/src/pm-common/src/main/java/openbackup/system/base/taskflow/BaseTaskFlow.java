@@ -36,8 +36,6 @@ import java.util.Queue;
 /**
  * 任务流
  *
- * @author w00607005
- * @since 2023-05-18
  */
 @Slf4j
 public abstract class BaseTaskFlow<T extends BaseContext> {

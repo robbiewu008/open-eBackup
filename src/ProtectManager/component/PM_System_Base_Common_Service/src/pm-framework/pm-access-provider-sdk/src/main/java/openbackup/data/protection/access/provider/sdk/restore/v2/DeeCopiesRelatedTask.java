@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * 实时侦测安全快照相关任务实体类
  *
- * @author f00809938
- * @since 2023-06-01
- * @version OceanCyber 300 1.1.0
  **/
 @Data
 public class DeeCopiesRelatedTask {

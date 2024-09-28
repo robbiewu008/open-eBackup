@@ -15,9 +15,6 @@ package openbackup.data.access.framework.core.common.constants;
 /**
  * 副本处理过程中需要的常量
  *
- * @version [BCManager 8.0.0]
- * @author p00511147
- * @since 2020-10-26
  **/
 public class CopyConstants {
     /**

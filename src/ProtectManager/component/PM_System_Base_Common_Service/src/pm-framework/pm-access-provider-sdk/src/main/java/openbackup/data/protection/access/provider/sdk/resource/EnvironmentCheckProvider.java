@@ -17,9 +17,6 @@ import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvide
 /**
  * 功能描述: 注册环境时环境检查check接口定义
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-16
  */
 public interface EnvironmentCheckProvider extends DataProtectionProvider<ProtectedEnvironment> {
     /**

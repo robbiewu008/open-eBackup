@@ -18,8 +18,6 @@ import openbackup.data.protection.access.provider.sdk.util.ResourceCheckContextU
 /**
  * 资源连通性检查provider
  *
- * @author g30003063
- * @since 2022-05-20
  */
 public interface ResourceConnectionCheckProvider extends DataProtectionProvider<ProtectedResource> {
     /**

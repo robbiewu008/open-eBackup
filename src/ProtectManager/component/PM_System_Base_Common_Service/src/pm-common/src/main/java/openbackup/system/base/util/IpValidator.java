@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * 校验IP合法性工具类。为防止SSRF攻击，判断输入ip是否为A8000内部节点ip，如果是则抛出非法参数。
  *
- * @since 2022-03-31
  */
 @Slf4j
 @Component

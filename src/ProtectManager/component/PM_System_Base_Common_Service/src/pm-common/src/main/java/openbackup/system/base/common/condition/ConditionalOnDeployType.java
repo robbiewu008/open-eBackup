@@ -25,7 +25,6 @@ import java.lang.annotation.Target;
 /**
  * 在SpringBean上标注说明该类支持的部署类型, 不标注表示全部支持
  *
- * @since 2023-01-03
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})

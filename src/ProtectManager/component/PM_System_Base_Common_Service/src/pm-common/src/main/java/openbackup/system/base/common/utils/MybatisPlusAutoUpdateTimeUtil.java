@@ -24,8 +24,6 @@ import java.sql.Timestamp;
 /**
  * MyBatis自动增加创建时间和更新时间货站
  *
- * @author h30003246
- * @since 2020-09-17
  */
 @Slf4j
 @Component

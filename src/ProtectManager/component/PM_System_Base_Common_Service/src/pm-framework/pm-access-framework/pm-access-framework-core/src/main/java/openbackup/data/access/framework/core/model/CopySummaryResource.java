@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * 副本聚合
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-03-01
  */
 @Setter
 @Getter

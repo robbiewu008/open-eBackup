@@ -26,9 +26,6 @@ import java.util.List;
  * {@link PageListResponse}
  *
  * @param <T> the body type
- * @author w00448845
- * @version [BCManager 8.0.0]
- * @since 2019-11-12
  */
 @Getter
 @Setter

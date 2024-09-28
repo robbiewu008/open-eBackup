@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author h30003246
- * @since 2020-08-24
  */
 public interface CopyProvider extends DataProtectionProvider<CopyBo> {
     /**

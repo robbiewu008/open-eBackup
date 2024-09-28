@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * The CheckReport
  *
- * @author g30003063
- * @since 2022-05-20
  */
 @Getter
 @Setter

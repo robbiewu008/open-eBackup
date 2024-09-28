@@ -20,9 +20,6 @@ import java.util.List;
 /**
  * 执行扫描的结果
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-06-06
  */
 @Getter
 @Setter

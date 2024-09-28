@@ -25,8 +25,6 @@ import java.util.Optional;
 /**
  * 功能描述 GoldenDb服务
  *
- * @author s30036254
- * @since 2023-02-13
  */
 public interface GoldenDbService {
     /**

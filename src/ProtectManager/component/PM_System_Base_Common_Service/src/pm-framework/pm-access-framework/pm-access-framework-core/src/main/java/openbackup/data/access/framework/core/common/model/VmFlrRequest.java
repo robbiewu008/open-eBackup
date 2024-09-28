@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * VmwareFLRRequestBody
  *
- * @author p00511147
- * @since 2020-12-29
  */
 @Getter
 @Setter

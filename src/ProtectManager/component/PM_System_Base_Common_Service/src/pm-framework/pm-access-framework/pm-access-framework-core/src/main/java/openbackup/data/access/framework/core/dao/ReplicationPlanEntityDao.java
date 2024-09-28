@@ -22,8 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * Replication Plan Entity Dao
  *
- * @author l00272247
- * @since 2021-02-08
  */
 @Component
 public interface ReplicationPlanEntityDao extends BaseMapper<ReplicationPlanEntity> {

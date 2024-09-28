@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 错误码定义类
  *
- * @author p00511147
- * @since 2020-012-10
  */
 public class StorageCommonErrorCode {
     /**

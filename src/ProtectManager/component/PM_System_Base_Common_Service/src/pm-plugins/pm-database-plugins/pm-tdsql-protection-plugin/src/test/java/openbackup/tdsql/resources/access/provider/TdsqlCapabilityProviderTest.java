@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * TdsqlCapabilityProviderTest
  *
- * @author z00445440
- * @since 2023-12-19
  */
 public class TdsqlCapabilityProviderTest {
     /**

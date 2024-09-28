@@ -47,9 +47,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * 安全一体机创建快照单元测试
  *
- * @author q00564609
- * @since 2024-06-14
- * @version OceanCyber 300 1.2.0
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {FsSnapshotServiceImpl.class})

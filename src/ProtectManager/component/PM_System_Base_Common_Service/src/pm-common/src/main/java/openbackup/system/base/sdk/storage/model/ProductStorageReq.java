@@ -25,8 +25,6 @@ import javax.validation.constraints.Pattern;
 /**
  * 存储信息
  *
- * @author p00511147
- * @since 2020-11-10
  */
 @Data
 public class ProductStorageReq {

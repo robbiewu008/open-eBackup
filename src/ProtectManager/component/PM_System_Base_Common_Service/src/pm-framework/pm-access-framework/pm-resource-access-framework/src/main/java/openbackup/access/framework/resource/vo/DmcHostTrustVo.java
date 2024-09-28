@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * dmc host trust vo
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2023-01-12
  */
 @Getter
 @Setter

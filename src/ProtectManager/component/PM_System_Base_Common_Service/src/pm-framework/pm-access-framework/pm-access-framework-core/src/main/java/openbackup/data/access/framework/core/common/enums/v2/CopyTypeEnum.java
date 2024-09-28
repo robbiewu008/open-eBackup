@@ -17,9 +17,6 @@ import java.util.Arrays;
 /**
  * 副本类型定义，定义DME副本类型和PM的副本类型映射
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-17
  */
 public enum CopyTypeEnum {
     // 副本类型：

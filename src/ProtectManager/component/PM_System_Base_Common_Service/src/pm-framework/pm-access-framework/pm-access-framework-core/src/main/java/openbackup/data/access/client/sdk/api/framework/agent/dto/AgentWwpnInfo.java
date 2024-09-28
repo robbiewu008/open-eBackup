@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * agent wwpn返回信息
  *
- * @author l30023229
- * @since 2023-02-21
  */
 @Data
 public class AgentWwpnInfo extends AgentBaseDto {

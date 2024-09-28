@@ -49,7 +49,6 @@ import java.nio.file.Paths;
 /**
  * 测试FeignBuilder中默认重试次数，默认超时时间。
  *
- * @since 2022-05-05
  */
 @PrepareForTest( {FeignBuilder.class, Client.class, Client.Default.class, File.class, Paths.class})
 public class FeignBuilderTest {

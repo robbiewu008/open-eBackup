@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * asm信息
  *
- * @author l00272247
- * @since 2020-10-09
  */
 @Data
 public class AsmInfo {

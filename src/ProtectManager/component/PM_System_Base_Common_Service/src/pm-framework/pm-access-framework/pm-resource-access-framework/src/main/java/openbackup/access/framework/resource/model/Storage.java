@@ -22,9 +22,6 @@ import javax.validation.constraints.NotBlank;
 /**
  * 功能描述: 生产存储
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-22
  */
 @Getter
 @Setter

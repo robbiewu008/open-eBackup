@@ -40,8 +40,6 @@ import java.util.Map;
 /**
  * 工具类测试
  *
- * @author x30021699
- * @since 2023-05-09
  */
 public class TpopsGaussDBClusterUtilsTest {
     private ClusterNativeApi clusterNativeApi = mock(ClusterNativeApi.class);

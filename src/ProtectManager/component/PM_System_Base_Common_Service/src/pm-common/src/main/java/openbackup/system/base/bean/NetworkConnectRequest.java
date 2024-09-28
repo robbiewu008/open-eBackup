@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * 检查网络连通性请求
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/6/3
  */
 @Getter
 @Setter

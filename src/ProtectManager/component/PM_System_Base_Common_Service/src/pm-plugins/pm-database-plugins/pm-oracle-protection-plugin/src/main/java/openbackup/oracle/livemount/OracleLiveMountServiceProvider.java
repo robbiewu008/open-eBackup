@@ -36,9 +36,6 @@ import java.util.Objects;
 /**
  * Oracle即时挂载服务provider
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023/02/24
  */
 @Slf4j
 @Component

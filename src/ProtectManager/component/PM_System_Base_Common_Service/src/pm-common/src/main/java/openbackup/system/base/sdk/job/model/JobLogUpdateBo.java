@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * 功能描述
  *
- * @author w00448845
- * @version [BCManager 8.0.0]
- * @since 2020-04-01
  */
 @Data
 public class JobLogUpdateBo {

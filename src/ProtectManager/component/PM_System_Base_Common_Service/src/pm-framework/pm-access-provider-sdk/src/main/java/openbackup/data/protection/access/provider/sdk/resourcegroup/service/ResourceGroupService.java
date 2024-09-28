@@ -28,8 +28,6 @@ import java.util.Optional;
 /**
  * 资源组服务
  *
- * @author c00631681
- * @since 2024-01-18
  */
 public interface ResourceGroupService {
     /**

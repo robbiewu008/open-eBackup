@@ -17,8 +17,6 @@ import openbackup.system.base.common.model.repository.tape.TapeSetDetailResponse
 /**
  * 介质集管理业务层
  *
- * @author z00633516
- * @since 2022-01-18
  */
 public interface MediaSetCommonService {
     /**

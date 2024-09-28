@@ -39,8 +39,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * DeleteCopyIndex LLT
  *
- * @author zwx1010134
- * @since 2021-07-01
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(CopyDeleteCompleteHandler.class)

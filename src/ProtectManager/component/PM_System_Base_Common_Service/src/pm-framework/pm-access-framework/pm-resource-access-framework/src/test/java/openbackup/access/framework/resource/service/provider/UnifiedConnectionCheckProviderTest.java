@@ -100,8 +100,6 @@ import javax.annotation.Resource;
 /**
  * The UnifiedConnectionCheckProviderTest
  *
- * @author g30003063
- * @since 2022/6/15
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

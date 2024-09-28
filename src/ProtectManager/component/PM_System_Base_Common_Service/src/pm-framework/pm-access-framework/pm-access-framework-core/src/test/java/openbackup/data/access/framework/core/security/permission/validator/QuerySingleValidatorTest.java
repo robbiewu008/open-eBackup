@@ -36,8 +36,6 @@ import java.lang.annotation.Annotation;
 /**
  * 功能描述
  *
- * @author x30046484
- * @since 2024-05-20
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {})

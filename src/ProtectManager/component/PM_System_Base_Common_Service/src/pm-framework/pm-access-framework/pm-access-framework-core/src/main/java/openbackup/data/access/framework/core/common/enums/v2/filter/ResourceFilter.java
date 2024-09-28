@@ -21,9 +21,6 @@ import javax.validation.constraints.NotNull;
  * ResourceFilter
  *
  * @description: 资源过滤器，用于定义各种资源的过滤规则及过滤条件，用于跟框架层传递数据
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  **/
 public class ResourceFilter {
     /**

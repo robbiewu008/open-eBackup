@@ -51,9 +51,6 @@ import java.util.Optional;
 /**
  * CnwareEnvironmentProvider测试类
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-12-19
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(TokenBo.class)

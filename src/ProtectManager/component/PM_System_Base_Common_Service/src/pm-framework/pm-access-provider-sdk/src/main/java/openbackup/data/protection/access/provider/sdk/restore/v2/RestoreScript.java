@@ -18,7 +18,6 @@ import lombok.Setter;
 /**
  * 恢复脚本
  *
- * @since 2022-09-15
  */
 @Getter
 @Setter

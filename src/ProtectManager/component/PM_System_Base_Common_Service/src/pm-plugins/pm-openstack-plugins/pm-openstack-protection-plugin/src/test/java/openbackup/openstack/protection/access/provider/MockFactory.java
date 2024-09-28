@@ -36,9 +36,6 @@ import java.util.UUID;
 /**
  * 通用mock工厂
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-10
  */
 public class MockFactory {
     public static ProtectedEnvironment mockAgentResource() {

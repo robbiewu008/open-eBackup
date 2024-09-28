@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
 /**
  * ExchangeCopyDeleteInterceptorTest
  *
- * @author z00830422
- * @since 2024/4/3 19:30
  */
 @ExtendWith(MockitoExtension.class)
 public class ExchangeCopyDeleteInterceptorTest {

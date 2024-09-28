@@ -54,9 +54,6 @@ import java.util.stream.Collectors;
  * GaussDbdws project资源相关接口的具体实现类
  * 实现了：扫描，健康状态检查，资源浏览，环境信息检查相关等接口
  *
- * @author swx1010572
- * @version [DataProtect X8000 1.5.0]
- * @since 2023-09-14
  */
 @Slf4j
 @Component

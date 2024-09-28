@@ -23,9 +23,6 @@ import java.util.Optional;
 /**
  * 受保护环境Provider接口定义，该接口提供受保护环境资源扫描，健康状态检查，资源浏览，环境信息检查标准接口
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-12
  */
 public interface EnvironmentProvider extends DataProtectionProvider<String> {
     /**

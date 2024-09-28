@@ -27,9 +27,6 @@ import java.util.List;
 /**
  * SapHana副本删除Provider
  *
- * @author l30061432
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-09-03
  */
 @Slf4j
 @Component

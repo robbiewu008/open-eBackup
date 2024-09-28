@@ -46,9 +46,6 @@ import java.util.Map;
 /**
  * pxc集群校验测试类
  *
- * @author xWX950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-07
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {FeignBuilder.class})

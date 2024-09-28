@@ -22,8 +22,6 @@ import java.lang.annotation.Target;
 /**
  * Operation Contexts
  *
- * @author l00272247
- * @since 2019-12-30
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

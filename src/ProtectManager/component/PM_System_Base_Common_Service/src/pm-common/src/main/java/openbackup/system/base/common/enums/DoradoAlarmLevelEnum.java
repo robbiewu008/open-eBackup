@@ -17,8 +17,6 @@ import lombok.Getter;
 /**
  * Dorado告警枚举
  *
- * @author y30000858
- * @since 2021-01-12
  */
 @Getter
 public enum DoradoAlarmLevelEnum {

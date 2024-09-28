@@ -25,8 +25,6 @@ import java.util.Collection;
 /**
  * InitConsumerManager
  *
- * @author swx1010572
- * @since 2022-03-15
  */
 @Slf4j
 @Component

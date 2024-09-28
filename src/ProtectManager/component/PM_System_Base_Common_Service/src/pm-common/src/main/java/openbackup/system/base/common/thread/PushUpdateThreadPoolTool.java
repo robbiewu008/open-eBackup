@@ -25,9 +25,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * PushUpdateThreadPoolTool
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-11-20
  */
 @Slf4j
 public class PushUpdateThreadPoolTool {

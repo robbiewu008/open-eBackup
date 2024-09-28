@@ -36,8 +36,6 @@ import java.util.Optional;
 /**
  * 功能描述
  *
- * @author j00619968
- * @since 2024-04-08
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {ExchangeMailboxJobQueueProvider.class})

@@ -31,9 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Http Request 工具类，封装一些Request的公共工具方法
  *
- * @author t00482481
- * @version [CDM Integrated machine]
- * @since 2019-11-05
  */
 @Component
 public final class RequestUtil {

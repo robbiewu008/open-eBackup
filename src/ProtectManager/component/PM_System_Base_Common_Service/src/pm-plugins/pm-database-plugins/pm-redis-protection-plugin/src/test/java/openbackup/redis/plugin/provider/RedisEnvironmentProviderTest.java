@@ -50,9 +50,6 @@ import java.util.Optional;
 /**
  * redis集群环境检查测试类
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {RedisEnvironmentProvider.class})

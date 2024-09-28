@@ -28,9 +28,6 @@ import org.springframework.stereotype.Component;
 /**
  * OpenstackIndexerProvider
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-31
  */
 @Component
 public class OpenstackIndexerProvider extends AbstractVmIndexerProvider implements IndexerProvider {

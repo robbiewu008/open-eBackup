@@ -24,8 +24,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  *  HashUtil测试类
  *
- * @author w00426202
- * @since 2023-10-12
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(HashUtil.class)

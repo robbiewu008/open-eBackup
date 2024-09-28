@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 /**
  * 存储信息
  *
- * @author p00511147
- * @since 2020-12-10
  */
 @Data
 @AllArgsConstructor

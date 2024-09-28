@@ -45,8 +45,6 @@ import java.util.UUID;
 /**
  * CopyListener LLT
  *
- * @author m00576658
- * @since 2021-03-05
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

@@ -48,9 +48,6 @@ import java.util.Map;
 /**
  * {@link SapHanaDatabaseRestoreProvider Test}
  *
- * @author wWX1013713
- * @version [DataBackup 1.5.0]
- * @since 2023-05-24
  */
 public class SapHanaDatabaseRestoreProviderTest {
     private final CopyRestApi copyRestApi = PowerMockito.mock(CopyRestApi.class);

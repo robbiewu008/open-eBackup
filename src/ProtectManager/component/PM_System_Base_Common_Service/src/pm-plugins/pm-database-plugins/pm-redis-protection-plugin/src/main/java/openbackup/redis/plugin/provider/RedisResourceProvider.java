@@ -29,9 +29,6 @@ import org.springframework.stereotype.Component;
 /**
  * The RedisResourceProvider
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 @Slf4j
 @Component

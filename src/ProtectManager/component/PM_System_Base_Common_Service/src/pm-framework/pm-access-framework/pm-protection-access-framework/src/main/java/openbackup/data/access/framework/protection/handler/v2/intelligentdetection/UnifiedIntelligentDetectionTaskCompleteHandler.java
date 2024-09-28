@@ -20,9 +20,6 @@ import org.springframework.stereotype.Component;
 /**
  * 统一智能侦测任务完成处理器
  *
- * @author: x30028756
- * @version: [CyberEngine 1.0.0]
- * @since: 2023年3月2日23:40:36
  **/
 @Slf4j
 @Component

@@ -22,8 +22,6 @@ import java.util.Map;
 /**
  * Protected Resource Extend Info Bo
  *
- * @author l00272247
- * @since 2021-10-15
  */
 @TableName(ProtectedResourceExtendInfoPo.TABLE_NAME)
 public class ProtectedResourceExtendInfoPo {

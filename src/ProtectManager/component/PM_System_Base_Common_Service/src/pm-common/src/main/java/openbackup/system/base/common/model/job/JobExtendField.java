@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * 功能描述
  *
- * @author w30044259
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-18
  */
 @Data
 @PageQueryConfig(conditions = {"%cluster_name%", "%unit_name%"})

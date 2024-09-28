@@ -36,8 +36,6 @@ import java.util.Map;
 /**
  * Request Context
  *
- * @author l00272247
- * @since 2020/07/23
  */
 @Getter
 @Slf4j

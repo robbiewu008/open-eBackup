@@ -18,9 +18,6 @@ import lombok.Setter;
 /**
  * pacific业务网络的ip和端口
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-02-01
  */
 @Getter
 @Setter

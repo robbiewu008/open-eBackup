@@ -25,9 +25,6 @@ import java.util.List;
 /**
  * 应用配置conf
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-27
  */
 @Setter
 @Getter

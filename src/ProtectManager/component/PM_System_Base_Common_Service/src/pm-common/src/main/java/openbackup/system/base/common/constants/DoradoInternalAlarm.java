@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * dorado告警对象
  *
- * @author y30000858
- * @since 2021-01-15
  */
 @Data
 public class DoradoInternalAlarm extends LegoInternalAlarm {

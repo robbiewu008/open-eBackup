@@ -26,9 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * KingBase的sla provider
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-15
  */
 @Slf4j
 @Component

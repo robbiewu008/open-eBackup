@@ -18,9 +18,6 @@ import openbackup.data.protection.access.provider.sdk.base.v2.TaskResourceFilter
 /**
  * TaskResourceFilter对象转换器，用于跟controller层对象转换
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/2
  **/
 public class TaskResourceFilterConverter {
     /**

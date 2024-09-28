@@ -22,8 +22,6 @@ import java.util.Arrays;
 /**
  * 归档副本类型
  *
- * @author z30006621
- * @since 2021-09-02
  */
 @Getter
 @AllArgsConstructor

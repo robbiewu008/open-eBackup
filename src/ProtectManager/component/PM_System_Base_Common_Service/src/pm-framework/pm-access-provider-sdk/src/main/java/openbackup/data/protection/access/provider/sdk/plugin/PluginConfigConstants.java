@@ -15,7 +15,6 @@ package openbackup.data.protection.access.provider.sdk.plugin;
 /**
  * 插件常数
  *
- * @since 2022-05-23
  */
 public class PluginConfigConstants {
     /**

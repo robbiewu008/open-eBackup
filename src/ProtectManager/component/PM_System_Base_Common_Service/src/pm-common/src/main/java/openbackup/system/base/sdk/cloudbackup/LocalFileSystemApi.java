@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 /**
  * The CloudBackupApi
  *
- * @author g30003063
- * @since 2021-12-14
  */
 @FeignClient(name = "localFileSystemApi", url = "${service.url.pm-repository}/v1/internal/local-storage",
     configuration = CommonFeignConfiguration.class)

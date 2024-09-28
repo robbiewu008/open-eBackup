@@ -27,8 +27,6 @@ import java.util.List;
 /**
  * 网络平面信息
  *
- * @author w00493811
- * @since 2021-01-25
  */
 @Data
 @AllArgsConstructor

@@ -17,8 +17,6 @@ import openbackup.system.base.common.model.host.ManagementIp;
 /**
  * 内部接口 更新AgentServerIp
  *
- * @author swx1010572
- * @since 2022-07-22
  */
 public interface UpdateAgentServerIpService {
     /**

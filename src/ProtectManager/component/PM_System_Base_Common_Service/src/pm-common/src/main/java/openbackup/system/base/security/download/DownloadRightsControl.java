@@ -22,9 +22,6 @@ import java.lang.annotation.Target;
 /**
  * 存在该注解表明需要支持校验用户权限完成下载吊销列表权限
  *
- * @author swx1010572
- * @version [OceanProtect X8000 2.1.0]
- * @since 2022-08-19
  */
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

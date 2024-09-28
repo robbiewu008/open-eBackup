@@ -75,8 +75,6 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * 功能描述 TdsqlServiceImpl
  *
- * @author z30047175
- * @since 2023-05-22
  */
 @Slf4j
 @Service

@@ -28,9 +28,6 @@ import java.util.Optional;
  * <li>对备份参数进行修改或扩展</li>
  * <li>备份拦截器和资源的子类型关联</li>
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-01
  */
 public interface BackupInterceptorProvider extends DataProtectionProvider<String> {
     /**

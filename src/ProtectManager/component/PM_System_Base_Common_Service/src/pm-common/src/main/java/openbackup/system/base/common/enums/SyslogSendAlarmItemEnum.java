@@ -23,9 +23,6 @@ import java.util.List;
 /**
  * Syslog上报告警类型枚举类
  *
- * @author l00617376
- * @version OceanCyber 300 1.2.0
- * @since 2024-05-31
  */
 @Getter
 public enum SyslogSendAlarmItemEnum {

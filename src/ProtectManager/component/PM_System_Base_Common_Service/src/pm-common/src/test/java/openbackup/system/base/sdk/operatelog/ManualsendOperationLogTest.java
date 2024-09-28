@@ -30,8 +30,6 @@ import javax.annotation.Resource;
 /**
  * manual operate log
  *
- * @author h30003246
- * @since 2021-05-24
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {ManualSendOperationLogImpl.class})

@@ -36,9 +36,6 @@ import java.util.Optional;
 /**
  * NDMP备份资源接入
  *
- * @author t30021437
- * @version [OceanProtect X8000 1.5.0]
- * @since 2023-05-09
  */
 
 @Component

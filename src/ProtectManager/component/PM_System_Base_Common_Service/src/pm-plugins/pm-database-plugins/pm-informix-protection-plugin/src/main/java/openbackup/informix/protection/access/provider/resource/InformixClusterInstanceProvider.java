@@ -26,9 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * informix集群实例注册provider
  *
- * @author zwx951267
- * @version [DataBackup 1.5.0]
- * @since 2023-05-10
  */
 @Component
 @Slf4j

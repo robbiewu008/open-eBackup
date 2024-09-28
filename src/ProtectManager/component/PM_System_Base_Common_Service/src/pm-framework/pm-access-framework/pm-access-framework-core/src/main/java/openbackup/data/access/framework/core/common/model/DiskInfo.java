@@ -21,8 +21,6 @@ import lombok.Setter;
 /**
  * 存储盘信息实体类
  *
- * @author z00425178
- * @since 2021-11-13
  */
 @Getter
 @Setter

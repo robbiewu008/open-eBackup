@@ -15,9 +15,6 @@ package openbackup.opengauss.resources.access.constants;
 /**
  * OpenGauss相关常量
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-23
  */
 public class OpenGaussConstants {
     /**

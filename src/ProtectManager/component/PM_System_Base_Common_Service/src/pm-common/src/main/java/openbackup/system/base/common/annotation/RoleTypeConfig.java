@@ -22,8 +22,6 @@ import java.lang.annotation.Target;
 /**
  * role type config
  *
- * @author l00272247
- * @since 2019-11-26
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

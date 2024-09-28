@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.backup;
 /**
  * 预置的备份参数key
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-03
  */
 public enum PredefineBackupParameters {
     // 是否加密

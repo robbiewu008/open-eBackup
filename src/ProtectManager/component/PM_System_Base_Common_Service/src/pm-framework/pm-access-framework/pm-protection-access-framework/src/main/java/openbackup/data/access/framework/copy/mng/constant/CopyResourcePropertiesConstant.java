@@ -15,9 +15,6 @@ package openbackup.data.access.framework.copy.mng.constant;
 /**
  * 副本信息中资源属性的key定义
  *
- * @author: y00559272
- * @version: [OceanProtect X8000 1.2.1]
- * @since: 2022/8/3
  **/
 public abstract class CopyResourcePropertiesConstant {
     /**

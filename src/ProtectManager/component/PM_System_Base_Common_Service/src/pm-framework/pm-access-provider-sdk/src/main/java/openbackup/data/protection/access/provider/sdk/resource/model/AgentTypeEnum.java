@@ -15,8 +15,6 @@ package openbackup.data.protection.access.provider.sdk.resource.model;
 /**
  * agent类型枚举类
  *
- * @author w00616953
- * @since 2022-03-22
  */
 public enum AgentTypeEnum {
     /**

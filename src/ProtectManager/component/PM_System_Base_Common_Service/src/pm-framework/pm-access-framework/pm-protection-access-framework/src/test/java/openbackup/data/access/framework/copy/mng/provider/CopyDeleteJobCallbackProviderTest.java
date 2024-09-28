@@ -29,9 +29,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 /**
  * CopyDeleteJobCallbackProvider测试
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-26
  */
 public class CopyDeleteJobCallbackProviderTest {
     private CopyRestApi copyRestApi;

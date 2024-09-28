@@ -40,8 +40,6 @@ import java.util.Optional;
 /**
  * ExchangeDatabaseJobProvider Test
  *
- * @author w30032137
- * @since 2024-06-17
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {ExchangeDatabaseJobProvider.class})

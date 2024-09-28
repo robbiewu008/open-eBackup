@@ -76,9 +76,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 受保护环境服务实现类
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-15
  */
 @Slf4j
 @Service

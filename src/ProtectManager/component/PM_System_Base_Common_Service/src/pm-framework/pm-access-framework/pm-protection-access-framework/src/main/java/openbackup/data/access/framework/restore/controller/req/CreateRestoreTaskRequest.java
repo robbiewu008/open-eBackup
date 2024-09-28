@@ -33,9 +33,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 创建恢复任务请求对象，用于Controller中使用
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  **/
 public class CreateRestoreTaskRequest {
     /**

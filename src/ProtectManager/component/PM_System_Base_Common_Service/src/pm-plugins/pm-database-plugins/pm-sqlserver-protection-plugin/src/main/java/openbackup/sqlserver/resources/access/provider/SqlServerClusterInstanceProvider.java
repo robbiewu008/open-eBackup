@@ -50,9 +50,6 @@ import java.util.stream.Collectors;
 /**
  * sqlserver集群实例provider
  *
- * @author xWX950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-19
  */
 @Component
 @Slf4j

@@ -32,8 +32,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * 功能描述
  *
- * @author s30031954
- * @since 2024-01-08
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {TpopsGaussDbJobQueueProvider.class, ResourceService.class})

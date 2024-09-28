@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * OBS Agent相关service
  *
- * @author c30035089
- * @since 2023-11-16
  */
 public interface ObjectStorageAgentService {
     /**

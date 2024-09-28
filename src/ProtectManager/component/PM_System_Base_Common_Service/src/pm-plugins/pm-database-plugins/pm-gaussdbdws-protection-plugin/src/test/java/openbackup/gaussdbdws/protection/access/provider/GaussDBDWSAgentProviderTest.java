@@ -31,9 +31,6 @@ import java.util.HashMap;
 /**
  * {@link GaussDBDWSAgentProvider 测试类}
  *
- * @author dwx1009286
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-25
  */
 public class GaussDBDWSAgentProviderTest {
     private final GaussDBBaseService gaussDBBaseService = PowerMockito.mock(GaussDBBaseService.class);

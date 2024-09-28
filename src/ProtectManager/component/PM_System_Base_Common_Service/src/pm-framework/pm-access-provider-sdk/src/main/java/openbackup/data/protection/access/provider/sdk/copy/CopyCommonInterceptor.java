@@ -20,9 +20,6 @@ import openbackup.system.base.sdk.dee.model.CopyCatalogsRequest;
 /**
  * 副本拦截器
  *
- * @author t30028453
- * @version OceanProtect DataBackup 1.3.0
- * @since 2023-05-10
  */
 public interface CopyCommonInterceptor extends DataProtectionProvider<String> {
     /**

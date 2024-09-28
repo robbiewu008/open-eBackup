@@ -26,9 +26,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * 共享路径恢复调用DEE内部接口类
  *
- * @author w00574036
- * @since 2024-04-13
- * @version [OceanCyber 300 1.2.0]
  */
 @FeignClient(name = "DeeLiveMountRestApi",
     url = "${data-enable-engine-server.url}/v1/internal/", configuration = CommonFeignConfiguration.class)

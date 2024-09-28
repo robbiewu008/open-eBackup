@@ -29,9 +29,6 @@ import java.util.List;
 /**
  * 资源组dao
  *
- * @author c00631681
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-1-18
  */
 @Repository
 public interface ResourceGroupMapper extends BaseMapper<ResourceGroupPo> {

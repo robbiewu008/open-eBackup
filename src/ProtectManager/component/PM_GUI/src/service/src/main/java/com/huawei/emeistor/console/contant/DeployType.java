@@ -21,8 +21,6 @@ import java.util.Map;
 /**
  * 部署类型
  *
- * @author w00504341
- * @since 2023-01-05
  */
 public enum DeployType {
     /**

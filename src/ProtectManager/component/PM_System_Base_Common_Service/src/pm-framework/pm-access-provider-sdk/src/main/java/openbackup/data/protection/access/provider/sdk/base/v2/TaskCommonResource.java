@@ -26,9 +26,6 @@ import java.util.Map;
  * RestoreCommonResource
  *
  * @description: 恢复任务中通用的资源信息，是资源类和环境类中公共的信息
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  **/
 @Data
 abstract class TaskCommonResource {

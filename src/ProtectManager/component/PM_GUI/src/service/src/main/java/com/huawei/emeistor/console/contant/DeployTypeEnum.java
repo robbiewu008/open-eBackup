@@ -18,9 +18,6 @@ import lombok.Getter;
 /**
  * 部署场景枚举
  *
- * @author r00570078
- * @version OceanCyber 300 1.2.0
- * @since 2024-07-24
  */
 @Getter
 @AllArgsConstructor

@@ -21,8 +21,6 @@ import java.util.Map;
 /**
  * 资源查询context
  *
- * @author h30027154
- * @since 2022-07-08
  */
 @Data
 public class ResourceQueryParams {

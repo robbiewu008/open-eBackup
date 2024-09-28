@@ -50,9 +50,6 @@ import java.util.Date;
 /**
  * {@link AccessPointController} 测试类
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-12
  */
 public class AccessPointControllerTest {
     AccessPointController controller = Mockito.mock(AccessPointController.class);

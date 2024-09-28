@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * 介质集详情
  *
- * @author z30006621
- * @since 2021-08-24
  */
 @Data
 public class TapeSetDetailResponse {

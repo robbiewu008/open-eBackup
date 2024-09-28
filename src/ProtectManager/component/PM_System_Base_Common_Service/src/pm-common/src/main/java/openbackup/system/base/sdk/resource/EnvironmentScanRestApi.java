@@ -23,9 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * 功能描述
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-08-28
  */
 @FeignClient(name = "EnvironmentScanRestApi",
     url = "${services.endpoints.protectmanager.protection-service}/v1/internal",

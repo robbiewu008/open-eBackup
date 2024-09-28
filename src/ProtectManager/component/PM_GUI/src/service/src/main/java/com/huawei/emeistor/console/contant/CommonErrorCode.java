@@ -15,8 +15,6 @@ package com.huawei.emeistor.console.contant;
 /**
  * 错误码相关类
  *
- * @since 2020-06-15
- * @author t00482481
  */
 public class CommonErrorCode {
     /**

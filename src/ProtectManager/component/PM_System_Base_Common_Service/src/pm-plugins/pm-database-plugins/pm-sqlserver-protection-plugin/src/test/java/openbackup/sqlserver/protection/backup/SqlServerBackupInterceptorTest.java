@@ -53,9 +53,6 @@ import java.util.stream.Stream;
 /**
  * SQL Server数据库备份拦截器测试类
  *
- * @author xWX1016404
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-06
  */
 @RunWith(PowerMockRunner.class)
 public class SqlServerBackupInterceptorTest {

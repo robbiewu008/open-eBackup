@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * 更新策略接口
  *
- * @author h30003246
- * @since 2020-09-18
  */
 public interface PolicyService {
     /**

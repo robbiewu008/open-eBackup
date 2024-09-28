@@ -19,9 +19,6 @@ import java.security.KeyStore;
 /**
  * 安全证书管理器，用于安全证书的加载
  *
- * @author l90005176
- * @version [OceanStor BCManager V200R001C00, 2016年2月16日]
- * @since 2019-10-25
  */
 public final class SecurityCertificateManager {
     /**

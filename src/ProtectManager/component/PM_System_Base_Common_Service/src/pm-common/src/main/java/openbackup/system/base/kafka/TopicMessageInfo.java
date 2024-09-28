@@ -20,8 +20,6 @@ import java.util.Arrays;
 /**
  * Topic Message Info
  *
- * @author l00272247
- * @since 2020-11-02
  */
 public class TopicMessageInfo implements TopicMessage {
     private final String topic;

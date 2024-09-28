@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * import copy entity
  *
- * @author g00500588
- * @since 2021/9/16
  */
 @Data
 public class ImportCopyEntity extends ResourceEntity {

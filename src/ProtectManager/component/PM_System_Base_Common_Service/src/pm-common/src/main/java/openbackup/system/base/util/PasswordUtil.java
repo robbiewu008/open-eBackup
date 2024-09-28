@@ -27,8 +27,6 @@ import java.util.List;
 /**
  * 生成密码工具类
  *
- * @author c30047317
- * @since 2023-07-27
  */
 @Slf4j
 public class PasswordUtil {

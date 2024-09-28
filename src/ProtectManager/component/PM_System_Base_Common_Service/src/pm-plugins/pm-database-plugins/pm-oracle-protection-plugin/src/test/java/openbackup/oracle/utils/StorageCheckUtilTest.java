@@ -24,8 +24,6 @@ import org.junit.Test;
 /**
  * 功能描述
  *
- * @author l30023229
- * @since 2023-12-04
  */
 public class StorageCheckUtilTest {
     private static final String CERTIFICATION = "-----BEGIN CERTIFICATE-----\n" +

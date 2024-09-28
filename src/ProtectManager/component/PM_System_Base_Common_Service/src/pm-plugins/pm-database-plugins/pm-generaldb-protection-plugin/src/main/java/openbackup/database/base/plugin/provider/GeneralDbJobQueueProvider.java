@@ -42,9 +42,6 @@ import java.util.stream.Collectors;
 /**
  * 通用数据库GeneralDBJobQueueProvider
  *
- * @author t30049904
- * @version [OceanProtect DataBack 1.5.0]
- * @since 2023/12/1
  */
 @Slf4j
 @AllArgsConstructor

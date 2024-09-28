@@ -20,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * ADFS保存配置请求体
  *
- * @author y30021475
- * @since 2023-05-15
  */
 @Data
 @ToString(exclude = {"clientPwd"})

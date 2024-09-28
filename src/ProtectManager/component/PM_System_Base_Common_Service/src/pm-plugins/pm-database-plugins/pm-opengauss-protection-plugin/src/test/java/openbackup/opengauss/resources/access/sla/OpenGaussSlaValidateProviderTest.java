@@ -27,9 +27,6 @@ import org.powermock.api.mockito.PowerMockito;
 /**
  * OpenGaussSlaValidateProvider测试类
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-30
  */
 public class OpenGaussSlaValidateProviderTest {
     /**

@@ -34,9 +34,6 @@ import java.util.Optional;
 /**
  * BackupFeatureServiceImpl测试类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/6/6
  */
 @RunWith(SpringRunner.class)
 @PrepareForTest({BackupFeatureServiceImpl.class})

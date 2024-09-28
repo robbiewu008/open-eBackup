@@ -20,8 +20,6 @@ import lombok.Data;
 /**
  * Live Mount Model
  *
- * @author l00272247
- * @since 2020-09-26
  */
 @Data
 @PageQueryConfig(conditions = {"%policy_name%", "%cluster_name%"})

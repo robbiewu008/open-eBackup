@@ -32,9 +32,6 @@ import javax.crypto.spec.PBEKeySpec;
 /**
  * sha256加密类
  *
- * @author lWX243311
- * @version [BCManager V200R001C00, 2016年1月30日]
- * @since 2019-11-01
  */
 public class SHA256Encryptor {
     // 盐值长度

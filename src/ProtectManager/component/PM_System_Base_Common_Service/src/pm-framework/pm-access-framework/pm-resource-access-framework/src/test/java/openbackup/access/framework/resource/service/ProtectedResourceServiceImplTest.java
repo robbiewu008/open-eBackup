@@ -84,9 +84,6 @@ import java.util.stream.Collectors;
 /**
  * 测试类
  *
- * @author l00581651
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-03-08
  */
 @RunWith(PowerMockRunner.class)
 public class ProtectedResourceServiceImplTest {

@@ -28,8 +28,6 @@ import org.springframework.context.annotation.Bean;
 /**
  * DEE feign配置类，使用apache
  *
- * @author y00413474
- * @since 2020-06-19
  */
 @Slf4j
 public class DeeFeignConfiguration implements RequestInterceptor {

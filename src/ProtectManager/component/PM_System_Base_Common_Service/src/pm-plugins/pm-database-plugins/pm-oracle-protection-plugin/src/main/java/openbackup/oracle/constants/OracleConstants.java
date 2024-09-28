@@ -15,8 +15,6 @@ package openbackup.oracle.constants;
 /**
  * oracle常量类
  *
- * @author c30038333
- * @since 2023-01-03
  */
 public class OracleConstants {
     /**

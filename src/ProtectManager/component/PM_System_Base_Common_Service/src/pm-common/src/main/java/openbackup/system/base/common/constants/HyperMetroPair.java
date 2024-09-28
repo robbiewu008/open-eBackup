@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 双活pairBO
  *
- * @author mwx776342
- * @since 2022/03/17
  */
 @Getter
 @Setter

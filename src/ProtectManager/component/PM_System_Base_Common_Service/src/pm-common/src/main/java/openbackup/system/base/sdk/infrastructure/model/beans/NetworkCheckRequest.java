@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * 校验浮动IP和仲裁网关请求体
  *
- * @author w00607005
- * @since 2023-05-19
  */
 @Data
 public class NetworkCheckRequest {

@@ -41,8 +41,6 @@ import java.util.Optional;
 /**
  * ExchangeAgentProvider Test
  *
- * @author z00693144
- * @since 2024-03-08
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {ExchangeAgentProvider.class, ProtectedResourceServiceImpl.class, ExchangeServiceImpl.class})

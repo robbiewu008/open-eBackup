@@ -27,8 +27,6 @@ import org.springframework.context.annotation.Bean;
 /**
  * 功能描述
  *
- * @author s00455050
- * @since 2021-08-16
  */
 @Slf4j
 public class AgentConfiguration {

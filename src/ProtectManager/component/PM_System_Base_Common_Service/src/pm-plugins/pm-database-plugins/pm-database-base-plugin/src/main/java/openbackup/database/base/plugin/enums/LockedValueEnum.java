@@ -15,9 +15,6 @@ package openbackup.database.base.plugin.enums;
 /**
  * 启用禁用枚举类
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-14
  */
 public enum LockedValueEnum {
     /**

@@ -55,9 +55,6 @@ import java.util.stream.Collectors;
 /**
  * 通用数据库恢复拦截器
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-30
  */
 @Component
 public class GeneralDbRestoreInterceptorProvider extends AbstractDbRestoreInterceptorProvider {

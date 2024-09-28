@@ -21,9 +21,6 @@ import org.springframework.stereotype.Repository;
 /**
  * COPIES_ANTI_RANSOMWARE表Mapper
  *
- * @author f00809938
- * @since 2023-05-30
- * @version OceanCyber 300 1.2.0
  **/
 @Repository
 public interface CopiesAntiRansomwareDao extends BaseMapper<CopiesAntiRansomware> {

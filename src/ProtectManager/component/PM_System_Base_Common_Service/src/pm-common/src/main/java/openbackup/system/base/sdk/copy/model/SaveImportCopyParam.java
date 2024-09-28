@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * SaveImportCopyParam
  *
- * @author g00500588
- * @since 2021/9/15
  */
 @Data
 public class SaveImportCopyParam {

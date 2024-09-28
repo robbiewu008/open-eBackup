@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 /**
  * ClientCertGenResult
  *
- * @author wx1011919
- * @since 2021-08-16
  */
 @Data
 @AllArgsConstructor

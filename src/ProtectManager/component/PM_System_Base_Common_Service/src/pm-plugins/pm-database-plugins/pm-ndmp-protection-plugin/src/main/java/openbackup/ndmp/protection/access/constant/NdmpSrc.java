@@ -22,8 +22,6 @@ import lombok.NoArgsConstructor;
 /**
  * 功能描述 NdmpSrc
  *
- * @author t30021437
- * @since 2023-05-15
  */
 @Data
 @AllArgsConstructor

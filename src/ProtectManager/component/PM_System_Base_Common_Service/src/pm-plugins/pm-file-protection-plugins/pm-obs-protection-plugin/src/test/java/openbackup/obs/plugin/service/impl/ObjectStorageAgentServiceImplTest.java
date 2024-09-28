@@ -52,8 +52,6 @@ import java.util.Optional;
 /**
  * 功能描述
  *
- * @author w00607005
- * @since 2023-11-20
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"javax.management.*", "jdk.internal.reflect.*"})

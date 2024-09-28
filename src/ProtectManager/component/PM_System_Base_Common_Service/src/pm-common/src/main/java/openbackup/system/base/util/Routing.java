@@ -48,8 +48,6 @@ import javax.net.ssl.SSLHandshakeException;
 /**
  * Routing
  *
- * @author l00272247
- * @since 2020-12-18
  */
 @Slf4j
 public class Routing {

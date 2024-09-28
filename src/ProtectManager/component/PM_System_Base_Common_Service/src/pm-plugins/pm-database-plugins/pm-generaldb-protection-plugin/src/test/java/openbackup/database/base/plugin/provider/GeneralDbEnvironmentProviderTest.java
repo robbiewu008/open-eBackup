@@ -40,9 +40,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * GeneralDbEnvironmentProvider测试类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-30
  */
 @SpringBootTest(classes = {
     GeneralDbEnvironmentProvider.class, UnifiedConnectionCheckProvider.class, GeneralDbResourceConnectionChecker.class

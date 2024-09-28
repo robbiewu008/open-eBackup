@@ -55,8 +55,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述 测试实例节点连通性
  *
- * @author z30047175
- * @since 2023-05-30
  */
 @Component
 @Slf4j

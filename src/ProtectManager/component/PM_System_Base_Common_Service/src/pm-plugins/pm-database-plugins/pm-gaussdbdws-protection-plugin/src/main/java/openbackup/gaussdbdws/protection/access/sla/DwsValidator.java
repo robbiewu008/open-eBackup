@@ -48,9 +48,6 @@ import java.util.stream.Collectors;
 /**
  * dws校验器
  *
- * @author mwx1009754
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-30
  */
 
 @Slf4j

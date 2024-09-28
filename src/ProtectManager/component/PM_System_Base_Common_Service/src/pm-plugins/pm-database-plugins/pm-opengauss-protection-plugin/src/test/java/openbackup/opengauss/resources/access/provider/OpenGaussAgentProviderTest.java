@@ -32,9 +32,6 @@ import java.util.HashMap;
 /**
  * {@link OpenGaussAgentProvider 测试类}
  *
- * @author dwx1009286
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-25
  */
 public class OpenGaussAgentProviderTest {
     private final OpenGaussAgentService openGaussAgentService = PowerMockito.mock(OpenGaussAgentService.class);

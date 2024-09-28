@@ -19,8 +19,6 @@ import java.util.Locale;
 /**
  * 操作系统工具
  *
- * @author w00493811
- * @since 2021-08-09
  */
 public class OsTypeUtil {
     /**

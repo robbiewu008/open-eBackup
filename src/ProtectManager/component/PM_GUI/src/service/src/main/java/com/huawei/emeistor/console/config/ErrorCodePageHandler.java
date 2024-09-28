@@ -21,8 +21,6 @@ import org.springframework.http.HttpStatus;
 /**
  * 针对不同错误码跳转不同页面
  *
- * @author w30042425
- * @since 2023-09-22
  */
 @Configuration
 public class ErrorCodePageHandler implements ErrorPageRegistrar {

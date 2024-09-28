@@ -64,9 +64,6 @@ import java.util.UUID;
 /**
  * {@link Db2ClusterProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2022-12-28
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {FeignBuilder.class, EnvironmentLinkStatusHelper.class})

@@ -34,8 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * CaptchaController
  *
- * @author y00407642
- * @since 2019-10-26
  */
 @Controller
 @RequestMapping(ConfigConstant.CONSOLE)

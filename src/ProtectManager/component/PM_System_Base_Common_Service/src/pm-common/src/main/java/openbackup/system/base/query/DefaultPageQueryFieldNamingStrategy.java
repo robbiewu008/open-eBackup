@@ -28,8 +28,6 @@ import java.lang.reflect.Field;
 /**
  * Page Query Field Naming Snake Case Strategy
  *
- * @author l00272247
- * @since 2021-06-03
  */
 @Component(Pagination.DEFAULT_FIELD_NAMING_STRATEGY)
 @Slf4j

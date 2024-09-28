@@ -50,9 +50,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * SSO保存配置
  *
- * @author w30042425
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-08
  */
 @Slf4j
 @RestController

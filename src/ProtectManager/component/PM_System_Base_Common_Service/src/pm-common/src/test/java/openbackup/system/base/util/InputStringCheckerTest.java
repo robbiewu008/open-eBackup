@@ -22,8 +22,6 @@ import org.junit.Test;
 /**
  * InputStringChecker测试类
  *
- * @author w00426202
- * @since 2023-05-18
  */
 public class InputStringCheckerTest {
     /**

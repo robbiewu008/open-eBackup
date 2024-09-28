@@ -25,8 +25,6 @@ import java.util.List;
 /**
  * 修改HA配置请求
  *
- * @author c30047317
- * @since 2023-05-17
  */
 @Data
 @AllArgsConstructor

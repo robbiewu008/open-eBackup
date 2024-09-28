@@ -44,8 +44,6 @@ import java.util.List;
 /**
  * sla 测试类
  *
- * @author t30021437
- * @since 2023-05-09
  */
 public class NdmpVailderSlaTest {
     SlaBase slaBase = new SlaBase();

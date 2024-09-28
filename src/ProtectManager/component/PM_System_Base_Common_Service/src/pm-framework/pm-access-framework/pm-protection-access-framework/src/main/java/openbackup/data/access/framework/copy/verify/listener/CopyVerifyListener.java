@@ -29,9 +29,6 @@ import org.springframework.stereotype.Component;
 /**
  * 副本校验任务监听器
  *
- * @author: y00559272
- * @version: [OceanProtect X8000 1.2.1]
- * @since: 2022/8/2
  **/
 @Slf4j
 @Component

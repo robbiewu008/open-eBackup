@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Global Search index file info
  *
- * @author l00347293
- * @since 2021-01-07
  **/
 @Data
 public class CopyIndexFileInfo {

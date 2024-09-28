@@ -38,9 +38,6 @@ import java.util.Objects;
 /**
  * AbstractDbCopyDeleteInterceptor:级联删除与是否下发agent公共
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-02
  */
 @Slf4j
 @Component

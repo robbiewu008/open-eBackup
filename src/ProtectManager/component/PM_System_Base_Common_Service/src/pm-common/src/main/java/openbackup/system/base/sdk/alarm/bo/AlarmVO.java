@@ -28,9 +28,6 @@ import java.util.stream.Collectors;
 /**
  * 告警前端对象
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-01-01
  */
 @Data
 public class AlarmVO {

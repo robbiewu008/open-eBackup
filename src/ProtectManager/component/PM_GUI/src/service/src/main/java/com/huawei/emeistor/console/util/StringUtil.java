@@ -17,9 +17,6 @@ import java.lang.reflect.Field;
 /**
  * String 工具类
  *
- * @author mwx776342
- * @version V100R001C00
- * @since 2022-03-07
  */
 public class StringUtil {
     private static final int DEFAULT_TIMES = 3;

@@ -28,8 +28,6 @@ import java.util.Objects;
 /**
  * 描述
  *
- * @author h30027154
- * @since 2022-06-27
  */
 public class ResourceUtilTest {
     @Test

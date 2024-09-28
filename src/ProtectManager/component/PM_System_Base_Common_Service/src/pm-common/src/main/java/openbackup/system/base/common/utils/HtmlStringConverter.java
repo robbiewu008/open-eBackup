@@ -16,9 +16,6 @@ package openbackup.system.base.common.utils;
  * 替换特殊字符
  * 把特殊字符的有实体替换成原状
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-05
  */
 public final class HtmlStringConverter {
     private HtmlStringConverter() {

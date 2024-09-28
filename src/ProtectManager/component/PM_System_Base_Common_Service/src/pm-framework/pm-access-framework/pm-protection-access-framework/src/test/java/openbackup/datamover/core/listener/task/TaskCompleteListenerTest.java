@@ -40,8 +40,6 @@ import java.util.UUID;
 /**
  * Task Complete Listener Test
  *
- * @author lwx776769
- * @since 2021-01-04
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(TaskCompleteListener.class)

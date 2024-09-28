@@ -41,9 +41,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * DME 归档接口
  *
- * @author y00490893
- * @version [BCManager 8.0.0]
- * @since 2020-12-16
  */
 @FeignClient(name = "dmeArchiveService", url = "${dme-archive.url}", configuration = DmeArchiveFeignConfiguration.class)
 public interface DmeArchiveService {

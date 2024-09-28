@@ -20,9 +20,6 @@ import java.util.Objects;
 /**
  * 功能描述
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/8/16
  */
 public class RestoreUtil {
     /**

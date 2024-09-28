@@ -22,9 +22,6 @@ import java.util.List;
 /**
  * 副本资源查询条件
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-03-02
  */
 @Getter
 @Setter

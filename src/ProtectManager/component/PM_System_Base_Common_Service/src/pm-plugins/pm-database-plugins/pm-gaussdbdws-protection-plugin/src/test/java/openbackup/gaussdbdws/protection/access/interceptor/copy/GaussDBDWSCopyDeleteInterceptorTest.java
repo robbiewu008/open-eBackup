@@ -59,9 +59,6 @@ import java.util.Optional;
 /**
  * GaussDBDWS副本删除测试类
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-01
  */
 public class GaussDBDWSCopyDeleteInterceptorTest {
     private final CopyRestApi copyRestApi = PowerMockito.mock(CopyRestApi.class);

@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * JobCenter Client Service
  *
- * @author swx1010572
- * @since 2020-01-12
  */
 @FeignClient(name = "UpdateLogicApi", url = "${service.url.pm-dm-access-point}/v1/internal/eb",
     configuration = CommonFeignConfiguration.class)

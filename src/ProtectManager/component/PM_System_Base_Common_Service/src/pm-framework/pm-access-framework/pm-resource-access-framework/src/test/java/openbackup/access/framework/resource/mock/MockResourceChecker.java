@@ -33,8 +33,6 @@ import java.util.Map;
 /**
  * The MockResourceChecker
  *
- * @author g30003063
- * @since 2022/5/30
  */
 @Component
 public class MockResourceChecker extends AbstractResourceChecker<AppEnvResponse> {

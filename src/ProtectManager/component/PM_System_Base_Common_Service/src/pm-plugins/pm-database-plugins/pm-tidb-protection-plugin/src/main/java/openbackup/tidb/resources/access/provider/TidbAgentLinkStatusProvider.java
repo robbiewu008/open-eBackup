@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author c00826511
- * @since 2023-08-14
  */
 public class TidbAgentLinkStatusProvider implements AgentLinkStatusProvider {
     @Override

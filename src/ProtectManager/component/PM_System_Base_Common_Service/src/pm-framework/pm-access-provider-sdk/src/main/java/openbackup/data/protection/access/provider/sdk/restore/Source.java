@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * host entity
  *
- * @author y30000858
- * @since 2020-09-19
  */
 @Data
 public class Source {

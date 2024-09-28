@@ -53,9 +53,6 @@ import java.util.Map;
 /**
  * SQL Server集群扫描测试类
  *
- * @author xWX1016404
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-19
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {EnvironmentLinkStatusHelper.class})

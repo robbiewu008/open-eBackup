@@ -39,8 +39,6 @@ import java.util.Optional;
 /**
  * 索引provider类
  *
- * @author y30037959
- * @since 2023-06-01
  */
 @Slf4j
 public abstract class AbstractVmIndexerProvider {

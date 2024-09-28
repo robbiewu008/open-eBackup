@@ -26,9 +26,6 @@ import java.util.Optional;
 /**
  * job DAO类
  *
- * @author y00280557
- * @version [OceanProtect 8.1.RC1]
- * @since 2020-04-01
  */
 @TableName(value = "t_job")
 @Data

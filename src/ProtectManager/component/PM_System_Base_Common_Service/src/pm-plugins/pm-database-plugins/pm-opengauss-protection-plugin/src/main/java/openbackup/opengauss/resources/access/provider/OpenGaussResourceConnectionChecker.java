@@ -41,9 +41,6 @@ import java.util.stream.Collectors;
 /**
  * openGauss环境连通性检测提供者
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-08
  */
 @Component
 @Slf4j

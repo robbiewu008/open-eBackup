@@ -39,8 +39,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author z30047175
- * @since 2023-07-04
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(TokenBo.class)

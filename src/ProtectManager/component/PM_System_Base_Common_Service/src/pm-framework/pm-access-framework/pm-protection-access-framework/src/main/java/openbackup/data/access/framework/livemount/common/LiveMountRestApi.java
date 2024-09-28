@@ -27,8 +27,6 @@ import java.util.List;
 /**
  * Live Mount Rest Api
  *
- * @author l00272247
- * @since 2020-09-19
  */
 public interface LiveMountRestApi {
     /**

@@ -27,8 +27,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 /**
  * 功能描述 GaussDBAlwaysOnProvider用例
  *
- * @author s30031954
- * @since 2023-06-13
  */
 @RunWith(MockitoJUnitRunner.class)
 public class GaussDBAlwaysOnProviderTest extends TestCase {

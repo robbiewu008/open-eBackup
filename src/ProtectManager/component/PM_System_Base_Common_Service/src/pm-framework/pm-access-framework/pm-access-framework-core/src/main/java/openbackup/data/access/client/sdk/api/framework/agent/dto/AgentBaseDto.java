@@ -20,9 +20,6 @@ import lombok.Data;
 /**
  * Agent Base Dto
  *
- * @author fwx1022842
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022/2/28
  */
 @Data
 public class AgentBaseDto {

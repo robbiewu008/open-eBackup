@@ -37,8 +37,6 @@ import java.util.stream.Collectors;
 /**
  * Protected Resource Watch Service
  *
- * @author l00272247
- * @since 2021-10-19
  */
 @Component
 @Slf4j

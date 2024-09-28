@@ -22,9 +22,6 @@ import java.util.stream.Stream;
 /**
  * 异常工具类
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-30
  */
 public class ErrorUtil {
     /**

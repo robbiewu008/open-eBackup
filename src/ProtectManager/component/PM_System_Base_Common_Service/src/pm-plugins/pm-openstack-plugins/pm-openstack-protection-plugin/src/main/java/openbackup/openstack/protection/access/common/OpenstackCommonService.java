@@ -33,9 +33,6 @@ import java.util.Map;
 /**
  * openstack 公共检查服务
  *
- * @author t30049904
- * @version [OceanProtect DataBack 1.5.0]
- * @since 2023/9/19
  */
 @Slf4j
 @Component

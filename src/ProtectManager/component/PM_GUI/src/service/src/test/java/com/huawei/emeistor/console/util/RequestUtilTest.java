@@ -34,8 +34,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * RequestUtil工具测试类
  *
- * @author xwx1016404
- * @since 2021-07-24
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {RequestUtil.class})

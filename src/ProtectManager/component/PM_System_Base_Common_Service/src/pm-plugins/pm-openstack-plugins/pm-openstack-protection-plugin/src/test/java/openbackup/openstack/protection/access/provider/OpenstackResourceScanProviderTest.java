@@ -47,9 +47,6 @@ import java.util.Optional;
 /**
  * 功能描述: test OpenstackResourceScanProvider
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-26
  */
 public class OpenstackResourceScanProviderTest {
     private static OpenstackResourceScanProvider openstackResourceScanProvider;

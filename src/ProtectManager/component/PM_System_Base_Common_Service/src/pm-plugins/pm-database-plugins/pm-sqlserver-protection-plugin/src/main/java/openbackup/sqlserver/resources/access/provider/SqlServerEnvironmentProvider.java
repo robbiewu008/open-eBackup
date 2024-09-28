@@ -40,9 +40,6 @@ import java.util.stream.Collectors;
 /**
  * 集群环境健康检查
  *
- * @author xwx1016404
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-28
  */
 @Component
 @Slf4j

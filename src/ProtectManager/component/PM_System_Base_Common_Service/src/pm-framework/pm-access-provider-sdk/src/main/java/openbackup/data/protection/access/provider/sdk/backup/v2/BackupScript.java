@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.backup.v2;
 /**
  * 备份脚本
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-19
  */
 public class BackupScript {
     // 前置脚本

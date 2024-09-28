@@ -26,9 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * dameng的sla应用校验
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-20
  */
 @Component
 public class DamengSlaValidate implements SlaValidateProvider {

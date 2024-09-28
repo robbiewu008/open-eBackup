@@ -31,9 +31,6 @@ import java.util.Optional;
 /**
  * Openstack副本删除拦截器
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-14
  */
 @Slf4j
 @Component

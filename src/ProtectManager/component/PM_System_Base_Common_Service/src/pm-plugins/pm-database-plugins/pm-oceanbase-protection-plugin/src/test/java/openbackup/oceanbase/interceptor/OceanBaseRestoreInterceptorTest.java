@@ -48,8 +48,6 @@ import java.util.Optional;
 /**
  * 功能描述
  *
- * @author x30028756
- * @since 2023-08-08
  */
 @RunWith(PowerMockRunner.class)
 public class OceanBaseRestoreInterceptorTest extends OceanBaseTest {

@@ -62,9 +62,6 @@ import java.util.stream.Collectors;
 /**
  * mysql应用基本的Service
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/6/16
  */
 @Slf4j
 @Service("mysqlBaseService")

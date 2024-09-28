@@ -23,9 +23,6 @@ import org.junit.Test;
 /**
  * sqlserver集群 测试类
  *
- * @author twx1009756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2023-1-5
  */
 public class SqlServerClusterResourceProviderTest {
     private final SqlServerClusterResourceProvider sqlServerClusterResourceProvider

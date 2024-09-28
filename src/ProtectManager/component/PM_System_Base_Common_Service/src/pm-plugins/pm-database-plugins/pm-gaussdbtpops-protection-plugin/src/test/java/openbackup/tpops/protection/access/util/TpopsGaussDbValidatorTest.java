@@ -26,8 +26,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author t30021437
- * @since 2023-02-07
  */
 public class TpopsGaussDbValidatorTest {
     @Rule

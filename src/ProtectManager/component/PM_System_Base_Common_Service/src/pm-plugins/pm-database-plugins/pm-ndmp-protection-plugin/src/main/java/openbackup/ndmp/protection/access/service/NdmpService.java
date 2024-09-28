@@ -25,8 +25,6 @@ import java.util.Map;
 /**
  * 功能描述
  *
- * @author t30021437
- * @since 2023-05-06
  */
 public interface NdmpService {
     /**

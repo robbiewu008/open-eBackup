@@ -72,9 +72,6 @@ import java.util.stream.Collectors;
  * GaussDbDws资源相关接口的具体实现类
  * 实现了：扫描，健康状态检查，资源浏览，环境信息检查相关等接口
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-13
  */
 @Slf4j
 @Component

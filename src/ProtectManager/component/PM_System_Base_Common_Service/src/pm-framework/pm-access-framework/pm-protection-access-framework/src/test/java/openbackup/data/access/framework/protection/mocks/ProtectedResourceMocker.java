@@ -30,9 +30,6 @@ import java.util.UUID;
  * 保护资源信息的Mock类，模拟测试用例中{@code ProtectedResource}对象的各种情况
  *
  * @description:
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/7
  **/
 public class ProtectedResourceMocker {
     /**

@@ -19,8 +19,6 @@ import java.math.BigDecimal;
 /**
  * 存储库完整信息回复
  *
- * @author w00504341
- * @since 2020-12-18
  */
 @Data
 public class CompleteStorageInfoRes {

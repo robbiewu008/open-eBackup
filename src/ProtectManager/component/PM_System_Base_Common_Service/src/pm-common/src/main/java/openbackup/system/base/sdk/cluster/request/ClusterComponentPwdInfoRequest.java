@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author c30047317
- * @since 2023-07-27
  */
 @Data
 public class ClusterComponentPwdInfoRequest {

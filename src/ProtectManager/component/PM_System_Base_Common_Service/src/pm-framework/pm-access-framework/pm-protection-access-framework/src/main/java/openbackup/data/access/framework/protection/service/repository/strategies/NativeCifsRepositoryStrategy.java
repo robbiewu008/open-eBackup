@@ -25,9 +25,6 @@ import org.springframework.stereotype.Component;
 /**
  * 本地存储CIFS库协议的策略类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/8
  **/
 @Component("nativeCifsRepositoryStrategy")
 public class NativeCifsRepositoryStrategy extends BaseNativeRepositoryStrategy implements RepositoryStrategy {

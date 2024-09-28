@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * 功能描述 GoldenDB实例
  *
- * @author s30036254
- * @since 2023-02-14
  */
 @NoArgsConstructor
 @Data

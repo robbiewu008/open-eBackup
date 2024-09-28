@@ -17,9 +17,6 @@ import openbackup.system.base.common.constants.TokenBo;
 /**
  * token对象模拟
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/9/13
  **/
 public class TokenMocker {
     /**

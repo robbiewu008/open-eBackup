@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * SyncComponentInfoRequest
  *
- * @author z00613137
- * @since 2023-05-25
  */
 @Getter
 @Setter

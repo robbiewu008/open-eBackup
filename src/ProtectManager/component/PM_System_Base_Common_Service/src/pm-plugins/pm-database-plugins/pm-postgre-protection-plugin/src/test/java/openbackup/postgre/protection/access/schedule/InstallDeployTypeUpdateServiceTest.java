@@ -34,9 +34,6 @@ import java.util.Map;
 /**
  * {@link InstallDeployTypeUpdateService} 测试类
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.6.0]
- * @since 2024-06-11
  */
 public class InstallDeployTypeUpdateServiceTest {
     private ResourceService resourceService = PowerMockito.mock(ResourceService.class);

@@ -21,8 +21,6 @@ import lombok.Data;
 /**
  * Performance
  *
- * @author l00272247
- * @since 2020-09-21
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)

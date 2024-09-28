@@ -43,8 +43,6 @@ import java.util.Optional;
 /**
  * 功能描述 分布式实例备份
  *
- * @author z00427109
- * @since 2023-05-30
  */
 @Slf4j
 @Component

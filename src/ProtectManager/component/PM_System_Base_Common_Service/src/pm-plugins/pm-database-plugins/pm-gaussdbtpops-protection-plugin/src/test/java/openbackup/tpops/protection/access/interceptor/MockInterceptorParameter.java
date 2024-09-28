@@ -33,8 +33,6 @@ import java.util.Map;
 /**
  * GussDB下发参数工具类
  * <p>
- * * @author x30021699
- * * @since 2023-05-09
  */
 public class MockInterceptorParameter {
     /**

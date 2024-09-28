@@ -47,9 +47,6 @@ import java.util.Optional;
 /**
  * 功能描述 sanClient测试类
  *
- * @author n30046257
- * @version [DataBackup 1.3.0]
- * @since 2023-07-27
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SanClientService.class})

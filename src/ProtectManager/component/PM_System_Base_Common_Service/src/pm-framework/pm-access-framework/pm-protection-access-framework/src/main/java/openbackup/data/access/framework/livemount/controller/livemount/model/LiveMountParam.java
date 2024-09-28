@@ -21,8 +21,6 @@ import java.util.Map;
 /**
  * Live Mount Param
  *
- * @author l00272247
- * @since 2020-09-17
  */
 @Data
 public class LiveMountParam {

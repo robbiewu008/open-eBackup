@@ -46,8 +46,6 @@ import java.util.List;
 /**
  * 副本扫描响应监听(VM等虚拟化应用使用)
  *
- * @author y30037959
- * @since 2023-06-01
  */
 @Slf4j
 @Component

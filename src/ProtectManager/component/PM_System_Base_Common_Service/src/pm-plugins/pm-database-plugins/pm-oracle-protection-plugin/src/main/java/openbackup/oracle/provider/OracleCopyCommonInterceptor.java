@@ -29,8 +29,6 @@ import java.util.Optional;
 /**
  * oracle 副本拦截器
  *
- * @author w30044259
- * @since 2024-05-07
  */
 @Component
 @Slf4j

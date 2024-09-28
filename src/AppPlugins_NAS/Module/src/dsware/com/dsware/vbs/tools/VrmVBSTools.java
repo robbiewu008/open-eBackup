@@ -20,8 +20,6 @@ import org.apache.log4j.PropertyConfigurator;
 /**
  * <Description>
  * 
- * @author  j55771
- * @version  [V100R001C00, 2012-7-26]
  */
 public class VrmVBSTools
 {

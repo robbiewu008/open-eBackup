@@ -67,8 +67,6 @@ import javax.validation.constraints.Size;
 /**
  * Live Mount Controller
  *
- * @author l00272247
- * @since 2020-09-17
  */
 @Validated
 @RestController

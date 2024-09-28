@@ -38,8 +38,6 @@ import java.util.Map;
 /**
  * 功能描述
  *
- * @author z30047175
- * @since 2023-07-03
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TdsqlClusterConnectionCheckerTest {

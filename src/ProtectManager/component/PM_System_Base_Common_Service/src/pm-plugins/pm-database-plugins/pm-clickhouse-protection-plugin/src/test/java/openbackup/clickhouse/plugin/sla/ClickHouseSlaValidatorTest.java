@@ -28,9 +28,6 @@ import java.util.stream.Collectors;
 /**
  * ClickHouse SLA校验测试类
  *
- * @author w00439064
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-07
  */
 public class ClickHouseSlaValidatorTest{
     private final ClickHouseSlaValidator clickHouseSlaValidator = new ClickHouseSlaValidator();

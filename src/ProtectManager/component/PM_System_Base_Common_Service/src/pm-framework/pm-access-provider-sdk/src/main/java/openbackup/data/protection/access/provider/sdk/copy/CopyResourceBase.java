@@ -19,9 +19,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 /**
  * 副本资源基类
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-22
  */
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CopyResourceBase {

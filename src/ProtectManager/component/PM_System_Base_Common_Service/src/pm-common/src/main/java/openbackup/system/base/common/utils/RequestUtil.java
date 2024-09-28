@@ -36,9 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Http Request 工具类，封装一些Request的公共工具方法
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-05
  */
 @Component
 @CalleeMethods(name = "request_util", value = {

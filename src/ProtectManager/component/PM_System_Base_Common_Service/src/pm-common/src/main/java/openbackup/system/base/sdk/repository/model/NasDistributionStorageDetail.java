@@ -19,9 +19,6 @@ import java.util.List;
 /**
  * 分布式NAS存储库详情
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 @Data
 public class NasDistributionStorageDetail {

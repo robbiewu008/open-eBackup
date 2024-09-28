@@ -36,9 +36,6 @@ import java.util.List;
 /**
  * mysql单实例恢复任务下发provider
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.0]
- * @since 2022/6/23
  */
 @Slf4j
 @Component

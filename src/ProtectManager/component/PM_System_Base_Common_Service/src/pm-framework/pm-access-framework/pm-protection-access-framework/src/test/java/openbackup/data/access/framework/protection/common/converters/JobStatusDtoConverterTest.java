@@ -41,8 +41,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author w00616953
- * @since 2021-12-10
  */
 public class JobStatusDtoConverterTest {
     @Rule

@@ -40,9 +40,6 @@ import java.util.List;
 /**
  * CnwareFirProvider CNware细粒度恢复
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-03-09
  */
 @Component
 @Slf4j

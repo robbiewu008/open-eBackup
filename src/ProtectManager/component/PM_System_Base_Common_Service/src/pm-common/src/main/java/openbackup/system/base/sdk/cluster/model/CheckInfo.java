@@ -19,8 +19,6 @@ import lombok.Setter;
 /**
  * 功能说明 检查满足度结果
  *
- * @author x30046484
- * @since 2023-05-11
  */
 
 @Getter

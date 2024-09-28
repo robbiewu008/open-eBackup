@@ -151,8 +151,6 @@ import java.util.stream.Collectors;
 /**
  * Abstract DME Replication Provider
  *
- * @author l00272247
- * @since 2020-11-19
  */
 @Component
 @Slf4j

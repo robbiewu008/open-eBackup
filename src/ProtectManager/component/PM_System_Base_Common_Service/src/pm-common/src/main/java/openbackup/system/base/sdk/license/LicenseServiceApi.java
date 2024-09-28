@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * license service
  *
- * @author g00500588
- * @since 2021-01-29
  * */
 @FeignClient(name = "LicenseService", url = "${service.url.pm-system-base}/v1/internal/license/",
         configuration = CommonFeignConfiguration.class)

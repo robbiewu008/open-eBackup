@@ -49,8 +49,6 @@ import java.util.stream.Collectors;
 /**
  * RedissonClient https config
  *
- * @author xwx1016404
- * @since 2021-12-21
  */
 @Slf4j
 @Configuration

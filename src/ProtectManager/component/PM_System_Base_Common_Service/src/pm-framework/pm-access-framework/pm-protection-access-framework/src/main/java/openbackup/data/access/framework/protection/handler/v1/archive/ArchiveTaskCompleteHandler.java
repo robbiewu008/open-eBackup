@@ -60,8 +60,6 @@ import java.util.List;
 /**
  * Archive Task Complete Listener
  *
- * @author y00490893
- * @since 2020-12-21
  **/
 @Component
 @Slf4j

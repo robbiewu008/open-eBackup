@@ -25,9 +25,6 @@ import java.util.Objects;
 /**
  * CNware AlwaysOnProvider
  *
- * @author q30048244
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-12-30
  */
 @Component
 @Slf4j

@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.resourcegroup.constant;
 /**
  * 资源组label常量定义
  *
- * @author l30046868
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/04/07
  **/
 public class ResourceGroupLabelConstant {
     /**

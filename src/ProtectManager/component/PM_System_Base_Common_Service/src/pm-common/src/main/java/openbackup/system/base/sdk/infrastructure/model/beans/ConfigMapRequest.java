@@ -22,8 +22,6 @@ import lombok.NoArgsConstructor;
 /**
  * config map key-value request
  *
- * @author xwx1016404
- * @since 2021-02-03
  */
 @Data
 @AllArgsConstructor

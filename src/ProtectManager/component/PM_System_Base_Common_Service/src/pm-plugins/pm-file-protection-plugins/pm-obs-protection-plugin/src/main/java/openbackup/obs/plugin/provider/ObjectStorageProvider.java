@@ -56,8 +56,6 @@ import java.util.regex.Pattern;
 /**
  * HCS-OBS存储
  *
- * @author w00607005
- * @since 2023-11-15
  */
 @Slf4j
 @Component

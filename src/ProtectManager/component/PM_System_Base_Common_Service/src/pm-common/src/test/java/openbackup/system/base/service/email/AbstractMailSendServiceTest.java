@@ -26,8 +26,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * 功能描述
  *
- * @author c00826511
- * @since 2023-02-23
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {ApplicationContextService.class})

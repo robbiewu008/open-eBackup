@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * dee database Anonymization
  *
- * @author y30044273
- * @since 2023-09-27
  */
 @FeignClient(name = "deeDbAnonymizationRest", url = "${protectengine-e-dee-db-anonymization.url}/v1/internal",
     configuration = CommonFeignConfiguration.class)

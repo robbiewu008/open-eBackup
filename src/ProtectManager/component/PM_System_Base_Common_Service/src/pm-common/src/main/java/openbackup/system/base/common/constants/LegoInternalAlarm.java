@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * Lego告警
  *
- * @author y30000858
- * @version [8.0.0]
- * @since 2020-07-04
  */
 @Data
 public class LegoInternalAlarm {

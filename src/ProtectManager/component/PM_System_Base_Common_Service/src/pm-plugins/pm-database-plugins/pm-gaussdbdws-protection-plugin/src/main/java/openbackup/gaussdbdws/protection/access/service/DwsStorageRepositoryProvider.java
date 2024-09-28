@@ -33,8 +33,6 @@ import java.util.List;
 /**
  * DWS
  *
- * @author w30044259
- * @since 2024-03-26
  */
 @Component
 @AllArgsConstructor

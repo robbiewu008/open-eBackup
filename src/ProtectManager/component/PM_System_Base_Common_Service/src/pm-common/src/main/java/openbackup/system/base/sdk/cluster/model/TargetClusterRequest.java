@@ -31,8 +31,6 @@ import javax.validation.constraints.Pattern;
 /**
  * 目标集群请求下发基类
  *
- * @author p30001902
- * @since 2020-06-11
  */
 @Data
 public class TargetClusterRequest {

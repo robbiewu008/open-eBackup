@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 页面展示ProtectedAgentExtendPo
  *
- * @author z00613137
- * @since 2023-08-11
  */
 @Getter
 @Setter

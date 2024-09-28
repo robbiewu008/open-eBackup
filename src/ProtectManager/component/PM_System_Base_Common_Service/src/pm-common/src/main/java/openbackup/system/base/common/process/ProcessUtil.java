@@ -32,8 +32,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 执行工具
  *
- * @author w00493811
- * @since 2021-08-10
  */
 @Slf4j
 public class ProcessUtil {

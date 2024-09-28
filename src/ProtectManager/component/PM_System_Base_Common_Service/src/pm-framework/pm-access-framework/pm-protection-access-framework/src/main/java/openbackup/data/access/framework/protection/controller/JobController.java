@@ -55,9 +55,6 @@ import javax.validation.Valid;
 /**
  * Live Mount Controller
  *
- * @author l00272247
- * @version [OceanProtect X8000 1.2.1]
- * @since 2020-09-19
  */
 @Slf4j
 @RestController

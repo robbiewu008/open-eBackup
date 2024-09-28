@@ -39,8 +39,6 @@ import javax.net.ssl.TrustManagerFactory;
 /**
  * InternalSSLSocketFactory
  *
- * @author y30046482
- * @since 2023-12-23
  */
 @Slf4j
 @Component

@@ -47,8 +47,6 @@ import java.util.concurrent.atomic.AtomicStampedReference;
 /**
  * Replication Task Complete Handler
  *
- * @author l00272247
- * @since 2020-12-18
  */
 @Component
 @Slf4j

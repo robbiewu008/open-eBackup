@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 虚拟机资源类
  *
- * @author t00482481
- * @since 2020-10-29
  */
 @Data
 public class VirtualResourceSchema extends ResourceEntity {

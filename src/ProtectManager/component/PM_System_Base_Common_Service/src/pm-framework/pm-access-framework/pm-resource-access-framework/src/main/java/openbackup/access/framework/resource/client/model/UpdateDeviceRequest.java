@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * 更新设备请求体
  *
- * @author s30031954
- * @since 2022-12-29
  */
 @Data
 @Builder

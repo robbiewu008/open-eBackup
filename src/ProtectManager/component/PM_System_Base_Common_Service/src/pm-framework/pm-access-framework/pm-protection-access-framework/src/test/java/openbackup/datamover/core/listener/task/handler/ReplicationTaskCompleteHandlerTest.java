@@ -48,8 +48,6 @@ import java.util.concurrent.atomic.AtomicStampedReference;
 /**
  * ReplicationTaskCompleteHandler LLT
  *
- * @author m00576658
- * @since 2021-03-25
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ReplicationTaskCompleteHandler.class)

@@ -24,9 +24,6 @@ import org.springframework.stereotype.Component;
 /**
  * 云主机资源Provider
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-2-22
  */
 @Slf4j
 @Component

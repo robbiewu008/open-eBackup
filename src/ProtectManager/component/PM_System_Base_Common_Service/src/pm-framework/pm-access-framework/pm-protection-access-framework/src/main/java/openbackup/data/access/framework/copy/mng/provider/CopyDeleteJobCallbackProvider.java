@@ -31,9 +31,6 @@ import java.util.List;
 /**
  * 副本删除、过期的长时间任务失败的回调
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-26
  */
 @Component
 @Slf4j

@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 功能描述
  *
- * @author p00511147
- * @since 2020-11-10
  */
 @Data
 public class OceanStorageLunInfoRes {

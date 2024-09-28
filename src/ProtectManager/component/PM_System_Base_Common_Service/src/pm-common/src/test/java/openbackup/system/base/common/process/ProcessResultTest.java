@@ -22,8 +22,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * 测试ProcessResult
  *
- * @author w00493811
- * @since 2021-08-17
  */
 @RunWith(SpringRunner.class)
 public class ProcessResultTest {

@@ -34,8 +34,6 @@ import javax.validation.ConstraintValidatorContext;
 /**
  * 文件校验
  *
- * @author w00607005
- * @since 2023-09-22
  */
 @Slf4j
 public class FileValidator implements ConstraintValidator<FileCheck, MultipartFile> {

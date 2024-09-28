@@ -44,9 +44,6 @@ import java.util.Optional;
 /**
  * DWS table集环境测试类
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-17
  */
 public class GaussDBDWSTableBackupInterceptorTest {
     private final ProtectedResourceChecker protectedResourceChecker = Mockito.mock(ProtectedResourceChecker.class);

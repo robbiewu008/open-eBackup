@@ -58,8 +58,6 @@ import java.util.Optional;
 /**
  * 实现类测试
  *
- * @author t30021437
- * @since 2023-03-27
  */
 @RunWith(MockitoJUnitRunner.class)
 @PrepareForTest(GaussDBService.class)

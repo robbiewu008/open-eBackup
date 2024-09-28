@@ -29,8 +29,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 备份完成后python发给主集群java的归档消息
  *
- * @author y30046482
- * @since 2023-07-26
  */
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)

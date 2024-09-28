@@ -25,9 +25,6 @@ import java.util.Objects;
 /**
  * DataMover provider registry
  *
- * @author j00364432
- * @version [BCManager 8.0.0]
- * @since 2020-06-22
  */
 @Component
 public class ProviderManager {

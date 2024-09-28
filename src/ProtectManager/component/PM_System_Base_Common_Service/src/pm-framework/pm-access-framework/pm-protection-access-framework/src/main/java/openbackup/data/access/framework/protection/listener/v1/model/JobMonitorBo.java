@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * 任务监控消息
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2020-10-16
  */
 @Data
 public class JobMonitorBo {

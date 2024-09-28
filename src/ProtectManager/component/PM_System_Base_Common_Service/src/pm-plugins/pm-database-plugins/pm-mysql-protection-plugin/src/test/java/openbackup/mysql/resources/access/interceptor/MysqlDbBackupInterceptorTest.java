@@ -55,9 +55,6 @@ import java.util.UUID;
 /**
  * MySQL数据库备份拦截器实现类 测试类
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/5/31
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MysqlDbBackupInterceptor.class})

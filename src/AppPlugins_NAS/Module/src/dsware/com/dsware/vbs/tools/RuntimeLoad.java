@@ -21,7 +21,6 @@ import java.util.Map;
 /**
  * RuntimeLoad
  *
- * @since 2024-08-27
  */
 public class RuntimeLoad {
     private static final String DSWARE_JSR_PATH = "DSWARE_JSR_PATH";

@@ -15,9 +15,6 @@ package openbackup.system.base.common.utils.unit;
 /**
  * 抽象的自动转换容量单位
  *
- * @author l90003110
- * @version V100R001C00
- * @since 2019-10-25
  */
 public abstract class AbstractCapUnitType {
     /**
@@ -50,7 +47,6 @@ public abstract class AbstractCapUnitType {
      * 返回单位名称 如GB
      *
      * @return String [返回类型说明]
-     * @since 2019-10-25
      */
     public abstract String getUnitName();
 

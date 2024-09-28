@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.resource;
 /**
  * 受保护环境检查结果
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-12
  */
 public enum EnvironmentCheckResult {
     /**

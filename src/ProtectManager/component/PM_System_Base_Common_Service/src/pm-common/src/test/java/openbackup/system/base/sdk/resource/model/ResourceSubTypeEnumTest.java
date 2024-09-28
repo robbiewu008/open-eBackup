@@ -21,8 +21,6 @@ import org.junit.Test;
 /**
  * ResourceSubTypeEnumTest
  *
- * @author z00613137
- * @since 2023-06-27
  */
 public class ResourceSubTypeEnumTest {
     private static final String VM_BACKUP_AGENT_SUB_TYPE = "VMBackupAgent";

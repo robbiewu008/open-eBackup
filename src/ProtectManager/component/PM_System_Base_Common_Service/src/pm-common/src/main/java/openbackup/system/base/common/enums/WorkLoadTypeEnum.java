@@ -17,8 +17,6 @@ import lombok.Getter;
 /**
  * 工作负载类型 k8s的
  *
- * @author y30046482
- * @since 2023-10-18
  */
 @Getter
 public enum WorkLoadTypeEnum {

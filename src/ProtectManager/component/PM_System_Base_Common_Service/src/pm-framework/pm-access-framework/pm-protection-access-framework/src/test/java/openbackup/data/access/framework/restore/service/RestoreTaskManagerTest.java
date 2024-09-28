@@ -87,9 +87,6 @@ import java.util.UUID;
 /**
  * 恢复任务管理单元测试类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/7
  **/
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {RestoreTaskManager.class, KmcHelper.class, TokenBo.class})

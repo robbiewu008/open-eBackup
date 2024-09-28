@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 功能描述
  *
- * @author dWX1009286
- * @since 2021-07-26
  */
 @Data
 public class ClusterResourceCount {

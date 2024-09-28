@@ -23,8 +23,6 @@ import lombok.AllArgsConstructor;
 /**
  * 介质集类型
  *
- * @author z30006621
- * @since 2021-08-24
  */
 @AllArgsConstructor
 public enum MediaSetAppType {

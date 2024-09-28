@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * Json Data View
  *
- * @author l00272247
- * @since 2019-11-28
  */
 public class DataView {
     /**

@@ -15,9 +15,6 @@ package openbackup.sqlserver.common;
 /**
  * Sql Server应用错误码
  *
- * @author tWX1009756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-9-27
  */
 public class SqlServerErrorCode {
     /**

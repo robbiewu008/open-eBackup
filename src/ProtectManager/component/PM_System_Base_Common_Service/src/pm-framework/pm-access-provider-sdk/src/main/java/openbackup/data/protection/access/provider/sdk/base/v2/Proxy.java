@@ -19,9 +19,6 @@ import java.util.Map;
 /**
  * 存储库代理信息对象
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/15
  **/
 public class Proxy {
     /**

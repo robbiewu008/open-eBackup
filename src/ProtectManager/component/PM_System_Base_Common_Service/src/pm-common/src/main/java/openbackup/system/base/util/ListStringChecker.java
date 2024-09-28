@@ -28,8 +28,6 @@ import javax.validation.ConstraintValidatorContext;
 /**
  * List输入参数校验实现类
  *
- * @author w00426202
- * @since 2023-05-11
  */
 @Data
 public class ListStringChecker implements ConstraintValidator<CheckInputList, List<String>> {

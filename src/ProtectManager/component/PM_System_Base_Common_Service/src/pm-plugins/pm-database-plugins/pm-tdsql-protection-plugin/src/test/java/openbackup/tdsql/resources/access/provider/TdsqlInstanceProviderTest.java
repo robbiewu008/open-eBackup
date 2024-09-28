@@ -45,8 +45,6 @@ import java.util.Map;
 /**
  * 功能描述
  *
- * @author z30047175
- * @since 2023-07-05
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TdsqlInstanceProviderTest {

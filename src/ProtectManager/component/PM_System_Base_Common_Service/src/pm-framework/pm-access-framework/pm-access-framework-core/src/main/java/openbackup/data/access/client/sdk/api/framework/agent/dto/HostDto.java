@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * Agent健康检查接口返回数据模型
  *
- * @author w00616953
- * @since 2021-11-30
  */
 @Data
 public class HostDto {

@@ -18,9 +18,6 @@ import java.util.List;
 /**
  * 敏感词过滤规则集合
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/3/22
  **/
 public class RuleSet {
     /**

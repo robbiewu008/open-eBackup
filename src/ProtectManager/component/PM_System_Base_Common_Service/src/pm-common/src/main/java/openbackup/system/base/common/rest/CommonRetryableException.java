@@ -20,9 +20,6 @@ import java.util.Date;
 /**
  * CommonRetryableException
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2024/1/17
  */
 public class CommonRetryableException extends RetryableException {
     private Exception exception;

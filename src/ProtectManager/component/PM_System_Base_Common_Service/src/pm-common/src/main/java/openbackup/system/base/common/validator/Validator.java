@@ -30,9 +30,6 @@ import java.util.regex.Pattern;
  * 邮箱地址，url地址，端口，电话，日期， email的格式， 可以参考UnifyValid.js 里面的正则
  * 拉框里面的字段另外单独给出，按照具体的使用场景。
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-05
  */
 public final class Validator {
     private static final int MAX_PORT = 65536;

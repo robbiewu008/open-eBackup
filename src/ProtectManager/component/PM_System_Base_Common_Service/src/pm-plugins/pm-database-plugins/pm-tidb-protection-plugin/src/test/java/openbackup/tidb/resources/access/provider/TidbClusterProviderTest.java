@@ -55,8 +55,6 @@ import java.util.Optional;
 /**
  * TidbClusterProviderTest
  *
- * @author w00426202
- * @since 2023-07-15
  */
 @RunWith(PowerMockRunner.class)
 public class TidbClusterProviderTest {

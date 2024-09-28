@@ -38,8 +38,6 @@ import java.util.List;
 /**
  * 功能描述 TdsqlClusterGroupProviderTest
  *
- * @author z00445440
- * @since 2023-11-16
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TdsqlClusterGroupProviderTest {

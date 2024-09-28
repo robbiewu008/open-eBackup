@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * Php Mapping Jackson2 Http Message Converter
  *
- * @author l00272247
- * @since 2021-02-23
  */
 public class PhpMappingJackson2HttpMessageConverter extends MappingJackson2HttpMessageConverter {
     /**

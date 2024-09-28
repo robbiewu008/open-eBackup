@@ -38,9 +38,6 @@ import java.util.Optional;
 /**
  * 数据库恢复插件通用功能
  *
- * @author h30027154
- * @version OceanProtect X8000 1.2.1
- * @since 2022-06-15
  */
 @Slf4j
 public abstract class AbstractDbRestoreInterceptorProvider implements RestoreInterceptorProvider {

@@ -15,9 +15,6 @@ package openbackup.system.base.sdk.protection.constants;
 /**
  * 备份常量定义
  *
- * @author y00559272
- * @version [A8000 1.0.0]
- * @since 2021-01-03
  */
 public class SlaConstant {
     /**

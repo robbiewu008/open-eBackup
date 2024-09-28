@@ -19,8 +19,6 @@ import java.util.regex.Pattern;
 /**
  * 环境常量
  *
- * @author w00607005
- * @since 2023-11-15
  */
 public class EnvironmentConstant {
     /**

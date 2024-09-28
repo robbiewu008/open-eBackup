@@ -19,9 +19,6 @@ import java.util.Arrays;
 /**
  * 副本保留类型枚举类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.0.0]
- * @since: 2020/10/9
  **/
 @Getter
 public enum RetentionTypeEnum {

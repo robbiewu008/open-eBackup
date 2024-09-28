@@ -22,9 +22,6 @@ import java.math.BigDecimal;
 /**
  * 存储池VO
  *
- * @author w00639094
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-06
  */
 @Getter
 @Setter

@@ -22,9 +22,6 @@ import java.util.Objects;
 /**
  * nas存储库集群信息
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 @Data
 public class BackupClusterVo {

@@ -21,9 +21,6 @@ import java.util.List;
 /**
  * nas分布式存储库查询参数
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-16
  */
 @NoArgsConstructor
 @AllArgsConstructor

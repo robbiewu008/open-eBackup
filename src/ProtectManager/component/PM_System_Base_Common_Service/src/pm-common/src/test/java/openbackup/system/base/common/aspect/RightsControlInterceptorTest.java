@@ -42,8 +42,6 @@ import java.util.Optional;
 /**
  * 功能描述
  *
- * @author y30021475
- * @since 2023-09-27
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TokenBo.class, RequestContextHolder.class})

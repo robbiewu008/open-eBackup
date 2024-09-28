@@ -27,8 +27,6 @@ import org.redisson.api.RedissonClient;
 /**
  * ExportFilesInitServiceImpl Test
  *
- * @author z00633516
- * @since 2022-03-17
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {ExportFilesInitServiceImpl.class})

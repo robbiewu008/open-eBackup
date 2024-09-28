@@ -21,8 +21,6 @@ import java.util.function.Supplier;
  * Thread Cache
  *
  * @param <T> template type
- * @author l00272247
- * @since 2021-11-23
  */
 public class ThreadCache<T> {
     private final ThreadLocal<T> cache = new ThreadLocal<>();

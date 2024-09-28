@@ -53,8 +53,6 @@ import java.util.stream.Collectors;
 /**
  * mysql集群实例注册provider
  *
- * @author xWX950025
- * @since 2022-05-25
  */
 @Component
 @Slf4j

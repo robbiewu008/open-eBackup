@@ -70,9 +70,6 @@ import javax.validation.Valid;
 /**
  * 受保护环境接入REST API控制器，提供受保护环境相关REST接口
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-13
  */
 @Slf4j
 @RestController

@@ -47,9 +47,6 @@ import java.util.UUID;
 /**
  * {@link ClusterEnvironmentServiceImpl} 测试类
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-29
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {EnvironmentLinkStatusHelper.class})

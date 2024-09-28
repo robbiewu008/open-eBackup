@@ -36,8 +36,6 @@ import java.util.UUID;
 /**
  * ArchiveImportTaskCompleteHandler LLT
  *
- * @author m00576658
- * @since 2021-03-26
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ArchiveImportTaskCompleteHandler.class)

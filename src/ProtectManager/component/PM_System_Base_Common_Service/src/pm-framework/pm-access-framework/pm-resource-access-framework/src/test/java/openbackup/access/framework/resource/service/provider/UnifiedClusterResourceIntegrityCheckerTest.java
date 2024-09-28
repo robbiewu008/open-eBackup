@@ -34,9 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author cWX1161886
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-19
  */
 @RunWith(PowerMockRunner.class)
 public class UnifiedClusterResourceIntegrityCheckerTest {

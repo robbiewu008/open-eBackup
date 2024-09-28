@@ -18,9 +18,6 @@ import lombok.Getter;
 /**
  * 设备类型
  *
- * @author g00500588
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/8/2
  */
 @Getter
 @AllArgsConstructor

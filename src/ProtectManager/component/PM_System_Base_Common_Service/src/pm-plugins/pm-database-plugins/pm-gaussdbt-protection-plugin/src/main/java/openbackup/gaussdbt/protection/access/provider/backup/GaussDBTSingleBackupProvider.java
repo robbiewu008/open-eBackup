@@ -41,9 +41,6 @@ import java.util.Optional;
 /**
  * GaussDBT单机版备份拦截器
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/7/21
  */
 @Slf4j
 @Component

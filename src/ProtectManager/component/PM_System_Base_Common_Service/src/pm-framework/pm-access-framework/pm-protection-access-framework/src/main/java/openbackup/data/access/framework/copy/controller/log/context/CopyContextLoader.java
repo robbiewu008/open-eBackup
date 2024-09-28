@@ -22,9 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * 副本上下文，用于操作日志记录
  *
- * @author: y00559272
- * @version: [OceanProtect X8000 1.2.1]
- * @since: 2022/8/17
  **/
 @Component
 @CalleeMethods(name = "copy_context_loader",

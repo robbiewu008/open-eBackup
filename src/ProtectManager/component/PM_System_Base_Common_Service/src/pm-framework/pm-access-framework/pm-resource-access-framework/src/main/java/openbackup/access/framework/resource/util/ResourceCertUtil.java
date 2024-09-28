@@ -31,9 +31,6 @@ import java.security.cert.X509Certificate;
 /**
  * 证书资源工具类
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/10/13
  */
 @Slf4j
 public class ResourceCertUtil {

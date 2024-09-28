@@ -19,9 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Saml服务
  *
- * @author w30042425
- * @version [OceanProtect X800 1.3.0]
- * @since 2023-02-15
  */
 public interface SamlInternalService {
     /**

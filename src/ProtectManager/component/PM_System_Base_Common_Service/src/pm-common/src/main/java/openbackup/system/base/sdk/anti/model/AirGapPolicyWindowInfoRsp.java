@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * AirGap策略信息时间窗对象返回
  *
- * @author q00654632
- * @since 2023-07-12
  */
 @Data
 public class AirGapPolicyWindowInfoRsp {

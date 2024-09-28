@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Resource type Enum
  *
- * @author l00557046
- * @since 2020-10-14
  */
 public enum ResourceTypeEnum {
     // 主机

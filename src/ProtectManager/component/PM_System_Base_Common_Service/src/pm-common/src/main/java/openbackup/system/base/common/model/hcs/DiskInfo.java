@@ -18,9 +18,6 @@ import lombok.Setter;
 /**
  * 功能描述 磁盘信息
  *
- * @author z30027603
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/13 17:54
  */
 @Getter
 @Setter

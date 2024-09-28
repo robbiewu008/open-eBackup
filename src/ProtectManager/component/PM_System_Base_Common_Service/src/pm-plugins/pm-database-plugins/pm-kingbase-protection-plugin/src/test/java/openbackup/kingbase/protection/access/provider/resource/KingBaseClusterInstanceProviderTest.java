@@ -40,9 +40,6 @@ import java.util.Map;
 /**
  * {@link KingBaseClusterInstanceProvider} 测试类
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-25
  */
 public class KingBaseClusterInstanceProviderTest {
     private static final String ENDPOINT = "8.40.99.176";

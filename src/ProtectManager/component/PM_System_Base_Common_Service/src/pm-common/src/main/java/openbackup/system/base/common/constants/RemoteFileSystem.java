@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 远端文件系统，概念区分于本地文件系统模型，字段保持一致
  *
- * @author j00619968
- * @since 2023-10-19
  */
 @Getter
 @Setter

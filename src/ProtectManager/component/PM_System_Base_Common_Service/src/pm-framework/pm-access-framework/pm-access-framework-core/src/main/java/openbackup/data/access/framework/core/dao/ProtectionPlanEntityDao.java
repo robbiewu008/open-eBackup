@@ -21,9 +21,6 @@ import org.springframework.stereotype.Component;
 /**
  * Protection Plan Entity Dao
  *
- * @author l00557046
- * @version [OceanProtect A8000 1.1.0]
- * @since 2020-08-12
  */
 @Component
 public interface ProtectionPlanEntityDao extends BaseMapper<ProtectionPlanEntity> {

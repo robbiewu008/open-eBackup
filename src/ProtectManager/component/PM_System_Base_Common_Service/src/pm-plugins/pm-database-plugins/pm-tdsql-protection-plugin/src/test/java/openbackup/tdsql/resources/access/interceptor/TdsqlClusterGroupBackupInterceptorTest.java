@@ -47,8 +47,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author z00427109
- * @since 2023-11-18
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TdsqlClusterGroupBackupInterceptorTest {

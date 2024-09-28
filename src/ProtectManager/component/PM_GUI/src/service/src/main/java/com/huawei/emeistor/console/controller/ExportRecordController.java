@@ -60,8 +60,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * The ExportRecordController
  *
- * @author g30003063
- * @since 2021-10-29
  */
 @Slf4j
 @RestController

@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * ClusterNode
  *
- * @author y30021475
- * @since 2023-08-02
  */
 @Getter
 @Setter

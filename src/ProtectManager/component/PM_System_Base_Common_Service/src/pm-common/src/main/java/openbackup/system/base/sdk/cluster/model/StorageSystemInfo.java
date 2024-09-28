@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * Storage system info
  *
- * @author p30001902
- * @since 2020-12-17
  */
 @Data
 public class StorageSystemInfo {

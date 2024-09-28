@@ -32,9 +32,6 @@ import java.util.stream.Collectors;
 /**
  * OpenGaussClusterUtil 工具类
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-12
  */
 @Slf4j
 public class OpenGaussRestoreUtil {

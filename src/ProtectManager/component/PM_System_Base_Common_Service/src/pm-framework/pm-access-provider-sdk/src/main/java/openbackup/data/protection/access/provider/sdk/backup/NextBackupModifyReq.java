@@ -25,9 +25,6 @@ import java.util.Locale;
 /**
  * 更改下次备份参数
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-13
  */
 @Setter
 @Getter

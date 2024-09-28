@@ -19,8 +19,6 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 /**
  * 自动加载错误码配置
  *
- * @author y00559272
- * @since 2020-07-21
  */
 @Configuration
 public class ErrorMessageConfig {

@@ -21,8 +21,6 @@ import java.util.Map;
 /**
  * 客户端内部查询服务
  *
- * @author q00654632
- * @since 2023-10-08
  */
 public interface AgentQueryService {
     /**

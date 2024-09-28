@@ -15,8 +15,6 @@ package openbackup.access.framework.resource.validator.enums;
 /**
  * JsonSchema中需获取的字段的关键字枚举
  *
- * @author w00616953
- * @since 2021-10-19
  */
 public enum SchemaKeywordsEnum {
     SECRET("secret"), // jsonschema文件中，关键字为secret的元素名

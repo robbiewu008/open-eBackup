@@ -39,9 +39,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * ArchiveImportListener LLT
  *
- * @author z00633516
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-02-12
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {ArchiveImportListener.class})

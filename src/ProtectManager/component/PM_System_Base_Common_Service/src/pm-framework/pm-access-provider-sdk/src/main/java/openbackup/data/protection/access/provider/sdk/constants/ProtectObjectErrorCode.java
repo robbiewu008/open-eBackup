@@ -15,8 +15,6 @@ package openbackup.data.protection.access.provider.sdk.constants;
 /**
  * 保护对象相关错误码
  *
- * @author w30044259
- * @since 2024-03-07
  */
 public class ProtectObjectErrorCode {
     /**

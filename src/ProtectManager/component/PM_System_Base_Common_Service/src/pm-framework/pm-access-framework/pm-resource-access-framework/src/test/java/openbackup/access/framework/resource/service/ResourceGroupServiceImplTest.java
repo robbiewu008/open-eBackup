@@ -61,8 +61,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * ResourceGroupServiceImplTest
  *
- * @author c00631681
- * @since 2023-01-22
  */
 @RunWith(MockitoJUnitRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

@@ -35,9 +35,6 @@ import java.net.URI;
 /**
  * {@link RedissonClientConfig} 测试类
  *
- * @author w00616953
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-28
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {File.class, Redisson.class})

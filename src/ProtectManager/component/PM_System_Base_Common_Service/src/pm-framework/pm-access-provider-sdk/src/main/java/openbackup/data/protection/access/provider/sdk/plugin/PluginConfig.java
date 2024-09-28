@@ -21,7 +21,6 @@ import java.util.Map;
 /**
  * 插件配置类
  *
- * @since 2022-05-20
  */
 @Data
 public class PluginConfig {

@@ -36,9 +36,6 @@ import java.util.Optional;
 /**
  * ClickHouse环境供应器
  *
- * @author q00464130
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-27
  */
 @Slf4j
 @Component

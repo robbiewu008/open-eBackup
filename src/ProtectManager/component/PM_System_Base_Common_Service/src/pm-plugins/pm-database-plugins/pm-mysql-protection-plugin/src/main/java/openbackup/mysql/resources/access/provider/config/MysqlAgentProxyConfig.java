@@ -22,9 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * AgentProxyProperties agent代理
  *
- * @author xwx950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-31
  */
 @Setter
 @Getter

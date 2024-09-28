@@ -54,8 +54,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 转发license导入接口
  *
- * @author w00574036
- * @since 2023-02-09
  */
 @RestController
 @RequestMapping(ConfigConstant.CONSOLE)

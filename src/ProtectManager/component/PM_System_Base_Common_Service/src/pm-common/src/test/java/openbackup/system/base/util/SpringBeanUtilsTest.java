@@ -29,9 +29,6 @@ import java.util.Map;
 /**
  * Spring Bean 工具类的测试用例
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022/3/7
  **/
 public class SpringBeanUtilsTest {
     private static final ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);

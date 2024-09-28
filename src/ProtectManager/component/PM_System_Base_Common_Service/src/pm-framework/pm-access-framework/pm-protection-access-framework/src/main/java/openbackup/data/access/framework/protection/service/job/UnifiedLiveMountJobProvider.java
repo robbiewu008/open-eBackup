@@ -32,9 +32,6 @@ import org.springframework.stereotype.Component;
 /**
  * UnifiedLiveMountJobProvider
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-04-30
  */
 @Slf4j
 @Component("unifiedLiveMountJobProvider")

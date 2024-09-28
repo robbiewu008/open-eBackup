@@ -23,9 +23,6 @@ import java.util.List;
 /**
  * 创建保护资源过滤规则
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-17
  */
 @Getter
 @Setter

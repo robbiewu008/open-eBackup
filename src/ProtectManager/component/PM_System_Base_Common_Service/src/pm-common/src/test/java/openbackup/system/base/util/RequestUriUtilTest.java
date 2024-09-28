@@ -28,9 +28,6 @@ import java.net.URI;
 /**
  * RequestUriUtilTest
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-26
  */
 public class RequestUriUtilTest {
     private static final String TEST_IP = "127.0.0.1";

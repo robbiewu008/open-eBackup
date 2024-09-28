@@ -85,8 +85,6 @@ import javax.annotation.Resource;
 /**
  * Protection Remove Listener
  *
- * @author l00272247
- * @since 2020-07-14
  */
 @Component
 @Slf4j

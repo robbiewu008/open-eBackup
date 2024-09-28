@@ -23,8 +23,6 @@ import lombok.Data;
 /**
  * 修改更新策略
  *
- * @author h30003246
- * @since 2020-09-17
  */
 @Data
 public class UpdatePolicyRequest {

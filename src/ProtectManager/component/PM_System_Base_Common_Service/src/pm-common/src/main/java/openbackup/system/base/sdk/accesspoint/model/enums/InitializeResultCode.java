@@ -26,8 +26,6 @@ import java.util.Map;
 /**
  * 初始化动作结果编码
  *
- * @author w00493811
- * @since 2020-12-26
  */
 @Getter
 @ToString

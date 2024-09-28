@@ -56,8 +56,6 @@ import java.util.stream.Stream;
 /**
  * Protection Remove Listener
  *
- * @author m00576658
- * @since 2021-01-04
  */
 @Component
 @Slf4j

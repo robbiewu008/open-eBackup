@@ -22,9 +22,6 @@ import lombok.Setter;
 /**
  * 数据布局
  *
- * @author t30028453
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-17
  */
 @Getter
 @Setter

@@ -20,8 +20,6 @@ import java.util.concurrent.atomic.AtomicStampedReference;
 /**
  * Replication Copy Processor
  *
- * @author l00272247
- * @since 2020-12-18
  */
 public interface ReplicationCopyProcessor extends Applicable<String> {
     /**

@@ -18,9 +18,6 @@ import lombok.Setter;
 /**
  * pacific节点信息 前端存储网络和管理网络信息
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-02-04
  */
 @Getter
 @Setter

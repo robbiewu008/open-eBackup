@@ -23,8 +23,6 @@ import javax.validation.constraints.NotNull;
 /**
  * Dorado account request
  *
- * @author p30001902
- * @since 2020-12-02
  */
 @Data
 public class DoradoAccountRequest {

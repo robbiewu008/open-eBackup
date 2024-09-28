@@ -35,7 +35,6 @@ import java.util.Map;
 /**
  * Informix Connection Checker Test
  *
- * @since 2023-09-01
  */
 public class InformixConnectionCheckerTest {
     ProtectedEnvironmentRetrievalsService retrievalsService = Mockito.mock(ProtectedEnvironmentRetrievalsService.class);

@@ -18,9 +18,6 @@ import lombok.Setter;
 /**
  * 用户访问控制列表
  *
- * @author t00104528
- * @version [Lego V100R002C10, 2010-8-27]
- * @since 2018-10-30
  */
 @Getter
 @Setter

@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 授权关系用户信息
  *
- * @author nwx1077006
- * @since 2022-02-23
  */
 @Data
 public class ClustersRelationUserInfo {

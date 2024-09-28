@@ -28,8 +28,6 @@ import java.util.List;
 /**
  * JobCenter Client Service
  *
- * @author h30003246
- * @since 2020-07-16
  */
 @FeignClient(name = "InitializeRestApi", url = "${service.url.pm-dm-access-point}/v1/ab/internal/initialize",
     configuration = CommonFeignConfiguration.class)

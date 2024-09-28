@@ -54,9 +54,6 @@ import java.util.Random;
 /**
  * HCS-GaussDb 恢复任务基础数据Provider
  *
- * @author 30021437
- * @version [OceanProtect X8000 1.5.0]
- * @since 2023-05-10
  */
 @Slf4j
 @Component

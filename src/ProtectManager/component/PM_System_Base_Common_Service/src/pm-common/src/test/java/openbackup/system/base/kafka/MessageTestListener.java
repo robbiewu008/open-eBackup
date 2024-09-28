@@ -26,8 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * Message Listener
  *
- * @author l00272247
- * @since 2022-02-24
  */
 @Component
 public class MessageTestListener {

@@ -17,9 +17,6 @@ package openbackup.system.base.common.constants;
  * <p>
  * 超过30的Int类型，自己采用乘，加等方式实现。
  *
- * @author l90005176
- * @version [Lego V100R002C10, 2010-10-30]
- * @since 2019-10-31
  */
 public class LegoNumberConstant {
     /**

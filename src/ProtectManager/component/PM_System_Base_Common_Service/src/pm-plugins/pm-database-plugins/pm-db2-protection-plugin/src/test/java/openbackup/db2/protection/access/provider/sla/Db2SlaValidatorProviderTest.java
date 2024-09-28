@@ -31,9 +31,6 @@ import org.mockito.Mockito;
 /**
  * {@link Db2SlaValidatorProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-05
  */
 public class Db2SlaValidatorProviderTest {
     private final SlaValidService slaValidService = Mockito.mock(SlaValidService.class);

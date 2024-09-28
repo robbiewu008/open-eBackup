@@ -28,8 +28,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * Operation Log Service Test
  *
- * @author c30044692
- * @since 2023/4/20
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OperationLogService.class)

@@ -15,9 +15,6 @@ package openbackup.sqlserver.common;
 /**
  * SQL Server常量
  *
- * @author xwx1016404
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-23
  */
 public class SqlServerConstants {
     /**

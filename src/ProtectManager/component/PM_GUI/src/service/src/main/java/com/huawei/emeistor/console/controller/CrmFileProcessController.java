@@ -51,8 +51,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 描述
  *
- * @author h00406347
- * @since 2021-01-21
  */
 @RestController
 @RequestMapping(ConfigConstant.CONSOLE + "/v1/host-agent")

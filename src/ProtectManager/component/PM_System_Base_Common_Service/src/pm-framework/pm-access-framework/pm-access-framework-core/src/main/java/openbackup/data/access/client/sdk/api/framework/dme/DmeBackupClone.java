@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * Dme Backup Clone
  *
- * @author l00272247
- * @since 2021-12-28
  */
 @Data
 public class DmeBackupClone {

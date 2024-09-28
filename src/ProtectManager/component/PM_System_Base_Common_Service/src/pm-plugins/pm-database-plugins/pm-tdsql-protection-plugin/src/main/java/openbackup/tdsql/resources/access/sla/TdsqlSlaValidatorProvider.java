@@ -44,8 +44,6 @@ import java.util.stream.Collectors;
 /**
  * TDSQL的sla校验器provider
  *
- * @author z30047175
- * @since 2023-06-19
  */
 @Component
 @Slf4j

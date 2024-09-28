@@ -30,8 +30,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author y00413474
- * @since 2020-07-16
  */
 @FeignClient(name = "systemBaseService", url = "${pm-system-base.url}",
     configuration = CommonFeignConfiguration.class)

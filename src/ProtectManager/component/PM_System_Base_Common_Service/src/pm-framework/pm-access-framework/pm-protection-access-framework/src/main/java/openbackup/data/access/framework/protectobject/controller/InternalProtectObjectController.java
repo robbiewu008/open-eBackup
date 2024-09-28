@@ -29,9 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 保护对象controller
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023/11/10
  */
 @Slf4j
 @AllArgsConstructor

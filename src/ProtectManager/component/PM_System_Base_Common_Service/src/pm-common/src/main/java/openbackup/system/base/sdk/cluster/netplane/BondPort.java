@@ -22,9 +22,6 @@ import java.util.List;
 /**
  * BondPort
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-04-10
  */
 @Getter
 @Setter

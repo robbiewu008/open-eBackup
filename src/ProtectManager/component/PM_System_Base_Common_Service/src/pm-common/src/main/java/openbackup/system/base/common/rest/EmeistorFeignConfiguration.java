@@ -33,8 +33,6 @@ import java.util.Arrays;
 /**
  * emeistor 自定义配置类
  *
- * @author y00559272
- * @since 2021-04-16
  */
 @Slf4j
 public class EmeistorFeignConfiguration implements RequestInterceptor {

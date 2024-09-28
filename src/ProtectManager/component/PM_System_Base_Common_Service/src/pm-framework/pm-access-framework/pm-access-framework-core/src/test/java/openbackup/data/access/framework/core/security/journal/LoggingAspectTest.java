@@ -46,8 +46,6 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Logging Aspect Test
  *
- * @author l00272247
- * @since 2021-12-13
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

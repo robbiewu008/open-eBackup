@@ -47,8 +47,6 @@ import java.util.stream.Collectors;
 /**
  * Exchange单机备份拦截器
  *
- * @author s30036254
- * @since 2023-05-09
  */
 @Slf4j
 @Component

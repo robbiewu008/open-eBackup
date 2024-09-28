@@ -26,9 +26,6 @@ import java.util.stream.Collectors;
 /**
  * 描述
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-14
  */
 public abstract class AbstractResourceScanProvider implements ResourceScanProvider {
     @Autowired

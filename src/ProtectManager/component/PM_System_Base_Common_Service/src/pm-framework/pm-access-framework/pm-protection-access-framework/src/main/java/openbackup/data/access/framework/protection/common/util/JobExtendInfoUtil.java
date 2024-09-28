@@ -35,9 +35,6 @@ import java.util.function.Function;
 /**
  * 任务触发策略信息填充工具类
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-04-30
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class JobExtendInfoUtil {

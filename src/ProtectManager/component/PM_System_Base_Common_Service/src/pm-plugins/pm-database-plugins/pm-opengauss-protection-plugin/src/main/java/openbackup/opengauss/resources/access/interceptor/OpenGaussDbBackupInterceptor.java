@@ -37,9 +37,6 @@ import java.util.List;
 /**
  * openGauss环境注册提供者
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-30
  */
 @Component
 @Slf4j

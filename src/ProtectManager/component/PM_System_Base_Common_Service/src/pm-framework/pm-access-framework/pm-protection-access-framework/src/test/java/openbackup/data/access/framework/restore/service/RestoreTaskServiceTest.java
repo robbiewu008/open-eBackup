@@ -81,9 +81,6 @@ import java.util.UUID;
 /**
  * RestoreTaskService 的单元测试用例集合
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/6
  **/
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {KmcHelper.class, RestoreTaskHelper.class, RestoreTaskService.class})

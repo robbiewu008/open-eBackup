@@ -37,8 +37,6 @@ import java.util.Optional;
 /**
  * 功能描述
  *
- * @author c00826511
- * @since 2024-05-27
  */
 @RunWith(MockitoJUnitRunner.class)
 public class GoldenDBCopyDeleteInterceptorTest {

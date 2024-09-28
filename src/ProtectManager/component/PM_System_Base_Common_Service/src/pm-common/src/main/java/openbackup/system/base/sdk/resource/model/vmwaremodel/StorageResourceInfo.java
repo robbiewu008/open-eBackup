@@ -20,9 +20,6 @@ import java.util.List;
 /**
  * 注册VMware时所填的存储信息
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-02-18
  */
 @Setter
 @Getter

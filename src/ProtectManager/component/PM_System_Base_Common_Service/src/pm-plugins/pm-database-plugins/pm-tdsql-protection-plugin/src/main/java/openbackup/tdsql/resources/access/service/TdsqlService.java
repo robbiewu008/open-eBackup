@@ -30,8 +30,6 @@ import java.util.List;
 /**
  * 功能描述  TDSQL服务
  *
- * @author z30047175
- * @since 2023-05-22
  */
 public interface TdsqlService {
     /**

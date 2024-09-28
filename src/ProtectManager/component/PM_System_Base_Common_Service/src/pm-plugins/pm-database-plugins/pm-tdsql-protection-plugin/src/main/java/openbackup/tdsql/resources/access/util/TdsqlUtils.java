@@ -23,8 +23,6 @@ import java.util.HashMap;
 /**
  * 功能描述
  *
- * @author c00826511
- * @since 2023-08-09
  */
 public class TdsqlUtils {
     /**

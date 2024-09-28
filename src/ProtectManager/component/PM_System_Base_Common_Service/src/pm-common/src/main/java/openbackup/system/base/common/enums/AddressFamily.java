@@ -25,8 +25,6 @@ import java.util.Map;
 /**
  * 互联网协议版本
  *
- * @author swx1010572
- * @since 2021-01-03
  */
 public enum AddressFamily {
     /**

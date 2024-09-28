@@ -18,9 +18,6 @@ import openbackup.data.protection.access.provider.sdk.index.v2.CopyIndexTask;
 /**
  * 副本索引服务
  *
- * @author lWX776769
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021/12/31
  */
 public interface ICopyIndexService {
     /**

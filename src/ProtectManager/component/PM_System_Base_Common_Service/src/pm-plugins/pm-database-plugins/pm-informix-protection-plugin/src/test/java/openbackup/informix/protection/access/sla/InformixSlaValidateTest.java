@@ -29,9 +29,6 @@ import java.util.stream.Collectors;
 /**
  * sla应用校验测试类
  *
- * @author zWX951267
- * @version [DataBackup 1.5.0]
- * @since 2023-05-17
  */
 public class InformixSlaValidateTest {
     private final InformixSlaValidate informixSlaValidate = new InformixSlaValidate();

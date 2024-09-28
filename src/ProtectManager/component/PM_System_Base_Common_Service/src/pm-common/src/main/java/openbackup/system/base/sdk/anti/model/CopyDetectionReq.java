@@ -23,8 +23,6 @@ import javax.validation.constraints.NotBlank;
 /**
  * 副本防勒索检测入参
  *
- * @author nwx1077006
- * @since 2021-10-28
  */
 @Data
 public class CopyDetectionReq {

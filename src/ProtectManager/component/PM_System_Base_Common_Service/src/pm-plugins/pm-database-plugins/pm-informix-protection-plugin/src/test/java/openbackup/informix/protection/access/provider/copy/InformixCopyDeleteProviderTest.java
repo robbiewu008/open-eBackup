@@ -33,9 +33,6 @@ import java.util.List;
 /**
  * InformixProviderTest
  *
- * @author hwx1164326
- * @version [DataBackup 1.5.0]
- * @since 2023-08-03
  */
 public class InformixCopyDeleteProviderTest {
     private final CopyRestApi copyRestApi = PowerMockito.mock(CopyRestApi.class);

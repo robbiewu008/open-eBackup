@@ -66,8 +66,6 @@ import java.util.Optional;
 /**
  * JobCenter Client Service
  *
- * @author h30003246
- * @since 2020-07-16
  */
 @FeignClient(
         contextId = "copyClient",

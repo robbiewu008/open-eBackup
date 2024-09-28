@@ -23,9 +23,6 @@ import lombok.Setter;
 /**
  * 邮件服务器设置模型
  *
- * @author w00448845
- * @version @version [CDM Integrated machine]
- * @since 2019-10-28
  */
 @NoArgsConstructor
 @TableName(value = "t_alarm_notifyserver")

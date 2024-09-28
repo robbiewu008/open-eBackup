@@ -52,8 +52,6 @@ import java.util.Optional;
 /**
  * TidbClusterRestoreInterceptorTest
  *
- * @author w00426202
- * @since 2023-07-27
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(TidbUtil.class)

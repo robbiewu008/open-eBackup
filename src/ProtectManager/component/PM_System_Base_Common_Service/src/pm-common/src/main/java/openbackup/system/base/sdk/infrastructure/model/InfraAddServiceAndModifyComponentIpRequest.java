@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * 修改gaussDB/ES IP 请求体
  *
- * @author x30046484
- * @since 2023-05-19
  */
 
 @Getter

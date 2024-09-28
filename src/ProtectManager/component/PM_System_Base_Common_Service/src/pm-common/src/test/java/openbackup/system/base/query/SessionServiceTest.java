@@ -29,8 +29,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 /**
  * Session Service Test
  *
- * @author l00650874
- * @since 2022-04-01
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SessionServiceTest {

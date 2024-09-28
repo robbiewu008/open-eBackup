@@ -22,8 +22,6 @@ import org.junit.Test;
 /**
  * Engine Util Test
  *
- * @author g00500588
- * @since 2021/12/15
  */
 public class EngineUtilTest {
     /**

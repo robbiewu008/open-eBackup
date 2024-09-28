@@ -20,9 +20,6 @@ import org.slf4j.LoggerFactory;
 /**
  * 数字工具类
  *
- * @author w90002860
- * @version V100R001C00
- * @since 2019-11-01
  */
 public final class NumberUtil {
     private static final Logger logger = LoggerFactory.getLogger(NumberUtil.class);
@@ -32,7 +29,6 @@ public final class NumberUtil {
     /**
      * 定义转换时的进制
      *
-     * @since 2019-11-01
      */
     public enum RADIX {
         /**

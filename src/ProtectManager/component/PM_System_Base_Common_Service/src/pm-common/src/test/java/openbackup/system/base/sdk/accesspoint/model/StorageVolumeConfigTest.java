@@ -20,8 +20,6 @@ import org.junit.Test;
 /**
  * StorageVolumeConfig test
  *
- * @author l00347293
- * @since 2021-07-03
  */
 public class StorageVolumeConfigTest {
     @Test

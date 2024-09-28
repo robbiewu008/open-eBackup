@@ -32,9 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 文件管理基类
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-11
  */
 public abstract class AbstractFileUtil {
     /**

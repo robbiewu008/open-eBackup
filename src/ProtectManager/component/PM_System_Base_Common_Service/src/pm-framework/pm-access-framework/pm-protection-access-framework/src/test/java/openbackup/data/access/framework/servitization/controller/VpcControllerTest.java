@@ -41,8 +41,6 @@ import java.util.Arrays;
 /**
  * VpcControllerTest
  *
- * @author l30044826
- * @since 2023-08-15
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(RequestUtil.class)

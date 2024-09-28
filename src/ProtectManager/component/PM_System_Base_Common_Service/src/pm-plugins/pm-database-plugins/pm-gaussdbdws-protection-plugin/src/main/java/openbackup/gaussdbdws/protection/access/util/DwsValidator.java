@@ -41,9 +41,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述: 校验 DWS各种参数的基本格式等信息
  *
- * @author l00570077
- * @version [OceanProtect x8000 1.2.1]
- * @since 2022-06-24
  */
 @Slf4j
 public class DwsValidator {

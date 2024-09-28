@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.resource.model;
 /**
  * resource extend info的内置key
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-29
  */
 public class ResourceExtendInfoKeyConstants {
     /**

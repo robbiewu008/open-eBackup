@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 查询历史容量信息
  *
- * @author z00613137
- * @since 2023-05-11
  */
 @Data
 @NoArgsConstructor

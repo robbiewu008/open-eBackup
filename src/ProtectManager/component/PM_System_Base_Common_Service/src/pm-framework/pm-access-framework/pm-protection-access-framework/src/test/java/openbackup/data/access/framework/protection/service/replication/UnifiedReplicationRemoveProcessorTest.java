@@ -49,8 +49,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 /**
  * Advance Replication Remove Processor Test
  *
- * @author l00272247
- * @since 2022-01-17
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(UnifiedReplicationRemoveProcessor.class)

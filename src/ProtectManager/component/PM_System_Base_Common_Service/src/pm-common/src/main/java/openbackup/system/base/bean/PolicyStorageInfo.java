@@ -20,8 +20,6 @@ import lombok.Setter;
 /**
  * policy extParameters中保存的指定目标位置
  *
- * @author w30044259
- * @since 2024-03-24
  */
 @Getter
 @Setter

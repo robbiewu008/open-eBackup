@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 分布式实例数据
  *
- * @author z00445440
- * @since 2023-11-14
  */
 @Data
 public class TdsqlGroup {

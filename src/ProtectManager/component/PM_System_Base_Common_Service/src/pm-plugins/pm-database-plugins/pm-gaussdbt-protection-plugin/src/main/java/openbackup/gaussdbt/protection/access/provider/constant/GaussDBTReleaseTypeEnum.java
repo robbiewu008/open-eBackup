@@ -15,9 +15,6 @@ package openbackup.gaussdbt.protection.access.provider.constant;
 /**
  * GaussDBT产品发行类型枚举
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/7/14
  */
 public enum GaussDBTReleaseTypeEnum {
     /**

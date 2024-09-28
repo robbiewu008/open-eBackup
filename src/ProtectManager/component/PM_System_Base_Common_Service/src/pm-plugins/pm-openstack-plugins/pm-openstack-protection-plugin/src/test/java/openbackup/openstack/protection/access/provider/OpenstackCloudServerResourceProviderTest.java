@@ -24,9 +24,6 @@ import org.junit.Test;
 /**
  * 功能描述: OpenstackCloudServerResourceProviderTest
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-22
  */
 public class OpenstackCloudServerResourceProviderTest {
     private static OpenstackCloudServerResProvider openstackCloudServerResProvider;

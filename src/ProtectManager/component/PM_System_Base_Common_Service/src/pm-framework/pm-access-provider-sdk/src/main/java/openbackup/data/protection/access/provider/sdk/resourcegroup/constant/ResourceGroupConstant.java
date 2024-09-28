@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.resourcegroup.constant;
 /**
  * 资源组常量定义
  *
- * @author C0061681
- * @version [OceanProtect X8000 1.6.1]
- * @since 2024/02/01
  **/
 public final class ResourceGroupConstant {
     /**

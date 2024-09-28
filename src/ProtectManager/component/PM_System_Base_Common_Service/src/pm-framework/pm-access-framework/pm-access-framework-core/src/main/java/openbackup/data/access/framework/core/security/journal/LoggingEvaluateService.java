@@ -26,8 +26,6 @@ import java.util.stream.Collectors;
 /**
  * Logging Evaluate Service
  *
- * @author l00272247
- * @since 2022-01-07
  */
 @Component
 public class LoggingEvaluateService implements EvaluateService<Logging> {

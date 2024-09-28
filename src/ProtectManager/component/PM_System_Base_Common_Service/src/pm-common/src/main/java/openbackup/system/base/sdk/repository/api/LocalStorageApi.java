@@ -25,8 +25,6 @@ import java.util.List;
 /**
  * 本地存储内部接口
  *
- * @author y30037959
- * @since 2022-12-08
  */
 @FeignClient(name = "LocalStorageApi", url = "${pm-system-base.url}/v1/internal/local-storage",
     configuration = CommonFeignConfiguration.class)

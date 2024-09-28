@@ -37,8 +37,6 @@ import java.util.Optional;
 /**
  * Standard User Token Validate Service
  *
- * @author l00272247
- * @since 2021-12-14
  */
 @Component
 @Slf4j

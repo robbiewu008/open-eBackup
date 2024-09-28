@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Dme Tape Request
  *
- * @author l00272247
- * @since 2022-02-24
  */
 @Data
 public class DmeTapeRequest {

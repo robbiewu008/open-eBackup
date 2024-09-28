@@ -19,7 +19,6 @@ import java.util.Arrays;
 /**
  * 周枚举
  *
- * @since 2023-02-24
  */
 @Getter
 public enum TimeRangeWeekEnum {

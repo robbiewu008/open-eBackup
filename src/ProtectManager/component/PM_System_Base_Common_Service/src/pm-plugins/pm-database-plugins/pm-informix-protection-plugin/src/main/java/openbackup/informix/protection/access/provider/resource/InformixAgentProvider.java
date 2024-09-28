@@ -28,9 +28,6 @@ import java.util.List;
 /**
  * Informix的agent配置
  *
- * @author dwx1009286
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-25
  */
 @Slf4j
 @Component

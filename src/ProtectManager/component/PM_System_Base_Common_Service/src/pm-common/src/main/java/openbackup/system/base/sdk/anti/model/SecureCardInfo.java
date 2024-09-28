@@ -21,8 +21,6 @@ import lombok.Setter;
 /**
  * 安全卡信息
  *
- * @author j00619968
- * @since 2024-01-23
  */
 @Getter
 @Setter

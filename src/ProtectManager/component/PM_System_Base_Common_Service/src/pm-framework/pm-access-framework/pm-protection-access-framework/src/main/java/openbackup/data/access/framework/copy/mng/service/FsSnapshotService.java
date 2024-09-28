@@ -19,9 +19,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 /**
  * 安全一体机创建文件系统快照接口
  *
- * @author q00564609
- * @since 2024-06-24
- * @version OceanCyber 300 1.2.0
  */
 public interface FsSnapshotService {
     /**

@@ -18,9 +18,6 @@ import java.util.List;
  * ResourceFilter
  *
  * @description: 资源过滤器，用于DME接口参数
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  **/
 public class TaskResourceFilter {
     /**

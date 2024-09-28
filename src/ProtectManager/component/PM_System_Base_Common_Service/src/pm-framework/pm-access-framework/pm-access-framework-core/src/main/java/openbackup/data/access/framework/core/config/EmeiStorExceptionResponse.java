@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * 功能描述
  *
- * @author y00413474
- * @version [BCManager 8.0.0]
- * @since 2020-06-19
  */
 @Data
 public class EmeiStorExceptionResponse {

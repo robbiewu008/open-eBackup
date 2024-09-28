@@ -15,8 +15,6 @@ package openbackup.access.framework.resource.lock;
 /**
  * Redis冗余锁常量类
  *
- * @author y30044273
- * @since 2023-10-08
  */
 public class ResourceLockConstant {
     /**

@@ -39,9 +39,6 @@ import java.util.List;
 /**
  * MongoDB的sla provider 测试类
  *
- * @author lwx1012372
- * @version [DataBackup 1.5.0]
- * @since 2023-04-07
  */
 public class MongoDBSlaProviderTest {
     private final ProtectObjectRestApi protectObjectRestApi = Mockito.mock(ProtectObjectRestApi.class);

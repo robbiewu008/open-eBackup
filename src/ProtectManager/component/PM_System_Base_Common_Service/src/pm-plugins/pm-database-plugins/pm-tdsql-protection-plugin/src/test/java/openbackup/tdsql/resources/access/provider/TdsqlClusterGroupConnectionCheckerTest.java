@@ -15,8 +15,6 @@ package openbackup.tdsql.resources.access.provider;
 /**
  * 功能描述
  *
- * @author z00445440
- * @since 2023-11-16
  */
 
 import static org.junit.Assert.assertTrue;

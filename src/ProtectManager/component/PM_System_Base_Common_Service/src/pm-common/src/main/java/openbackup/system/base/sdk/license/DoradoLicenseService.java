@@ -29,8 +29,6 @@ import java.util.Map;
 /**
  * 功能描述
  *
- * @author s00455050
- * @since 2021-01-28
  */
 @FeignClient(value = "DoradoLicenseService", url = "https://${repository.storage.ip}:${repository.storage.port}",
     configuration = LicenseFeignConfiguration.class)

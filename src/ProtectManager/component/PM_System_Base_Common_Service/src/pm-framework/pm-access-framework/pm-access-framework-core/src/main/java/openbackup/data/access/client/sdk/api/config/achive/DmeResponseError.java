@@ -20,8 +20,6 @@ import lombok.Setter;
 /**
  * DME Response Error
  *
- * @author l00272247
- * @since 2020-04-03
  */
 @Getter
 @Setter

@@ -53,9 +53,6 @@ import java.util.UUID;
 /**
  * Redis 数据库备份拦截器实现类 测试类
  *
- * @author w00439064
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/06/24
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {RedisBackupInterceptor.class})

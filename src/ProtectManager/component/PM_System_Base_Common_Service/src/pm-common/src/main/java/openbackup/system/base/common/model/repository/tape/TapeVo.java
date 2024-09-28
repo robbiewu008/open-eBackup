@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 单个磁带信息
  *
- * @author w50021188
- * @since 2021-08-10
  **/
 @Getter
 @Setter

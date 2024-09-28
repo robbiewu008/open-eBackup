@@ -18,8 +18,6 @@ import openbackup.data.protection.access.provider.sdk.enums.RepositoryProtocolEn
 /**
  * Storage Repository Util
  *
- * @author l00272247
- * @since 20221-02-10
  */
 public class StorageRepositoryUtil {
     /**

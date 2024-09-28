@@ -44,8 +44,6 @@ import java.util.Optional;
 /**
  * tidb 工具 测试类
  *
- * @author w00426202
- * @since 2023-07-15
  */
 public class TidbUtilTest {
     /**

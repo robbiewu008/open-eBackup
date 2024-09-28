@@ -15,7 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * FeignClient策略常量
  *
- * @since 2022-04-29
  */
 public class FeignClientConstant {
     /**

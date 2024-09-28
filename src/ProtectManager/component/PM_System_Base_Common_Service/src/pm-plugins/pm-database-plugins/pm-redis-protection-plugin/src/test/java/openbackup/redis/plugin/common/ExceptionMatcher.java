@@ -20,9 +20,6 @@ import org.junit.internal.matchers.TypeSafeMatcher;
 /**
  * 自定义异常匹配器
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/06/16
  */
 public class ExceptionMatcher extends TypeSafeMatcher<LegoCheckedException> {
     private long code;

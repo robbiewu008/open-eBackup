@@ -27,9 +27,6 @@ import java.util.Optional;
 /**
  * 归档业务上下文
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/14
  **/
 public class ArchiveContextImpl implements ArchiveContext {
     private final Map<String, String> contextMap;

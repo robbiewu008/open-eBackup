@@ -15,9 +15,6 @@ package openbackup.system.base.common.enums;
 /**
  * Dtree安全模式
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-22
  */
 public enum DtreeSecurityStyleEnum {
     NATIVE("1"),

@@ -24,8 +24,6 @@ import org.springframework.stereotype.Service;
 /**
  * clear read_export_file_list
  *
- * @author z00633516
- * @since 2022-03-17
  */
 @Slf4j
 @Service

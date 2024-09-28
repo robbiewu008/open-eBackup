@@ -30,9 +30,6 @@ import java.util.Random;
 /**
  * 验证码生成工具类
  *
- * @author 马鑫
- * @version RD V100R003C10
- * @since 2019-11-19
  */
 public final class CheckCodeUtil {
     private static final Logger LOG = LoggerFactory.getLogger(CheckCodeUtil.class);

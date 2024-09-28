@@ -20,8 +20,6 @@ import org.junit.Test;
 /**
  * Thread Cache Test
  * 
- * @author l00272247
- * @since 2021-11-23
  */
 public class ThreadCacheTest {
     @Test

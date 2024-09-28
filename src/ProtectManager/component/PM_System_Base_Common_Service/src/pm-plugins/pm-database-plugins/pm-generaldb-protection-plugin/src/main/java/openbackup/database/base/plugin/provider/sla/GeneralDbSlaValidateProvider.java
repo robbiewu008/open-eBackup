@@ -50,9 +50,6 @@ import java.util.stream.Collectors;
 /**
  * GeneralDb的SlaValidateProvider实现
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-05
  */
 @Component
 @Slf4j

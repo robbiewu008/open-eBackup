@@ -19,8 +19,6 @@ import lombok.Getter;
 /**
  * function item
  *
- * @author g00500588
- * @since 2021-01-29
  **/
 @Getter
 public enum FunctionEnum {

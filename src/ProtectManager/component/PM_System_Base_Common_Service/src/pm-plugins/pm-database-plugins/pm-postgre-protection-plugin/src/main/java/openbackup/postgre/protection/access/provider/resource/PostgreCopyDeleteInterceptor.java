@@ -37,9 +37,6 @@ import java.util.Optional;
 /**
  * Postgre副本删除provider
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.6.0]
- * @since 2023-11-24
  */
 @Slf4j
 @Component

@@ -37,8 +37,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * Live Mount Controller Test
  *
- * @author fwx1022842
- * @since 2021-03-09
  */
 @RunWith(SpringRunner.class)
 @PrepareForTest(LiveMountOwnershipVerifyController.class)

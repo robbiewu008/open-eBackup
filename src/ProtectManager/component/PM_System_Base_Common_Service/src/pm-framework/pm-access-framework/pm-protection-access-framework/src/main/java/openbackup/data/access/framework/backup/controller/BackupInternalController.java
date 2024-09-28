@@ -39,9 +39,6 @@ import java.util.List;
 /**
  * 备份内部Controller
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/5/27
  */
 @RestController
 @RequestMapping("/v2/internal/backup")

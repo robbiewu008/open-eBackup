@@ -43,9 +43,6 @@ import java.util.stream.Stream;
 /**
  * Openstack资源连通性检查器
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-1-10
  */
 @Slf4j
 @Component

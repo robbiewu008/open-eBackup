@@ -21,8 +21,6 @@ import lombok.Data;
 /**
  * 网络平面 成员信息（来源：DM sdk）
  *
- * @author w00607005
- * @since 2023-05-17
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

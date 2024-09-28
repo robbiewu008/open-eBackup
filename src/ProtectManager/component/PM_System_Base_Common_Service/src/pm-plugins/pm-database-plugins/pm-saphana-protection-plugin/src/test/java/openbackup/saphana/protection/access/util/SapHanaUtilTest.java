@@ -39,9 +39,6 @@ import java.util.Map;
 /**
  * {@link SapHanaUtil Test}
  *
- * @author dwx1009286
- * @version [DataBackup 1.5.0]
- * @since 2023-05-16
  */
 public class SapHanaUtilTest {
     /**

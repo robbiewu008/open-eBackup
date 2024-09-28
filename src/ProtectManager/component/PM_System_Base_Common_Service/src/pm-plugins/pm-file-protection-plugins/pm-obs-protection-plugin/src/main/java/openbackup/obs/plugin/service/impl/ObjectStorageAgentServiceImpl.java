@@ -57,8 +57,6 @@ import java.util.stream.Collectors;
 /**
  * OBS Agent相关service
  *
- * @author c30035089
- * @since 2023-11-16
  */
 
 @Slf4j

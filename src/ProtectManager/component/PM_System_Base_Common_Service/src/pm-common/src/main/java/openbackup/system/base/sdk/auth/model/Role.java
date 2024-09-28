@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Role
  *
- * @author y30021475
- * @since 2023-07-08
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

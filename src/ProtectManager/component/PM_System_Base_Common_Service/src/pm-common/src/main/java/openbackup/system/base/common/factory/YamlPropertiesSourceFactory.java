@@ -24,8 +24,6 @@ import java.util.Optional;
 /**
  * 非默认yaml文件解析
  *
- * @author l30023229
- * @since 2023-08-09
  */
 public class YamlPropertiesSourceFactory implements PropertySourceFactory {
     @Override

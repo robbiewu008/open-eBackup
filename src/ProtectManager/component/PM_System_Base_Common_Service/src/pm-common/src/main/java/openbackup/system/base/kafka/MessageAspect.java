@@ -81,8 +81,6 @@ import java.util.stream.Stream;
 /**
  * Kafka Method Aspect
  *
- * @author l00272247
- * @since 2020-10-19
  */
 @Component
 @Aspect

@@ -32,9 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author t30049904
- * @version [OceanProtect DataBack 1.5.0]
- * @since 2023/9/19
  */
 public class OpenstackCommonServiceTest {
     private static OpenstackCommonService openstackCommonService;

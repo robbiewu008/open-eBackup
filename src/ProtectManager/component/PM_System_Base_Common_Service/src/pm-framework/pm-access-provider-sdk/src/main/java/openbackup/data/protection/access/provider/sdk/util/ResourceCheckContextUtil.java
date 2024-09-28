@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 /**
  * Resource Check Context Util
  *
- * @author l00650874
- * @since 2022-06-29
  */
 public class ResourceCheckContextUtil {
     /**

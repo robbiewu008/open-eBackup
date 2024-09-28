@@ -24,9 +24,6 @@ import java.util.List;
 /**
  * 功能描述: 校验 GaussDb各种参数的基本格式等信息
  *
- * @author t30021437
- * @version [OceanProtect x8000 1.3.0]
- * @since 2022-02-06
  */
 @Slf4j
 public class GaussDBValidator {

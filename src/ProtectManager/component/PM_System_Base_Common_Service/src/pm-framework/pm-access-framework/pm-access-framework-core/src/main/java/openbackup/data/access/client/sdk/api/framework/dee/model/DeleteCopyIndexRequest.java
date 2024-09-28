@@ -22,9 +22,6 @@ import java.util.List;
 /**
  * 删除副本索引请求
  *
- * @author z00842230
- * @version [oceanprotect databackup 1.7.0]
- * @since 2024-08-08
  */
 @AllArgsConstructor
 @NoArgsConstructor

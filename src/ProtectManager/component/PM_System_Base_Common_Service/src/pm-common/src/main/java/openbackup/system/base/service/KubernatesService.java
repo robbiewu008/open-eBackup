@@ -39,9 +39,6 @@ import java.util.List;
 /**
  * k8s集群节点间通信服务
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2024-07-25
  */
 @Service
 @Slf4j

@@ -56,9 +56,6 @@ import java.util.stream.Collectors;
 /**
  * OpenStack相关实体类生成器
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-28
  */
 @Slf4j
 public final class OpenStackModelsGenerator {

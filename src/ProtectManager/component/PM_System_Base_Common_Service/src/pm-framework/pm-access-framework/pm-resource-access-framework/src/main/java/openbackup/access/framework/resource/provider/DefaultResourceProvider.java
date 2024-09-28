@@ -22,9 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * 默认ResourceProvider
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-18
  */
 @Component("defaultResourceProvider")
 @Slf4j

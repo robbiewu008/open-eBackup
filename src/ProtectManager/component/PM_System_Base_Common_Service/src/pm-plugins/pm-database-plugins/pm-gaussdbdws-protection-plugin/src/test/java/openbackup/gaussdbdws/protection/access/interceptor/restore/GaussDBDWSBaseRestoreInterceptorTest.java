@@ -62,9 +62,6 @@ import java.util.Map;
 /**
  * GaussDbDws 恢复任务基础数据Provider测试类
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-13
  */
 public class GaussDBDWSBaseRestoreInterceptorTest {
     private final ProtectedEnvironmentService environmentService = Mockito.mock(ProtectedEnvironmentService.class);

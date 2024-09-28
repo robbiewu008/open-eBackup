@@ -21,8 +21,6 @@ import java.util.Objects;
 /**
  * 功能描述
  *
- * @author z30047175
- * @since 2023-05-25
  */
 public class DataNodeEquator implements Equator<DataNode> {
     @Override

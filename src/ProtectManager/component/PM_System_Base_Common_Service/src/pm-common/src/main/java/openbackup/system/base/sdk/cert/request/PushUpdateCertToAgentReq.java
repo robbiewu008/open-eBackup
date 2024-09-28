@@ -18,9 +18,6 @@ import lombok.Setter;
 /**
  * PushUpdateCertToAgentReq
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-11-18
  */
 @Getter
 @Setter

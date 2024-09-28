@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * 初始化网络配置，操作数据库操作
  *
- * @author l00347293
- * @since 2020-12-18
  */
 @Component
 public interface InitNetworkConfigMapper {

@@ -28,9 +28,6 @@ import java.util.Locale;
 /**
  * 任务日志记录器
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/27
  **/
 @Component
 public class JobLogRecorder {

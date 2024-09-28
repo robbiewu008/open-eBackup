@@ -26,8 +26,6 @@ import java.util.stream.Stream;
 /**
  * Protected Resource Monitor Service
  *
- * @author l00272247
- * @since 2021-10-20
  */
 @Component
 public class ProtectedResourceMonitorService {

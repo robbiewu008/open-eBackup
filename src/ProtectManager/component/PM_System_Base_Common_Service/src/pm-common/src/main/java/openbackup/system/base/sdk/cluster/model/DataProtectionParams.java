@@ -18,8 +18,6 @@ import lombok.NoArgsConstructor;
 /**
  * Data protection params
  *
- * @author p30001902
- * @since 2020-12-17
  */
 @Data
 @NoArgsConstructor

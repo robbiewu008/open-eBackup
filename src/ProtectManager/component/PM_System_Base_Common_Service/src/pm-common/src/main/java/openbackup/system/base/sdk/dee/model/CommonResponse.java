@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 功能描述
  *
- * @author c30047317
- * @since 2023-08-14
  */
 @Data
 public class CommonResponse {

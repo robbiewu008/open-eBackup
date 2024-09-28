@@ -54,8 +54,6 @@ import java.util.stream.Stream;
 /**
  * Page Query Service
  *
- * @author l00272247
- * @since 2020-09-24
  */
 @Component
 @Slf4j

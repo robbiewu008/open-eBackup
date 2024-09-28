@@ -19,9 +19,6 @@ import java.util.Locale;
  * 若要使用该类接口，需要将GUI的国际化文件复制到自己的微服务中，
  * 可参考PM_System_Base_Common_Service如何实现
  *
- * @author t00104528
- * @version [Lego V100R002C10, 2010-11-30]
- * @since 2019-10-30
  */
 public interface I18nMrg {
     /**

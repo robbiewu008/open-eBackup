@@ -23,9 +23,6 @@ import java.util.List;
 /**
  * 类型转换
  *
- * @author c00631681
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-01-23
  */
 public class ResourceGroupRequestConverter {
     /**

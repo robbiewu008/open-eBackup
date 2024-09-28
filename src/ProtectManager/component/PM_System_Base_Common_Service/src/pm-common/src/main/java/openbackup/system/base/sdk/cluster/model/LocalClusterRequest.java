@@ -29,9 +29,6 @@ import javax.validation.constraints.Pattern;
 /**
  * 指定管理集群时，需要的相关本地集群参数
  *
- * @author fwx1022842
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-07-29
  */
 @Data
 public class LocalClusterRequest {

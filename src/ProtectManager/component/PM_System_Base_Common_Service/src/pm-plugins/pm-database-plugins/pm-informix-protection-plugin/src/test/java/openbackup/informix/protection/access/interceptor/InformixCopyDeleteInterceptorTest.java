@@ -27,8 +27,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * 功能描述
  *
- * @author l00853347
- * @since 2023-11-29
  */
 @RunWith(PowerMockRunner.class)
 public class InformixCopyDeleteInterceptorTest {

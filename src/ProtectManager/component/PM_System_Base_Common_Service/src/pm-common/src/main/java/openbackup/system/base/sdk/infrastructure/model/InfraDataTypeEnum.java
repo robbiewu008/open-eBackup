@@ -17,8 +17,6 @@ import lombok.Getter;
 /**
  * data type for infrastructure
  *
- * @author t00508428
- * @since 2020-12-17
  */
 @Getter
 public enum InfraDataTypeEnum {

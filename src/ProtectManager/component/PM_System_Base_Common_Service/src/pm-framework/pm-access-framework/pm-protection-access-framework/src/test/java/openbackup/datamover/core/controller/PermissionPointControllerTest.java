@@ -92,8 +92,6 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 /**
  * JobControllerTest LLT
  *
- * @author m00576658
- * @since 2021-03-05
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AccessPointController.class)

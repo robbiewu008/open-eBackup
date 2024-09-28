@@ -46,9 +46,6 @@ import java.util.stream.Collectors;
  * 功能描述:
  * MySQL的sla校验器
  *
- * @author wWX1146064
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-16
  */
 @Slf4j
 @Component

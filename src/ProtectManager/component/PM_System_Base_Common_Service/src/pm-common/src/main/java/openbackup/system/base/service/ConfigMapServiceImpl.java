@@ -32,8 +32,6 @@ import java.util.Map;
 /**
  * 提供获取configMap或secret中的数据能力
  *
- * @author xwx1016404
- * @since 2021-12-28
  */
 @Slf4j
 @Service

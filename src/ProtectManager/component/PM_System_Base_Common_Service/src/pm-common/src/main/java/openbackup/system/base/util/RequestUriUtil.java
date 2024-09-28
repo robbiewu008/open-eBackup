@@ -35,9 +35,6 @@ import java.security.NoSuchAlgorithmException;
 /**
  * 获取请求url util
  *
- * @author z30009433
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-24
  */
 @Slf4j
 public class RequestUriUtil {

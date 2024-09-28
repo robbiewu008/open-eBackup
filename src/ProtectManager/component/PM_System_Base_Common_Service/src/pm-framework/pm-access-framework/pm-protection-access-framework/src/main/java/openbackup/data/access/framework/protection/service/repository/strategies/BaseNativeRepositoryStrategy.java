@@ -54,9 +54,6 @@ import java.util.OptionalInt;
 /**
  * 本地存储C库协议的策略基类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/29
  **/
 @Slf4j
 public class BaseNativeRepositoryStrategy {

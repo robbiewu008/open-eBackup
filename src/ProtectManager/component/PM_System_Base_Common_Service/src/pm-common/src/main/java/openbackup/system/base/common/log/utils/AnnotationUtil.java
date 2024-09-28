@@ -36,8 +36,6 @@ import java.util.stream.Stream;
 /**
  * Annotation Util
  *
- * @author l00272247
- * @since 2019-11-14
  */
 public class AnnotationUtil {
     /**

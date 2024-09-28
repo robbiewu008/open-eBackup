@@ -34,9 +34,6 @@ import javax.servlet.http.HttpServletRequest;
  * OpenStack用户管理类
  * 云核OpenStack场景会创建一个用户名固定的数据保护管理员用户
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-23
  */
 @Slf4j
 @Component

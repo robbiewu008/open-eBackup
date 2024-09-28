@@ -25,9 +25,6 @@ import java.util.List;
 /**
  * DWS provider 下发参数工具类
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-05
  */
 public class MockProviderParameter {
     public static ProtectedResource getProtectedResource() {

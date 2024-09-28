@@ -39,9 +39,6 @@ import java.util.Map;
 /**
  * 提供dameng测试类所需的数据
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-28
  */
 public class DamengTestDataUtil {
     public static ProtectedEnvironment buildProtectedEnvironment(String uuid, String subType) {

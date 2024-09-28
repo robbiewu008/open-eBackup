@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * 磁盘和存储位置的对应关系
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023/12/2
  */
 @Getter
 @Setter

@@ -48,9 +48,6 @@ import java.util.Set;
 /**
  * dameng单节点注册
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-13
  */
 @Slf4j
 @Component

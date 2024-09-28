@@ -17,9 +17,6 @@ import openbackup.system.base.common.utils.network.AddressUtil;
 /**
  * 正则规格类
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-05
  */
 public final class RegexpConstants {
     /**

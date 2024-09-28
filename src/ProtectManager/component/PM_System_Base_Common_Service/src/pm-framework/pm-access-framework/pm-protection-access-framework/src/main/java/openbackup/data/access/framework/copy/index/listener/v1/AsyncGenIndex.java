@@ -26,8 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * 异步新线程调用
  *
- * @author wx1010134
- * @since 2021-05-17
  */
 @Slf4j
 @Component

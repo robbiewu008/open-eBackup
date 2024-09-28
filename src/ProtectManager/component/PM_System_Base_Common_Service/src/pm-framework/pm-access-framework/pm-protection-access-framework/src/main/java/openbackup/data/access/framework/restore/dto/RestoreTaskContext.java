@@ -21,9 +21,6 @@ import openbackup.system.base.sdk.copy.model.Copy;
  * RestoreTaskContext
  *
  * @description: 恢复任务管理的上下文信息，存储中间过程的数据，减少函数中参数数量
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/2
  **/
 public class RestoreTaskContext {
     /**

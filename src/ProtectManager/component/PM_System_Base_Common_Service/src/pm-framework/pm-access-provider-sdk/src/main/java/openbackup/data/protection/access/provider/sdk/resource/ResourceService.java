@@ -29,9 +29,6 @@ import java.util.function.Consumer;
 /**
  * 资源服务接口定义
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-12
  */
 public interface ResourceService {
     /**

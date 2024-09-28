@@ -24,9 +24,6 @@ import org.springframework.stereotype.Component;
 /**
  * informix的sla应用校验
  *
- * @author zWX951267
- * @version [OceanProtect X8000 1.5.0]
- * @since 2023-05-06
  */
 @Component
 public class InformixSlaValidate implements SlaValidateProvider {

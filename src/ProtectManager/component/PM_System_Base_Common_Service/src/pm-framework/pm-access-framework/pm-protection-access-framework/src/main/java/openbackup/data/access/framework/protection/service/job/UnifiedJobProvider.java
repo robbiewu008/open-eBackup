@@ -22,9 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * 统一备份框架Job提供者，负责任务的终止
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-29
  */
 @Slf4j
 @Component("unifiedJobProvider")

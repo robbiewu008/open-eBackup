@@ -26,8 +26,6 @@ import java.util.Map;
 /**
  * Retry Message Handler
  *
- * @author l00272247
- * @since 2021-04-22
  */
 @Component
 public class RetryMessageHandler implements MessageErrorHandler {

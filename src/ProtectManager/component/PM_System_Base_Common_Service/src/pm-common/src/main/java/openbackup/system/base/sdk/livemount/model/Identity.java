@@ -20,8 +20,6 @@ import java.util.Objects;
  * Live Mount Context
  *
  * @param <T> template T
- * @author l00272247
- * @since 2020-09-18
  */
 @Data
 public class Identity<T> {

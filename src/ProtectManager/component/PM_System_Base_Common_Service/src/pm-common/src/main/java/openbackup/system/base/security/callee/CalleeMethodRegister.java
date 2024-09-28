@@ -40,8 +40,6 @@ import java.util.stream.Stream;
 /**
  * Callee Method Register
  *
- * @author l00272247
- * @since 2021-12-14
  */
 @Slf4j
 public class CalleeMethodRegister implements ImportBeanDefinitionRegistrar {

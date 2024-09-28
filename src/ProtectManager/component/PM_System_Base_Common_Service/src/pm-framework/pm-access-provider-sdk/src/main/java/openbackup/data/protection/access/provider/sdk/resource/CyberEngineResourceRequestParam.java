@@ -21,8 +21,6 @@ import java.util.Map;
 /**
  * 功能描述 安全一体机资源接入请求参数
  *
- * @author s30031954
- * @since 2022-12-21
  */
 @Data
 public class CyberEngineResourceRequestParam {

@@ -15,9 +15,6 @@ package openbackup.gaussdbdws.protection.access.enums;
 /**
  * 备份方式枚举
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-07
  */
 public enum BackupToolEnum {
     /**

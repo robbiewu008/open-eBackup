@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * 排序规则
  *
- * @author w00607005
- * @since 2023-07-21
  */
 @Data
 public class SortRule {

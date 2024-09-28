@@ -18,9 +18,6 @@ import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 /**
  * 任务更新工具类
  *
- * @author t30028453
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-04-20
  *
  */
 public class JobUpdateUtil {

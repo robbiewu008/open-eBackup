@@ -35,9 +35,6 @@ import java.util.stream.Collectors;
 /**
  * String 工具类
  *
- * @author z90005513
- * @version V100R001C00
- * @since 2019-10-25
  */
 public final class StringUtil {
     private static final String BLANK = "";

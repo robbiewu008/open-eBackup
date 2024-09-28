@@ -44,9 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * @author: y00559272
- * @version: [OceanProtect X8000 1.2.1]
- * @since: 2022/8/6
  **/
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TokenBo.class})

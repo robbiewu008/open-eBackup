@@ -17,9 +17,6 @@ import openbackup.system.base.sdk.system.model.StorageAuth;
 /**
  * 本地系统接口
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/3/16
  */
 public interface SystemNativeApi {
     /**

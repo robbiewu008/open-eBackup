@@ -18,9 +18,6 @@ import java.util.Map;
 /**
  * MongoDB类型集合
  *
- * @author lwx1012372
- * @version [DataBackup 1.5.0]
- * @since 2023-04-07
  */
 public enum MongoDBNodeTypeEnum {
     /**

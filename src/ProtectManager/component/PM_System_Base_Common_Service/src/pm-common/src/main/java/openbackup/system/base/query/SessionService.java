@@ -29,8 +29,6 @@ import java.util.stream.Stream;
 /**
  * Session Service
  *
- * @author l00272247
- * @since 2021-10-16
  */
 @Component
 public class SessionService {

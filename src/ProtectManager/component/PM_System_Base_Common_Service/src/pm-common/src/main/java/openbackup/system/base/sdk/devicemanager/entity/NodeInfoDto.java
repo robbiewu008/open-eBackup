@@ -21,9 +21,6 @@ import java.util.Map;
 /**
  * pacific节点的信息
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-19
  */
 @Getter
 @Setter

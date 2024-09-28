@@ -52,9 +52,6 @@ import java.util.UUID;
 /**
  * {@link InstanceResourceServiceImpl} 测试类
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-24
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {FeignBuilder.class})

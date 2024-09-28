@@ -31,9 +31,6 @@ import org.mockito.Mockito;
 /**
  * RestoreValidateService的单元测试类
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/26
  **/
 public class RestoreValidateServiceTest {
     private final LicenseValidateService validateService = Mockito.mock(LicenseValidateService.class);

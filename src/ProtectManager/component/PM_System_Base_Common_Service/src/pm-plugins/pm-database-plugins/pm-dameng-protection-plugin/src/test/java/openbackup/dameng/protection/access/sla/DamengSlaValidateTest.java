@@ -31,9 +31,6 @@ import java.util.stream.Collectors;
 /**
  * sla应用校验测试类
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-20
  */
 public class DamengSlaValidateTest {
     private final SlaValidService slaValidService = PowerMockito.mock(SlaValidService.class);

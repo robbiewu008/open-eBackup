@@ -47,9 +47,6 @@ import java.lang.reflect.Field;
 /**
  * DataProtectionAccessExceptionAdviceTest
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-29
  */
 @RunWith(SpringRunner.class)
 @AutoConfigureWebMvc

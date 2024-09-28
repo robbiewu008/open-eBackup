@@ -66,9 +66,6 @@ import java.util.regex.Pattern;
 /**
  * OpenGauss环境注册提供者测试类
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-20
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {ResourceCheckContextUtil.class, OpenGaussClusterUtil.class, EnvironmentLinkStatusHelper.class})

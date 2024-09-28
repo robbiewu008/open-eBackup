@@ -61,9 +61,6 @@ import java.util.stream.Collectors;
 /**
  * MongoDB集群provider
  *
- * @author lwx1012372
- * @version [DataBackup 1.5.0]
- * @since 2023-04-07
  */
 @Component
 @Slf4j

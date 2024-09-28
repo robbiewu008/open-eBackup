@@ -54,9 +54,6 @@ import static org.mockito.ArgumentMatchers.anyMap;
 /**
  * 功能描述: test OpenstackEnvironmentParamProvider
  *
- * @author x30038064
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-27
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(TokenBo.class)

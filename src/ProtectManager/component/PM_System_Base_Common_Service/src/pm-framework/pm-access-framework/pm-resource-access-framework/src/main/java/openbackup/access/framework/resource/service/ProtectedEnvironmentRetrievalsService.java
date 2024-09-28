@@ -52,8 +52,6 @@ import java.util.stream.Collectors;
 /**
  * The ProtectedEnvironmentRetrievalService
  *
- * @author g30003063
- * @since 2022-06-07
  */
 @Slf4j
 @Component

@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.enums;
 /**
  * 存储库角色 枚举类
  *
- * @author: swx1010572
- * @version: [OceanProtect X8000 2.1.0]
- * @since: 2022/07/13
  **/
 public enum RepositoryRoleEnum {
     /**

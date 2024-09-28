@@ -20,8 +20,6 @@ import lombok.Data;
 /**
  * VpcInfoEntity
  *
- * @author l30044826
- * @since 2023-08-11
  */
 @TableName(value = "t_vpc_info")
 @Data

@@ -27,9 +27,6 @@ import org.springframework.stereotype.Component;
 /**
  * 统一框架恢复任务开始监听器
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/14
  **/
 @Slf4j
 @Component

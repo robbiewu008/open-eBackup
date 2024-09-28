@@ -42,8 +42,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 /**
  * 功能描述
  *
- * @author w00616953
- * @since 2021-10-14
  */
 @SpringBootTest
 @RunWith(PowerMockRunner.class)

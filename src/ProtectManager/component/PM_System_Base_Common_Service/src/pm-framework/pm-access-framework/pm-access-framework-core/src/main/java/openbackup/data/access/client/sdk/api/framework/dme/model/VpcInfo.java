@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * op服务化VPC信息，循环依赖了
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-05-09
  */
 @Getter
 @Setter

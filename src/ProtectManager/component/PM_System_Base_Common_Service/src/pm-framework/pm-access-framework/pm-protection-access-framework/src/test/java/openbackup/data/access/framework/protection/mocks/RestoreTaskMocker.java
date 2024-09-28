@@ -25,9 +25,6 @@ import org.springframework.beans.BeanUtils;
  * 功能描述
  *
  * @description:
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/15
  **/
 public class RestoreTaskMocker {
     public static RestoreTask mockRestoreTask(String requestId) {

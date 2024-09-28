@@ -45,9 +45,6 @@ import java.util.stream.Collectors;
 /**
  * Redis数据库备份拦截器实现类
  *
- * @author w00439064
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/06/24
  */
 @Slf4j
 @Component

@@ -24,8 +24,6 @@ import java.util.Date;
 /**
  * Date Converter
  *
- * @author l00272247
- * @since 2021-06-10
  */
 @Slf4j
 @Component

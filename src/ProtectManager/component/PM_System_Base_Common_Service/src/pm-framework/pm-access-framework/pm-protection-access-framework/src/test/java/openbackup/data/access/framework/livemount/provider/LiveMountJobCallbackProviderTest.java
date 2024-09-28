@@ -31,9 +31,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * 功能描述: LiveMountJobCallbackProviderTest
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-24
  */
 public class LiveMountJobCallbackProviderTest {
     private static LiveMountJobCallbackProvider liveMountJobCallbackProvider;

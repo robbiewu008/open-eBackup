@@ -44,9 +44,6 @@ import java.util.stream.Collectors;
 /**
  * 更新路由切面
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/2/27
  */
 @Aspect
 @Component

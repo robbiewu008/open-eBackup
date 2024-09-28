@@ -23,9 +23,6 @@ import java.util.List;
 /**
  * 创建保护请求体中资源对象DTO
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-17
  */
 @Getter
 @Setter

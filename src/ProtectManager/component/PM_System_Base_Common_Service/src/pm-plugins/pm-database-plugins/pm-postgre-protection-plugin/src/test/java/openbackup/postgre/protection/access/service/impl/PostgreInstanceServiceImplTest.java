@@ -39,9 +39,6 @@ import java.util.UUID;
 /**
  * postgre实例服务测试类
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-30
  */
 public class PostgreInstanceServiceImplTest {
     private final ResourceService resourceService = PowerMockito.mock(ResourceService.class);

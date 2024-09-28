@@ -24,8 +24,6 @@ import java.util.Date;
 /**
  * Schedule
  *
- * @author l00272247
- * @since 2020-09-21
  */
 @Data
 public class Schedule {

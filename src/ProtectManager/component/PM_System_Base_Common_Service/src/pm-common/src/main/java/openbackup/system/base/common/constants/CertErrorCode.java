@@ -15,9 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 证书相关通用错误码
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/8/2
  */
 public final class CertErrorCode {
     /**

@@ -53,9 +53,6 @@ import java.util.Optional;
 /**
  * 功能描述: OpenstackRestoreProviderTest
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-18
  */
 public class OpenstackRestoreProviderTest {
     private OpenstackRestoreProvider openstackRestoreProvider;

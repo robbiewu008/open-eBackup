@@ -49,9 +49,6 @@ import java.time.format.DateTimeFormatter;
 /**
  * 副本校验服务类
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/29
  **/
 @Slf4j
 @Service

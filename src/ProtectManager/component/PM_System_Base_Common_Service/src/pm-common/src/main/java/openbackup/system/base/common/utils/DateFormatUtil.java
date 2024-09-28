@@ -19,9 +19,6 @@ import java.util.Date;
 /**
  * DateFormatUtil
  *
- * @author p00171530
- * @version [Lego V100R002C10, 2014-12-8]
- * @since 2019-10-31
  */
 public class DateFormatUtil {
     private DateFormatUtil() {

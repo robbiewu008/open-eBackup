@@ -47,9 +47,6 @@ import javax.net.ssl.SSLContext;
 /**
  * 功能描述
  *
- * @author y00413474
- * @version [BCManager 8.0.0]
- * @since 2020-06-19
  */
 @Slf4j
 public class DoradoFeignConfiguration implements RequestInterceptor {
@@ -95,9 +92,6 @@ public class DoradoFeignConfiguration implements RequestInterceptor {
     /**
      * 自定义MyDecoder
      *
-     * @author y00413474
-     * @version [BCManager 8.0.0]
-     * @since 2020-06-19
      */
     private class MyDecoder extends SpringDecoder {
         /**
@@ -145,9 +139,6 @@ public class DoradoFeignConfiguration implements RequestInterceptor {
     /**
      * 功能描述
      *
-     * @author y00413474
-     * @version [BCManager 8.0.0]
-     * @since 2020-06-19
      */
     private static class PhpMappingJackson2HttpMessageConverter extends MappingJackson2HttpMessageConverter {
         PhpMappingJackson2HttpMessageConverter() {

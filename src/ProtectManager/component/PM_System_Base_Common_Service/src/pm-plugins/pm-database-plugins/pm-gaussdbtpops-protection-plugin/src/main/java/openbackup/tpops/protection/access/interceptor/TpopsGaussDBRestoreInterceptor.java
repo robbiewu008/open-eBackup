@@ -62,8 +62,6 @@ import java.util.Optional;
 /**
  * TPOPS 恢复
  *
- * @author x30021699
- * @since 2023-05-09
  */
 @Slf4j
 @Component

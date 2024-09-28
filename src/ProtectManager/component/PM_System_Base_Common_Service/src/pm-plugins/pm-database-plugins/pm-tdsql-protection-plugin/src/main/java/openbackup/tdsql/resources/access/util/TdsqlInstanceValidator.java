@@ -24,8 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 功能描述TdsqlInstanceValidator参数校验
  *
- * @author z30047175
- * @since 2023-05-25
  */
 @Slf4j
 public class TdsqlInstanceValidator {

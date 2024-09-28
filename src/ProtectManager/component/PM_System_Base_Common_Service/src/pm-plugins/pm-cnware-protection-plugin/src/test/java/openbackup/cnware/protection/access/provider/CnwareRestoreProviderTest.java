@@ -40,9 +40,6 @@ import java.util.Map;
 /**
  * 功能描述 CnwareRestoreProviderTest
  *
- * @author q30048244
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-02-05 9:40
  */
 @Slf4j
 public class CnwareRestoreProviderTest {

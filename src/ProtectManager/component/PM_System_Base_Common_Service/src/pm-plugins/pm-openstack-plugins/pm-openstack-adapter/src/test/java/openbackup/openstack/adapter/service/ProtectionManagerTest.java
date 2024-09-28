@@ -42,9 +42,6 @@ import java.util.HashMap;
 /**
  * {@link ProtectionManager} 测试类
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-21
  */
 public class ProtectionManagerTest {
     private final ProtectObjectRestApi protectObjectRestApi = Mockito.mock(ProtectObjectRestApi.class);

@@ -17,8 +17,6 @@ import java.lang.reflect.Field;
 /**
  * Field Naming Strategy
  *
- * @author l00272247
- * @since 2021-06-03
  */
 public interface FieldNamingStrategy {
     /**

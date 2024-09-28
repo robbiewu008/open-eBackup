@@ -25,8 +25,6 @@ import java.util.List;
 /**
  * dme-a pod information
  *
- * @author dWX1009286
- * @since 2021-06-10
  */
 @Data
 @AllArgsConstructor

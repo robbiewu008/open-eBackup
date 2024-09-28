@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.archive;
 /**
  * This object is used to store the data required for creating an archive copy.
  *
- * @author y00490893
- * @version [OceanStor 100P 8.1.0]
- * @since 2020-06-17
  */
 public class ArchiveObject {
     private String requestId;

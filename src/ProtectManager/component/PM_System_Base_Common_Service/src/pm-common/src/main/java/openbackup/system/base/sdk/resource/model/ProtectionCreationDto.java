@@ -24,9 +24,6 @@ import java.util.Map;
 /**
  * 保护创建请求体DTO
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-17
  */
 @Getter
 @Setter

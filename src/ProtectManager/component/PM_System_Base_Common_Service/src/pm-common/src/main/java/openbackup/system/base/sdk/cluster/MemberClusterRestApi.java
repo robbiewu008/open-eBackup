@@ -33,8 +33,6 @@ import java.util.List;
 /**
  * MemberClusterRestApi
  *
- * @author y30046482
- * @since 2023-05-27
  */
 public interface MemberClusterRestApi {
     /**

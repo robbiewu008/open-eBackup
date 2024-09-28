@@ -26,9 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * SAP HANA的SLA校验器Provider
  *
- * @author wWX1013713
- * @version [DataBackup 1.5.0]
- * @since 2023-06-09
  */
 @Slf4j
 @Component

@@ -62,9 +62,6 @@ import java.util.regex.Pattern;
 /**
  * OceanBase恢复拦截器
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.5.0]
- * @since 2023-07-13
  */
 @Slf4j
 @Component

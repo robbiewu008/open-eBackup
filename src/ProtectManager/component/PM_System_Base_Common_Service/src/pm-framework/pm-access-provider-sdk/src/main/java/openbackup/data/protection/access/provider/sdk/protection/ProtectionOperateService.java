@@ -17,9 +17,6 @@ import java.util.Map;
 /**
  * 操作受保护对形象
  *
- * @author y30044273
- * @version [OceanProtect X8000 1.5.0]
- * @since 2023-08-07
  */
 public interface ProtectionOperateService {
     /**

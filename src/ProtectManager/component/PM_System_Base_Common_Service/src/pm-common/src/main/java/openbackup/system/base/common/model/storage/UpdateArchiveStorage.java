@@ -19,8 +19,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 功能描述
  *
- * @author y00413474
- * @since 2020-06-29
  */
 @Data
 public class UpdateArchiveStorage {

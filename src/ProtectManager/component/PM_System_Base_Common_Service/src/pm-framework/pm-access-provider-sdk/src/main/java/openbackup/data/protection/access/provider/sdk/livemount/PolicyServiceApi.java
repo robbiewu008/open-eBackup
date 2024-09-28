@@ -17,9 +17,6 @@ import java.util.List;
 /**
  * 及时挂载policy对外接口
  *
- * @author z30027603
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2022-07-17
  */
 public interface PolicyServiceApi {
     /**

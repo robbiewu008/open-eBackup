@@ -31,8 +31,6 @@ import java.util.function.Function;
 /**
  * target cluster object
  *
- * @author p30001902
- * @since 2020-11-19
  */
 @Data
 public class TargetClusterVo {

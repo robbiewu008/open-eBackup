@@ -57,9 +57,6 @@ import java.util.UUID;
 /**
  * {@link ObjectStorageAgentSelector} 测试类
  *
- * @author l00370588
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-1-14
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(EnvironmentLinkStatusHelper.class)

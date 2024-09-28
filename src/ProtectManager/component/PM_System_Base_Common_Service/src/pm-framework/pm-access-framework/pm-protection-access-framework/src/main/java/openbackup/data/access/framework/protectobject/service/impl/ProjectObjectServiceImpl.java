@@ -60,9 +60,6 @@ import java.util.stream.Collectors;
 /**
  * ProjectObjectService实现类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023/11/13
  */
 @Service
 @AllArgsConstructor

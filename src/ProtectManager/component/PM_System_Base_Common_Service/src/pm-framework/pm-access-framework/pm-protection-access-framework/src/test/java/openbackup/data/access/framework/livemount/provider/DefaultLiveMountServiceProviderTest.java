@@ -40,9 +40,6 @@ import java.util.List;
 /**
  * 功能描述: DefaultLiveMountServiceProviderTest
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-09
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {TokenBo.class})

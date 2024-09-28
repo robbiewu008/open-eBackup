@@ -30,9 +30,6 @@ import java.util.regex.Pattern;
  * 参数校验工具类
  * 约定：validate开头的方法,在参数不满足要求时,会抛出LegoCheckedException异常,其余方法,返回boolean结果
  *
- * @author l90006153
- * @version [OceanStor ReplicationDirector V100R003C10, 2015-1-9]
- * @since 2019-10-25
  */
 @Slf4j
 public class ValidateUtil {

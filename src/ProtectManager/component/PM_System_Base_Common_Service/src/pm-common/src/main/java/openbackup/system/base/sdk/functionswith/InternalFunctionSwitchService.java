@@ -15,8 +15,6 @@ package openbackup.system.base.sdk.functionswith;
 /**
  * 删除用户功能开关服务（内部调用）
  *
- * @author w30042425
- * @since 2023-01-18
  */
 public interface InternalFunctionSwitchService {
     /**

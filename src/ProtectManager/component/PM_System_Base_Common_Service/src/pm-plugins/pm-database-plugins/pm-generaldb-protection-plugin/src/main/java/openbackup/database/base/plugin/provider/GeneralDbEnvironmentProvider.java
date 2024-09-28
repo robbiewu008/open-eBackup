@@ -24,9 +24,6 @@ import java.util.Objects;
 /**
  * GeneralDb的EnvironmentProvider实现
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-26
  */
 @Component
 public class GeneralDbEnvironmentProvider implements EnvironmentProvider {

@@ -164,8 +164,6 @@ import javax.annotation.Resource;
 /**
  * Resource Integration Test
  *
- * @author l00272247
- * @since 2022-01-24
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

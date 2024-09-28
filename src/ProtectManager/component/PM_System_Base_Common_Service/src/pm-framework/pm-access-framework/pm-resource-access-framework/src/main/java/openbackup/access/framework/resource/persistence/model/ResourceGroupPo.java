@@ -25,8 +25,6 @@ import java.sql.Timestamp;
 /**
  * ResourceGroup Po
  *
- * @author c00631681
- * @since 2024-1-18
  */
 @TableName("T_RESOURCE_GROUP")
 @Getter

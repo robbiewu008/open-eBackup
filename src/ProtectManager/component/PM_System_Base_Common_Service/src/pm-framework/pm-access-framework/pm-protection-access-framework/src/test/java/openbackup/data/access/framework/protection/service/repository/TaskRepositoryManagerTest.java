@@ -54,9 +54,6 @@ import java.util.Optional;
 /**
  * 目标存储集群的Repository获取Manager 测试类
  *
- * @author: swx1010572
- * @version: [OceanProtect X8000 2.1.0]
- * @since: 2022/07/13
  **/
 public class TaskRepositoryManagerTest {
     private final ClusterNativeApi clusterNativeApi = Mockito.mock(ClusterNativeApi.class);

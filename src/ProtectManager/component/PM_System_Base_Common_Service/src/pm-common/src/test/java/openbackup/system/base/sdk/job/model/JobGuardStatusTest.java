@@ -25,8 +25,6 @@ import java.util.Locale;
 /**
  * Job Guard Status Test
  *
- * @author l00272247
- * @since 2021-03-12
  */
 public class JobGuardStatusTest {
     @Test

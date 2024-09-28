@@ -40,9 +40,6 @@ import java.util.Objects;
 /**
  * DB2集群实例provider
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-27
  */
 @Component
 @Slf4j

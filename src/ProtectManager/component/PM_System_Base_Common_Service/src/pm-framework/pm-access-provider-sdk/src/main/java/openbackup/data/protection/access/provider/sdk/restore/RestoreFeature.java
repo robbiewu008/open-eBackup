@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 恢复的一些特性开关
  *
- * @author h30027154
- * @since 2022-07-01
  */
 @Data
 public class RestoreFeature {

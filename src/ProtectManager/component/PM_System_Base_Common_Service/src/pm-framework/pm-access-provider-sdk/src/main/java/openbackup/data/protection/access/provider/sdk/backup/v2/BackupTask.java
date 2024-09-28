@@ -31,9 +31,6 @@ import java.util.Map;
 /**
  * 通用备份框架备份参数对象，备份相关参数通过该对象承载
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-01
  */
 @Data
 public class BackupTask {

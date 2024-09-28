@@ -28,9 +28,6 @@ import javax.validation.Payload;
 /**
  * 文件上传防护注解（需要与@Validated配合使用）
  *
- * @author t30028453
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-27
  */
 @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.TYPE, ElementType.METHOD, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)

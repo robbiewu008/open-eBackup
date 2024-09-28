@@ -36,8 +36,6 @@ import java.util.ArrayList;
 /**
  * ResourceLockReleaseSchedulerTest
  *
- * @author n30046257
- * @since 2023/7/7
  */
 public class ResourceLockReleaseSchedulerTest {
     private static final long END_TIME = 1688715622907L;

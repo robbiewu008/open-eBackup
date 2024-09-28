@@ -42,9 +42,6 @@ import java.util.Optional;
 /**
  * 功能描述 CnwareBackupProviderTest
  *
- * @author q30048244
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-02-05 9:39
  */
 public class CnwareBackupProviderTest {
     private static CnwareBackupProvider backupProvider;

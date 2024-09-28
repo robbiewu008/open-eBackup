@@ -21,8 +21,6 @@ import org.junit.Test;
 /**
  * 常数类测试
  *
- * @author t30021437
- * @since 2023-05-09
  */
 public class NdmpConstantTest {
     /**

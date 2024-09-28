@@ -24,9 +24,6 @@ import java.util.Map;
 /**
  * 获取SpringBean的工具类
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-05
  */
 @Slf4j
 @Component

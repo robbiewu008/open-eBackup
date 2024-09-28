@@ -20,9 +20,6 @@ import java.io.Serializable;
 /**
  * 安全策略VO 必须实现序列化才能写入redis
  *
- * @author y00280557
- * @version [UltraAPM V100R002C10, 2014-9-16]
- * @since 2020-11-28
  */
 @Getter
 @Setter

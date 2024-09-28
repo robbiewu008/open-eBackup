@@ -26,9 +26,6 @@ import org.junit.Test;
 /**
  * MongoDBbean对象创建类
  *
- * @author lwx1012372
- * @version [DataBackup 1.5.0]
- * @since 2023-04-07
  */
 
 @Data

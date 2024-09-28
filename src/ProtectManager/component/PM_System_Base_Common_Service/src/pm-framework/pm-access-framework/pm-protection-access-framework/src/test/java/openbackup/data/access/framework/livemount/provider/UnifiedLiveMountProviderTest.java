@@ -113,8 +113,6 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Unified Live Mount Provider Test
  *
- * @author l00272247
- * @since 2022-01-03
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

@@ -36,8 +36,6 @@ import java.util.Objects;
 /**
  * ExchangeSlaValidatorTest
  *
- * @author x00635457
- * @since 2024/2/18
  */
 public class ExchangeSlaValidatorTest {
     private final ProtectObjectRestApi protectObjectRestApi = Mockito.mock(ProtectObjectRestApi.class);

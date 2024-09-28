@@ -44,9 +44,6 @@ import java.util.Map;
 /**
  * Agent Unified Service
  *
- * @author z30009433
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-24
  */
 public interface AgentUnifiedService {
     /**

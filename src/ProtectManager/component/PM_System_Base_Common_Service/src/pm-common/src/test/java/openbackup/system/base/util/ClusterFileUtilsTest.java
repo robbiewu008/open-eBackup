@@ -27,8 +27,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * ClusterFileUtils工具类测试类
  *
- * @author y30046482
- * @since 2023-05-17
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({FileZip.class, FileUtils.class, ClusterFileUtils.class})

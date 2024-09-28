@@ -26,9 +26,6 @@ import java.util.Objects;
 /**
  * sqlserver集群 新加provider实现resourceprovider
  *
- * @author twx1009756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2023-1-5
  */
 @Component
 @Slf4j

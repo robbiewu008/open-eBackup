@@ -23,8 +23,6 @@ import org.junit.Test;
 /**
  * 测试初始化参数（路径）
  *
- * @author w00493811
- * @since 2021-02-03
  */
 public class InitializeParamNodeInfoTest {
     /**

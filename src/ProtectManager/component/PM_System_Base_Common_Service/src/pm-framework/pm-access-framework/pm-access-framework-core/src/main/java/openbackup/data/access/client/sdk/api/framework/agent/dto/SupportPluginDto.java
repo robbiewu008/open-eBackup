@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * Agent返回的插件数据模型，包括插件名字、插件版本以及插件支持的应用
  *
- * @author w00616953
- * @since 2021-11-30
  */
 @Data
 public class SupportPluginDto {

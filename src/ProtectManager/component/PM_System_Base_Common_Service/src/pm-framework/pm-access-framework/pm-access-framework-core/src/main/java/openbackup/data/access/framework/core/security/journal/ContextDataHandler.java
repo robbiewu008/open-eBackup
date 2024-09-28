@@ -18,8 +18,6 @@ import java.util.function.Consumer;
 /**
  * Define Cache Callback
  *
- * @author l00272247
- * @since 2021-12-14
  */
 public interface ContextDataHandler {
     /**

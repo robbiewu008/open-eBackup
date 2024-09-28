@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * Clone Copy Param
  *
- * @author l00272247
- * @since 2022-01-06
  */
 public class CloneCopyParam {
     private final String backupId;

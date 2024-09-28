@@ -21,9 +21,6 @@ import lombok.Setter;
 /**
  * MultiClusterJobBo
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-12-22
  */
 @Getter
 @Setter

@@ -22,8 +22,6 @@ import java.util.Map;
 /**
  * Protected Object Info
  *
- * @author l00272247
- * @since 2020-01-11
  */
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)

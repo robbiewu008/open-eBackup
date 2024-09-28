@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * 任务流基础上下文
  *
- * @author w00607005
- * @since 2023-05-18
  */
 @Data
 public class BaseContext {

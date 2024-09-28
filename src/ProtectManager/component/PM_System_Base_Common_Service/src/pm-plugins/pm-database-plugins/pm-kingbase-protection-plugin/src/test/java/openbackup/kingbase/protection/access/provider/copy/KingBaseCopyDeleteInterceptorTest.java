@@ -41,9 +41,6 @@ import java.util.List;
 /**
  * {@link KingBaseCopyDeleteInterceptor} 测试类
  *
- * @author wwx1013713
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-03-17
  */
 public class KingBaseCopyDeleteInterceptorTest {
     private final CopyRestApi copyRestApi = PowerMockito.mock(CopyRestApi.class);

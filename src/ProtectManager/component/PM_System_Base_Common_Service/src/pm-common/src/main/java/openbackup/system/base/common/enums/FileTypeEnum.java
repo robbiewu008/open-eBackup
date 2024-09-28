@@ -19,8 +19,6 @@ import openbackup.system.base.common.utils.files.FileZip;
 /**
  * 文件类型枚举类
  *
- * @author w00607005
- * @since 2023-09-21
  */
 public enum FileTypeEnum {
     /**

@@ -24,8 +24,6 @@ import java.util.Map;
 /**
  * 创建保护请求体
  *
- * @author w30044259
- * @since 2024-03-06
  */
 @Getter
 @Setter

@@ -46,9 +46,6 @@ import java.util.UUID;
 /**
  * {@link Db2DatabaseScanProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-04
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {FeignBuilder.class})

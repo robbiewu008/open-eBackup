@@ -62,9 +62,6 @@ import java.util.stream.Collectors;
 /**
  * dameng集群查询、校验的类
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 @Slf4j
 @Service

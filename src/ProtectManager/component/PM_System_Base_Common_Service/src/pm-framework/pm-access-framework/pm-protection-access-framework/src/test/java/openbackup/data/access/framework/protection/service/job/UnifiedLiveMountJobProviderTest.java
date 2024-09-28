@@ -37,9 +37,6 @@ import org.powermock.reflect.Whitebox;
 /**
  * UnifiedLiveMountJobProviderTest
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-05-08
  */
 @RunWith(PowerMockRunner.class)
 public class UnifiedLiveMountJobProviderTest {

@@ -25,8 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 登录相关service
  *
- * @author t00482481
- * @since 2020-9-06
  */
 public interface UserService {
     /**

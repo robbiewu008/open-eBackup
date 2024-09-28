@@ -20,9 +20,6 @@ import java.util.Objects;
 /**
  * 受保护环境连接状态
  *
- * @author y00559272
- * @version [A8000 1.0.0]
- * @since 2021-03-08
  */
 @Getter
 public enum LinkStatusEnum {

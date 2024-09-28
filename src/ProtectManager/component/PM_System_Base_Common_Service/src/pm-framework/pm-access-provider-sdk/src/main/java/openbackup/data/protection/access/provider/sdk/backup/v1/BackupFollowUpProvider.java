@@ -17,8 +17,6 @@ import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvide
 /**
  * The BackupFollowUpProvider
  *
- * @author g30003063
- * @since 2022/2/9
  */
 public interface BackupFollowUpProvider extends DataProtectionProvider<String> {
     /**

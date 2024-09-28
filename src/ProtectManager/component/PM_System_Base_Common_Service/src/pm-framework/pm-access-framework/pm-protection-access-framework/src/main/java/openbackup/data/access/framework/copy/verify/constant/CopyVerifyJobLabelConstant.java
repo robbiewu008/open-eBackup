@@ -15,9 +15,6 @@ package openbackup.data.access.framework.copy.verify.constant;
 /**
  * 副本校验任务步骤国际化标签常量类
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/30
  **/
 public final class CopyVerifyJobLabelConstant {
     /**

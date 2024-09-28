@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 双活domainBO
  *
- * @author mwx776342
- * @since 2022/03/23
  */
 @Data
 public class HyperMetroDomainBo {

@@ -46,9 +46,6 @@ import java.util.Optional;
 /**
  * 恢复任务资源服务
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/26
  **/
 @Slf4j
 @Service

@@ -33,9 +33,6 @@ import java.util.stream.Collectors;
 /**
  *  oracle集群实例恢复任务下发provider
  *
- * @author c30038333
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023/02/18
  */
 @Slf4j
 @Component

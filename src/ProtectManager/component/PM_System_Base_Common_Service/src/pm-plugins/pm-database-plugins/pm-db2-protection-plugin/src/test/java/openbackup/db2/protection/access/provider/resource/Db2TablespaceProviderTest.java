@@ -39,9 +39,6 @@ import java.util.UUID;
 /**
  * {@link Db2TablespaceProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-06
  */
 public class Db2TablespaceProviderTest {
     private final ResourceService resourceService = PowerMockito.mock(ResourceService.class);

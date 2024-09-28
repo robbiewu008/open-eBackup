@@ -34,9 +34,6 @@ import static org.mockito.Mockito.verify;
 /**
  * 统一恢复任务完成处理器测试集合
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/8/31
  **/
 public class UnifiedRestoreTaskCompleteHandlerTest {
     private final RestoreTaskManager restoreTaskManager = mock(RestoreTaskManager.class);

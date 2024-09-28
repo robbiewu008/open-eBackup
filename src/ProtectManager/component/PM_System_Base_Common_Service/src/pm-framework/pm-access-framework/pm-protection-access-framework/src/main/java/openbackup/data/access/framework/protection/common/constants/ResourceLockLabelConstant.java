@@ -15,9 +15,6 @@ package openbackup.data.access.framework.protection.common.constants;
 /**
  * 资源锁任务步骤国际化key定义
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/27
  **/
 public final class ResourceLockLabelConstant {
     /**

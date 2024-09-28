@@ -52,9 +52,6 @@ import java.util.stream.Collectors;
 /**
  * db2恢复拦截器
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-09
  */
 @Component
 @Slf4j

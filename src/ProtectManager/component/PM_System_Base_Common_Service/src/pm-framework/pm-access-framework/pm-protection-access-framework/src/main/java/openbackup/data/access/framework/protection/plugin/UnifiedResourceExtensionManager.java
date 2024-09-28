@@ -41,8 +41,6 @@ import java.util.stream.Collectors;
  * 统一资源扩展管理
  * ResourceExtensionHandler与PluginExtensionInvokeContext泛型信息需要相同，并且必须在该父类指定具体类型
  *
- * @author h30027154
- * @since 2022-05-30
  */
 @Component
 public class UnifiedResourceExtensionManager implements ResourceExtensionManager, InitializingBean {

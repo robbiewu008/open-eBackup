@@ -32,9 +32,6 @@ import org.springframework.stereotype.Component;
  * <p>
  * 拦截exchange database备份，添加区分数据库属于单机和DAG参数
  *
- * @author w30032137
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-06-17
  */
 @Slf4j
 @Component

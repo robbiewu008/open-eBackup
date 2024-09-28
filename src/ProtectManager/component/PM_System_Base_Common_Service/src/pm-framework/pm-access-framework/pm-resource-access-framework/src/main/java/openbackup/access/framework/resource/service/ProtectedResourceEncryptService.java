@@ -33,8 +33,6 @@ import java.util.Optional;
 /**
  * Protected Resource Encryptor
  *
- * @author l00272247
- * @since 2021-10-19
  */
 @Slf4j
 @Component

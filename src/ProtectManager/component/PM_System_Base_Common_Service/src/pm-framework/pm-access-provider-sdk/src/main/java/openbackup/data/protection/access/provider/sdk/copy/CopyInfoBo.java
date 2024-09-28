@@ -24,8 +24,6 @@ import java.util.Date;
 /**
  * Copy Info
  *
- * @author l00272247
- * @since 2020-09-23
  */
 @Getter
 @Setter

@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Dorado存储信息
  *
- * @author y00490893
- * @since 2020-12-19
  */
 @Data
 public class DmeBackupStorage {

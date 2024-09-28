@@ -15,9 +15,6 @@ package openbackup.openstack.protection.access.constant;
 /**
  * OpenStack常量类
  *
- * @author x30038064
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-24
  */
 public class OpenstackConstant {
     /**

@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * 副本保留策略枚举定义
  *
- * @author h30003246
- * @since 2020-09-22
  */
 public enum RetentionType {
     /**

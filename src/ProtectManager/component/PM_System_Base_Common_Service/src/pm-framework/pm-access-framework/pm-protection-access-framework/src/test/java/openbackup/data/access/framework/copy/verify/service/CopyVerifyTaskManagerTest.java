@@ -74,9 +74,6 @@ import java.util.UUID;
 /**
  * CopyVerifyTaskManager类的单元测试集合
  *
- * @author: y00559272
- * @version: [OceanProtect X8000 1.2.1]
- * @since: 2022/8/5
  **/
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({EnvironmentLinkStatusHelper.class})

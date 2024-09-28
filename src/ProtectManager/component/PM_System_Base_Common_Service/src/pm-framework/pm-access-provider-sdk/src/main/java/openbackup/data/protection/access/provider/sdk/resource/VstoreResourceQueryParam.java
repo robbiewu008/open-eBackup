@@ -18,8 +18,6 @@ import lombok.Data;
 /**
  * 资源查询参数
  *
- * @author c00642388
- * @since 2024-04-25
  */
 @Builder
 @Data

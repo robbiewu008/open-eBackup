@@ -22,9 +22,6 @@ import org.mockito.Mockito;
 /**
  * DWS集群 资源测试类
  *
- * @author swx1010572
- * @version: [OceanProtect DataBackup 1.5.0]
- * @since 2023-02-22
  */
 public class GaussDBDWSClusterResourceProviderTest {
     private final ProviderManager providerManager = Mockito.mock(ProviderManager.class);

@@ -15,9 +15,6 @@ package openbackup.system.base.common.utils.unit;
 /**
  * 度量单位接口
  *
- * @author l90002863 李溜
- * @version V100R001C00
- * @since 2019-10-25
  */
 public interface IUnitType {
     /**

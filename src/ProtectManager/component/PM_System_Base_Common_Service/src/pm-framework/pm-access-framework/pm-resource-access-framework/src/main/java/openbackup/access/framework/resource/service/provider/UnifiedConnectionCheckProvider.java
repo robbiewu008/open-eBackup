@@ -39,8 +39,6 @@ import java.util.Map;
 /**
  * The UnifiedConnectionCheckProvider
  *
- * @author g30003063
- * @since 2022-05-20
  */
 @Slf4j
 @Component

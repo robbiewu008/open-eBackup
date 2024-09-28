@@ -51,9 +51,6 @@ import java.util.stream.Collectors;
 /**
  * GeneralDbResourceProvider测试用例
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-22
  */
 @SpringBootTest(classes = {
     GeneralDbResourceProvider.class

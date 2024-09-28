@@ -15,9 +15,6 @@ package openbackup.database.base.plugin.enums;
 /**
  * 集群实例在线状态策略
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-12-14
  */
 public enum ClusterInstanceOnlinePolicy {
     /**

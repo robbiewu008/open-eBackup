@@ -46,9 +46,6 @@ import java.util.stream.Collectors;
 /**
  * GaussDb 集群环境联通性校验覆写collectActionResults，异常抛出
  *
- * @author t30021437
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-02-07
  */
 @Component
 @Slf4j

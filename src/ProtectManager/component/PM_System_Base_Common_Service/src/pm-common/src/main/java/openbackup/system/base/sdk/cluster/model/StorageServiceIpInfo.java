@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * Storage service ips info
  *
- * @author p30001902
- * @since 2020-12-10
  */
 @Data
 public class StorageServiceIpInfo {

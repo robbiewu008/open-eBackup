@@ -29,8 +29,6 @@ import javax.validation.constraints.Size;
 /**
  * 添加备节点HA请求体
  *
- * @author w00607005
- * @since 2023-05-12
  */
 @Data
 public class AddStandbyHaRequest {

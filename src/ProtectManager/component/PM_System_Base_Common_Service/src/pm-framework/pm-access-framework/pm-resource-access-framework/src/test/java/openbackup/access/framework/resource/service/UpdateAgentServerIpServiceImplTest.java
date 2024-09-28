@@ -38,9 +38,6 @@ import java.util.Map;
 /**
  * 更新AgentServerIp 测试类
  *
- * @author swx1010572
- * @version [OceanProtect X8000 2.1.0]
- * @since 2022-07-27
  */
 public class UpdateAgentServerIpServiceImplTest {
 

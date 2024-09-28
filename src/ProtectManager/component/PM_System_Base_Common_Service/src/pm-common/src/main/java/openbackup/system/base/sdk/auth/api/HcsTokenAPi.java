@@ -36,8 +36,6 @@ import java.net.URISyntaxException;
 /**
  * 调用Hcs平台的Api
  *
- * @author l30044826
- * @since 2023-07-12
  */
 public interface HcsTokenAPi {
     /**

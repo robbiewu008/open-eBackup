@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * NodePodInfo test
  *
- * @author jwx701567
- * @since 2021-03-12
  */
 public class NodePodInfoTest {
 

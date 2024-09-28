@@ -26,9 +26,6 @@ import static org.assertj.core.api.BDDAssertions.then;
  * 功能描述
  *
  * @description:
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/4
  **/
 public class RestoreTaskConverterTest {
     /**

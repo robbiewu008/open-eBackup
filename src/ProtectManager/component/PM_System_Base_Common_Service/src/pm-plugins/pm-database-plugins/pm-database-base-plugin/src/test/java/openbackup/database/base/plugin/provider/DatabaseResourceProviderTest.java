@@ -35,8 +35,6 @@ import java.util.Collections;
 /**
  * The DatabaseResourceProviderTest
  *
- * @author g30003063
- * @since 2022/5/31
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {

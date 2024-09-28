@@ -40,9 +40,6 @@ import java.util.Set;
 /**
  * GaussDBTJobQueueProvider
  *
- * @author x30028756
- * @version [OceanProtect DataBack 1.5.0]
- * @since 2024/1/9
  */
 @Slf4j
 @AllArgsConstructor

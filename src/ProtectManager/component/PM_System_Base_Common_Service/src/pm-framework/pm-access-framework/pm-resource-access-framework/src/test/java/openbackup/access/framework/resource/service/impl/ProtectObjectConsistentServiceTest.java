@@ -46,9 +46,6 @@ import static org.mockito.Mockito.when;
 /**
  * 功能描述: ProtectObjectConsistentServiceTest
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-07
  */
 public class ProtectObjectConsistentServiceTest {
     private static ProtectedResourceRepository repository;

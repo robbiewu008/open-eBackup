@@ -16,9 +16,6 @@ package openbackup.system.base.common.constants;
  * 为了避免魔鬼数字而定义的ISM 数字常量 0-30,50 ,100,1000
  * 超过40的Int类型，自己采用乘，加等方式实现。
  *
- * @author m90002995
- * @version [RD V100R002C10, 2014-11-6]
- * @since 2019-10-30
  */
 public class IsmNumberConstant {
     /**

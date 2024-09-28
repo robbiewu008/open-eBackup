@@ -49,10 +49,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 通用的接口转发
  *
- * @author lwx544155
- * @version [OceanStor DJ V100R003C00, 2020年03月04日]
  * @see [相关类/方法]
- * @since [产品/模块版本]
  */
 @RestController
 @RequestMapping(ConfigConstant.CONSOLE)

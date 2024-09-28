@@ -39,8 +39,6 @@ import javax.validation.ConstraintValidatorContext;
 /**
  * 功能描述
  *
- * @author w00607005
- * @since 2023-10-11
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {Collections.class, Arrays.class, FileUtil.class, Collectors.class, CollectionUtils.class})

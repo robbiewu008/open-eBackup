@@ -15,8 +15,6 @@ package openbackup.data.access.framework.core.security.journal;
 /**
  * Evaluate Service Interface
  *
- * @author l00272247
- * @since 2022-01-07
  */
 public interface EvaluateService<T> {
     /**

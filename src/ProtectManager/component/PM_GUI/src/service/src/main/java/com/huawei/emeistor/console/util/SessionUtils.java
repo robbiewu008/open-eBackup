@@ -21,9 +21,6 @@ import java.security.SecureRandom;
 /**
  * 产生用户登录Session ID
  *
- * @author t00104528
- * @version [LEGO V100R002C01, 2010-8-30]
- * @since 2018-01-01
  */
 public final class SessionUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SessionUtils.class);

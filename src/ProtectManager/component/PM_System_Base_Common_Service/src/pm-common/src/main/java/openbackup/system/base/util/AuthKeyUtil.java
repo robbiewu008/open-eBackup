@@ -20,9 +20,6 @@ import java.security.SecureRandom;
 /**
  * 口令工具类
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-13
  */
 public class AuthKeyUtil {
     /**

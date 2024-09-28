@@ -36,9 +36,6 @@ import java.util.Map;
 /**
  * CommonAgentService测试类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/9/15
  */
 public class CommonAgentServiceTest {
     private final String subNetFixedIpKey = "subNetFixedIp";

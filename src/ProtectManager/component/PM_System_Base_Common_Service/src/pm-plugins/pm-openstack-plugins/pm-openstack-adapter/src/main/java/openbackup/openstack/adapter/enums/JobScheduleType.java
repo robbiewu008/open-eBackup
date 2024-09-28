@@ -20,9 +20,6 @@ import java.util.stream.Stream;
 /**
  * 云核OpenStack备份任务调度类型
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-05
  */
 public enum JobScheduleType {
     /**

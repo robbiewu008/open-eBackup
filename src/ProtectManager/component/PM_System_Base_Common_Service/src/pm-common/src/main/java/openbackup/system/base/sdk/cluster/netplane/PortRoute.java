@@ -28,9 +28,6 @@ import javax.validation.constraints.Pattern;
 /**
  * PortRoute
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-03-28
  */
 @Getter
 @Setter

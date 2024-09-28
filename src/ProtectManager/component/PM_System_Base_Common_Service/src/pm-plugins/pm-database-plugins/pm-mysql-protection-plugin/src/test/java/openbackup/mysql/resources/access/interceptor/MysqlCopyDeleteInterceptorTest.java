@@ -35,9 +35,6 @@ import java.util.Optional;
 /**
  * MySQL副本删除
  *
- * @author fwx1022842
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022/10/27
  */
 public class MysqlCopyDeleteInterceptorTest {
     private final CopyRestApi copyRestApi = PowerMockito.mock(CopyRestApi.class);

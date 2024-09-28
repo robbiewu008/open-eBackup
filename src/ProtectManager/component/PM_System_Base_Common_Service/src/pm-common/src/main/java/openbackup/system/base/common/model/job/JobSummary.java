@@ -21,9 +21,6 @@ import lombok.NoArgsConstructor;
 /**
  * Task summary response
  *
- * @author j00364432
- * @version [BCManager 8.0.0]
- * @since 2020-01-15
  */
 @Data
 @NoArgsConstructor

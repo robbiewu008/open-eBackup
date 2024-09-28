@@ -46,8 +46,6 @@ import java.util.Map;
 /**
  * 资源类测试
  *
- * @author t30021437
- * @since 2023-02-21
  */
 @RunWith(MockitoJUnitRunner.class)
 @PrepareForTest(GaussDBResourceProvider.class)

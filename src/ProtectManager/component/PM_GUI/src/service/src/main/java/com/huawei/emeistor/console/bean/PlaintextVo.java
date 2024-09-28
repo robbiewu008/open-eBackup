@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 加密请求体
  *
- * @author jwx701567
- * @since 2021-09-22
  */
 @Data
 public class PlaintextVo {

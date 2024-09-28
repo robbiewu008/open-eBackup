@@ -22,8 +22,6 @@ import java.util.Map;
 /**
  * Live Mount Task
  *
- * @author l00272247
- * @since 2021-12-27
  */
 public class LiveMountCreateTask extends BaseTask {
     private List<ProtectedResource> subObjects;

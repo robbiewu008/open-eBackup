@@ -24,9 +24,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 更新存储池容量阈值请求体
  *
- * @author w00639094
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-12
  */
 @Getter
 @Setter

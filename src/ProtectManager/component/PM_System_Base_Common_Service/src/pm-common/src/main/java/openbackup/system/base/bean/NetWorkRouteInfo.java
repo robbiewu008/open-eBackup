@@ -19,9 +19,6 @@ import lombok.NoArgsConstructor;
 /**
  * NetWorkRouteInfo
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-02-20
  */
 @Data
 @AllArgsConstructor

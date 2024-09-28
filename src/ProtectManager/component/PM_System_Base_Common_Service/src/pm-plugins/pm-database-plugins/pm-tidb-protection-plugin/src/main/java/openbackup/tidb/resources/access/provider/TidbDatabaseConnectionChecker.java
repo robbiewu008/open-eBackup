@@ -33,8 +33,6 @@ import java.util.Objects;
 /**
  * tidb 数据库连接检查
  *
- * @author w00426202
- * @since 2023-07-06
  */
 
 @Slf4j

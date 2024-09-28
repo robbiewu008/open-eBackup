@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * LocalStorageInfoRes
  *
- * @author p00511147
- * @since 2020-12-17
  */
 @Data
 public class LocalStorageInfoRes {

@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * Job Schedule Config
  *
- * @author l00272247
- * @since 2021-03-12
  */
 @Data
 public class JobScheduleConfig {

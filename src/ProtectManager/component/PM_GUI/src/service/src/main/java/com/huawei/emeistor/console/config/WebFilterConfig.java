@@ -27,8 +27,6 @@ import org.springframework.context.annotation.PropertySource;
 /**
  * 配置Filter
  *
- * @author l00422407
- * @since 2021-03-30
  */
 @Configuration
 @PropertySource(value = "classpath:/properties/security.properties")

@@ -25,8 +25,6 @@ import java.util.List;
 /**
  * 查询用户关联的资源空间列表返回体
  *
- * @author y30021475
- * @since 2023-07-27
  */
 @Getter
 @Setter

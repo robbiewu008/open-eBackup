@@ -20,8 +20,6 @@ import java.util.Map;
 /**
  * The ResourceConnectionChecker
  *
- * @author g30003063
- * @since 2022-05-20
  */
 public interface ProtectedResourceChecker<T> extends DataProtectionProvider<ProtectedResource> {
     /**

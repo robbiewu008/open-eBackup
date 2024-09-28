@@ -25,8 +25,6 @@ import javax.validation.constraints.Size;
 /**
  * 组件信息
  *
- * @author x30046484
- * @since 2023-05-17
  */
 @Getter
 @Setter

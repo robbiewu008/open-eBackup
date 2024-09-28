@@ -20,9 +20,6 @@ import org.junit.Test;
 /**
  * 证书资源工具类
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/10/14
  */
 public class ResourceCertUtilTest {
     /**

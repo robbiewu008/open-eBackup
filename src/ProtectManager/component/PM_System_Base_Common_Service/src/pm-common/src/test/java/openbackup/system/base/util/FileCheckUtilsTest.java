@@ -28,8 +28,6 @@ import java.util.Set;
 /**
  * FileCheckUtils 测试类
  *
- * @author l30044826
- * @since 2023-05-11
  */
 public class FileCheckUtilsTest {
 

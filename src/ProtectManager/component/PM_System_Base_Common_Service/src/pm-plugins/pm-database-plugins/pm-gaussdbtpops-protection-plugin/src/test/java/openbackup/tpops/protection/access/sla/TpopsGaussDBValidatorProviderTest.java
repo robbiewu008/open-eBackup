@@ -43,8 +43,6 @@ import java.util.List;
 /**
  * {@link TpopsGaussDBValidatorProvider}测试类
  *
- * @author x30021699
- * @since 2023-05-09
  */
 
 public class TpopsGaussDBValidatorProviderTest {

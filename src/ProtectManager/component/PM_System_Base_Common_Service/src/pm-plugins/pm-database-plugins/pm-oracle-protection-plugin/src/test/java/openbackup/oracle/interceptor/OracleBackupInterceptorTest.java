@@ -56,9 +56,6 @@ import java.util.UUID;
 /**
  * oracle数据库备份拦截器实现类 测试类
  *
- * @version [OceanProtect DataBackup 1.3.0]
- * @author c30038333
- * @since 2023-01-05
  */
 public class OracleBackupInterceptorTest {
     private final AgentUnifiedService agentUnifiedService = Mockito.mock(AgentUnifiedService.class);

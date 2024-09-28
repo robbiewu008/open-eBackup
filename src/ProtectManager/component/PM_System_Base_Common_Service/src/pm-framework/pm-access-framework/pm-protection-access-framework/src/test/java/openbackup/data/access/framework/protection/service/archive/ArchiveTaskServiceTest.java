@@ -59,9 +59,6 @@ import java.util.UUID;
 /**
  * ArchiveTaskService 的单元测试用例集合
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/14
  **/
 @RunWith(PowerMockRunner.class)
 public class ArchiveTaskServiceTest {

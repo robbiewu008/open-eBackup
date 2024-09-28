@@ -32,8 +32,6 @@ import java.util.List;
 /**
  * The AbstractFileUtilTest
  *
- * @author g30003063
- * @since 2022/5/5
  */
 public class AbstractFileUtilTest {
     @Test

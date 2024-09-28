@@ -21,8 +21,6 @@ import java.security.NoSuchAlgorithmException;
 /**
  * HashUtil 工具类
  *
- * @author w00426202
- * @since 2023-10-12
  */
 @Slf4j
 public final class HashUtil {

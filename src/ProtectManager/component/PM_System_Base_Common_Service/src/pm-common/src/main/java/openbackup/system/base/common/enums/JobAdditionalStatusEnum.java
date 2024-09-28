@@ -17,8 +17,6 @@ import openbackup.system.base.util.EnumUtil;
 /**
  * 任务附加状态枚举
  *
- * @author w00616953
- * @since 2022-03-07
  */
 public enum JobAdditionalStatusEnum {
     /**

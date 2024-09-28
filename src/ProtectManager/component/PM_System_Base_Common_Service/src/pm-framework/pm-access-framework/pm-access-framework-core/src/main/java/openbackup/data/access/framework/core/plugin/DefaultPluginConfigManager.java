@@ -38,7 +38,6 @@ import java.util.Optional;
 /**
  * 插件管理实现
  *
- * @since 2022-05-23
  */
 @Slf4j
 public class DefaultPluginConfigManager implements PluginConfigManager {

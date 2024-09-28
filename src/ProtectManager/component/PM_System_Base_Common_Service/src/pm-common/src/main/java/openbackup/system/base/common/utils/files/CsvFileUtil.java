@@ -41,9 +41,6 @@ import java.util.regex.Pattern;
 /**
  * csv文件处理类
  *
- * @author 郝云峰 00004536
- * @version [Lego V100R002C10, 2014-12-18]
- * @since 2014-12-18
  */
 public class CsvFileUtil extends AbstractFileUtil {
     private static final String SIGN_COMMA = ",";
@@ -58,8 +55,6 @@ public class CsvFileUtil extends AbstractFileUtil {
      * 构造函数<br>
      * <br>
      *
-     * @author 郝云峰 00004536
-     * @since Lego V1R1, Aug 30, 2010
      */
     public CsvFileUtil() {
         super();
@@ -71,8 +66,6 @@ public class CsvFileUtil extends AbstractFileUtil {
      * <br>
      *
      * @throws IOException IOException
-     * @author 郝云峰 00004536
-     * @since Lego V1R1, Aug 30, 2010
      */
     @Override
     public void closeFile() throws IOException {
@@ -141,8 +134,6 @@ public class CsvFileUtil extends AbstractFileUtil {
      *
      * @param file File
      * @return int
-     * @author q50016449
-     * @since 2020-09-04
      */
     @ExterAttack
     public static int readCsv(File file) {

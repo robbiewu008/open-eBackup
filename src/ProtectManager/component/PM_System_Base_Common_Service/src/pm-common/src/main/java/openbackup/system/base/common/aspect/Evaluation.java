@@ -15,8 +15,6 @@ package openbackup.system.base.common.aspect;
 /**
  * Evaluation
  *
- * @author l00272247
- * @since 2021-01-14
  */
 public interface Evaluation {
     /**

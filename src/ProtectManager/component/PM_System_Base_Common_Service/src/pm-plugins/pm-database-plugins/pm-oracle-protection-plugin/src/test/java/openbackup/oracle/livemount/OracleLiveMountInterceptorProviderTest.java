@@ -47,9 +47,6 @@ import java.util.HashMap;
 /**
  * 功能描述: test OracleLiveMountInterceptorProvider
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-15
  */
 public class OracleLiveMountInterceptorProviderTest {
     private OracleLiveMountInterceptorProvider liveMountInterceptorProvider;

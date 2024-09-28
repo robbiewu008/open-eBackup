@@ -48,9 +48,6 @@ import org.springframework.stereotype.Component;
  * the specified provider is found by provider registry
  * to complete the restore service logic processing.
  *
- * @author h30003246
- * @version [OceanStor 100P 8.1.0]
- * @since 2020-08-25
  */
 @Component
 @Slf4j

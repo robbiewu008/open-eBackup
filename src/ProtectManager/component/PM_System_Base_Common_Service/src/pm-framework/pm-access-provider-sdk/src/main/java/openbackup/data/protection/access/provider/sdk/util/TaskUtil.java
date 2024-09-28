@@ -23,9 +23,6 @@ import java.util.Optional;
 /**
  * 公用的任务util
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-22
  */
 public class TaskUtil {
     /**

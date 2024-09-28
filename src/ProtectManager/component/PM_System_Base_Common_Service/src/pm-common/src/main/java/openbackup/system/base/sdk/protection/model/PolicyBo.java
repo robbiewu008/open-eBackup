@@ -23,9 +23,6 @@ import java.util.Optional;
 /**
  * 策略数据模型
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.0.0]
- * @since 2020/10/9
  **/
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)

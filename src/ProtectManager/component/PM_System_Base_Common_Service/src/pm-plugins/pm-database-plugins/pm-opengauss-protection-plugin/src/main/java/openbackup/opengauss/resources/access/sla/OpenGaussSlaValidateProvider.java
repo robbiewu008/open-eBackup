@@ -28,9 +28,6 @@ import org.springframework.stereotype.Service;
 /**
  * openGauss sla provider
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-16
  */
 @Service
 @Slf4j

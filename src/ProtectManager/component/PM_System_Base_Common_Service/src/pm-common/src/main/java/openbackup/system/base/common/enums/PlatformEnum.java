@@ -17,8 +17,6 @@ import lombok.Getter;
 /**
  * 平台枚举类
  *
- * @author y30046482
- * @since 2023-09-08
  */
 @Getter
 public enum PlatformEnum {

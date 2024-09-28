@@ -70,8 +70,6 @@ import javax.validation.ConstraintViolationException;
 /**
  * Logging Aspect
  *
- * @author l00272247
- * @since 2021-12-11
  */
 @Slf4j
 @Aspect

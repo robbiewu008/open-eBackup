@@ -49,8 +49,6 @@ import java.util.Map;
 /**
  * ObjectStorageBackupProvider Test
  *
- * @author l00370588
- * @since 2023-12-30
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(EnvironmentLinkStatusHelper.class)

@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * TdsqlCapabilityProvider
  *
- * @author z00445440
- * @since 2023-12-19
  */
 @Component
 public class TdsqlCapabilityProvider implements CapabilityProvider {

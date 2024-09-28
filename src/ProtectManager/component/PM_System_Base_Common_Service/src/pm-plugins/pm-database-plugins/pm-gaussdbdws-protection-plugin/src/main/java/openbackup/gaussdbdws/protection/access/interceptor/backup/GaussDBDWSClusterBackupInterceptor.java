@@ -33,9 +33,6 @@ import java.util.List;
 /**
  * GaussDbDws 集群备份任务下发Provider
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-23
  */
 @Slf4j
 @Component

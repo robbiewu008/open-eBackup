@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.enums;
 /**
  * 仓库挂载类型Enum
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-11
  */
 public enum MountTypeEnum {
     /**

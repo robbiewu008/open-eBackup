@@ -28,8 +28,6 @@ import java.sql.Timestamp;
 /**
  * Live Mount Entity
  *
- * @author l00272247
- * @since 2020-09-17
  */
 @Data
 @PageQueryConfig(

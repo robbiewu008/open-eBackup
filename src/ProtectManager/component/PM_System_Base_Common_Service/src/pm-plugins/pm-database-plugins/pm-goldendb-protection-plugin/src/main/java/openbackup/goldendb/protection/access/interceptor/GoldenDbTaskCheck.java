@@ -37,8 +37,6 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * 功能描述 校验goldenDb任务
  *
- * @author s30036254
- * @since 2023-03-14
  */
 @Slf4j
 @Component

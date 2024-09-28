@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 端口协议常用常量类
  *
- * @author w00504341
- * @since 2020-12-18
  */
 public class ProtocolPortConstant {
     /**

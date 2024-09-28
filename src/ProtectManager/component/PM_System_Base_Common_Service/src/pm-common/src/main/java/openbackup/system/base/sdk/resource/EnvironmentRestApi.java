@@ -26,8 +26,6 @@ import java.util.List;
 /**
  * 虚拟机资源api
  *
- * @author t00482481
- * @since 2020-10-29
  */
 @FeignClient(name = "EnvironmentRestApi", url = "${pm-resource-manager.url}/v1",
     configuration = CommonFeignConfiguration.class)

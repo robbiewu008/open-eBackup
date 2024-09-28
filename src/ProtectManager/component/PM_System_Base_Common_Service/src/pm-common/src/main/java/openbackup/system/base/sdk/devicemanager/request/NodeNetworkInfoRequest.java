@@ -26,9 +26,6 @@ import javax.validation.constraints.Size;
 /**
  * pacific 某节点上的业务网络配置信息
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-05
  */
 @Getter
 @Setter

@@ -34,8 +34,6 @@ import java.util.Objects;
 /**
  * Command
  *
- * @author l00272247
- * @since 2020-06-28
  */
 public class Command {
     private static final Logger log = LoggerFactory.getLogger(Command.class);

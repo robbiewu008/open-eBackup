@@ -24,9 +24,6 @@ import javax.validation.constraints.Min;
 /**
  * 内部查询接口参数
  *
- * @author mwx1009754
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-06
  */
 @Data
 public class InternalResourceQueryParam {

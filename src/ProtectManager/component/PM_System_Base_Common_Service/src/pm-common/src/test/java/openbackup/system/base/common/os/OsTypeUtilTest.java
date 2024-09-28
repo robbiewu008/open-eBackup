@@ -22,8 +22,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * 测试操作系统类型工具
  *
- * @author w00493811
- * @since 2021-08-09
  */
 @RunWith(SpringRunner.class)
 public class OsTypeUtilTest {

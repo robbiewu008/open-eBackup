@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * 指定时间范围可用于恢复的时间段
  *
- * @author jwx701567
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-01-26
  */
 @Data
 public class AvailableTimeRanges {

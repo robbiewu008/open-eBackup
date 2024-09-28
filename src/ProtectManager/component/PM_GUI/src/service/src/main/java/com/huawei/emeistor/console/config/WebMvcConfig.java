@@ -20,10 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * 描述
  *
- * @author lwx544155
- * @version [OceanStor DJ V100R003C00, 2020年02月25日]
  * @see [相关类/方法]
- * @since [产品/模块版本]
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {

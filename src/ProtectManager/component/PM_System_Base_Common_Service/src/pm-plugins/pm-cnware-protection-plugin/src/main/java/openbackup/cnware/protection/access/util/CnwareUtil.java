@@ -29,9 +29,6 @@ import java.util.regex.Pattern;
 /**
  * CNware工具类
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-12-11
  */
 @Slf4j
 public class CnwareUtil {

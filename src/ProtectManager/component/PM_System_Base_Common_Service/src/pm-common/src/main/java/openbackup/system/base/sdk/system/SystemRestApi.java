@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * 查询系统是否初始化完毕
  *
- * @author w30042425
- * @since 2022-12-28
  */
 @FeignClient(name = "SystemFeignClient", url = "${pm-system-base.url}/v1/system",
     configuration = CommonFeignConfiguration.class)

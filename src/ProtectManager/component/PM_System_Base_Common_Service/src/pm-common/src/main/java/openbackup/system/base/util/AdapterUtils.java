@@ -37,9 +37,6 @@ import java.util.stream.Collectors;
 /**
  * AdapterUtils
  *
- * @author m90005650
- * @version [BCManager eReplication V200R001C10, 2016年12月26日]
- * @since 2019-10-31
  */
 @Slf4j
 public class AdapterUtils {

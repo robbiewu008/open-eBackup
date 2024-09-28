@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 更新策略Vo对象
  *
- * @author h30003246
- * @since 2020-09-17
  */
 @Data
 public class LiveMountPolicyVo {

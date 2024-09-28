@@ -38,9 +38,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/18
  **/
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {LocalRedisConfiguration.class, RedissonAutoConfiguration.class, ContextManager.class,

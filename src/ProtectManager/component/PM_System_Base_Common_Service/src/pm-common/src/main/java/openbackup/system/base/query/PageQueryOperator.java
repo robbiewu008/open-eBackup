@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * page query condition enum
  *
- * @author h30003246
- * @since 2021-06-07
  */
 public enum PageQueryOperator {
     /**

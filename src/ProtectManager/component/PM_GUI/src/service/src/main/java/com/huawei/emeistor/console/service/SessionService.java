@@ -24,9 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Session 相关的操作类
  *
- * @author t00482481
- * @version [LEGO V100R002C01, 2010-7-13]
- * @since 2020-07-05
  */
 public interface SessionService {
     /**

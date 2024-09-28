@@ -20,8 +20,6 @@ import openbackup.system.base.sdk.resource.model.ResourceEntity;
 /**
  * Protection Remove Processor
  *
- * @author l00272247
- * @since 2021-01-05
  */
 public interface ReplicationProtectionRemoveProcessor extends DataProtectionProvider<String> {
     /**

@@ -38,8 +38,6 @@ import java.util.Objects;
 /**
  * TidbTableProviderTest
  *
- * @author w00426202
- * @since 2023-07-15
  */
 @RunWith(PowerMockRunner.class)
 public class TidbTableProviderTest {

@@ -34,9 +34,6 @@ import java.util.Map;
 /**
  * {@link GaussDBTSingleEnvironmentProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/7/21
  */
 public class GaussDBTSingleEnvironmentProviderTest {
     private ProviderManager providerManager = PowerMockito.mock(ProviderManager.class);

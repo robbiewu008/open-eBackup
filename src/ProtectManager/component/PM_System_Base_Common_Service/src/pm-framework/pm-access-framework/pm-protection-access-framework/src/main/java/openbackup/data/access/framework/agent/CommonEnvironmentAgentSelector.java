@@ -31,9 +31,6 @@ import java.util.Map;
 /**
  * 传统数据库资源的保护代理选择器，备份/恢复该类资源时保护代理和受保护环境在一起
  *
- * @author j00364432
- * @version [OceanProtect X8000 1.2.1]
- * @since 2021-11-26
  */
 @Component
 @Slf4j

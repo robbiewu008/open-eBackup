@@ -26,9 +26,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述 api工具类
  *
- * @author t30028453
- * @version [DataBackup 1.3.0]
- * @since 2023-05-31
  */
 public class AgentApiUtil {
     /**

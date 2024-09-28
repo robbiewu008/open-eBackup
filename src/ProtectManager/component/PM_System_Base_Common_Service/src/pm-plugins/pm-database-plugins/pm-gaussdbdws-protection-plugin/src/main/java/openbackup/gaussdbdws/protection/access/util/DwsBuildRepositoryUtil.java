@@ -48,9 +48,6 @@ import java.util.Optional;
 /**
  * 构建Repository 对象工具类
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-01
  */
 @Slf4j
 public class DwsBuildRepositoryUtil {

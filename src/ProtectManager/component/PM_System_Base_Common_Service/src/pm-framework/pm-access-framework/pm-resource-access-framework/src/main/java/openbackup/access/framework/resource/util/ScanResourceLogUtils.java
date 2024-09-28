@@ -26,8 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * 功能描述
  *
- * @author c00642388
- * @since 2024-06-05
  */
 @Component
 @Slf4j

@@ -75,9 +75,6 @@ import java.util.UUID;
 /**
  * 统一框架副本创建索引服务类的测试类
  *
- * @author lWX776769
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-01-13
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {UnifiedCopyIndexService.class})

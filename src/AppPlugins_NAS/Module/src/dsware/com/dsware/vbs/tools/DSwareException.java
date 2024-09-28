@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 /**
  * DSwareException
  *
- * @since 2024-08-27
  */
 public class DSwareException extends RuntimeException {
     private static Method getErrorMethod;

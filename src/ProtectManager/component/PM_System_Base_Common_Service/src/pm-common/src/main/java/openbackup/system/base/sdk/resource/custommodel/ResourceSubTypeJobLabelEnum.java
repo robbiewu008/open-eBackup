@@ -21,9 +21,6 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * 资源子类型与任务日志的步骤label（log_info）的枚举类
  *
- * @author c30063664
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-08-06
  */
 @Slf4j
 public enum ResourceSubTypeJobLabelEnum {

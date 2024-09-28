@@ -46,9 +46,6 @@ import java.util.Optional;
 /**
  * {@link OpenStackBackupAdapter} 测试类
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-07
  */
 public class OpenStackBackupAdapterTest {
     private static final String RESOURCE_ID = "test resource id";

@@ -60,8 +60,6 @@ import java.util.Optional;
 /**
  * 描述
  *
- * @author h30027154
- * @since 2022-05-27
  */
 @SpringBootTest(classes = {
     DefaultDbBackupInterceptor.class, DefaultDbRestoreInterceptorProvider.class, TestBaseCopyDeleteInterceptor.class

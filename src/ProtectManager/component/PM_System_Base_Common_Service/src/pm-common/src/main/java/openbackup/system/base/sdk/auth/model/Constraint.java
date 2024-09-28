@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 调cmdb接口查询ip时封装的请求参数 Constraint
  *
- * @author z00664377
- * @since 2023-08-04
  */
 @Getter
 @Setter

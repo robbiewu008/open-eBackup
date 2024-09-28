@@ -27,9 +27,6 @@ import org.springframework.context.annotation.Primary;
 /**
  * 微服务内部证书双向认证配置类
  *
- * @author xwx1016404
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-24
  */
 @Slf4j
 @Configuration

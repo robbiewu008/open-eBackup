@@ -19,8 +19,6 @@ import java.math.BigDecimal;
 /**
  * 存储容量统计信息
  *
- * @author c30047317
- * @since 2023-07-18
  */
 @Data
 public class StorageCapacitySummaryVo {

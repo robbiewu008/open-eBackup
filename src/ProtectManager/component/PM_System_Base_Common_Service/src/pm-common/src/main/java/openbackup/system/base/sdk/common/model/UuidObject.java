@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 /**
  * Uuid Object
  *
- * @author l00272247
- * @since 2020-09-23
  */
 @Data
 @NoArgsConstructor

@@ -38,9 +38,6 @@ import java.util.UUID;
 /**
  * mysql llt 基本参数mock类
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/6/23
  */
 public class MysqlBaseMock {
     public static ProtectedResource mockGetGrantParentResource(RestoreTask task, String type, MysqlBaseService mysqlBaseService) {

@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 /**
  * 恶意参数名单 华为C语言编程规范V5_1.pdf 附录B
  *
- * @since 2022-04-01
  */
 public enum EvilParams {
     /**

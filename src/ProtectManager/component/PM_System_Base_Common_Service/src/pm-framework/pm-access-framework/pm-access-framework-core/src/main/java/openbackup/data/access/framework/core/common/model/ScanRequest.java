@@ -22,8 +22,6 @@ import lombok.Setter;
 /**
  * Global Search index
  *
- * @author l00347293
- * @since 2021-01-12
  **/
 @Getter
 @Setter

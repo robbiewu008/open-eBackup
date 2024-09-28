@@ -34,8 +34,6 @@ import java.util.List;
 /**
  * 框架提供的默认构造存储仓的方法
  *
- * @author w30044259
- * @since 2024-03-26
  */
 @Component
 @AllArgsConstructor

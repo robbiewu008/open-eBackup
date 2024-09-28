@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * AntiRansomware 本地调用防勒索API接口定义
  *
- * @author mwx1009754
- * @since 2022-10-13
  */
 public interface AntiRansomwareApi {
     /**

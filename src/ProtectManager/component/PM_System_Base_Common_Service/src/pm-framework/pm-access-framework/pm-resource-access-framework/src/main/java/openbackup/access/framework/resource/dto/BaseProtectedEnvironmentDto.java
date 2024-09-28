@@ -27,9 +27,6 @@ import javax.validation.constraints.Max;
 /**
  * 更新受保护环境信息DTO对象
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-14
  */
 @Data
 public class BaseProtectedEnvironmentDto {

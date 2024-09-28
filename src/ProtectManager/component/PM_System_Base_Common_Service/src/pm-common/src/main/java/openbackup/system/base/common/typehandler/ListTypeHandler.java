@@ -32,8 +32,6 @@ import java.util.List;
 /**
  * ListTypeHandler List类型数据库字段转换
  *
- * @author z00445440
- * @since 2023-01-09
  */
 @MappedJdbcTypes(JdbcType.VARBINARY)
 @MappedTypes({List.class})

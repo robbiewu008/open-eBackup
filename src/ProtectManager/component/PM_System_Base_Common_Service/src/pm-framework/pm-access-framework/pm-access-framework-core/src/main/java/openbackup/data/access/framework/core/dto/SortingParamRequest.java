@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * Sorting parameter object
  *
- * @author j00364432
- * @version [BCManager 8.0.0]
- * @since 2019-12-23
  */
 @Data
 public class SortingParamRequest {

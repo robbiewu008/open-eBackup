@@ -27,9 +27,6 @@ import java.net.SocketTimeoutException;
 /**
  * 功能描述: WebExceptionHandlerTest
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2023-2-28
  */
 public class WebExceptionHandlerTest {
     private final WebExceptionHandler handler = new WebExceptionHandler();

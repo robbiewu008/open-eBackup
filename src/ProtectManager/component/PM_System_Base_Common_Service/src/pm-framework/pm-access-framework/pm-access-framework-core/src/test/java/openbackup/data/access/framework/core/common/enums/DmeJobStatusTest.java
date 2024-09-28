@@ -21,9 +21,6 @@ import org.junit.Test;
 /**
  * DmeJobStatus LLT
  *
- * @author z30027603
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-07-26
  */
 public class DmeJobStatusTest {
     @Test

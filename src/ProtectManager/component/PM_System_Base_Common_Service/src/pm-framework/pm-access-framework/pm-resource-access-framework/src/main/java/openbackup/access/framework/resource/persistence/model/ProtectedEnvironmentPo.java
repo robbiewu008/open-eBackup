@@ -20,8 +20,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 /**
  * Protected Environment Po
  *
- * @author l00272247
- * @since 2021-10-18
  */
 public class ProtectedEnvironmentPo extends ProtectedResourcePo {
     private String endpoint;

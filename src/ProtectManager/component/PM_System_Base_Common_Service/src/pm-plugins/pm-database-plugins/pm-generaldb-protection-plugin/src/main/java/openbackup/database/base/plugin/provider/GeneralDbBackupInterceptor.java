@@ -49,9 +49,6 @@ import java.util.OptionalInt;
 /**
  * 通用数据库备份拦截器
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-28
  */
 @Slf4j
 @Component

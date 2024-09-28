@@ -19,9 +19,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 /**
  * 生产存储的Feign客户端
  *
- * @author y00559272
- * @version [A8000 1.0.0]
- * @since 2021-01-05
  */
 @FeignClient(
         name = "productStorageClientRestApi",

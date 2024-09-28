@@ -35,8 +35,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 /**
  * 功能描述
  *
- * @author w30042425
- * @since 2023-06-12
  */
 @RunWith(PowerMockRunner.class)
 @SpringBootTest(classes = {

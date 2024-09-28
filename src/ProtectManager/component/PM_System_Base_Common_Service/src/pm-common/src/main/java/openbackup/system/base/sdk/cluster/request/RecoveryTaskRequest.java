@@ -20,8 +20,6 @@ import javax.validation.constraints.Size;
 /**
  * 功能描述
  *
- * @author w30042425
- * @since 2023-07-22
  */
 @Data
 public class RecoveryTaskRequest {

@@ -17,9 +17,6 @@ import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvide
 /**
  * 受保护资源发送告警资源名称填充Provider
  *
- * @author z30027603
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-3-31
  */
 public interface ResourceAlarmProvider extends DataProtectionProvider<ProtectedResource> {
     /**

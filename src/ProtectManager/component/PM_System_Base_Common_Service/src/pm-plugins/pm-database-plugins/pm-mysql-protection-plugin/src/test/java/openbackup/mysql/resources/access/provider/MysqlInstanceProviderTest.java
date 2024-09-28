@@ -62,9 +62,6 @@ import java.util.Optional;
 /**
  * MySQL单实例注册测试类
  *
- * @author xWX950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-01
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {FeignBuilder.class})

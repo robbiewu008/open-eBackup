@@ -17,9 +17,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 /**
  * ProtectResourceUtil
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-18
  */
 public class ProtectedResourceUtil {
     /**

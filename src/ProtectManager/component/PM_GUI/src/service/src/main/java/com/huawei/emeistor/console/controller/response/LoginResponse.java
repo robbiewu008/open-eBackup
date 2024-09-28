@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 登录请求response
  *
- * @author t00482481
- * @since 2020-9-06
  */
 @Setter
 @Getter

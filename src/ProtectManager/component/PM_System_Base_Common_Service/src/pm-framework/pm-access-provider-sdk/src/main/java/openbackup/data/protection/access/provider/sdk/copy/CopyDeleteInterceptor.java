@@ -24,9 +24,6 @@ import java.util.Optional;
 /**
  * 副本删除拦截器
  *
- * @author h30027154
- * @version OceanProtect X8000 1.2.1
- * @since 2022-06-15
  */
 public interface CopyDeleteInterceptor extends DataProtectionProvider<String> {
     /**

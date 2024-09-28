@@ -27,9 +27,6 @@ import java.lang.reflect.Method;
 /**
  * 覆盖类中的成员变量
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023/4/20
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({AvailableTimeRanges.class, DmeTest.class})

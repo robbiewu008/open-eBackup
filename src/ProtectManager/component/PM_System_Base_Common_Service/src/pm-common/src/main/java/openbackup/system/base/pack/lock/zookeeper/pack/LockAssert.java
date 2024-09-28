@@ -15,8 +15,6 @@ package openbackup.system.base.pack.lock.zookeeper.pack;
 /**
  * 保存锁的上下文，方便判断是否真的已获取锁
  *
- * @author w30042425
- * @since 2023-06-12
  */
 public class LockAssert {
     private static final ThreadLocal<String> CURRENT_LOCK_NAME = ThreadLocal.withInitial(() -> null);

@@ -41,9 +41,6 @@ import java.util.stream.Collectors;
 /**
  * 数据库集群环境服务
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-29
  */
 @Service
 @Slf4j

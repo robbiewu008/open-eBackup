@@ -38,9 +38,6 @@ import java.util.Optional;
 /**
  * SQL Server单实例注册provider
  *
- * @author xWX1016404
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-20
  */
 @Component
 @Slf4j

@@ -24,7 +24,6 @@ import javax.validation.constraints.Size;
 /**
  * PM防勒索-更新租户列表请求
  *
- * @since 2022-12-13
  */
 @Data
 @AllArgsConstructor

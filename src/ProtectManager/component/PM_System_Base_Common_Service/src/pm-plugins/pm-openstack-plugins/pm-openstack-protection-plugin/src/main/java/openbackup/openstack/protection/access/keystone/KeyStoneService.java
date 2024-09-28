@@ -59,9 +59,6 @@ import java.util.regex.Pattern;
 /**
  * KeyStoneService调用服务
  *
- * @author x30038064
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-24
  */
 @Slf4j
 @Component

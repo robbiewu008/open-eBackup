@@ -24,9 +24,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
  * 1.必须使用PowerMockRunner执行测试
  * 2.必须在@PrepareForTest中声明KmcHelper.class
  *
- * @author y00559272
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023/3/24
  **/
 @PrepareForTest(value = {KmcHelper.class})
 public class KmcHelperMocker {

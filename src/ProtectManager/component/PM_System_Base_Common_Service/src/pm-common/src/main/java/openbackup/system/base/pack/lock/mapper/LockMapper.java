@@ -24,9 +24,6 @@ import java.util.Date;
 /**
  * T_DISTRIBUTED_LOCK DAO
  *
- * @author w30042425
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-06-10
  */
 public interface LockMapper extends BaseMapper<LockEntity> {
     /**

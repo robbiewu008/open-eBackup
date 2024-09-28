@@ -30,8 +30,6 @@ import java.util.List;
 /**
  * Resource type Enum
  *
- * @author l00557046
- * @since 2020-10-14
  */
 @Slf4j
 public enum ResourceSubTypeEnum {

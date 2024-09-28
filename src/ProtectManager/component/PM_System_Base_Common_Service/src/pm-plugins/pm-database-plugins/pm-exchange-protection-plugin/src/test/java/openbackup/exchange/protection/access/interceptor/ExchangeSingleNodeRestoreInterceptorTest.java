@@ -42,8 +42,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author w30032137
- * @since 2023-05-31
  */
 @ExtendWith(MockitoExtension.class)
 class ExchangeSingleNodeRestoreInterceptorTest {

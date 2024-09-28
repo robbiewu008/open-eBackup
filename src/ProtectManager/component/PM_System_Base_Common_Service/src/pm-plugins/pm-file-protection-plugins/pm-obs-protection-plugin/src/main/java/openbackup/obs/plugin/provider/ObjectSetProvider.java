@@ -43,8 +43,6 @@ import java.util.Objects;
 /**
  * OBS对象集合Provider
  *
- * @author c30035089
- * @since 2023-11-15
  */
 @Component
 @Slf4j

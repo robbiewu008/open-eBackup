@@ -25,9 +25,6 @@ import java.util.List;
 /**
  * 功能描述: OracleCapabilityProviderTest
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2023-03-08
  */
 public class OracleCapabilityProviderTest {
     /**

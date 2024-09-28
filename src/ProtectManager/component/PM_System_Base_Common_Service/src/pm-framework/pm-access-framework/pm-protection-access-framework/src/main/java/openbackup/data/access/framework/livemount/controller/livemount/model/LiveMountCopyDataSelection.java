@@ -21,8 +21,6 @@ import javax.validation.constraints.NotNull;
 /**
  * Live Mount Copy Data Selection
  *
- * @author l00272247
- * @since 2020-09-17
  */
 @Data
 public class LiveMountCopyDataSelection {

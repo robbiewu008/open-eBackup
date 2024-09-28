@@ -22,9 +22,6 @@ import java.util.List;
 /**
  * 存储库基类
  *
- * @author y00413474
- * @version [BCManager 8.0.0]
- * @since 2020-06-19
  */
 @Data
 public class RepositoryBase {

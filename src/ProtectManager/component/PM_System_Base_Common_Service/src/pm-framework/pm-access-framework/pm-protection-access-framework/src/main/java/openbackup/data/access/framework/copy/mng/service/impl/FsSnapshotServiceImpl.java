@@ -43,9 +43,6 @@ import org.springframework.stereotype.Service;
  * 安全一体机创建快照实现
  * 支持Dorado/OceanProtect/Pacific设备
  *
- * @author q00564609
- * @since 2024-06-14
- * @version OceanCyber 300 1.2.0
  */
 @Slf4j
 @Service

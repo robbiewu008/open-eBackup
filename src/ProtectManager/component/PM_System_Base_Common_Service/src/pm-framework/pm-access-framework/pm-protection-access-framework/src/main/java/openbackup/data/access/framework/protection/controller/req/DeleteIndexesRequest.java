@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * The DeleteIndexesRequest
  *
- * @author g30003063
- * @since 2021/12/16
  */
 @Getter
 @Setter
