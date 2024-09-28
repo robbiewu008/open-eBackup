@@ -11,7 +11,7 @@
 ::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 rem @dest:   application agent for cifs
 rem @date:   2022-06-18
-rem @authr:  kWX884906
+rem @authr:
 rem @modify:
 
 setlocal EnableDelayedExpansion
