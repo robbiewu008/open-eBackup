@@ -40,8 +40,6 @@ import java.util.Map;
 /**
  * 功能描述
  *
- * @author z00427109
- * @since 2023-08-28
  */
 @RunWith(PowerMockRunner.class)
 public class OceanBaseTenantBackupInterceptorTest {

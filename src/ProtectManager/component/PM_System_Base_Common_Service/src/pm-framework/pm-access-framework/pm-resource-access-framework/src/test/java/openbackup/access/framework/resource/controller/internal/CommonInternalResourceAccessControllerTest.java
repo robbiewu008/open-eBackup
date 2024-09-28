@@ -47,7 +47,6 @@ public class CommonInternalResourceAccessControllerTest {
 /**
  * CommonResourceAccessController测试
  *
- * @since 2022-07-19
  */
     @Autowired
     private MockMvc mvc;

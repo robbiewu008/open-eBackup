@@ -50,9 +50,6 @@ import java.util.List;
 /**
  * GeneralDbCopyDeleteInterceptor测试类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-30
  */
 @SpringBootTest(classes = {
     GeneralDbCopyDeleteInterceptor.class, GeneralDbProtectAgentService.class, SqlInitializationAutoConfiguration.class

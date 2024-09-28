@@ -27,8 +27,6 @@ import java.util.function.Consumer;
 /**
  * app util
  *
- * @author l00272247
- * @since 2019-11-06
  */
 public class AppUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppUtil.class);

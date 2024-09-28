@@ -19,8 +19,6 @@ import java.util.Map;
 /**
  * Dme File System Share Info
  *
- * @author l00272247
- * @since 2022-01-06
  */
 @Data
 public class DmeFileSystemShareInfo {

@@ -46,8 +46,6 @@ import java.util.UUID;
 /**
  * CopyDeleteCompleteHandler LLT
  *
- * @author m00576658
- * @since 2021-03-26
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(CopyDeleteCompleteHandler.class)

@@ -24,8 +24,6 @@ import java.util.UUID;
 /**
  * 单元测试使用的数据结构
  *
- * @author w00616953
- * @since 2021-12-07
  */
 public class MockEntity {
     public static ProtectedEnvironment mockProtectedEnvironment() {

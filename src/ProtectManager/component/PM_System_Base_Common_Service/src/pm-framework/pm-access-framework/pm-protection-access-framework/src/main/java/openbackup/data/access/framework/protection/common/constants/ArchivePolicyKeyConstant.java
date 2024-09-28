@@ -15,9 +15,6 @@ package openbackup.data.access.framework.protection.common.constants;
 /**
  * 归档策略常量的key定义
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/18
  **/
 public class ArchivePolicyKeyConstant {
     /**

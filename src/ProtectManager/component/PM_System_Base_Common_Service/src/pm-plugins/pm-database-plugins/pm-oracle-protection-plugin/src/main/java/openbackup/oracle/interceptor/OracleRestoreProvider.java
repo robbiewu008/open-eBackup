@@ -72,9 +72,6 @@ import java.util.Optional;
 /**
  * oracle副本恢复
  *
- * @author c30038333
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023/2/2
  */
 @Slf4j
 @Component

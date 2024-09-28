@@ -35,8 +35,6 @@ import java.util.Optional;
 /**
  * 功能描述
  *
- * @author c00826511
- * @since 2024-06-13
  */
 @RunWith(PowerMockRunner.class)
 public class ObjectStorageCommonJobProviderTest {

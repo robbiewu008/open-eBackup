@@ -29,9 +29,6 @@ import java.util.stream.IntStream;
 /**
  * 集合列表工具类
  *
- * @author j00364432
- * @version [OceanStor BCManager eReplication V200R001C500, 2018-7-25]
- * @since 2019-11-01
  */
 public final class CollectionUtils {
     private CollectionUtils() {}

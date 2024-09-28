@@ -25,9 +25,6 @@ import javax.validation.Validator;
 /**
  * Controller中自定义参数的基类校验器
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022/3/5
  **/
 public abstract class BaseParamValidator<T> implements org.springframework.validation.Validator {
     /**

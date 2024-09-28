@@ -18,9 +18,6 @@ import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 /**
  * 主机环境上资源浏览 Provider
  *
- * @author lwx776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-04
  */
 public interface ResourceBrowseProvider extends DataProtectionProvider<String> {
     /**

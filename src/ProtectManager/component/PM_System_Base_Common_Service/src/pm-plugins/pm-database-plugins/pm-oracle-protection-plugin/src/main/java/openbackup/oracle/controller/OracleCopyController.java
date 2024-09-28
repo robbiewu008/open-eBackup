@@ -34,9 +34,6 @@ import javax.validation.constraints.NotNull;
 /**
  * Oracle副本相关接口
  *
- * @author c30038333
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-04-04
  */
 @Slf4j
 @RestController

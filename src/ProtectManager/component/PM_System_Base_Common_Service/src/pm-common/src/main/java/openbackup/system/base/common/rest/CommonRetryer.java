@@ -28,8 +28,6 @@ import java.util.function.BiPredicate;
 /**
  * Common Retryer
  *
- * @author l00272247
- * @since 2021-05-31
  */
 @Slf4j
 public class CommonRetryer<T> implements Retryer {

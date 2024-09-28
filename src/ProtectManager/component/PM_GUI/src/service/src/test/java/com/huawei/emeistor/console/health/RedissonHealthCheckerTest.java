@@ -33,8 +33,6 @@ import java.lang.reflect.Field;
 /**
  * The RedissonHealthCheckerTest
  *
- * @author g30003063
- * @since 2022/1/27
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SpringApplication.class, SystemUtil.class})

@@ -18,9 +18,6 @@ import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvide
  * This interface defines the protection providers that need to be implemented by DataMover, such as backup, archiving,
  * and copy copy.
  *
- * @author j00364432
- * @version [BCManager 8.0.0]
- * @since 2020-06-19
  */
 public interface BackupProvider extends DataProtectionProvider<String> {
     /**

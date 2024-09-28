@@ -35,9 +35,6 @@ import javax.sql.DataSource;
 /**
  * 数学工具类
  *
- * @author z90001721
- * @version V100R001C00
- * @since 2019-10-25
  */
 @Configuration
 public class DataSourceConfig {

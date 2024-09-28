@@ -21,8 +21,6 @@ import java.sql.Timestamp;
 /**
  * Protected Object Po
  *
- * @author l00272247
- * @since 2021-10-20
  */
 @TableName("PROTECTED_OBJECT")
 public class ProtectedObjectPo {

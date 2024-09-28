@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 节点控制器信息
  *
- * @author g30003063
- * @since 2021-07-27
  */
 @Getter
 @Setter

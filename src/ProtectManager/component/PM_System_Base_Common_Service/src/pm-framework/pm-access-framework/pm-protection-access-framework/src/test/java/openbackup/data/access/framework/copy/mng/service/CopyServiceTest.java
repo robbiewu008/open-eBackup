@@ -67,9 +67,6 @@ import java.util.List;
 /**
  * 副本相关的测试类
  *
- * @author jwx701567
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-25
  */
 
 @RunWith(PowerMockRunner.class)

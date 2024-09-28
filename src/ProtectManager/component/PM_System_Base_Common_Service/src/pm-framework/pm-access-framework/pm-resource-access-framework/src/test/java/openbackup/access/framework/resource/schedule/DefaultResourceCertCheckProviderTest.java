@@ -24,9 +24,6 @@ import java.util.HashMap;
 /**
  * DefaultResourceCertCheckProvider Test
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/10/14
  */
 public class DefaultResourceCertCheckProviderTest {
     /**

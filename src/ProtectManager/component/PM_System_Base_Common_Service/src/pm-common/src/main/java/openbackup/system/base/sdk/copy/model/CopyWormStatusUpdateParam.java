@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * 修改副本WORM状态请求体
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-20
  */
 @Data
 public class CopyWormStatusUpdateParam {

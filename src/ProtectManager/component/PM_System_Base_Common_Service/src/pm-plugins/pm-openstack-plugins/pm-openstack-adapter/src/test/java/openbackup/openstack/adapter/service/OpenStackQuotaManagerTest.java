@@ -37,9 +37,6 @@ import java.util.List;
 /**
  * {@link OpenStackQuotaManager} 测试类
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-28
  */
 public class OpenStackQuotaManagerTest {
     private final UserQuotaService quotaService = Mockito.mock(UserQuotaService.class);

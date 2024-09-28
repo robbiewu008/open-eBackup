@@ -15,9 +15,6 @@ package openbackup.gaussdbt.protection.access.provider.constant;
 /**
  * GaussDBT常量
  *
- * @author hwx1144169
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-30
  */
 public class GaussDBTConstant {
     /**

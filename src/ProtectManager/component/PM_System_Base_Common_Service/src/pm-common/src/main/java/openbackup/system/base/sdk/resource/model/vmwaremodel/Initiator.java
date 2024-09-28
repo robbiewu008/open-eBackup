@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * Initiator 实体类
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-07-31
  */
 @Getter
 @Setter

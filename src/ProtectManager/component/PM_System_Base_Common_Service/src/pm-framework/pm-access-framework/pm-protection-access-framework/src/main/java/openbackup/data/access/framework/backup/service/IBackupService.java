@@ -18,9 +18,6 @@ import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 /**
  * 备份服务，处理备份请求
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-25
  */
 public interface IBackupService {
     /**

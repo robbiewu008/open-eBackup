@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 客户端扩展信息
  *
- * @author q00654632
- * @since 2023-10-08
  */
 @Data
 public class AgentExtend {

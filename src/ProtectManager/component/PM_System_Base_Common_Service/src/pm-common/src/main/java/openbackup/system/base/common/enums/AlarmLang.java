@@ -15,8 +15,6 @@ package openbackup.system.base.common.enums;
 /**
  * The AlarmLang
  *
- * @author g30003063
- * @since 2022-08-09
  */
 public enum AlarmLang {
     EN(1, "en"),

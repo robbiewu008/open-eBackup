@@ -50,9 +50,6 @@ import java.util.Map;
  * Restore msg listener, this lister will consume the restore msg and the specified provider is found by provider
  * registry to complete the restore service logic processing.
  *
- * @author j00364432
- * @version [OceanStor 100P 8.1.0]
- * @since 2020-06-22
  */
 @Component
 @Slf4j

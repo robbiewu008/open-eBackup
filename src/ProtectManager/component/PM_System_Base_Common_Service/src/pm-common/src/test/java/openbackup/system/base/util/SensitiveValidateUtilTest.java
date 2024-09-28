@@ -25,8 +25,6 @@ import java.util.stream.Stream;
 /**
  * 功能描述
  *
- * @author t30028453
- * @since 2022-10-12
  */
 public class SensitiveValidateUtilTest {
     /**

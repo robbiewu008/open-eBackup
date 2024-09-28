@@ -23,8 +23,6 @@ import javax.validation.constraints.NotEmpty;
 /**
  * 查询告警详情接口的参数
  *
- * @author y30021475
- * @since 2023-11-13
  */
 @Getter
 @Setter

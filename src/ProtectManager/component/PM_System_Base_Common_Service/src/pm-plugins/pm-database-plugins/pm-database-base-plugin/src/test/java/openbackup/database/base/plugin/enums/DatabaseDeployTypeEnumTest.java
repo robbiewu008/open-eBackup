@@ -20,9 +20,6 @@ import org.junit.Test;
 /**
  * DatabaseDeployTypeEnumTest
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.5.0]
- * @since 2024-01-20
  */
 public class DatabaseDeployTypeEnumTest {
     /**

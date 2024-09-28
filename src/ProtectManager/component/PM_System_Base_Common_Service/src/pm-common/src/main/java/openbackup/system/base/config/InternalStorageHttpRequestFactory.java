@@ -26,8 +26,6 @@ import javax.net.ssl.SSLSocketFactory;
 /**
  * 自定义InternalStorageHttpRequestFactory
  *
- * @author y30046482
- * @since 2023-12-23
  */
 public class InternalStorageHttpRequestFactory extends SimpleClientHttpRequestFactory {
     private static final Logger logger = LoggerFactory.getLogger(InternalStorageHttpRequestFactory.class);

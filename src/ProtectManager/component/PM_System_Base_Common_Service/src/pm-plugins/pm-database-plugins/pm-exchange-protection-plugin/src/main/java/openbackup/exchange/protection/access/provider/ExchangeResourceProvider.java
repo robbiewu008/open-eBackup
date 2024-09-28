@@ -26,8 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * exchange资源provider, 目前只实现资源删除前检查功能
  *
- * @author z00693144
- * @since 2024-06-27
  */
 @Slf4j
 @Component

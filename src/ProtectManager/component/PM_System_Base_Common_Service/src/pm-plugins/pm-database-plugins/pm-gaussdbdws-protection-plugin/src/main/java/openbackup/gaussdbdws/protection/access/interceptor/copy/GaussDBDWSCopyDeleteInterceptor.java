@@ -64,9 +64,6 @@ import java.util.stream.Collectors;
 /**
  * GaussDBDWS副本删除Provider
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-19
  */
 @Slf4j
 @Component

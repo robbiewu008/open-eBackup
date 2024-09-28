@@ -17,8 +17,6 @@ import java.util.function.Supplier;
 /**
  * Lambda
  *
- * @author l00272247
- * @since 2021-12-25
  */
 public final class Lambda {
     private Lambda() {}

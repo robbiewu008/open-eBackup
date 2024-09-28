@@ -31,9 +31,6 @@ import javax.validation.Valid;
 /**
  * 资源Redis冗余锁内部接口
  *
- * @author w30044259
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-08-04
  */
 @Slf4j
 @RestController

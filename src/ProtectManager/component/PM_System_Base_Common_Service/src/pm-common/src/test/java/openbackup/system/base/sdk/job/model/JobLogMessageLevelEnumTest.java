@@ -22,8 +22,6 @@ import org.junit.rules.ExpectedException;
 /**
  * JobLogMessageLevelEnum test
  *
- * @author jwx701567
- * @since 2021-03-12
  */
 public class JobLogMessageLevelEnumTest {
     @Rule

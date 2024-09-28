@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 查询集群任务请求体
  *
- * @author w00607005
- * @since 2023-08-15
  */
 @Data
 public class ClusterJobRequest {

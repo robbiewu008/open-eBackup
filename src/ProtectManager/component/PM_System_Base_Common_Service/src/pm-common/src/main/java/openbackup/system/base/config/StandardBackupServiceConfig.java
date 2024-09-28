@@ -27,8 +27,6 @@ import javax.validation.constraints.Pattern;
 /**
  * 标准备份服务 参数
  *
- * @author swx1010572
- * @since 2021-09-26
  */
 @Data
 @AllArgsConstructor

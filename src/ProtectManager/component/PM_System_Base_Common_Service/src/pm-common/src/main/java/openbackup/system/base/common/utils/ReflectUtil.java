@@ -24,9 +24,6 @@ import java.util.Locale;
 /**
  * 反射工具
  *
- * @author l00272247
- * @version [V200R001C30, 2018-07-10]
- * @since 2019-11-01
  */
 public final class ReflectUtil {
     private static final Logger logger = LoggerFactory.getLogger(ReflectUtil.class);

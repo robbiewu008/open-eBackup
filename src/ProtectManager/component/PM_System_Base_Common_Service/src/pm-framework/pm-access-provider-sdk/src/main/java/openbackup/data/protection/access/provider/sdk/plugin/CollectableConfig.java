@@ -17,7 +17,6 @@ import lombok.Data;
 /**
  *  收集的配置
  *
- * @since 2022-05-23
  */
 @Data
 public class CollectableConfig {

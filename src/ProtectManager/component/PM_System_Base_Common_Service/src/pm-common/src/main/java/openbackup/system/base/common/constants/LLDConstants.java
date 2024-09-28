@@ -15,9 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * LLD常量
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-08-20
  */
 public class LLDConstants {
     /**

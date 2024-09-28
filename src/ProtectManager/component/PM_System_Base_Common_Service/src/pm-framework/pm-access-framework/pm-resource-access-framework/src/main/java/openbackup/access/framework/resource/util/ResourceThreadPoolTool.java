@@ -24,9 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 资源扫描的线程池工具类
  *
- * @author t30028453
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-19
  */
 @Slf4j
 public class ResourceThreadPoolTool {

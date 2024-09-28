@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * S3StorageStatusResponse
  *
- * @author y30046482
- * @since 2023-08-17
  */
 @Getter
 @Setter

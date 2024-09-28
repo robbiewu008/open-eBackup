@@ -17,8 +17,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 /**
  * 用户模块记录操作日志
  *
- * @author jwx701567
- * @since 2021-04-23
  */
 public interface ManualSendOperationLog {
     /**

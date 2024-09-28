@@ -19,9 +19,6 @@ import java.util.Optional;
 /**
  * 归档任务上下文统一抽象接口
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/14
  **/
 public interface ArchiveContext {
     /**

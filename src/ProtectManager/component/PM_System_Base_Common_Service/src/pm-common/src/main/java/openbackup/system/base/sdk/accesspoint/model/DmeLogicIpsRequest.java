@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * DME 修改逻辑端口链路请求
  *
- * @author swx1010572
- * @since 2021-01-12
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)

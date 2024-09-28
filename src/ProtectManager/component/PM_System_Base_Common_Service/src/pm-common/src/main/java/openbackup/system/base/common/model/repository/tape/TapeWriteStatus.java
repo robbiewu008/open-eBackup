@@ -25,8 +25,6 @@ import java.util.Set;
 /**
  * 磁带写状态
  *
- * @author w50021188
- * @since 2021-08-11
  **/
 @Getter
 @AllArgsConstructor

@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * 初始化动作结果
  *
- * @author swx1010572
- * @since 2021-01-15
  */
 @Data
 @ToString

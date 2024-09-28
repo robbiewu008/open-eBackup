@@ -19,8 +19,6 @@ import java.util.Arrays;
 /**
  * OceanStorageEthernetPortQuery
  *
- * @author 存储设备端口类型
- * @since 2021-05-06
  */
 @Getter
 public enum StoragePortType {

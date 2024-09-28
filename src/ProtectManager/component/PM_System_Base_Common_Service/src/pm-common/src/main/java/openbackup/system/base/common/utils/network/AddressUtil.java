@@ -33,9 +33,6 @@ import java.util.regex.Pattern;
 /**
  * Ip地址工具类
  *
- * @author s90004407
- * @version [Lego V100R002C10, 2014-12-18]
- * @since 2019-11-01
  */
 public final class AddressUtil {
     /**

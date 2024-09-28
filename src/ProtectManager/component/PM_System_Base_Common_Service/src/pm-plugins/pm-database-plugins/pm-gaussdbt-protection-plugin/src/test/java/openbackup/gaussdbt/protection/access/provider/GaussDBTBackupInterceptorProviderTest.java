@@ -33,9 +33,6 @@ import java.util.Map;
 /**
  * GaussDBT备份拦截器Provider测试类
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-24
  */
 public class GaussDBTBackupInterceptorProviderTest {
     private final GaussDBTBackupInterceptorProvider gaussDBTBackupInterceptorProvider

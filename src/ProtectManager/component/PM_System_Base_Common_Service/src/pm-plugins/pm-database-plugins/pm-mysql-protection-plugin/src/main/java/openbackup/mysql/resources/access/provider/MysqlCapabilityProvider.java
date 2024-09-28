@@ -26,8 +26,6 @@ import java.util.List;
 /**
  * Mysql副本支持操作
  *
- * @author w30042425
- * @since 2023-12-28
  */
 @Component
 @Slf4j

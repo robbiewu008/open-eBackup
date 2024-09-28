@@ -38,9 +38,6 @@ import java.util.Collections;
 import java.util.UUID;
 
 /**
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/27
  **/
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JobLogRecorder.class)

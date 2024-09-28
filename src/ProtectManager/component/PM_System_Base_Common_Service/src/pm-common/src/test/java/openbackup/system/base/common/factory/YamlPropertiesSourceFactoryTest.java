@@ -27,8 +27,6 @@ import java.io.IOException;
 /**
  * 功能描述
  *
- * @author l30023229
- * @since 2023-08-10
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {YamlPropertiesSourceFactory.class})

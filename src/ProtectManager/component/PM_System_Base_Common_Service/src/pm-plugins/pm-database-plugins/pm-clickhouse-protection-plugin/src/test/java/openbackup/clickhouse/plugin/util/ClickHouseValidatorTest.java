@@ -38,9 +38,6 @@ import java.util.List;
 /**
  * ClickHouse Validator Test
  *
- * @author w00439064
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-27
  */
 @RunWith(PowerMockRunner.class)
 public class ClickHouseValidatorTest {

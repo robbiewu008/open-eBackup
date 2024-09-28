@@ -21,8 +21,6 @@ import lombok.Getter;
 /**
  * 保留策略
  *
- * @author z30006621
- * @since 2021-08-24
  */
 @Getter
 @AllArgsConstructor

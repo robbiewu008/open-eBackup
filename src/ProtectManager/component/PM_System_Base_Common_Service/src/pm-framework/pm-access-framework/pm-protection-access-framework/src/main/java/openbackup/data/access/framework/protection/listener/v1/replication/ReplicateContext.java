@@ -30,8 +30,6 @@ import java.util.List;
 /**
  * Replicate Context
  *
- * @author l00272247
- * @since 2020-11-21
  */
 @Getter
 @Builder

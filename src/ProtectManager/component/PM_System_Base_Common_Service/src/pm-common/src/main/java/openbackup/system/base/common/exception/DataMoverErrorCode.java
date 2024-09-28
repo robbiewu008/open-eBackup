@@ -15,8 +15,6 @@ package openbackup.system.base.common.exception;
 /**
  * Data Mover Error Code
  *
- * @author l00272247
- * @since 2020-07-13
  */
 public interface DataMoverErrorCode {
     /**

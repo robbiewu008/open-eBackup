@@ -19,8 +19,6 @@ import openbackup.system.base.sdk.job.model.JobStatusEnum;
 /**
  * Message Object
  *
- * @author l00272247
- * @since 22020-11-09
  */
 public class MessageObject extends JSONObject {
     /**

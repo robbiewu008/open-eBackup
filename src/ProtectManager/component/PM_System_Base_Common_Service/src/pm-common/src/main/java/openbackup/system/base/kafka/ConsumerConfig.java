@@ -52,8 +52,6 @@ import java.util.Optional;
 /**
  * kafka消费者配置类
  *
- * @author y00559272
- * @since 2021-04-09
  */
 @Slf4j
 @Configuration

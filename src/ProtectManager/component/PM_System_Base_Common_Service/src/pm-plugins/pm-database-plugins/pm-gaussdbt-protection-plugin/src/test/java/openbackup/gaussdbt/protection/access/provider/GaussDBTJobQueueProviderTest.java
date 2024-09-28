@@ -37,9 +37,6 @@ import java.util.Optional;
 /**
  * GaussDBTJobQueueProvider测试类
  *
- * @author x30028756
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2024/1/9
  */
 @SpringBootTest(classes = {
     GaussDBTJobQueueProvider.class

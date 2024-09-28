@@ -26,9 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * 创建PostgreSQL的SLA
  *
- * @author zwx1010134
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-01
  */
 @Slf4j
 @Component

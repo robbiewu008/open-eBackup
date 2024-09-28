@@ -34,8 +34,6 @@ import javax.validation.constraints.Min;
 /**
  * Smart Qos Policy
  *
- * @author l00272247
- * @since 2020-09-24
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)

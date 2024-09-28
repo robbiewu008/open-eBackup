@@ -22,9 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * 功能描述: LockResourceMapper
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-07-07
  */
 @Mapper
 @Component

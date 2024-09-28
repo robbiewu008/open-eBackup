@@ -28,8 +28,6 @@ import javax.validation.constraints.NotNull;
 /**
  * Live Mount Create Request
  *
- * @author l00272247
- * @since 2020-09-18
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class LiveMountObject {

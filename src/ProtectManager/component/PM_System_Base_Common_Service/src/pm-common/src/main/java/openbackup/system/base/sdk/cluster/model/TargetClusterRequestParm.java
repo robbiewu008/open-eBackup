@@ -21,9 +21,6 @@ import java.util.List;
 /**
  * 外部集群查询参数对象
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-15
  */
 @Data
 @AllArgsConstructor

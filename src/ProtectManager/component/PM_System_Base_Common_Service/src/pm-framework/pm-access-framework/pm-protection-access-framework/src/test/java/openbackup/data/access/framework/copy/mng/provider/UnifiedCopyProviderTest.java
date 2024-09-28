@@ -46,9 +46,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * UnifiedCopyProvider LLT
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-16
  */
 public class UnifiedCopyProviderTest {
     private static final String COPY_PROP = "{\"repositories\":[{\"id\":\"\",\"protocol\":1, \"type\": 1}]}";

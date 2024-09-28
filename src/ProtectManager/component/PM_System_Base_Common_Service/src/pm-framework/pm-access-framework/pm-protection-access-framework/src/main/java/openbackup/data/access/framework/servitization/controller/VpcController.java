@@ -53,8 +53,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * VpcController
  *
- * @author l30044826
- * @since 2023-08-11
  */
 @Slf4j
 @RestController

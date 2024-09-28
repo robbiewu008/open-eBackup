@@ -25,17 +25,11 @@ import java.util.Locale;
 /**
  * 告警枚举定义：告警级别、清除状态、确认状态、告警类型
  *
- * @author p00171530
- * @version [Lego V100R002C10, 2014-12-20]
- * @since 2019-10-28
  */
 public class FaultEnum {
     /**
      * 告警确认状态-> 该字段为了配套DPA,变更为告警状态
      *
-     * @author h90002262
-     * @version [版本号, 2010-9-1]
-     * @since 2019-10-28
      */
     public enum ConfirmState {
         /**
@@ -184,9 +178,6 @@ public class FaultEnum {
     /**
      * 消息类型定义
      *
-     * @author h90002262
-     * @version [Lego V100R002C10, 2010-7-21]
-     * @since 2010-07-21
      */
     public enum MessageTopic {
         /**
@@ -208,9 +199,6 @@ public class FaultEnum {
     /**
      * 告警级别定义 1--提示 2--次要 3--重要 4--紧急
      *
-     * @author h90002262
-     * @version [版本号, 2010-9-1]
-     * @since 2019-10-28
      */
     public enum AlarmSeverity {
         /**
@@ -355,9 +343,6 @@ public class FaultEnum {
     /**
      * 告警清除状态
      *
-     * @author h90002262
-     * @version [版本号, 2010-9-1]
-     * @since 2019-10-28
      */
     public enum ClearState {
         /**
@@ -423,9 +408,6 @@ public class FaultEnum {
     /**
      * 告警类型定义
      *
-     * @author h90002262
-     * @version [版本号, 2010-9-1]
-     * @since 2019-10-28
      */
     public enum AlarmType {
         /**
@@ -568,9 +550,6 @@ public class FaultEnum {
     /**
      * 告警Trap类型定义 -1-无效类型 0-事件 1-故障 2-恢复告警 3-操作日志 4-运行日志
      *
-     * @author h90002262
-     * @version [版本号, 2010-11-17]
-     * @since 2019-10-28
      */
     public enum TrapType {
         /**
@@ -658,9 +637,6 @@ public class FaultEnum {
     /**
      * 北向告警Trap类型定义 -1-无效类型 1-故障 2-恢复告警 3-事件 4-确认告警 5-反确认告警
      *
-     * @author h90002262
-     * @version [版本号, 2010-11-17]
-     * @since 2019-10-28
      */
     public enum NorthTrapType {
         /**
@@ -719,9 +695,6 @@ public class FaultEnum {
     /**
      * snmp north 枚举
      *
-     * @author y30000858
-     * @version [8.0]
-     * @since 2020-07-03
      */
     public enum SnmpTrapEnum {
         /**
@@ -747,9 +720,6 @@ public class FaultEnum {
     /**
      * 告警排序枚举
      *
-     * @author y30000858
-     * @version [8.0]
-     * @since 2020-07-03
      */
     public enum OrderBy {
         /**
@@ -807,9 +777,6 @@ public class FaultEnum {
     /**
      * 分页排序枚举
      *
-     * @author y30000858
-     * @version [8.0]
-     * @since 2020-07-03
      */
     public enum OrderType {
         /**
@@ -846,9 +813,6 @@ public class FaultEnum {
     /**
      * 告警来源类型
      *
-     * @author y30000858
-     * @version [8.0]
-     * @since 2020-07-03
      */
     @Getter
     @AllArgsConstructor
@@ -999,9 +963,6 @@ public class FaultEnum {
     /**
      * 告警MoName类型
      *
-     * @author y30046482
-     * @version [OceanProtect DataBackup 1.6.0]
-     * @since 2024-07-17
      */
     @Getter
     @AllArgsConstructor

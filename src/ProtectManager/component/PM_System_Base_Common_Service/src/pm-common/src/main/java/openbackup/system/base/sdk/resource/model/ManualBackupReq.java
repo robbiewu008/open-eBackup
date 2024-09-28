@@ -21,9 +21,6 @@ import lombok.Setter;
 /**
  * 手动备份请求参数
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-23
  */
 @Getter
 @Setter

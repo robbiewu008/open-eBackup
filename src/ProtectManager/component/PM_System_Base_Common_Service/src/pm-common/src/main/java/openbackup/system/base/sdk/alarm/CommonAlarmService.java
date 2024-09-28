@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * 公共方法接口
  *
- * @author y30000858
- * @since 2020-06-21
  */
 public interface CommonAlarmService {
     /**

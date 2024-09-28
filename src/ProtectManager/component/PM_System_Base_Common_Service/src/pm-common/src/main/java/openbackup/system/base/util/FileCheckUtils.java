@@ -35,8 +35,6 @@ import java.util.stream.Collectors;
 /**
  * 校验文件
  *
- * @author l30044826
- * @since 2023-05-11
  */
 @Slf4j
 public class FileCheckUtils {

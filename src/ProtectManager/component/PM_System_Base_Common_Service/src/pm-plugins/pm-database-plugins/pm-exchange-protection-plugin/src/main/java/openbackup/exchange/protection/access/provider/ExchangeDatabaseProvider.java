@@ -27,8 +27,6 @@ import org.springframework.stereotype.Component;
 /**
  * ExchangeDatabaseProvider
  *
- * @author s30036254
- * @since 2023-04-27
  */
 @Slf4j
 @Component

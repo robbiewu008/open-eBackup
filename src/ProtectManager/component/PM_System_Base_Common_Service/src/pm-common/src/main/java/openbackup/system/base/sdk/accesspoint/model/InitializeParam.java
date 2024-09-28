@@ -28,8 +28,6 @@ import java.util.Map;
 /**
  * 初始化备份存储参数
  *
- * @author w00493811
- * @since 2020-12-26
  */
 @Data
 @Slf4j

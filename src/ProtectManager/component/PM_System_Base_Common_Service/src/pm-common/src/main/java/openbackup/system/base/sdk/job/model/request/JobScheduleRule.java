@@ -25,8 +25,6 @@ import java.util.Map;
 /**
  * Job Schedule Rule
  *
- * @author l00272247
- * @since 2021-03-12
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)

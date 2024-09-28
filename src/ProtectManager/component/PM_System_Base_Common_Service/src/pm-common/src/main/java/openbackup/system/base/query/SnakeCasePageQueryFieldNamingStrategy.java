@@ -19,8 +19,6 @@ import org.springframework.stereotype.Component;
 /**
  * SnakeCasePageQueryFieldNamingStrategy
  *
- * @author l00272247
- * @since 2021-06-03
  */
 @Component(SnakeCasePageQueryFieldNamingStrategy.NAME)
 public class SnakeCasePageQueryFieldNamingStrategy extends DefaultPageQueryFieldNamingStrategy {

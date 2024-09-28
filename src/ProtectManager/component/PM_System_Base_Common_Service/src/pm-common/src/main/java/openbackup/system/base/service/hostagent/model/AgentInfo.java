@@ -27,8 +27,6 @@ import javax.validation.constraints.Max;
 /**
  * Agent信息类
  *
- * @author q00654632
- * @since 2023-10-08
  */
 @Getter
 @Setter

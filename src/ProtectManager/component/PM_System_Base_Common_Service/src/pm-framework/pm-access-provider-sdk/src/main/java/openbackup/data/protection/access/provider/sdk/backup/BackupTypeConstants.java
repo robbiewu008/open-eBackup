@@ -17,8 +17,6 @@ import openbackup.system.base.util.EnumUtil;
 /**
  * 功能描述
  *
- * @author l00422407
- * @since 2020-12-04
  */
 public enum BackupTypeConstants {
     /**

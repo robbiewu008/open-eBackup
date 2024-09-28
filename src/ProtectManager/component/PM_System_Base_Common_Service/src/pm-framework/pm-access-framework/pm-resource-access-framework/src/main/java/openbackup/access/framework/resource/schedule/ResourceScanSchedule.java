@@ -28,9 +28,6 @@ import java.util.Optional;
 /**
  * 资源扫描Schedule
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-11-02
  */
 @Slf4j
 @Component

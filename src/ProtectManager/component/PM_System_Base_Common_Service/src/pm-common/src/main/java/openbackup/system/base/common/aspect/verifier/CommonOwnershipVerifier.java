@@ -22,8 +22,6 @@ import java.util.function.BiConsumer;
 /**
  * Common Ownership Verifier
  *
- * @author l00272247
- * @since 2020-11-28
  */
 public class CommonOwnershipVerifier implements DomainBasedOwnershipVerifier {
     private final String type;

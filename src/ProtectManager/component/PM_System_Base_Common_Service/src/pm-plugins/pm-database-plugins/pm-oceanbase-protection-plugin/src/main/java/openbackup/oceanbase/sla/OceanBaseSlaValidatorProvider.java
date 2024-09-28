@@ -44,8 +44,6 @@ import java.util.stream.Collectors;
 /**
  * OceanBase的sla校验器provider
  *
- * @author c00826511
- * @since 2023-07-22
  */
 @Component
 @Slf4j

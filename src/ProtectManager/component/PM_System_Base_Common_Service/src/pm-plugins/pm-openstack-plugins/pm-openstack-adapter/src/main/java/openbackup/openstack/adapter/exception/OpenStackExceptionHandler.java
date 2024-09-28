@@ -26,9 +26,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 /**
  * OpenStack北向接口异常处理器
  *
- * @author w00616953
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-30
  */
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)

@@ -18,9 +18,6 @@ import openbackup.system.base.sdk.copy.model.Copy;
 /**
  * 副本校验任务上下文
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/30
  **/
 public class CopyVerifyManagerContext {
     private Copy copy;

@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * DME副本信息中存储仓路径信息
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-11
  */
 @Data
 public class RemotePath {

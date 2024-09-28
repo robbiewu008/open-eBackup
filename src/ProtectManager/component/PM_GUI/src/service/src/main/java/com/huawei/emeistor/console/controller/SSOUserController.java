@@ -32,8 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * SSO用户(SAML用户,ADFS用户)登录接口
  *
- * @author w30042425
- * @since 2023-02-14
  */
 @Slf4j
 @Controller

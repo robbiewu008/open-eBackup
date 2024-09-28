@@ -30,9 +30,6 @@ import java.util.Optional;
  * <li>对不合法的请求参数进行拦截</li>
  * <li>拦截器由不同的插件提供，并和具体资源的子类型绑定</>
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-01
  */
 public interface RestoreInterceptorProvider extends DataProtectionProvider<String> {
     /**

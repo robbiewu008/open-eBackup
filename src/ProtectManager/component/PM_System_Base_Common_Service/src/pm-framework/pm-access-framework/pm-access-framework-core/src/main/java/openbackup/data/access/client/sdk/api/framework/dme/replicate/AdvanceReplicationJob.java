@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 终止复制任务
  *
- * @author m00576658
- * @since 2021-01-13
  */
 @Data
 public class AdvanceReplicationJob {

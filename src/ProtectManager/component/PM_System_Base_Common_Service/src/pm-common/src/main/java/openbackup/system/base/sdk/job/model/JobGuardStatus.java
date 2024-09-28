@@ -21,8 +21,6 @@ import java.util.Locale;
 /**
  * Job Guard Status
  *
- * @author l00272247
- * @since 2021-03-12
  */
 public enum JobGuardStatus {
     /**

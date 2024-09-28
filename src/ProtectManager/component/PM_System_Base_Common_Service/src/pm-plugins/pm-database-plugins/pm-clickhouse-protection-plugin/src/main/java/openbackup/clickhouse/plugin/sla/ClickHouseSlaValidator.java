@@ -24,9 +24,6 @@ import org.springframework.stereotype.Component;
 /**
  * ClickHouse SLA校验类
  *
- * @author w00439064
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-07
  */
 @Component
 public class ClickHouseSlaValidator implements SlaValidateProvider {

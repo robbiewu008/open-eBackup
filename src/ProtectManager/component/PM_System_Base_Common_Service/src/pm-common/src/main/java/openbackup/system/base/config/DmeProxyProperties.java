@@ -22,9 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * 功能描述: DME 备份网络平面代理
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-17
  */
 @Setter
 @Getter

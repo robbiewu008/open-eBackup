@@ -23,9 +23,6 @@ import lombok.NoArgsConstructor;
 /**
  * 开关SFTP参数
  *
- * @author wx1016945
- * @version [BCManager 8.0.0]
- * @since 2021-06-16
  */
 @Data
 @AllArgsConstructor

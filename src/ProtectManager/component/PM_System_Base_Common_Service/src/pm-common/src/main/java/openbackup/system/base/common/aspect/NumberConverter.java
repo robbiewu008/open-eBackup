@@ -17,8 +17,6 @@ import org.springframework.stereotype.Component;
 /**
  * Number Converter
  *
- * @author l00272247
- * @since 2021-06-10
  */
 @Component
 public class NumberConverter extends AbstractConverter {

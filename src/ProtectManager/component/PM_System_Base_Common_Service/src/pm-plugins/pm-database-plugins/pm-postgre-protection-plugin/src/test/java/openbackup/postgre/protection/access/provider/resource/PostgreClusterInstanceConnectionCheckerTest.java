@@ -42,9 +42,6 @@ import java.util.Map;
 /**
  * poostgre集群实例ConnectionChecker测试类
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.6.0]
- * @since 2024-04-25
  */
 public class PostgreClusterInstanceConnectionCheckerTest {
     private static final String ENDPOINT = "8.40.99.187";

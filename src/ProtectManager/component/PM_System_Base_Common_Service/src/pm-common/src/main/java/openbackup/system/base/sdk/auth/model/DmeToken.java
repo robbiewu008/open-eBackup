@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * DME token
  *
- * @author z30062305
- * @since 2023-07-027
  */
 @Setter
 @Getter

@@ -18,9 +18,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 锁接口
  *
- * @author w30042425
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-03
  */
 public interface Lock {
     /**

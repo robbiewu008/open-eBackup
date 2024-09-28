@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 归档存储信息
  *
- * @author z30009433
- * @since 2020-12-31
  */
 @Data
 public class ArchiveStorage {

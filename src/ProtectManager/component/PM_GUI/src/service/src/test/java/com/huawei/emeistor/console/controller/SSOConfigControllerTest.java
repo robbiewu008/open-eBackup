@@ -41,8 +41,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * SSO功能配置测试
  *
- * @author w30042425
- * @since 2023-02-14
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {

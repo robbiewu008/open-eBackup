@@ -37,9 +37,6 @@ import java.util.List;
 /**
  * {@link CommonEnvironmentAgentSelector} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-31
  */
 public class CommonEnvironmentAgentSelectorTest {
     private final ProtectedEnvironmentService environmentService = PowerMockito.mock(ProtectedEnvironmentService.class);

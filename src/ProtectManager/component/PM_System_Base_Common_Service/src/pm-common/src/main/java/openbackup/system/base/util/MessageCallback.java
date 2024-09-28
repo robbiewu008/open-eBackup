@@ -28,9 +28,6 @@ import java.util.Locale;
 /**
  * 爱数保护计划消息回调类
  *
- * @author l00557046
- * @version [BCManager 8.0.0]
- * @since 2020-08-15
  */
 @Component
 public class MessageCallback<K, V> implements ProducerListener<K, V> {

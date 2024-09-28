@@ -57,8 +57,6 @@ import java.util.Optional;
 /**
  * oracle单实例注册provider
  *
- * @author c30038333
- * @since 2022-12-27
  */
 @Component
 @Slf4j

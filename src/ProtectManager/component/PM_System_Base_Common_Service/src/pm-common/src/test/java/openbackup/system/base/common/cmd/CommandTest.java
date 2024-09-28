@@ -27,9 +27,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * Command Test
  *
- * @author fwx1022842
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022/3/9
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Command.class)

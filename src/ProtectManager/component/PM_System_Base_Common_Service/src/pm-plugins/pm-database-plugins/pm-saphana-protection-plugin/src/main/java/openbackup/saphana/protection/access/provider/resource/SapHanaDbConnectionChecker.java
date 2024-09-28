@@ -43,9 +43,6 @@ import java.util.stream.Collectors;
 /**
  * SAP HANA数据库连通测试校验类
  *
- * @author wWX1013713
- * @version [DataBackup 1.5.0]
- * @since 2023-05-23
  */
 @Component
 @Slf4j

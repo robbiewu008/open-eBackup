@@ -21,8 +21,6 @@ import lombok.Getter;
 /**
  * 磁带驱动器压缩状态
  *
- * @author g30003063
- * @since 2021-08-10
  */
 @Getter
 @AllArgsConstructor

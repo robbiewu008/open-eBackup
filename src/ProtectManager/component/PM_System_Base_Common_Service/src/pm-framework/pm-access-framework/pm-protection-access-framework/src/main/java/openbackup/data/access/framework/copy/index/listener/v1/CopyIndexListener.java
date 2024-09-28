@@ -58,8 +58,6 @@ import java.util.Map;
 /**
  * Copy index msg listener, this lister will consume the copy index msg
  *
- * @author l00347293
- * @since 2021-01-05
  */
 @Component
 @Slf4j

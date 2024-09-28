@@ -50,9 +50,6 @@ import java.util.Optional;
 /**
  * SQL Server单实例注册测试类
  *
- * @author xWX1016404
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-20
  */
 @RunWith(PowerMockRunner.class)
 public class SqlServerInstanceProviderTest {

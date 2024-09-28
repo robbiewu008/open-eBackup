@@ -55,9 +55,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述: Openstack备份拦截器
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-09
  */
 @Slf4j
 @Component

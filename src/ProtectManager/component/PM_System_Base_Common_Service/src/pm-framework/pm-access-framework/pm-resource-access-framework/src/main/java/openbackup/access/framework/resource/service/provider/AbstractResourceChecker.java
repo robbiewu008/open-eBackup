@@ -23,8 +23,6 @@ import java.util.Map;
 /**
  * The AbstractResourceChecker
  *
- * @author g30003063
- * @since 2022-05-28
  */
 public abstract class AbstractResourceChecker<T> implements ProtectedResourceChecker<T> {
     /**

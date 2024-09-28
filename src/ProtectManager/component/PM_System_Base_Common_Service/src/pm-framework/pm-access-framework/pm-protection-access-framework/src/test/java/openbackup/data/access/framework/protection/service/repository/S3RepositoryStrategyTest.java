@@ -31,8 +31,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * S3RepositoryStrategy测试类
  *
- * @author y30021475
- * @since 2023-09-06
  */
 @RunWith(PowerMockRunner.class)
 public class S3RepositoryStrategyTest {

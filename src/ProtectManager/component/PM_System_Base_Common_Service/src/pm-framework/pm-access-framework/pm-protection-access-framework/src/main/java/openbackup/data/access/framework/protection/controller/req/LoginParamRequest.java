@@ -21,8 +21,6 @@ import lombok.Data;
 /**
  * HDFS Login Params
  *
- * @author m00576658
- * @since 2020/08/05
  */
 @Data
 public class LoginParamRequest {

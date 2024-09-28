@@ -23,8 +23,6 @@ import javax.validation.constraints.Size;
 /**
  * 更新任务状态时数据模型
  *
- * @author w00616953
- * @since 2021-11-29
  */
 @Data
 public class UpdateJobStatusRequest {

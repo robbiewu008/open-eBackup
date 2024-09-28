@@ -42,9 +42,6 @@ import java.util.stream.Collectors;
 /**
  * SAP HANA工具类
  *
- * @author wWX1013713
- * @version [DataBackup 1.5.0]
- * @since 2023-05-10
  */
 @Slf4j
 public class SapHanaUtil {

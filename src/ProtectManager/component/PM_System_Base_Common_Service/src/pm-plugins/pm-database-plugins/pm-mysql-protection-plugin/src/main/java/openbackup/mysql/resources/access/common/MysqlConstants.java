@@ -15,9 +15,6 @@ package openbackup.mysql.resources.access.common;
 /**
  * 数据库相关常量类
  *
- * @author xWX950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-07
  */
 public class MysqlConstants {
     /**

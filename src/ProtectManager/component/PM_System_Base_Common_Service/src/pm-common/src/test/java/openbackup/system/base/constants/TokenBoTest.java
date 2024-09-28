@@ -24,8 +24,6 @@ import java.util.Collections;
 /**
  * TokenBo test
  *
- * @author h30003246
- * @since 2021-02-23
  */
 public class TokenBoTest {
     public static final String ROLE_SYS_ADMIN = "88a94c476f12a21e016f12a246e50001";

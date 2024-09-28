@@ -33,8 +33,6 @@ import java.util.stream.Collectors;
 /**
  * Sensitive Data Eliminate Service
  *
- * @author l00272247
- * @since 2021-03-06
  */
 @Component
 public class SensitiveDataEliminateService {

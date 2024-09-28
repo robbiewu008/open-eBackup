@@ -39,9 +39,6 @@ import java.util.Map;
 /**
  * DB2单实例provider
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2022-12-27
  */
 @Component
 @Slf4j

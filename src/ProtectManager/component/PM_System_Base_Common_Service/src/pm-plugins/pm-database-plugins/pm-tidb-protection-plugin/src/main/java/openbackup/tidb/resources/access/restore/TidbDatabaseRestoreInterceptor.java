@@ -35,8 +35,6 @@ import java.util.List;
 /**
  * 数据库恢复
  *
- * @author w00426202
- * @since 2023-07-21
  */
 @Slf4j
 @Component

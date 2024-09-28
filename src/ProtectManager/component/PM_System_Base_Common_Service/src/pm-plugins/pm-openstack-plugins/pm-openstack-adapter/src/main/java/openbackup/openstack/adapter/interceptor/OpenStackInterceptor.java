@@ -30,9 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * OpenStack北向接口Web拦截器
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-30
  */
 @Slf4j
 @Component

@@ -20,9 +20,6 @@ import org.hibernate.validator.constraints.Range;
 /**
  * Lego告警
  *
- * @author swx1010572
- * @version [Lego V100R002C10, 2014-12-20]
- * @since 2021-04-22
  */
 @Data
 public class InternalAlarm {

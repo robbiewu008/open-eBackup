@@ -38,9 +38,6 @@ import java.util.Map;
 /**
  * 统一即时挂载卸载任务完成处理器测试类
  *
- * @author twx1009756
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-01-18
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

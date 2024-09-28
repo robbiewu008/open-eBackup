@@ -24,8 +24,6 @@ import java.lang.annotation.Target;
 /**
  * RestClient
  *
- * @author l00272247
- * @since 2020-08-12
  */
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

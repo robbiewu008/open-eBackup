@@ -23,9 +23,6 @@ import java.util.Map;
 /**
  * Resource entity, this class entity Indicates a specific resource, for example db, file system, vm.
  *
- * @author j00364432
- * @version [BCManager 8.0.0]
- * @since 2020-06-17
  */
 @Data
 public class Resource {

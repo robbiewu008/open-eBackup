@@ -21,8 +21,6 @@ import lombok.NoArgsConstructor;
 /**
  * ????
  *
- * @author x00464136
- * @since 2023-06-09
  */
 @Data
 @AllArgsConstructor

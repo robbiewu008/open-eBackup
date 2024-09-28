@@ -22,9 +22,6 @@ import org.springframework.stereotype.Service;
 /**
  * EnvironmentServices
  *
- * @author zwx951267
- * @version [DataBackup 1.5.0]
- * @since 2023-05-26
  */
 @Service
 @Slf4j

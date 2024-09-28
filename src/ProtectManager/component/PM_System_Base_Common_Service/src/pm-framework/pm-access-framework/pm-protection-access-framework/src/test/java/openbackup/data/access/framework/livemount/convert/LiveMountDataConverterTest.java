@@ -30,8 +30,6 @@ import java.util.Collection;
 /**
  * test LiveMountData Converter
  *
- * @author fwx1022842
- * @since 2021-3-8
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

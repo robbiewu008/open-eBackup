@@ -23,8 +23,6 @@ import lombok.NoArgsConstructor;
 /**
  * 证书替换所需的证书类型
  *
- * @author yWX1126359
- * @since 2022/2/19
  */
 @Data
 @AllArgsConstructor

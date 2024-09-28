@@ -19,9 +19,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 /**
  * 保护Provider, 根据subType区分
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023/11/10
  */
 public interface ProtectObjectProvider extends DataProtectionProvider<String> {
     /**

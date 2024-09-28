@@ -15,9 +15,6 @@ package openbackup.mysql.resources.access.common;
 /**
  * mysql相关错误码
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/12
  */
 public class MysqlErrorCode {
     /**

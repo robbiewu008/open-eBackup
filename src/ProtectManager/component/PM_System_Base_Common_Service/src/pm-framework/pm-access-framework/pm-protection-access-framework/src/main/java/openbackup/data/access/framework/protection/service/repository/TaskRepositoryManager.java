@@ -71,9 +71,6 @@ import java.util.stream.Collectors;
 /**
  * 获取备份/恢复的多集群RepositoryManager
  *
- * @author: swx1010572
- * @version: [OceanProtect X8000 2.1.0]
- * @since: 2022/07/13
  **/
 @Component
 @Slf4j

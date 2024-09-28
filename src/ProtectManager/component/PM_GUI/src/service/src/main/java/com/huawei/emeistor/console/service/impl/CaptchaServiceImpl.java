@@ -34,8 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 验证码相关service
  *
- * @author t00482481
- * @since 2020-9-06
  */
 @Service
 public class CaptchaServiceImpl implements CaptchaService {

@@ -15,9 +15,6 @@ package openbackup.mysql.resources.access.enums;
 /**
  * mysql节点role枚举
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/10/10
  */
 public enum MysqlRoleEnum {
     /**

@@ -29,9 +29,6 @@ import java.util.Map;
 /**
  * 删除副本任务实体类
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-15
  */
 @Data
 public class DeleteCopyTask {

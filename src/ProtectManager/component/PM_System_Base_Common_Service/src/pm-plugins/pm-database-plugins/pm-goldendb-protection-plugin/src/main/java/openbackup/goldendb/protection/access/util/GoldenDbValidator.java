@@ -26,8 +26,6 @@ import java.util.Map;
 /**
  * 功能描述 GoldenDbValidator参数校验
  *
- * @author s30036254
- * @since 2023-02-06
  */
 @Slf4j
 public class GoldenDbValidator {

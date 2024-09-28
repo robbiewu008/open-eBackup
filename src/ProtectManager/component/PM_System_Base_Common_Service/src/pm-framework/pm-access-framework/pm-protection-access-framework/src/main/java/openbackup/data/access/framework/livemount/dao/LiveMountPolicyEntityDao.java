@@ -27,8 +27,6 @@ import org.apache.ibatis.annotations.Select;
 /**
  * Updating Policy Entity Dao
  *
- * @author l00272247
- * @since 2020-09-17
  */
 @DbMangerMapper
 @CalleeMethods(

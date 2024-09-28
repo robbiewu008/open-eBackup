@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * date format constant
  *
- * @author h30003246
- * @since 2021-03-05
  */
 public class DateFormatConstant {
     /**

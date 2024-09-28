@@ -50,8 +50,6 @@ import java.util.Optional;
 /**
  * 对象备份恢复任务拦截器
  *
- * @author l00370588
- * @since 2023-12-28
  */
 @Component
 @Slf4j

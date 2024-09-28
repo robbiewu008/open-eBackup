@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * Dmc Copy Service Api
  *
- * @author l00272247
- * @since 2022-01-20
  */
 public interface DmcCopyServiceApi {
     /**

@@ -19,8 +19,6 @@ import java.lang.reflect.Type;
 /**
  * Simple Type Reference
  *
- * @author l00272247
- * @since 2020-07-13
  */
 public class SimpleTypeReference extends TypeReference<Object> {
     private Type type;

@@ -26,8 +26,6 @@ import java.util.Map;
 /**
  * 存储池健康状态
  *
- * @author w00493811
- * @since 2020-12-08
  */
 @Getter
 @AllArgsConstructor

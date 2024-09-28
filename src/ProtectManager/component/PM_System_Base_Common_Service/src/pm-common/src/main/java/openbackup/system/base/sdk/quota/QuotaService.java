@@ -15,8 +15,6 @@ package openbackup.system.base.sdk.quota;
 /**
  * 删除用户的配额信息
  *
- * @author w30042425
- * @since 2023-01-18
  */
 public interface QuotaService {
     /**

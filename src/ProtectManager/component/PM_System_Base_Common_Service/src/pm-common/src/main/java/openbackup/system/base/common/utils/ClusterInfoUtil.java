@@ -22,8 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * 获取当前集群信息工具类
  *
- * @author y30044273
- * @since 2023-09-18
  */
 @Component
 @CalleeMethods(name = "cluster_info_util", value = {@CalleeMethod(name = "getCurrentClusterInfo")})

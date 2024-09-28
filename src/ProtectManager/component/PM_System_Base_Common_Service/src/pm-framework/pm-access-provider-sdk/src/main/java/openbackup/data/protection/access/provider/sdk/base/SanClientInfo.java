@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * SanClient的实体模型，方便以后扩展其他参数
  *
- * @author n30046257
- * @since 2023/7/11
  */
 @Data
 @AllArgsConstructor

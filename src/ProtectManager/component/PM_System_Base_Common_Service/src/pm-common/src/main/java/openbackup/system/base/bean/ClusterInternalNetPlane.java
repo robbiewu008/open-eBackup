@@ -28,9 +28,6 @@ import java.util.List;
 /**
  * ClusterInternalNetPlane
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-03-06
  */
 @Getter
 @Setter

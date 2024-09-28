@@ -35,9 +35,6 @@ import java.util.List;
 /**
  * {@link GaussDBTSingleAgentProvider} 参数类
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/8/30
  */
 public class GaussDBTSingleAgentProviderTest {
     private final GaussDBTSingleService gaussDBTSingleService = PowerMockito.mock(GaussDBTSingleService.class);

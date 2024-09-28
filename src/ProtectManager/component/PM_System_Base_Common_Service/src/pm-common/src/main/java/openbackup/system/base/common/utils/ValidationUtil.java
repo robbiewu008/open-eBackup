@@ -26,8 +26,6 @@ import javax.validation.Validator;
 /**
  * 实现任何地方校验有@size等注解的bean的工具类
  *
- * @author y30046482
- * @since 2023-10-19
  */
 public class ValidationUtil {
     /**

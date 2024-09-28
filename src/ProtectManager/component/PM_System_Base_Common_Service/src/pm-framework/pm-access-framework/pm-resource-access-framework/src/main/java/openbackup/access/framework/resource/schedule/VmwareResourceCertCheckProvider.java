@@ -28,9 +28,6 @@ import java.util.Optional;
 /**
  * Vmware资源证书check provider
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/10/13
  */
 @Slf4j
 @Component

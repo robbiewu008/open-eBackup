@@ -20,9 +20,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 /**
  * 功能描述: Schedule线程池
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-20
  */
 @Configuration
 public class SchedulingConfiguration {

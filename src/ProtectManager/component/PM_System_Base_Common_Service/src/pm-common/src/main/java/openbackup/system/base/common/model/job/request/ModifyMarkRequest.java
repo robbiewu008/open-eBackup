@@ -21,9 +21,6 @@ import javax.validation.constraints.Size;
 /**
  * 修改处理意见请求
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-08-21
  */
 @Data
 @AllArgsConstructor

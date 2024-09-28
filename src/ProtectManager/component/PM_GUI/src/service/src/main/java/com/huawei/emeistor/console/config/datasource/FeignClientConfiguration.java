@@ -52,8 +52,6 @@ import javax.net.ssl.TrustManagerFactory;
 /**
  * 功能描述
  *
- * @author w30042425
- * @since 2023-06-27
  */
 @Slf4j
 public class FeignClientConfiguration implements RequestInterceptor {

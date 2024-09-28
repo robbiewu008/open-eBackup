@@ -79,9 +79,6 @@ import java.util.stream.Collectors;
 /**
  * CNware资源注册扫描
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-12-12
  */
 @Component
 @Slf4j

@@ -24,9 +24,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * 吊销列表
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/28
  */
 @Slf4j
 public class CrlContent {

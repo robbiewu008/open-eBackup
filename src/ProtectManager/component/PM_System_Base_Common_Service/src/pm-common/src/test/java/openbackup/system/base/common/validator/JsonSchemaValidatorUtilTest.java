@@ -33,9 +33,6 @@ import java.util.Optional;
 /**
  * {@link JsonSchemaValidatorUtil 测试类}
  *
- * @author dWX1009286
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-24
  */
 public class JsonSchemaValidatorUtilTest {
     /**
@@ -134,9 +131,6 @@ public class JsonSchemaValidatorUtilTest {
     /**
      * JsonTestFile
      *
-     * @author dWX1009286
-     * @version [OceanProtect DataBackup 1.3.0]
-     * @since 2023-02-24
      */
     public static class JsonTestFile {
         private String name;

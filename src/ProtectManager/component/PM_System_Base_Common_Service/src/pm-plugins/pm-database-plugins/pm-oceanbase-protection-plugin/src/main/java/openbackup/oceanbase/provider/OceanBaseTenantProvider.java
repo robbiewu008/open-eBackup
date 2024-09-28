@@ -39,8 +39,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述
  *
- * @author c00826511
- * @since 2023-07-06
  */
 @Slf4j
 @Component

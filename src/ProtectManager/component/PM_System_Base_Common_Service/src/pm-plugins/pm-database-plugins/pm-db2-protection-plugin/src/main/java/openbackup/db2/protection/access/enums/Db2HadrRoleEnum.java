@@ -17,9 +17,6 @@ import java.util.Arrays;
 /**
  * db2 hadr数据库角色
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-02-20
  */
 public enum Db2HadrRoleEnum {
     PRIMARY("PRIMARY"),

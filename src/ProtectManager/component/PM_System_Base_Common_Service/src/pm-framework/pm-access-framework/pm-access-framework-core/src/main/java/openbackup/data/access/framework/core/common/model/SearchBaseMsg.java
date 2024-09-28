@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Global Search index base message body
  *
- * @author l00347293
- * @since 2021-01-12
  **/
 @Data
 public class SearchBaseMsg {

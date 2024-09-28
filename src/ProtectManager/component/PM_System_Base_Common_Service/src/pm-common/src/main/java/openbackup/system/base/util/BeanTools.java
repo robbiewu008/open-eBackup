@@ -28,8 +28,6 @@ import java.util.stream.Stream;
 /**
  * Bean Tools
  *
- * @author l00272247
- * @since 2021-12-24
  */
 public class BeanTools {
     /**

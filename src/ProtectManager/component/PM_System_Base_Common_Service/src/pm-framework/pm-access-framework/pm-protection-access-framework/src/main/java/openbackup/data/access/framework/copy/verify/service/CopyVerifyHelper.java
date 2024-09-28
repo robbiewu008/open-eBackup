@@ -43,9 +43,6 @@ import java.util.function.Supplier;
 /**
  * 副本校验辅助工具类，提供静态方法.
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/29
  **/
 @Slf4j
 public abstract class CopyVerifyHelper {

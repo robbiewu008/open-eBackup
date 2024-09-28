@@ -22,8 +22,6 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * 仅供token生成解密用
  *
- * @author twx1011919
- * @since 2021-05-10
  */
 @Component("openbackup.system.utils.common.base.KMS4Token")
 public class KMS4Token {

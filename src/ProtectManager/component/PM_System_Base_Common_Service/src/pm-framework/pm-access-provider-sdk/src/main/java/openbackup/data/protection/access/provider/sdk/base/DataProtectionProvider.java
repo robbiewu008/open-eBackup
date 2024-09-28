@@ -16,9 +16,6 @@ package openbackup.data.protection.access.provider.sdk.base;
  * DataMover provider base class
  *
  * @param <T> template type
- * @author j00364432
- * @version [BCManager 8.0.0]
- * @since 2020-06-19
  */
 public interface DataProtectionProvider<T> {
     /**

@@ -20,9 +20,6 @@ import java.io.Serializable;
 /**
  * session信息
  *
- * @author y00280557
- * @version [OceanProtect A8000 1.1.0]
- * @since 2020-11-30
  */
 @Getter
 @Setter

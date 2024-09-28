@@ -21,9 +21,6 @@ import lombok.Setter;
 /**
  * 资源锁同步加锁响应
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/10/15
  **/
 @Setter
 @Getter

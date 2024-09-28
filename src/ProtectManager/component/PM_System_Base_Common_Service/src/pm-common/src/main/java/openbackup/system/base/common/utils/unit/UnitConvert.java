@@ -21,9 +21,6 @@ import java.text.NumberFormat;
 /**
  * 用于存放所有单位的枚举与转换逻辑
  *
- * @author x00102290
- * @version V100R001C00
- * @since 2019-10-25
  */
 public final class UnitConvert {
     /**

@@ -32,8 +32,6 @@ import java.util.List;
 /**
  * Live Mount Ownership Verify Controller
  *
- * @author l00272247
- * @since 2020-11-28
  */
 @RestController
 @RequestMapping("/v1/internal")

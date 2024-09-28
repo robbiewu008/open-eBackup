@@ -60,9 +60,6 @@ import java.util.Optional;
 /**
  * InformixServiceImplTest
  *
- * @author zWX951267
- * @version [DataBackup 1.5.0]
- * @since 2023-05-17
  */
 public class InformixServiceImplTest {
     private final ResourceService resourceService = PowerMockito.mock(ResourceService.class);

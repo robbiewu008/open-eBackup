@@ -20,8 +20,6 @@ import org.junit.Test;
 /**
  * CopyGeneratedByEnum test
  *
- * @author jwx701567
- * @since 2021-03-12
  */
 public class CopyGeneratedByEnumTest {
     @Test

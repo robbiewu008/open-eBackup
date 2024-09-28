@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 功能描述
  *
- * @author c00826511
- * @since 2023-07-26
  */
 @Data
 public class ResourcePool {

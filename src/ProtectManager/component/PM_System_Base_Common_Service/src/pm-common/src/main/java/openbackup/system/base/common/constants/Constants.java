@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * constants
  *
- * @author l00272247
- * @since 2019-11-04
  */
 public class Constants {
     /**
@@ -311,8 +309,6 @@ public class Constants {
     /**
      * Builtin
      *
-     * @author l00272247
-     * @since 2019-11-04
      */
     public static class Builtin {
         /**

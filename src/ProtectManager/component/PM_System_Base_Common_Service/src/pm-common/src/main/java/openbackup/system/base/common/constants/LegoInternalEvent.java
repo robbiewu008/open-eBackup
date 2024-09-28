@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * Lego告警
  *
- * @author h90002262
- * @version [Lego V100R002C10, 2014-12-20]
- * @since 2019-10-28
  */
 @Data
 public class LegoInternalEvent {

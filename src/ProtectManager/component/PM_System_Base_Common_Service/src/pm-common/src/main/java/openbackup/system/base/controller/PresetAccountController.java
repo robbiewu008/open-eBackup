@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 功能描述
  *
- * @author y30021475
- * @since 2023-08-07
  */
 @Slf4j
 @RestController

@@ -25,9 +25,6 @@ import org.springframework.stereotype.Component;
 /**
  * OpenStack恢复相关操作管理器
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-16
  */
 @Slf4j
 @Component

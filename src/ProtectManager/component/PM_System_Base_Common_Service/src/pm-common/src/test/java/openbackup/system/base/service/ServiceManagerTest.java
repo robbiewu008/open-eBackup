@@ -24,8 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * Service Manager Test
  *
- * @author twx1009756
- * @since 2021-03-17
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {

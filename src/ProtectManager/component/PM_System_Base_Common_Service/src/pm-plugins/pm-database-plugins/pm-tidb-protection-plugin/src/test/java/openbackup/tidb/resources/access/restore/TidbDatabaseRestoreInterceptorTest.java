@@ -44,8 +44,6 @@ import java.util.Map;
 /**
  * TidbClusterRestoreInterceptorTest
  *
- * @author w00426202
- * @since 2023-07-27
  */
 @RunWith(PowerMockRunner.class)
 public class TidbDatabaseRestoreInterceptorTest {

@@ -19,9 +19,6 @@ import org.slf4j.Logger;
 /**
  * 未获取到锁的异常
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-22
  */
 public class LockNotObtainedException extends LegoCheckedException {
     public LockNotObtainedException(String message, Throwable cause) {

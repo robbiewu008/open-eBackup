@@ -27,9 +27,6 @@ import java.util.stream.Collectors;
  * FutureResult类
  *
  * @param <T> 模板类
- * @author l00272247
- * @version V200R001C50
- * @since 2019-10-30
  */
 public class FutureResult<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(FutureResult.class);

@@ -30,8 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Saml用户登录接口
  *
- * @author w30042425
- * @since 2023-02-14
  */
 @Slf4j
 @Controller

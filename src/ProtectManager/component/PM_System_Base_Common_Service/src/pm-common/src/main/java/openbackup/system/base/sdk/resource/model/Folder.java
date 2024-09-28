@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * VMFolder信息
  *
- * @author h30003246
- * @since 2020-11-04
  */
 @Data
 public class Folder {

@@ -22,8 +22,6 @@ import lombok.Data;
 /**
  * Live Mount Destroy Param
  *
- * @author l00272247
- * @since 2020-09-22
  */
 @Data
 public class LiveMountUnmountParam {

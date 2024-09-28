@@ -103,9 +103,6 @@ import java.util.Optional;
 /**
  * 统一备份任务完成处理器
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-07
  */
 @Slf4j
 @Component

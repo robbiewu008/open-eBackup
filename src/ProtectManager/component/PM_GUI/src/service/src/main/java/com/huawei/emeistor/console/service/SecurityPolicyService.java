@@ -19,8 +19,6 @@ import org.springframework.http.HttpEntity;
 /**
  * 安全策略相关的操作类
  *
- * @author t00482481
- * @since 2020-07-05
  */
 public interface SecurityPolicyService {
     /**

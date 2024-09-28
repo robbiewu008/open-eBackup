@@ -24,9 +24,6 @@ import java.util.Map;
 /**
  * 归档任务对象，归档时所需要的参数由该对象承载
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/12
  **/
 public class ArchiveTask {
     /**

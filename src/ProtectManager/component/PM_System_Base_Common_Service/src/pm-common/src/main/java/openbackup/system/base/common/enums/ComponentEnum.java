@@ -15,8 +15,6 @@ package openbackup.system.base.common.enums;
 /**
  * 组件名枚举
  *
- * @author w00607005
- * @since 2023-08-04
  */
 public enum ComponentEnum {
     GAUSSDB("gaussdb");

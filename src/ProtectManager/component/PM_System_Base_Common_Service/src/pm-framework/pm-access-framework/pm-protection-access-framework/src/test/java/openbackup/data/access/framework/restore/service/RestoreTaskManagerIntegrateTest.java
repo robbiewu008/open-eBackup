@@ -68,7 +68,6 @@ import java.util.UUID;
 /**
  * RestoreTaskManager类集成测试，主要验证Retry & Recover机制
  *
- * @since 2022-09-02
  */
 @EnableRetry
 @RunWith(PowerMockRunner.class)

@@ -19,9 +19,6 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 /**
  * 功能描述: ErrorMessageConfigTest
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2023-2-28
  */
 public class ErrorMessageConfigTest {
     @Test

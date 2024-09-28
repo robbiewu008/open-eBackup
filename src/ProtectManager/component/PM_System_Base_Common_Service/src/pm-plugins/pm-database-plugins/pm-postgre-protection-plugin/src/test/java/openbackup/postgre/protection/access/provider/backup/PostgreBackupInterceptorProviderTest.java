@@ -41,9 +41,6 @@ import java.util.UUID;
 /**
  * postgre备份拦截器测试类
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-29
  */
 public class PostgreBackupInterceptorProviderTest {
     private final static String endpoint = "8.40.99.127";

@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * Php Mapping Jackson Http Message Converter Test
  *
- * @author l00272247
- * @since 2021-02-23
  */
 public class PhpMappingJackson2HttpMessageConverterTest {
     @Test

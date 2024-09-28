@@ -20,8 +20,6 @@ import lombok.Data;
 /**
  * Storage front service ips info
  *
- * @author p30001902
- * @since 2020-12-17
  */
 
 @Data

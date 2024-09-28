@@ -62,8 +62,6 @@ import java.util.Optional;
 /**
  * Abstract Live Mount Provider
  *
- * @author l00272247
- * @since 2020-09-24
  */
 @Slf4j
 public abstract class AbstractLiveMountProvider implements LiveMountProvider {

@@ -28,8 +28,6 @@ import java.util.List;
 /**
  * Target cluster service
  *
- * @author p30001902
- * @since 2020-11-19
  */
 @FeignClient(name = "TargetClusterApi", url = "${service.url.pm-system-base}/v1",
     configuration = CommonFeignConfiguration.class)

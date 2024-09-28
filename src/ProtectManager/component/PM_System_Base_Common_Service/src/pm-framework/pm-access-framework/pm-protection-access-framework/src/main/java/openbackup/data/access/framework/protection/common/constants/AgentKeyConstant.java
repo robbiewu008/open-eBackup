@@ -15,7 +15,6 @@ package openbackup.data.access.framework.protection.common.constants;
 /**
  * Agent选择器对应的高级参数
  *
- * @since 2022-04-21
  */
 public class AgentKeyConstant {
     /**

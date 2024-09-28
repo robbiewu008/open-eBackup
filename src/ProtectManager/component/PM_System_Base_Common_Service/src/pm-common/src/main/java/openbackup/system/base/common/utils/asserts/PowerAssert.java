@@ -27,9 +27,6 @@ import java.util.function.Supplier;
  * <p>此工具类代码可以消除大部分代码中需要对数据判空等判断条件验证，然后抛出业务异常的场景
  * <p>使用方法参考各个函数注释中的示例
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/20
  **/
 public abstract class PowerAssert {
     /**

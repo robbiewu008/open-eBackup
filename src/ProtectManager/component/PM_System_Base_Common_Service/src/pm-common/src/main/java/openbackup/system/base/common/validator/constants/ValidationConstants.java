@@ -15,9 +15,6 @@ package openbackup.system.base.common.validator.constants;
 /**
  * 验证错误码类
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-05
  */
 public class ValidationConstants {
     /**

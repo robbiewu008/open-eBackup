@@ -21,8 +21,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * zk 分布式锁 注解
  *
- * @author s00574739
- * @since 2021/08/05
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

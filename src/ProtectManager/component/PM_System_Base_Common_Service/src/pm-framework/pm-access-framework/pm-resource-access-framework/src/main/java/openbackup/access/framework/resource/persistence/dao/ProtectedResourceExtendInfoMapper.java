@@ -29,8 +29,6 @@ import java.util.List;
 /**
  * Protected Resource Extend Info Bo Mapper
  *
- * @author l00272247
- * @since 2021-10-15
  */
 @Mapper
 @Component

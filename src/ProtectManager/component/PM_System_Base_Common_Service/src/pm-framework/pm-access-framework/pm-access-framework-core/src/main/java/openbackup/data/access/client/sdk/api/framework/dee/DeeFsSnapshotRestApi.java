@@ -25,9 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * 文件系统快照DEE REST接口
  *
- * @author q00564609
- * @since 2024-6-17
- * @version OceanCyber 300 1.2.0
  */
 @FeignClient(name = "deeFsSnapshotRestApi",
     url = "${data-enable-engine-server.url}/v1/internal/",

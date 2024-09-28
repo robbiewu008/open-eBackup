@@ -21,9 +21,6 @@ import java.util.List;
 /**
  * NetWorkIpRoutesInfo
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-02-20
  */
 @Data
 @AllArgsConstructor

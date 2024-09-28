@@ -18,8 +18,6 @@ import lombok.Getter;
 /**
  * 设备管理器异常
  *
- * @author w00493811
- * @since 2020-12-15
  */
 @Getter
 public class DeviceManagerException extends FeignException {

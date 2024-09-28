@@ -62,9 +62,6 @@ import java.util.stream.Collectors;
 /**
  * GaussDB 应用基本的Service
  *
- * @author t30021437
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-02-09
  */
 @Slf4j
 @Service

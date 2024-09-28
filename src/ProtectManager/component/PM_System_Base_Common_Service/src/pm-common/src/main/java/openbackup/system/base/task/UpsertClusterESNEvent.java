@@ -20,8 +20,6 @@ import org.springframework.context.ApplicationEvent;
 /**
  * 初始化ESN事件
  *
- * @author w30042425
- * @since 2023-09-26
  */
 @Getter
 @Setter

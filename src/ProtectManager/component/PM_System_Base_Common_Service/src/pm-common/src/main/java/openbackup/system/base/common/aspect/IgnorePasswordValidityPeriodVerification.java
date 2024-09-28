@@ -20,8 +20,6 @@ import java.lang.annotation.Target;
 /**
  * Ignore Password Validity Period Verification
  *
- * @author l00272247
- * @since 2021-02-04
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

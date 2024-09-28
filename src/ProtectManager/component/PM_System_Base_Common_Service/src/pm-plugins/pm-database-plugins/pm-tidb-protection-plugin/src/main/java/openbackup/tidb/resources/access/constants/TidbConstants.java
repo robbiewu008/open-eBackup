@@ -15,8 +15,6 @@ package openbackup.tidb.resources.access.constants;
 /**
  * Tidb 常量
  *
- * @author w00426202
- * @since 2023-07-08
  */
 public class TidbConstants {
     /**

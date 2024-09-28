@@ -27,8 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * sftp feign client
  *
- * @author dWX1009286
- * @since 2021-06-10
  */
 @FeignClient(name = "InfrastructureSftpRestApi", url = "${service.url.sftp}/v1/infra/internal/sftp",
     configuration = CommonFeignConfiguration.class)

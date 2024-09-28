@@ -34,8 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 功能描述
  *
- * @author y30000858
- * @since 2020-07-10
  */
 @RestController
 @RequestMapping(ConfigConstant.CONSOLE)

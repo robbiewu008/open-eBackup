@@ -70,8 +70,6 @@ import java.util.UUID;
 /**
  * BackupTaskCompleteHandler LLT
  *
- * @author m00576658
- * @since 2021-03-26
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(BackupTaskCompleteHandler.class)

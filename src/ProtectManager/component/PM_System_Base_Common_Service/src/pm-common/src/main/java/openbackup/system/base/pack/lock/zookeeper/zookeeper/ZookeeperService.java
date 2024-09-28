@@ -22,9 +22,6 @@ import java.util.Map;
 /**
  * 功能描述
  *
- * @author y00413474
- * @version [BCManager 8.0.0]
- * @since 2020-05-30
  */
 public interface ZookeeperService {
     /**

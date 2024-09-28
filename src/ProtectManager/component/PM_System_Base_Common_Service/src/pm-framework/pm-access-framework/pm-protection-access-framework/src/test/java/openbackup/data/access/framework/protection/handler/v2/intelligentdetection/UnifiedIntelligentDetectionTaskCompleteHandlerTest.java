@@ -21,9 +21,6 @@ import org.powermock.api.mockito.PowerMockito;
 /**
  * 统一智能侦测任务完成处理器测试集合
  *
- * @author: x30028756
- * @version: [CyberEngine 1.0.0]
- * @since: 2023年3月2日23:40:36
  **/
 public class UnifiedIntelligentDetectionTaskCompleteHandlerTest {
     private final JobService jobService = mock(JobService.class);

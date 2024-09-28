@@ -38,9 +38,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Trust aspect
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-29
  */
 @Aspect
 @Component

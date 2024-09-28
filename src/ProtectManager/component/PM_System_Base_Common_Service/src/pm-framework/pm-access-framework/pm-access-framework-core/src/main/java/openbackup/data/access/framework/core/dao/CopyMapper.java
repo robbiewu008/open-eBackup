@@ -28,9 +28,6 @@ import java.util.List;
 /**
  * 副本mapper
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-03-01
  */
 @Mapper
 @Component

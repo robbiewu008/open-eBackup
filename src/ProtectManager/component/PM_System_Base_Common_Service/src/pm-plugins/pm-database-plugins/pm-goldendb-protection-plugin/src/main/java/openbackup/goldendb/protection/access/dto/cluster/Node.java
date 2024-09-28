@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 功能描述
  *
- * @author s30036254
- * @since 2023-02-14
  */
 @Data
 public class Node {

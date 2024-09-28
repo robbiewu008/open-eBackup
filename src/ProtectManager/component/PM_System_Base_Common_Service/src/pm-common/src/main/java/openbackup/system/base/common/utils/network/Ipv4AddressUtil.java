@@ -28,9 +28,6 @@ import java.util.regex.Pattern;
 /**
  * Ipv4地址工具类
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-12
  */
 public class Ipv4AddressUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(Ipv4AddressUtil.class);

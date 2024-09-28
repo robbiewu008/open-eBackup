@@ -46,9 +46,6 @@ import java.util.stream.Collectors;
 /**
  * dws 集群环境联通性校验覆写collectActionResults，异常抛出
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-29
  */
 @Component
 @Slf4j

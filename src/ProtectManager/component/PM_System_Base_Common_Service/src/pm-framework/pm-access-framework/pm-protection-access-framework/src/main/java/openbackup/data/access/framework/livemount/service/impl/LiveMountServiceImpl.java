@@ -124,8 +124,6 @@ import javax.validation.Valid;
 /**
  * Live Mount Service
  *
- * @author l00272247
- * @since 2020-09-18
  */
 @Service
 @Slf4j

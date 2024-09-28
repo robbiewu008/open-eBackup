@@ -15,8 +15,6 @@ package openbackup.data.access.framework.livemount.common;
 /**
  * live mount operate type
  *
- * @author h30003246
- * @since 2021/01/25
  **/
 public final class LiveMountOperateType {
     /**

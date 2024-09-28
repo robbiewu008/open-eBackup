@@ -41,9 +41,6 @@ import java.util.UUID;
 /**
  * {@link KingBaseClusterProvider} 测试类
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-22
  */
 public class KingBaseClusterProviderTest {
     private final ProtectedEnvironmentService environmentService = PowerMockito.mock(ProtectedEnvironmentService.class);

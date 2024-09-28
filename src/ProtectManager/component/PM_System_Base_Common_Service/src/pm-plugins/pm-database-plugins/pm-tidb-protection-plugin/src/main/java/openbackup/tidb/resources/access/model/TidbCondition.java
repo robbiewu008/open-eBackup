@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * tidb Condition
  *
- * @author w00426202
- * @since 2023-07-15
  */
 @Setter
 @Getter

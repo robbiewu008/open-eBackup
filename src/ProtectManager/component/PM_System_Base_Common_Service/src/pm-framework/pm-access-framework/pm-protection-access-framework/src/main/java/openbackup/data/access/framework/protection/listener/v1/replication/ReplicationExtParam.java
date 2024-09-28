@@ -21,8 +21,6 @@ import lombok.Data;
 /**
  * Replication Ext Param
  *
- * @author l00272247
- * @since 2020-11-19
  */
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)

@@ -23,9 +23,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.0.0 2020.8]
- * @since 2020-12-11
  */
 public enum CopyGeneratedByEnum {
     /**

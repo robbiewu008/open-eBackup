@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 副本防勒索检测信息
  *
- * @author nwx1077006
- * @since 2022-01-12
  */
 @Data
 public class CopyAntiRansomwareRes {

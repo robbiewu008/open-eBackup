@@ -27,8 +27,6 @@ import java.io.File;
 /**
  * Redisson Service
  *
- * @author l00272247
- * @since 2021-02-27
  */
 @Component
 public class RedissonService {

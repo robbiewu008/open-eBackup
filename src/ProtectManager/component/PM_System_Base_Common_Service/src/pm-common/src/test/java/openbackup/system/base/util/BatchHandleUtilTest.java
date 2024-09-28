@@ -29,8 +29,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author w00607005
- * @since 2023-07-24
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {CollectionUtils.class})

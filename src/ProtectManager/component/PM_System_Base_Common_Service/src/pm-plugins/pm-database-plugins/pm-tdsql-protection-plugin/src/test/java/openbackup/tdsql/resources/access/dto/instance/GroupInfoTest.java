@@ -21,8 +21,6 @@ import org.junit.Test;
 /**
  * 功能描述 测试GroupInfo类
  *
- * @author z00445440
- * @since 2023-11-16
  */
 public class GroupInfoTest {
     @Test

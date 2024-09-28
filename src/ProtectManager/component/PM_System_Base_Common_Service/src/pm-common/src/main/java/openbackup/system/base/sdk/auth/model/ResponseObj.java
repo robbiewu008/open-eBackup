@@ -20,8 +20,6 @@ import lombok.Setter;
 /**
  * 调用hcs接口，根据条件查询浮动ip信息响应体中的对象，实际只使用了externalRelayIpAddress
  *
- * @author z00664377
- * @since 2023-08-04
  */
 @Getter
 @Setter

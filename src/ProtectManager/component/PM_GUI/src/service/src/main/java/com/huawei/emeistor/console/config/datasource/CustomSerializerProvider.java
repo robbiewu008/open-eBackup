@@ -35,9 +35,6 @@ import java.util.Collection;
  * <p>
  * 其他仍然为null
  *
- * @author z00398217
- * @version [OceanStor ReplicationDirector V200R001C10, 2016年12月7日]
- * @since 2019-11-01
  */
 public class CustomSerializerProvider extends DefaultSerializerProvider {
     // <变量的意义、目的、功能和可能被用到的地方>

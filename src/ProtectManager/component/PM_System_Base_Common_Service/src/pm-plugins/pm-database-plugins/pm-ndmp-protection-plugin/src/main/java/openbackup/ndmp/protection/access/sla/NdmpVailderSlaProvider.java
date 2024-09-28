@@ -38,8 +38,6 @@ import java.util.stream.Collectors;
 /**
  * NDMP SLA校验器
  *
- * @author t30021437
- * @since 2023-05-06
  */
 @Slf4j
 @Component

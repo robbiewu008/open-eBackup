@@ -25,8 +25,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 批量查询防勒索策略请求
  *
- * @author j00619968
- * @since 2023-09-05
  */
 @Data
 @AllArgsConstructor

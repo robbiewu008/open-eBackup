@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.exception;
 /**
  * 数据保护接入异常
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-12
  */
 public class DataProtectionAccessException extends RuntimeException {
     private long errorCode;

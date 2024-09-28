@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Response
  *
- * @author p00511147
- * @since 2020-10-29
  */
 @Data
 public class StorageCommonRes<T> {

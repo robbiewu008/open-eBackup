@@ -24,8 +24,6 @@ import lombok.Data;
 /**
  * Live Mount Execute Param
  *
- * @author l00272247
- * @since 2020-09-22
  */
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)

@@ -15,9 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * rest接口切面的执行顺序常量
  *
- * @author t30028453
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-31
  */
 public class AspectOrderConstant {
     /**

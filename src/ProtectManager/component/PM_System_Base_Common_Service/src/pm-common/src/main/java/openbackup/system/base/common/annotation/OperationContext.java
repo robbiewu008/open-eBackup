@@ -25,8 +25,6 @@ import java.lang.annotation.Target;
 /**
  * current user
  *
- * @author l00272247
- * @since 2019-11-04
  */
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)

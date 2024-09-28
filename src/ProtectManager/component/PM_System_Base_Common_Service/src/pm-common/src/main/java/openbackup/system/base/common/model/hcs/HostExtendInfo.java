@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * 功能描述 主机扩展信息
  *
- * @author z30027603
- * @since 2022/7/22 9:52
  */
 @Getter
 @Setter

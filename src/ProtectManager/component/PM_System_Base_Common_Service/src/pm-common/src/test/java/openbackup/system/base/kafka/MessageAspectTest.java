@@ -61,8 +61,6 @@ import java.lang.reflect.Method;
 /**
  * Message Aspect Test
  *
- * @author l00272247
- * @since 2020-12-29
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

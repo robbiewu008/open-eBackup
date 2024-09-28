@@ -30,8 +30,6 @@ import javax.validation.constraints.Size;
 /**
  * 修改备节点HA配置请求
  *
- * @author c30047317
- * @since 2023-05-17
  */
 @Getter
 @Setter

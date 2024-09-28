@@ -29,9 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 服务器端国际化工具类
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-11
  */
 public class ResourceUtil {
     /**

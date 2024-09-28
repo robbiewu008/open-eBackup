@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * 功能描述
  *
- * @author d00886448
- * @since 2024-07-30
  */
 public enum CopyExtendType {
     CHECKPOINT("checkPoint"); // 断点续备

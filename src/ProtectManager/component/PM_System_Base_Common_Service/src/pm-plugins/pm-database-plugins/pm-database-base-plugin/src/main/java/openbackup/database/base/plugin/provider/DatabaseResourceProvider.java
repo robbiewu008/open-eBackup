@@ -26,8 +26,6 @@ import java.util.Map;
 /**
  * The DatabaseResourceProvider
  *
- * @author g30003063
- * @since 2022-05-30
  */
 @Slf4j
 public class DatabaseResourceProvider implements ResourceProvider {

@@ -23,9 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * DEE侧实时侦测安全快照管理API
  *
- * @author f00809938
- * @since 2023-06-12
- * @version OceanCyber 300 1.1.0
  **/
 @FeignClient(name = "copiesManagementRestApi",
     url = "${data-enable-engine-server.url}/v1/internal/anti/ransomware/snapshot/",

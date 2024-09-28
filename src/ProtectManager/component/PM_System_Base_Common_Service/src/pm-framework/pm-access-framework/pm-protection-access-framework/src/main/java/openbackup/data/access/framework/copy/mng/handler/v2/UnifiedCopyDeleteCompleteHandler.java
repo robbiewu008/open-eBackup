@@ -56,9 +56,6 @@ import java.util.Map;
 /**
  * 统一副本删除任务完成处理器
  *
- * @author twx1009756
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-01-26
  */
 @Slf4j
 @Component

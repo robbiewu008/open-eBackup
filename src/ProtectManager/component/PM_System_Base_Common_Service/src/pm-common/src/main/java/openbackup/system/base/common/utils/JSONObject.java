@@ -46,9 +46,6 @@ import java.util.TimeZone;
  * JSONObject封装类 修改内容： 2016.11.26 1、去除序列化时对空串、null的过滤：
  * 2、华为虚拟机业务中会根据rest返回结果的参数格式，判断操作是否成功
  *
- * @author z00398217
- * @version [OceanStor ReplicationDirector V200R001C10, 2016年11月12日]
- * @since 2019-11-01
  */
 public class JSONObject implements Map {
     /**

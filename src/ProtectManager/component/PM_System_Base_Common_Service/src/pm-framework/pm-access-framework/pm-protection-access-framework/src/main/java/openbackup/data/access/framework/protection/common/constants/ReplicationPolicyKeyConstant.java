@@ -15,9 +15,6 @@ package openbackup.data.access.framework.protection.common.constants;
 /**
  * 复制策略扩展参数key定义常量类.
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/14
  **/
 public class ReplicationPolicyKeyConstant {
     /**

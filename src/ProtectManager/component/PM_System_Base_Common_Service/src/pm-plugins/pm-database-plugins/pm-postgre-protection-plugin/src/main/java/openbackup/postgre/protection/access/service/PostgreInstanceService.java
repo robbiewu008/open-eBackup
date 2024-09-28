@@ -21,9 +21,6 @@ import java.util.List;
 /**
  * postgre实例服务
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-28
  */
 public interface PostgreInstanceService {
     /**

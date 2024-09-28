@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 /**
  * Agent当前控制器所在pod的信息
  *
- * @author l30044826
- * @since 2023-05-29
  */
 @AllArgsConstructor
 @NoArgsConstructor

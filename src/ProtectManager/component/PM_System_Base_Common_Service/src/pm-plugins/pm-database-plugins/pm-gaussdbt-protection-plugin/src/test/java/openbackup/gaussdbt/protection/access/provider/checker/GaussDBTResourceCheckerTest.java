@@ -46,9 +46,6 @@ import java.util.UUID;
 /**
  * GaussDBT资源检查checker测试类
  *
- * @author hwx1144169
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-31
  */
 public class GaussDBTResourceCheckerTest {
     private final UnifiedClusterResourceIntegrityChecker integrityChecker = PowerMockito.mock(UnifiedClusterResourceIntegrityChecker.class);

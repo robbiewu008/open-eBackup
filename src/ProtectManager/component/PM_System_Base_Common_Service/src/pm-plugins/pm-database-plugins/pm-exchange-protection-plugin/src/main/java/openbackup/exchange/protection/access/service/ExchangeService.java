@@ -26,8 +26,6 @@ import java.util.Set;
 /**
  * ExchangeService
  *
- * @author s30036254
- * @since 2023-04-28
  */
 public interface ExchangeService {
     /**

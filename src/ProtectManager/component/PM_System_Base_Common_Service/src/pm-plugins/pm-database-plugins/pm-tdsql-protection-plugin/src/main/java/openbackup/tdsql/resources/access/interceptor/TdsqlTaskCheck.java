@@ -41,8 +41,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述 校验TDSQL任务
  *
- * @author z30047175
- * @since 2023-05-30
  */
 @Slf4j
 @Component

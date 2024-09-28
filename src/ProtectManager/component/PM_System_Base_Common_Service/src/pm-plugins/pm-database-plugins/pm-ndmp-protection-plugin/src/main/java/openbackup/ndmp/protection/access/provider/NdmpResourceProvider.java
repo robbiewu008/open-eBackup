@@ -27,9 +27,6 @@ import java.util.Objects;
 /**
  * Ndmp资源类提供者
  *
- * @author t30021437
- * @version [OceanProtect X8000 1.5.0]
- * @since 2023-05-10
  */
 @Component
 @Slf4j

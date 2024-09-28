@@ -19,9 +19,6 @@ import java.util.Map;
 /**
  * 资源repository查询参数
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-23
  */
 @Data
 public class ResourceRepositoryQueryParams {

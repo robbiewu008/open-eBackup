@@ -54,9 +54,6 @@ import java.util.Set;
 /**
  * dameng集群注册测试类
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-25
  */
 @RunWith(PowerMockRunner.class)
 public class DamengClusterProviderTest {

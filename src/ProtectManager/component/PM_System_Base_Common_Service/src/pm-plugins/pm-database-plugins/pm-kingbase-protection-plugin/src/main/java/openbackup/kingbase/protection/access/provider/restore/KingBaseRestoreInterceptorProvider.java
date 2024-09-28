@@ -46,9 +46,6 @@ import java.util.Optional;
 /**
  * KingBase恢复拦截器
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-26
  */
 @Slf4j
 @Component

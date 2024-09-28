@@ -47,9 +47,6 @@ import java.util.stream.Collectors;
 /**
  * AbstractDbCopyDeleteInterceptorTest
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-02
  */
 public class AbstractDbCopyDeleteInterceptorTest {
     private final CopyRestApi copyRestApi = PowerMockito.mock(CopyRestApi.class);

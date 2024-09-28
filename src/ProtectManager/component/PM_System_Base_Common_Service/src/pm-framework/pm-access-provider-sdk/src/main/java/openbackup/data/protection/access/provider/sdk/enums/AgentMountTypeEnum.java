@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.enums;
 /**
  * agent执行任务时的挂载方法
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-07-12
  */
 public enum AgentMountTypeEnum {
     /**

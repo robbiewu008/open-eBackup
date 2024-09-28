@@ -31,9 +31,6 @@ import java.util.Optional;
 /**
  * 备份特性功能服务 实现类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/5/27
  */
 @Slf4j
 @Service

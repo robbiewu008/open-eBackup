@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 操作事件对应code
  *
- * @author t00482481
- * @since 2020-8-10
  */
 public class CommonOperationCode {
     /**

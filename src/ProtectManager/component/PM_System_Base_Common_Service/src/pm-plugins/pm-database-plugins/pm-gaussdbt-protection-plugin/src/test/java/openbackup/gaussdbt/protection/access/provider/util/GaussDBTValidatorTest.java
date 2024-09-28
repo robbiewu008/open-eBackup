@@ -22,9 +22,6 @@ import org.junit.Test;
 /**
  * GaussDBT校验工具测试类
  *
- * @author mwx776342
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-19
  */
 public class GaussDBTValidatorTest {
     /**

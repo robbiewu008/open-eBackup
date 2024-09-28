@@ -23,10 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 描述
  *
- * @author lwx544155
- * @version [OceanStor DJ V100R003C00, 2020年03月16日]
  * @see [相关类/方法]
- * @since [产品/模块版本]
  */
 public class RequestUtils {
     private RequestUtils() {

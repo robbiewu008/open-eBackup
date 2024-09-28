@@ -53,8 +53,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * Job Schedule Control Registrar
  *
- * @author l00272247
- * @since 2021-03-20
  */
 @Component
 @Slf4j

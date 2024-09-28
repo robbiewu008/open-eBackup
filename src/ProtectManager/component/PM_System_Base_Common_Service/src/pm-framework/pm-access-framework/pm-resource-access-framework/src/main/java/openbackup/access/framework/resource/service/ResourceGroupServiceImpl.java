@@ -80,8 +80,6 @@ import java.util.stream.Collectors;
 /**
  * 资源组服务
  *
- * @author c00631681
- * @since 2024-01-18
  */
 @Service
 @Slf4j

@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * endpoint请求体
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-30
  */
 @Getter
 @Setter

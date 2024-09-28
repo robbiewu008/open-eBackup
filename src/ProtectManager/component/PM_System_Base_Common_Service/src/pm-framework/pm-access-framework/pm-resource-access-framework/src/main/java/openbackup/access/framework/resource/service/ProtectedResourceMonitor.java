@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * Protected Resource Monitor
  *
- * @author l00272247
- * @since 2021-10-19
  */
 public interface ProtectedResourceMonitor extends Invoker<ProtectedResourceEvent, Object> {
     /**

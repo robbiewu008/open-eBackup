@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * 安全卡响应
  *
- * @author j00619968
- * @since 2024-01-23
  */
 @Getter
 @Setter

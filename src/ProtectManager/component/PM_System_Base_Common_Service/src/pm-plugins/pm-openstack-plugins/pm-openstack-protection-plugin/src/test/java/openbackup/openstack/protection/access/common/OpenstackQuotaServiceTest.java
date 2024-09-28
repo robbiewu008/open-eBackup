@@ -31,9 +31,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 /**
  * 功能描述: OpenstackQuotaServiceTest
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-16
  */
 public class OpenstackQuotaServiceTest {
     private static OpenstackQuotaService openstackQuotaService;

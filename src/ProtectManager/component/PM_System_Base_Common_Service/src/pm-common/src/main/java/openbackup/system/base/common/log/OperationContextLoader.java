@@ -15,8 +15,6 @@ package openbackup.system.base.common.log;
 /**
  * data loader
  *
- * @author l00272247
- * @since 2019-11-05
  */
 public interface OperationContextLoader {
     /**

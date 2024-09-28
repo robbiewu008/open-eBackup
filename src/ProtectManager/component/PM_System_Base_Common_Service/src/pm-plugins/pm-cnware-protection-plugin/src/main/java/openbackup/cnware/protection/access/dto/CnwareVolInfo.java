@@ -32,9 +32,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-03-09
  */
 @Setter
 @Getter

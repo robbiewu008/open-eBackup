@@ -30,9 +30,6 @@ import java.util.function.Function;
 /**
  * 资源分布式锁Service
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-05-12
  */
 @Slf4j
 @Component

@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * host对象
  *
- * @author t00482481
- * @since 2020-09-20
  */
 @Data
 public class Host {

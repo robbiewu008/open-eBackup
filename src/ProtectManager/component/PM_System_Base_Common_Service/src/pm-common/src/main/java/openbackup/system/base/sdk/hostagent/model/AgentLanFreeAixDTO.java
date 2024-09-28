@@ -24,8 +24,6 @@ import javax.validation.constraints.Pattern;
 /**
  * AIX主机 LAN-FREE 配置页信息
  *
- * @author hwx1164326
- * @since 2023-08-22
  */
 @Getter
 @Setter

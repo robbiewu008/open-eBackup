@@ -17,8 +17,6 @@ import java.util.Locale;
 /**
  * 处理描述
  *
- * @author w00493811
- * @since 2021-08-10
  */
 public class ProcessException extends Exception {
     /**

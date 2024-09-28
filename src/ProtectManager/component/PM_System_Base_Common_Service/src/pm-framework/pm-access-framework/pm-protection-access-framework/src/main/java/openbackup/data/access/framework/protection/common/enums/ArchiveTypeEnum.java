@@ -36,8 +36,6 @@ import java.util.List;
 /**
  * 归档副本类型
  *
- * @author z30006621
- * @since 2021-09-02
  */
 @Slf4j
 @Getter

@@ -18,9 +18,6 @@ import lombok.Getter;
 /**
  * ResourceSetTypeEnum 资源集枚举类
  *
- * @author z30027603
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2024-05-13
  */
 @Getter
 @AllArgsConstructor

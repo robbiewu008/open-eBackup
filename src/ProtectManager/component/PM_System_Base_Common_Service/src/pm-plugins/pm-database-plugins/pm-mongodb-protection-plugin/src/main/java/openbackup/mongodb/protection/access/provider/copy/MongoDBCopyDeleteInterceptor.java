@@ -38,9 +38,6 @@ import java.util.Optional;
 /**
  * MongoDB 副本删除拦截器
  *
- * @author swx1010572
- * @version [DataBackup 1.5.0]
- * @since 2023-05-31
  */
 @Slf4j
 @Component

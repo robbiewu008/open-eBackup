@@ -20,8 +20,6 @@ import lombok.Getter;
 /**
  * 统一转换成天比较
  *
- * @author z30006621
- * @since 2021-09-07
  */
 @Getter
 public class SpecifiedScope {

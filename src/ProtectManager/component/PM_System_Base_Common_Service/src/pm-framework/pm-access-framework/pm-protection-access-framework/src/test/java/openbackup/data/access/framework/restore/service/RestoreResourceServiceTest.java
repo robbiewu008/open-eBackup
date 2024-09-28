@@ -63,9 +63,6 @@ import static org.mockito.Mockito.when;
 /**
  * 恢复资源服务测试用例集合
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/26
  **/
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TokenBo.class})

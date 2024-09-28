@@ -15,8 +15,6 @@ package openbackup.tpops.protection.access.constant;
 /**
  * 功能描述: GaussDb模块的通用常量
  *
- * @author x30021699
- * @since 2023-05-09
  */
 public class TpopsGaussDBErrorCode {
     /**

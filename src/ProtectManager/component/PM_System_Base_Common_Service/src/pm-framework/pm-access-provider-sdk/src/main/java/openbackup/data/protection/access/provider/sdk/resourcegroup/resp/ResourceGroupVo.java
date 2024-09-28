@@ -20,9 +20,6 @@ import java.util.List;
 /**
  * 资源组列表查询返回体
  *
- * @author c00631681
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-25
  */
 
 @Getter

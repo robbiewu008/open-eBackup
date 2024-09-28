@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Live Mount Modify Param
  *
- * @author l00272247
- * @since 2020-09-21
  */
 @Data
 public class LiveMountModifyParam {

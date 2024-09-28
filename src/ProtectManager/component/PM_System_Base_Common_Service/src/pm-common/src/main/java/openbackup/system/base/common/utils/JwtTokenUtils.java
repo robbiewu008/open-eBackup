@@ -34,8 +34,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * JWT token utils
  *
- * @author y00407642
- * @since 2020-06-05
  */
 public class JwtTokenUtils {
     private static final String CLAIM_KEY_USERINFO = "user";

@@ -20,8 +20,6 @@ import org.springframework.stereotype.Component;
 /**
  * agent 连接状态默认获得
  *
- * @author y30044273
- * @since 2023-08-16
  */
 @Component
 public class AgentDefaultLinkStatusProvider implements AgentLinkStatusProvider {

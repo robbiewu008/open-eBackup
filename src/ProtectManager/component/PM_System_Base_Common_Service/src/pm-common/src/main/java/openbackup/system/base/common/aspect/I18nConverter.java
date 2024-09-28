@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
 /**
  * I18n Converter
  *
- * @author l00272247
- * @since 2021-01-22
  */
 @Component
 public class I18nConverter implements DataConverter {

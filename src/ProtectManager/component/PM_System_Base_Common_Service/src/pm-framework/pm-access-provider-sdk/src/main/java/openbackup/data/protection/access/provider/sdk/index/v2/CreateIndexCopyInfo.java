@@ -17,9 +17,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * 创建索引的副本信息
  *
- * @author lWX776769
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-29
  */
 public class CreateIndexCopyInfo {
     // 副本ID

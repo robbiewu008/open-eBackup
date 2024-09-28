@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * cluster params
  *
- * @author p30001902
- * @since 2020-12-17
  */
 @Data
 public class SourceClustersParams {

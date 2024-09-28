@@ -43,9 +43,6 @@ import java.util.stream.Collectors;
 /**
  * 副本相关操作管理器
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-17
  */
 @Slf4j
 @Component

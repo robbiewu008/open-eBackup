@@ -20,8 +20,6 @@ import lombok.Data;
 /**
  * Host Detail
  *
- * @author l00272247
- * @since 2020-10-30
  */
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)

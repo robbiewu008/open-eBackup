@@ -25,9 +25,6 @@ import java.util.Locale;
 /**
  * 根据集群的IP/port生成对应URI
  *
- * @author cWX1161886
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-17
  */
 @Slf4j
 public class UriUtil {

@@ -34,8 +34,6 @@ import javax.net.ssl.SSLContext;
 /**
  * feign hc5客户端build类
  *
- * @author y30037959
- * @since 2023-03-29
  */
 public final class ApacheHttp5ClientBuilder {
     private ApacheHttp5ClientBuilder() {

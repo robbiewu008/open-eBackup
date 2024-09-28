@@ -24,9 +24,6 @@ import javax.validation.constraints.Pattern;
 /**
  * 存储的信息
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023/11/19
  */
 @Data
 public class Storage {

@@ -76,9 +76,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 归档任务服务类，用例隔离对其它组件的依赖，简化manager代码
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/14
  **/
 @Slf4j
 @Service

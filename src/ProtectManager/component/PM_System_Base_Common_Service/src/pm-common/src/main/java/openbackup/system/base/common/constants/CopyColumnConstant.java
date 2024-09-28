@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 副本查询字段常量类
  *
- * @author w30044259
- * @since 2024-04-06
  */
 public class CopyColumnConstant {
     /**

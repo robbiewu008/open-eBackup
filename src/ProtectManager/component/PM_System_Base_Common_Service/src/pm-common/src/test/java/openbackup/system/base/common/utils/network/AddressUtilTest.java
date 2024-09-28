@@ -20,8 +20,6 @@ import org.junit.Test;
 /**
  * AddressUtil
  *
- * @author w00439064
- * @since 2021-04-05
  */
 public class AddressUtilTest {
     /**

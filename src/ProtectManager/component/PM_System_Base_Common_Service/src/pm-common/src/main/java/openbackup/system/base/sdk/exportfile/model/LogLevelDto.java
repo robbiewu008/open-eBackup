@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * LogLevelInfoDto
  *
- * @author w00607005
- * @since 2023-07-24
  */
 @Data
 public class LogLevelDto {

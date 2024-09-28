@@ -22,9 +22,6 @@ import java.util.List;
 /**
  * 存储单元查询请求参数体
  *
- * @author w00639094
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-20
  */
 @AllArgsConstructor
 @NoArgsConstructor

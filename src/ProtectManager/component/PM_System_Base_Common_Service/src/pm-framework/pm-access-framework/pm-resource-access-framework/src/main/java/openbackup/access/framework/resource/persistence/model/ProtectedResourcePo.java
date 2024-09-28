@@ -43,8 +43,6 @@ import java.util.stream.Collectors;
 /**
  * Protected Resource Po
  *
- * @author l00272247
- * @since 2021-10-15
  */
 @TableName("RESOURCES")
 @Slf4j

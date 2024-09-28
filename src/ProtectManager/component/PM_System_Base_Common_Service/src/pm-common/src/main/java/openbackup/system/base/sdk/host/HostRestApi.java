@@ -32,8 +32,6 @@ import java.util.List;
 /**
  * JobCenter Client Service
  *
- * @author h30003246
- * @since 2020-07-16
  */
 @FeignClient(name = "host-service", url = "${pm-resource-manager.url}/v1",
     configuration = CommonFeignConfiguration.class)

@@ -49,8 +49,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * Workflow Error Handler Test
  *
- * @author l00272247
- * @since 2022-03-21
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

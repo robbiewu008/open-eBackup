@@ -22,8 +22,6 @@ import lombok.Setter;
 /**
  * 设备更新状态响应
  *
- * @author c00441246
- * @since 2023-10-14
  */
 @Getter
 @Setter

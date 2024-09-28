@@ -27,8 +27,6 @@ import javax.sql.DataSource;
 /**
  * 数据库获取连接重试装饰器
  *
- * @author mwx776342
- * @since 2022-05-16
  */
 @Slf4j
 @RequiredArgsConstructor

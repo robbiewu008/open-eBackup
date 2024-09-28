@@ -20,8 +20,6 @@ import lombok.Setter;
 /**
  * vmware副本中的磁盘信息
  *
- * @author tantong
- * @since 2020-11-29
  */
 @Getter
 @Setter

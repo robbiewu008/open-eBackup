@@ -19,9 +19,6 @@ import java.util.UUID;
 /**
  * UUIDGenerator
  *
- * @author p00171530
- * @version [Lego V100R002C10, 2014-12-18]
- * @since 2019-11-01
  */
 public class UUIDGenerator {
     private UUIDGenerator() {

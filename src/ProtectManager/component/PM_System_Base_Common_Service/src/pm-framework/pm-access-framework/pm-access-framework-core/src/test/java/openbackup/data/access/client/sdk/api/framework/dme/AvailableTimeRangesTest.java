@@ -22,8 +22,6 @@ import org.junit.Test;
 /**
  * 功能描述 AvailableTimeRange的测试用例
  *
- * @author s30031954
- * @since 2023-05-25
  */
 public class AvailableTimeRangesTest extends TestCase {
     @Test

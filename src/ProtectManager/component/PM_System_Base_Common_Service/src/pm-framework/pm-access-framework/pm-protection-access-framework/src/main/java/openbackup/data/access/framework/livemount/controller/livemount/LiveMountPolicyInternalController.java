@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Live Mount Policy Internal Controller
  *
- * @author m00576658
- * @since 2021-03-09
  */
 @RestController
 @RequestMapping("v1/internal/live-mount")

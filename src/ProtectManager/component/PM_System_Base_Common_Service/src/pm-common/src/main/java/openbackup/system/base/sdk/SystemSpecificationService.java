@@ -15,8 +15,6 @@ package openbackup.system.base.sdk;
 /**
  * System Specification Service
  *
- * @author l00272247
- * @since 2021-03-20
  */
 public interface SystemSpecificationService {
     /**

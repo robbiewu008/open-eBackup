@@ -22,8 +22,6 @@ import java.util.regex.Pattern;
 /**
  * 常数项验证
  *
- * @author t30021437
- * @since 2023-04-03
  */
 public class RegexpConstantsTest {
     /**

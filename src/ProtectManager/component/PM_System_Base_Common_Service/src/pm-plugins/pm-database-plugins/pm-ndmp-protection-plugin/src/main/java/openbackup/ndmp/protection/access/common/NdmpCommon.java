@@ -21,9 +21,6 @@ import java.util.Map;
 /**
  * Ndmp公共函数
  *
- * @author s30043630
- * @version [OceanProtect X8000 1.6.0]
- * @since 2024-06-12
  */
 @Slf4j
 public class NdmpCommon {

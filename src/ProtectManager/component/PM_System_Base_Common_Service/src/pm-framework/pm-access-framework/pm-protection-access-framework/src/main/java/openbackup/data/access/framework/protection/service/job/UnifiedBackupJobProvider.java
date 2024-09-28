@@ -42,9 +42,6 @@ import java.util.Optional;
 /**
  * UnifiedBackupJobProvider
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-02-23
  */
 @Slf4j
 @Component("unifiedBackupJobProvider")

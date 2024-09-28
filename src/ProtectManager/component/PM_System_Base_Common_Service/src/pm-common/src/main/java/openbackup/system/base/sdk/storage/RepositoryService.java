@@ -30,10 +30,6 @@ import java.util.Optional;
 /**
  * 功能描述
  *
- * @author y00413474
- * @author w00493811
- * @version [BCManager 8.0.0]
- * @since 2020-06-19
  */
 public interface RepositoryService {
     /**

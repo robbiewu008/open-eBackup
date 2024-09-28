@@ -26,8 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Thread PoolTool
  *
- * @author t00508428
- * @since 2020-12-19
  */
 @Slf4j
 public class ThreadPoolTool {

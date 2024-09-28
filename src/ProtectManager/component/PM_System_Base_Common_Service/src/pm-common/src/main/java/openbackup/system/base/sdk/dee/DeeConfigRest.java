@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * 功能描述
  *
- * @author c30047317
- * @since 2023-08-12
  */
 @FeignClient(name = "deeConfigRest", url = "${protectengine.url}/v1/internal",
     configuration = CommonFeignConfiguration.class)

@@ -48,8 +48,6 @@ import java.util.Arrays;
 /**
  * kafka consumer of task complete witch is comes from dme
  *
- * @author y30000858
- * @since 2020-09-21
  */
 @Component
 @Slf4j

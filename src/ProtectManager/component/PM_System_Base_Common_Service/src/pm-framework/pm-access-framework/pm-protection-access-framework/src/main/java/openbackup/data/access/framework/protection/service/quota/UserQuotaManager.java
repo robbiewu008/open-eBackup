@@ -33,9 +33,6 @@ import java.util.Optional;
 /**
  * 用户配额管理器
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-12
  */
 @Slf4j
 @Component

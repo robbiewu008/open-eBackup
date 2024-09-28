@@ -20,8 +20,6 @@ import lombok.NoArgsConstructor;
 /**
  * 功能描述 文件系统DTO
  *
- * @author s30031954
- * @since 2022-12-21
  */
 @Data
 @Builder

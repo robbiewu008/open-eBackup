@@ -60,9 +60,6 @@ import java.util.Map;
 /**
  * oracle副本恢复 测试类
  *
- * @author c30038333
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023/2/2
  */
 public class OracleRestoreProviderTest {
     private final OracleBaseService oracleBaseService = Mockito.mock(OracleBaseService.class);

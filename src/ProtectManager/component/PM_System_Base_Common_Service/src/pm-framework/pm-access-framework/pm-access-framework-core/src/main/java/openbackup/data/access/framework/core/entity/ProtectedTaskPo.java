@@ -21,8 +21,6 @@ import lombok.Setter;
 /**
  * ProtectedTask Po
  *
- * @author c00631681
- * @since 2024-01-29
  */
 @TableName("PROTECTED_TASK")
 @Getter

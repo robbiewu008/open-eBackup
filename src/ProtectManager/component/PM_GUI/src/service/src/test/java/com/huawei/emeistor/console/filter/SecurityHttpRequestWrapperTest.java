@@ -36,9 +36,6 @@ import java.net.URL;
 /**
  * URL标准化处理 单元测试
  *
- * @author t30028453
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-28
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {SecurityHttpRequestWrapper.class})

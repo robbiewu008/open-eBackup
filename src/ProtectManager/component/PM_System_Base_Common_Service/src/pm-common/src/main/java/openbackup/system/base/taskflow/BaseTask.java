@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * 子任务基类
  *
- * @author w00607005
- * @since 2023-05-18
  */
 public abstract class BaseTask {
     /**

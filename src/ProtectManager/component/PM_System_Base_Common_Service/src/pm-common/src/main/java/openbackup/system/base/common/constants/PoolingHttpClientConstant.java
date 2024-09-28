@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 池化HttpClient常量
  *
- * @author y30037959
- * @since 2023-03-29
  */
 public final class PoolingHttpClientConstant {
     /**

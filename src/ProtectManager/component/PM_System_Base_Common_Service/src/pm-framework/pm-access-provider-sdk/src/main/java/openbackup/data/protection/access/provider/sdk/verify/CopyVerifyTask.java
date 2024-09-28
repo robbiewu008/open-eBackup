@@ -22,9 +22,6 @@ import java.util.Map;
 /**
  * 副本校验任务对象
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/28
  **/
 public class CopyVerifyTask extends BaseTask {
     // 高级备份参数，key/value键值对存放

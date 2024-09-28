@@ -41,9 +41,6 @@ import java.util.Map;
 /**
  * OpenGauss资源检查checker测试类
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-21
  */
 public class OpenGaussResourceConnectionCheckerTest {
     private final ProtectedEnvironmentRetrievalsService environmentRetrievalsService = PowerMockito.mock(ProtectedEnvironmentRetrievalsService.class);

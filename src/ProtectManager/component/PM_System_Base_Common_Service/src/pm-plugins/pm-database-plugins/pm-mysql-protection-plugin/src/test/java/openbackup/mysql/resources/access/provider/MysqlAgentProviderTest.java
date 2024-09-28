@@ -36,9 +36,6 @@ import java.util.List;
 /**
  * {@link MysqlAgentProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/7/27
  */
 public class MysqlAgentProviderTest {
     private final MysqlBaseService mysqlBaseService = PowerMockito.mock(MysqlBaseService.class);

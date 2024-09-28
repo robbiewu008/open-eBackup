@@ -34,8 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Smal用户登录接口测试类
  *
- * @author w30042425
- * @since 2023-02-14
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {SamlController.class})

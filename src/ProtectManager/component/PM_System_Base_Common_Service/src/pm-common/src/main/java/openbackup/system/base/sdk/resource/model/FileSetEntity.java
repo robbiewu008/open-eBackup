@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * FileSet Entity
  *
- * @author l00272247
- * @since 2020-07-14
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

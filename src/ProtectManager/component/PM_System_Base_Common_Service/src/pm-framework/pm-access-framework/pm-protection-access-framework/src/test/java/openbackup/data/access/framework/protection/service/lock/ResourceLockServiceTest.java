@@ -38,9 +38,6 @@ import static org.mockito.Mockito.times;
 /**
  * 资源锁服务测试用例集合
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/3/19
  **/
 public class ResourceLockServiceTest {
 

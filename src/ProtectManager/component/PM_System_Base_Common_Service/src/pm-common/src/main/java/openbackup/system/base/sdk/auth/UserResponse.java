@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * 功能描述
  *
- * @author j00364432
- * @version [BCManager 8.0.0]
- * @since 2019-11-26
  */
 @Getter
 @Setter

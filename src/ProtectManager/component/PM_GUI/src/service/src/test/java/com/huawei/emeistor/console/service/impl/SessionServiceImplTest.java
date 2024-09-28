@@ -48,8 +48,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 /**
  * SessionServiceImpl Test
  *
- * @author wwx1013713
- * @since 2021-07-26
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SessionServiceImpl.class})

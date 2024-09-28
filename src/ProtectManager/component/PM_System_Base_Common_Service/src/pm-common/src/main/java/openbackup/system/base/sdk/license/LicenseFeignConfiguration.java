@@ -51,8 +51,6 @@ import javax.net.ssl.SSLContext;
 /**
  * 功能描述
  *
- * @author s00455050
- * @since 2021-01-28
  */
 @Slf4j
 public class LicenseFeignConfiguration implements RequestInterceptor {

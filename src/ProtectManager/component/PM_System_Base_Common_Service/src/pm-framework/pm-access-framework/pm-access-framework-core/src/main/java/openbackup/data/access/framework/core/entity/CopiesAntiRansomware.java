@@ -23,9 +23,6 @@ import lombok.Setter;
 /**
  * COPIES_ANTI_RANSOMWARE表实体类
  *
- * @author f00809938
- * @since 2023-12-12
- * @version OceanCyber 300 1.2.0
  **/
 @Getter
 @Setter

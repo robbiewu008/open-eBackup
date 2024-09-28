@@ -15,9 +15,6 @@ package openbackup.postgre.protection.access.common;
 /**
  * Postgre数据库常量类
  *
- * @author wwx1013713
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/8
  */
 public class PostgreConstants {
     /**

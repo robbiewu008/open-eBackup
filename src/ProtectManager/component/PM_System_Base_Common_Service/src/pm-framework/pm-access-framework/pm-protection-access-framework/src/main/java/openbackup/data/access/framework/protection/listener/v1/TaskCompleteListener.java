@@ -39,8 +39,6 @@ import org.springframework.stereotype.Component;
 /**
  * Task Complete Listener
  *
- * @author l00272247
- * @since 2020-12-18
  */
 @Component
 @Slf4j

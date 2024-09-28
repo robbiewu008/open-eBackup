@@ -22,9 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 内部查询secret信息入口类
  *
- * @author xwx1016404
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-28
  */
 @RestController
 @RequestMapping("/v1/secret")

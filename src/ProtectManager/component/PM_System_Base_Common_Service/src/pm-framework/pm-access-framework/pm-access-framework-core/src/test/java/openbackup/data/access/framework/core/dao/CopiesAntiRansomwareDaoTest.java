@@ -33,9 +33,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * CopiesAntiRansomwareDao测试类
  *
- * @author f00809938
- * @version OceanCyber 300 1.2.0
- * @since 2024-01-10
  **/
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

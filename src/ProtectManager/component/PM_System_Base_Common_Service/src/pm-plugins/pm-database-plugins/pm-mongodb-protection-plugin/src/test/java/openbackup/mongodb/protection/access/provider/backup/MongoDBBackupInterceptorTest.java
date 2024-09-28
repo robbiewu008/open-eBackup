@@ -44,9 +44,6 @@ import java.util.List;
 /**
  * MongoDB备份拦截器 测试类
  *
- * @author lwx1012372
- * @version [DataBackup 1.5.0]
- * @since 2023-04-07
  */
 public class MongoDBBackupInterceptorTest {
     private final MongoDBBaseService mongoDBBaseService = Mockito.mock(MongoDBBaseService.class);

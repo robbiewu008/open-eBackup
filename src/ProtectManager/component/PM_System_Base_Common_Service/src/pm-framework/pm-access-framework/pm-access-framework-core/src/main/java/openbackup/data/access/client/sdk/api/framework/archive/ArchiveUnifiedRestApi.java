@@ -26,9 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * 归档统一框架api
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/13
  **/
 @FeignClient(
         name = "archiveUnifiedRestApi",

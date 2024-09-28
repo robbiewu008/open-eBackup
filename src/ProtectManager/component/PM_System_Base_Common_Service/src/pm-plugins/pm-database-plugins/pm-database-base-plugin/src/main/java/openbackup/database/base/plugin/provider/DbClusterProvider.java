@@ -20,9 +20,6 @@ import java.util.List;
 /**
  * 集群实例注册校验使用
  *
- * @author wx950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-25
  */
 public interface DbClusterProvider extends DataProtectionProvider<String> {
     /**

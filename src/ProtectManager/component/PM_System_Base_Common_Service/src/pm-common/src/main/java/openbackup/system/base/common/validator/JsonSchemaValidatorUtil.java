@@ -40,9 +40,6 @@ import java.util.Optional;
 /**
  * JsonSchemaUtil
  *
- * @author dWX1009286
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-22
  */
 @Slf4j
 public class JsonSchemaValidatorUtil {

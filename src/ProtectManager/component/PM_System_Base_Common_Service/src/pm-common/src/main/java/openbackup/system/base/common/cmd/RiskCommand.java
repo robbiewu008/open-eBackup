@@ -29,9 +29,6 @@ import java.nio.charset.StandardCharsets;
 /**
  * 危险的命令执行类
  *
- * @author fwx1022842
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/9/26
  */
 @Slf4j
 public class RiskCommand {

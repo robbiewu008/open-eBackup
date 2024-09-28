@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 集群谢谢
  *
- * @author c00826511
- * @since 2023-07-04
  */
 @Data
 public class OBClusterInfo {

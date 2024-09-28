@@ -36,9 +36,6 @@ import java.util.List;
 /**
  * 副本权限校验
  *
- * @author z00842230
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2024-07-17
  */
 @Slf4j
 @Component

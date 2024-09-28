@@ -18,9 +18,6 @@ import java.util.Map;
 /**
  * 本类用于对常见的集合、String、Map、一维数组、二维数组等进行校验
  *
- * @author w90002860
- * @version V100R001C00
- * @since 2019-11-01
  */
 public final class VerifyUtil {
     /**
@@ -34,7 +31,6 @@ public final class VerifyUtil {
      *
      * @param collection 集合对象
      * @return boolean [true：空，false：非空]
-     * @author lKF20890
      */
     public static boolean isEmpty(Collection<?> collection) {
         return (collection == null) || (collection.isEmpty());
@@ -45,7 +41,6 @@ public final class VerifyUtil {
      *
      * @param obj 对象
      * @return boolean [true：空，false：非空]
-     * @author w90002860
      */
     public static boolean isEmpty(Object obj) {
         return (obj == null) || (obj instanceof String && ((String) obj).isEmpty());
@@ -56,7 +51,6 @@ public final class VerifyUtil {
      *
      * @param map Map对象
      * @return boolean [true：空，false：非空]
-     * @author w90002860
      */
     public static boolean isEmpty(Map<?, ?> map) {
         return (map == null) || (map.isEmpty());
@@ -67,7 +61,6 @@ public final class VerifyUtil {
      *
      * @param string 字符串
      * @return boolean [true：空，false：非空]
-     * @author w90002860
      */
     public static boolean isEmpty(String string) {
         return (string == null) || (string.trim().isEmpty());
@@ -88,7 +81,6 @@ public final class VerifyUtil {
      *
      * @param objects 数组
      * @return boolean [返回类型说明]
-     * @author z90005513
      */
     public static boolean isEmpty(Object[] objects) {
         return objects == null || objects.length == 0;
@@ -99,7 +91,6 @@ public final class VerifyUtil {
      *
      * @param objects 对象
      * @return boolean [true：空，false：非空]
-     * @author w90002860
      */
     public static boolean isAnyEmpty(Object[] objects) {
         for (Object object : objects) {

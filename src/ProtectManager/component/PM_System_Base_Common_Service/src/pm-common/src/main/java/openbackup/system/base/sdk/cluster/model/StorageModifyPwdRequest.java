@@ -22,8 +22,6 @@ import javax.validation.constraints.Size;
 /**
  * Modify dorado passwd request
  *
- * @author p30001902
- * @since 2020-12-02
  */
 @Data
 public class StorageModifyPwdRequest {

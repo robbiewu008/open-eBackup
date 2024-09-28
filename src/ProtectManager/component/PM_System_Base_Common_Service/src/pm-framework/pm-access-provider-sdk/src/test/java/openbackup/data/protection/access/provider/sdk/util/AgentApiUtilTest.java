@@ -24,9 +24,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author t30028453
- * @version [DataBackup 1.3.0]
- * @since 2023-05-31
  */
 public class AgentApiUtilTest extends TestCase {
     /**

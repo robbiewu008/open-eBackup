@@ -35,8 +35,6 @@ import javax.naming.AuthenticationException;
 /**
  * 功能描述
  *
- * @author w30042425
- * @since 2023-10-20
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {SSHDClientSession.class})

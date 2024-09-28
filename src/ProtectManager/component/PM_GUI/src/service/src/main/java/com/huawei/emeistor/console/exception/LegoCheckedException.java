@@ -29,7 +29,6 @@ import java.util.concurrent.ExecutionException;
 /**
  * 系统异常，用户可以直接介入修正异常信息的定义为LegoCheckedException 如：用户登录时用户名/密码错误
  *
- * @since 2019-10-31
  */
 @Getter
 @Setter

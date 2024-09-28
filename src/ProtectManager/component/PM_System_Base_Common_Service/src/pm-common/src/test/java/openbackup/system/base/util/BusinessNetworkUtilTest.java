@@ -31,8 +31,6 @@ import java.util.List;
 /**
  * 测试获取业务ip信息
  *
- * @author swx1010572
- * @since 2022-03-04
  */
 public class BusinessNetworkUtilTest {
     private final InfrastructureRestApi infrastructureRestApi = Mockito.mock(InfrastructureRestApi.class);

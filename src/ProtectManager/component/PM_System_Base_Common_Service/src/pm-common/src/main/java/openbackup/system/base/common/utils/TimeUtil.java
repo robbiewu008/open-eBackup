@@ -22,9 +22,6 @@ import java.util.TimeZone;
 /**
  * 时间处理类
  *
- * @author t00104528
- * @version [Lego V100R002C10, 2010-9-2]
- * @since 2019-11-01
  */
 public final class TimeUtil {
     private static final String YYYY_MM_DD_HH_MM_SS_UTC_Z = "yyyy-MM-dd HH:mm:ss 'UTC'Z";
@@ -53,7 +50,6 @@ public final class TimeUtil {
      * 得到当前时间
      *
      * @return String [返回类型说明]
-     * @author q30048244
      */
     public static String getTimeStringFormat() {
         SimpleDateFormat format = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS_UTC_Z);

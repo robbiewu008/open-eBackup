@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * 功能描述
  *
- * @author x30058130
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-05-25
  */
 @Data
 @PageQueryConfig(conditions = {"%sla_name%", "is_sla_compliance"})

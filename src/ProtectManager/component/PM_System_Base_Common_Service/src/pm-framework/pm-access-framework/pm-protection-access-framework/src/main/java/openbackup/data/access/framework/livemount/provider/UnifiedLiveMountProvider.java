@@ -101,8 +101,6 @@ import java.util.stream.Collectors;
 /**
  * Unified Live Mount Provider
  *
- * @author l00272247
- * @since 2021-12-28
  */
 @Slf4j
 @Component

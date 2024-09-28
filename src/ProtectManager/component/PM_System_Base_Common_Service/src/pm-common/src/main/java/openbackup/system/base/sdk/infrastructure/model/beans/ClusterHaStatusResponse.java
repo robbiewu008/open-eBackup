@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * HA操作结果
  *
- * @author w00607005
- * @since 2023-05-22
  */
 @Data
 public class ClusterHaStatusResponse {

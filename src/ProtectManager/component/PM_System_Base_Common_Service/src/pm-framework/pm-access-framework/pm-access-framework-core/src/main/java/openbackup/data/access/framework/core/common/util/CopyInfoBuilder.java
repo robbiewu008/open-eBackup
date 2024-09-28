@@ -35,8 +35,6 @@ import java.util.Map;
 /**
  * 副本信息构造器
  *
- * @author y00559272
- * @since 2020-10-10
  */
 @Slf4j
 public class CopyInfoBuilder {

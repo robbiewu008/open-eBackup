@@ -38,9 +38,6 @@ import java.util.Map;
 /**
  * InstallDeployType更新service
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.6.0]
- * @since 2024-06-11
  */
 @Slf4j
 @Component

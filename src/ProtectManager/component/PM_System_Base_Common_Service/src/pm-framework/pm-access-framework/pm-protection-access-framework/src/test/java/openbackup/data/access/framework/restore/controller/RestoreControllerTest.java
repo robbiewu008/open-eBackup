@@ -45,9 +45,6 @@ import java.util.UUID;
 /**
  * RestoreController 的单元测试用例集合
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  **/
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {RestoreController.class, CreateRestoreTaskRequestValidator.class, SpringBeanUtils.class})

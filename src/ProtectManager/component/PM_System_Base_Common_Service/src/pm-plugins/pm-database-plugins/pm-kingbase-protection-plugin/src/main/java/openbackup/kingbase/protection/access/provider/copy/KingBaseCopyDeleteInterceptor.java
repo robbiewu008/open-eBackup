@@ -35,9 +35,6 @@ import java.util.stream.Collectors;
 /**
  * Kingbase副本删除Provider
  *
- * @author wwx1013713
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-03-15
  */
 @Slf4j
 @Component

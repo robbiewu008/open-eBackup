@@ -20,8 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 转发请求到具体一控，失败后尝试其他控制器，直到所有控制器都失败或者至少有一个控制器成功
  *
- * @author y30046482
- * @since 2023-12-23
  */
 public interface TryAllNodeService {
     /**

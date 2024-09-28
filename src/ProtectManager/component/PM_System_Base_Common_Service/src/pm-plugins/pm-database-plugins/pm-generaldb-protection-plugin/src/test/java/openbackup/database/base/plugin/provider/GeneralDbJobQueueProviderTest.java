@@ -34,9 +34,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * GeneralDbJobQueueProvider测试类
  *
- * @author t30049904
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-12-13
  */
 @SpringBootTest(classes = {
         GeneralDbJobQueueProvider.class

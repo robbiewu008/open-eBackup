@@ -19,8 +19,6 @@ import org.junit.Test;
 /**
  * CopyStatus test
  *
- * @author jwx701567
- * @since 2021-03-16
  */
 public class CopyStatusTest {
 

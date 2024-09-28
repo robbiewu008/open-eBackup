@@ -58,8 +58,6 @@ import javax.validation.Valid;
 /**
  * 转发DEE接口
  *
- * @author nwx1077006
- * @since 2021-11-9
  */
 @RestController
 @RequestMapping(ConfigConstant.CONSOLE)

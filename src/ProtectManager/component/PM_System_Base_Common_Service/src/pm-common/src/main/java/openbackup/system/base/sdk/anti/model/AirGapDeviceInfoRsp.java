@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * AirGap设备信息对象返回
  *
- * @author q00654632
- * @since 2023-07-12
  */
 @Data
 public class AirGapDeviceInfoRsp {

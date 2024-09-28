@@ -29,8 +29,6 @@ import java.util.List;
 /**
  * TdsqlGroupValidator参数校验
  *
- * @author z00445440
- * @since 2023-11-14
  */
 @Slf4j
 public class TdsqlClusterGroupValidator {

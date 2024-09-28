@@ -43,8 +43,6 @@ import java.util.stream.Collectors;
 /**
  * 结束安全一体机即时挂载的超时任务
  *
- * @author x30028756
- * @since 2023-03-14
  */
 @Slf4j
 @Component

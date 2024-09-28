@@ -64,8 +64,6 @@ import java.util.Map;
 /**
  * GaussDb 恢复任务基础数据Provider测试类
  *
- * @author x30021699
- * @since 2023-05-09
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {EnvironmentLinkStatusHelper.class})

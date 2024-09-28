@@ -19,8 +19,6 @@ import lombok.Getter;
 /**
  * Copy index status
  *
- * @author l00347293
- * @since 2021-01-14
  */
 @Getter
 public enum CopyIndexType {

@@ -35,9 +35,6 @@ import java.util.List;
 /**
  * CNware类型服务
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-12-09
  */
 @Service
 @Slf4j

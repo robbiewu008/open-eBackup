@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * Dme Remove Pair Request
  *
- * @author l00272247
- * @since 2020-12-16
  */
 @Data
 public class DmeRemovePairRequest {

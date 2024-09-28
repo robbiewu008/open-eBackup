@@ -40,9 +40,6 @@ import java.util.stream.Collectors;
 /**
  * MySQL副本删除
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/10/27
  */
 @Slf4j
 @Component

@@ -17,8 +17,6 @@ import java.io.File;
 /**
  * 获取证书服务
  *
- * @author w30042425
- * @since 2023-01-28
  */
 public interface CertInternalService {
     /**

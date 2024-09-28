@@ -17,9 +17,6 @@ import lombok.Getter;
 /**
  * 功能描述
  *
- * @author x30046484
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-05-17
  */
 @Getter
 public enum OperationTypeEnum {

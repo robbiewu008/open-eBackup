@@ -33,9 +33,6 @@ import javax.net.ssl.TrustManager;
 /**
  * SMTP SSL Socket工厂
  *
- * @author l90005176
- * @version [OceanStor BCManager V200R001C00, 2016年2月16日]
- * @since 2018-01-01
  */
 @Slf4j
 public class SmtpSslSocketFactory extends BcmSslSocketFactory {

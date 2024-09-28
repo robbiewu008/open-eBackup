@@ -53,8 +53,6 @@ import java.util.Map;
 /**
  * Page Query Service Test
  *
- * @author twx1009756
- * @since 2021-03-17
  */
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest(classes = {PageQueryService.class, PageQueryServiceTest.LMDao.class, PageQueryServiceTest.LM.class, SqlInitializationAutoConfiguration.class})

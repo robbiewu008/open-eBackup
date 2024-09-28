@@ -18,8 +18,6 @@ import openbackup.system.base.sdk.kmc.model.PlaintextVo;
 /**
  * 解密api接口
  *
- * @author t00482481
- * @since 2020-07-05
  */
 public interface EncryptorRestApi {
     /**

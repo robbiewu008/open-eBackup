@@ -38,9 +38,6 @@ import java.util.stream.Collectors;
 /**
  * secret接口实现
  *
- * @author l00853347
- * @since 2023-12-22
- * @version [OceanProtect DataBackup 1.6.0]
  */
 @Service
 @Slf4j

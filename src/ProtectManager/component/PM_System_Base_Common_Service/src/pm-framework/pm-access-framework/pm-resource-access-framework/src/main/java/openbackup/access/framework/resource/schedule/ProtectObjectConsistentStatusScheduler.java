@@ -33,9 +33,6 @@ import java.util.List;
 /**
  * 功能描述: ProtectObjectConsistentStatusScheduler
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-24
  */
 @Slf4j
 @Component

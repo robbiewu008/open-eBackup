@@ -61,8 +61,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 用户serviceTest
  *
- * @author w30042425
- * @since 2023-02-14
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {UserServiceImpl.class, RestTemplate.class, SecurityPolicyService.class, RequestUtil.class})

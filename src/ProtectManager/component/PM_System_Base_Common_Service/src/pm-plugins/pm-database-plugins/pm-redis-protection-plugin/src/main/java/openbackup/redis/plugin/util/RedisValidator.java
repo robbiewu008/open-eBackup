@@ -39,9 +39,6 @@ import java.util.Objects;
 /**
  * 功能描述: 校验 Redis各种参数信息
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 @Slf4j
 public class RedisValidator {

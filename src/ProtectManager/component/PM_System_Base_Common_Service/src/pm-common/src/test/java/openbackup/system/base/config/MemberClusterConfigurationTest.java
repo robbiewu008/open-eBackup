@@ -35,8 +35,6 @@ import java.net.Proxy;
 /**
  * MemberClusterConfigurationTest
  *
- * @author y30046482
- * @since 2023-05-27
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {MemberClusterConfiguration.class, FeignBuilder.class, RequestUriUtil.class})

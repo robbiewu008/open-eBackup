@@ -43,8 +43,6 @@ import java.util.List;
 /**
  * Exchange邮箱恢复拦截器 LLT
  *
- * @author w30032137
- * @since 2023-05-31
  */
 @ExtendWith(MockitoExtension.class)
 class ExchangeMailboxRestoreInterceptorTest {

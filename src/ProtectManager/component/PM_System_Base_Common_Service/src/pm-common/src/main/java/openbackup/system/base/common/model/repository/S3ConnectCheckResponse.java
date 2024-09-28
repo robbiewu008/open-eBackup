@@ -21,8 +21,6 @@ import java.math.BigDecimal;
 /**
  * 功能描述
  *
- * @author y00413474
- * @since 2020-07-14
  */
 @Data
 public class S3ConnectCheckResponse {

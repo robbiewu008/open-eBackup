@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * 共享路径恢复任务请求参数
  *
- * @author w00574036
- * @since 2024-04-19
- * @version [OceanCyber 300 1.2.0]
  */
 @Data
 public class OcLiveMountTaskReq {

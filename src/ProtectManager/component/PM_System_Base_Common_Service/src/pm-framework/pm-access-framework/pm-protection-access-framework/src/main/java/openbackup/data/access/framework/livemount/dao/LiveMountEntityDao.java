@@ -25,8 +25,6 @@ import java.util.List;
 /**
  * Live Mount Entity Dao
  *
- * @author l00272247
- * @since 2020-09-18
  */
 @DbMangerMapper
 public interface LiveMountEntityDao extends BaseMapper<LiveMountEntity> {

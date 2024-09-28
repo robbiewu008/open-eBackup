@@ -30,8 +30,6 @@ import java.util.Map;
 /**
  * ExprUtilTest
  *
- * @author l00272247
- * @since 2020-07-09
  */
 public class ExprUtilTest {
     /**

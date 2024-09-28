@@ -15,9 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * hcs复制常量类
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/7/26
  */
 public class HcsConstant {
     /**

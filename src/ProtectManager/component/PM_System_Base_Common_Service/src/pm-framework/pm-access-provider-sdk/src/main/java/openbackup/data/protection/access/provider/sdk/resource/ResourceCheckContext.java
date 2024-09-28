@@ -22,8 +22,6 @@ import java.util.Map;
 /**
  * The CheckContext
  *
- * @author g30003063
- * @since 2022/5/30
  */
 @Getter
 @Setter

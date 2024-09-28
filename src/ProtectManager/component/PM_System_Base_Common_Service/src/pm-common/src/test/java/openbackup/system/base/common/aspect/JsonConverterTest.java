@@ -28,8 +28,6 @@ import java.util.List;
 /**
  * Json Converter Test
  *
- * @author c30044692
- * @since 2023/4/20
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = JsonConverter.class)

@@ -15,9 +15,6 @@ package openbackup.data.access.framework.livemount.common.enums;
 /**
  * Live Mount操作类型枚举类
  *
- * @author tWX1009756
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-03-28
  */
 public enum OperationEnums {
     // 创建即时挂载

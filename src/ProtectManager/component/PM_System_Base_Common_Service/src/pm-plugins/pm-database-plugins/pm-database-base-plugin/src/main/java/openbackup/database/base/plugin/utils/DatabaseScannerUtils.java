@@ -28,9 +28,6 @@ import java.util.Optional;
 /**
  * 数据库扫描公共工具类
  *
- * @author xWX950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-30
  */
 @Slf4j
 public final class DatabaseScannerUtils {

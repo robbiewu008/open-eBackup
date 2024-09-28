@@ -32,9 +32,6 @@ import javax.validation.constraints.NotNull;
 /**
  * CopyUtil
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-12
  */
 public class CopyUtil {
     /**

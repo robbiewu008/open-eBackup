@@ -15,9 +15,6 @@ package com.huawei.emeistor.console.config.lock;
 /**
  * 锁服务
  *
- * @author w30042425
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-03
  */
 public interface LockService {
     /**

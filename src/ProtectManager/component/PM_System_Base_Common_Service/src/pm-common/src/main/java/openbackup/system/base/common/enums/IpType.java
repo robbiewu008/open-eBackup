@@ -15,8 +15,6 @@ package openbackup.system.base.common.enums;
 /**
  * IpType
  *
- * @author wwx1013713
- * @since 2021-06-29
  */
 public enum IpType {
     IPV4("IPV4"),

@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 文件集
  *
- * @author t00482481
- * @since 2020-07-05
  */
 @Data
 public class LiveMountResource {

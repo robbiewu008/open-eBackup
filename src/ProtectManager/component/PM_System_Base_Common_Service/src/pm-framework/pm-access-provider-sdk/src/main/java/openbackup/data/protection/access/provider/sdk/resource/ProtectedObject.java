@@ -20,8 +20,6 @@ import java.util.Map;
 /**
  * Protected Object
  *
- * @author l00272247
- * @since 2021-10-20
  */
 public class ProtectedObject extends ResourceBase {
     private String slaId;

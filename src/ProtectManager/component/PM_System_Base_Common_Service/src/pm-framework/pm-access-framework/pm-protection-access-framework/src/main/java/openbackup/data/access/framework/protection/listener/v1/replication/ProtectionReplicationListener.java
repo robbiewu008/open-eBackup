@@ -79,8 +79,6 @@ import java.util.Optional;
 /**
  * Protection Replication Listener
  *
- * @author l00272247
- * @since 2020-11-18
  */
 @Component
 @Slf4j

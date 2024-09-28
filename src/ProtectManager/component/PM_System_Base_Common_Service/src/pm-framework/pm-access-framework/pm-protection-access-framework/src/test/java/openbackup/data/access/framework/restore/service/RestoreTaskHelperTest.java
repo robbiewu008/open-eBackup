@@ -52,9 +52,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 /**
  * 恢复任务辅助工具类
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/28
  **/
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {KmcHelper.class})

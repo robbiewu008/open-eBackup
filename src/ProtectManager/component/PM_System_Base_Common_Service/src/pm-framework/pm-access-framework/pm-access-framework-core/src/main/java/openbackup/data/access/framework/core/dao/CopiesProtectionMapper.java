@@ -22,8 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * CopiesProtectionMapper
  *
- * @author l30044826
- * @since 2024-01-29
  */
 @Mapper
 @Component

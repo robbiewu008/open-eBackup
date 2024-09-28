@@ -22,9 +22,6 @@ import java.util.List;
 /**
  * nas卷信息
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-22
  */
 @Setter
 @Getter

@@ -57,9 +57,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * 功能描述: OpenstackBackupProviderTest
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-11
  */
 public class OpenstackBackupProviderTest {
     private static OpenstackBackupProvider backupProvider;

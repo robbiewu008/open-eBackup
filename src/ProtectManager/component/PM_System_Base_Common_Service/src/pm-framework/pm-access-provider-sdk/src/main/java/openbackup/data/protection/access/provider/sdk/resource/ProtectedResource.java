@@ -28,9 +28,6 @@ import javax.validation.constraints.Max;
 /**
  * 受保护资源
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-12
  */
 @EqualsAndHashCode(callSuper = true)
 public class ProtectedResource extends ResourceBase {

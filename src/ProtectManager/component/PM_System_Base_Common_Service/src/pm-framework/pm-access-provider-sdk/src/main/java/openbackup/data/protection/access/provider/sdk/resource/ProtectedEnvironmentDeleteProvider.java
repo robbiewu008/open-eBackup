@@ -18,9 +18,6 @@ import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvide
  * 环境删除provider
  * 根据resourceSubType区分
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/7/26
  */
 public interface ProtectedEnvironmentDeleteProvider extends DataProtectionProvider<String> {
     /**

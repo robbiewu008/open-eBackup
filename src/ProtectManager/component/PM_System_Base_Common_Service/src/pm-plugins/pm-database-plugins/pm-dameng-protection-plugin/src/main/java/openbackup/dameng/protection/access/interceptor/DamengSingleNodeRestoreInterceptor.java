@@ -56,9 +56,6 @@ import java.util.stream.Collectors;
 /**
  * dameng单机恢复任务下发provider
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-09
  */
 @Slf4j
 @Component

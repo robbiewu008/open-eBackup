@@ -17,8 +17,6 @@ import java.util.List;
 /**
  * 资源集-资源接口
  *
- * @author z00842230
- * @since 2024-07-11
  */
 public interface ResourceSetResourceServiceApi {
     /**

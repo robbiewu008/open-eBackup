@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * Redis Constants
  *
- * @author l00272247
- * @since 2021-01-04
  */
 public interface RedisConstants {
     /**

@@ -38,9 +38,6 @@ import javax.validation.Valid;
  * 框架中接口为V2版本，V1.0.0中已接入的资源依然走V1版本的接口
  * </p>
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  **/
 @Slf4j
 @RestController

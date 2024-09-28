@@ -25,9 +25,6 @@ import org.springframework.validation.Errors;
 /**
  * 创建恢复任务请求的自定义业务校验器
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/3/5
  **/
 @Slf4j
 @Component

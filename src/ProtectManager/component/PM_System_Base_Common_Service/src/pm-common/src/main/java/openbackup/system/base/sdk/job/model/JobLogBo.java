@@ -21,9 +21,6 @@ import java.util.List;
 /**
  * 任务日志
  *
- * @author y00407642
- * @version [8.0.1]
- * @since 2020-06-12
  */
 @Data
 public class JobLogBo {

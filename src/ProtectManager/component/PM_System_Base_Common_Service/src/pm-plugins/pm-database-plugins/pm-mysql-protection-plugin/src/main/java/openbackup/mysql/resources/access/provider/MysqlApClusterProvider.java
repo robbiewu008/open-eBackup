@@ -34,9 +34,6 @@ import java.util.Optional;
 /**
  * MYSQL 主备集群 检验provider
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/14
  */
 @Slf4j
 @Component

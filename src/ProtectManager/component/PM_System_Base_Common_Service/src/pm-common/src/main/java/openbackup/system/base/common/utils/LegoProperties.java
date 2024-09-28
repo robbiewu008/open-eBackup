@@ -27,9 +27,6 @@ import java.util.Properties;
  * 运行时，如果conf/lego.properties文件存在，则加载conf/lego.properties文件定义的属性
  * 两个文件属性重合时，以conf/lego.properties为准
  *
- * @author s90004407
- * @version [Lego V100R002C10, 2010-7-8]
- * @since 2019-11-01
  */
 public class LegoProperties {
     /**

@@ -21,8 +21,6 @@ import lombok.Data;
 /**
  * dme task entity
  *
- * @author y30000858
- * @since 2020-09-21
  */
 @Data
 public class TaskCompleteMessageDto {

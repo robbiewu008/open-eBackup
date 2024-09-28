@@ -56,9 +56,6 @@ import javax.validation.ConstraintViolationException;
 /**
  * {@link OpenStackBackupController} 测试类
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-28
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OpenStackBackupController.class)

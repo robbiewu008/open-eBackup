@@ -24,9 +24,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 功能描述
  *
- * @author w00448845
- * @version [BCManager 8.0.0]
- * @since 2020-04-15
  */
 @Data
 public class CreateJobRequest {

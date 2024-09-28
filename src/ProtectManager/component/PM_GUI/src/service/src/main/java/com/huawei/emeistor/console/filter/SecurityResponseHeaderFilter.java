@@ -24,8 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 回复添加统一的header
  *
- * @author t00482481
- * @since 2020-9-06
  */
 public class SecurityResponseHeaderFilter extends OncePerRequestFilter {
     /**

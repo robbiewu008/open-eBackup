@@ -29,8 +29,6 @@ import java.util.Collections;
 /**
  * Protected Resource Po Test
  *
- * @author l00272247
- * @since 2022-01-17
  */
 public class ProtectedResourcePoTest {
     /**

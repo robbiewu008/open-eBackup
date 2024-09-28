@@ -27,9 +27,6 @@ import javax.validation.constraints.Size;
 /**
  * 资源Redis冗余锁
  *
- * @author w30044259
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-08-14
  */
 @Data
 @NoArgsConstructor

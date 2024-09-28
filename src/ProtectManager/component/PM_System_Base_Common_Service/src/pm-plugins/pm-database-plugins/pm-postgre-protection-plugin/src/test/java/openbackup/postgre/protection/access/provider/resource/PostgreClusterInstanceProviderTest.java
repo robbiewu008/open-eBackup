@@ -36,9 +36,6 @@ import java.util.Map;
 /**
  * poostgre集群实例测试类
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-30
  */
 public class PostgreClusterInstanceProviderTest {
     private static final String ENDPOINT = "8.40.99.187";

@@ -55,9 +55,6 @@ import java.util.UUID;
 /**
  * 功能描述: UnifiedEnvironmentCheckProvider
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-23
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({UnifiedEnvironmentCheckProvider.class, EnvironmentLinkStatusHelper.class})

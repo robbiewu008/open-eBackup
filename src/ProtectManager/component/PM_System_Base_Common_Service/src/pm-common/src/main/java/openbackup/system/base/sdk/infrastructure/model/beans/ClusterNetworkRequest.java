@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 功能描述
  *
- * @author x00464136
- * @since 2023-10-18
  */
 @Data
 public class ClusterNetworkRequest {

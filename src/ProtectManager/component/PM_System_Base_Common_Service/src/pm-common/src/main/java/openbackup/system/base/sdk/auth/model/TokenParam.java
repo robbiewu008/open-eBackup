@@ -18,9 +18,6 @@ import lombok.Setter;
 /**
  * 查询hcs manageOne管理员的token参数
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/7/30
  */
 @Getter
 @Setter

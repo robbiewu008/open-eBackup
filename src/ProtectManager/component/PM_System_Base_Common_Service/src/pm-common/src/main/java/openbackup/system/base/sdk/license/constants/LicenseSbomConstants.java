@@ -15,8 +15,6 @@ package openbackup.system.base.sdk.license.constants;
 /**
  * 功能描述
  *
- * @author s00455050
- * @since 2021-01-23
  */
 public class LicenseSbomConstants {
     /**

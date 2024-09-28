@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 目标集群资源信息查询数据返回模型
  *
- * @author dWX1009286
- * @since 2021-07-20
  */
 @Data
 public class ClusterResourcesInfo {

@@ -28,9 +28,6 @@ import org.junit.Test;
 /**
  * {@link SapHanaSlaValidatorProvider Test}
  *
- * @author wWX1013713
- * @version [DataBackup 1.5.0]
- * @since 2023-06-09
  */
 public class SapHanaSlaValidatorProviderTest {
     private final SapHanaSlaValidatorProvider hanaSlaProvider = new SapHanaSlaValidatorProvider();

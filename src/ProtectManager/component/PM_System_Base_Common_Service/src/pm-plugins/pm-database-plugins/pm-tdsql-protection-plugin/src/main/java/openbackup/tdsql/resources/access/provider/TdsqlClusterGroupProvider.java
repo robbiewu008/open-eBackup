@@ -43,8 +43,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述 TDSQL 分布式实例 Provider
  *
- * @author z00445440
- * @since 2023-11-13
  */
 @Slf4j
 @Component

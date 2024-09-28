@@ -23,9 +23,6 @@ import java.util.Optional;
 /**
  * JsonNodeUtil
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-05-27
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonNodeUtil {

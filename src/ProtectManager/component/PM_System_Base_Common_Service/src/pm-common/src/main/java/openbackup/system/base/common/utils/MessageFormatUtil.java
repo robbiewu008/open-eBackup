@@ -17,9 +17,6 @@ import java.text.MessageFormat;
 /**
  * MessageFormatUtil
  *
- * @author p00171530
- * @version [Lego V100R002C10, 2014-12-18]
- * @since 2019-11-01
  */
 public class MessageFormatUtil {
     private MessageFormatUtil() {

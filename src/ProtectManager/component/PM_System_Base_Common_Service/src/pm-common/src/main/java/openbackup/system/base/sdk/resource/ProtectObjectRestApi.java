@@ -36,8 +36,6 @@ import java.util.List;
 /**
  * Protect Object RestApi
  *
- * @author l00272247
- * @since 2021-01-11
  */
 @FeignClient(name = "ProtectObjectRestApi", url = "${services.endpoints.protectmanager.protection-service}/v1/internal",
     configuration = CommonFeignConfiguration.class)

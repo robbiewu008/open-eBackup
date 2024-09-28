@@ -36,9 +36,6 @@ import java.util.Map;
 /**
  * RestoreValidator工具类单元测试集合
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/26
  **/
 public class RestoreValidatorTest {
     /**

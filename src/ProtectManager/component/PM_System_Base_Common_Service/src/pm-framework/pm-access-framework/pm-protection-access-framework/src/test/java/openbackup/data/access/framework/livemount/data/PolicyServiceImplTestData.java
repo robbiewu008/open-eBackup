@@ -26,8 +26,6 @@ import java.sql.Timestamp;
 /**
  * live mount policy service test
  *
- * @author h30003246
- * @since 2021-03-02
  */
 public class PolicyServiceImplTestData extends LiveMountCommonTestData {
     private static final String POLICY_NAME = "policy_name_1";

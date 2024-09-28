@@ -22,8 +22,6 @@ import java.lang.annotation.Target;
 /**
  * Page Query Configs
  *
- * @author l00272247
- * @since 2020-10-10
  */
 @Documented
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})

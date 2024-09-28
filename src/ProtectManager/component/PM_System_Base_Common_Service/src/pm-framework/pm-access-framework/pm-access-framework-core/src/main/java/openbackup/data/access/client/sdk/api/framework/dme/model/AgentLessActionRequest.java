@@ -27,9 +27,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author y30044273
- * @since 2023-11-17
- * @version [OceanProtect DataBackup 1.6.0]
  */
 @Data
 @AllArgsConstructor

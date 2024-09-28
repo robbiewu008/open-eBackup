@@ -25,8 +25,6 @@ import javax.validation.constraints.Pattern;
 /**
  * 同步组件ip请求体
  *
- * @author x30046484
- * @since 2023-05-18
  */
 @Getter
 @Setter

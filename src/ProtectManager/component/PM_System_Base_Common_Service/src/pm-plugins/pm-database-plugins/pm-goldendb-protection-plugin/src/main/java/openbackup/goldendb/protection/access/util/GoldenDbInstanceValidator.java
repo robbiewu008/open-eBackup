@@ -22,8 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 功能描述 GoldenDbValidator参数校验
  *
- * @author s30036254
- * @since 2023-03-20
  */
 @Slf4j
 public class GoldenDbInstanceValidator {

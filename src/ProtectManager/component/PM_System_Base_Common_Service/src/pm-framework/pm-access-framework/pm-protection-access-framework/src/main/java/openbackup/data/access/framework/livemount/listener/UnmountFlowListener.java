@@ -40,8 +40,6 @@ import java.util.Collections;
 /**
  * Unmount Flow Listener
  *
- * @author l00272247
- * @since 2020-11-05
  */
 @Slf4j
 @Component

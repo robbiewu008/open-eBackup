@@ -42,9 +42,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * 类描述
  *
- * @author fwx1022842
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022/4/22
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("javax.security.*")

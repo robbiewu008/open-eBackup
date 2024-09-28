@@ -44,8 +44,6 @@ import java.util.Optional;
 /**
  * The GaussDBConnectionCheckerTest
  *
- * @author x30021699
- * @since 2023-05-09
  */
 @RunWith(PowerMockRunner.class)
 public class TpopsGaussDBConnectionCheckerTest {

@@ -60,8 +60,6 @@ import java.util.Map;
 /**
  * MySQL集群实例测试类
  *
- * @author xWX950025
- * @since 2022-06-01
  */
 @RunWith(PowerMockRunner.class)
 public class MysqlClusterInstanceProviderTest {

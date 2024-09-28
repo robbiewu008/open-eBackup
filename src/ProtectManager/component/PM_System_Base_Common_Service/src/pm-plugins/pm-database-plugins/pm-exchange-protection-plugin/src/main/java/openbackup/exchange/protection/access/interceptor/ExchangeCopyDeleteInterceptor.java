@@ -29,8 +29,6 @@ import java.util.stream.Collectors;
 /**
  * ExchangeCopyDeleteInterceptor
  *
- * @author z00830422
- * @since 2024/4/3 16:59
  */
 @Slf4j
 @Component

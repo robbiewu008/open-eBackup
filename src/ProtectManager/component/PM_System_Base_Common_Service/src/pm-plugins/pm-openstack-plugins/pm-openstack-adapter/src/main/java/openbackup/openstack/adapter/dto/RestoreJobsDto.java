@@ -25,9 +25,6 @@ import java.util.List;
 /**
  * Restore Jobs
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-18
  */
 @Setter
 @Getter

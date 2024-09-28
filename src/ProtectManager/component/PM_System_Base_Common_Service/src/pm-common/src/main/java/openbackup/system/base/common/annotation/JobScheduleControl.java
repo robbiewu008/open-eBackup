@@ -26,8 +26,6 @@ import java.lang.annotation.Target;
 /**
  * Job Schedule Control
  *
- * @author l00272247
- * @since 2021-03-17
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

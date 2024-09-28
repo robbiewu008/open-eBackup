@@ -59,9 +59,6 @@ import java.util.Optional;
  * Backup msg listener, this lister will consume the backup msg and the specified provider is found by provider registry
  * to complete the backup service logic processing.
  *
- * @author j00364432
- * @version [BCManager 8.0.0]
- * @since 2020-06-22
  */
 @Component
 @Slf4j

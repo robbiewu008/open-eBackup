@@ -17,8 +17,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 /**
  * 资源扩展属性handler
  *
- * @author h30027154
- * @since 2022-05-30
  */
 public abstract class ResourceExtensionHandler<T, R> {
     /**

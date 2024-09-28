@@ -68,9 +68,6 @@ import java.util.stream.Collectors;
 /**
  * 实现恢复接口
  *
- * @author hwx1144169
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-15
  */
 @Component
 @Slf4j

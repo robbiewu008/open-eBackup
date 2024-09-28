@@ -23,8 +23,6 @@ import lombok.NoArgsConstructor;
 /**
  * Sftp user information
  *
- * @author dWX1009286
- * @since 2021-06-09
  */
 @Data
 @AllArgsConstructor

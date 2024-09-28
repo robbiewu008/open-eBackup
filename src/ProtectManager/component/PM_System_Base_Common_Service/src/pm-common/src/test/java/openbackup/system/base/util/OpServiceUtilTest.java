@@ -20,8 +20,6 @@ import org.junit.Test;
 /**
  * OpServiceUtilTest
  *
- * @author l30044826
- * @since 2023-08-29
  */
 public class OpServiceUtilTest {
     @Test

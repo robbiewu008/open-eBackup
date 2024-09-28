@@ -21,8 +21,6 @@ import lombok.ToString;
 /**
  * 存储设备的信息实体类
  *
- * @author z00425178
- * @since 2021-11-13
  */
 @ToString(exclude = "password")
 @Getter

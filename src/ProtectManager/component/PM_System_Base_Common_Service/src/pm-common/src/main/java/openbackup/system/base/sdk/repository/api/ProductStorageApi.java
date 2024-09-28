@@ -17,9 +17,6 @@ import java.util.Optional;
 /**
  * ProductStorageService SDK
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-03-16
  */
 public interface ProductStorageApi {
     /**

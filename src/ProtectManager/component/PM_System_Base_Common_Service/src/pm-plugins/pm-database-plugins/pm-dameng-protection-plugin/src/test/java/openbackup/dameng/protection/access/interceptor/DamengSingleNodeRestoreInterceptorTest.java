@@ -51,9 +51,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-20
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({AgentDtoUtil.class})

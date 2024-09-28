@@ -19,8 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * agent更新请求体
  *
- * @author w00426202
- * @since 2022-11-30
  */
 @Data
 public class AgentUpdateRequest {

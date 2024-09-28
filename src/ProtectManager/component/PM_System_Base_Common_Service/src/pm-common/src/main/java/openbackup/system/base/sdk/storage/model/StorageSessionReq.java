@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * OceanStorageSessionReq
  *
- * @author p00511147
- * @since 2020-12-14
  */
 @Data
 public class StorageSessionReq {

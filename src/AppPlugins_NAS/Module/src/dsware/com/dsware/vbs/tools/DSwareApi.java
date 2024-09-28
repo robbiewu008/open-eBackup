@@ -17,7 +17,6 @@ import java.util.Map;
 /**
  * DSwareApi
  *
- * @since 2024-08-27
  */
 public interface DSwareApi {
     /**

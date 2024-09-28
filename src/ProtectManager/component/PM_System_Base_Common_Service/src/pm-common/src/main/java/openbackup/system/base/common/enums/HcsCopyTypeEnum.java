@@ -15,9 +15,6 @@ package openbackup.system.base.common.enums;
 /**
  * hcs复制类型枚举
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/7/28
  */
 public enum HcsCopyTypeEnum {
     REGION_COPY("0"),

@@ -21,9 +21,6 @@ import java.util.List;
 /**
  * ResourceGroupDto
  *
- * @author c00631681
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-26
  */
 @Getter
 @Setter

@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 云服务参数 查询参数
  *
- * @author y30021475
- * @since 2023-07-28
  */
 @Getter
 @Setter

@@ -38,8 +38,6 @@ import java.text.SimpleDateFormat;
 /**
  * Migrate Flow Listener
  *
- * @author h30003246
- * @since 2021-01-05
  */
 @Slf4j
 @Component

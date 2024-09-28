@@ -27,8 +27,6 @@ import java.sql.Timestamp;
 /**
  * UpdatingPolicyEntity
  *
- * @author l00272247
- * @since 2020-09-16
  */
 @Data
 @PageQueryConfig(conditions = {"%name%"}, orders = {"live_mount_count", "created_time"})

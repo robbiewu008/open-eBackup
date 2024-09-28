@@ -20,9 +20,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 /**
  * This interface defines the restore providers that need to be implemented by DataMover
  *
- * @author j00364432
- * @version [OceanStor 100P 8.1.0]
- * @since 2020-06-19
  */
 public interface RestoreProvider extends DataProtectionProvider<RestoreObject> {
     /**

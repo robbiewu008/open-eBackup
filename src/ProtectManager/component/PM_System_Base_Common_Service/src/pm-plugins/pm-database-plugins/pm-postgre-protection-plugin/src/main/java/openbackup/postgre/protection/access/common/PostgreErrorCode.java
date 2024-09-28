@@ -15,9 +15,6 @@ package openbackup.postgre.protection.access.common;
 /**
  * PostgreSQL相关错误码
  *
- * @author wwx1013713
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/09/03
  */
 public class PostgreErrorCode {
     /**

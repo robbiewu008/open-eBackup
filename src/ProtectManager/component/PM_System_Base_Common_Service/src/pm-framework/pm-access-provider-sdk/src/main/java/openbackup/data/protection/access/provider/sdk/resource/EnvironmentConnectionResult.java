@@ -20,9 +20,6 @@ import lombok.NoArgsConstructor;
 /**
  * Agent connection result
  *
- * @author w30044259
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-27
  */
 @Data
 @NoArgsConstructor

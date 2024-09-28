@@ -21,8 +21,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 导入证书请求体
  *
- * @author wx1011919
- * @since 2021-06-29
  */
 @Data
 public class ImportCertificateFiles {

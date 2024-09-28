@@ -37,8 +37,6 @@ import static org.mockito.ArgumentMatchers.*;
 /**
  * PageQueryRestApi
  *
- * @author jwx701567
- * @since 2021-05-08
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {PageQueryRestApi.class})

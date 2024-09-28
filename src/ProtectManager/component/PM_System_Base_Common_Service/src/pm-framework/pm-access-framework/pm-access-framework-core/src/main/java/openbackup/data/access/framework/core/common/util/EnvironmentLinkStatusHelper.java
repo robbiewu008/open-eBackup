@@ -36,9 +36,6 @@ import java.util.Objects;
 /**
  * 资源受保护状态获取工具类
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-27
  */
 @Component
 @Slf4j

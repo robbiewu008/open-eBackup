@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
 /**
  * Context Registration Test
  *
- * @author l00272247
- * @since 2021-12-15
  */
 @RunWith(PowerMockRunner.class)
 public class ContextDataRegistrationTest {

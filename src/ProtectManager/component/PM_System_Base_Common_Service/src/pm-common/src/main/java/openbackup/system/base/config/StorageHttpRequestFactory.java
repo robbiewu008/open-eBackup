@@ -33,8 +33,6 @@ import javax.net.ssl.X509TrustManager;
 /**
  * 自定义CustomHttpConfiguation
  *
- * @author y00407642
- * @since 2019-10-26
  */
 public class StorageHttpRequestFactory extends SimpleClientHttpRequestFactory {
     private static final Logger logger = LoggerFactory.getLogger(StorageHttpRequestFactory.class);
@@ -66,8 +64,6 @@ public class StorageHttpRequestFactory extends SimpleClientHttpRequestFactory {
     /**
      * SsoX509TrustManager
      *
-     * @author y00407642
-     * @since 2019-10-26
      */
     private static class SsoX509TrustManager implements X509TrustManager {
         @Override

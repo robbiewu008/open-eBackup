@@ -15,8 +15,6 @@ package openbackup.exchange.protection.access.constant;
 /**
  * Exchange 常量
  *
- * @author s30036254
- * @since 2023-05-04
  */
 public class ExchangeConstant {
     /**

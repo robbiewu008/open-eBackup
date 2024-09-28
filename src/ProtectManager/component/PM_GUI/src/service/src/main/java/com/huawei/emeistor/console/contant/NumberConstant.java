@@ -15,10 +15,7 @@ package com.huawei.emeistor.console.contant;
 /**
  * 描述
  *
- * @author lwx544155
- * @version [OceanStor DJ V100R003C00, 2020年03月05日]
  * @see [相关类/方法]
- * @since [产品/模块版本]
  */
 public class NumberConstant {
     /**

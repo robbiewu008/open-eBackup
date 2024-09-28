@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * dme cloud backup file system request
  *
- * @author g00500588
- * @since 2021/12/7
  */
 @Data
 public class DmeCloudBackupFileSystemRequest extends DmeArchiveRequest {

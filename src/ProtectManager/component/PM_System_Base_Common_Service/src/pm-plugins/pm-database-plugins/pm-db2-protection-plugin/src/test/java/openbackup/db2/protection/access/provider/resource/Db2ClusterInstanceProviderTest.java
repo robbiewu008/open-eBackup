@@ -44,9 +44,6 @@ import java.util.UUID;
 /**
  * {@link Db2ClusterInstanceProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-04
  */
 public class Db2ClusterInstanceProviderTest {
     private static final String ENDPOINT = "127.0.0.1";

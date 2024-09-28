@@ -26,9 +26,6 @@ import java.util.regex.Pattern;
 /**
  * dameng参数校验工具类
  *
- * @author dwx1009286
- * @version [DataBackup 1.3.0]
- * @since 2023-05-29
  */
 @Slf4j
 public class DamengParamCheckUtil {

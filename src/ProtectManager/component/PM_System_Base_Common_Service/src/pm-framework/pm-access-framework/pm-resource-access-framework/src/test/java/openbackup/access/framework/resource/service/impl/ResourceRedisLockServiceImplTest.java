@@ -50,9 +50,6 @@ import feign.FeignException;
 /**
  * ResourceRedisLockServiceImplTest
  *
- * @author w30044259
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-08-15
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ExceptionUtil.class)

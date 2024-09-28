@@ -26,9 +26,6 @@ import org.powermock.api.mockito.PowerMockito;
 /**
  * {@link InformixSingleInstanceProvider Test}
  *
- * @author dwx1009286
- * @version [DataBackup 1.5.0]
- * @since 2023-05-17
  */
 public class InformixSingleInstanceProviderTest {
     private final InformixService informixService = PowerMockito.mock(InformixService.class);

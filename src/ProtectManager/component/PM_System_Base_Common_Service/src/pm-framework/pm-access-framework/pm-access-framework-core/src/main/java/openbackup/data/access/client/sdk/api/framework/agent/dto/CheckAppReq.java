@@ -22,9 +22,6 @@ import lombok.NoArgsConstructor;
 /**
  * Check App Req
  *
- * @author fwx1022842
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022/2/22
  */
 @Data
 @NoArgsConstructor

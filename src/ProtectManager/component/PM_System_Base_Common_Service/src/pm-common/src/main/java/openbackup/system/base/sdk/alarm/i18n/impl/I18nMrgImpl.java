@@ -58,9 +58,6 @@ import javax.annotation.PostConstruct;
 /**
  * 后台资源国际化对外的接口
  *
- * @author t00104528
- * @version [BCManager 8.0.0]
- * @since 2020-01-10
  */
 @Slf4j
 @Service

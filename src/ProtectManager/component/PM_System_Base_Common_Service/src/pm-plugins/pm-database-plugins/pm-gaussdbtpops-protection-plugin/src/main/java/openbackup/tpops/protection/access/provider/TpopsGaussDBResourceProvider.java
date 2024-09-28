@@ -28,8 +28,6 @@ import java.util.Objects;
 /**
  * GaussDB资源类提供者
  *
- * @author x30021699
- * @since 2023-05-09
  */
 @Component
 @Slf4j

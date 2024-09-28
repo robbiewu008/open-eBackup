@@ -21,8 +21,6 @@ import java.util.TimeZone;
 /**
  * JacksonConfiguration
  *
- * @author l00272247
- * @since 2020-01-16
  */
 @Configuration
 public class JacksonConfiguration {

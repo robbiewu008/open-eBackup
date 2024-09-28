@@ -44,9 +44,6 @@ import java.util.List;
 /**
  * {@link GaussDBValidatorProvider}测试类
  *
- * @author t30021437
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-02-15
  */
 
 public class GaussDBValidatorProviderTest {

@@ -37,9 +37,6 @@ import java.util.Map;
 /**
  * CNware data Mock
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-12-21
  */
 public class CnwareMockUtil {
     /**

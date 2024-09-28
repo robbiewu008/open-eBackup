@@ -17,8 +17,6 @@ import lombok.Getter;
 /**
  * 权限操作枚举类
  *
- * @author z00842230
- * @since 2024-07-08
  */
 @Getter
 public enum AuthOperationEnum {

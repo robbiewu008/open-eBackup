@@ -24,8 +24,6 @@ import lombok.Getter;
 /**
  * 保留时长单位
  *
- * @author z30006621
- * @since 2021-08-24
  */
 @Getter
 @AllArgsConstructor

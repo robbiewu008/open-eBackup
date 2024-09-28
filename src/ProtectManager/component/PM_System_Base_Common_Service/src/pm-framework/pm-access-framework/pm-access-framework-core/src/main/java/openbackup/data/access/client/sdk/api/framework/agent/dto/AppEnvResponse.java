@@ -20,9 +20,6 @@ import java.util.Map;
 /**
  * 集群信息查询接口返回对象
  *
- * @author hwx1144169
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-19
  */
 @Data
 public class AppEnvResponse {

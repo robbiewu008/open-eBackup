@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * 集群操作信息
  *
- * @author x30046484
- * @since 2023-05-19
  */
 
 @Getter

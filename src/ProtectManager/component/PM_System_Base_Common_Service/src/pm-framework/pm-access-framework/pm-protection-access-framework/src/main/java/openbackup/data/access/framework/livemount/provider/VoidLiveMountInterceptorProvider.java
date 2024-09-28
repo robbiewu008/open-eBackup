@@ -22,8 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * Void Live Mount Interceptor Provider
  *
- * @author l00272247
- * @since 2021-12-29
  */
 @Component
 public class VoidLiveMountInterceptorProvider implements LiveMountInterceptorProvider {

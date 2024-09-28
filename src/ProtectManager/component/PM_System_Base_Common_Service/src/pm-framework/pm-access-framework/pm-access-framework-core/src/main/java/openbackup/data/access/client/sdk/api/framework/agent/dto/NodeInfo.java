@@ -19,9 +19,6 @@ import java.util.Map;
 /**
  * Node Info
  *
- * @author hwx1144169
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-19
  */
 @Data
 public class NodeInfo {

@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * system backup service
  *
- * @author dWX1009286
- * @since 2021-09-27
  */
 @FeignClient(name = "SystemBackupRestApi", url = "${service.url.pm-system-base}/v1/internal/sysbackup",
     configuration = CommonFeignConfiguration.class)

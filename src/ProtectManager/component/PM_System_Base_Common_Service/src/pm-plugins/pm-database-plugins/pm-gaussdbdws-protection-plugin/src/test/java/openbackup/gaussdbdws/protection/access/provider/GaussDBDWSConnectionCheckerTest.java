@@ -47,9 +47,6 @@ import java.util.Optional;
 /**
  * DWS集群环境 联通性测试类
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-17
  */
 @RunWith(PowerMockRunner.class)
 public class GaussDBDWSConnectionCheckerTest {

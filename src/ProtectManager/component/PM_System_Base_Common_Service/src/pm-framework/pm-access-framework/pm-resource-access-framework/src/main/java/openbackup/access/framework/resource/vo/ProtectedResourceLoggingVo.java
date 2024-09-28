@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * ProtectedResourceLoggingVo resource 事件vo对象，主要用于组装后返回给logging框架记录detail
  *
- * @author x00635457
- * @since 2023/6/8
  */
 @Getter
 @Setter

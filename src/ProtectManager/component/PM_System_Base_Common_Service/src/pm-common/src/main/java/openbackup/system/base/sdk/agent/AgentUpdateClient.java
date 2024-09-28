@@ -30,8 +30,6 @@ import java.net.URI;
 /**
  * 功能描述
  *
- * @author s00455050
- * @since 2021-08-06
  */
 @FeignClient(name = "AgentUpdateClient", url = "${pm-resource-manager.url}/v1/internal/agent/",
     configuration = AgentConfiguration.class)

@@ -30,9 +30,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * {@link SlaPostgresValidator} 测试类
  *
- * @author zwx1010134
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-01
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {SlaPostgresValidator.class})

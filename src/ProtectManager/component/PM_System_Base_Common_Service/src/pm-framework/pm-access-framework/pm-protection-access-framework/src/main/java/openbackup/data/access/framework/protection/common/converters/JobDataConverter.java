@@ -44,8 +44,6 @@ import java.util.stream.Collectors;
 /**
  * JobStatus数据转换类
  *
- * @author w00616953
- * @since 2021-12-09
  */
 @Slf4j
 public final class JobDataConverter {

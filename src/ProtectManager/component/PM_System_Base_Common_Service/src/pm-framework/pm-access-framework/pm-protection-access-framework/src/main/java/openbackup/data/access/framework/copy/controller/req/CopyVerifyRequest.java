@@ -20,9 +20,6 @@ import org.hibernate.validator.constraints.Length;
 /**
  * 副本校验请求体
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-05-30
  */
 @Getter
 @Setter

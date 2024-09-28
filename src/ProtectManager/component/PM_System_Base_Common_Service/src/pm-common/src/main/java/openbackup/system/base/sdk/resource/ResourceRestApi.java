@@ -42,8 +42,6 @@ import java.util.stream.Collectors;
 /**
  * get protected resource
  *
- * @author l00557046
- * @since 2020-08-10
  */
 @FeignClient(name = "ResourceService", url = "${pm-resource-manager.url}/v1",
     configuration = CommonFeignConfiguration.class)

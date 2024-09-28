@@ -32,9 +32,6 @@ import java.util.List;
  * 2. 删除副本的时候，只需要auth和endpoint信息；
  * </p>
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  **/
 @Data
 public class StorageRepository extends BaseStorageRepository {

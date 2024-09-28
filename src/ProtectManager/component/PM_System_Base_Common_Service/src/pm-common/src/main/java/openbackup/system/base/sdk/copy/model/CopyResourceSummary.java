@@ -20,8 +20,6 @@ import lombok.Data;
 /**
  * Copy Resource Summary
  *
- * @author l00272247
- * @since 2020-11-09
  */
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)

@@ -23,8 +23,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Bean Tools Test
  *
- * @author l00272247
- * @since 2021-12-25
  */
 public class BeanToolsTest {
     @Test

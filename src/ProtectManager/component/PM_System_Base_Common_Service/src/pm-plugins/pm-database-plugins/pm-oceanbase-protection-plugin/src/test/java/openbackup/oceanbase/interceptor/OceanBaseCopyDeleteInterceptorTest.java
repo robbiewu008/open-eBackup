@@ -30,8 +30,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * 功能描述
  *
- * @author x30028756
- * @since 2023-11-24
  */
 @RunWith(PowerMockRunner.class)
 public class OceanBaseCopyDeleteInterceptorTest {

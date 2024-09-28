@@ -23,8 +23,6 @@ import java.lang.annotation.Target;
 /**
  * Callee Method
  *
- * @author l00272247
- * @since 2021-12-14
  */
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

@@ -23,8 +23,6 @@ import lombok.Setter;
 /**
  * 预置账号密码Po类
  *
- * @author y30021475
- * @since 2023-08-07
  */
 @Getter
 @Setter

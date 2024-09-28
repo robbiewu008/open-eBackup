@@ -48,8 +48,6 @@ import javax.validation.Valid;
 /**
  * ADFS保存配置
  *
- * @author y30021475
- * @since 2023-05-17
  */
 @Slf4j
 @RestController

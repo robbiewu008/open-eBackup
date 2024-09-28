@@ -17,9 +17,6 @@ import java.util.stream.Stream;
 /**
  * 保护状态枚举
  *
- * @author lWX1012372
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-28
  */
 public enum ProtectionStatusEnum {
     /**

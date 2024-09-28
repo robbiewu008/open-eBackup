@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 修改agent应用类型结果
  *
- * @author c30035089
- * @since 2023-08-25
  */
 @Getter
 @Setter

@@ -20,9 +20,6 @@ import openbackup.database.base.plugin.enums.ClusterInstanceOnlinePolicy;
 /**
  * 数据库的实例资源服务
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-24
  */
 public interface InstanceResourceService {
     /**

@@ -56,9 +56,6 @@ import java.util.zip.ZipInputStream;
 /**
  * 上传文件验证工具类
  *
- * @author hwx1144169
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-03-31
  */
 @Slf4j
 public class UploadFileValidateUtil {

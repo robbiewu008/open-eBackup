@@ -37,9 +37,6 @@ import java.util.Set;
 /**
  * DataProtectionAccessException处理器，针对改异常进行拦截处理
  *
- * @author j00364432
- * @version [OceanProtect 1.1.0]
- * @since 2021-11-24
  */
 @Slf4j
 @RestControllerAdvice

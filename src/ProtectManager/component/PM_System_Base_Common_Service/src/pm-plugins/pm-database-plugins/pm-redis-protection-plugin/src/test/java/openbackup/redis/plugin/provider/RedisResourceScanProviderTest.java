@@ -48,9 +48,6 @@ import java.util.List;
 /**
  * redis资源扫描测试类
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-11
  */
 @RunWith(PowerMockRunner.class)
 public class RedisResourceScanProviderTest {

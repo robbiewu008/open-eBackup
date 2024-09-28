@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 功能描述
  *
- * @since [生成时间]
  */
 @Component
 @PropertySource("classpath:/properties/security.properties")

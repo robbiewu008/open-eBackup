@@ -19,8 +19,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * 环境信息Mapper
  *
- * @author w30042425
- * @since 2023-11-27
  */
 public interface EnvironmentsMapper extends BaseMapper<EnvironmentsEntity> {
 }

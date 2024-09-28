@@ -15,9 +15,6 @@ package openbackup.data.access.framework.restore.constant;
 /**
  * 恢复任务中任务步骤国际化标签常量类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/10
  **/
 public class RestoreJobLabelConstant {
     /**

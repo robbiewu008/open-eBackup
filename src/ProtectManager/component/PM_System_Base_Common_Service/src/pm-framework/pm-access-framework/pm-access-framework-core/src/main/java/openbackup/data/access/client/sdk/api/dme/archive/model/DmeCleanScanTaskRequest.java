@@ -21,8 +21,6 @@ import lombok.NoArgsConstructor;
 /**
  * 清理扫描归档任务 请求体
  *
- * @author z30009433
- * @since 2020-12-31
  */
 @Data
 @NoArgsConstructor

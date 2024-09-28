@@ -26,8 +26,6 @@ import java.util.Optional;
  * DME Response
  *
  * @param <T> template type
- * @author l00272247
- * @since 2020-04-03
  */
 @Getter
 @Setter

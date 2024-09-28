@@ -23,9 +23,6 @@ import java.util.List;
 /**
  * GaussDBT AgentLinkStatusProvider
  *
- * @author dwx1009286
- * @version [DataBackup 1.5.0]
- * @since 2023-08-04
  */
 public class GaussDBTAgentLinkStatusProvider implements AgentLinkStatusProvider {
     @Override

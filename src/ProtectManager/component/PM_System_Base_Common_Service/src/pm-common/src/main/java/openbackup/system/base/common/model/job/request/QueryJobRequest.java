@@ -26,9 +26,6 @@ import javax.validation.constraints.Size;
 /**
  * 查询任务请求
  *
- * @author w00448845
- * @version [BCManager 8.0.0]
- * @since 2020-04-15
  */
 @Data
 @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)

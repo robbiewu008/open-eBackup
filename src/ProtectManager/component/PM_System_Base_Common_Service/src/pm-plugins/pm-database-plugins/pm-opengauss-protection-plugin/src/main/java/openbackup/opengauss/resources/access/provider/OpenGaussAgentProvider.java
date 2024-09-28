@@ -29,9 +29,6 @@ import java.util.List;
 /**
  * OpenGauss的插件选择
  *
- * @author dwx1009286
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/7/25
  */
 @Slf4j
 @Component

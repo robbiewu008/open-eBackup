@@ -35,8 +35,6 @@ import javax.annotation.Resource;
 /**
  * Redis Context Service Test
  *
- * @author twx1009756
- * @since 2021-03-17
  */
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest(classes = {RedisContextService.class, RedissonClient.class, LockService.class})

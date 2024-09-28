@@ -47,9 +47,6 @@ import java.util.List;
 /**
  * 功能描述: test KeyStoneService
  *
- * @author x30038064
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-27
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({KeyStoneHttpUtil.class, KeyStoneService.class, SpringBeanUtils.class})

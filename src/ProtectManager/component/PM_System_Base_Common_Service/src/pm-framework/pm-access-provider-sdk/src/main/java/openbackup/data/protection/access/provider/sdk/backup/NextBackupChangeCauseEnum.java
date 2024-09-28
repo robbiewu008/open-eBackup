@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.backup;
 /**
  * 更改下次备份的原因
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-13
  */
 public enum NextBackupChangeCauseEnum {
     // 恢复成功

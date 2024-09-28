@@ -31,9 +31,6 @@ import java.util.regex.Pattern;
 /**
  * Ipv6地址工具类
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-12
  */
 @Slf4j
 public final class Ipv6AddressUtil {

@@ -29,8 +29,6 @@ import java.util.Map;
 /**
  * kerberos监听服务实现
  *
- * @author c30016231
- * @since 2021-12-01
  */
 @Service
 public class KerberosListenerImpl implements KerberosListener {

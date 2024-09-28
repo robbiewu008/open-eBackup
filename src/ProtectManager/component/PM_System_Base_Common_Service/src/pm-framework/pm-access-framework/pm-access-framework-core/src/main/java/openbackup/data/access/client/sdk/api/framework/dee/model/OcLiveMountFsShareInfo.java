@@ -19,9 +19,6 @@ import java.util.Map;
 /**
  * 一体机共享路径恢复共享信息
  *
- * @author w00574036
- * @since 2024-04-19
- * @version [OceanCyber 300 1.2.0]
  */
 @Data
 public class OcLiveMountFsShareInfo {

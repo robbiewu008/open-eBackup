@@ -57,9 +57,6 @@ import java.util.stream.Collectors;
 /**
  * SQL Server数据库恢复
  *
- * @author xWX950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-20
  */
 @Slf4j
 @Component

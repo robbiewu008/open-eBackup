@@ -27,9 +27,6 @@ import java.util.List;
 /**
  * OpenGaussRestoreUtil测试类
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-20
  */
 public class OpenGaussRestoreUtilTest {
     /**

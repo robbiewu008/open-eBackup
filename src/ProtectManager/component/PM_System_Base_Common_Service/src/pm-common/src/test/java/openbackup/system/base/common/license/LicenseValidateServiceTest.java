@@ -35,8 +35,6 @@ import java.util.UUID;
 /**
  * License Validate Service Test
  *
- * @author c30044692
- * @since 2023/4/20
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = LicenseValidateService.class)

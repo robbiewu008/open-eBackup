@@ -61,8 +61,6 @@ import java.util.Optional;
 /**
  * 功能描述
  *
- * @author x30021699
- * @since 2023-05-09
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {TpopsGaussDBClusterEnvironmentProvider.class, JsonSchemaValidator.class})

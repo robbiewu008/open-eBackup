@@ -18,9 +18,6 @@ import java.util.Map;
 /**
  * 副本勒索服务
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/8/16
  */
 public interface CopyRansomwareService {
     /**

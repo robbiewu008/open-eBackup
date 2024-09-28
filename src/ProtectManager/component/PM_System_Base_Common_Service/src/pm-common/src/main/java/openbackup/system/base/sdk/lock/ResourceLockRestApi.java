@@ -26,9 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * 资源锁服务rest api定义
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022/1/26
  **/
 @FeignClient(
         name = "resourceLockRestApi",

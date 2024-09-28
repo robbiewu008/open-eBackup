@@ -34,9 +34,6 @@ import java.util.Map;
 /**
  * Informix资源连通性检查器
  *
- * @author hwx1164326
- * @version [OceanProtect X8000 1.2.1]
- * @since 2023-08-31
  */
 @Slf4j
 @Component

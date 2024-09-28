@@ -41,8 +41,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 登录白名单过滤器
  *
- * @author l00422407
- * @since 2021-04-21
  */
 @Slf4j
 public class AuthFilter extends OncePerRequestFilter {

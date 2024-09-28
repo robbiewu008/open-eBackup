@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * Copy Object
  *
- * @author l00557046
- * @version [BCManager 8.0.0]
- * @since 2020-06-17
  */
 @Data
 public class CopyObject {

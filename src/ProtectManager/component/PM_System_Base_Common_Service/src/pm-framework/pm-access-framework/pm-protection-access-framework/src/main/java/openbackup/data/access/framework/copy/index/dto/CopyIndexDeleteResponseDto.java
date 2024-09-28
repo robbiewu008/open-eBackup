@@ -20,8 +20,6 @@ import lombok.Setter;
 /**
  * 删除副本索引的响应
  *
- * @author g30003063
- * @since 2021-12-16
  */
 @Getter
 @Setter

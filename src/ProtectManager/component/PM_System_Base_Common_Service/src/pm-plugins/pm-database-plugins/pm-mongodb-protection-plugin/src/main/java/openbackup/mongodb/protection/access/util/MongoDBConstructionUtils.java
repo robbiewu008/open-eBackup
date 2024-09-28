@@ -38,9 +38,6 @@ import java.util.stream.Collectors;
 /**
  * mongodb 参数构造工具类
  *
- * @author lwx1012372
- * @version [DataBackup 1.5.0]
- * @since 2023-04-27
  */
 public class MongoDBConstructionUtils {
     /**

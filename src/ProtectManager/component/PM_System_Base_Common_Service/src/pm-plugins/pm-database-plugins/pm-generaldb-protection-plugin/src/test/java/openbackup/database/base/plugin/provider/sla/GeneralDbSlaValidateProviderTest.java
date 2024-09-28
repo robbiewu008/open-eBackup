@@ -39,9 +39,6 @@ import java.util.Objects;
 /**
  * GeneralDbSlaValidateProvider测试
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-30
  */
 public class GeneralDbSlaValidateProviderTest {
     GeneralDbSlaValidateProvider generalDbSlaValidateProvider;

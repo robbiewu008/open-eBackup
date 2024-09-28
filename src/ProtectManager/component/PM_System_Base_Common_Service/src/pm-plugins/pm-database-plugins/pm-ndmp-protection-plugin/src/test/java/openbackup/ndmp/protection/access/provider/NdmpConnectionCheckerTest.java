@@ -41,8 +41,6 @@ import java.util.Optional;
 /**
  * 联通性检查
  *
- * @author t30021437
- * @since 2023-05-11
  */
 public class NdmpConnectionCheckerTest {
     private NdmpConnectionChecker ndmpConnectionChecker;

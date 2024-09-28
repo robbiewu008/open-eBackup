@@ -39,9 +39,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * 功能描述: OpenstackAgentServiceTest
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-03
  */
 public class OpenstackAgentServiceTest {
     private static OpenstackAgentService agentService;

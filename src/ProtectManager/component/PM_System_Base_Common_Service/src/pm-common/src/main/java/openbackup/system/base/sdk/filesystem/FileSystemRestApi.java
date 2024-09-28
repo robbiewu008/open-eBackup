@@ -27,9 +27,6 @@ import java.util.List;
 /**
  * fileSystem REST调用接口
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-05
  */
 @FeignClient(
         name = "fileSystemRestApi",

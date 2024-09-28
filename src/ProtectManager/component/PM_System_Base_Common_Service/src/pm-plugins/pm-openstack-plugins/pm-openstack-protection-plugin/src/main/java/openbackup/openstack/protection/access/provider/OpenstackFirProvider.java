@@ -38,9 +38,6 @@ import java.util.List;
 /**
  * OpenstackFirProvider
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-31
  */
 @Component
 public class OpenstackFirProvider extends AbstractVmFileLevelRestoreProvider implements RestoreProvider {

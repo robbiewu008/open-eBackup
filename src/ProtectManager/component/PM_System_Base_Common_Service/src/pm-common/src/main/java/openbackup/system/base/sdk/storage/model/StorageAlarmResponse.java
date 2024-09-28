@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 本地存储告警查询返回对象
  *
- * @author y30000858
- * @since 2021-01-12
  */
 @Data
 public class StorageAlarmResponse {

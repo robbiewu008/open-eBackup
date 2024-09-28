@@ -20,9 +20,6 @@ import openbackup.system.base.sdk.job.model.request.JobMessage;
 /**
  * Job数据模拟器
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/15
  **/
 public class JobBoMocker {
     public static JobBo buildRestoreJobBo(RestoreTask restoreTask){

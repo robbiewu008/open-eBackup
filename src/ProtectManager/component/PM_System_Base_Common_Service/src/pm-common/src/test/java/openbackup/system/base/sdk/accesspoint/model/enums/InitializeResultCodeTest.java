@@ -20,8 +20,6 @@ import org.junit.Test;
 /**
  * InitializeResultCode test
  *
- * @author jwx701567
- * @since 2021-03-15
  */
 public class InitializeResultCodeTest {
 

@@ -36,9 +36,6 @@ import java.util.Map;
 /**
  * S3存储库的策略类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/8
  **/
 @Component("s3RepositoryStrategy")
 @Slf4j

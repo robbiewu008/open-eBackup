@@ -19,8 +19,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 /**
  * Live Mount Ownership Verify Client Rest Api
  *
- * @author l00272247
- * @since 2020-11-28
  */
 @FeignClient(name = "live-mount-ownership-verify-client-rest-api",
     url = "${service.url.pm-live-mount}/v1/internal",

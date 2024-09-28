@@ -24,9 +24,6 @@ import java.util.Map;
 /**
  * 功能描述 通用mock工厂
  *
- * @author q30048244
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-02-05 10:04
  */
 public class MockFactory {
 

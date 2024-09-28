@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * 资源upsert返回结果
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-05-18
  */
 @Data
 public class ResourceUpsertRes {

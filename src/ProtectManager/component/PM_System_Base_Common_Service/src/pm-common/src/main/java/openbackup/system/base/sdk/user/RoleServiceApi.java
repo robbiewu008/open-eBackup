@@ -17,9 +17,6 @@ import openbackup.system.base.sdk.user.model.RolePo;
 /**
  * 角色sdk接口
  *
- * @author z00842230
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-07-04
  */
 public interface RoleServiceApi {
     /**

@@ -36,9 +36,6 @@ import java.util.stream.Collectors;
 /**
  * CopyVolInfo
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-31
  */
 @Getter
 @Setter

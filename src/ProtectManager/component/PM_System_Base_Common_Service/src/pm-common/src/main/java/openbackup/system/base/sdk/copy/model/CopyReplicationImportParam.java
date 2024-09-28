@@ -26,8 +26,6 @@ import javax.validation.constraints.Max;
 /**
  * Copy Replication Import Param
  *
- * @author l00272247
- * @since 2020-12-15
  */
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)

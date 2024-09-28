@@ -37,8 +37,6 @@ import java.util.Map;
 /**
  * TPOPS 备份
  *
- * @author x30021699
- * @since 2023-05-09
  */
 
 @Component

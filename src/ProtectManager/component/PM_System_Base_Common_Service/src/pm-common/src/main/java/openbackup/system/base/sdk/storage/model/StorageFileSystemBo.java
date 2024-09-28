@@ -20,8 +20,6 @@ import lombok.Setter;
 /**
  * 本地存储文件系统BO
  *
- * @author g30003063
- * @since 2021/12/14
  */
 @Getter
 @Setter

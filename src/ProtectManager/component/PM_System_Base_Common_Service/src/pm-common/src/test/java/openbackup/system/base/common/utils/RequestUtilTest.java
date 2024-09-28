@@ -33,8 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * RequestUtil Test
  *
- * @author wwx1013713
- * @since 2022-06-22
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {RequestContextHolder.class})

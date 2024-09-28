@@ -29,7 +29,6 @@ import java.util.Optional;
 /**
  * 部署类型Condition, 与ConditionalOnDeployType结合使用
  *
- * @since 2023-01-03
  */
 @Slf4j
 class DeployTypeCondition extends SpringBootCondition {

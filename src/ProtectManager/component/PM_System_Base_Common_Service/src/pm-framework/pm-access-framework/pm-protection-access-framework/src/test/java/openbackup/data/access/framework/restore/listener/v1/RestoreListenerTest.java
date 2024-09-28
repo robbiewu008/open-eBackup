@@ -46,8 +46,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 /**
  * RestoreListener LLT
  *
- * @author m00576658
- * @since 2021-03-04
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(RestoreListener.class)

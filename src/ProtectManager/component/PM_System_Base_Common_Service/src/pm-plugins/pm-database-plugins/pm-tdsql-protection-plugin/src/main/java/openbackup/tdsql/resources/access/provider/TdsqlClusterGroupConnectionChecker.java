@@ -57,8 +57,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述 分布式实例节点连通性检查
  *
- * @author z00427109
- * @since 2023-11-14
  */
 @Component
 @Slf4j

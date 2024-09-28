@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.backup;
 /**
  * 资源扩展字段的常量
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-13
  */
 public class ResourceExtendInfoConstants {
     /**

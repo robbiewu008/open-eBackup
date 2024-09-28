@@ -27,8 +27,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
 /**
  * URL标准化处理
  *
- * @author l00422407
- * @since 2021-04-12
  */
 @Slf4j
 public class SecurityHttpRequestWrapper extends HttpServletRequestWrapper {

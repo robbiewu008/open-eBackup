@@ -19,9 +19,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 /**
  * Redis Service
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 public interface RedisService {
     /**

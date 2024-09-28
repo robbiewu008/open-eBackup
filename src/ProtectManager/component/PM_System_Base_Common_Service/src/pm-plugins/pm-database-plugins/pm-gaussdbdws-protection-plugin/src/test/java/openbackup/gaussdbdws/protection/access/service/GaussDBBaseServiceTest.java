@@ -64,8 +64,6 @@ import java.util.Optional;
 /**
  * DWS集群 基础类工具类
  *
- * @author swx1010572
- * @since 2023-09-13
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {UnifiedHealthCheckProvider.class, EnvironmentLinkStatusHelper.class, OpServiceUtil.class})

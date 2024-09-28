@@ -23,8 +23,6 @@ import java.lang.annotation.Target;
  * operation permission
  *
  * @see Permission
- * @author p00264414
- * @since 2020-01-09
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

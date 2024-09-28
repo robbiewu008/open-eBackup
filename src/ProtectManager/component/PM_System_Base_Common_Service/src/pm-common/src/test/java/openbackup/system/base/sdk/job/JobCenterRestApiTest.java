@@ -41,8 +41,6 @@ import java.util.List;
 /**
  * JobCenterRestApi test
  *
- * @author jwx701567
- * @since 2021-03-12
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JobCenterRestApiTest.class)

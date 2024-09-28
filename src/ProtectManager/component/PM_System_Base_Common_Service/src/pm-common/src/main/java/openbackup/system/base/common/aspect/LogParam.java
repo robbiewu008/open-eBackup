@@ -21,8 +21,6 @@ import lombok.NoArgsConstructor;
 /**
  * 事件用到的参数
  *
- * @author w30042425
- * @since 2023-10-10
  */
 @Data
 @NoArgsConstructor

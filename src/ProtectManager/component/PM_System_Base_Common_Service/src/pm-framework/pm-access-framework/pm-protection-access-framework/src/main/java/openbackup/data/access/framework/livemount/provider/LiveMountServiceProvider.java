@@ -22,9 +22,6 @@ import openbackup.system.base.sdk.resource.model.ResourceEntity;
 /**
  * 功能描述: 即时挂载流程扩展接口
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-07
  */
 public interface LiveMountServiceProvider extends DataProtectionProvider<String> {
     /**

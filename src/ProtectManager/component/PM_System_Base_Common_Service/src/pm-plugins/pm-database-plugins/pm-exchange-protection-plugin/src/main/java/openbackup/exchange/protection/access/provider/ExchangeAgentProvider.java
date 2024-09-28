@@ -35,8 +35,6 @@ import java.util.Optional;
 /**
  * Exchange Agent Provider
  *
- * @author z00693144
- * @since 2024-03-08
  */
 @Slf4j
 @Component

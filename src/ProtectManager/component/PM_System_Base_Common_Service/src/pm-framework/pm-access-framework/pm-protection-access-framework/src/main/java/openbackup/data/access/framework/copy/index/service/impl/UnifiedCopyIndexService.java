@@ -89,9 +89,6 @@ import java.util.UUID;
 /**
  * 统一框架副本创建索引服务类
  *
- * @author lWX776769
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-29
  */
 @Service
 @Slf4j

@@ -21,9 +21,6 @@ import java.util.List;
 /**
  * db2实例服务
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-03
  */
 public interface Db2InstanceService {
     /**

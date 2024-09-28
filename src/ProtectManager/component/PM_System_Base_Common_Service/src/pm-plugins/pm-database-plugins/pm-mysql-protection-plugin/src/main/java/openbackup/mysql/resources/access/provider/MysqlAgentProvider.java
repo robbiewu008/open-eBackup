@@ -38,9 +38,6 @@ import java.util.Map;
 /**
  * MySQl资源查询agent主机的provider
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/7/27
  */
 @Component
 @Slf4j

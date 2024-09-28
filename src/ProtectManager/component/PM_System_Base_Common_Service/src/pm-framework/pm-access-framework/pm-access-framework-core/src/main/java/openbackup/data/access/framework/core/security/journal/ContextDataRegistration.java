@@ -32,8 +32,6 @@ import java.util.stream.Stream;
 /**
  * Definition
  *
- * @author l00272247
- * @since 2021-12-14
  */
 public class ContextDataRegistration implements Comparable<ContextDataRegistration> {
     private final ApplicationContext applicationContext;

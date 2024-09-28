@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * redis键过期entity
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/5/24
  */
 @Getter
 @Setter

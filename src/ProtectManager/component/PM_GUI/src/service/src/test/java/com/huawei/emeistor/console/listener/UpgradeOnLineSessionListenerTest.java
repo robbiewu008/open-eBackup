@@ -36,9 +36,6 @@ import java.util.List;
 /**
  * 理升级问题，解决之前序列化到redis中的session数据，将其转换为json字符串保存 单元测试
  *
- * @author t30028453
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-28
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {SessionService.class, RedissonClient.class})

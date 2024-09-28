@@ -28,8 +28,6 @@ import java.util.Map;
 /**
  * mock数据类型
  *
- * @author w00616953
- * @since 2021-12-17
  */
 public class MockEntity {
     public static ProtectedEnvironmentDto mockProtectedEnvironmentDto() {

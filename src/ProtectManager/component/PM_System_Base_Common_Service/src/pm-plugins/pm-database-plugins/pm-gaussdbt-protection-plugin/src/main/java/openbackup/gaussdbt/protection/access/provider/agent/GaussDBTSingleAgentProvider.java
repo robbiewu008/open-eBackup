@@ -25,9 +25,6 @@ import java.util.List;
 /**
  * GaussDBT单机资源查询agent主机的provider
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/8/29
  */
 @Component
 public class GaussDBTSingleAgentProvider extends DataBaseAgentSelector {

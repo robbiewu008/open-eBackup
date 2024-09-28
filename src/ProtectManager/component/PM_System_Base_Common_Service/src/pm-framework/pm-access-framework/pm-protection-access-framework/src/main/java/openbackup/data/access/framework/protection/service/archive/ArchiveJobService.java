@@ -38,9 +38,6 @@ import java.util.Objects;
 /**
  * 归档任务服务，用于统一的创建归档job
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/18
  **/
 @Component
 public class ArchiveJobService {

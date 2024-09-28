@@ -51,9 +51,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * 功能描述: AgentResourceControllerTest
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-26
  */
 @RunWith(SpringRunner.class)
 @AutoConfigureWebMvc

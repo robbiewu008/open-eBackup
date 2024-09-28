@@ -43,9 +43,6 @@ import java.util.UUID;
 /**
  * {@link Db2InstanceProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2022-12-29
  */
 public class Db2InstanceProviderTest {
     private final ProviderManager providerManager = PowerMockito.mock(ProviderManager.class);

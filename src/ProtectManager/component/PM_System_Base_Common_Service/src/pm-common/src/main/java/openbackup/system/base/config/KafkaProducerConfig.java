@@ -38,8 +38,6 @@ import java.util.Map;
  * get the kafka properties from spring &
  * return kafka templete as  bean
  *
- * @author y30000858
- * @since 2020-07-30
  */
 @Configuration
 @EnableKafka

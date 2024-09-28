@@ -52,9 +52,6 @@ import java.util.stream.Collectors;
 /**
  * Oracle集群环境注册provider
  *
- * @author c30038333
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-27
  */
 @Component
 @Slf4j

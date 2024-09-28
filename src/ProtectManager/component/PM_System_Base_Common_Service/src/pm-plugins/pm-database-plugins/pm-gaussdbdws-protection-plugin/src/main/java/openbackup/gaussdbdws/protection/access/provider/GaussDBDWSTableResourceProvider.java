@@ -33,9 +33,6 @@ import java.util.stream.Collectors;
  * GaussDBDWS Table资源相关接口的具体实现类
  * 实现了：健康状态检查，环境信息检查相关等接口
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-17
  */
 @Slf4j
 @Component

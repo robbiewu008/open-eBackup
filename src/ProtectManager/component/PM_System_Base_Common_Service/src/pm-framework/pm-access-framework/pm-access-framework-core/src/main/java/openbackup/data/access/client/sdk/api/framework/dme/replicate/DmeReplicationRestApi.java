@@ -35,8 +35,6 @@ import java.net.URI;
 /**
  * Dme Replication Rest Api
  *
- * @author l00272247
- * @since 2020-12-16
  */
 @FeignClient(name = "dmeReplicationRestApi", url = "${services.endpoints.protectengine.replication}/v1/dme_replication",
     configuration = DmeArchiveFeignConfiguration.class)

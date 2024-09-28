@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * 副本归档请求体
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-07
  */
 @Data
 public class ArchiveRequestDto {

@@ -33,9 +33,6 @@ import java.util.ArrayList;
 /**
  * InformixProviderTest
  *
- * @author zWX951267
- * @version [DataBackup 1.5.0]
- * @since 2023-05-17
  */
 public class InformixProviderTest {
     private final ProviderManager providerManager = PowerMockito.mock(ProviderManager.class);

@@ -32,8 +32,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 集成公共的Controller方法
  *
- * @author w00493811
- * @since 2021-01-20
  */
 public class AdvBaseController {
     private static final int DEFAULT_REQUEST_ID_MAX_SIZE = 1024;

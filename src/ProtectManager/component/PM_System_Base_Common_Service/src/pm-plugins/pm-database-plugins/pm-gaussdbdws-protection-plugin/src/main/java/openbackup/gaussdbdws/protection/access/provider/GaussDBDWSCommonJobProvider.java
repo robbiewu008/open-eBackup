@@ -30,9 +30,6 @@ import org.springframework.stereotype.Component;
 /**
  * GaussDBDWSCommonJobProvider
  *
- * @author l00626951
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-06-20
  */
 @Slf4j
 @Component

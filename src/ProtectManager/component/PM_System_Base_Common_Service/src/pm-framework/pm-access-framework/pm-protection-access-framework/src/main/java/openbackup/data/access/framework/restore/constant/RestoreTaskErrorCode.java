@@ -15,9 +15,6 @@ package openbackup.data.access.framework.restore.constant;
 /**
  * 恢复任务中单独的码定义
  *
- * @author: y00559272
- * @version: [OceanProtect X8000 1.2.1]
- * @since: 2022/8/10
  **/
 public abstract class RestoreTaskErrorCode {
     /**

@@ -32,8 +32,6 @@ import java.util.function.Supplier;
 /**
  * AnyBackup Enhance Service
  *
- * @author l00272247
- * @since 2020-07-08
  */
 @Component
 @Primary

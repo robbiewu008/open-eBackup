@@ -45,8 +45,6 @@ import java.util.stream.Collectors;
 /**
  * 对象备份agent筛选器
  *
- * @author l00370588
- * @since 2024-1-13
  */
 @Component
 @Slf4j

@@ -23,9 +23,6 @@ import java.util.Map;
 /**
  * 获取DME远端设备信息请求体
  *
- * @author l00853347
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-06-25
  */
 @Data
 @Builder

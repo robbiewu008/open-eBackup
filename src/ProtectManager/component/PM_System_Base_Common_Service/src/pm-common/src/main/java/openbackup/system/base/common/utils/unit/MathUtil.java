@@ -20,9 +20,6 @@ import java.util.logging.Logger;
 /**
  * 数学工具类
  *
- * @author z90001721
- * @version V100R001C00
- * @since 2019-10-25
  */
 public final class MathUtil {
     private static final Logger LOGGER =

@@ -67,8 +67,6 @@ import java.util.Optional;
 /**
  * Backup Task Complete Listener
  *
- * @author y00559272
- * @since 2020/9/19
  **/
 @Slf4j
 @Component

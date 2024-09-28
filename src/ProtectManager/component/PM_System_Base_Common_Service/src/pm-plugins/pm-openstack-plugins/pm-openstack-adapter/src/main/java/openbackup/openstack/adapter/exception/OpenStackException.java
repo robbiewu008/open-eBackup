@@ -15,9 +15,6 @@ package openbackup.openstack.adapter.exception;
 /**
  * OpenStack北向接口异常类
  *
- * @author w00616953
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-30
  */
 public class OpenStackException extends RuntimeException {
     private final long errorCode;

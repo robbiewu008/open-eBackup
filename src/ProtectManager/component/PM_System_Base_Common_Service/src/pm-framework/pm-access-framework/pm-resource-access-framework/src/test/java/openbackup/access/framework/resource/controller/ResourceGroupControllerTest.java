@@ -42,8 +42,6 @@ import java.util.UUID;
 /**
  * 功能描述 资源组 controller测试
  *
- * @author w30044259
- * @since 2023-11-20
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

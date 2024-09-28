@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 调用agent查询到的AIX主机和SanClient主机WWPN或IQN信息类
  *
- * @author z00613137
- * @since 2023-06-27
  */
 @Data
 public class WwpnOrIqnInfo {

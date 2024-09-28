@@ -25,9 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * 统一备份框架DEE相关接口定义
  *
- * @author lWX776769
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-29
  */
 @FeignClient(name = "deeTaskRestApi", url = "${services.endpoints.protectengine.dee}",
     configuration = CommonFeignConfiguration.class)

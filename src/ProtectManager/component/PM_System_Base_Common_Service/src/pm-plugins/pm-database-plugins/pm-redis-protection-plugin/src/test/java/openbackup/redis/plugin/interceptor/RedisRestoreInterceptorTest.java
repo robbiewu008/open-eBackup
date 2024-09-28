@@ -56,8 +56,6 @@ import java.util.Optional;
 /**
  * Redis 数据库备份拦截器实现类 测试类
  *
- * @author w00504341
- * @since 2022-07-11
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( {RedisRestoreInterceptor.class})

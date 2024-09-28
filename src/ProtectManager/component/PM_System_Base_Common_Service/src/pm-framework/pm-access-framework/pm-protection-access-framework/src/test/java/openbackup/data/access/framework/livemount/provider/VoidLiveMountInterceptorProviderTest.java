@@ -20,8 +20,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Void Live Mount Interceptor Provider Test
  *
- * @author l00272247
- * @since 2021-12-30
  */
 public class VoidLiveMountInterceptorProviderTest {
     @Test

@@ -52,8 +52,6 @@ import static org.mockito.Mockito.doAnswer;
 /**
  * CopyListener LLT
  *
- * @author m00576658
- * @since 2021-03-03
  */
 
 @RunWith(PowerMockRunner.class)

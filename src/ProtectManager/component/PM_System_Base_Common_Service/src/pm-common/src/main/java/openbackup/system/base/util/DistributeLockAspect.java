@@ -29,8 +29,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 分布式锁切面逻辑
  *
- * @author g00500588
- * @since 2021/4/16
  */
 @Aspect
 @Component

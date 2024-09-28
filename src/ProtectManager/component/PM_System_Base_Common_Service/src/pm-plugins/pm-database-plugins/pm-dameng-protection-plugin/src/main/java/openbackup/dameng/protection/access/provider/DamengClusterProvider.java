@@ -58,9 +58,6 @@ import java.util.stream.Collectors;
 /**
  * dameng集群实例注册
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-15
  */
 @Slf4j
 @Component

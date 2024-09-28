@@ -36,8 +36,6 @@ import java.util.List;
 /**
  * TidbTableProvider
  *
- * @author w00426202
- * @since 2023-07-15
  */
 
 @Slf4j

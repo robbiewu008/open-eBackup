@@ -40,9 +40,6 @@ import java.util.function.Function;
 /**
  * JSONArray封装类
  *
- * @author z00398217
- * @version [OceanStor ReplicationDirector V200R001C10, 2016年11月12日]
- * @since 2019-11-01
  */
 public class JSONArray extends ArrayList {
     private static final long serialVersionUID = 5871970967397101346L;

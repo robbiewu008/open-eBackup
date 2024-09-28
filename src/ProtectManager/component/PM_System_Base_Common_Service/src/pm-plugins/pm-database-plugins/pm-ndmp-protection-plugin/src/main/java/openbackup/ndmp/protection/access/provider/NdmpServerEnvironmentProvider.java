@@ -51,8 +51,6 @@ import java.util.stream.Collectors;
 /**
  * NDMP-server 资源接入
  *
- * @author t30021437
- * @since 2023-05-06
  */
 @Slf4j
 @Component

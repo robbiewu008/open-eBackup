@@ -26,8 +26,6 @@ import java.util.Map;
 /**
  * 外部认证类
  *
- * @author t00482481
- * @since 2020-08-10
  */
 @Service
 public class ServiceManager implements InitializingBean, ApplicationContextAware {

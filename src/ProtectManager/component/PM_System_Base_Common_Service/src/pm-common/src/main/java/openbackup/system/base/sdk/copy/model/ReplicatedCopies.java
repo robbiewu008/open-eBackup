@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 复制副本记录表
  *
- * @author z30027603
- * @since 2022/11/23 16:58
  */
 @Data
 public class ReplicatedCopies {

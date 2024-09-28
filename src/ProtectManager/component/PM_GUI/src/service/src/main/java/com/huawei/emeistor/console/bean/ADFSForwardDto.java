@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * ADFS跳转URL
  *
- * @author w30042425
- * @since 2023-05-18
  */
 @Data
 public class ADFSForwardDto {

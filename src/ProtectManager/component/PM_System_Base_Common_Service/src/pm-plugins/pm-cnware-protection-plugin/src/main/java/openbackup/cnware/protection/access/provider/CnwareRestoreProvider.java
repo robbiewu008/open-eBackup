@@ -43,9 +43,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述: Cnware恢复拦截器
  *
- * @author q30048244
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-02-01 9:42
  */
 @Slf4j
 @Component

@@ -19,9 +19,6 @@ import org.junit.Test;
 /**
  * MysqlResourceSubTypeEnum测试类
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/5/31
  */
 public class MysqlResourceSubTypeEnumTest {
     /**

@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Live Mount Enable Status
  *
- * @author h3003246
- * @since 2020-12-08
  */
 public enum LiveMountEnableStatus {
     /**

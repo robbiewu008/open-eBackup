@@ -43,9 +43,6 @@ import java.util.Objects;
 /**
  * 集群环境和单节点连通性校验
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 @Component
 @Slf4j

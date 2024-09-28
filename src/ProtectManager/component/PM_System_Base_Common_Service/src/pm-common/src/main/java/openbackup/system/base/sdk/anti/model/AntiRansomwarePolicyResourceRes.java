@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 防勒索资源对象
  *
- * @author nwx1077006
- * @since 2021-11-12
  */
 @Data
 public class AntiRansomwarePolicyResourceRes {

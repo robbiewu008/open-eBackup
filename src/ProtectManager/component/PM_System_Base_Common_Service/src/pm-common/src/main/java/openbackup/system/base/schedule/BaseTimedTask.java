@@ -18,8 +18,6 @@ import java.util.TimerTask;
 /**
  * 逻辑定时任务基类
  *
- * @author w00607005
- * @since 2023-05-17
  */
 public abstract class BaseTimedTask {
     /**

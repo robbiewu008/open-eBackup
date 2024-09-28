@@ -22,8 +22,6 @@ import org.junit.Test;
 /**
  * TdsqlClusterGroupValidator测试用例
  *
- * @author z00445440
- * @since 2023-11-16
  */
 public class TdsqlClusterGroupValidatorTest {
     @Test

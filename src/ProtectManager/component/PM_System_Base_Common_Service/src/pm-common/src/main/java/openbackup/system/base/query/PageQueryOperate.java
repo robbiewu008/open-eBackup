@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * Page Query Operate
  *
- * @author l00272247
- * @since 2021-11-26
  */
 public interface PageQueryOperate {
     /**

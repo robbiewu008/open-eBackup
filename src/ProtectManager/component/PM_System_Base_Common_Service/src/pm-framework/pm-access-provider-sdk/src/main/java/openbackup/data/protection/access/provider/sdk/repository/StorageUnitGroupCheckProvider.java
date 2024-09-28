@@ -17,9 +17,6 @@ import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvide
 /**
  * 存储单元组修改校验扩展接口
  *
- * @author l00853347
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-04-02
  **/
 public interface StorageUnitGroupCheckProvider extends DataProtectionProvider<String> {
     /**

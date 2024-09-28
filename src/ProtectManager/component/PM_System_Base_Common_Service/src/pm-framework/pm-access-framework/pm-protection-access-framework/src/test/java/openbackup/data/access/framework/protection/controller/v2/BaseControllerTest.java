@@ -22,9 +22,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTypeExclude
  * 功能描述
  *
  * @description:
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  **/
 @AutoConfigureWebMvc
 @AutoConfigureMockMvc

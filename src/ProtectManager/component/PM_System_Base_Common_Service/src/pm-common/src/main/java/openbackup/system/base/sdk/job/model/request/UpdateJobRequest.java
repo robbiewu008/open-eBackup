@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * 更新任务时的请求模型
  *
- * @author y00280557
- * @since 2020-09-01
  */
 @Data
 public class UpdateJobRequest {

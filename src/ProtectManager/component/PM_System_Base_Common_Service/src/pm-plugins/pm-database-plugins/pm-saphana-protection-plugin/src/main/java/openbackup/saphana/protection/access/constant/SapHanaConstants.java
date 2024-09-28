@@ -15,9 +15,6 @@ package openbackup.saphana.protection.access.constant;
 /**
  * SAP HANA常量
  *
- * @author wWX1013713
- * @version [DataBackup 1.5.0]
- * @since 2023-05-09
  */
 public class SapHanaConstants {
     /**

@@ -26,9 +26,6 @@ import java.util.regex.Pattern;
 /**
  *  检查ip合法性
  *
- * @author t30049904
- * @version [OceanProtect DataBack 1.5.0]
- * @since 2024/1/2
  */
 @Slf4j
 public class CommonChecker {

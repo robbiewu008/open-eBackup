@@ -59,8 +59,6 @@ import java.util.function.Consumer;
 /**
  * Security Aspect Test
  *
- * @author l00272247
- * @since 2022-01-08
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

@@ -36,9 +36,6 @@ import java.util.regex.Pattern;
 /**
  * 提供公共的校驗方法，如非空，正則表達式校驗等等
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-09
  */
 public final class CommUtils {
     private static final Logger logger = LoggerFactory.getLogger(CommonUtil.class);

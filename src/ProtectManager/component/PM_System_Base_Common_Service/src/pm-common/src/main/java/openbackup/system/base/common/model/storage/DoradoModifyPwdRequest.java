@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 修改dorado用户名请求体
  *
- * @author t00482481
- * @since 2020-07-31
  */
 @Data
 public class DoradoModifyPwdRequest {

@@ -17,9 +17,6 @@ import org.hibernate.validator.constraints.Length;
 /**
  * 资源基类
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-22
  */
 public class ResourceBase {
     /**

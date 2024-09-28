@@ -38,9 +38,6 @@ import java.util.stream.Collectors;
 /**
  * 域资源Provider
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-03-20
  */
 @Slf4j
 @Component

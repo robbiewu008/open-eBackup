@@ -25,8 +25,6 @@ import java.util.regex.Pattern;
 /**
  * 任务速度转换器
  *
- * @author w00616953
- * @since 2021-12-10
  */
 public final class JobSpeedConverter {
     private static final String INTEGER_REGEX = "^[-\\+]?[\\d]*$";

@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * ProcessResult
  *
- * @author w00493811
- * @since 2021-08-17
  */
 @Data
 public class ProcessResult {

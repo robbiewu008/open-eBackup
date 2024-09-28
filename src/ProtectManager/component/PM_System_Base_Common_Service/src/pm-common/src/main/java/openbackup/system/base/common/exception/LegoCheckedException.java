@@ -25,9 +25,6 @@ import java.util.Arrays;
 /**
  * 系统异常，用户可以直接介入修正异常信息的定义为LegoCheckedException
  *
- * @author w00448845
- * @version @version [CDM Integrated machine]
- * @since 2019-10-28
  */
 public class LegoCheckedException extends RuntimeException {
     /**

@@ -15,9 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 错误码
  *
- * @author l90003110
- * @version [RD V100R002C10, 2010-11-29]
- * @since 2019-10-30
  */
 public class IsmErrorCodeConstant {
     /**

@@ -53,9 +53,6 @@ import java.util.Optional;
 /**
  * {@link DwsValidator}测试类
  *
- * @author mwx1009754
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-30
  */
 
 public class DwsValidatorTest {

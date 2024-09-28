@@ -36,9 +36,6 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * 功能描述
  *
- * @author y00413474
- * @version [BCManager 8.0.0]
- * @since 2020-06-01
  */
 @Component
 @Slf4j
@@ -94,9 +91,6 @@ public class LockServiceImpl implements LockService {
     /**
      * BaseLock
      *
-     * @author y00413474
-     * @version [BCManager 8.0.0]
-     * @since 2020-06-01
      */
     private abstract class BaseLock implements Lock {
         /**
@@ -182,9 +176,6 @@ public class LockServiceImpl implements LockService {
     /**
      * DistributeLock
      *
-     * @author y00413474
-     * @version [BCManager 8.0.0]
-     * @since 2020-06-01
      */
     public class DistributeLock extends BaseLock implements Lock {
         private final InterProcessMutex interProcessMutex;
@@ -240,9 +231,6 @@ public class LockServiceImpl implements LockService {
     /**
      * MemoryLock
      *
-     * @author y00413474
-     * @version [BCManager 8.0.0]
-     * @since 2020-06-01
      */
     private class MemoryLock extends BaseLock implements Lock {
         private final ReentrantLock reentrantLock;
@@ -287,8 +275,6 @@ public class LockServiceImpl implements LockService {
     /**
      * SQL 实现的乐观锁
      *
-     * @author w30042425
-     * @since 2023-06-10
      */
     public class SQLDistributeLock extends BaseLock implements Lock {
         private final String key;

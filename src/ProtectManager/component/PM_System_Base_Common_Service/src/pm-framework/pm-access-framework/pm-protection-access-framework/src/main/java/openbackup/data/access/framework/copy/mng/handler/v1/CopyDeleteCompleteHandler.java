@@ -48,9 +48,6 @@ import java.util.Map;
 /**
  * 副本删除任务完成消息监听器
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-09-27
  */
 @Slf4j
 @Component

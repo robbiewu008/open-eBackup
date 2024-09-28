@@ -21,8 +21,6 @@ import org.junit.Test;
 /**
  * 功能描述 MathUtil测试类
  *
- * @author s30031954
- * @since 2023-03-14
  */
 public class MathUtilTest extends TestCase {
     /**

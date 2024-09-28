@@ -33,8 +33,6 @@ import java.util.Properties;
 /**
  * 功能描述
  *
- * @author y00413474
- * @since 2020-06-29
  */
 @Component
 public class EnvironmentInitial implements EnvironmentPostProcessor {

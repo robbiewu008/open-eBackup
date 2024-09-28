@@ -45,8 +45,6 @@ import java.util.Objects;
 /**
  * TidbDatabaseProviderTest
  *
- * @author w00426202
- * @since 2023-07-15
  */
 @RunWith(PowerMockRunner.class)
 public class TidbDatabaseProviderTest {

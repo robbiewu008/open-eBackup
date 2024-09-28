@@ -26,9 +26,6 @@ import java.util.List;
 /**
  * NetPlaneInfoReqGroupProvider
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-04-02
  */
 public class PortRouteGroupProvider implements DefaultGroupSequenceProvider<PortRoute> {
     private static final String MASTER = "1";

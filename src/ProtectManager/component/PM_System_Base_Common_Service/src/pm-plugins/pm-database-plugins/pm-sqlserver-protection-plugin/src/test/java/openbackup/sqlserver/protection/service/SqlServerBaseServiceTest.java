@@ -54,9 +54,6 @@ import java.util.UUID;
 /**
  * sqlserver公共基础服务测试类
  *
- * @author xWX950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-20
  */
 public class SqlServerBaseServiceTest {
     private SqlServerBaseService sqlServerBaseService;

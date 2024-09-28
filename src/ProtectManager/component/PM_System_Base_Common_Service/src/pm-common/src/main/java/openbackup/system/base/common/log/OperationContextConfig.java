@@ -41,8 +41,6 @@ import java.util.Set;
 /**
  * data load config
  *
- * @author l00272247
- * @since 2019-11-05
  */
 public class OperationContextConfig implements Comparable<OperationContextConfig> {
     private OperationContextLoader defaultOperationContextLoader;

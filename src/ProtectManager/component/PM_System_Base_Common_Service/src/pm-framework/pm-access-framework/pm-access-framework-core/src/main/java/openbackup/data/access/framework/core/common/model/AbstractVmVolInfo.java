@@ -26,8 +26,6 @@ import java.util.List;
 /**
  * Vm卷信息抽象类
  *
- * @author y30037959
- * @since 2023-06-13
  */
 @Slf4j
 public abstract class AbstractVmVolInfo {

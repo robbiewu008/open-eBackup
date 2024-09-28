@@ -26,8 +26,6 @@ import java.util.Map;
 /**
  * 功能描述
  *
- * @author z30047175
- * @since 2023-05-23
  */
 @Slf4j
 public class TdsqlValidator {

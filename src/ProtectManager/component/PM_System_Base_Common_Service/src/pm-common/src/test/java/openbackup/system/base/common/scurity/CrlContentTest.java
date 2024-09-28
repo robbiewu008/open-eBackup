@@ -28,9 +28,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * CrlContent Test
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/8/2
  */
 public class CrlContentTest {
     /**

@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * sftp response
  *
- * @author dWX1009286
- * @since 2021-06-10
  */
 @Data
 public class SftpResponse {

@@ -26,8 +26,6 @@ import java.net.URI;
 /**
  * Access Point Rest Api
  *
- * @author l00272247
- * @since 2020-12-18
  */
 public interface AccessPointRestApi {
     /**

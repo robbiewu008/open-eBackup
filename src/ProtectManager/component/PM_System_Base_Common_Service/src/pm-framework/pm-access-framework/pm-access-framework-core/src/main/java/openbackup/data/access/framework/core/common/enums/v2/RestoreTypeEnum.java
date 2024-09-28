@@ -20,9 +20,6 @@ import java.util.Arrays;
 /**
  * 恢复任务类型枚举定义
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  */
 public enum RestoreTypeEnum {
     /**

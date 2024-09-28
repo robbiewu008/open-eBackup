@@ -19,8 +19,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * 策略调度周期, 按间隔时间的枚举单位定义
  *
- * @author h30003246
- * @since 2020-09-22
  */
 public enum ScheduledUnit {
     /**

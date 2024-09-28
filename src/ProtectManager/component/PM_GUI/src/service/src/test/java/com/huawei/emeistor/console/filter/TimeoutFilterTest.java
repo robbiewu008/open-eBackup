@@ -52,9 +52,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * 配置Filter 单元测试
  *
- * @author t30028453
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-28
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {TimeoutFilter.class, TimeoutUtils.class, SessionService.class, SHA256Encryptor.class})

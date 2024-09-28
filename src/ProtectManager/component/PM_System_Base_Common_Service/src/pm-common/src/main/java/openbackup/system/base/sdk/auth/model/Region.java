@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * hcs region
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/7/26
  */
 @Getter
 @Setter

@@ -42,9 +42,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * JsonSchema验证器实现类
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-14
  */
 @Component
 @Slf4j

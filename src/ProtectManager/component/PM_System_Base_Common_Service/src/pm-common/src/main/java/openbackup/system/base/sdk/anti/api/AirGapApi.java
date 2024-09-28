@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * 功能描述 airGap
  *
- * @author y30037959
- * @since 2023-03-30
  */
 @FeignClient(name = "airGapApiSdk", url = "${pm-system-base.url}/v1", configuration = CommonFeignConfiguration.class)
 public interface AirGapApi {

@@ -20,8 +20,6 @@ import lombok.NoArgsConstructor;
 /**
  * 租户信息
  *
- * @author s30031954
- * @since 2022-12-29
  */
 @Data
 @Builder

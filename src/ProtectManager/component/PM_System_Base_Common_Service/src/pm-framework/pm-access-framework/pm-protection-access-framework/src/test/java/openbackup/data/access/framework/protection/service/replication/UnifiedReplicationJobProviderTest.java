@@ -32,8 +32,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * OracleBackupProviderTest LLT
  *
- * @author m00576658
- * @since 2021-02-25
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(UnifiedReplicationJobProvider.class)

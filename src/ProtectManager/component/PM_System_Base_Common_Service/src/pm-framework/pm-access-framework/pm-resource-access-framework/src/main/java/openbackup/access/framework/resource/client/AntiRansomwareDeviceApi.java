@@ -32,8 +32,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * 功能描述 新增或删除设备信息
  *
- * @author s30031954
- * @since 2022-12-29
  */
 @FeignClient(name = "updateDeviceApi", url = "${data-enable-engine-server.url}/v1",
     configuration = CommonFeignConfiguration.class)

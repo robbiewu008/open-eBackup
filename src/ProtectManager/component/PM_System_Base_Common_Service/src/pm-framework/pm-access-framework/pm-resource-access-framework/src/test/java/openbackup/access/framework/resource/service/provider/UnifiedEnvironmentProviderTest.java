@@ -30,9 +30,6 @@ import static org.mockito.Mockito.mock;
 /**
  * 功能描述: UnifiedEnvironmentProviderTest
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-01
  */
 public class UnifiedEnvironmentProviderTest {
     private PluginConfigManager pluginConfigManager;

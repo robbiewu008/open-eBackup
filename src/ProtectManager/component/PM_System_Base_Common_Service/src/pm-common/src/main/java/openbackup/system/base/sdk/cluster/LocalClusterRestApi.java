@@ -33,9 +33,6 @@ import java.net.URI;
 /**
  * Local Cluster Rest Api
  *
- * @author dwx1009286
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-02-10
  */
 @FeignClient(name = "LocalClusterApi", url = "${service.url.pm-system-base}/v1",
     configuration = CommonFeignConfiguration.class)

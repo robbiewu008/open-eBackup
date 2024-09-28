@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * cluster Info model
  *
- * @author w00426202
- * @since 2023-07-24
  */
 @Getter
 @Setter

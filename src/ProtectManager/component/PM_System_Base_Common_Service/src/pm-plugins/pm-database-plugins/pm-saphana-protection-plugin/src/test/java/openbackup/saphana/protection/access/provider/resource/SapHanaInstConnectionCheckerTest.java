@@ -45,9 +45,6 @@ import java.util.stream.Collectors;
 /**
  * {@link SapHanaInstConnectionChecker Test}
  *
- * @author wWX1013713
- * @version [DataBackup 1.5.0]
- * @since 2023-05-30
  */
 public class SapHanaInstConnectionCheckerTest {
     private final ProtectedEnvironmentRetrievalsService environmentRetrievalsService = PowerMockito.mock(

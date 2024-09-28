@@ -20,9 +20,6 @@ import java.util.List;
 /**
  * RecentJobQueryReq
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-12-21
  */
 @Data
 public class RecentJobQueryReq {

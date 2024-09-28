@@ -38,8 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 配置Filter
  *
- * @author l00422407
- * @since 2021-03-30
  */
 @Slf4j
 public class TimeoutFilter extends OncePerRequestFilter {

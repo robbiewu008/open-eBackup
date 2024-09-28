@@ -15,8 +15,6 @@ package openbackup.system.base.sdk.license;
 /**
  * license check error code
  *
- * @author g00500588
- * @since 2021/2/2
  */
 public class ErrorCode {
     /**

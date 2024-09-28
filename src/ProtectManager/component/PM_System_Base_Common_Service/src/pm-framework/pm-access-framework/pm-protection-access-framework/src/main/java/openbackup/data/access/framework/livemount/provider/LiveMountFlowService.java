@@ -28,8 +28,6 @@ import java.util.Optional;
 /**
  * Live Mount Provider
  *
- * @author h30003246
- * @since 2021-01-05
  */
 public interface LiveMountFlowService extends Applicable<String> {
     /**

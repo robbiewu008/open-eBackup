@@ -31,8 +31,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * 功能描述
  *
- * @author y30021475
- * @since 2023-08-07
  */
 @RunWith(PowerMockRunner.class)
 public class PresetAccountServiceImplTest {

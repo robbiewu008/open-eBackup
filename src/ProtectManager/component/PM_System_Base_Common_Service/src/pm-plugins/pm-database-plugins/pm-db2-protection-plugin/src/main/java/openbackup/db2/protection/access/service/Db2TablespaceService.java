@@ -20,9 +20,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 /**
  * db2表空间服务
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-07
  */
 public interface Db2TablespaceService {
     /**

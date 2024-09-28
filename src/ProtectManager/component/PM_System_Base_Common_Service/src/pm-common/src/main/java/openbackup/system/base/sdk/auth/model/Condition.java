@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * Condition
  *
- * @author z00664377
- * @since 2023-08-09
  */
 @Getter
 @Setter

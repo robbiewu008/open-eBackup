@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * mysqlNodes
  *
- * @author z30047175
- * @since 2023-05-24
  */
 @Data
 public class DataNode {

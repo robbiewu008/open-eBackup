@@ -43,8 +43,6 @@ import java.util.Optional;
 /**
  * 功能描述
  *
- * @author p00511147
- * @since 2020-10-10
  */
 @Slf4j
 @Component("consumerAwareErrorHandler")

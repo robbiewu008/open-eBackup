@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * VMWare Cluster config info
  *
- * @author z00595268
- * @since 2021-07-14
  */
 @Data
 public class ClusterConfig {

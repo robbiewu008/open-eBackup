@@ -50,9 +50,6 @@ import java.util.UUID;
 /**
  * Postgre实例恢复任务下发provider测试类
  *
- * @author wwx1013713
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/26
  */
 public class PostgreInstanceRestoreProviderTest {
     private final PostgreInstanceService postgreInstanceService = PowerMockito.mock(PostgreInstanceService.class);

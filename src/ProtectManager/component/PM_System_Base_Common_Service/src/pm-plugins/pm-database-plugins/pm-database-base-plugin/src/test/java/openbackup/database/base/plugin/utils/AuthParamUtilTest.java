@@ -26,9 +26,6 @@ import java.util.Map;
 /**
  * 鉴权参数工具测试类
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-02
  */
 public class AuthParamUtilTest {
     /**

@@ -61,9 +61,6 @@ import java.util.UUID;
 /**
  * MySQL集群环境测试类
  *
- * @author xWX950025
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-01
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(EnvironmentLinkStatusHelper.class)

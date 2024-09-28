@@ -29,8 +29,6 @@ import java.util.List;
 /**
  * SortUtilTest
  *
- * @author w00607005
- * @since 2023-07-21
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore( {"javax.management.*", "jdk.internal.reflect.*"})

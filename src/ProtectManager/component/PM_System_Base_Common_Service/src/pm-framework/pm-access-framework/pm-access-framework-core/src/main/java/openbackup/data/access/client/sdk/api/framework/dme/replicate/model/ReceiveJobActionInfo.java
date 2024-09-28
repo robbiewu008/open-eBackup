@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 接收复制任务操作返回信息对象
  *
- * @author y30037959
- * @since 2023-01-31
  */
 @Data
 @NoArgsConstructor

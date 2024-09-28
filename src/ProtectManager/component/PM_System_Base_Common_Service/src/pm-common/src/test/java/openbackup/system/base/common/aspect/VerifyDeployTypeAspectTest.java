@@ -30,8 +30,6 @@ import javax.annotation.Resource;
 /**
  * Date Converter
  *
- * @author c30044692
- * @since 2023/4/20
  */
 @RunWith(SpringRunner.class)
 @Import(AnnotationAwareAspectJAutoProxyCreator.class)

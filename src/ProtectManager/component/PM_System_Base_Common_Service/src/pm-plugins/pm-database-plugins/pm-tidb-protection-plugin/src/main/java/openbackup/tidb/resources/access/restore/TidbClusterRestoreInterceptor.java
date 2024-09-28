@@ -60,8 +60,6 @@ import java.util.stream.Collectors;
 /**
  * 集群恢复
  *
- * @author w00426202
- * @since 2023-07-21
  */
 @Slf4j
 @Component

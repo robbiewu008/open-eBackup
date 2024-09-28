@@ -49,8 +49,6 @@ import java.util.stream.Stream;
 /**
  * Workflow Error Handler
  *
- * @author l00272247
- * @since 2021-04-15
  */
 @Slf4j
 @Component

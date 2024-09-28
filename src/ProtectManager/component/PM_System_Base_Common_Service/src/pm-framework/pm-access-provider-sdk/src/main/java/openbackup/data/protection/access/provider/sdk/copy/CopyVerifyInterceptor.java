@@ -19,9 +19,6 @@ import openbackup.system.base.sdk.copy.model.Copy;
 /**
  * 副本校验拦截器
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-02-20
  */
 public interface CopyVerifyInterceptor extends DataProtectionProvider<String> {
     /**

@@ -18,9 +18,6 @@ import lombok.Setter;
 /**
  * 即时挂载脚本
  *
- * @author c30016231
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023/03/02
  */
 @Getter
 @Setter

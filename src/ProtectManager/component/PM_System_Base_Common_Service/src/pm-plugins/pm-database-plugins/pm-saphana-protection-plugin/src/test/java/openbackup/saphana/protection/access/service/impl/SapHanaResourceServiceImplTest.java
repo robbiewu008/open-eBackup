@@ -40,9 +40,6 @@ import java.util.Optional;
 /**
  * {@link SapHanaResourceServiceImpl Test}
  *
- * @author wWX1013713
- * @version [DataBackup 1.5.0]
- * @since 2023-05-17
  */
 public class SapHanaResourceServiceImplTest {
     private final ResourceConnectionCheckProvider connectionCheckProvider = PowerMockito.mock(

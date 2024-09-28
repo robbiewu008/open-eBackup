@@ -62,8 +62,6 @@ import java.util.stream.Collectors;
 /**
  * The GaussDBClusterEnvironmentProvider
  *
- * @author x30021699
- * @since 2023-05-09
  */
 @Slf4j
 @Component

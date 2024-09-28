@@ -94,9 +94,6 @@ import java.util.UUID;
 /**
  * AgentUnifiedServiceImplTest 测试类
  *
- * @author z30009433
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-24
  */
 @SpringBootTest(classes = {AgentUnifiedServiceImpl.class, FeignBuilder.class})
 @RunWith(PowerMockRunner.class)

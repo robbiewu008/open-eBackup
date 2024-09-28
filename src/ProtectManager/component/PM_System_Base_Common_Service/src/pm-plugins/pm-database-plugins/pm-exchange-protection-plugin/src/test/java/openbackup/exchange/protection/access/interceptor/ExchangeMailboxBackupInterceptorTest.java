@@ -38,8 +38,6 @@ import java.util.List;
 /**
  * ExchangeMailboxBackupInterceptor Test
  *
- * @author z00693144
- * @since 2024-01-31
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {ExchangeMailboxBackupInterceptor.class, ExchangeService.class})

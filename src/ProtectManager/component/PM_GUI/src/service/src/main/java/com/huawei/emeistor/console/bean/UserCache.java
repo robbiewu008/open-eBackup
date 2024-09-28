@@ -26,8 +26,6 @@ import java.util.Set;
  * 用户缓存相关信息
  * 必须实现序列化才能写入redis
  *
- * @author t00482481
- * @since 2020-07-15
  */
 @Getter
 @Setter

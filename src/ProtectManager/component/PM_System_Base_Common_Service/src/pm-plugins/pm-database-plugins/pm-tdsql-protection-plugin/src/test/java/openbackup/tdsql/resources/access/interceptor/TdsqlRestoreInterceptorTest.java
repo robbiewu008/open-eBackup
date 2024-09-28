@@ -43,8 +43,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述
  *
- * @author z30047175
- * @since 2023-07-04
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TdsqlRestoreInterceptorTest {

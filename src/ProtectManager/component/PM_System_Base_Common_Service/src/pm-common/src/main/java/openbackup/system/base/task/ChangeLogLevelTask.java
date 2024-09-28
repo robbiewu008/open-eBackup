@@ -33,8 +33,6 @@ import java.util.Locale;
 /**
  * The ChangeLogLevelTask
  *
- * @author s00574739
- * @since 2021-02-25
  */
 @EnableScheduling
 @Component

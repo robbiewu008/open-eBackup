@@ -19,9 +19,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author w00448845
- * @version [BCManager 8.0.0]
- * @since 2020-04-01
  */
 public class ProviderJobLogMessage {
     private String id;

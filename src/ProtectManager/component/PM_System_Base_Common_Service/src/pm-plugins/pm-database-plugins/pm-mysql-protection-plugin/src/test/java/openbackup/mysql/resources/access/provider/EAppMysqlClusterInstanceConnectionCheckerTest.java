@@ -45,8 +45,6 @@ import java.util.Map;
 /**
  * eapp实例检查LLT
  *
- * @author fWX1071802
- * @since 2023/8/5
  */
 @RunWith(PowerMockRunner.class)
 public class EAppMysqlClusterInstanceConnectionCheckerTest {

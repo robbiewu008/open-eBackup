@@ -28,8 +28,6 @@ import java.util.function.Supplier;
 /**
  * Redis Context Service
  *
- * @author l00272247
- * @since 2020-10-09
  */
 @Component
 public class RedisContextService {

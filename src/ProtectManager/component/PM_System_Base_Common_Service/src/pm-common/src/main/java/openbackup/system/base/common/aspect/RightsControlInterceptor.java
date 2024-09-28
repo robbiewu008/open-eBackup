@@ -51,8 +51,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * rights control interceptor
  *
- * @author y00559272
- * @since 2020-07-05
  */
 @Slf4j
 @Component

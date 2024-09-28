@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 /**
  * Job Guard Info
  *
- * @author l00272247
- * @since 2021-03-10
  */
 @Data
 public class JobExamineInfo {

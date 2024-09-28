@@ -41,8 +41,6 @@ import java.util.Arrays;
 /**
  * Replicate Context Test
  *
- * @author l00272247
- * @since 2021-01-03
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

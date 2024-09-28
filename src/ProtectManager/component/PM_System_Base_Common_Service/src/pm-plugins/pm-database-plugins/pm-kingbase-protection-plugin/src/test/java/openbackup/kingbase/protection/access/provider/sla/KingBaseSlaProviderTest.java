@@ -28,9 +28,6 @@ import org.junit.Test;
 /**
  * {@link KingBaseSlaProvider} 测试类
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-19
  */
 public class KingBaseSlaProviderTest {
     private final KingBaseSlaProvider kingBaseSlaProvider = new KingBaseSlaProvider();

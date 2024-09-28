@@ -16,9 +16,6 @@ package openbackup.system.base.common.model.job;
  * Job 类型枚举类
  * （计划删除，请用com.huawei.oceanprotect.system.base.sdk.job.model.JobTypeEnum）
  *
- * @author w00448845
- * @version [BCManager 8.0.0]
- * @since 2020-04-15
  * @see openbackup.system.base.sdk.job.model.JobTypeEnum
  */
 @Deprecated

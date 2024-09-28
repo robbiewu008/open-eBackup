@@ -21,8 +21,6 @@ import org.junit.Test;
 /**
  * AgentWwpnInfo测试类
  *
- * @author l30023229
- * @since 2023-02-21
  */
 public class AgentWwpnInfoTest {
     /**

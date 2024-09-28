@@ -19,9 +19,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * 数据布局
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-19
  */
 public class DataLayout extends BaseDataLayout {
     // 是否开启目标端加密

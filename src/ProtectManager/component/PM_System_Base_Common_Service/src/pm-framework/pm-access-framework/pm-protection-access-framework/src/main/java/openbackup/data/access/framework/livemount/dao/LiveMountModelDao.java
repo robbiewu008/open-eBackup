@@ -26,8 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * Live Mount Model Dao
  *
- * @author l00272247
- * @since 2020-09-26
  */
 @Mapper
 @Component

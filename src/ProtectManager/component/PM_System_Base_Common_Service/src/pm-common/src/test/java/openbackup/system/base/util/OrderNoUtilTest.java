@@ -27,8 +27,6 @@ import java.time.format.DateTimeFormatter;
 /**
  * 功能描述
  *
- * @author w00607005
- * @since 2023-07-07
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore( {"javax.management.*", "jdk.internal.reflect.*"})

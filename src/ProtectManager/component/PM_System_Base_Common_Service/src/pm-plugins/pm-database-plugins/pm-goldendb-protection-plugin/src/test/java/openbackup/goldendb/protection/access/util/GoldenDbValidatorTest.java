@@ -22,8 +22,6 @@ import org.junit.Test;
 /**
  * 功能描述
  *
- * @author s30036254
- * @since 2023-03-21
  */
 public class GoldenDbValidatorTest {
 

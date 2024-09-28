@@ -73,9 +73,6 @@ import java.util.stream.Collectors;
 /**
  * InformixServiceImpl
  *
- * @author zwx951267
- * @version [DataBackup 1.5.0]
- * @since 2023-05-10
  */
 @Service
 @Slf4j

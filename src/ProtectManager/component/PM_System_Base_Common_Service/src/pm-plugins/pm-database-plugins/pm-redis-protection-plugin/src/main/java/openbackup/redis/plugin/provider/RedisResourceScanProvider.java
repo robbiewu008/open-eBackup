@@ -42,9 +42,6 @@ import java.util.Objects;
 /**
  * 集群资源扫描
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-25
  */
 @Component
 @Slf4j

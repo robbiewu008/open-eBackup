@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * 功能描述: 校验 GaussDb各种参数的基本格式等信息
  *
- * @author x30021699
- * @since 2023-05-09
  */
 @Slf4j
 public class TpopsGaussDBValidator {

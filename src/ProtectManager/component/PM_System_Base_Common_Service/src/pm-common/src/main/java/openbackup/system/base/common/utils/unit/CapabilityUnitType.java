@@ -15,9 +15,6 @@ package openbackup.system.base.common.utils.unit;
 /**
  * 容量单位
  *
- * @author l90002863 李溜
- * @version V100R001C00
- * @since 2019-10-25
  */
 public enum CapabilityUnitType implements IUnitType {
     /**

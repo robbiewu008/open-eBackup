@@ -38,9 +38,6 @@ import java.util.UUID;
 /**
  * mysql数据库恢复任务下发provider test
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/6/23
  */
 public class MysqlDatabaseRestoreProviderTest {
     private static final String MYSQL_INSTANCE_UUID = "mysqlInstanceUuid";

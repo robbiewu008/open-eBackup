@@ -24,8 +24,6 @@ import java.util.Set;
 /**
  * Copy index constant
  *
- * @author l00347293
- * @since 2021-01-07
  */
 public final class CopyIndexConstants {
     /**

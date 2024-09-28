@@ -27,8 +27,6 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Auth Rest Api
  *
- * @author l00272247
- * @since 2020-12-06
  */
 @FeignClient(name = "auth-client-rest-api", url = "${service.url.pm-system-base}/v1",
     configuration = CommonFeignConfiguration.class)

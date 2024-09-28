@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 功能描述
  *
- * @author s00455050
- * @since 2021-08-06
  */
 @Data
 public class AgentUpdateResponse {

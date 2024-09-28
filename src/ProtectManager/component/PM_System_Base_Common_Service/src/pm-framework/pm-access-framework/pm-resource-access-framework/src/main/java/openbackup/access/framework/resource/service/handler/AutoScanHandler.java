@@ -37,8 +37,6 @@ import java.util.Optional;
 /**
  * 自动扫描handler
  *
- * @author h30027154
- * @since 2022-06-23
  */
 @Component
 @Slf4j

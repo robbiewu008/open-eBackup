@@ -37,8 +37,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * CSRF 防御Filter
  *
- * @author l00422407
- * @since 2021-03-30
  */
 @Slf4j
 public class CsrfWebFilter extends OncePerRequestFilter {

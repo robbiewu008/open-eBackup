@@ -49,8 +49,6 @@ import java.util.List;
 /**
  * 增加ndmp-server 资源类型
  *
- * @author t30021437
- * @since 2023-05-08
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {NdmpServerEnvironmentProvider.class, NdmpServiceImpl.class})

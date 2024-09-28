@@ -22,8 +22,6 @@ import java.util.Map;
 /**
  * dme task entity
  *
- * @author y30000858
- * @since 2020-09-21
  */
 public class TaskCompleteMessageBo extends TaskBaseMessage {
     private String taskId;
@@ -139,9 +137,6 @@ public class TaskCompleteMessageBo extends TaskBaseMessage {
     /**
      * 任务完成扩展参数key定义
      *
-     * @author y00559272
-     * @version [OceanProtect X8000 1.2.1]
-     * @since 2022/8/8
      **/
     public static final class ExtendsInfoKeys {
         /**

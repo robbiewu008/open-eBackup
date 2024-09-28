@@ -28,9 +28,6 @@ import java.util.List;
 /**
  * copy service
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-06
  */
 public interface CopyManagerService {
     /**

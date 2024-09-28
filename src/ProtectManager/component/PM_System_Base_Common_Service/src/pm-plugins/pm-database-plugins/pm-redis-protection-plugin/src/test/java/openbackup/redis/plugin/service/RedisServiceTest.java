@@ -56,9 +56,6 @@ import java.util.Optional;
 /**
  * Redis Service Test
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 @RunWith(PowerMockRunner.class)
 public class RedisServiceTest {

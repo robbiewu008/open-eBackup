@@ -72,9 +72,6 @@ import java.util.stream.Collectors;
 /**
  * 资源组Repository实现
  *
- * @author c00631681
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-01-20
  */
 @Service
 @Slf4j

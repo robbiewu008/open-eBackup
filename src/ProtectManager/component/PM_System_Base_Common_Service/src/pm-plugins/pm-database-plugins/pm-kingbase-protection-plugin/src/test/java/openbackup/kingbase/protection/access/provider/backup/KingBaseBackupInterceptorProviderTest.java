@@ -44,9 +44,6 @@ import java.util.UUID;
 /**
  * {@link KingBaseBackupInterceptorProvider} 测试类
  *
- * @author lWX776769
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-22
  */
 public class KingBaseBackupInterceptorProviderTest {
     private final static String endpoint = "8.40.99.125";

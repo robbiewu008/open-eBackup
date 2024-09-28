@@ -49,8 +49,6 @@ import org.springframework.test.context.ContextConfiguration;
 /**
  * Mount Flow Listener Test
  *
- * @author l00272247
- * @since 2020-12-29
  */
 @RunWith(PowerMockRunner.class)
 @SpringBootTest

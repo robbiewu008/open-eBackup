@@ -39,9 +39,6 @@ import java.util.stream.Collectors;
 /**
  * OracleConnectionChecker
  *
- * @author c30038333
- * @since 2023/3/31
- * @version [OceanProtect DataBackup 1.3.0]
  */
 @Component
 @Slf4j

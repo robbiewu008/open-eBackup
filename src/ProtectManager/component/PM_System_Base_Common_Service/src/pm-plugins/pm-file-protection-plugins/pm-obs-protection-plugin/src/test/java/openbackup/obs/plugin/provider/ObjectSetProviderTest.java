@@ -44,8 +44,6 @@ import java.util.Map;
 /**
  * ObjectSetProvider Test
  *
- * @author c30035089
- * @since 2023-11-21
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(EnvironmentLinkStatusHelper.class)

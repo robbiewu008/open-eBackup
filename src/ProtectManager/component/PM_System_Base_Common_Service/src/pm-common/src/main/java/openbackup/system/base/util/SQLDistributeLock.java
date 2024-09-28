@@ -21,9 +21,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 基于数据库的分布式锁
  *
- * @author w30042425
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-06-12
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

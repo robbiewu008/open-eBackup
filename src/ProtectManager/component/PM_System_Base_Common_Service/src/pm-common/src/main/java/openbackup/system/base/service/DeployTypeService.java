@@ -28,8 +28,6 @@ import java.util.Objects;
 /**
  * 提供获取产品部署类型的能力
  *
- * @author c30016231
- * @since 2022-06-08
  */
 @Slf4j
 @Component

@@ -21,8 +21,6 @@ import lombok.Data;
 /**
  * 环境Entity
  *
- * @author w30042425
- * @since 2023-11-27
  */
 @Data
 @TableName("environments")

@@ -126,9 +126,6 @@ import java.util.stream.Collectors;
 /**
  * 具体处理备份请求的实现
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-25
  */
 @Service
 @Slf4j

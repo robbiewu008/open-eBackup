@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 /**
  * 是否允许恢复对象
  *
- * @author s30031954
- * @since 2024-04-10
  */
 @Data
 @NoArgsConstructor

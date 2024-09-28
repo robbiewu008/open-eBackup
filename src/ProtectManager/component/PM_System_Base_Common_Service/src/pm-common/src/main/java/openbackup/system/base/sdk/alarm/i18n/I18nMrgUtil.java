@@ -15,9 +15,6 @@ package openbackup.system.base.sdk.alarm.i18n;
 /**
  * 国际化处理类
  *
- * @author l90005176
- * @version [LEGO V100R002C01, 2011-12-12]
- * @since 2018-01-01
  */
 public class I18nMrgUtil {
     private static I18nMrgUtil i18nMrg;

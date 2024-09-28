@@ -17,8 +17,6 @@ import java.util.Arrays;
 /**
  * SDK中使用的JobType枚举类
  *
- * @author y00559272
- * @since 2021-10-11
  */
 public enum ProviderJobTypeEnum {
     /**

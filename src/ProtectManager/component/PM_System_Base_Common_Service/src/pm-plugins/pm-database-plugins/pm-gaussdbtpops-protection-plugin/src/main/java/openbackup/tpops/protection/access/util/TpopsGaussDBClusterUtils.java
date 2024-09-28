@@ -39,8 +39,6 @@ import java.util.Optional;
 /**
  * GaussDB项目实例工具类
  *
- * @author x30021699
- * @since 2023-05-09
  */
 public class TpopsGaussDBClusterUtils {
     /**

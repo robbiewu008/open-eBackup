@@ -21,8 +21,6 @@ import java.util.concurrent.Executor;
 /**
  * job monitor 自定义线程池
  *
- * @author y30000858
- * @since 2021-10-16
  */
 @Configuration
 public class JobMonitorExecutePoolConfig {

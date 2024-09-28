@@ -27,9 +27,6 @@ import java.util.List;
 /**
  * ResourceScanScheduleTest
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-11-02
  */
 public class ResourceScanScheduleTest {
     private ResourceScanSchedule resourceScanSchedule;

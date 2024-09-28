@@ -32,8 +32,6 @@ import org.springframework.web.client.RestTemplate;
 /**
  * kmc加解密接口
  *
- * @author jwx701567
- * @since 2021-09-22
  */
 @Component
 @Slf4j

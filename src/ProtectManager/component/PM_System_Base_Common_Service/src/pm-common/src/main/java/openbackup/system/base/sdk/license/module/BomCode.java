@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * dorado activelicense 接口返回内容
  *
- * @author x30066966
- * @version [OceanProtect E6000]
- * @since 2024/8/29
  */
 
 @Getter

@@ -21,8 +21,6 @@ import java.util.regex.Pattern;
 /**
  * ID 生成器工具类
  *
- * @author w00607005
- * @since 2023-07-06
  */
 public class IdUtil {
     /**

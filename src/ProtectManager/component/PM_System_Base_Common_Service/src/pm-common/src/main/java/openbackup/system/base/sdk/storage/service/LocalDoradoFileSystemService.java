@@ -34,9 +34,6 @@ import java.util.function.Supplier;
 /**
  * 功能描述: 访问本地 dorado 存储文件系统相关接口统一 Service
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-26
  */
 @Slf4j
 @Component

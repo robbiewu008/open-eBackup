@@ -26,8 +26,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * 功能描述
  *
- * @author z00445440
- * @since 2024-06-18
  */
 @RunWith(PowerMockRunner.class)
 public class TdsqlInstanceCopyDeleteInterceptorTest {

@@ -15,9 +15,6 @@ package openbackup.database.base.plugin.common;
 /**
  * 通用数据库错误码
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-09
  */
 public class GeneralDbErrorCode {
     /**

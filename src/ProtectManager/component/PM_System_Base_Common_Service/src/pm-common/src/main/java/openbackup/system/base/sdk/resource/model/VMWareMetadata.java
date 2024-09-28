@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * VMWare metadata
  *
- * @author h30003246
- * @since 2020-12-04
  */
 @Data
 public class VMWareMetadata {

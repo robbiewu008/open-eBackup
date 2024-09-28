@@ -25,9 +25,6 @@ import java.util.List;
 /**
  * 敏感字段校验类
  *
- * @author t30028453
- * @version [OceanProtect A8000 1.2.1]
- * @since 2022-10-11
  */
 @Slf4j
 public class SensitiveValidateUtil {

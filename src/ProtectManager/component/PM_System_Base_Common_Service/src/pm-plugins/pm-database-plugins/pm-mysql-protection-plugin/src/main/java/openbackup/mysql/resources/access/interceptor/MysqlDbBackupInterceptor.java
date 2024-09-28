@@ -71,9 +71,6 @@ import java.util.stream.Collectors;
 /**
  * MySQL数据库备份拦截器实现类
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/5/31
  */
 @Slf4j
 @Component

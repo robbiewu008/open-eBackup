@@ -15,8 +15,6 @@ package openbackup.openstack.protection.access.constant;
 /**
  * Openstack 域可见性枚举类
  *
- * @author c30016231
- * @since 2023-03-13
  */
 public enum OpenstackDomainVisibleEnum {
     /**

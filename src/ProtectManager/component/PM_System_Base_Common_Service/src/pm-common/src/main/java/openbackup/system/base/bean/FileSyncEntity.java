@@ -21,9 +21,6 @@ import lombok.Setter;
 /**
  * 在所有节点间同步的文件信息实体类
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2024-07-26
  */
 @Getter
 @Setter

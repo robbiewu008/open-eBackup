@@ -19,8 +19,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 /**
  * User Token Validate Service
  *
- * @author l00272247
- * @since 2021-12-14
  */
 public interface UserTokenValidateService {
     /**

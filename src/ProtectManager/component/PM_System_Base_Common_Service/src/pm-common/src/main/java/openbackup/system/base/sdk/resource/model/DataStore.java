@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * dataStore信息
  *
- * @author t00482481
- * @since 2020-11-04
  */
 @Data
 public class DataStore {

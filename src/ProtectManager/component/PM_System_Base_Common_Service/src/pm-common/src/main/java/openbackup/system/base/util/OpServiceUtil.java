@@ -15,8 +15,6 @@ package openbackup.system.base.util;
 /**
  * OpServiceUtil
  *
- * @author l30044826
- * @since 2023-08-23
  */
 public class OpServiceUtil {
     /**

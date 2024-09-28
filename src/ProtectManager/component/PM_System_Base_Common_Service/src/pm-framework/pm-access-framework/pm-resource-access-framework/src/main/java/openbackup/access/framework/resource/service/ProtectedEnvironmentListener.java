@@ -105,8 +105,6 @@ import java.util.stream.Stream;
 /**
  * Protected Environment Listener
  *
- * @author l00272247
- * @since 2021-12-08
  */
 @Slf4j
 @Component

@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * 调用hcs接口，根据条件查询浮动ip信息响应体
  *
- * @author z00664377
- * @since 2023-08-04
  */
 @Getter
 @Setter

@@ -15,8 +15,6 @@ package openbackup.system.base.common.os.enums;
 /**
  * 操作系统类型
  *
- * @author w00493811
- * @since 2021-08-09
  */
 public enum OsType {
     /**

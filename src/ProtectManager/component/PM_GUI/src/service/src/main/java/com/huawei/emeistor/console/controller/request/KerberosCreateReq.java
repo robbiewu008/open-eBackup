@@ -21,8 +21,6 @@ import javax.validation.constraints.Size;
 /**
  * KerberosCreateReq
  *
- * @author m00576658
- * @since 2021-08-13
  */
 @Data
 public class KerberosCreateReq {

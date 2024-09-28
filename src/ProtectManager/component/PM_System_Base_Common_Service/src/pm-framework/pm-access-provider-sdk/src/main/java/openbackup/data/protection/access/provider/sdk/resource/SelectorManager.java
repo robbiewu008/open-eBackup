@@ -20,9 +20,6 @@ import java.util.Map;
 /**
  * 选择器管理器
  *
- * @author w30044259
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-29
  */
 public interface SelectorManager {
     /**

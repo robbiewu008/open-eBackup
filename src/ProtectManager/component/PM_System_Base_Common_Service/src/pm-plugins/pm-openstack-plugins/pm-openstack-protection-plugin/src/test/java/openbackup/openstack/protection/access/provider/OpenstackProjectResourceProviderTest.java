@@ -35,9 +35,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * 功能描述: test OpenstackProjectResourceProvider
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-29
  */
 public class OpenstackProjectResourceProviderTest {
     private static OpenstackProjectResourceProvider openstackProjectResourceProvider;

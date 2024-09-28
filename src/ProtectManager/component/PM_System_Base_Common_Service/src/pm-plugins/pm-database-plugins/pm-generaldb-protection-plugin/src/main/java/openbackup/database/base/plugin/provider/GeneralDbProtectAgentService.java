@@ -28,9 +28,6 @@ import java.util.stream.Collectors;
 /**
  * 通用数据库AgentSelector
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-28
  */
 @Component
 public class GeneralDbProtectAgentService {

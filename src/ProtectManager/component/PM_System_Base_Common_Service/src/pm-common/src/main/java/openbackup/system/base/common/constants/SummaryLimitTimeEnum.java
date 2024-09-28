@@ -20,8 +20,6 @@ import java.util.Map;
 /**
  * 演练任务统计期限枚举类
  *
- * @author x30046484
- * @since 2023-11-14
  */
 public enum SummaryLimitTimeEnum {
     /**

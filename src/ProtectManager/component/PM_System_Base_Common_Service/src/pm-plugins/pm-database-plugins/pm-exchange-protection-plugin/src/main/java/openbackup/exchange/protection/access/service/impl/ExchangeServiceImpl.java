@@ -76,8 +76,6 @@ import java.util.stream.Collectors;
 /**
  * ExchangeServiceImpl
  *
- * @author s30036254
- * @since 2023-04-28
  */
 @Service
 @Slf4j

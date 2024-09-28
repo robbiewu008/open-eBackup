@@ -30,9 +30,6 @@ import java.util.Optional;
 /**
  * Base64文本编码工具
  *
- * @author dWX1009286
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-16
  */
 @Slf4j
 public class Base64Util {

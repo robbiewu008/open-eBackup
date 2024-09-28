@@ -32,9 +32,6 @@ import java.util.stream.Collectors;
 /**
  * 环境变量工具类
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-01
  */
 public class DwsTaskEnvironmentUtil {
     /**

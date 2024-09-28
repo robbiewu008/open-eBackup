@@ -22,9 +22,6 @@ import org.hibernate.validator.constraints.Length;
 /**
  * 策略与存储单元关联关系
  *
- * @author w00639094
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-03-20
  */
 @Getter
 @Setter

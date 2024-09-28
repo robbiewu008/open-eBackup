@@ -18,8 +18,6 @@ import openbackup.data.protection.access.provider.sdk.copy.CopyBo;
 /**
  * 生成索引文件
  *
- * @author t00482481
- * @since 2020-08-26
  */
 public interface IndexerProvider extends DataProtectionProvider<String> {
     /**

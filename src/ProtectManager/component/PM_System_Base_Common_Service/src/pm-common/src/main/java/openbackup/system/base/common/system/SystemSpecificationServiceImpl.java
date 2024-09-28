@@ -35,8 +35,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * System Specification Service Impl
  *
- * @author l00272247
- * @since 2021-03-17
  */
 @Component
 @Slf4j

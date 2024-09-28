@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Global Search copy index base message body
  *
- * @author l00347293
- * @since 2021-01-08
  **/
 @Data
 public class CopyIndexBaseMsg extends SearchBaseMsg {

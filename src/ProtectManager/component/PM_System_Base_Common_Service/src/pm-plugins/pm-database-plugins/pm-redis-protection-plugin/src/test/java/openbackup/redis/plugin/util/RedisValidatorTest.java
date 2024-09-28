@@ -38,9 +38,6 @@ import java.util.List;
 /**
  * Redis Validator Test
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 @RunWith(PowerMockRunner.class)
 public class RedisValidatorTest {

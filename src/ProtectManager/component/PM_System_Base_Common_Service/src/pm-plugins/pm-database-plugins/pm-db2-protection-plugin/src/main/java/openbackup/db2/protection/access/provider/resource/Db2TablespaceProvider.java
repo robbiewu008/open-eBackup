@@ -45,9 +45,6 @@ import java.util.stream.Collectors;
 /**
  * db2表空间创建provider
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2022-12-30
  */
 @Component
 @Slf4j

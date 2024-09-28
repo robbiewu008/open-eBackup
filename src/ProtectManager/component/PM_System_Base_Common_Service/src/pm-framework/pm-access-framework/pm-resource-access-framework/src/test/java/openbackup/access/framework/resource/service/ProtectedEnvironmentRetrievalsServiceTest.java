@@ -35,8 +35,6 @@ import java.util.Objects;
 /**
  * ProtectedEnvironmentRetrievalsService测试类
  *
- * @author h30027154
- * @since 2022-07-05
  */
 public class ProtectedEnvironmentRetrievalsServiceTest {
     /**

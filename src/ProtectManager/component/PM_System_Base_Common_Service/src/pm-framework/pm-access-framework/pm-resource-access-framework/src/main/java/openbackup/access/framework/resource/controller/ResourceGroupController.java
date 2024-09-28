@@ -55,9 +55,6 @@ import java.util.List;
 /**
  * 资源组Contoller
  *
- * @author c0061681
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-01-23
  */
 
 @RestController

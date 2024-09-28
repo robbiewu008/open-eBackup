@@ -21,9 +21,6 @@ import java.util.Map;
 /**
  * 数据保护代理实体模型
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-01
  */
 @NoArgsConstructor
 public class Endpoint {

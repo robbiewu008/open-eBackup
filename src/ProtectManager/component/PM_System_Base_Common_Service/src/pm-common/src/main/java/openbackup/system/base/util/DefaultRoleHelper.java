@@ -31,9 +31,6 @@ import java.util.List;
 /**
  * 默认角色工具类
  *
- * @author z00842230
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2024-07-03
  */
 @Slf4j
 @Component

@@ -15,9 +15,6 @@ package openbackup.system.base.common.utils.unit;
 /**
  * 容量工具类
  *
- * @author cKF17701
- * @version V100R001C00
- * @since 2019-10-25
  */
 public class CapUnit {
     private double capacity;

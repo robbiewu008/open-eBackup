@@ -53,8 +53,6 @@ import java.util.Collections;
 /**
  * Unified Replication Provider Test
  *
- * @author l00272247
- * @since 2022-01-30
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

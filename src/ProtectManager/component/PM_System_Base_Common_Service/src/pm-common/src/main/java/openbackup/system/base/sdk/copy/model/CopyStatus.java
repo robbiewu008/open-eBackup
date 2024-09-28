@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Copy Status
  *
- * @author l00272247
- * @since 2020-10-30
  */
 public enum CopyStatus {
     /**

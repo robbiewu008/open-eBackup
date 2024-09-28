@@ -102,9 +102,6 @@ import java.util.UUID;
 /**
  * 备份服务LLT
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-03
  */
 public class BackupServiceImplTest {
     private static final String RESOURCE_ID = "266ea41d-adf5-480b-af50-15b940c2b846";

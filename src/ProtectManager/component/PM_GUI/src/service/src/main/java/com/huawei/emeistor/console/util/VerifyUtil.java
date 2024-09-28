@@ -18,9 +18,6 @@ import java.util.Map;
 /**
  * 本类用于对常见的集合、String、Map、一维数组、二维数组等进行校验
  *
- * @author w90002860
- * @version V100R001C00
- * @since 2020-05-25
  */
 public final class VerifyUtil {
     private VerifyUtil() {

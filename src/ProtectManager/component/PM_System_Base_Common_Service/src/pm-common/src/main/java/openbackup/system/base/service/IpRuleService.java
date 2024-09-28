@@ -15,9 +15,6 @@ package openbackup.system.base.service;
 /**
  * 更新ip路由服务
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/2/27
  */
 public interface IpRuleService {
     /**

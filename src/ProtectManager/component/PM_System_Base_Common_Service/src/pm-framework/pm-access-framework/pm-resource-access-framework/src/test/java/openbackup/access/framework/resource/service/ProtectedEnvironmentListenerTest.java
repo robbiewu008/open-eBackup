@@ -93,8 +93,6 @@ import static org.mockito.Mockito.verify;
 /**
  * Protected Environment Listener Test
  *
- * @author l00272247
- * @since 2022-01-27
  */
 @SpringBootTest
 @RunWith(PowerMockRunner.class)

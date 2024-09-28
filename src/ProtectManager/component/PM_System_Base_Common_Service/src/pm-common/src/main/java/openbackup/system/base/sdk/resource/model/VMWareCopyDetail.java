@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * VMWare info in copy properties
  *
- * @author h30003246
- * @since 2020-12-04
  */
 @Data
 public class VMWareCopyDetail {

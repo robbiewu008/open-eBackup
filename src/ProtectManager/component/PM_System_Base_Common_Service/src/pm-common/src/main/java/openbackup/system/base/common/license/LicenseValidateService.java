@@ -35,8 +35,6 @@ import java.util.Optional;
 /**
  * License Validate Service
  *
- * @author l00272247
- * @since 2021-02-03
  */
 @Component
 public class LicenseValidateService {

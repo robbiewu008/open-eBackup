@@ -48,8 +48,6 @@ import java.util.stream.Collectors;
 /**
  * ObjectStorageConnectionChecker
  *
- * @author w00607005
- * @since 2023-11-16
  */
 @Component
 @Slf4j

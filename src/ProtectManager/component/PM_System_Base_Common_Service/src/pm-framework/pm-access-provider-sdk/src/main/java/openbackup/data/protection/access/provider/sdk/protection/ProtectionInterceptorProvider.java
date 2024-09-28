@@ -18,9 +18,6 @@ import openbackup.data.protection.access.provider.sdk.resourcegroup.req.Protecte
 /**
  * 保护拦截器
  *
- * @author c30062305
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-07-30
  */
 public interface ProtectionInterceptorProvider extends DataProtectionProvider<String> {
     /**

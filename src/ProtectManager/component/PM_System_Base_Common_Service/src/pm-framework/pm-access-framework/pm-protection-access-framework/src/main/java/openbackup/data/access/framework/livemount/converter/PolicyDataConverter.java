@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 /**
  * Live Mount Policy Converter
  *
- * @author l00272247
- * @since 2021-01-14
  */
 @Component
 public class PolicyDataConverter implements DataConverter {

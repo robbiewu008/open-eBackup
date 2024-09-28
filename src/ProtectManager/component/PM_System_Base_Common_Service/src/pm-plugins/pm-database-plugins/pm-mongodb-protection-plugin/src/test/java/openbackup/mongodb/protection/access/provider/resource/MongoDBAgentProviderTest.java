@@ -48,9 +48,6 @@ import java.util.Optional;
 /**
  * {@link MongoDBAgentProvider 测试类}
  *
- * @author dwx1009286
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/7/25
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

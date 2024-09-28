@@ -25,9 +25,6 @@ import org.springframework.stereotype.Component;
 /**
  * 任务流程中依赖其它模块api操作的集成器.
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/30
  **/
 @Slf4j
 @Component

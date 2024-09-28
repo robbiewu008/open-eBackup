@@ -33,9 +33,6 @@ import java.util.Properties;
 /**
  * lego.properties文件配置
  *
- * @author l90005176
- * @version [OceanStor BCManager V200R001C00, 2016年3月21日]
- * @since 2019-11-01
  */
 public class LegoConfig {
     private static final Logger logger = LoggerFactory.getLogger(LegoConfig.class);

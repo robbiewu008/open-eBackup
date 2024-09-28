@@ -19,8 +19,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * VMWare 迁移磁盘配置dataStore枚举
  *
- * @author h30003246
- * @since 2020-12-31
  */
 public enum VMWareMigrateDiskDatastoreType {
     /**

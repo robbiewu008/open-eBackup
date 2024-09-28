@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 数据库信息
  *
- * @author y00413474
- * @since 2020-07-30
  */
 @Data
 public class Database {

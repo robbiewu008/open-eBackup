@@ -30,9 +30,6 @@ import java.util.Locale;
 /**
  * I18nMrgImplTest
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/4/13
  */
 public class I18nMrgImplTest {
     private I18nMrgImpl i18nMrgImpl = new I18nMrgImpl();

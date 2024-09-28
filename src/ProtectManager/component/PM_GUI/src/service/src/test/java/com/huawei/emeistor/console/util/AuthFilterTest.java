@@ -27,8 +27,6 @@ import java.util.regex.Pattern;
 /**
  * 功能描述
  *
- * @author jwx701567
- * @since 2021-0-16
  */
 @RunWith(PowerMockRunner.class)
 @SpringBootTest(classes = {AuthFilter.class})

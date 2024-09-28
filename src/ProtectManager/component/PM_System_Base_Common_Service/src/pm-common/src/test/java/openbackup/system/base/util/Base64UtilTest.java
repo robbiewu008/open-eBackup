@@ -23,9 +23,6 @@ import java.nio.file.Paths;
 /**
  * The Base64Util 测试
  *
- * @author l50024885
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/22
  */
 public class Base64UtilTest {
     /**

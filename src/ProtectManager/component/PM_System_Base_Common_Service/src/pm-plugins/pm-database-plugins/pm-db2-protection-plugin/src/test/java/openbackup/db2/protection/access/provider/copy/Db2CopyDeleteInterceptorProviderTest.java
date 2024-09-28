@@ -62,9 +62,6 @@ import java.util.UUID;
 /**
  * {@link Db2CopyDeleteInterceptorProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-13
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(OpServiceUtil.class)

@@ -56,9 +56,6 @@ import java.util.UUID;
 /**
  * 高斯资源健康检查测试类
  *
- * @author hwx1144169
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-31
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(GaussDBTClusterUtil.class)

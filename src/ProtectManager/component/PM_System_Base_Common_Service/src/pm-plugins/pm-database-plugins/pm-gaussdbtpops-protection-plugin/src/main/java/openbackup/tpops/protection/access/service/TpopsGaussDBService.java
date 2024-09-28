@@ -25,8 +25,6 @@ import java.util.Map;
 /**
  * 与agent插件交互的接口
  *
- * @author x30021699
- * @since 2023-05-09
  */
 public interface TpopsGaussDBService {
     /**

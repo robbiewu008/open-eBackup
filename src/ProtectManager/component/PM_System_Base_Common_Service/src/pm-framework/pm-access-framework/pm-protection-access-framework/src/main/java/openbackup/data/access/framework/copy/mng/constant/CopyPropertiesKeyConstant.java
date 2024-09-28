@@ -35,9 +35,6 @@ package openbackup.data.access.framework.copy.mng.constant;
  * 4. KEY_RESOURCES_ENV_UUID
  * 5. KEY_RESOURCES_ENV_LINK_STATUS
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-03
  **/
 public abstract class CopyPropertiesKeyConstant {
     /**

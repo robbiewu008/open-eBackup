@@ -15,9 +15,6 @@ package openbackup.system.base.common.utils.unit;
 /**
  * 容量单位：TB
  *
- * @author l90003110
- * @version V100R001C00
- * @since 2019-10-25
  */
 public class TBCapUnitType extends AbstractCapUnitType {
     /**

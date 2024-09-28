@@ -39,9 +39,6 @@ import java.util.Optional;
 /**
  * PostgreClusterInstanceConnectionChecker连接检查
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.6.0]
- * @since 2024-04-25
  */
 @Slf4j
 @Component

@@ -26,8 +26,6 @@ import javax.net.ssl.SSLHandshakeException;
 /**
  * 功能描述
  *
- * @author w30042425
- * @since 2023-09-14
  */
 @RunWith(PowerMockRunner.class)
 public class ExceptionUtilTest {

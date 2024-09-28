@@ -31,9 +31,6 @@ import java.net.URI;
  * 调用其它集群的任务接口
  * </p>
  *
- * @author y00559272
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/5/20
  **/
 @Validated
 public interface BackupClusterJobClient {

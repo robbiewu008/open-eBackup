@@ -28,8 +28,6 @@ import java.util.Properties;
 /**
  * 功能描述: PropertiesUtilTest
  *
- * @author w00607005
- * @since 2023-05-16
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PropertiesUtilTest {

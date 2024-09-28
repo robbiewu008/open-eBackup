@@ -32,8 +32,6 @@ import java.util.List;
 /**
  * 停止任务的代理类
  *
- * @author y00280557
- * @since 2020-09-05
  */
 @Slf4j
 @Component

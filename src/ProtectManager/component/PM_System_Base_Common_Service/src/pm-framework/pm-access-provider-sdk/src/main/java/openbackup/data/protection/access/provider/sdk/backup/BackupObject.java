@@ -25,9 +25,6 @@ import java.util.List;
 /**
  * Backup Object
  *
- * @author j00364432
- * @version [BCManager 8.0.0]
- * @since 2020-06-22
  */
 @Data
 public class BackupObject {

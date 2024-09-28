@@ -25,8 +25,6 @@ import org.springframework.stereotype.Component;
 /**
  * CnwareCopyCommonInterceptor
  *
- * @author y30037959
- * @since 2024-08-20
  */
 @Slf4j
 @Component

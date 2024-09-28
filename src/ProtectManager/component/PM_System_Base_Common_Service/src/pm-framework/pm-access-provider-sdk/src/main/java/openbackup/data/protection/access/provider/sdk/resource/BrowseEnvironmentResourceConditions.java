@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * 子资源查询过滤条件对象组合
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-30
  */
 @Data
 public class BrowseEnvironmentResourceConditions {

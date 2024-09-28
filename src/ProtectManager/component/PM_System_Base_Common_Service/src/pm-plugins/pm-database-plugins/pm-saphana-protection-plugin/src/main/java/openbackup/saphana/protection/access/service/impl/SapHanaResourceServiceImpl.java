@@ -59,9 +59,6 @@ import java.util.stream.Stream;
 /**
  * SAP HANA资源Service接口实现类
  *
- * @author wWX1013713
- * @version [DataBackup 1.5.0]
- * @since 2023-05-10
  */
 @Service
 @Slf4j

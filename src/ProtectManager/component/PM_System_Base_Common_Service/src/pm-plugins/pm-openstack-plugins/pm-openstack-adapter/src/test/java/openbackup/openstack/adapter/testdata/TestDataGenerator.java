@@ -33,9 +33,6 @@ import java.util.Map;
 /**
  * 测试数据生成类
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-14
  */
 public class TestDataGenerator {
     private static final ObjectMapper MAPPER = new ObjectMapper();

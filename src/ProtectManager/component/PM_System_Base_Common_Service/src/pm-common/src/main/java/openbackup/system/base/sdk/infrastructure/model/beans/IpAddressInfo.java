@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 备份网络ip信息
  *
- * @author s00574739
- * @since 2021-09-23
  */
 @Data
 public class IpAddressInfo {

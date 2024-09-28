@@ -28,8 +28,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Ownership Verifier Configuration
  *
- * @author l00272247
- * @since 2020-11-28
  */
 @Configuration
 public class OwnershipVerifierConfiguration {

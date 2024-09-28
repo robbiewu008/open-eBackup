@@ -17,9 +17,6 @@ import openbackup.system.base.sdk.system.model.TimeZoneInfo;
 /**
  * 系统上下文服务接口定义，提供系统相关上下文信息的获取接口定义
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-21
  */
 public interface SystemContextService {
     /**

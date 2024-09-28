@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * 保护中间业务实体
  *
- * @author z30062305
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-07-29
  */
 
 @Data

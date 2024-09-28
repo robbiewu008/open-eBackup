@@ -15,8 +15,6 @@ package openbackup.data.access.framework.livemount;
 /**
  * Topic Constants
  *
- * @author l00272247
- * @since 2020-09-20
  */
 public class TopicConstants {
     /**

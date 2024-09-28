@@ -39,8 +39,6 @@ import javax.validation.ValidatorFactory;
 /**
  * PerformanceValidator test
  *
- * @author jwx701567
- * @since 2021-03-17
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {PerformanceValidator.class, ValidatorFactoryImpl.class})

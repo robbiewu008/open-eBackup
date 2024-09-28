@@ -27,8 +27,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * DmeLocalDevice test
  *
- * @author jwx701567
- * @since 2021-03-15
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DmeLocalDevice.class)

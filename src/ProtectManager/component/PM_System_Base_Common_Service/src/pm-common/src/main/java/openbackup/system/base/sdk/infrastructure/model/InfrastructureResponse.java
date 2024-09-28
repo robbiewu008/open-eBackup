@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * infrastructure response
  *
- * @author t00508428
- * @since 2020-12-10
  */
 @Data
 public class InfrastructureResponse {

@@ -27,9 +27,6 @@ import java.util.List;
 /**
  * SQL Server的SLA应用校验
  *
- * @author xWX1016404
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-15
  */
 @Component
 public class SqlServerSlaValidatorProvider implements SlaValidateProvider {

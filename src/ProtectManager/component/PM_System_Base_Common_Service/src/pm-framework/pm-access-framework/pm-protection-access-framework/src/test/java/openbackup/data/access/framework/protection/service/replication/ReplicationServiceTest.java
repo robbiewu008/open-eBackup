@@ -36,7 +36,6 @@ import java.util.Date;
 /**
  * ReplicationService LLT
  *
- * @since 2023-04-01
  */
 @RunWith(PowerMockRunner.class)
 @AutoConfigureMockMvc

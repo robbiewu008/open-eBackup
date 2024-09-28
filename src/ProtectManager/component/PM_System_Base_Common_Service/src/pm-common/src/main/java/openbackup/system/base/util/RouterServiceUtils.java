@@ -43,9 +43,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 外部请求处理Service
  *
- * @author w50021188
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-19
  */
 @Slf4j
 public class RouterServiceUtils {

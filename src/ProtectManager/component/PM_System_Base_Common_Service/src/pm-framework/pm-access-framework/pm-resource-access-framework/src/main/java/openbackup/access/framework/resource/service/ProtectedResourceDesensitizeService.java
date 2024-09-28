@@ -25,8 +25,6 @@ import java.util.List;
 /**
  * Protected Resource Desensitize Service
  *
- * @author l00272247
- * @since 2021-10-19
  */
 @Component
 public class ProtectedResourceDesensitizeService implements ProtectedResourceMonitor {

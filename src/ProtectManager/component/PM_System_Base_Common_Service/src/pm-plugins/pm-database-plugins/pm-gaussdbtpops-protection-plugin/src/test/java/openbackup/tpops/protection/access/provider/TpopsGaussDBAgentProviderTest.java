@@ -42,8 +42,6 @@ import java.util.Map;
 /**
  * 功能描述
  *
- * @author c00826511
- * @since 2023-07-29
  */
 @RunWith(PowerMockRunner.class)
 public class TpopsGaussDBAgentProviderTest {

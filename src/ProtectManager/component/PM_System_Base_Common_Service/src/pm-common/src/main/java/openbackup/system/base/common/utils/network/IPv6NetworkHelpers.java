@@ -19,8 +19,6 @@ import java.util.BitSet;
 /**
  * 功能描述
  *
- * @author y00413474
- * @since 2020-07-01
  */
 public class IPv6NetworkHelpers {
     static int longestPrefixLength(IPv6Address first, IPv6Address last) {

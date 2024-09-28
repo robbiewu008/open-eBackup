@@ -19,8 +19,6 @@ import openbackup.system.base.common.model.job.Job;
 /**
  * Job provider base class
  *
- * @author l00272247
- * @since 2020-09-01
  */
 public interface JobProvider extends DataProtectionProvider<String> {
     /**

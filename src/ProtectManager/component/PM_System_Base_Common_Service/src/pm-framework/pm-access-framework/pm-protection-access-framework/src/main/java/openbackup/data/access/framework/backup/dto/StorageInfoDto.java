@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * Storage Info
  *
- * @author l00853347
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-26
  */
 @Data
 public class StorageInfoDto {

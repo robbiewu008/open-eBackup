@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author w30044259
- * @since 2024-03-26
  */
 public interface StorageRepositoryProvider extends DataProtectionProvider<BackupObject> {
     /**

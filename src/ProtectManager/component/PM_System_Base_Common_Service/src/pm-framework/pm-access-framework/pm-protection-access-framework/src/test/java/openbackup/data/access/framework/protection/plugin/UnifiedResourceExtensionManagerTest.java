@@ -34,8 +34,6 @@ import java.util.Map;
 /**
  * 统一资源管理测试
  *
- * @author h30027154
- * @since 2022-05-30
  */
 public class UnifiedResourceExtensionManagerTest {
     private static final String AUTO_SCAN_CONFIG_PATH = "functions.scan.auto-scan";

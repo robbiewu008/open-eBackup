@@ -49,8 +49,6 @@ import java.util.Map;
 /**
  * 备份测试类
  *
- * @author t30021437
- * @since 2023-05-11
  */
 @RunWith(PowerMockRunner.class)
 public class NdmpBackupInterceptorTest {

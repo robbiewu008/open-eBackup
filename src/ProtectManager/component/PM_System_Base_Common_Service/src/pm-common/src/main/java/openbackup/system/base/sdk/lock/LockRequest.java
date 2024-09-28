@@ -19,9 +19,6 @@ import java.util.List;
 /**
  * 创建资源锁请求
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022/1/26
  **/
 @Data
 public class LockRequest {

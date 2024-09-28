@@ -19,8 +19,6 @@ import java.util.Date;
 /**
  * KerberosBo
  *
- * @author m00576658
- * @since 2021-08-18
  */
 @Data
 public class KerberosBo {

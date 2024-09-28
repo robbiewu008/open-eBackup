@@ -36,8 +36,6 @@ import java.util.Arrays;
 /**
  * System Specification Service Impl Test
  *
- * @author l00272247
- * @since 2021-03-17
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

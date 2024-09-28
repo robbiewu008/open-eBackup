@@ -81,8 +81,6 @@ import java.util.List;
 /**
  * Live Mount Listener
  *
- * @author l00272247
- * @since 2020-09-20
  */
 @Component
 @Slf4j

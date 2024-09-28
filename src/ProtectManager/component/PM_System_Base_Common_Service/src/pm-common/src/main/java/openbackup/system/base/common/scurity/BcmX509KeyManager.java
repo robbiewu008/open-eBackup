@@ -33,9 +33,6 @@ import javax.net.ssl.X509ExtendedKeyManager;
 /**
  * PM Feign Key Manager
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/12/8
  */
 @Slf4j
 public class BcmX509KeyManager extends X509ExtendedKeyManager {

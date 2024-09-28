@@ -45,9 +45,6 @@ import java.util.UUID;
 /**
  * SQL Server副本删除拦截器测试类
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-04
  */
 public class SqlServerCopyDeleteInterceptorTest {
     private final CopyRestApi copyRestApi = PowerMockito.mock(CopyRestApi.class);

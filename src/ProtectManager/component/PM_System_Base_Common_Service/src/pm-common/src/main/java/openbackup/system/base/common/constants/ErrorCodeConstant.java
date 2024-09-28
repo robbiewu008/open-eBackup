@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 错误码常量类
  *
- * @author y00280557
- * @since 2020-09-03
  */
 public class ErrorCodeConstant {
     /**

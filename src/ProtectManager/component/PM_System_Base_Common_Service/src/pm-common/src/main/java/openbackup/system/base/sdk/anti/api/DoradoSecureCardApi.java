@@ -27,8 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * Dorado安全卡api
  *
- * @author j00619968
- * @since 2024-01-23
  */
 @FeignClient(value = "DoradoSecuryCardApi", url = "https://${repository.storage.ip}:${repository.storage.port}",
     configuration = DoradoFeignConfiguration.class)

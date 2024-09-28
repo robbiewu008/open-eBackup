@@ -20,8 +20,6 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 /**
  * Callee Method Scanner
  *
- * @author l00272247
- * @since 2021-12-14
  */
 public class CalleeMethodScanner extends ClassPathScanningCandidateComponentProvider {
     /**

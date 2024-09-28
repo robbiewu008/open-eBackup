@@ -20,9 +20,6 @@ import java.util.List;
 /**
  * 批量更新资源可恢复情况请求体
  *
- * @author s30031954
- * @version [OceanProtect X8000 1.5.0]
- * @since 2024-04-11
  */
 @Getter
 @Setter

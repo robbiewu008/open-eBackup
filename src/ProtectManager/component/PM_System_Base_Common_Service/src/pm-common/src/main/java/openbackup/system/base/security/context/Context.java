@@ -22,8 +22,6 @@ import java.lang.annotation.Target;
 /**
  * Cache
  *
- * @author l00272247
- * @since 2021-12-14
  */
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

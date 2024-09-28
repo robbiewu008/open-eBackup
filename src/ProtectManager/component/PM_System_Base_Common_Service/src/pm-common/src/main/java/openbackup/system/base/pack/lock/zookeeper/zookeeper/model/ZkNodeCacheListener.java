@@ -18,9 +18,6 @@ import org.apache.curator.framework.recipes.cache.NodeCacheListener;
 /**
  * 功能描述
  *
- * @author y00413474
- * @version [BCManager 8.0.0]
- * @since 2020-06-01
  */
 public abstract class ZkNodeCacheListener implements NodeCacheListener {
     private NodeCache cache;

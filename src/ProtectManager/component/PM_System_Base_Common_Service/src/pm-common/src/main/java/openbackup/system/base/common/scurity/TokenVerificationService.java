@@ -34,8 +34,6 @@ import java.security.cert.CertificateFactory;
 /**
  * Token Verification Service
  *
- * @author l00272247
- * @since 2020-11-27
  */
 @Component
 @Slf4j

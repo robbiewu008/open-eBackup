@@ -36,8 +36,6 @@ import java.util.Optional;
 /**
  * 用户相关的工具类
  *
- * @author l00422407
- * @since 2021-02-04
  */
 @Slf4j
 public class UserUtils {

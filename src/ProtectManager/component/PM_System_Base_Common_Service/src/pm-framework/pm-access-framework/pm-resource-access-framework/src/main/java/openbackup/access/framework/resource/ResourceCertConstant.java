@@ -15,9 +15,6 @@ package openbackup.access.framework.resource;
 /**
  * 资源证书常量类
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/10/13
  */
 public final class ResourceCertConstant {
     /**

@@ -33,9 +33,6 @@ import java.nio.file.Files;
 /**
  * File Util Test
  *
- * @author fwx1022842
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023/3/30
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({FileUtil.class, Files.class})

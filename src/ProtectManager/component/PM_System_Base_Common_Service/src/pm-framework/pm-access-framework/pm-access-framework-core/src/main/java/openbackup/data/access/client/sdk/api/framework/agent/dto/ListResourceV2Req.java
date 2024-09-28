@@ -20,9 +20,6 @@ import java.util.List;
 /**
  * PM向Agent查询应用详细信息(V2接口)的请求对象
  *
- * @author 30009433
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-19
  */
 @Getter
 @Setter

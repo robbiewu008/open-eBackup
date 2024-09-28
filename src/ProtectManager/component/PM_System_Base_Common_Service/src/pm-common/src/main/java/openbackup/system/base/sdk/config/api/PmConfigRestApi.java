@@ -22,9 +22,6 @@ import java.util.List;
 /**
  * PmConfigRestApi
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-07-24
  */
 public interface PmConfigRestApi {
     /**

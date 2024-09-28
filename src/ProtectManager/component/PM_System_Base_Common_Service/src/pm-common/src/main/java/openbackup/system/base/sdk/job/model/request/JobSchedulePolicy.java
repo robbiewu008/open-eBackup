@@ -22,8 +22,6 @@ import java.util.Objects;
 /**
  * Job Schedule Policy
  *
- * @author l00272247
- * @since 2021-03-10
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)

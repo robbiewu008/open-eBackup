@@ -22,8 +22,6 @@ import org.springframework.stereotype.Component;
 /**
  * agent扩展表查询语句
  *
- * @author z00613137
- * @since 2023-08-09
  */
 @Mapper
 @Component

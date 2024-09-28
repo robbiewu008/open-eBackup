@@ -29,9 +29,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 功能描述
  *
- * @author y00413474
- * @version [BCManager 8.0.0]
- * @since 2023-07-05
  */
 @Component
 @Slf4j
@@ -48,9 +45,6 @@ public class LockServiceImpl implements LockService {
     /**
      * BaseLock
      *
-     * @author y00413474
-     * @version [BCManager 8.0.0]
-     * @since 2020-06-01
      */
     private abstract static class BaseLock implements Lock {
         /**
@@ -136,8 +130,6 @@ public class LockServiceImpl implements LockService {
     /**
      * SQL 实现的乐观锁
      *
-     * @author w30042425
-     * @since 2023-06-10
      */
     public static class SQLDistributeLock extends BaseLock implements Lock {
         private final String key;

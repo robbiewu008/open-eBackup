@@ -34,8 +34,6 @@ import java.util.concurrent.atomic.AtomicStampedReference;
 /**
  * Advance Replication Copy Processor Test
  *
- * @author l00272247
- * @since 2022-01-18
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(UnifiedReplicationCopyProcessor.class)

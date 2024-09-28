@@ -58,9 +58,6 @@ import java.util.stream.Collectors;
 /**
  * GaussDBT资源健康检查
  *
- * @author hwx1144169
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-31
  */
 @Slf4j
 @Component

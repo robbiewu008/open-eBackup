@@ -29,9 +29,6 @@ import java.util.Map;
 /**
  * 副本恢复参数对象，恢复时所需要的参数由该对象承载
  *
- * @author j00364432
- * @version [OceanProtect X8000 1.2.1]
- * @since 2021-11-01
  */
 public class RestoreTask extends BaseTask {
     /**

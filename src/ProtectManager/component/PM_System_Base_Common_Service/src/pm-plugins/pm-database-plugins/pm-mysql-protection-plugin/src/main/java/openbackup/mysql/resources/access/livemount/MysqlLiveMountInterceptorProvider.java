@@ -56,9 +56,6 @@ import java.util.stream.Collectors;
 /**
  * mysql即时挂载provider
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/6/24
  */
 @Slf4j
 @Component

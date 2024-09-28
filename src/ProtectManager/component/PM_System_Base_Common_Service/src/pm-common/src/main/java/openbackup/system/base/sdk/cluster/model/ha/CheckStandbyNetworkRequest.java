@@ -29,8 +29,6 @@ import javax.validation.constraints.Size;
 /**
  * 校验备节点浮动IP地址与仲裁网关的可用性请求体
  *
- * @author w00607005
- * @since 2023-05-17
  */
 @Data
 public class CheckStandbyNetworkRequest {

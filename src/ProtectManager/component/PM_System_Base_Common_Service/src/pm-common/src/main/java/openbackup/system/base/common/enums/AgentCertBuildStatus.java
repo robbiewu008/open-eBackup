@@ -17,8 +17,6 @@ import lombok.Getter;
 /**
  * 组装Agent证书
  *
- * @author h00406347
- * @since 2021-01-20
  */
 public enum AgentCertBuildStatus {
     SUCCESS(0),

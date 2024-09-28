@@ -22,9 +22,6 @@ import java.util.Map;
 /**
  * AgentDtoUtil
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/9/2
  */
 public class AgentDtoUtil {
     /**

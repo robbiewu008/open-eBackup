@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * asm auth info for target oracle host
  *
- * @author y30000858
- * @since 2020-09-21
  */
 @Data
 public class AsmAuthEntity {

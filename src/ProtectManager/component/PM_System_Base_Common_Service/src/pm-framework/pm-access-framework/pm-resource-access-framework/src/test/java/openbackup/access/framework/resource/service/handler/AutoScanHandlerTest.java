@@ -30,8 +30,6 @@ import org.mockito.Mockito;
 /**
  * auto scan test
  *
- * @author h30027154
- * @since 2022-06-23
  */
 public class AutoScanHandlerTest {
     /**

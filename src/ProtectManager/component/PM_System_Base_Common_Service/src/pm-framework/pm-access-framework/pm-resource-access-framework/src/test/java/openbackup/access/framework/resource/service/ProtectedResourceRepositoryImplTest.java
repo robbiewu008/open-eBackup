@@ -61,8 +61,6 @@ import javax.annotation.Resource;
 /**
  * ProtectedResourceRepositoryImplTest
  *
- * @author z00613137
- * @since 2023-08-10
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

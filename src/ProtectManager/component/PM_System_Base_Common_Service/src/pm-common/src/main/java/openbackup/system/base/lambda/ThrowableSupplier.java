@@ -17,8 +17,6 @@ package openbackup.system.base.lambda;
  *
  * @param <ET> template type ET
  * @param <T> template type T
- * @author l00272247
- * @since 2021-12-14
  */
 public interface ThrowableSupplier<ET extends Throwable, T> {
     /**

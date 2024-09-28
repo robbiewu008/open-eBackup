@@ -47,9 +47,6 @@ import javax.net.ssl.SSLHandshakeException;
 /**
  * 邮件发送服务
  *
- * @author c00826511
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-22
  */
 @Slf4j
 public abstract class AbstractMailSendService {

@@ -44,9 +44,6 @@ import java.util.Map;
 /**
  * AbstractLiveMountProvider测试
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-20
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

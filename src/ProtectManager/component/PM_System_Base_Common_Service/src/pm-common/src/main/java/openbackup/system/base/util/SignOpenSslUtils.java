@@ -31,8 +31,6 @@ import java.util.Arrays;
 /**
  * SignOpenSslUtils
  *
- * @author l30023229
- * @since 2023-06-10
  */
 @Slf4j
 public class SignOpenSslUtils {

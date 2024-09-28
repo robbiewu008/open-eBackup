@@ -22,9 +22,6 @@ import java.util.Map;
 /**
  * 功能描述: DWS模块的通用常量
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-23
  */
 public class DwsConstant {
     /**

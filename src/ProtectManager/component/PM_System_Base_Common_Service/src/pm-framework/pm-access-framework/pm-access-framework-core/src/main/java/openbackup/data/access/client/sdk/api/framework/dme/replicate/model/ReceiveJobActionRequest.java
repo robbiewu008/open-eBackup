@@ -20,8 +20,6 @@ import lombok.NoArgsConstructor;
 /**
  * 接收任务行为请求对象
  *
- * @author y30037959
- * @since 2023-01-31
  */
 @Data
 @Builder

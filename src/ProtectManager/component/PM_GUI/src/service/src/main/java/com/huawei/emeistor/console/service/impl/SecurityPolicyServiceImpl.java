@@ -33,7 +33,6 @@ import org.springframework.web.client.RestTemplate;
 /**
  * 功能描述
  *
- * @since [生成时间]
  */
 @Service
 public class SecurityPolicyServiceImpl implements SecurityPolicyService {

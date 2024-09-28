@@ -23,9 +23,6 @@ import java.util.Optional;
 /**
  * 保护策略
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-19
  */
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)

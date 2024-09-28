@@ -18,8 +18,6 @@ import openbackup.system.base.common.exception.DataMoverCheckedException;
 /**
  * 功能描述
  *
- * @author l30023229
- * @since 2023-02-03
  */
 public enum AgentHostOsTypeEnum {
     /**

@@ -27,8 +27,6 @@ import java.util.Map;
 /**
  * 初始化参数路径
  *
- * @author w00493811
- * @since 2021-02-03
  */
 @Data
 @NoArgsConstructor

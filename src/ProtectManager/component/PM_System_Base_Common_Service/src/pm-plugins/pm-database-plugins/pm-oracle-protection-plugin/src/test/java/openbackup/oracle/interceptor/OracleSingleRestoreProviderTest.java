@@ -37,9 +37,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * oracle数据库恢复拦截器实现类 测试类
  *
- * @version [OceanProtect DataBackup 1.3.0]
- * @author c30038333
- * @since 2023-02-14
  */
 public class OracleSingleRestoreProviderTest {
     private final OracleBaseService oracleBaseService = Mockito.mock(OracleBaseService.class);

@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * 安全一体机基于快照创建克隆请求参数
  *
- * @author w00574036
- * @since 2024-04-18
- * @version [OceanCyber 300 1.2.0]
  */
 @Data
 public class OcLiveMountCloneReq {

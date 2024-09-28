@@ -21,9 +21,6 @@ import org.springframework.beans.BeanUtils;
 /**
  * 恢复应用插件的模拟类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/15
  **/
 public class MockRestoreInterceptorProvider implements RestoreInterceptorProvider {
     @Override

@@ -22,15 +22,11 @@ import java.util.List;
 /**
  * Cluster enum class
  *
- * @author p30001902
- * @since 2020-07-10
  */
 public class ClusterEnum {
     /**
      * enum type
      *
-     * @author p30001902
-     * @since 2020-07-10
      */
     public enum TypeEnum {
         /**
@@ -60,8 +56,6 @@ public class ClusterEnum {
     /**
      * enum status
      *
-     * @author p30001902
-     * @since 2020-07-10
      */
     public enum StatusEnum {
         /**
@@ -144,8 +138,6 @@ public class ClusterEnum {
     /**
      * enum type
      *
-     * @author p30001902
-     * @since 2020-07-10
      */
     public enum ModifyType {
         /**
@@ -181,8 +173,6 @@ public class ClusterEnum {
     /**
      * dorado eth_port type
      *
-     * @author p30001902
-     * @since 2020-07-10
      */
     public enum DoradoSelectTypeEnum {
         /**
@@ -212,8 +202,6 @@ public class ClusterEnum {
     /**
      * enum flag
      *
-     * @author p30001902
-     * @since 2020-07-10
      */
     public enum VerifyFlag {
         /**
@@ -239,8 +227,6 @@ public class ClusterEnum {
     /**
      * Enum operate type
      *
-     * @author p30001902
-     * @since 2020-09-5
      */
     public enum OperateType {
         /**
@@ -270,8 +256,6 @@ public class ClusterEnum {
     /**
      * Enum relation status
      *
-     * @author p30001902
-     * @since 2020-09-5
      */
     public enum EnableRelation {
         /**
@@ -297,8 +281,6 @@ public class ClusterEnum {
     /**
      * Enum request type
      *
-     * @author p30001902
-     * @since 2020-12-25
      */
     public enum RequestType {
         /**
@@ -325,8 +307,6 @@ public class ClusterEnum {
     /**
      * Enum create user type
      *
-     * @author p30001902
-     * @since 2020-12-25
      */
     public enum DoradoCreateUserType {
         // create device admin
@@ -349,8 +329,6 @@ public class ClusterEnum {
     /**
      * Enum target cluster role type
      *
-     * @author nwx1077006
-     * @since 2022-02-21
      */
     public enum RoleType {
         /**
@@ -449,8 +427,6 @@ public class ClusterEnum {
     /**
      * 集群端口枚举类
      *
-     * @author nwx1077006
-     * @since 2022-02-21
      */
     public enum PortType {
         /**
@@ -481,8 +457,6 @@ public class ClusterEnum {
     /**
      * 复制集群类型枚举类
      *
-     * @author nwx1077006
-     * @since 2022-02-21
      */
     public enum ClusterType {
         /**

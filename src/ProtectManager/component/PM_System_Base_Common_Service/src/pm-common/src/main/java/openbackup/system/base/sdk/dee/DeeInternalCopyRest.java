@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * dee 副本相关的内部接口
  *
- * @author jwx701567
- * @since 2021-12-25
  */
 @FeignClient(name = "deeInternalCopyRest", url = "${protectengine-e-dee.url}/v1/internal",
         configuration = CommonFeignConfiguration.class)

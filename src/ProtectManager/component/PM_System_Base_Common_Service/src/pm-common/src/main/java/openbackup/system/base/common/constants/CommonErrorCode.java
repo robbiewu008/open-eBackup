@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 错误码定义类
  *
- * @author t00482481
- * @since 2020-06-15
  */
 public final class CommonErrorCode {
     /**

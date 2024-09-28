@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * The GetClusterEsnReq
  *
- * @author b30042790
- * @since 2023-06-16
  */
 @Data
 public class GetClusterEsnReq {

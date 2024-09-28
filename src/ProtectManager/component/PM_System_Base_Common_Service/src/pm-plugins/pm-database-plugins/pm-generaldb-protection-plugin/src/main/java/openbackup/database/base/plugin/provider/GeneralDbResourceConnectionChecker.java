@@ -43,9 +43,6 @@ import java.util.Optional;
 /**
  * 通用数据库健康检查
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-29
  */
 @Component
 @Slf4j

@@ -23,8 +23,6 @@ import java.util.UUID;
 /**
  * 更新JobStatus信息Mock类，用于mock更新job状态各种场景的对象
  *
- * @author w00616953
- * @since 2021-12-10
  */
 public class UpdateJobStatusMocker {
 

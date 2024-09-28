@@ -17,9 +17,6 @@ import java.security.cert.CertificateException;
 /**
  * 用于验证服务器证书的TrustManager
  *
- * @author l90005176
- * @version [OceanStor BCManager V200R001C00, 2016年2月16日]
- * @since 2019-10-25
  */
 public interface IBcmX509TrustHandler {
     /**

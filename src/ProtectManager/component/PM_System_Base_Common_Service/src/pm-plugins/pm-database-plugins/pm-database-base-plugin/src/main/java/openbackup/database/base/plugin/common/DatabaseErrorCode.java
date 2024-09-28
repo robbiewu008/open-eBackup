@@ -15,9 +15,6 @@ package openbackup.database.base.plugin.common;
 /**
  * 数据库应用通用错误码
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/15
  */
 public class DatabaseErrorCode {
     /**

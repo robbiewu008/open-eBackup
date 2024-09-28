@@ -22,8 +22,6 @@ import org.springframework.context.ApplicationContext;
 /**
  * 功能描述
  *
- * @author w30042425
- * @since 2023-09-14
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {SystemUtil.class,ApplicationContext.class,System.class})

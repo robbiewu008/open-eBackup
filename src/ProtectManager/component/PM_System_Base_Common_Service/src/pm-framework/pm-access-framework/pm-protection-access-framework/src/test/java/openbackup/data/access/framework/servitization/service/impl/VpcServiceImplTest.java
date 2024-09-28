@@ -29,8 +29,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * Vpc服务化测试用例
  *
- * @author l00853347
- * @since 2024-01-22
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(VpcServiceImpl.class)

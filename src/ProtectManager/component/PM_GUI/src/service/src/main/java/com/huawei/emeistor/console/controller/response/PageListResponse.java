@@ -22,9 +22,6 @@ import java.util.List;
  * 分页模板类
  *
  * @param <T> the body type
- * @author w00448845
- * @version [BCManager 8.0.0]
- * @since 2019-11-12
  */
 @Data
 @AllArgsConstructor

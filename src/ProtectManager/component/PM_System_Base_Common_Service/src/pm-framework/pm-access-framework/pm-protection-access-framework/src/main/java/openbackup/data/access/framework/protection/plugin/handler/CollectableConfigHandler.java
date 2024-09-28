@@ -26,8 +26,6 @@ import java.util.List;
 /**
  * The CollectableConfigHandler
  *
- * @author g30003063
- * @since 2022/6/7
  */
 @Component
 public class CollectableConfigHandler extends ResourceExtensionHandler<Object, List<CollectableConfig>> {

@@ -32,9 +32,6 @@ import java.util.stream.Collectors;
 /**
  * 创建校验
  *
- * @author x30046484
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-05-16
  */
 @Component
 public class CreateValidator implements AuthValidator {

@@ -123,8 +123,6 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * 功能描述
  *
- * @author h30003246
- * @since 2021-02-27
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(TokenBo.class)

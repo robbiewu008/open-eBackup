@@ -21,9 +21,6 @@ import java.util.Comparator;
 /**
  * 安全协议排序比较器
  *
- * @author l90005176
- * @version [OceanStor BCManager V200R001C00, 2016年2月16日]
- * @since 2018-01-01
  */
 public class ProtocolComparator implements Comparator<String> {
     private static final String PROTOCOL_TLS = "TLS";

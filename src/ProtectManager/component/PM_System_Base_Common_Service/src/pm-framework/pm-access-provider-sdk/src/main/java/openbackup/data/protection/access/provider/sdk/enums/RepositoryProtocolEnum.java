@@ -19,9 +19,6 @@ import java.util.Arrays;
  * <p>
  * A8000本地存储均已NATIVE_<协议名>来定义
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/8
  **/
 public enum RepositoryProtocolEnum {
     CIFS(0),

@@ -25,8 +25,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 /**
  * CnwareCopyCommonInterceptor
  *
- * @author y30037959
- * @since 2024-08-24
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(CnwareCopyCommonInterceptor.class)

@@ -19,9 +19,6 @@ import java.util.List;
 /**
  * SourceScanCopy
  *
- * @author jwx701567
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-21
  */
 @Data
 public class FinegrainedRestoreCopy {

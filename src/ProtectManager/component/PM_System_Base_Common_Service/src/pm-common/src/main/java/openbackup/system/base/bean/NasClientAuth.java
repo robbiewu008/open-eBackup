@@ -23,9 +23,6 @@ import lombok.NoArgsConstructor;
 /**
  * Nas共享客户端下AUTH
  *
- * @author fwx1022842
- * @version [BCManager 8.0.0]
- * @since 2021-06-11
  */
 @Data
 @AllArgsConstructor

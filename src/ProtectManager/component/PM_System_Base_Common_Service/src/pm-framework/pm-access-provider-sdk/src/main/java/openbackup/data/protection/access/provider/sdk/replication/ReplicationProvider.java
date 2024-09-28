@@ -19,8 +19,6 @@ import openbackup.data.protection.access.provider.sdk.copy.CopyReplicationImport
 /**
  * Replication Provider
  *
- * @author l00272247
- * @since 2020-11-18
  */
 public interface ReplicationProvider extends DataProtectionProvider<String> {
     /**

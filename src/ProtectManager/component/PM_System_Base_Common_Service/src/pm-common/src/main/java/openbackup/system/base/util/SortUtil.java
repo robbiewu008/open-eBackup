@@ -28,8 +28,6 @@ import java.util.List;
 /**
  * 排序工具类
  *
- * @author w00607005
- * @since 2023-07-21
  */
 @Slf4j
 public class SortUtil {

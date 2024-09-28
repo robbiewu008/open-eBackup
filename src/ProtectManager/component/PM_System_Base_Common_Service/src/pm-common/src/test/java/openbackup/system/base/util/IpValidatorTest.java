@@ -34,7 +34,6 @@ import java.util.Objects;
 /**
  * IP校验类测试
  *
- * @since 2022-03-31
  */
 @RunWith(PowerMockRunner.class)
 public class IpValidatorTest {

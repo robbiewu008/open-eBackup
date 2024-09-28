@@ -23,8 +23,6 @@ import javax.validation.constraints.Size;
 /**
  * 修改configMap请求体
  *
- * @author x30046484
- * @since 2023-05-18
  */
 @Getter
 @Setter

@@ -29,9 +29,6 @@ import org.springframework.stereotype.Component;
 /**
  * 统一归档框架任务处理Provider
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-01-20
  */
 @Slf4j
 @Component("unifiedArchiveJobProvider")

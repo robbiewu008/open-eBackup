@@ -22,9 +22,6 @@ import com.huawei.oceanprotect.sla.sdk.validator.SlaValidateConfig;
  * 应用插件实现此接口可以定制SLA校验框架的行为并且可以实现自己特有的校验逻辑
  * </p>
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/4/29
  **/
 public interface SlaValidateProvider extends DataProtectionProvider<String> {
     /**

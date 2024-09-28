@@ -60,9 +60,6 @@ import java.util.UUID;
 /**
  * 恢复任务辅助类，提供一些静态辅助函数
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/28
  **/
 @Slf4j
 public abstract class RestoreTaskHelper {

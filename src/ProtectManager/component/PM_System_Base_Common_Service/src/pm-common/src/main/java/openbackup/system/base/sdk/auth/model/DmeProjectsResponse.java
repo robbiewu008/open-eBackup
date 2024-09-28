@@ -20,9 +20,6 @@ import java.util.List;
 /**
  * 查询dme用户关联的项目列表返回体
  *
- * @author z30062305
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-08-29
  */
 @Setter
 @Getter

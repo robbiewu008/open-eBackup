@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.protection;
 /**
  * 查询关联资源信息
  *
- * @author swx1010572
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-06-19
  */
 public interface ProtectionQueryService {
     /**

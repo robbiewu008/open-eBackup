@@ -24,8 +24,6 @@ import java.util.function.Function;
  *
  * @param <T> param template type
  * @param <R> result template type
- * @author l00272247
- * @since 2021-10-19
  */
 public class Invocation<T, R> {
     private final List<Invoker<T, R>> invokers;

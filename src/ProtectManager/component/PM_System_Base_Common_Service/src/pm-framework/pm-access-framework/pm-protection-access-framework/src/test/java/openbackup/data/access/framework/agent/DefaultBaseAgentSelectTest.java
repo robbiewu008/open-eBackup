@@ -44,9 +44,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 /**
- * @author z30027603
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/7/22
  **/
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TokenBo.class})

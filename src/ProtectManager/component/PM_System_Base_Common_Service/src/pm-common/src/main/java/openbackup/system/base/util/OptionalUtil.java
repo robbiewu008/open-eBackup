@@ -18,8 +18,6 @@ import java.util.function.Function;
 /**
  * Optional Util
  *
- * @author l00650874
- * @since 2022-07-01
  */
 public class OptionalUtil {
     /**

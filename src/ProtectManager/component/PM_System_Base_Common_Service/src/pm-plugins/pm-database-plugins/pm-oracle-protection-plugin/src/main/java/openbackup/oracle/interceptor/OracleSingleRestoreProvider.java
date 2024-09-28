@@ -31,9 +31,6 @@ import java.util.Collections;
 /**
  * oracle数据库恢复任务下发provider
  *
- * @version [OceanProtect DataBackup 1.3.0]
- * @author c30038333
- * @since 2023-02-14
  */
 @Slf4j
 @Component

@@ -24,9 +24,6 @@ import java.util.List;
 /**
  * NetPlaneInfoReqCroupProvider
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-04-02
  */
 public class NetPlaneInfoReqCroupProvider implements DefaultGroupSequenceProvider<NetPlaneInfoReq> {
     private static final String IPV4 = "0";

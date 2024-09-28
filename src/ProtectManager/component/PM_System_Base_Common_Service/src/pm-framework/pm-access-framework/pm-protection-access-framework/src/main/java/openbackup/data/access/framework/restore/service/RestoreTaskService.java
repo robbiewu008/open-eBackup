@@ -54,9 +54,6 @@ import java.util.List;
 /**
  * 恢复任务服务类，用于辅助RestoreTaskManager处理恢复业务流程
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-02
  **/
 @Slf4j
 @Service

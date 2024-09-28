@@ -29,8 +29,6 @@ import java.util.List;
 /**
  * get protected resource
  *
- * @author l00557046
- * @since 2020-08-10
  */
 @FeignClient(name = "OracleRestApi", url = "${pm-resource-manager.url}/v1",
     configuration = CommonFeignConfiguration.class)

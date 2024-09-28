@@ -92,8 +92,6 @@ import java.util.Map;
 /**
  * Target Cluster Rest Api
  *
- * @author p30001902
- * @since 2020-07-21
  */
 @Routing(destinationIp = "#{uri.host}", requires = {"#{uri.port}=30068"}, onNetPlane = "replication")
 public interface TargetClusterRestApi {

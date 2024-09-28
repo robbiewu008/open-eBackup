@@ -20,8 +20,6 @@ import java.util.Map;
 /**
  * Message Error Handler
  *
- * @author l00272247
- * @since 2021-04-15
  */
 public interface MessageErrorHandler extends Applicable<Throwable> {
     /**

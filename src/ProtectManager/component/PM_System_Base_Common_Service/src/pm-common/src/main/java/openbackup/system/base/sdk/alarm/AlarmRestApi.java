@@ -24,9 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * 功能描述
  *
- * @author y00413474
- * @version [BCManager 8.0.0]
- * @since 2020-06-19
  */
 @FeignClient(name = "AlarmRestApi", url = "${service.url.alarm-manager}",
     configuration = CommonFeignConfiguration.class)

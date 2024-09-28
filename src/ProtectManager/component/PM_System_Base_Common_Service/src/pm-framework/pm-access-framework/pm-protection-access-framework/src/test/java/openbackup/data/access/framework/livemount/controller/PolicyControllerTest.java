@@ -58,8 +58,6 @@ import java.util.ArrayList;
 /**
  * test Policy Controller
  *
- * @author fwx1022842
- * @since 2021-3-8
  */
 @RunWith(SpringRunner.class)
 @PrepareForTest(PolicyController.class)

@@ -18,9 +18,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-02-02
  */
 public class Db2ClusterTypeEnumTest {
     /**

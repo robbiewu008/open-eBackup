@@ -15,8 +15,6 @@ package openbackup.data.protection.access.provider.sdk.plugin;
 /**
  * 资源扩展invoke管理
  *
- * @author h30027154
- * @since 2022-05-30
  */
 public interface ResourceExtensionManager {
     /**

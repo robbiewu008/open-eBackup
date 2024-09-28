@@ -24,8 +24,6 @@ import java.util.function.Consumer;
 /**
  * Job Service
  *
- * @author l00272247
- * @since 2021-12-08
  */
 @Component
 public class JobScheduleService {

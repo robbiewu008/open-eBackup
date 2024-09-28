@@ -58,8 +58,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 /**
  * ProtectionBackupListener LLT
  *
- * @author m00576658
- * @since 2021-03-18
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ProtectionRemoveListener.class)

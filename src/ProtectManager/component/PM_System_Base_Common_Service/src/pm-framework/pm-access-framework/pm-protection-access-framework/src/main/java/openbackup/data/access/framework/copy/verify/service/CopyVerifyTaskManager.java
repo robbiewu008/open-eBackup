@@ -63,9 +63,6 @@ import java.util.stream.Collectors;
 /**
  * 副本校验任务管理器
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/28
  **/
 @Slf4j
 @Component

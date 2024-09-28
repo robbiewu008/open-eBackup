@@ -51,8 +51,6 @@ import java.util.stream.Collectors;
 /**
  * tidb 校验工具类
  *
- * @author w00426202
- * @since 2023-07-14
  */
 @Slf4j
 public class TidbUtil {

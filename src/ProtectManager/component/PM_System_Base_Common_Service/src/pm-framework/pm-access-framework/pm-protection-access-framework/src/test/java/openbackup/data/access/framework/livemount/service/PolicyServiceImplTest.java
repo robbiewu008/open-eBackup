@@ -53,8 +53,6 @@ import java.util.List;
 /**
  * live mount policy test impl
  *
- * @author h30003246
- * @since 2021-03-02
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

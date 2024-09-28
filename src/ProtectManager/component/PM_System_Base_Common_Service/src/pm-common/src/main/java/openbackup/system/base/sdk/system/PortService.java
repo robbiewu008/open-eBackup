@@ -19,9 +19,6 @@ import java.util.List;
 /**
  * 逻辑端口服务
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-06-19
  */
 public interface PortService {
     /**

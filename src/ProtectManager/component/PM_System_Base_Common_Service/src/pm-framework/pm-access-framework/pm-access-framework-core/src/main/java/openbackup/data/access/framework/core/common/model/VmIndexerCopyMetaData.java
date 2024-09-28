@@ -15,8 +15,6 @@ package openbackup.data.access.framework.core.common.model;
 /**
  * VMWare copy properties meta data
  *
- * @author h30003246
- * @since 2020/9/19
  **/
 public final class VmIndexerCopyMetaData {
     /**

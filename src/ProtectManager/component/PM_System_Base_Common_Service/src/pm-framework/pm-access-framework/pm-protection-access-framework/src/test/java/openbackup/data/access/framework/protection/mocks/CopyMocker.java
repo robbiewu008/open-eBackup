@@ -26,9 +26,6 @@ import java.util.List;
 /**
  * 副本信息的Mock类，模拟测试用例中{@code Copy}对象的各种情况
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/6
  **/
 public class CopyMocker {
 

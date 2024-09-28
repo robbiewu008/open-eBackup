@@ -20,9 +20,6 @@ import java.util.Arrays;
 /**
  * 副本校验状态枚举
  *
- * @author c30016231
- * @since 2022-08-03
- * @version [OceanProtect X8000 1.2.1]
  */
 @Getter
 @AllArgsConstructor

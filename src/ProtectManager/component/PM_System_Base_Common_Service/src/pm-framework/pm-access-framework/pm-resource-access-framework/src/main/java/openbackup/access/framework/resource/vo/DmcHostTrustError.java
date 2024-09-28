@@ -20,8 +20,6 @@ import lombok.Setter;
 /**
  * dmc host trust code
  *
- * @author z30027603
- * @since 2023-01-12
  */
 @Getter
 @Setter

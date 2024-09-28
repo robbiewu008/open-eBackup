@@ -25,8 +25,6 @@ import java.util.List;
  * page query rest api
  *
  * @param <T> template type
- * @author l00272247
- * @since 2020-11-01
  */
 @FunctionalInterface
 public interface PageQueryRestApi<T> {

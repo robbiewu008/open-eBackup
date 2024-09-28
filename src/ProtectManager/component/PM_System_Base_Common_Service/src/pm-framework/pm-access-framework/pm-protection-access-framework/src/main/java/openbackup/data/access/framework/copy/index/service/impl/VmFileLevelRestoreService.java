@@ -65,8 +65,6 @@ import java.util.stream.Collectors;
 /**
  * 虚拟化应用文件集恢复服务
  *
- * @author y30037959
- * @since 2023-06-15
  */
 @Component
 @Slf4j

@@ -17,8 +17,6 @@ import lombok.Data;
 /**
  * 节点告警统计数据
  *
- * @author w00607005
- * @since 2023-07-11
  */
 @Data
 public class NodeAlarmInfo {

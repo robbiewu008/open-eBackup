@@ -17,9 +17,6 @@ import java.util.regex.Pattern;
 /**
  * 功能描述: Redis模块的通用常量
  *
- * @author x30028756
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-14
  */
 public class RedisConstant {
     /**

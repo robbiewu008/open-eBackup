@@ -24,8 +24,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * 功能描述
  *
- * @author w30042425
- * @since 2024-01-16
  */
 @RunWith(PowerMockRunner.class)
 public class OracleCopyControllerTest {

@@ -33,9 +33,6 @@ import java.util.Set;
 /**
  * 受保护资源存储库，提供受保护资源持久化标准接口，该接口的定义和具体的持久化框架无关
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-14
  */
 public interface ProtectedResourceRepository {
     /**

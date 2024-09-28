@@ -20,8 +20,6 @@ import java.util.Arrays;
 /**
  * Message Context Info
  *
- * @author l00272247
- * @since 2020-10-25
  */
 public class MessageContextInfo implements MessageContext {
     private final String[] messages;

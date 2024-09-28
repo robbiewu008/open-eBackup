@@ -21,8 +21,6 @@ import lombok.Getter;
 /**
  * 磁带类型
  *
- * @author w50021188
- * @since 2021-08-11
  **/
 @Getter
 @AllArgsConstructor

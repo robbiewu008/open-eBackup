@@ -18,8 +18,6 @@ import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
 /**
  * This interface defines the restore providers that need to be implemented by DataMover
  *
- * @author z30009433
- * @since 2020-12-30
  */
 public interface ArchiveImportProvider extends DataProtectionProvider<String> {
     /**

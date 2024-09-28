@@ -21,9 +21,6 @@ import java.util.Map;
 /**
  * Application
  *
- * @author 30009433
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-19
  */
 @Data
 public class Application {

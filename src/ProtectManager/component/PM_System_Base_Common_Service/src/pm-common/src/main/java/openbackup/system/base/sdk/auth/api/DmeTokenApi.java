@@ -17,9 +17,6 @@ import openbackup.system.base.sdk.auth.model.DmeToken;
 /**
  * 调用DME平台的Api
  *
- * @author z30062305
- * @version [OceanProtect 1.6.0]
- * @since 2024-07-30
  */
 public interface DmeTokenApi {
     /**

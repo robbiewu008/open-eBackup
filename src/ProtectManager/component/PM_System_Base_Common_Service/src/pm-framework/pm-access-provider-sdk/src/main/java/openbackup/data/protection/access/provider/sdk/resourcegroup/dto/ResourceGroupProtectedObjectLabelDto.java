@@ -18,9 +18,6 @@ import lombok.Setter;
 /**
  * ResourceGroupProtectedObjectLabelDto
  *
- * @author l30046868
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-04-07
  */
 @Getter
 @Setter

@@ -53,8 +53,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * DEE转发测试类
  *
- * @author nwx1077006
- * @since 2021-10-28
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {

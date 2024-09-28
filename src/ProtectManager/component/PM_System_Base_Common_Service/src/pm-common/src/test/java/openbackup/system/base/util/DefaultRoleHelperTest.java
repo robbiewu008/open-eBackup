@@ -29,9 +29,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * 默认角色工具类单元测试
  *
- * @author z00842230
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2024-07-04
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {RoleServiceApi.class, DefaultRoleHelper.class})

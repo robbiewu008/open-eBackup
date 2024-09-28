@@ -19,9 +19,6 @@ import java.util.regex.Pattern;
 /**
  * IPv6AddressHelpers
  *
- * @author zKF66175
- * @version [V100R002C00, 2013-2-5]
- * @since 2019-10-25
  */
 public final class IPv6AddressHelpers {
     private static final Pattern DOT_DELIM = Pattern.compile("\\.");

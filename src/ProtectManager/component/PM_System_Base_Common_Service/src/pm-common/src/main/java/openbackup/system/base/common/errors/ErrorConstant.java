@@ -15,8 +15,6 @@ package openbackup.system.base.common.errors;
 /**
  * 功能描述
  *
- * @author y00413474
- * @since 2020-07-01
  */
 public class ErrorConstant {
     /**

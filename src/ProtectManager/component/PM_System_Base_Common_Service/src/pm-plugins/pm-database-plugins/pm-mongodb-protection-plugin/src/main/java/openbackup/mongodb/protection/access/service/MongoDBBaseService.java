@@ -25,9 +25,6 @@ import java.util.Map;
 /**
  * mongodb 实际业务service
  *
- * @author lwx1012372
- * @version [DataBackup 1.5.0]
- * @since 2023-04-07
  */
 public interface MongoDBBaseService {
     /**

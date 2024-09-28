@@ -43,8 +43,6 @@ import java.util.stream.Collectors;
 /**
  * File Util
  *
- * @author l00272247
- * @since 2020-06-29
  */
 @Slf4j
 public class FileUtil implements FileCheckInterface {

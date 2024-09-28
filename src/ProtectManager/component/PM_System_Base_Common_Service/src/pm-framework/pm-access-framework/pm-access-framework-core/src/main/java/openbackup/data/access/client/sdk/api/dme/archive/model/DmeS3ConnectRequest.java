@@ -26,8 +26,6 @@ import lombok.NoArgsConstructor;
 /**
  * DME 连通性请求体
  *
- * @author w00504341
- * @since 2020-12-19
  */
 @Data
 @NoArgsConstructor

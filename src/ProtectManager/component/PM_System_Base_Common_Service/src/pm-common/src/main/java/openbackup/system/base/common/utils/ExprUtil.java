@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
 /**
  * expr util
  *
- * @author l00272247
- * @since 2019-11-06
  */
 public class ExprUtil {
     /**

@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 /**
  * Stringify Converter
  *
- * @author l00272247
- * @since 2021-01-15
  */
 @Component
 @Slf4j

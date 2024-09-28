@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.constants;
 /**
  * 恢复任务扩展参数常量定义
  *
- * @author y00559272
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/8/1
  **/
 public final class RestoreTaskExtendInfoConstant {
     /**

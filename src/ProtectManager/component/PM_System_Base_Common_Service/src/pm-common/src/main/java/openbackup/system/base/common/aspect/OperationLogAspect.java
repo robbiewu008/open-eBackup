@@ -81,8 +81,6 @@ import javax.validation.ConstraintViolationException;
 /**
  * 操作日志切面
  *
- * @author t00482481
- * @since 2020-07-05
  */
 @Slf4j
 @Aspect

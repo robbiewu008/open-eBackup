@@ -19,8 +19,6 @@ import openbackup.tidb.resources.access.constants.TidbConstants;
 /**
  * 功能描述
  *
- * @author c00826511
- * @since 2023-08-18
  */
 public class TidbServiceUtil {
     /**

@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * BucketInfoEntity
  *
- * @author c30035089
- * @since 2023-11-21
  */
 @Data
 public class BucketInfoEntity {

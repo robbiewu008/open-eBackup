@@ -37,8 +37,6 @@ import java.util.Optional;
 /**
  * Rest Template Configuration
  *
- * @author l00272247
- * @since 2021-03-20
  */
 @Configuration
 @Slf4j

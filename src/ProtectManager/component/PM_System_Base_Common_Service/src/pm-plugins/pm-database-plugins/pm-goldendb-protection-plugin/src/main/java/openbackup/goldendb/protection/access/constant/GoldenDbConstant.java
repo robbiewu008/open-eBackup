@@ -15,8 +15,6 @@ package openbackup.goldendb.protection.access.constant;
 /**
  * 功能描述 Golden常量
  *
- * @author s30036254
- * @since 2023-02-14
  */
 public class GoldenDbConstant {
     /**

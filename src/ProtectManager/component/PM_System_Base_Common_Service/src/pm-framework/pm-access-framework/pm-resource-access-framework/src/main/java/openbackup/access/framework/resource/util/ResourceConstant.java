@@ -15,9 +15,6 @@ package openbackup.access.framework.resource.util;
 /**
  * 受保护资源常量
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-04
  */
 public class ResourceConstant {
     /**

@@ -61,9 +61,6 @@ import java.util.UUID;
 /**
  * {@link GaussDBTSingleServiceImpl} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/7/14
  */
 public class GaussDBTSingleServiceImplTest {
     private final ResourceService resourceService = PowerMockito.mock(ResourceService.class);

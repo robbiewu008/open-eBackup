@@ -24,9 +24,6 @@ import java.sql.Timestamp;
 /**
  * 副本信息
  *
- * @author w00574036
- * @version [CyberEngine 300 1.0.0]
- * @since 2023/02/13
  */
 @Data
 @Builder

@@ -27,9 +27,6 @@ import static org.mockito.BDDMockito.given;
 /**
  * 恢复任务创建请求校验器测试类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/3/8
  **/
 public class CreateRestoreTaskRequestValidatorTest {
     private final CopyRestApi copyRestApi = Mockito.mock(CopyRestApi.class);

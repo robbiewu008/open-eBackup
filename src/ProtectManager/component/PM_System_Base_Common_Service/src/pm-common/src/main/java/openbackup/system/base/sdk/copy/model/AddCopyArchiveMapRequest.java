@@ -20,8 +20,6 @@ import lombok.Data;
 /**
  * 增加copy archive map映射请求
  *
- * @author g00500588
- * @since 2021/12/11
  */
 @AllArgsConstructor
 @Data

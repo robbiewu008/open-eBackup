@@ -24,8 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * 统一框架快照信息
  *
- * @author y30037959
- * @since 2023-06-07
  */
 @Slf4j
 @Getter

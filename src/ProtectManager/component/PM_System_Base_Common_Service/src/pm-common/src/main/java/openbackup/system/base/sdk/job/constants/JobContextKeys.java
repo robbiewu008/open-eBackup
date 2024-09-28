@@ -15,9 +15,6 @@ package openbackup.system.base.sdk.job.constants;
 /**
  * 任务上下文keys
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-22
  */
 public class JobContextKeys {
     /**

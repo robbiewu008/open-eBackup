@@ -19,8 +19,6 @@ import javax.validation.constraints.Size;
 /**
  * VMWare 迁移请求参数
  *
- * @author h30003246
- * @since 2020-12-31
  */
 @Data
 public class Datastore {

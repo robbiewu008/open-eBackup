@@ -26,8 +26,6 @@ import java.util.List;
 /**
  * OBS对象集合备份公共类
  *
- * @author l00370588
- * @since 2023-12-25
  */
 @Slf4j
 public class ObjectStorageCommonTool {

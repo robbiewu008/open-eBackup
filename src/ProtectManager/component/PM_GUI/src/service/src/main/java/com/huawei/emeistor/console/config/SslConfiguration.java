@@ -33,9 +33,6 @@ import java.nio.charset.StandardCharsets;
 /**
  * 服务证书认证配置类
  *
- * @author xwx1016404
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-04-18
  */
 @Slf4j
 @Configuration

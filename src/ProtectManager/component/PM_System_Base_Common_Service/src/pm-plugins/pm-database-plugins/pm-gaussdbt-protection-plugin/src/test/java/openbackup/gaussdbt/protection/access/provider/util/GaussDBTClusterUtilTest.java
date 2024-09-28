@@ -34,9 +34,6 @@ import java.util.Map;
 /**
  * GaussDBT集群工具测试
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-24
  */
 public class GaussDBTClusterUtilTest {
     /**

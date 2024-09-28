@@ -45,8 +45,6 @@ import java.util.stream.Collectors;
 /**
  * ExchangeSlaValidator exchange sla校验
  *
- * @author x00635457
- * @since 2024/2/18
  */
 @Component
 @Slf4j

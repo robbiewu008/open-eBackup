@@ -22,8 +22,6 @@ import lombok.NoArgsConstructor;
 /**
  * 初始化配置，与数据库对应
  *
- * @author l00347293
- * @since 2020-12-21
  */
 @Data
 @NoArgsConstructor

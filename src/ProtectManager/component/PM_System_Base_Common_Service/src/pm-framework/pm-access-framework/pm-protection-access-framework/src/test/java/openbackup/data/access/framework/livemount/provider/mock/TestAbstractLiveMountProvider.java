@@ -30,9 +30,6 @@ import java.util.List;
 /**
  * AbstractLiveMountProvider的测试实现
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-20
  */
 @Component
 public class TestAbstractLiveMountProvider extends AbstractLiveMountProvider {

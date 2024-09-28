@@ -42,9 +42,6 @@ import java.util.UUID;
 /**
  * OpenGauss mok data
  *
- * @author jwx701567
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-20
  */
 public class OpenGaussMockData {
     public static final String agentId = "e40c888d-fa29-3da3-b3f0-847545d00411";

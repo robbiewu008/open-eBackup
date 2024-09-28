@@ -20,9 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 证书替换对象
  *
- * @author fwx1022842
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/6/27
  */
 @Getter
 @Setter

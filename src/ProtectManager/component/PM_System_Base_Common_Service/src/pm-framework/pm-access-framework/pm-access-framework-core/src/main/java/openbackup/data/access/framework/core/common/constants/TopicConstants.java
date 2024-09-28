@@ -15,9 +15,6 @@ package openbackup.data.access.framework.core.common.constants;
 /**
  * Kafka message topic
  *
- * @author l00557046
- * @version [BCManager 8.0.0]
- * @since 2020-08-19
  */
 public final class TopicConstants {
     /**

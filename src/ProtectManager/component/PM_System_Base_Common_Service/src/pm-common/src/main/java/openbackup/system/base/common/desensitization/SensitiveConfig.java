@@ -28,9 +28,6 @@ import java.util.stream.Stream;
 /**
  * 敏感信息过滤的配置文件解析类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/3/22
  **/
 @Slf4j
 public final class SensitiveConfig {

@@ -28,9 +28,6 @@ import java.util.Objects;
 /**
  * GaussDB资源类提供者
  *
- * @author t30021437
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-02-21
  */
 @Component
 @Slf4j

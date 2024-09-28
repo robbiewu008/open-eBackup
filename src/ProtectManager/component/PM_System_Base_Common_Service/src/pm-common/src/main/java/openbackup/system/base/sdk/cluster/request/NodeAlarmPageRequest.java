@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 告警查询条件
  *
- * @author w00607005
- * @since 2023-08-15
  */
 @Data
 public class NodeAlarmPageRequest {

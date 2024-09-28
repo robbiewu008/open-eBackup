@@ -15,8 +15,6 @@ package openbackup.system.base.sdk.resource.enums;
 /**
  * 桶类型枚举
  *
- * @author w00607005
- * @since 2023-11-15
  */
 public enum ObjectStorageTypeEnum {
     OTHER(0, "OTHER"),

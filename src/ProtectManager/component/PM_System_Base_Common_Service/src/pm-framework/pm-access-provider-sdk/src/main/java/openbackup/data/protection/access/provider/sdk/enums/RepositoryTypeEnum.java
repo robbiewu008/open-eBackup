@@ -17,9 +17,6 @@ import java.util.Arrays;
 /**
  * 存储库类型的枚举类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/9
  **/
 public enum RepositoryTypeEnum {
     /**

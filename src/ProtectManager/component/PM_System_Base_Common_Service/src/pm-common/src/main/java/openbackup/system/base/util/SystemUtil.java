@@ -18,8 +18,6 @@ import org.springframework.context.ApplicationContext;
 /**
  * The SystemUtil
  *
- * @author g30003063
- * @since 2022-02-24
  */
 public class SystemUtil {
     private SystemUtil() {

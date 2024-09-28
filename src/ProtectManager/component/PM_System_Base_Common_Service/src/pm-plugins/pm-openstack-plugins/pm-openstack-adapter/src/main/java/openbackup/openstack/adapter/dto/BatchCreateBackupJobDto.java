@@ -29,9 +29,6 @@ import javax.validation.constraints.Size;
 /**
  * OpenStack批量创建备份任务请求体
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-01-13
  */
 @Getter
 @Setter

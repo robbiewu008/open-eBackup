@@ -17,8 +17,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 /**
  * Protected Resource Event
  *
- * @author l00272247
- * @since 2021-10-19
  */
 public class ProtectedResourceEvent {
     private String type;

@@ -23,8 +23,6 @@ import lombok.NoArgsConstructor;
 /**
  * CopyStatusUpdateByEsnParam
  *
- * @author y30046482
- * @since 2023-07-12
  */
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)

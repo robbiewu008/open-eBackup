@@ -40,8 +40,6 @@ import java.util.Set;
 /**
  * Exchange邮箱备份/恢复排队机制
  *
- * @author j00619968
- * @since 2024-04-08
  */
 @Slf4j
 @AllArgsConstructor

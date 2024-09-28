@@ -43,8 +43,6 @@ import java.util.stream.Collectors;
 /**
  * GaussDb 集群环境联通性校验覆写collectActionResults，异常抛出
  *
- * @author x30021699
- * @since 2023-05-09
  */
 @Component
 @Slf4j

@@ -17,9 +17,6 @@ import lombok.Data;
 /**
  * 存储快照信息，用于存放副本在存储（NAS文件系统的快照信息）
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-08
  */
 @Data
 public class StorageSnapshot {

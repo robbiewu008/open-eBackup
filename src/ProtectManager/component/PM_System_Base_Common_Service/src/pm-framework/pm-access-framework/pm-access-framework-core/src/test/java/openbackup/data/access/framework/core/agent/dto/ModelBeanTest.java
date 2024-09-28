@@ -25,8 +25,6 @@ import org.junit.jupiter.api.Test;
 /**
  * Bean测试用例
  *
- * @author y00357914
- * @since 2021-11-09
  */
 public class ModelBeanTest {
     @Test

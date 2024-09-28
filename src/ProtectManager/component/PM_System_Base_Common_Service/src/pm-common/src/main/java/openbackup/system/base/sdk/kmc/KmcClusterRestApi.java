@@ -25,9 +25,6 @@ import java.net.URI;
 /**
  * KmcClusterRestApi
  *
- * @author z00842230
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-10-12
  */
 public interface KmcClusterRestApi {
     /**

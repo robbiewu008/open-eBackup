@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * Resources 扩展表常量
  *
- * @author l30044826
- * @since 2023-05-29
  */
 public class ResExtendConstant {
     /**

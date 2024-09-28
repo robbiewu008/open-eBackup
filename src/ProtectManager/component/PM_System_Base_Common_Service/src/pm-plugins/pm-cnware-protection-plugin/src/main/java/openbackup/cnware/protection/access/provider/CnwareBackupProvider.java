@@ -39,9 +39,6 @@ import java.util.Map;
 /**
  * CNware 备份Provider
  *
- * @author q30048244
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-12-30
  */
 @Component
 @Slf4j

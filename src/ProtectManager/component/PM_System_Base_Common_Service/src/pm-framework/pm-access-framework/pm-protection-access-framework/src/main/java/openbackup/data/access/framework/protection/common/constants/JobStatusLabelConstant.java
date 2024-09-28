@@ -15,9 +15,6 @@ package openbackup.data.access.framework.protection.common.constants;
 /**
  * 任务步骤状态标签的常量类
  *
- * @author y00559272
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-12-10
  **/
 public class JobStatusLabelConstant {
     /**

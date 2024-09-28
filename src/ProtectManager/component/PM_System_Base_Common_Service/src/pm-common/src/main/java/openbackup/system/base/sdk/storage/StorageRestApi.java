@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * Storage Rest Api
  *
- * @author l00272247
- * @since 2020-11-30
  */
 public interface StorageRestApi {
     /**

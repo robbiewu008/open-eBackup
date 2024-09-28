@@ -52,8 +52,6 @@ import java.util.List;
 /**
  * Target cluster service
  *
- * @author t00508428
- * @since 2020-12-17
  */
 @FeignClient(name = "InfrastructureRestApi", url = "${service.url.infra}",
     configuration = CommonFeignConfiguration.class)

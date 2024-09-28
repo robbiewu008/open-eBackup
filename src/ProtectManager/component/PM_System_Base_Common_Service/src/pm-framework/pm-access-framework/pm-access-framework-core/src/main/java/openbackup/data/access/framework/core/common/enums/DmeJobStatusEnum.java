@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author y30000858
- * @since 2020-09-21
  */
 public enum DmeJobStatusEnum {
     /**

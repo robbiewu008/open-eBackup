@@ -51,9 +51,6 @@ import java.util.Map;
 /**
  * 备份任务框架侧（不区分应用）后置处理
  *
- * @author w30044259
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-12-21
  */
 @Service
 @Slf4j

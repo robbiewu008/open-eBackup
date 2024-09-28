@@ -24,8 +24,6 @@ import java.util.List;
 /**
  * Live Mount Create Check Param
  *
- * @author l00272247
- * @since 2020-10-16
  */
 @Data
 public class LiveMountCreateCheckParam {

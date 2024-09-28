@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * 浏览恢复文件和目录返回体
  *
- * @author jwx701567
- * @since 2021-12-17
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

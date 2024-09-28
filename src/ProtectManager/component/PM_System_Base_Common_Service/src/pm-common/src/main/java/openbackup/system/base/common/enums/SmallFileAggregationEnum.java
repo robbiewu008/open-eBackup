@@ -21,9 +21,6 @@ import lombok.Getter;
 /**
  * 小文件聚合枚举类
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-26
  */
 @Getter
 @AllArgsConstructor

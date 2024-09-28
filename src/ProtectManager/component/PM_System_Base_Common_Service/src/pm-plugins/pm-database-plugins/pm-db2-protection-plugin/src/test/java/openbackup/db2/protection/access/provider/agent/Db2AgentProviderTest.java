@@ -35,9 +35,6 @@ import java.util.List;
 /**
  * {@link Db2AgentProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/7/27
  */
 public class Db2AgentProviderTest {
     private final Db2Service db2Service = PowerMockito.mock(Db2Service.class);

@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 扫描归档副本 请求体
  *
- * @author z30009433
- * @since 2020-12-31
  */
 @Data
 public class DmeScanArchiveRequestRequest {

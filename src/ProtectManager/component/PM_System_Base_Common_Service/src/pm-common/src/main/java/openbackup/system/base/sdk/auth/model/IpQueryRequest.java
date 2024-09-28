@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * IpQueryRequest
  *
- * @author z00664377
- * @since 2023-08-04
  */
 @Getter
 @Setter

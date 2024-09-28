@@ -28,8 +28,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * Session Service Test
  *
- * @author c30016231
- * @since 2022-06-10
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({DeployTypeService.class})

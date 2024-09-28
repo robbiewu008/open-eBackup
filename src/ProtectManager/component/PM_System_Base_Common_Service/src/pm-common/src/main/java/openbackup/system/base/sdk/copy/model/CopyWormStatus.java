@@ -15,9 +15,6 @@ package openbackup.system.base.sdk.copy.model;
 /**
  * 副本Worm状态
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-20
  */
 public enum CopyWormStatus {
     /**

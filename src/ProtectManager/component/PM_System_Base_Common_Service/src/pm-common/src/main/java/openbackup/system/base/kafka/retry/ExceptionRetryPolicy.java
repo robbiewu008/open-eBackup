@@ -25,8 +25,6 @@ import java.util.Map;
 /**
  * 自定义异常重试策略
  *
- * @author y00559272
- * @since 2021-04-10
  */
 public class ExceptionRetryPolicy implements RetryPolicy {
     /**

@@ -24,8 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * URL标准化处理
  *
- * @author l00422407
- * @since 2021-04-12
  */
 public class RequestNormalizeFilter extends OncePerRequestFilter {
     @Override

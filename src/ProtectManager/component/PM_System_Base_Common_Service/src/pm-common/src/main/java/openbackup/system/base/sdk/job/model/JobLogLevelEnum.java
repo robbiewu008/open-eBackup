@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author h30003246
- * @since 2021-01-12
  */
 public enum JobLogLevelEnum {
     /**

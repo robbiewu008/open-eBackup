@@ -54,9 +54,6 @@ import java.util.function.Consumer;
 /**
  * A easy FileSystem watcher
  *
- * @author l00272247
- * @version V200R001C50+: 8.0.1
- * @since 2019-10-30
  */
 public class Watcher {
     private static final Logger logger = LoggerFactory.getLogger(BcmX509TrustManager.class);
@@ -377,7 +374,6 @@ public class Watcher {
     /**
      * watcher event
      *
-     * @since 2019-10-30
      */
     public enum Kind {
         /**
@@ -401,7 +397,6 @@ public class Watcher {
     /**
      * Watcher EventOfAlarm
      *
-     * @since 2019-10-30
      */
     public static class Event {
         private final Path path;

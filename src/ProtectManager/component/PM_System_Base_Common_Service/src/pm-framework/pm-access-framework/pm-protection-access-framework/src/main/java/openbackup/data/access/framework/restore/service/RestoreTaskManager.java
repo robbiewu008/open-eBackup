@@ -123,9 +123,6 @@ import java.util.UUID;
  * 13.框架调用插件中的后置处理接口（可选）<br>
  * </p>
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/11/30
  **/
 @Slf4j
 @Component

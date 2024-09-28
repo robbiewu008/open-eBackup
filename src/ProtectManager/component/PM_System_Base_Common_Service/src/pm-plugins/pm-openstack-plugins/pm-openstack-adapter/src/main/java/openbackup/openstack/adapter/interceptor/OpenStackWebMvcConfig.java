@@ -20,9 +20,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * OpenStack北向接口MVC配置类
  *
- * @author w00616953
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-02-11
  */
 @Configuration
 public class OpenStackWebMvcConfig implements WebMvcConfigurer {

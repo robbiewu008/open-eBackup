@@ -17,8 +17,6 @@ import java.util.Collection;
 /**
  * Converter
  *
- * @author l00272247
- * @since 2021-01-14
  */
 public interface DataConverter {
     /**

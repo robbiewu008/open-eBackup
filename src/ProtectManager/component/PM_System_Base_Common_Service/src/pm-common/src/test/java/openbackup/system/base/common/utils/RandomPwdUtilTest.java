@@ -25,7 +25,6 @@ import java.security.SecureRandom;
 /**
  * 测试随机密码生成工具类
  *
- * @since 2022-03-29
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SecureRandom.class})

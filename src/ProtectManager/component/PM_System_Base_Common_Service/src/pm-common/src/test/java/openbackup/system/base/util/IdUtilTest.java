@@ -26,8 +26,6 @@ import java.util.UUID;
 /**
  * IdUtil test
  *
- * @author w00607005
- * @since 2023-07-07
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {UUID.class})

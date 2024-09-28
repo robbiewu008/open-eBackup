@@ -39,8 +39,6 @@ import java.util.List;
 /**
  * Evaluation Test
  *
- * @author l00272247
- * @since 2021-12-14
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

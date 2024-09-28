@@ -59,9 +59,6 @@ import java.util.stream.Collectors;
 /**
  * sqlserver集群实例或可用性组恢复任务下发provider。两者放在一起，本质是可用性组新位置恢复目标对象类型是集群实例
  *
- * @author xwx950025
- * @version [OceanProtect X8000 1.2.0]
- * @since 2022/7/11
  */
 @Component
 @Slf4j

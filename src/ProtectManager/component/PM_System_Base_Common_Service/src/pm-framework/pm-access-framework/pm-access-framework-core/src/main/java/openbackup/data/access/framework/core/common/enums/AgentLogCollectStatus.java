@@ -17,8 +17,6 @@ import lombok.Getter;
 /**
  * 代理日志收集状态
  *
- * @author w00504341
- * @since 2023-01-28
  */
 @Getter
 public enum AgentLogCollectStatus {

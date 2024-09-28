@@ -48,9 +48,6 @@ import java.util.Map;
 /**
  * Agent unified Rest Api
  *
- * @author 30009433
- * @version [OceanProtect A8000 1.2.0]
- * @since 2022-05-19
  */
 public interface AgentUnifiedRestApi {
     /**

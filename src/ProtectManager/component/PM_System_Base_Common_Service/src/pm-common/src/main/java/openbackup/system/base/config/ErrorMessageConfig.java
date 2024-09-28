@@ -19,9 +19,6 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 /**
  * ErrorMessageConfig
  *
- * @author w00448845
- * @version [CDM Integrated machine]
- * @since 2019-11-09
  */
 @Configuration
 public class ErrorMessageConfig {

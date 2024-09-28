@@ -50,9 +50,6 @@ import java.util.stream.Collectors;
 /**
  * 归档存储服务
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-17
  */
 @Service
 @Slf4j

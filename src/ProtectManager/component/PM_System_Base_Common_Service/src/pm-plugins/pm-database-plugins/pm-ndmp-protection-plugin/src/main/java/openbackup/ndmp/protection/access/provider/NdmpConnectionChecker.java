@@ -42,9 +42,6 @@ import java.util.stream.Collectors;
 /**
  * Ndmp 集群环境联通性校验覆写collectActionResults，异常抛出
  *
- * @author t30021437
- * @version [OceanProtect X8000 1.5.0]
- * @since 2023-05-09
  */
 @Component
 @Slf4j

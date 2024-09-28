@@ -26,8 +26,6 @@ import java.util.Objects;
 /**
  * 功能描述
  *
- * @author y00490893
- * @since 2022-06-25
  */
 @Component
 public class RedisSlaValidator implements SlaValidateProvider {

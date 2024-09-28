@@ -19,9 +19,6 @@ import java.util.Optional;
 /**
  * 请求参数过滤处理
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-21
  */
 public class RequestParamFilterUtil {
     /**

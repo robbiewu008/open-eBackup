@@ -47,9 +47,6 @@ import javax.validation.constraints.Size;
  *     提供第三方调用，不使用系统内部token校验机制
  * </p>
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-22
  */
 @Slf4j
 @Validated

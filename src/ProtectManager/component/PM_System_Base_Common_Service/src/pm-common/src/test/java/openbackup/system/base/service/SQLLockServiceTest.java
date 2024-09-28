@@ -33,8 +33,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * 功能描述
  *
- * @author w30042425
- * @since 2023-06-12
  */
 @RunWith(PowerMockRunner.class)
 @SpringBootTest(classes = {DataSourceAutoConfiguration.class, MybatisPlusAutoConfiguration.class, SQLLockService.class,

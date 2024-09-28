@@ -23,9 +23,6 @@ import java.util.Map;
 /**
  * App Resource
  *
- * @author 30009433
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-19
  */
 @Setter
 @Getter

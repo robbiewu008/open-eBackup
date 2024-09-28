@@ -22,8 +22,6 @@ import lombok.NoArgsConstructor;
 /**
  * The QueryReportJobsRequest
  *
- * @author x30021699
- * @since 2023-01-20
  */
 @Data
 @AllArgsConstructor

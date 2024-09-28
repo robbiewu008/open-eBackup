@@ -21,8 +21,6 @@ import lombok.Data;
 /**
  * 备份信息模型
  *
- * @author t00482481
- * @since 2020-07-02
  */
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)

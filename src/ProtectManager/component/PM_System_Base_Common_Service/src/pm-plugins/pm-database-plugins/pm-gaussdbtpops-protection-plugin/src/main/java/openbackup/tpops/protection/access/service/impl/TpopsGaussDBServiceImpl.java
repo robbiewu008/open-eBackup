@@ -63,8 +63,6 @@ import java.util.stream.Collectors;
  * GaussDB 应用基本的Service
  * 与agent插件交互的接口
  *
- * @author x30021699
- * @since 2023-05-09
  */
 @Slf4j
 @Service

@@ -38,8 +38,6 @@ import java.util.stream.Collectors;
 /**
  * The UnifiedClusterResourceInterityChecker
  *
- * @author g30003063
- * @since 2022-05-28
  */
 @Slf4j
 @Component("unifiedClusterResourceIntegrityChecker")

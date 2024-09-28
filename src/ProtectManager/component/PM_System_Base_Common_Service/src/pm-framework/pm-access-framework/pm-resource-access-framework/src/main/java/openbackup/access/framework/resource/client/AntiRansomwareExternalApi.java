@@ -27,8 +27,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 功能描述 新增或更新租户信息
  *
- * @author s30031954
- * @since 2022-12-29
  */
 @FeignClient(name = "antiRansomwareExternalApi", url = "${pm-system-base.url}/v1/internal",
     configuration = CommonFeignConfiguration.class)

@@ -25,9 +25,6 @@ import java.util.Objects;
 /**
  * GaussDBTPOPS擦除不可更新字段provider
  *
- * @author s30031954
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-06-13
  */
 @Component
 @Slf4j

@@ -42,9 +42,6 @@ import java.util.Optional;
 /**
  * 功能描述
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-21
  */
 public class DamengCopyDeleteInterceptorTest {
     private final DamengService damengService = PowerMockito.mock(DamengService.class);

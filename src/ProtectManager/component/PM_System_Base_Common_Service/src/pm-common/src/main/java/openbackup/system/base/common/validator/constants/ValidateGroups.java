@@ -15,9 +15,6 @@ package openbackup.system.base.common.validator.constants;
 /**
  * ValidateGroups
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-04-02
  */
 public class ValidateGroups {
     /**

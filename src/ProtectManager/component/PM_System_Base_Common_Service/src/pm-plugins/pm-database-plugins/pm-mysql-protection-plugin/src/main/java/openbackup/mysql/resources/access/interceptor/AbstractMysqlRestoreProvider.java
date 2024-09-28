@@ -35,9 +35,6 @@ import java.util.Optional;
 /**
  * mysql恢复抽象类
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/6/25
  */
 @Slf4j
 public abstract class AbstractMysqlRestoreProvider extends AbstractDbRestoreInterceptorProvider {

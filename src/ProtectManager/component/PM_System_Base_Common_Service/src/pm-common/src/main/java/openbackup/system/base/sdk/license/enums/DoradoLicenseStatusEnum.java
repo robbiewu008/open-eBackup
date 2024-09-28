@@ -17,8 +17,6 @@ import lombok.Getter;
 /**
  * 底座license状态
  *
- * @author g00500588
- * @since 2022/06/06
  */
 @Getter
 public enum DoradoLicenseStatusEnum {

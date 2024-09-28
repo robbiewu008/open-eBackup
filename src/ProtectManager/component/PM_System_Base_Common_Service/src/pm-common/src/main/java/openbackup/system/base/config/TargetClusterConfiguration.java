@@ -29,8 +29,6 @@ import org.springframework.context.annotation.ScopedProxyMode;
 /**
  * 目标集群feign请求bean 配置类
  *
- * @author p30001902
- * @since 2021-05-11
  */
 @Slf4j
 @Configuration

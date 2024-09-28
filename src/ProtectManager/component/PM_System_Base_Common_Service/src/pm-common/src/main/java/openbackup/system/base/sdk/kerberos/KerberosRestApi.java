@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 /**
  * Kerberos Rest Api
  *
- * @author m00576658
- * @since 2021-08-18
  */
 @FeignClient(
         name = "kerberos-rest-api",

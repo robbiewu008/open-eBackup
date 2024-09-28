@@ -46,9 +46,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 内部副本相关的接口
  *
- * @author z30027603
- * @version [OceanProtect X800 1.3.0]
- * @since 2023-2-23
  */
 @Slf4j
 @RestController

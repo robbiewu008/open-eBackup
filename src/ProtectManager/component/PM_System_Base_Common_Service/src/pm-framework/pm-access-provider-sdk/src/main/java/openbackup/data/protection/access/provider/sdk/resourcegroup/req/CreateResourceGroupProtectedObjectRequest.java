@@ -24,9 +24,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 创建资源组保护请求体
  *
- * @author c00631681
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-01-27
  */
 
 @Getter

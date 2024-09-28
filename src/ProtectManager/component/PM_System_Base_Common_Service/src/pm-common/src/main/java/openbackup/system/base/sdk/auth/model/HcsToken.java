@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * token
  *
- * @author l30044826
- * @since 2023-07-07
  */
 @Getter
 @Setter

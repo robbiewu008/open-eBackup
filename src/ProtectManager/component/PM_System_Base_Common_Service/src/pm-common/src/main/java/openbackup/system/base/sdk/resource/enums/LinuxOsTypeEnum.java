@@ -18,8 +18,6 @@ import java.util.List;
 /**
  * 操作系统类型枚举
  *
- * @author w00616953
- * @since 2022-01-07
  */
 public enum LinuxOsTypeEnum {
     /**

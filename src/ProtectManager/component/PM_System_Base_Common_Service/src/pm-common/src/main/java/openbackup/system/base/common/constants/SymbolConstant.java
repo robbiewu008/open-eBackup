@@ -15,8 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 符号常量
  *
- * @author w00607005
- * @since 2023-07-14
  */
 public class SymbolConstant {
     /**

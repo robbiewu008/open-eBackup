@@ -51,9 +51,6 @@ import java.util.List;
 /**
  * 归档认证测试类
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-17
  */
 public class ArchiveAuthServiceTest {
     private final ClusterNativeApi clusterNativeApi = Mockito.mock(ClusterNativeApi.class);

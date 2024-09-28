@@ -54,9 +54,6 @@ import java.util.stream.Collectors;
 /**
  * GaussDBT单机服务
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/7/14
  */
 @Service
 @Slf4j

@@ -25,9 +25,6 @@ import java.util.regex.Pattern;
 /**
  * 检查环境名称工具测试类
  *
- * @author x30038064
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/12/13
  */
 public class EnvironmentParamCheckUtilTest {
     /**

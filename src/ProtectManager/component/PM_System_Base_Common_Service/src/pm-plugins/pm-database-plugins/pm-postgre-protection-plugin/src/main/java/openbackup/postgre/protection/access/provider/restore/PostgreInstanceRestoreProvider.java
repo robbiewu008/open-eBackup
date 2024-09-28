@@ -60,9 +60,6 @@ import java.util.stream.Collectors;
 /**
  * Postgre实例恢复任务下发provider
  *
- * @author wwx1013713
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/8
  */
 @Slf4j
 @Component

@@ -38,8 +38,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述
  *
- * @author z30047175
- * @since 2023-07-03
  */
 public class TdsqlSlaValidatorProviderTest {
     private final ProtectObjectRestApi protectObjectRestApi = Mockito.mock(ProtectObjectRestApi.class);

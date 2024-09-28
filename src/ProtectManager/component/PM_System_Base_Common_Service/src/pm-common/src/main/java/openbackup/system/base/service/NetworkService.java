@@ -25,9 +25,6 @@ import java.util.Optional;
 /**
  * 初始化网络通用的服务
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/2/28
  */
 public interface NetworkService {
     /**

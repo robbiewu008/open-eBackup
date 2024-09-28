@@ -21,9 +21,6 @@ import java.util.UUID;
 /**
  * 任务资源的mock工具类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/11
  **/
 public class TaskResourceMocker {
 

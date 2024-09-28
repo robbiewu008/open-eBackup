@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 告警信息
  *
- * @author w00607005
- * @since 2023-07-22
  */
 @Data
 public class AlarmInfo {

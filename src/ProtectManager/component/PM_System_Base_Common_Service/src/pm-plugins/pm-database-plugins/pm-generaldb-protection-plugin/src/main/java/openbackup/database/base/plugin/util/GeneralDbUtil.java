@@ -39,9 +39,6 @@ import java.util.stream.Collectors;
 /**
  * 通用数据库工具类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-23
  */
 @Slf4j
 public class GeneralDbUtil {

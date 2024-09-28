@@ -22,9 +22,6 @@ import lombok.Setter;
 /**
  * 修改密码请求体
  *
- * @author j00364432
- * @version [BCManager 8.0.0]
- * @since 2019-11-28
  */
 @Getter
 @Setter

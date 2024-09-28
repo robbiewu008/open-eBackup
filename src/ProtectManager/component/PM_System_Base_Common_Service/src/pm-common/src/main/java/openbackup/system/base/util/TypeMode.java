@@ -15,8 +15,6 @@ package openbackup.system.base.util;
 /**
  * 输入参数类型
  *
- * @author w00426202
- * @since 2023-05-11
  */
 public interface TypeMode {
     /**

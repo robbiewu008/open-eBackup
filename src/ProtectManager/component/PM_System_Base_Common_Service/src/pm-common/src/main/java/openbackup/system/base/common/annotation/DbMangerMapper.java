@@ -25,8 +25,6 @@ import java.lang.annotation.Target;
 /**
  * dao层依赖注解，依赖数据库是否创建
  *
- * @author h30003246
- * @since 2020-09-2
  */
 @Documented
 @Inherited

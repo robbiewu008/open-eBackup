@@ -15,8 +15,6 @@ package openbackup.data.protection.access.provider.sdk.exception;
 /**
  * Data Protection Reject Exception
  *
- * @author l00272247
- * @since 2021-12-11
  */
 public class DataProtectionRejectException extends DataProtectionAccessException {
     /**

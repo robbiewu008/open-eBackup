@@ -54,9 +54,6 @@ import java.util.Collections;
 /**
  * PermissionAspectTest
  *
- * @author jwx701567
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-03-21
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {

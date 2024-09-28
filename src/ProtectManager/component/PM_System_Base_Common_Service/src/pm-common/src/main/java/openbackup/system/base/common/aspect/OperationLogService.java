@@ -25,8 +25,6 @@ import org.springframework.stereotype.Component;
 /**
  * Operation Log Service
  *
- * @author l00272247
- * @since 2021-01-16
  */
 @Component
 @Slf4j

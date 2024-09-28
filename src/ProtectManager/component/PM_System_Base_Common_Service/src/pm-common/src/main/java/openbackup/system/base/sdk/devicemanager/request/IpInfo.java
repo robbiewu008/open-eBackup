@@ -22,9 +22,6 @@ import javax.validation.constraints.NotNull;
 /**
  * pacific 初始化网络时传的参数
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-03
  */
 @Getter
 @Setter

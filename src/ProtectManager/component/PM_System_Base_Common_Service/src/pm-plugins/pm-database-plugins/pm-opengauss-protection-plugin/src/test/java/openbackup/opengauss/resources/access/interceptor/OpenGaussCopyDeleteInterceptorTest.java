@@ -33,9 +33,6 @@ import java.util.List;
 /**
  * OpenGauss副本删除测试类
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-17
  */
 public class OpenGaussCopyDeleteInterceptorTest {
     private final CopyRestApi copyRestApi = PowerMockito.mock(CopyRestApi.class);

@@ -39,9 +39,6 @@ import java.util.function.Function;
 /**
  * NodeRequestServiceImpl
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-07-24
  */
 
 @RequiredArgsConstructor

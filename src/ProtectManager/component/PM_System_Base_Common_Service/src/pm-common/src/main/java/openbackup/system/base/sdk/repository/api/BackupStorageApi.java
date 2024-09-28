@@ -18,9 +18,6 @@ import openbackup.system.base.sdk.repository.model.NasDistributionStorageDetail;
 /**
  * 备份存储api
  *
- * @author nwx1077006
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-10-10
  */
 public interface BackupStorageApi {
     /**

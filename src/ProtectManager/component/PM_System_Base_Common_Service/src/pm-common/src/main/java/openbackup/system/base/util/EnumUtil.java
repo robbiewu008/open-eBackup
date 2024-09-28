@@ -18,8 +18,6 @@ import java.util.function.Function;
 /**
  * Enum Util
  *
- * @author l00272247
- * @since 2020-10-14
  */
 public class EnumUtil {
     /**

@@ -41,9 +41,6 @@ import java.util.Map;
 /**
  * {@link SapHanaDatabaseProvider Test}
  *
- * @author wWX1013713
- * @version [DataBackup 1.5.0]
- * @since 2023-05-18
  */
 public class SapHanaDatabaseProviderTest {
     private static final long ACCESS_DB_ERROR = 1577213476L;

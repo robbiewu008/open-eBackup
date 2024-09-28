@@ -40,9 +40,6 @@ import javax.net.ssl.X509TrustManager;
 /**
  * 用于验证服务器证书的TrustManager
  *
- * @author l90005176
- * @version [OceanStor BCManager V200R001C00, 2016年2月16日]
- * @since 2022-12-15
  */
 public class BcmX509TrustManager implements X509TrustManager {
     /**

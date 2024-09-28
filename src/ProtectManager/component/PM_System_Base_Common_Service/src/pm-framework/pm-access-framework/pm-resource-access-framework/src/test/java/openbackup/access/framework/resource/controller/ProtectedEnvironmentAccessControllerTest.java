@@ -53,9 +53,6 @@ import java.util.stream.Collectors;
 /**
  * ProtectedEnvironmentAccessController测试
  *
- * @author h30027154
- * @since 2022-07-18
- * @version [OceanProtect X8000 1.2.1]
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TokenBo.class})

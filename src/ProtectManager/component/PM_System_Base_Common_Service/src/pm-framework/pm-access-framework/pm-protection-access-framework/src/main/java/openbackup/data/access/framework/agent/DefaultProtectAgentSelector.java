@@ -54,9 +54,6 @@ import java.util.stream.Collectors;
 /**
  * 默认的保护代理选择器，根据设置选择代理，或自动选择
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-11-30
  */
 @Slf4j
 @Component

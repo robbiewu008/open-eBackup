@@ -30,8 +30,6 @@ import java.util.List;
 /**
  * Common sla request api
  *
- * @author p30001902
- * @since 2021-01-03
  */
 @FeignClient(name = "slaRestApi", url = "${services.endpoints.protectmanager.system-base}/v1",
     configuration = CommonFeignConfiguration.class)

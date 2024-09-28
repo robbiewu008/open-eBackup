@@ -26,8 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * The DefualtBackupFollowUpProvider
  *
- * @author g30003063
- * @since 2022/2/9
  */
 @Component
 public class DefaultBackupFollowUpProvider implements BackupFollowUpProvider {

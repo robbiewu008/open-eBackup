@@ -15,7 +15,6 @@ package com.huawei.emeistor.console.contant;
 /**
  * 常用常量
  *
- * @since 2020-06-15
  */
 public class CommonConstant {
     /**

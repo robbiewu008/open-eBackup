@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * Global Search index
  *
- * @author l00347293
- * @since 2021-01-06
  **/
 @Data
 public class CopyIndexResponse {

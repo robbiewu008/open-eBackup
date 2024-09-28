@@ -15,9 +15,6 @@ package openbackup.system.base.common.enums;
 /**
  * 对象存储类型
  *
- * @author w00639094
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-06
  */
 public enum StorageTypeEnum {
     /**

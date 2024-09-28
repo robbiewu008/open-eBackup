@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * om-存储控制器节点信息
  *
- * @author p30001902
- * @since 2021-01-26
  */
 @Data
 public class NodeDetail {

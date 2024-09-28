@@ -63,9 +63,6 @@ import java.util.UUID;
 /**
  * mysql应用基本的Service 测试类
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/6/16
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {FeignBuilder.class})

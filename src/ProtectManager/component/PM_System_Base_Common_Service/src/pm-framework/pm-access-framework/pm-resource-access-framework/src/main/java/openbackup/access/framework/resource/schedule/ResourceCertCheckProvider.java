@@ -20,9 +20,6 @@ import java.util.Optional;
 /**
  * 资源证书check provider
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/10/12
  */
 public interface ResourceCertCheckProvider extends DataProtectionProvider<ProtectedResource> {
     /**

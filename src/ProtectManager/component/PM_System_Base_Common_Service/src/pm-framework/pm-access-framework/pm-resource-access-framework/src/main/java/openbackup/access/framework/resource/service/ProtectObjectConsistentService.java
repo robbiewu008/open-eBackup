@@ -15,9 +15,6 @@ package openbackup.access.framework.resource.service;
 /**
  * 功能描述: ProtectObjectService
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-01
  */
 public interface ProtectObjectConsistentService {
     /**

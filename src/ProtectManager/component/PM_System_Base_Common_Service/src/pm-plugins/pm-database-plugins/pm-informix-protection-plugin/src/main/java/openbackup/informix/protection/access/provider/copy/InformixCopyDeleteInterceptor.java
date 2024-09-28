@@ -38,9 +38,6 @@ import java.util.Map;
 /**
  * informix副本删除拦截器
  *
- * @author hwx1164326
- * @version [DataBackup 1.5.0]
- * @since 2023-08-03
  */
 @Component
 @Slf4j

@@ -20,9 +20,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * 手动监听redis过期类型
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/5/24
  */
 public enum RedisExpireTypeEnum {
     SESSION_TYPE("0"),

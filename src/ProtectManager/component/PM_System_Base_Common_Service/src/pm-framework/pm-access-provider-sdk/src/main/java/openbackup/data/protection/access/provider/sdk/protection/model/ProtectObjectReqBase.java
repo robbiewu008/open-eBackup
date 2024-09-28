@@ -22,9 +22,6 @@ import java.util.Map;
 /**
  * 保护请求体base类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023/11/10
  */
 @Getter
 @Setter

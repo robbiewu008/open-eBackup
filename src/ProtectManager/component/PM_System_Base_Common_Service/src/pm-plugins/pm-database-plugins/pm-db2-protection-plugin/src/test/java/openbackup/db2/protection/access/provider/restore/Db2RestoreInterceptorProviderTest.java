@@ -51,9 +51,6 @@ import java.util.UUID;
 /**
  * {@link Db2RestoreInterceptorProvider} 测试类
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-14
  */
 public class Db2RestoreInterceptorProviderTest {
     private static final String DB2VERSION = "DB2 V10.5.0.5";

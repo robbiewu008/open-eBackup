@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * 存储信息
  *
- * @author p00511147
- * @since 2020-11-10
  */
 @Data
 public class ProductStorageRes {

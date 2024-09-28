@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * PasswdInfo
  *
- * @author y30021475
- * @since 2023-09-13
  */
 @Getter
 @Setter

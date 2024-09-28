@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * resource domain based verifier
  *
- * @author l00272247
- * @since 2020-11-14
  */
 public interface DomainBasedOwnershipVerifier {
     /**

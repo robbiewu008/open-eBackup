@@ -26,9 +26,6 @@ import java.util.Set;
 /**
  * dameng查询、校验的接口定义
  *
- * @author lWX1100347
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-15
  */
 public interface DamengService {
     /**

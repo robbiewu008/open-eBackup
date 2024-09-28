@@ -23,9 +23,6 @@ import java.util.Optional;
 /**
  * 功能描述: 基础设施查询逻辑
  *
- * @author l00570077
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-09
  */
 public interface InfrastructureService {
     /**

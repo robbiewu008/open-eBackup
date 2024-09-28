@@ -35,8 +35,6 @@ import javax.validation.Valid;
 /**
  * 存储rest定义
  *
- * @author p00511147
- * @since 2020/10/29
  */
 public interface ProductStorageRestApi {
     /**

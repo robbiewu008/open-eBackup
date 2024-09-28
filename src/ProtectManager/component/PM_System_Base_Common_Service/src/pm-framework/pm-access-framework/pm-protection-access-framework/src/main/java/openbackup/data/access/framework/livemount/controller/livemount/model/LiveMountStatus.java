@@ -28,8 +28,6 @@ import java.util.function.Function;
 /**
  * Live Mount Status
  *
- * @author l00272247
- * @since 2020-09-18
  */
 public enum LiveMountStatus {
     /**

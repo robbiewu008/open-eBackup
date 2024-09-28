@@ -21,8 +21,6 @@ import org.junit.jupiter.api.Test;
 /**
  * EnumUtil Test
  *
- * @author twx1009756
- * @since 2021-03-17
  */
 public class EnumUtilTest {
     /**

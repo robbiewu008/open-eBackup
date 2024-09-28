@@ -15,9 +15,6 @@ package openbackup.system.base.common.constants;
 /**
  * 演练任务label常量类
  *
- * @author w30044259
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-11-14
  */
 public class ExerciseJobLabels {
     /**

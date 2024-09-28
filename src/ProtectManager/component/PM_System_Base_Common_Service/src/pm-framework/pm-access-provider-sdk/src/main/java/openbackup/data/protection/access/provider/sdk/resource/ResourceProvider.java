@@ -27,9 +27,6 @@ import java.util.Set;
  * 受保护资源Provider，该类定义受保护资源的接口定义。不用的应用需要创建逻辑资源
  * 如HDBS备份的文件集，HBASE的BackupSet，注册NAS共享时时需要实现该接口
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-13
  */
 public interface ResourceProvider extends DataProtectionProvider<ProtectedResource> {
     /**

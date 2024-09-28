@@ -54,9 +54,6 @@ import java.util.stream.Collectors;
 /**
  * OpenstackEnvironmentParamProvider
  *
- * @author x30038064
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-27
  */
 @Slf4j
 @Component

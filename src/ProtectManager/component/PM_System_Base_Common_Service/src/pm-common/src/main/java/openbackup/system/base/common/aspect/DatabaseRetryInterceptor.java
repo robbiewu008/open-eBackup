@@ -32,8 +32,6 @@ import java.util.Set;
 /**
  * 自定义Mybatis拦截器，做数据库重试
  *
- * @author mwx776342
- * @since 2022/05/11
  */
 @Component
 @Intercepts({

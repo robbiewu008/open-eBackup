@@ -26,9 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * 业务中上下文管理器，抽象用于统一对上下文的获取
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/14
  **/
 @Component
 public class ContextManager {

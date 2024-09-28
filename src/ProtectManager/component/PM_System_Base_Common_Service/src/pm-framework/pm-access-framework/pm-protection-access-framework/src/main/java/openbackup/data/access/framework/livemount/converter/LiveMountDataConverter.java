@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 /**
  * Live Mount DataConverter
  *
- * @author l00272247
- * @since 2021-01-14
  */
 @Component
 public class LiveMountDataConverter implements DataConverter {

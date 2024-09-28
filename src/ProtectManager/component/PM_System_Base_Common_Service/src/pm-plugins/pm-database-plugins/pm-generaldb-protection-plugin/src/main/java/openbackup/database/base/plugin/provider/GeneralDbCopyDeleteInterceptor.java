@@ -40,9 +40,6 @@ import java.util.stream.Collectors;
 /**
  * 通用数据库的副本删除逻辑
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-09
  */
 @Component
 public class GeneralDbCopyDeleteInterceptor extends AbstractDbCopyDeleteInterceptor {

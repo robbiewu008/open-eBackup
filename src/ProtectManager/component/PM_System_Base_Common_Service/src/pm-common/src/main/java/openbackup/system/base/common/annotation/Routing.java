@@ -20,8 +20,6 @@ import java.lang.annotation.Target;
 /**
  * 更新路由切面注解
  *
- * @author n30046257
- * @since 2024-02-27
  */
 
 @Target({ElementType.METHOD, ElementType.TYPE})

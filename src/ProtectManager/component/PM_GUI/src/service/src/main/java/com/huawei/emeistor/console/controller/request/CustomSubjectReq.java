@@ -21,9 +21,6 @@ import javax.validation.constraints.Size;
 /**
  * 自定义subject类
  *
- * @author f00809938
- * @version OceanCyber 1.2.0
- * @since 2024-07-26
  **/
 @Getter
 @Setter

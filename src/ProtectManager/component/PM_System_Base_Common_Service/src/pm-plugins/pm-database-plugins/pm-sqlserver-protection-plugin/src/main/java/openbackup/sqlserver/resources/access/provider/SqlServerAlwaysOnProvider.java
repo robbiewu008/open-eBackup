@@ -25,9 +25,6 @@ import java.util.Objects;
 /**
  * SQL Server AlwaysOnProvider
  *
- * @author swx1010572
- * @version [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-05
  */
 @Component
 @Slf4j

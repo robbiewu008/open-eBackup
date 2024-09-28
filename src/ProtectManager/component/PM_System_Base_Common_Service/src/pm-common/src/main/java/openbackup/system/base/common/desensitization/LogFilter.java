@@ -32,9 +32,6 @@ import java.util.regex.Pattern;
  * 2.word 全匹配：整条日志中任意单词相同即匹配 </br>
  * </p>
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/3/22
  **/
 public class LogFilter extends Filter<ILoggingEvent> {
     /**

@@ -22,10 +22,6 @@ import javax.validation.constraints.Min;
 /**
  * 分页参数
  *
- * @author w00448845
- * @author w00493811
- * @version [BCManager 8.0.0]
- * @since 2019-11-12
  */
 @Data
 @AllArgsConstructor

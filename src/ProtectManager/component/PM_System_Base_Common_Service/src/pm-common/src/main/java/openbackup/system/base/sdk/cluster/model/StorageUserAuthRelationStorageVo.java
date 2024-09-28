@@ -20,9 +20,6 @@ import lombok.Setter;
 /**
  * 根据用户ID查询授权存储单元（组）响应VO对象
  *
- * @author w00639094
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-02-02
  */
 @Getter
 @Setter

@@ -18,8 +18,6 @@ import java.util.stream.Stream;
 /**
  * Stream Util
  *
- * @author l00650874
- * @since 2022-07-01
  */
 public class StreamUtil {
     private StreamUtil() {

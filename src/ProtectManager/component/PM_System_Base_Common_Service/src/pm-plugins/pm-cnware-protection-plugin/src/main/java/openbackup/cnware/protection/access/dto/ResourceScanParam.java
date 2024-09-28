@@ -21,9 +21,6 @@ import lombok.Setter;
 /**
  * 资源扫描Param
  *
- * @author z30047175
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023-12-18
  */
 @Setter
 @Getter

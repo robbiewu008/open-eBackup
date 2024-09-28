@@ -22,9 +22,6 @@ import java.lang.annotation.Target;
 /**
  * Loggings
  *
- * @author z30027603
- * @since 2024-04-15
- * @version [OceanProtect DataBackup 1.6.0]
  */
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

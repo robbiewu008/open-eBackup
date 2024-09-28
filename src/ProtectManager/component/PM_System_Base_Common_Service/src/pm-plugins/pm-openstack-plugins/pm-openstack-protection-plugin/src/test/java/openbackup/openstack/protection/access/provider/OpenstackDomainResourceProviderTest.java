@@ -43,9 +43,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 /**
  * 功能描述: test OpenstackDomainResourceProvider
  *
- * @author c30016231
- * @version [OceanProtect X8000 1.3.0]
- * @since 2023-03-19
  */
 public class OpenstackDomainResourceProviderTest {
     private static OpenstackDomainResourceProvider openstackDomainResourceProvider;

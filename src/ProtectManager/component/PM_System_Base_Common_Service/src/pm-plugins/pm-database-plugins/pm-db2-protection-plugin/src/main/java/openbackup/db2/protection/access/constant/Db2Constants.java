@@ -15,9 +15,6 @@ package openbackup.db2.protection.access.constant;
 /**
  * db2常量
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-01-05
  */
 public class Db2Constants {
     /**

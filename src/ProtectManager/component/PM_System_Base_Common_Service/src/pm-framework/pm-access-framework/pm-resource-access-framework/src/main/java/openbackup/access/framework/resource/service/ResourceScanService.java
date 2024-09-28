@@ -19,9 +19,6 @@ import java.util.List;
 /**
  * 资源扫描类
  *
- * @author h30027154
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-09-23
  */
 public interface ResourceScanService {
     /**

@@ -18,9 +18,6 @@ import lombok.RequiredArgsConstructor;
 /**
  * CacheConstant
  *
- * @author y30044273
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-06-19
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class CacheConstant {

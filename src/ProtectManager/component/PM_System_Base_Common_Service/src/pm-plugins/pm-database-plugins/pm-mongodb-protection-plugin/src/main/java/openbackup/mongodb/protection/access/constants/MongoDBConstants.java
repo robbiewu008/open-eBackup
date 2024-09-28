@@ -21,9 +21,6 @@ import java.util.Map;
 /**
  * MongoDB常量
  *
- * @author lwx1012372
- * @version [DataBackup 1.5.0]
- * @since 2023-04-07
  */
 public class MongoDBConstants {
     /**

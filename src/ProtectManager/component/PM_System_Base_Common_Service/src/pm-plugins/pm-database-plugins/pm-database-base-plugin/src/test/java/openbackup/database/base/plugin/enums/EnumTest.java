@@ -20,9 +20,6 @@ import org.junit.Test;
 /**
  * 枚举测试类
  *
- * @author cWX1161886
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-25
  */
 public class EnumTest {
     /**

@@ -25,9 +25,6 @@ import org.springframework.stereotype.Component;
 /**
  * 统一归档任务完成处理器
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/12
  **/
 @Slf4j
 @Component

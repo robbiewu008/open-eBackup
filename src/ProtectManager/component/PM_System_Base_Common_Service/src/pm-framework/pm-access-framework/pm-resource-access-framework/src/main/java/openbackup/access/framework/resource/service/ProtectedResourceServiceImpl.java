@@ -150,9 +150,6 @@ import java.util.stream.Stream;
 /**
  * 受保护资源服务实现类
  *
- * @author j00364432
- * @version [OceanProtect A8000 1.1.0]
- * @since 2021-10-14
  */
 @Service
 @Slf4j

@@ -19,8 +19,6 @@ import lombok.Data;
 /**
  * cloud backup copy info
  *
- * @author g00500588
- * @since 2021/12/7
  */
 @Data
 public class DmeCloudBackupCopyInfo {

@@ -27,8 +27,6 @@ import javax.validation.constraints.NotEmpty;
 /**
  * system backup service
  *
- * @author hwx1164326
- * @since 2023-08-22
  */
 @FeignClient(name = "AgentLanFreeAixRestApi", url = "${service.url.pm-system-base}/v1/internal/host-agent",
         configuration = CommonFeignConfiguration.class)

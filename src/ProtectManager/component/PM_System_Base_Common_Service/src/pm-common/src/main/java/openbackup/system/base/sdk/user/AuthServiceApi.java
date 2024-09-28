@@ -17,9 +17,6 @@ import java.util.List;
 /**
  * 用户权限接口
  *
- * @author z00842230
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2024-07-11
  */
 public interface AuthServiceApi {
     /**

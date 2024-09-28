@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * 归档到云的信息
  *
- * @author d00512967
- * @version [BCManager 8.0.0]
- * @since 2020-12-12
  */
 @Data
 public class CloudArchiveInfo {

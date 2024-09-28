@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 解析hcs token返回体
  *
- * @author y30021475
- * @since 2023-08-01
  */
 @Getter
 @Setter

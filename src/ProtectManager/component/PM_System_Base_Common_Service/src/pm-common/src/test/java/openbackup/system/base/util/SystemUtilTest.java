@@ -27,9 +27,6 @@ import openbackup.system.base.util.SystemUtil;
 /**
  * SystemUtilTest
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-08-25
  */
 public class SystemUtilTest extends TestCase {
     protected static class ExitException extends SecurityException {

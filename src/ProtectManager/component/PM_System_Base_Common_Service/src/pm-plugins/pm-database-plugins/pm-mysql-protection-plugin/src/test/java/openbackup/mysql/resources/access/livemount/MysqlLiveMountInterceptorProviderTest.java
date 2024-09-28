@@ -47,9 +47,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * mysql即时挂载provider
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/1
  */
 public class MysqlLiveMountInterceptorProviderTest {
     private final MysqlBaseService mysqlBaseService = Mockito.mock(MysqlBaseService.class);

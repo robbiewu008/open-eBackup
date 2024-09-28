@@ -25,9 +25,6 @@ import java.net.URI;
 /**
  * RequestUriUtil Test类
  *
- * @author z30009433
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-05-24
  */
 public class RequestUriUtilTest {
     @Rule

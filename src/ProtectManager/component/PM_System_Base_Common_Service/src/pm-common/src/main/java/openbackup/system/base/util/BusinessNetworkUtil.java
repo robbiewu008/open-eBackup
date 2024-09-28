@@ -33,8 +33,6 @@ import java.util.stream.Collectors;
 /**
  * The BusinessNetworkUtil
  *
- * @author swx1010572
- * @since 2022-03-07
  */
 @Slf4j
 public class BusinessNetworkUtil {

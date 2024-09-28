@@ -49,9 +49,6 @@ import java.util.Map;
 /**
  * 统一副本删除任务完成处理器测试类
  *
- * @author twx1009756
- * @version [OceanProtect A8000 1.1.0]
- * @since 2022-01-27
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

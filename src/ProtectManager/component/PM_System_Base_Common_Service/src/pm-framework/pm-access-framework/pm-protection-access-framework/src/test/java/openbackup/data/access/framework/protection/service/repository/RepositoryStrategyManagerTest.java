@@ -66,9 +66,6 @@ import java.util.UUID;
 /**
  * 存储库策略类的测试集合
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2021/12/8
  **/
 public class RepositoryStrategyManagerTest {
     @Rule

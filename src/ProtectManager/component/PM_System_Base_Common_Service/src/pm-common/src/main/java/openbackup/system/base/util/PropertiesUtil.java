@@ -29,8 +29,6 @@ import java.util.Properties;
 /**
  * 配置文件操作相关工具类
  *
- * @author w00607005
- * @since 2023-05-16
  */
 @Slf4j
 public class PropertiesUtil {

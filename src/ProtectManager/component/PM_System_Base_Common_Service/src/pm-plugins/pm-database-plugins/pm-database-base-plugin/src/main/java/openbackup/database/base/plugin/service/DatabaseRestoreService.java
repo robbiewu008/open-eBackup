@@ -15,9 +15,6 @@ package openbackup.database.base.plugin.service;
 /**
  * 数据库恢复服务
  *
- * @author lWX776769
- * @version [DataBackup 1.3.0]
- * @since 2023-02-08
  */
 public interface DatabaseRestoreService {
     /**

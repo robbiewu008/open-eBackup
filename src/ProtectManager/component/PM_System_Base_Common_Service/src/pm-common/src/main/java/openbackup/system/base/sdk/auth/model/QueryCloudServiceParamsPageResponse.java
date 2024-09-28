@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * 向cmdb查询云服务参数返回体
  *
- * @author y30021475
- * @since 2023-07-27
  */
 @Getter
 @Setter

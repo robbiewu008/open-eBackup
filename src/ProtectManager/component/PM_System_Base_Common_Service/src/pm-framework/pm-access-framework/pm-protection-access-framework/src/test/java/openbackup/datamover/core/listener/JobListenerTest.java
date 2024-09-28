@@ -42,8 +42,6 @@ import java.util.UUID;
 /**
  * JobListener LLT
  *
- * @author m00576658
- * @since 2021-03-02
  */
 
 @RunWith(PowerMockRunner.class)

@@ -35,9 +35,6 @@ import java.util.List;
 /**
  * {@link KingBaseAgentProvider} 参数类
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/7/27
  */
 public class KingBaseAgentProviderTest {
     private final KingBaseService kingBaseService = PowerMockito.mock(KingBaseService.class);

@@ -15,8 +15,6 @@ package openbackup.system.base.common.enums;
 /**
  * 存储库连接类型
  *
- * @author c30057247
- * @since 2024-05-17
  */
 public enum StorageConnectTypeEnum {
     /**

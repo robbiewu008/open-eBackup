@@ -23,8 +23,6 @@ import java.util.Collections;
 /**
  * live mount service test
  *
- * @author h30003246
- * @since 2021-02-25
  */
 public class LiveMountCommonTestData {
     /**

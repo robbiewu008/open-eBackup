@@ -25,8 +25,6 @@ import java.util.Arrays;
 /**
  * Proxy Factory Test
  *
- * @author l00650874
- * @since 2022-05-30
  */
 public class ProxyFactoryTest {
     /**

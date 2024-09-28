@@ -23,9 +23,6 @@ import java.util.List;
 /**
  * GaussDBT单机服务
  *
- * @author lWX776769
- * @version [DataBackup 1.5.0]
- * @since 2023/7/14
  */
 public interface GaussDBTSingleService {
     /**

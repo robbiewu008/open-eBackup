@@ -18,8 +18,6 @@ import openbackup.system.base.sdk.copy.model.Copy;
 /**
  * mount flow listener test
  *
- * @author h30003246
- * @since 2021-02-25
  */
 public class MountFlowListenerTestData extends LiveMountCommonTestData {
     /**

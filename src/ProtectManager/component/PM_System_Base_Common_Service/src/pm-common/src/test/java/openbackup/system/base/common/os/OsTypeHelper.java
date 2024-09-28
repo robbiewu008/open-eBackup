@@ -23,8 +23,6 @@ import java.lang.reflect.Modifier;
 /**
  * 操作系统类型助手
  *
- * @author w00493811
- * @since 2021-08-23
  */
 @Slf4j
 public class OsTypeHelper {

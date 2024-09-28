@@ -26,9 +26,6 @@ import java.util.List;
 /**
  * 存储库相关工具类
  *
- * @author fwx1022842
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022/7/5
  */
 public class StorageRepositoryUtilTest {
     @Rule

@@ -34,8 +34,6 @@ import java.util.stream.Collectors;
 /**
  * The DatabaseEnvironmentProvider
  *
- * @author g30003063
- * @since 2022-05-31
  */
 @Slf4j
 @Component

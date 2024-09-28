@@ -15,9 +15,6 @@ package openbackup.data.protection.access.provider.sdk.resourcegroup.constant;
 /**
  * 错误码
  *
- * @author c00631681
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-22
  */
 public class ResourceGroupErrorCode {
     /**

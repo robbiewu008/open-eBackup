@@ -35,8 +35,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author w00504341
- * @since 2023-02-06
  */
 public class FileZipTest {
     /**

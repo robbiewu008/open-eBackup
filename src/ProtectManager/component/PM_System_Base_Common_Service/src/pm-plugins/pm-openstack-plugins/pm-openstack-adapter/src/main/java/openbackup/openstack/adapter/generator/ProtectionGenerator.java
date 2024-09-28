@@ -34,9 +34,6 @@ import java.util.Objects;
 /**
  * 保护相关对象生成器
  *
- * @author w00616953
- * @version [OceanProtect X8000 1.3.0]
- * @since 2022-12-17
  */
 public final class ProtectionGenerator {
     private ProtectionGenerator() {}

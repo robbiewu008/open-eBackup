@@ -24,8 +24,6 @@ import java.lang.annotation.Target;
 /**
  * Sensitive
  *
- * @author l00272247
- * @since 2020-04-24
  */
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

@@ -21,8 +21,6 @@ import lombok.Getter;
 /**
  * 磁盘状态Status
  *
- * @author w50021188
- * @since 2021-08-12
  **/
 @Getter
 @AllArgsConstructor

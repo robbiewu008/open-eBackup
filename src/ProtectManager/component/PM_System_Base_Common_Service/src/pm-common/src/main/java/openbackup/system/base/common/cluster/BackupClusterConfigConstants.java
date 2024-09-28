@@ -15,8 +15,6 @@ package openbackup.system.base.common.cluster;
 /**
  * 获取configMap中集群配置常量类
  *
- * @author z00613137
- * @since 2023-05-26
  */
 public class BackupClusterConfigConstants {
     /**

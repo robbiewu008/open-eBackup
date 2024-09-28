@@ -28,8 +28,6 @@ import java.util.Iterator;
 /**
  * I18n Converter Test
  *
- * @author c30044692
- * @since 2023/4/20
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = I18nConverter.class)

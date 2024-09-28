@@ -17,8 +17,6 @@ import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvide
 /**
  * 索引删除Provider(v1版本)
  *
- * @author g30003063
- * @since 2022-01-24
  */
 public interface DeleteIndexProvider extends DataProtectionProvider<String> {
     /**

@@ -15,8 +15,6 @@ package openbackup.system.base.common.enums;
 /**
  * 副本产生的类型
  *
- * @author p00511147
- * @since 2021-02-23
  */
 public enum CopyGenerationType {
     /**

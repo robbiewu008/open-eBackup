@@ -19,9 +19,6 @@ import lombok.Data;
 /**
  * 资源组查询参数
  *
- * @author l00853347
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2024-06-04
  */
 @Data
 @PageQueryConfig(conditions = {"resource_set_id"})

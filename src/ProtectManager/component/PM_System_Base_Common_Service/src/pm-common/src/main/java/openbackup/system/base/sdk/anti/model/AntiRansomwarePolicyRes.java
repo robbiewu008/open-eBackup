@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * 防勒索策略返回对象
  *
- * @author nwx1077006
- * @since 2021-11-16
  */
 @Data
 public class AntiRansomwarePolicyRes {

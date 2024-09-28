@@ -29,9 +29,6 @@ import org.springframework.stereotype.Component;
 /**
  * 磁带库存储库协议的策略类
  *
- * @author: y00559272
- * @version: [OceanProtect A8000 1.1.0]
- * @since: 2022/1/14
  **/
 @Component("tapeRepositoryStrategy")
 public class TapeRepositoryStrategy implements RepositoryStrategy {

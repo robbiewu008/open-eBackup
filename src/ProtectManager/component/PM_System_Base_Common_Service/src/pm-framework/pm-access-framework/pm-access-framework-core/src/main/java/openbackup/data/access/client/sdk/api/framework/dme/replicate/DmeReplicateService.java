@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * DME 高级复制接口
  *
- * @author m00576658
- * @since 2021-01-04
  */
 @FeignClient(name = "dmeReplicateService", url = "${services.endpoints.protectengine.replication}",
         configuration = DmeArchiveFeignConfiguration.class)

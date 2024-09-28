@@ -32,9 +32,6 @@ import java.util.stream.Collectors;
 /**
  * GaussDBTSlaValidatorTest
  *
- * @author dwx1009286
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-06-30
  */
 public class GaussDBTSlaValidatorTest {
     private SlaValidService slaValidService = PowerMockito.mock(SlaValidService.class);

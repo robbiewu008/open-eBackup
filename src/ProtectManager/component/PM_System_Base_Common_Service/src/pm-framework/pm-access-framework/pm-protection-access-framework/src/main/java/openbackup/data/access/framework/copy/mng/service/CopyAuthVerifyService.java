@@ -19,9 +19,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @author z00842230
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2024-07-17
  */
 public interface CopyAuthVerifyService {
     /**

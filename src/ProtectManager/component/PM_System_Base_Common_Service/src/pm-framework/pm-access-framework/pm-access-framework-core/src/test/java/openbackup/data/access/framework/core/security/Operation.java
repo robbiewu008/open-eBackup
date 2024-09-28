@@ -30,8 +30,6 @@ import java.util.Map;
 /**
  * Operation
  *
- * @author l00272247
- * @since 2021-12-13
  */
 @Component
 @CalleeMethods

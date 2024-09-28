@@ -57,8 +57,6 @@ import java.util.Optional;
 /**
  * OBS对象集合备份Provider
  *
- * @author l00370588
- * @since 2023-12-25
  */
 @Slf4j
 @Component

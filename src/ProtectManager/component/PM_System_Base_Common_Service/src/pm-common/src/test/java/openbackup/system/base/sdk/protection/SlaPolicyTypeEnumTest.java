@@ -20,8 +20,6 @@ import org.junit.Test;
 /**
  * SlaPolicyTypeEnum test
  *
- * @author jwx701567
- * @since 2021-03-16
  */
 public class SlaPolicyTypeEnumTest {
     @Test
