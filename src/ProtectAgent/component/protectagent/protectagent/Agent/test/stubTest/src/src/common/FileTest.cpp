@@ -183,18 +183,18 @@ TEST_F(CMpFileTest, CMpFileGetLastModifyTimeTest){
 TEST_F(CMpFileTest, CMpFileReadFileTest){
   stub.set(&CLogger::Log, StubCLoggerLog);
   vector<mp_string> vec;
-  //Õý³£ÎÄ¼þ¶ÁÐ´
+  //ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ð´
   vec.push_back("hello!");
-  vec.push_back("ÄãºÃ!");
+  vec.push_back("ï¿½ï¿½ï¿½!");
   vec.push_back("This is a test file!");
   ReadFileTest(vec);
   vec.clear();
 
-  //¿ÕÐÐ
+  //ï¿½ï¿½ï¿½ï¿½
   vec.push_back("");
   ReadFileTest(vec);
 
-  //ÎÄ¼þ²»´æÔÚ
+  //ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   do{
     mp_string strFilePath="dwigdiehdiewgfiewihdwqiugei";
     typedef mp_bool (*StubTypeFileExist)(void);
@@ -204,7 +204,7 @@ TEST_F(CMpFileTest, CMpFileReadFileTest){
     EXPECT_EQ(ret, MP_FAILED);
   }while(0);
 
-  //fopen·µ·µ»ØNULL
+  //fopenï¿½ï¿½ï¿½ï¿½ï¿½ï¿½NULL
   do{
     mp_string strFilePath="dwigdiehdiewgfiewihdwqiugei";
     typedef FILE* (*StubFopen)(void);
@@ -307,19 +307,19 @@ TEST_F(CMpFileTest, WaitForFileTest){
 TEST_F(CMpFileTest, DelFileTest){
 
   stub.set(&CLogger::Log, StubCLoggerLog);
-  //Èë²ÎÎª¿Õ
+  //ï¿½ï¿½ï¿½Îªï¿½ï¿½
   mp_int32 iRet = CMpFile::DelFile("");
   EXPECT_EQ(MP_SUCCESS, iRet);
 
-  //ÎÄ¼þ²»´æÔÚ
+  //ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   iRet = CMpFile::DelFile("xwsxhhoichwocie");
   EXPECT_EQ(MP_SUCCESS, iRet);
 
-  //ÎÄ¼þ´æÔÚ£¬µ«ÊÇÎÞ·¨É¾³ý
+  //ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½É¾ï¿½ï¿½
   //iRet = CMpFile::DelFile("/bin/ls");
   //EXPECT_EQ(MP_FAILED, iRet);
 
-  //ÎÄ¼þ´æÔÚ£¬ ÄÜ¹»É¾³ý
+  //ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ ï¿½Ü¹ï¿½É¾ï¿½ï¿½
   FILE *fp = fopen("testdel.txt", "w");
   if(NULL == fp){
     fprintf(stderr, "can not open file on %s file %d line\n", __FILE__, __LINE__);
@@ -332,21 +332,21 @@ TEST_F(CMpFileTest, DelFileTest){
 }
 
 /*
-* ÓÃÀýÃû³Æ£º²âÊÔÎÄ¼þÃûÐ£ÑéÊÇ·ñ³É¹¦
-* Ç°ÖÃÌõ¼þ£ºÎÞ
-* checkµã£ºÎÄ¼þÃûÊÇ·ñº¬ÓÐÌØÊâ×Ö·û
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½Ç·ï¿½É¹ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* checkï¿½ã£ºï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½
 */
 TEST_F(CMpFileTest, CheckFileNameTest){
-  // ÎÄ¼þÃû²»ºÏ·¨
+  // ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½
   mp_int32 iRet = CMpFile::CheckFileName("asd././asda.sh");
   EXPECT_NE(MP_SUCCESS, iRet);
 
-  // ÎÄ¼þºÏ·¨
+  // ï¿½Ä¼ï¿½ï¿½Ï·ï¿½
   iRet = CMpFile::CheckFileName("xwsxhhoichwocie.sh");
   EXPECT_EQ(MP_SUCCESS, iRet);
 }
 
-//ÁÙÊ±ÎÄ¼þ²»´æÔÚ£¬ÇÒÕý³£µÄÇé¿öÏÂµÄCIPCFile::ReadFile ºÍWriteFileµÄ²âÊÔ
+//ï¿½ï¿½Ê±ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½CIPCFile::ReadFile ï¿½ï¿½WriteFileï¿½Ä²ï¿½ï¿½ï¿½
 static void CIPCReadWriteFileTest1(void){
   Stub stub;
   stub.set(&CLogger::Log, StubCLoggerLog);
@@ -369,7 +369,7 @@ static void CIPCReadWriteFileTest1(void){
   }
 }
 
-//ÁÙÊ±ÎÄ¼þ´æÔÚµÄÇé¿ö
+//ï¿½ï¿½Ê±ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½
 static void CIPCReadWriteFileTest2(void){
   mp_string path = "/tmp/CIPCReadWriteFileTest.txt";
   FILE* fp = fopen(path.c_str(), "w");
@@ -382,7 +382,7 @@ static void CIPCReadWriteFileTest2(void){
   remove("/tmp/CIPCReadWriteFileTest.txt");
 }
 
-//ÁÙÊ±ÎÄ¼þ²»´æÔÚÊ±¶ÁÈ¡ÁÙÊ±ÎÄ¼þ
+//ï¿½ï¿½Ê±ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½È¡ï¿½ï¿½Ê±ï¿½Ä¼ï¿½
 static void CIPCReadWriteFileTest3(void){
   Stub stub;
   stub.set(&CLogger::Log, StubCLoggerLog);
@@ -392,7 +392,7 @@ static void CIPCReadWriteFileTest3(void){
   EXPECT_EQ(iRet, MP_FAILED);
 }
 
-//Òª¶ÁÈ¡µÄÎÄ¼þ´æÔÚ£¬µ«ÊÇ´ò¿ªÊ§°Ü
+//Òªï¿½ï¿½È¡ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½Ç´ï¿½Ê§ï¿½ï¿½
 static void CIPCReadWriteFileTest4(void){
 
   mp_string path = "/tmp/CIPCReadWriteFileTest.txt";

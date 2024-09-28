@@ -330,7 +330,7 @@ TEST_F(CChangeIpTest, RestartNginx)
     mp_int32 iRet = 0;
     ChangeIP IPObj;
     
-    /* ¼ì²âÊ§°Ü; */
+    /* ï¿½ï¿½ï¿½Ê§ï¿½ï¿½; */
     iRet = IPObj.RestartNginx();
     EXPECT_EQ(MP_FAILED, iRet);
 

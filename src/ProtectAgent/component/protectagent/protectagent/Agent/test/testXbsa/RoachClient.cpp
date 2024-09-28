@@ -138,7 +138,7 @@ int RoachClient::simulateBackup()
     Log("bsaHandle: %ld",bsaHandle);
 
 
-    // 2. ³õÊ¼»¯ÊÂÎñ
+    // 2. ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     ret = BSABeginTxn_fun(bsaHandle);
     if (BSA_RC_SUCCESS != ret)
     {
@@ -147,7 +147,7 @@ int RoachClient::simulateBackup()
         return ret;
     }
 
-    // 3. ´´½¨¶ÔÏó
+    // 3. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     BSA_DataBlock32 bsaBlock;
     BSA_ObjectDescriptor objDes;
     std::string objectName = m_objectNamePrefix + std::to_string(m_nameIndex) + "/metadata.tar.gz";
@@ -162,16 +162,16 @@ int RoachClient::simulateBackup()
         return ret;
     }
 
-    // 4. ·¢ËÍÊý¾Ý
+    // 4. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if (m_operateFile){
-        // ¿½±´Êý¾Ý
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         std::string tmpFileName = std::to_string(m_nameIndex-1) + "_" + m_serialNum + "_metadata.tar.gz";
         if (!CopyFile(m_testFileName, TEST_BACKUP_DIR + "/" + tmpFileName)) {
             Log("Copy file %s to %s failed.", m_testFileName.c_str(), objectName.c_str());
             TerminateTxnAndSession(bsaHandle, BSA_Vote::BSA_Vote_ABORT);
             return BSA_RC_ACCESS_FAILURE;
         }
-        // ¶ÁÈ¡²¢·¢ËÍÊý¾Ý
+        // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         FileTest testFile;
         if (!testFile.OpenFile(m_testFileName)) {
             Log("Open file %s failed.", tmpFileName.c_str());
@@ -206,7 +206,7 @@ int RoachClient::simulateBackup()
         
     }
     
-    // 5. ½áÊøÊý¾Ý
+    // 5. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     ret = BSAEndData_fun(bsaHandle);
     if (BSA_RC_SUCCESS != ret)
     {
@@ -215,7 +215,7 @@ int RoachClient::simulateBackup()
         return ret;
     }
 
-    // 6. ½áÊøÊÂÎñ
+    // 6. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     Log("new backup business end %ld with ret %d", bsaHandle, ret);
     TerminateTxnAndSession(bsaHandle, BSA_Vote::BSA_Vote_COMMIT);
     return ret;
@@ -252,7 +252,7 @@ int RoachClient::simulateDelete()
     Log("bsaHandle: %ld",bsaHandle);
 
 
-    // 2. ³õÊ¼»¯ÊÂÎñ
+    // 2. ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     ret = BSABeginTxn_fun(bsaHandle);
     if (BSA_RC_SUCCESS != ret)
     {
@@ -260,7 +260,7 @@ int RoachClient::simulateDelete()
         BSATerminate_fun(bsaHandle);
         return ret;
     }
-    // 4. É¾³ý¶ÔÏó
+    // 4. É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     for (size_t i = 0; i<objList.size(); i++)
     {
         ret = BSADeleteObj_fun(bsaHandle, objList[i]);
@@ -274,7 +274,7 @@ int RoachClient::simulateDelete()
     }
 
     Log("Delete all objects");
-    // 5. ½áÊøÊÂÎñ
+    // 5. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     Log("new delete business end %ld with ret %d", bsaHandle, ret);
     TerminateTxnAndSession(bsaHandle, BSA_Vote::BSA_Vote_COMMIT);
     return ret;
@@ -300,7 +300,7 @@ int RoachClient::QueryObject(std::vector<BSA_UInt64> &objList, const std::string
     Log("bsaHandle: %ld",bsaHandle);
 
 
-    // 2. ³õÊ¼»¯ÊÂÎñ
+    // 2. ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     ret = BSABeginTxn_fun(bsaHandle);
     if (BSA_RC_SUCCESS != ret)
     {
@@ -309,7 +309,7 @@ int RoachClient::QueryObject(std::vector<BSA_UInt64> &objList, const std::string
         return ret;
     }
 
-    // 3. ²éÑ¯¶ÔÏó
+    // 3. ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½
     BSA_QueryDescriptor queryDes;
     {
         memset(queryDes.objectOwner.app_ObjectOwner, 0, BSA_MAX_APPOBJECT_OWNER);
@@ -339,7 +339,7 @@ int RoachClient::QueryObject(std::vector<BSA_UInt64> &objList, const std::string
     {
         objList.push_back(queryRet.copyId);
     }
-    // 4. ½áÊøÊÂÎñ
+    // 4. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     Log("new query bus end %ld with ret %d", bsaHandle, ret);
     TerminateTxnAndSession(bsaHandle, BSA_Vote::BSA_Vote_COMMIT);
     return ret;
@@ -374,7 +374,7 @@ int RoachClient::simulateRecover()
     m_currentBsaHandle = bsaHandle;
     Log("bsaHandle: %ld",bsaHandle);
 
-    // 2. ³õÊ¼»¯ÊÂÎñ
+    // 2. ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     ret = BSABeginTxn_fun(bsaHandle);
     if (BSA_RC_SUCCESS != ret)
     {
@@ -403,7 +403,7 @@ int RoachClient::simulateRecover()
             return ret;
         }
 
-        //4. »ñÈ¡Êý¾Ý
+        //4. ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
         char tempData[2*1024*1024 + 1];
         memset(tempData, 0, 2*1024*1024 + 1);
         BSA_DataBlock32 dataBlockPtr;
@@ -430,7 +430,7 @@ int RoachClient::simulateRecover()
         }
     }
     Log("Recover all objects");
-    // 5. ½áÊøÊÂÎñ
+    // 5. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     Log("new recover bus end %ld with ret %d", bsaHandle, ret);
     TerminateTxnAndSession(bsaHandle, BSA_Vote::BSA_Vote_COMMIT);
     return ret;
@@ -443,7 +443,7 @@ void RoachClient::setTestFileName(const std::string &fileName)
 }
 int RoachClient::TerminateTxnAndSession(long bsaHandle, BSA_Vote vote)
 {
-    // 1. ½áÊøÊÂÎñ
+    // 1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     int ret = BSAEndTxn_fun(bsaHandle, vote);
     if (BSA_RC_SUCCESS != ret)
     {
@@ -451,7 +451,7 @@ int RoachClient::TerminateTxnAndSession(long bsaHandle, BSA_Vote vote)
         return ret;
     }
 
-    // 2. ½áÊø»á»°
+    // 2. ï¿½ï¿½ï¿½ï¿½ï¿½á»°
     ret = BSATerminate_fun(bsaHandle);
     if (BSA_RC_SUCCESS != ret)
     {

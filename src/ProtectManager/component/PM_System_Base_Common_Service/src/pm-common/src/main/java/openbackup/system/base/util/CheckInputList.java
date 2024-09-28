@@ -24,8 +24,6 @@ import javax.validation.Payload;
 /**
  * 输入参数list注解类
  *
- * @author w00426202
- * @since 2023-05-11
  */
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)

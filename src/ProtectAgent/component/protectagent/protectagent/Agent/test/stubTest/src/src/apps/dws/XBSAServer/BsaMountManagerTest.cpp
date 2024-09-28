@@ -23,9 +23,9 @@ mp_void LogTest(const mp_int32 iLevel, const mp_int32 iFileLine, const mp_string
 }
 
 /*
-* ²âÊÔÓÃÀı£ºSetRepositoryºÍAddIntoMountedList½Ó¿Ú²âÊÔ
-* Ç°ÖÃÌõ¼ş£ºÎŞ
-* CHECKµã£º²åÈë½á¹ûÓëÔ¤ÆÚÏà·û.
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SetRepositoryï¿½ï¿½AddIntoMountedListï¿½Ó¿Ú²ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* CHECKï¿½ã£ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½.
 */
 TEST_F(BsaMountManagerTest, AddIntoMountedList_Test)
 {
@@ -71,9 +71,9 @@ TEST_F(BsaMountManagerTest, AddIntoMountedList_Test)
 }
 
 /*
-* ²âÊÔÓÃÀı£ºIsFsMounted½Ó¿Ú²âÊÔ
-* Ç°ÖÃÌõ¼ş£ºÎŞ
-* CHECKµã£ºfsId£¬esnºÍfsName¶¼ÏàÍ¬µÄ²ÅÊÇÍ¬Ò»¸öÎÄ¼şÏµÍ³.
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IsFsMountedï¿½Ó¿Ú²ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* CHECKï¿½ã£ºfsIdï¿½ï¿½esnï¿½ï¿½fsNameï¿½ï¿½ï¿½ï¿½Í¬ï¿½Ä²ï¿½ï¿½ï¿½Í¬Ò»ï¿½ï¿½ï¿½Ä¼ï¿½ÏµÍ³.
 */
 TEST_F(BsaMountManagerTest, IsFsMounted_Test)
 {
@@ -95,9 +95,9 @@ TEST_F(BsaMountManagerTest, IsFsMounted_Test)
 }
 
 /*
-* ²âÊÔÓÃÀı£ºAllocFilesystem½Ó¿Ú²âÊÔ
-* Ç°ÖÃÌõ¼ş£ºÎÄ¼şÏµÍ³ÒÑ¾­¹ÒÔØ³É¹¦
-* CHECKµã£ºË³Ğò·ÖÅäÎÄ¼şÏµÍ³.
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½AllocFilesystemï¿½Ó¿Ú²ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ÏµÍ³ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ø³É¹ï¿½
+* CHECKï¿½ã£ºË³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ÏµÍ³.
 */
 TEST_F(BsaMountManagerTest, AllocFilesystem_Test)
 {
@@ -149,9 +149,9 @@ TEST_F(BsaMountManagerTest, AllocFilesystem_Test)
 }
 
 /*
-* ²âÊÔÓÃÀı£ºGetMountPath½Ó¿Ú²âÊÔ
-* Ç°ÖÃÌõ¼ş£ºÎÄ¼şÏµÍ³ÒÑ¾­¹ÒÔØ³É¹¦
-* CHECKµã£ºÍ¬Ò»¸öÎÄ¼şÏµÍ³ÓĞ¶à¸ö¹ÒÔØµãÊ±£¬Ë³Ğò·ÖÅä¹ÒÔØµã.
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½GetMountPathï¿½Ó¿Ú²ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ÏµÍ³ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ø³É¹ï¿½
+* CHECKï¿½ã£ºÍ¬Ò»ï¿½ï¿½ï¿½Ä¼ï¿½ÏµÍ³ï¿½Ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½Ê±ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½.
 */
 TEST_F(BsaMountManagerTest, GetMountPath_Test)
 {

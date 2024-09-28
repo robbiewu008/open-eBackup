@@ -20,9 +20,6 @@ import java.util.List;
 /**
  * 文件在所有节点间同步的kafka消息
  *
- * @author y30046482
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2024-07-29
  */
 @Getter
 @Setter

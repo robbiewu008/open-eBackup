@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 更新代理资源类型请求
  *
- * @author c30035089
- * @since 2023-08-11
  */
 @Getter
 @Setter

@@ -28,14 +28,14 @@ TEST_F(SocketStreamTest, StreamWrite) {
 
     StubClogToVoidLogNullPointReference();
     stub.set(&CLogger::Log, StubCLoggerLog);
-    //·¢ËÍÊ§°Ü
+    //ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
     {
         stub.set(ADDR(DataContext, GetSockFd), StubGetSockFd);
         stub.set(ADDR(CSocket, SendBuffer), StubSendBuffer);
         iRet = om.StreamWrite(ctx, buff, iBuffLen);
         EXPECT_EQ(MP_FAILED, iRet);
     }
-    //·¢ËÍ³É¹¦
+    //ï¿½ï¿½ï¿½Í³É¹ï¿½
     {
         iBuffLen = 3;
         stub.set(ADDR(DataContext, GetSockFd), StubGetSockFd);
@@ -58,14 +58,14 @@ TEST_F(SocketStreamTest, StreamRead) {
 
     StubClogToVoidLogNullPointReference();
     stub.set(&CLogger::Log, StubCLoggerLog);
-    //½ÓÊÕÊ§°Ü
+    //ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
     {
         stub.set(ADDR(DataContext, GetSockFd), StubGetSockFd);
         stub.set(ADDR(CSocket, RecvBuffer), StubRecvBufferFail);
         iRet = om.StreamRead(ctx, buff, iBuffLen, uiRecvLen);
         EXPECT_EQ(MP_FAILED, iRet);
     }
-    //½ÓÊÕ³É¹¦
+    //ï¿½ï¿½ï¿½Õ³É¹ï¿½
     {
         stub.set(ADDR(DataContext, GetSockFd), StubGetSockFd);
         stub.set(ADDR(CSocket, RecvBuffer), StubRecvBuffer);

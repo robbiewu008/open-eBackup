@@ -137,9 +137,9 @@ mp_int32 StubGetCancelLivemountJobName(mp_void* pThis, std::vector<mp_string> &v
 }
 
 /*
-* ÓÃÀýÃû³Æ£º´´½¨ÈÎÎñ³Ø£¬·ÅÈëÈÎÎñ£¬Ïú»ÙÈÎÎñ³Ø
-* Ç°ÖÃÌõ¼þ£º1¡¢Õý³£´´½¨ÈÎÎñ³Ø
-* checkµã£º1¡¢Õý³£·ÅÈëÈÎÎñ  2¡¢Õý³£Ïú»ÙÈÎÎñ³Ø 3¡¢»ñÈ¡µ½ÒÑÖ´ÐÐÈÎÎñÖ¸Õë²»Îª¿Õ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½
 */
 TEST_F(ExternalJobTest, JobPool)
 {
@@ -166,9 +166,9 @@ TEST_F(ExternalJobTest, JobPool)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÈÎÎñ×´Ì¬ÊÇ·ñÎªÊ§°Ü
-* Ç°ÖÃÌõ¼þ£º
-* checkµã£º1¡¢Ö÷ÈÎÎñ²»ÊÇÊ§°Ü  2¡¢×ÓÈÎÎñ²»ÊÇÊ§°Ü
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½Ç·ï¿½ÎªÊ§ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½  2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, IsFailed_TEST)
 {
@@ -187,9 +187,9 @@ TEST_F(ExternalJobTest, IsFailed_TEST)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ±¸·ÝÇ°ÖÃÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄÇ°ÖÃ±¸·ÝÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð±ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½Ã±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubPreJob_Backup)
 {
@@ -210,9 +210,9 @@ TEST_F(ExternalJobTest, SubPreJob_Backup)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ»Ö¸´Ç°ÖÃÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄÇ°ÖÃ»Ö¸´ÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð»Ö¸ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½Ã»Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubPreJob_Restore)
 {
@@ -233,9 +233,9 @@ TEST_F(ExternalJobTest, SubPreJob_Restore)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ¼´Ê±»Ö¸´Ç°ÖÃÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄÇ°ÖÃ¼´Ê±»Ö¸´ÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð¼ï¿½Ê±ï¿½Ö¸ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½Ã¼ï¿½Ê±ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubPreJob_Inrestore)
 {
@@ -256,9 +256,9 @@ TEST_F(ExternalJobTest, SubPreJob_Inrestore)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ±¸·Ý·Ö½âÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ±¸·Ý·Ö½âÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð±ï¿½ï¿½Ý·Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½Ý·Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubGeneJob_Backup)
 {
@@ -279,9 +279,9 @@ TEST_F(ExternalJobTest, SubGeneJob_Backup)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ»Ö¸´·Ö½âÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ»Ö¸´·Ö½âÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð»Ö¸ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»Ö¸ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubGeneJob_Restore)
 {
@@ -302,9 +302,9 @@ TEST_F(ExternalJobTest, SubGeneJob_Restore)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ¹ÒÔØ·Ö½âÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ¹ÒÔØ·Ö½âÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð¹ï¿½ï¿½Ø·Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½Ø·Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubGeneJob_Livemount)
 {
@@ -325,9 +325,9 @@ TEST_F(ExternalJobTest, SubGeneJob_Livemount)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ¹ÒÔØ·Ö½âÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ¹ÒÔØ·Ö½âÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð¹ï¿½ï¿½Ø·Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½Ø·Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubGeneJob_CancelLivemount)
 {
@@ -348,9 +348,9 @@ TEST_F(ExternalJobTest, SubGeneJob_CancelLivemount)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ¼´Ê±»Ö¸´·Ö½âÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ¼´Ê±»Ö¸´·Ö½âÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð¼ï¿½Ê±ï¿½Ö¸ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ê±ï¿½Ö¸ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubGeneJob_Inrestore)
 {
@@ -371,9 +371,9 @@ TEST_F(ExternalJobTest, SubGeneJob_Inrestore)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐË÷Òý·Ö½âÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄË÷Òý·Ö½âÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubGeneJob_BuildIndex)
 {
@@ -394,9 +394,9 @@ TEST_F(ExternalJobTest, SubGeneJob_BuildIndex)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐÉ¾³ý·Ö½âÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄÉ¾³ý·Ö½âÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½ï¿½É¾ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubGeneJob_DelCopy)
 {
@@ -417,9 +417,9 @@ TEST_F(ExternalJobTest, SubGeneJob_DelCopy)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ±¸·ÝÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ±¸·ÝÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubBusiJob_Backup)
 {
@@ -438,9 +438,9 @@ TEST_F(ExternalJobTest, SubBusiJob_Backup)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ»Ö¸´ÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ»Ö¸´ÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð»Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubBusiJob_Restore)
 {
@@ -459,9 +459,9 @@ TEST_F(ExternalJobTest, SubBusiJob_Restore)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ¹ÒÔØÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ¹ÒÔØÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubBusiJob_Livemount)
 {
@@ -480,9 +480,9 @@ TEST_F(ExternalJobTest, SubBusiJob_Livemount)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ¹ÒÔØÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ¹ÒÔØÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubBusiJob_CancelLivemount)
 {
@@ -501,9 +501,9 @@ TEST_F(ExternalJobTest, SubBusiJob_CancelLivemount)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ¼´Ê±»Ö¸´ÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ¼´Ê±»Ö¸´ÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð¼ï¿½Ê±ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ê±ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubBusiJob_Inrestore)
 {
@@ -522,9 +522,9 @@ TEST_F(ExternalJobTest, SubBusiJob_Inrestore)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐË÷ÒýÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄË÷ÒýÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubBusiJob_BuildIndex)
 {
@@ -544,9 +544,9 @@ TEST_F(ExternalJobTest, SubBusiJob_BuildIndex)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐÉ¾³ýÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄË÷ÒýÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubBusiJob_DelCopy)
 {
@@ -566,9 +566,9 @@ TEST_F(ExternalJobTest, SubBusiJob_DelCopy)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ±¸·ÝºóÖÃÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ±¸·ÝºóÖÃÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð±ï¿½ï¿½Ýºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½Ýºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubPostJob_Backup)
 {
@@ -588,9 +588,9 @@ TEST_F(ExternalJobTest, SubPostJob_Backup)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ»Ö¸´ºóÖÃÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ»Ö¸´ºóÖÃÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð»Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubPostJob_Restore)
 {
@@ -610,9 +610,9 @@ TEST_F(ExternalJobTest, SubPostJob_Restore)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐË÷ÒýºóÖÃÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄË÷ÒýºóÖÃÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubPostJob_BuildIndex)
 {
@@ -631,9 +631,9 @@ TEST_F(ExternalJobTest, SubPostJob_BuildIndex)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ¹ÒÔØºóÖÃÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ¹ÒÔØºóÖÃÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð¹ï¿½ï¿½Øºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½Øºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubPostJob_Livemount)
 {
@@ -652,9 +652,9 @@ TEST_F(ExternalJobTest, SubPostJob_Livemount)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐÈ¡Ïû¹ÒÔØºóÖÃÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄÈ¡Ïû¹ÒÔØºóÖÃÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubPostJob_CancelLivemount)
 {
@@ -673,9 +673,9 @@ TEST_F(ExternalJobTest, SubPostJob_CancelLivemount)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ¼´Ê±»Ö¸´ºóÖÃÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄ¼´Ê±»Ö¸´ºóÖÃÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð¼ï¿½Ê±ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ê±ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubPostJob_Inrestore)
 {
@@ -694,9 +694,9 @@ TEST_F(ExternalJobTest, SubPostJob_Inrestore)
     EXPECT_EQ(MP_SUCCESS, pJob->Exec());
 }
 /*
-* ÓÃÀýÃû³Æ£ºÖÐÖ¹×ÓÈÎÎñ³É¹¦£¬×ÓÈÎÎñ»¹Î´·¢ËÍµ½²å¼þ
-* Ç°ÖÃÌõ¼þ£º1¡¢agent¿ò¼ÜÖÐÒÑÓÐ×ÓÈÎÎñ 2. ÈÎÎñ»¹Î´·¢ËÍµ½²å¼þ
-* checkµã£ºÖÐÖ¹×ÓÈÎÎñ³É¹¦
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½agentï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2. ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½
+* checkï¿½ã£ºï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½
 */
 TEST_F(ExternalJobTest, AbortSubjobSuccessNotSendPlugin)
 {
@@ -714,9 +714,9 @@ TEST_F(ExternalJobTest, AbortSubjobSuccessNotSendPlugin)
     EXPECT_EQ((mp_uint32)SubJobState::SubJobComplete, pJob->GetData().status);
 }
 /*
-* ÓÃÀýÃû³Æ£ºÖÐÖ¹×ÓÈÎÎñÏÂ·¢³É¹¦£¬×ÓÈÎÎñÒÑ¾­·¢ËÍµ½²å¼þ
-* Ç°ÖÃÌõ¼þ£º1¡¢agent¿ò¼ÜÖÐÒÑÓÐ×ÓÈÎÎñ 2. ÈÎÎñÒÑ¾­·¢ËÍµ½²å¼þ 3. ²å¼þµ±Ç°×´Ì¬ÎªÔËÐÐÖÐ
-* checkµã£ºÖÐÖ¹×ÓÈÎÎñÏÂ·¢³É¹¦
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½agentï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2. ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½ 3. ï¿½ï¿½ï¿½ï¿½ï¿½Ç°×´Ì¬Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* checkï¿½ã£ºï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½É¹ï¿½
 */
 TEST_F(ExternalJobTest, AbortSubjobSendPluginSuccess)
 {
@@ -737,9 +737,9 @@ TEST_F(ExternalJobTest, AbortSubjobSendPluginSuccess)
     EXPECT_EQ((mp_uint32)SubJobState::Running, pJob->GetData().status);
 }
 /*
-* ÓÃÀýÃû³Æ£º²»ÄÜÖÐÖ¹ºóÖÃ×ÓÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢ºóÖÃ×ÓÈÎÎñÔÚagentÈÎÎñ³ØÖÐ´æÔÚ
-* checkµã£º²»ÄÜÖÐÖ¹ºóÖÃ×ÓÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½agentï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½
+* checkï¿½ã£ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, AbortPostJobFailed)
 {
@@ -756,9 +756,9 @@ TEST_F(ExternalJobTest, AbortPostJobFailed)
     EXPECT_EQ(MP_FAILED, ret);
 }
 /*
-* ÓÃÀýÃû³Æ£º×ÓÈÎÎñÔÚÕý³£´ÓÔËÐÐ×´Ì¬ÇÐ»»ÖÁÍê³É×´Ì¬
-* Ç°ÖÃÌõ¼þ£º1¡¢×ÓÈÎÎñÕýÔÚÔËÐÐ 2. ²å¼þ¶¨ÆÚÉÏ±¨×´Ì¬
-* checkµã£º×ÓÈÎÎñ×´Ì¬ÇÐ»»Õý³£
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½×´Ì¬
+* checkï¿½ã£ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubjobStateChangeNormal)
 {
@@ -784,9 +784,9 @@ TEST_F(ExternalJobTest, SubjobStateChangeNormal)
 }
 
 /*
-* ÓÃÀýÃû³Æ£º×ÓÈÎÎñÔÚÕý³£´ÓÔËÐÐ×´Ì¬ÇÐ»»ÖÁÍê³É×´Ì¬ºó£¬ÇåÀíµô¶¨Ê±Æ÷×ÊÔ´
-* Ç°ÖÃÌõ¼þ£º1¡¢×ÓÈÎÎñÕýÔÚÔËÐÐ 2. ²å¼þ¶¨ÆÚÉÏ±¨×´Ì¬
-* checkµã£º×ÊÔ´±»ÇåÀí
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ô´
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½×´Ì¬
+* checkï¿½ã£ºï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubjobStateChangeResrouceCleanSuccess)
 {
@@ -803,20 +803,20 @@ TEST_F(ExternalJobTest, SubjobStateChangeResrouceCleanSuccess)
     stub.set(ADDR(Job, GetThriftClient), StubGetThriftClient);
     servicecenter::ServiceFactory::GetInstance()->Register<timerservice::detail::TimerService>("ITimerService"); 
 
-    /*======== ×´Ì¬´ÓUNDEFINEÇÐ»»µ½PrepareFailed ============*/
+    /*======== ×´Ì¬ï¿½ï¿½UNDEFINEï¿½Ð»ï¿½ï¿½ï¿½PrepareFailed ============*/
     subjob->m_data.status = 255;
     subjob->ChangeState(SubJobState::UNDEFINE);
     EXPECT_NE(nullptr, subjob->m_pluginUdTimer);
     subjob->ChangeState(SubJobState::PrepareFailed);
     EXPECT_EQ(nullptr, subjob->m_pluginUdTimer);
 
-    /*======== ×´Ì¬´ÓRunningÇÐ»»µ½SubJobComplete ============*/
+    /*======== ×´Ì¬ï¿½ï¿½Runningï¿½Ð»ï¿½ï¿½ï¿½SubJobComplete ============*/
     subjob->ChangeState(SubJobState::Running);
     EXPECT_NE(nullptr, subjob->m_pluginUdTimer);
     subjob->ChangeState(SubJobState::SubJobComplete);
     EXPECT_EQ(nullptr, subjob->m_pluginUdTimer);
 
-    /*======== ×´Ì¬´ÓRunningÇÐ»»µ½SubJobFailed ============*/
+    /*======== ×´Ì¬ï¿½ï¿½Runningï¿½Ð»ï¿½ï¿½ï¿½SubJobFailed ============*/
     subjob->ChangeState(SubJobState::Running);
     EXPECT_NE(nullptr, subjob->m_pluginUdTimer);
     subjob->ChangeState(SubJobState::SubJobFailed );
@@ -825,9 +825,9 @@ TEST_F(ExternalJobTest, SubjobStateChangeResrouceCleanSuccess)
 
 
 /*
-* ÓÃÀýÃû³Æ£ºÈÎÎñ³¬Ê±ÖÕÖ¹½Ó¿ÚÏÂ·¢²å¼þÖ´ÐÐ
-* Ç°ÖÃÌõ¼þ£º1¡¢ÈÎÎñÏÂ·¢PauseJob½Ó¿Úµ÷ÓÃ
-* checkµã£º½Ó¿Ú·µ»Ø³É¹¦
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ö¹ï¿½Ó¿ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½PauseJobï¿½Ó¿Úµï¿½ï¿½ï¿½
+* checkï¿½ã£ºï¿½Ó¿Ú·ï¿½ï¿½Ø³É¹ï¿½
 */
 TEST_F(ExternalJobTest, Job_Pause_Job_call_thrift_interface_test_ok)
 {
@@ -846,9 +846,9 @@ TEST_F(ExternalJobTest, Job_Pause_Job_call_thrift_interface_test_ok)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÉ¾³ýqos²ßÂÔ
-* Ç°ÖÃÌõ¼þ£º
-* checkµã£º½Ó¿Úµ÷ÓÃ³É¹¦
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½É¾ï¿½ï¿½qosï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* checkï¿½ã£ºï¿½Ó¿Úµï¿½ï¿½Ã³É¹ï¿½
 */
 TEST_F(ExternalJobTest, DeleteQosStrategy_stub)
 {
@@ -876,9 +876,9 @@ TEST_F(ExternalJobTest, DeleteQosStrategy_stub)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÊÇ·ñÊÖ¶¯¹ÒÔØ
-* Ç°ÖÃÌõ¼þ£º
-* checkµã£º½Ó¿Úµ÷ÓÃ³É¹¦
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½Ç·ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* checkï¿½ã£ºï¿½Ó¿Úµï¿½ï¿½Ã³É¹ï¿½
 */
 TEST_F(ExternalJobTest, Is_ManualMount)
 {
@@ -894,10 +894,10 @@ TEST_F(ExternalJobTest, Is_ManualMount)
 }
 
 /*
-* ÓÃÀýÃû³Æ£º·ÇÔ­Éú¸ñÊ½»Ö¸´¹ÒÔØÎÄ¼þÏµÍ³
-* Ç°ÖÃÌõ¼þ£º»Ö¸´ÈÎÎñ
-* checkµã£º1¡¢ÈÎÎñÖ´ÐÐ³É¹¦
-           2¡¢ÏÂ·¢¶à¸±±¾¹ÒÔØÂ·¾¶
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Ê½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ÏµÍ³
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Ð³É¹ï¿½
+           2ï¿½ï¿½ï¿½Â·ï¿½ï¿½à¸±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, non_native_restore_job_test)
 {
@@ -930,9 +930,9 @@ TEST_F(ExternalJobTest, non_native_restore_job_test)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ¸±±¾Ð£Ñé·Ö½âÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄÉ¾³ý·Ö½âÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð¸ï¿½ï¿½ï¿½Ð£ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubGeneJob_CheckCopy)
 {
@@ -953,9 +953,9 @@ TEST_F(ExternalJobTest, SubGeneJob_CheckCopy)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ¸±±¾Ð£ÑéÈÎÎñ
-* Ç°ÖÃÌõ¼þ£º1¡¢Í¨¹ýExternalPluinManager»ñÈ¡thrift½Ó¿ÚÖ¸Õë
-* checkµã£º1¡¢´´½¨µÄË÷ÒýÈÎÎñÖ¸Õë²»Îª¿Õ 2 Õý³£Ö´ÐÐÈÎÎñ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð¸ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½Í¨ï¿½ï¿½ExternalPluinManagerï¿½ï¿½È¡thriftï¿½Ó¿ï¿½Ö¸ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë²»Îªï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, SubBusiJob_CheckCopy)
 {
@@ -975,9 +975,9 @@ TEST_F(ExternalJobTest, SubBusiJob_CheckCopy)
 }
 
 /*
-* ÓÃÀýÃû³Æ£ºÖ´ÐÐ½Å±¾ÃüÁî×¢ÈëÀ¹½Ø
-* Ç°ÖÃÌõ¼þ£º
-* checkµã£º1¡¢½Å±¾´æÔÚÃüÁî×¢Èë, ½Å±¾À¹½Ø³É¹¦ 2.Õý³£½Å±¾²»×öÀ¹½Ø
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ö´ï¿½Ð½Å±ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* checkï¿½ã£º1ï¿½ï¿½ï¿½Å±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½, ï¿½Å±ï¿½ï¿½ï¿½ï¿½Ø³É¹ï¿½ 2.ï¿½ï¿½ï¿½ï¿½ï¿½Å±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 TEST_F(ExternalJobTest, ScriptCommandInject)
 {

@@ -83,9 +83,9 @@ mp_int32 JudgePluginVersion(mp_string pluginVersion)
     return MP_FAILED;
 }
 /*
- * ÓÃÀıÃû³Æ£º½âÎö²å¼şÌØĞÔÎÄ¼ş
- * Ç°ÖÃÌõ¼ş£ºÍâ²¿²å¼şÄ¿Â¼Plugins´æÔÚ
- * checkµã£ºÄÜ·ñÕıÈ·½âÎöÎÄ¼ş
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
+ * Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â²¿ï¿½ï¿½ï¿½Ä¿Â¼Pluginsï¿½ï¿½ï¿½ï¿½
+ * checkï¿½ã£ºï¿½Ü·ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
  */
 TEST_F(ExternalPluginParseTest, ParsePluginAttributeTest)
 {
@@ -103,9 +103,9 @@ TEST_F(ExternalPluginParseTest, ParsePluginAttributeTest)
     EXPECT_EQ(iRet, MP_SUCCESS);
 }
 /*
- * ÓÃÀıÃû³Æ£º»ñÈ¡jsonÅäÖÃÎÄ¼ş×Ö¶Î
- * Ç°ÖÃÌõ¼ş£ºÍâ²¿²å¼şÄ¿Â¼Plugins´æÔÚ
- * checkµã£º´ò¿ªÎÄ¼ş·µ»ØÖµÊÇ·ñÕıÈ· 
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½È¡jsonï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ö¶ï¿½
+ * Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â²¿ï¿½ï¿½ï¿½Ä¿Â¼Pluginsï¿½ï¿½ï¿½ï¿½
+ * checkï¿½ã£ºï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½Ç·ï¿½ï¿½ï¿½È· 
  */
 /*TEST_F(ExternalPluginParseTest, GetConfigInfoTest)
 {
@@ -122,9 +122,9 @@ TEST_F(ExternalPluginParseTest, ParsePluginAttributeTest)
     (mp_void)ClearTemConfig(strFileName);
 }*/
 /*
- * ÓÃÀıÃû³Æ£º¼ì²é½âÎöµÄ²å¼ş°æ±¾ÊÇ·ñÕıÈ·
- * Ç°ÖÃÌõ¼ş£º²å¼şÃû³ÆÎªplugin_attribute_1.1.0.json
- * checkµã£ºÄÜ·ñ½âÎö²å¼ş°æ±¾1.1.0
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½æ±¾ï¿½Ç·ï¿½ï¿½ï¿½È·
+ * Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªplugin_attribute_1.1.0.json
+ * checkï¿½ã£ºï¿½Ü·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ±¾1.1.0
  */
 TEST_F(ExternalPluginParseTest, GetPluginConfigVersionTest)
 {

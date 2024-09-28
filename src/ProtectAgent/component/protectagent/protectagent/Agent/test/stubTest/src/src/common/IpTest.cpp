@@ -14,7 +14,7 @@
 #include "common/ErrorCode.h"
 #include "common/Ip.h"
 /*------------------------------------------------------------ 
- Description :²âÊÔCIP::IsIPV4(mp_string&)
+ Description :ï¿½ï¿½ï¿½ï¿½CIP::IsIPV4(mp_string&)
  Input         :   
  Output       :    
  Return       : 
@@ -52,31 +52,31 @@ TEST_F(IPTest, IsIPV4TEST){
     mp_string strIpAddr = "";
     mp_bool ret = true;
 
-    //¿Õ×Ö·û´®
+    //ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
     ret = CIP::IsIPV4(strIpAddr);
     EXPECT_EQ(MP_FALSE, ret);
 
-    //È«Áã×Ö·û´®
+    //È«ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
     strIpAddr = "0.0.0.0";
     ret = CIP::IsIPV4(strIpAddr);
     EXPECT_EQ(MP_FALSE, ret);
 
-    //Ä³¸ö¶Î³¬¹ý255
+    //Ä³ï¿½ï¿½ï¿½Î³ï¿½ï¿½ï¿½255
     strIpAddr = "127.0.3.256";
     ret = CIP::IsIPV4(strIpAddr);
     EXPECT_EQ(MP_FALSE, ret);
 
-    //´æÔÚÆäËü×Ö·û
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½
     strIpAddr = "1o9.25.31.4l";
     ret = CIP::IsIPV4(strIpAddr);
     EXPECT_EQ(MP_FALSE, ret);
 
-    //·Çipv4ÀàÐÍ¸ñÊ½
+    //ï¿½ï¿½ipv4ï¿½ï¿½ï¿½Í¸ï¿½Ê½
     strIpAddr = "10:2:3:5";
     ret = CIP::IsIPV4(strIpAddr);
     EXPECT_EQ(MP_FALSE, ret);
     
-    //Õý³£×Ö·û´®
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
     strIpAddr = "10.2.3.5";
     ret = CIP::IsIPV4(strIpAddr);
     EXPECT_EQ(MP_TRUE, ret);
@@ -135,7 +135,7 @@ TEST_F(IPTest, IPV6StrToUInt)
 
     uiLen = 3;
     iRet = CIP::IPV6StrToUInt(strIpAddr,charIpAdd, uiLen);
-    EXPECT_EQ(iRet,MP_FAILED); // ÎÞÐ§IP·µ»ØÖµ£¬´úÂëÖÐ¶¨ÒåµÄ
+    EXPECT_EQ(iRet,MP_FAILED); // ï¿½ï¿½Ð§IPï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½
 
     uiLen = 16;
     iRet = CIP::IPV6StrToUInt(strIpAddr,charIpAdd, uiLen);
@@ -211,9 +211,9 @@ TEST_F(IPTest, GetListenPort)
 
 
 /*
- * ÓÃÀýÃû³Æ£º¶ÁÈ¡»·¾³ÅäÖÃÎÄ¼þ³É¹¦
- * Ç°ÖÃÌõ¼þ£º»·¾³ÅäÖÃÎÄ¼þ´æÔÚ£¬ÇÒ¶ÁÈ¡ÄÚÈÝ³É¹¦
- * checkµã£ºGetBuildINEnvironmentTyper³É¹¦
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½É¹ï¿½
+ * Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½Ò¶ï¿½È¡ï¿½ï¿½ï¿½Ý³É¹ï¿½
+ * checkï¿½ã£ºGetBuildINEnvironmentTyperï¿½É¹ï¿½
  */
 TEST_F(IPTest, GetBuildINEnvironmentTypeSuccessTest)
 {
@@ -226,9 +226,9 @@ TEST_F(IPTest, GetBuildINEnvironmentTypeSuccessTest)
 }
 
 /*
- * ÓÃÀýÃû³Æ£º¶ÁÈ¡»·¾³ÅäÖÃÎÄ¼þÊ§°Ü
- * Ç°ÖÃÌõ¼þ£ºNA
- * checkµã£º»·¾³ÅäÖÃÎÄ¼þ²»´æÔÚ
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ê§ï¿½ï¿½
+ * Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½NA
+ * checkï¿½ã£ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 TEST_F(IPTest, GetBuildINEnvironmentTypeFailedTest)
 {
@@ -240,9 +240,9 @@ TEST_F(IPTest, GetBuildINEnvironmentTypeFailedTest)
 }
 
 /*
- * ÓÃÀýÃû³Æ£º¶ÁÈ¡»·¾³ÅäÖÃÎÄ¼þÊ§°Ü
- * Ç°ÖÃÌõ¼þ£º»·¾³ÅäÖÃÎÄ¼þ´æÔÚ
- * checkµã£º¶ÁÈ¡»·¾³ÅäÖÃÎÄ¼þ³É¹¦
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ê§ï¿½ï¿½
+ * Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
+ * checkï¿½ã£ºï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½É¹ï¿½
  */
 TEST_F(IPTest, GetBuildINEnvironmentTypeTest)
 {
@@ -255,9 +255,9 @@ TEST_F(IPTest, GetBuildINEnvironmentTypeTest)
 }
 
 /*
- * ÓÃÀýÃû³Æ£º¶ÁÈ¡»·¾³±äÁ¿³É¹¦
- * Ç°ÖÃÌõ¼þ£º»·¾³±äÁ¿´æÔÚ
- * checkµã£º¶ÁÈ¡»·¾³±äÁ¿³É¹¦
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½
+ * Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ * checkï¿½ã£ºï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½
  */
 TEST_F(IPTest, GetHostEnvSuccTest)
 {
@@ -268,9 +268,9 @@ TEST_F(IPTest, GetHostEnvSuccTest)
 }
 
 /*
- * ÓÃÀýÃû³Æ£º¶ÁÈ¡»·¾³±äÁ¿Ê§°Ü
- * Ç°ÖÃÌõ¼þ£º»·¾³±äÁ¿²»´æÔÚ
- * checkµã£º¶ÁÈ¡»·¾³±äÁ¿Ê§°Ü
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
+ * Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ * checkï¿½ã£ºï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
  */
 TEST_F(IPTest, GetHostEnvFailTest)
 {

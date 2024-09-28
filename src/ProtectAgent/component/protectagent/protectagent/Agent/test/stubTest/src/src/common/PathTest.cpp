@@ -28,7 +28,7 @@ static char *StubTestDirname(char * path){
 
 /*------------------------------------------------------------
 Function Name: 
-Description  : Õâ¸ö²âÊÔÓÃÀýÖ»ÊÇÒ»¸östubµÄ²âÊÔÊ¾Àý
+Description  : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Ò»ï¿½ï¿½stubï¿½Ä²ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½
 Return       :
 Call         :
 Called by    :
@@ -50,7 +50,7 @@ TEST_F(PathTest, JustAnExampleForStub){
 
 /*------------------------------------------------------------
 Function Name: 
-Description  : ¶ÔCPath::Init(mp_char *)º¯Êý½øÐÐ²âÊÔ
+Description  : ï¿½ï¿½CPath::Init(mp_char *)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½
 Return       :
 Call         :
 Called by    :
