@@ -12,7 +12,7 @@
 set +x
 
 #@dest:  query oracle host role for oracle 
-#@date:  2020-07-04
+#@date:
 #@authr: 
 USAGE="Usage: ./oraclequeryrole.sh AgentRoot PID"
 
