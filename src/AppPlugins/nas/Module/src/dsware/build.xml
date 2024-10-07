@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!--
+ This file is a part of the open-eBackup project.
+ This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one at
+ http://mozilla.org/MPL/2.0/.
+
+ Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+
+ THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+-->
+<project name="vrmVBSTool" default="buildAll" basedir="">
+
+    <!--define project path constant -->
+    <property name="current.path" location="/" />
+    <property name="lib.parent.path" location="../../" />
+
+    <!-- The file directory where vrmVBSTool.jar will be copied to, temply defined, should be modified at last-->
+    <property name="tool.project.path" location="/" />
+    <property name="tool.build.path" location="${current.path}/build" />
+    <property name="tool.class.path" location="${tool.build.path}/classes" />
+    <property name="tool.jar.path" location="${tool.build.path}/jar" />
+    <property name="tool.jar.name" value="vrmVBSTool.jar" />
+
+    <target name="buildAll" depends="init,compile">
+    </target>
+
+    <!--  tool build classpath -->
+    <path id="tool.classpath">
+        <fileset dir="${lib.parent.path}/platform/dsware_rel/api_lib/" >
+            <include name="*.jar" />
+        </fileset>
+        <fileset dir="${lib.parent.path}/platform/dsware_rel/dependency_lib/" >
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <target name="init">
+        <delete dir="${tool.build.path}" failonerror="false" />
+        <mkdir dir="${tool.build.path}" />
+        <mkdir dir="${tool.class.path}" />
+        <mkdir dir="${tool.jar.path}" />
+    </target>
+
+    <target name="compile">
+        <javac srcdir="${tool.project.path}/com" destdir="${tool.class.path}" debug="true" fork="true" includeantruntime="yes">
+            <classpath>
+                <path refid="tool.classpath" />
+            </classpath>
+        </javac>
+
+        <jar destfile="${tool.jar.path}/${tool.jar.name}" basedir="${tool.class.path}">
+        </jar>
+    </target>
+
+    <target name="clean">
+        <delete dir="${tool.build.path}" />
+    </target>
+</project>

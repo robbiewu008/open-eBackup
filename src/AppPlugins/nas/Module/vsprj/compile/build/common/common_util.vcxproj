@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DDEC0BF2-0781-3E31-8893-DB94274CB63A}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>common_util</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\bin\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">common_util.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">common_util</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\..\Module\src;..\..\..\..\Module\platform\securec\include;..\..\..\..\Module\open_src\jsoncpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;CMAKE_INTDIR="Release";common_util_EXPORTS;HAVE_STRUCT_TIMESPEC;WIN32;__WINDOWS__;AGENT_DLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BrowseInformation>true</BrowseInformation>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;CMAKE_INTDIR=\"Release\";common_util_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\code\AppPlugin_NAS\1\AppPlugins_NAS\Module\src\common\..;D:\code\AppPlugin_NAS\1\AppPlugins_NAS\Module\src\common\..\..\platform\securec\include;D:\code\AppPlugin_NAS\1\AppPlugins_NAS\Module\src\log\..;D:\code\AppPlugin_NAS\1\AppPlugins_NAS\Module\src\log\..\..\platform\securec\include;D:\code\AppPlugin_NAS\1\AppPlugins_NAS\Module\src\json\..;D:\code\AppPlugin_NAS\1\AppPlugins_NAS\Module\src\json\..\..\open_src\jsoncpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\code\AppPlugin_NAS\1\AppPlugins_NAS\Module\src\common\..;D:\code\AppPlugin_NAS\1\AppPlugins_NAS\Module\src\common\..\..\platform\securec\include;D:\code\AppPlugin_NAS\1\AppPlugins_NAS\Module\src\log\..;D:\code\AppPlugin_NAS\1\AppPlugins_NAS\Module\src\log\..\..\platform\securec\include;D:\code\AppPlugin_NAS\1\AppPlugins_NAS\Module\src\json\..;D:\code\AppPlugin_NAS\1\AppPlugins_NAS\Module\src\json\..\..\open_src\jsoncpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>VssApi.lib;securec.lib;log_util.lib;jsoncppobj.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\bin\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>..\..\..\bin\bin\common_util.lib</ImportLibrary>
+      <ProgramDataBaseFile>$(OutDir)$(TargetName).pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\code\AppPlugin_NAS\winNAS_Plugins\build\ZERO_CHECK.vcxproj">
+      <Project>{C54C84AC-7C50-3B61-B5FA-2B40308D8D96}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\code\AppPlugin_NAS\winNAS_Plugins\build\output_module\json\jsoncppobj.vcxproj">
+      <Project>{D4CB33B2-0215-3CAD-970A-EB8488E9F089}</Project>
+      <Name>jsoncppobj</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\code\AppPlugin_NAS\winNAS_Plugins\build\output_module\log\log_util.vcxproj">
+      <Project>{108DD459-7225-3844-87EA-68E9C4192765}</Project>
+      <Name>log_util</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\json\jsoncppobj.dir\Release\json_reader.obj" />
+    <Object Include="..\json\jsoncppobj.dir\Release\json_value.obj" />
+    <Object Include="..\json\jsoncppobj.dir\Release\json_writer.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\Module\src\common\CleanMemPwd.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\CTime.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\Dlib.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\EnvVarManager.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\File.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\IniFile.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\JsonUtils.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\MpString.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\Path.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\Snowflake.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\Thread.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\Utils.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\Vssclient.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\common\FileSystemUtil.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

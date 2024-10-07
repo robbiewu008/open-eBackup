@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\FS_Backup\src\common\backup_layout\SqliteOps.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\common\FileAggregateTask.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\common\FileAggregator.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\common\FSBackupUtils.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\common\MergeSqliteDB.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\hostcommon\HostServiceTask.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\hostcommon\HostCopyReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\hostcommon\HostCopyWriter.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\hostcommon\HostDirReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\hostcommon\HostDirWriter.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\hostcommon\HostDeleteReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\hostcommon\HostDeleteWriter.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\hostcommon\HostHardlinkReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\hostcommon\HostHardlinkWriter.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\win32\Win32BackupEngineUtils.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\win32\Win32CopyReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\win32\Win32CopyWriter.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\win32\Win32DeleteReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\win32\Win32DeleteWriter.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\win32\Win32DirReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\win32\Win32DirWriter.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\win32\Win32HardlinkReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\win32\Win32HardlinkWriter.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\win32\Win32ServiceTask.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\archive_client\ArchiveCopyReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\archive_client\ArchiveHardlinkReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\archive_client\ArchiveDirReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\engines\archive_client\ArchiveServiceTask.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\model\model.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\model\StreamHostFilePendingMap.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\BackupMgr.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\copy\Copy.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\copy\CopyAggregator.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\copy\CopyControlFileReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\delete\Delete.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\delete\DeleteAggregator.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\delete\DeleteControlFileReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\dir\Dir.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\dir\DirAggregator.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\dir\DirControlFileReader.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\hardlink\Hardlink.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\hardlink\HardlinkAggregator.cpp" />
+    <ClCompile Include="..\..\..\FS_Backup\src\service\hardlink\HardlinkControlFileReader.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{DA2F7C49-4D58-481B-8A30-ED121C09766E}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>FSBAckup</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>FS_Backup</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\bin\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">FS_Backup</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;FSBACKUP_EXPORTS;LIBRARY_EXPORT;__WINDOWS__;WIN32;_CRT_SECURE_NO_WARNINGS;AGENT_DLL_EXPORTS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\..\Module\src;
+                                    ..\..\..\Module\src\parser;
+                                    ..\..\..\Module\src\metafile_parser;
+                                    ..\..\..\Module\src\threadpool;
+                                    ..\..\..\Module\src\common;
+                                    ..\..\..\Module\platform\securec\include;
+                                    ..\..\..\Module\open_src\jsoncpp\include;
+                                    ..\..\..\Module\open_src\boost\.libs\include;
+                                    ..\..\..\Module\open_src\sqlite\tsrc;
+                                    ..\..\..\Module\open_src\openssl\include;
+                                    ..\..\..\FS_Backup\src\model;
+                                    ..\..\..\FS_Backup\src\common;
+                                    ..\..\..\FS_Backup\src\common\backup_layout;
+                                    ..\..\..\FS_Backup\src\engines;
+                                    ..\..\..\FS_Backup\src\engines\archive_client;
+                                    ..\..\..\FS_Backup\src\engines\win32;
+                                    ..\..\..\FS_Backup\src\service;
+                                    ..\..\..\FS_Backup\src\service\copy;
+                                    ..\..\..\FS_Backup\src\service\delete;
+                                    ..\..\..\FS_Backup\src\service\dir;
+                                    ..\..\..\FS_Backup\src\service\hardlink;
+                                    ..\..\..\FS_Backup\src\engines\hostcommon;
+      </AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>..\..\..\Module\open_src\all_libs;..\..\bin\bin;</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>virtDisk.lib;setupapi.lib;uuid.lib;Rpcrt4.lib;securec.lib;libssl.lib;libcrypto.lib;log_util.lib;Crypt32.lib;system.lib;parser.lib;metafile_parser.lib;sqlite3.lib;common_util.lib;threadpool.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1972
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cluster_obj", "applications\cluster\cluster_obj.vcxproj", "{E685AA82-8CDD-3FDF-A69F-28A0195ACFE4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common_obj", "common\common_obj.vcxproj", "{2EC0F953-69C0-3E03-A45B-B606673758FC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "database-1.0.0", "database-1.0.0.vcxproj", "{41B4A0CF-1E17-3BBD-B199-F19D6B88A7F8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E685AA82-8CDD-3FDF-A69F-28A0195ACFE4} = {E685AA82-8CDD-3FDF-A69F-28A0195ACFE4}
+		{2EC0F953-69C0-3E03-A45B-B606673758FC} = {2EC0F953-69C0-3E03-A45B-B606673758FC}
+		{E9A79D4B-6008-3D2C-8EC2-B798369B46F8} = {E9A79D4B-6008-3D2C-8EC2-B798369B46F8}
+		{63384E3B-0D4C-3CDA-AF8D-C66FF8C4D066} = {63384E3B-0D4C-3CDA-AF8D-C66FF8C4D066}
+		{333D5803-AE4E-3A5F-9A57-913709B629DF} = {333D5803-AE4E-3A5F-9A57-913709B629DF}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "executor_obj", "executor\executor_obj.vcxproj", "{E9A79D4B-6008-3D2C-8EC2-B798369B46F8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "general_obj", "applications\general\general_obj.vcxproj", "{63384E3B-0D4C-3CDA-AF8D-C66FF8C4D066}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "job_obj", "job\job_obj.vcxproj", "{333D5803-AE4E-3A5F-9A57-913709B629DF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbrpctool", "dbrpctool\dbrpctool.vcxproj", "{F76A7EB4-631F-4836-BE5F-1FDA54526412}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E685AA82-8CDD-3FDF-A69F-28A0195ACFE4}.Release|x64.ActiveCfg = Release|x64
+		{E685AA82-8CDD-3FDF-A69F-28A0195ACFE4}.Release|x64.Build.0 = Release|x64
+		{2EC0F953-69C0-3E03-A45B-B606673758FC}.Release|x64.ActiveCfg = Release|x64
+		{2EC0F953-69C0-3E03-A45B-B606673758FC}.Release|x64.Build.0 = Release|x64
+		{41B4A0CF-1E17-3BBD-B199-F19D6B88A7F8}.Release|x64.ActiveCfg = Release|x64
+		{41B4A0CF-1E17-3BBD-B199-F19D6B88A7F8}.Release|x64.Build.0 = Release|x64
+		{E9A79D4B-6008-3D2C-8EC2-B798369B46F8}.Release|x64.ActiveCfg = Release|x64
+		{E9A79D4B-6008-3D2C-8EC2-B798369B46F8}.Release|x64.Build.0 = Release|x64
+		{63384E3B-0D4C-3CDA-AF8D-C66FF8C4D066}.Release|x64.ActiveCfg = Release|x64
+		{63384E3B-0D4C-3CDA-AF8D-C66FF8C4D066}.Release|x64.Build.0 = Release|x64
+		{333D5803-AE4E-3A5F-9A57-913709B629DF}.Release|x64.ActiveCfg = Release|x64
+		{333D5803-AE4E-3A5F-9A57-913709B629DF}.Release|x64.Build.0 = Release|x64
+		{F76A7EB4-631F-4836-BE5F-1FDA54526412}.Release|x64.ActiveCfg = Release|x64
+		{F76A7EB4-631F-4836-BE5F-1FDA54526412}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8ABA4256-ACB6-37A9-B1E5-2B1B4A2D271B}
+	EndGlobalSection
+EndGlobal
