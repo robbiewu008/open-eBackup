@@ -16,7 +16,7 @@ inflection==0.5.1
 jsonschema==4.4.0
 attrs==21.4.0
 importlib-resources==5.7.1
-pyrsistent==0.18.1
+pyrsistent==0.19.3
 typing-extensions==4.2.0
 openapi-spec-validator==0.3.1
 openapi-schema-validator==0.2.3
