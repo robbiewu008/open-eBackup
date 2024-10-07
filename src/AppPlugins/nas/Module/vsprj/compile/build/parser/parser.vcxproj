@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\Module\src\parser\BackupFailedCtrlParser.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\CheckPointParser.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\CopyCtrlParser.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\DeleteCtrlParser.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\DirCacheParser.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\FileCacheParser.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\FileParser.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\HardlinkCtrlParser.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\MetaParser.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\MtimeCtrlParser.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\ParserUtils.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\RfiCtrlParser.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\XMetaParser.cpp" />
+    <ClCompile Include="..\..\..\..\Module\src\parser\Win32PathUtils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\json\jsoncppobj.vcxproj">
+      <Project>{d4cb33b2-0215-3cad-970a-eb8488e9f089}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\log\log_util.vcxproj">
+      <Project>{108dd459-7225-3844-87ea-68e9c4192765}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\system\system.vcxproj">
+      <Project>{ad7c5b4f-6c8d-4d91-8b1a-8ecb6f69806d}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{3894A564-167E-4F5F-AF0D-777B25FDE56F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>parser</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\bin\bin\</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">parser</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;PARSER_EXPORTS;__WINDOWS__;AGENT_DLL_EXPORTS;WIN32;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\..\..\Module\src;
+                                    ..\..\..\..\Module\src\common;
+                                    ..\..\..\..\Module\src\log;
+                                    ..\..\..\..\Module\platform\securec\include;
+                                    ..\..\..\..\Module\open_src\boost\.libs\include;
+                                    ..\..\..\..\Module\open_src\jsoncpp\include;
+                                    ..\..\..\..\Module\open_src\openssl\include;
+      </AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>log_util.lib;jsoncppobj.lib;system.lib;securec.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\..\Module\open_src\all_libs;..\..\..\bin\bin;</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

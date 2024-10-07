@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Object Include="..\..\..\plugins\database\vsprj\executor\executor_obj.dir\$(Configuration)\JobDetail.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\executor\executor_obj.dir\$(Configuration)\LocalCmdExector.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\executor\executor_obj.dir\$(Configuration)\ParamHandler.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\executor\executor_obj.dir\$(Configuration)\ParseConfigFile.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\executor\executor_obj.dir\$(Configuration)\UniqueId.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\job\job_obj.dir\$(Configuration)\CommonJobFactory.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\job\job_obj.dir\$(Configuration)\DBPlugin.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\job\job_obj.dir\$(Configuration)\JobControl.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\applications\general\general_obj.dir\$(Configuration)\CommonBackupJob.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\applications\general\general_obj.dir\$(Configuration)\CommonBackupService.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\applications\general\general_obj.dir\$(Configuration)\CommonCancelLivemountJob.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\applications\general\general_obj.dir\$(Configuration)\CommonDBJob.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\applications\general\general_obj.dir\$(Configuration)\CommonDelCopyJob.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\applications\general\general_obj.dir\$(Configuration)\CommonLivemountJob.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\applications\general\general_obj.dir\$(Configuration)\CommonRestoreJob.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\applications\general\general_obj.dir\$(Configuration)\ReportJobDetailHandler.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\applications\cluster\cluster_obj.dir\$(Configuration)\ClusterOperation.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\common\common_obj.dir\$(Configuration)\DBPluginPath.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\applications\general\general_obj.dir\$(Configuration)\CommonCheckCopyJob.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="..\..\..\plugins\database\vsprj\applications\general\general_obj.dir\$(Configuration)\CommonInstantRestoreJob.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Object Libraries">
+      <UniqueIdentifier>{7A00409C-13A3-3B57-8582-E62064E6B2EF}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

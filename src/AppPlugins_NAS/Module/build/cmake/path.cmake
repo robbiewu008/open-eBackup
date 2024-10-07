@@ -1,2 +1,0 @@
-SET(OPEN_SRC ${CMAKE_CURRENT_SOURCE_DIR}/../../third_open_src)
-SET(PLATFORM ${CMAKE_CURRENT_SOURCE_DIR}/../../platform)
