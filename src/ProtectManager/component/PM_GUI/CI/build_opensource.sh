@@ -56,6 +56,7 @@ function copy_pkgs() {
 	cp -f ${PM_MS_DIR}/src/service/target/PM_GUI.tar.gz ${PM_MS_DIR}/pkg/
 	find  ${PM_MS_DIR}/pkg/ -type d | xargs chmod 700
 	find ${PM_MS_DIR}/pkg/ -type f | xargs chmod 550
+	cp ${PM_MS_DIR}/pkg/PM_GUI.tar.gz ${BASE_PATH}/pkg/mspkg/
 	if [ $? -ne 0 ]; then
 		echo [INFO] copy pkg Failed.
 		exit 1
@@ -156,6 +157,7 @@ function main(){
 		copy_pkgs
 	else
 		build_private
+		copy_pkgs
 		if [ $? -ne 0 ]; then    
 			echo [INFO] private compile Failed.
 			exit 1

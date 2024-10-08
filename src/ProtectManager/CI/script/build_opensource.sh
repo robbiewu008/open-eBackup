@@ -56,25 +56,27 @@ function compile() {
 	PM_MS_LIST="PM_GUI PM_System_Base_Common_Service PM_Data_Protection_Service PM_Nginx PM_Database_Version_Migration PM_Config"
 	for pmservice in ${PM_MS_LIST}; do
 		echo "start compile ${pmservice}!"
-		cd ${BASE_PATH}/component/${pmservice}/CI
 		if [ "${pmservice}" == "PM_System_Base_Common_Service" ]; then
-			sh build_opensource.sh "${AGENT_BRANCH}" "${STEP_LEVEL}" "${BUILD_PKG_TYPE}" "${REPO_PATH}"
+			cd ${BASE_PATH}/component/${pmservice}/CI
+			sh build_opensource.sh "${AGENT_BRANCH}" "${STEP_LEVEL}" "${BUILD_PKG_TYPE}" "${REPO_PATH}/ProtectManager"
 			if [ $? -ne 0 ]; then
 				echo "${pmservice} compile failed"
 				exit 1
 			fi
 		elif [ "${pmservice}" == "PM_GUI" ]; then
-      sh build_opensource.sh "${REPO_PATH}"
-      if [ $? -ne 0 ]; then
-        echo "${pmservice} compile failed"
-        exit 1
-      fi
+			cd ${BASE_PATH}/component/${pmservice}/CI
+			sh build_opensource.sh "${REPO_PATH}/ProtectManager"
+			if [ $? -ne 0 ]; then
+				echo "${pmservice} compile failed"
+				exit 1
+			fi
+			cp ${REPO_PATH}/ProtectManager/${pmservice}.tar.gz  ${BASE_PATH}/pkg/mspkg/
 		else 
-		  local L_COMPONENTS_DIR="${BASE_PATH}/component"
-		  if [ -d ${L_COMPONENTS_DIR}/${pmservice}/pkg ]; then
-        cp  ${REPO_PATH}/${pmservice}.tar.gz ${L_COMPONENTS_DIR}/${pmservice}/pkg/
-      fi
-		  cp ${REPO_PATH}/${pmservice}.tar.gz  ${BASE_PATH}/pkg/mspkg
+			local L_COMPONENTS_DIR="${BASE_PATH}/component"
+			if [ -d ${L_COMPONENTS_DIR}/${pmservice}/pkg ]; then
+				cp  ${REPO_PATH}/ProtectManager/${pmservice}.tar.gz ${L_COMPONENTS_DIR}/${pmservice}/pkg/
+			fi
+		  cp ${REPO_PATH}/ProtectManager/${pmservice}.tar.gz  ${BASE_PATH}/pkg/mspkg/
 		fi
 	done
 }
