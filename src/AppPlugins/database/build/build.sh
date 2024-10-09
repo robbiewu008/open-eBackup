@@ -11,7 +11,7 @@
 # EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-
+set -x
 SYS_NAME=`uname -s`
 BASE_PATH=""
 if [ "${SYS_NAME}" = "AIX" ]; then
@@ -23,9 +23,7 @@ DB_INC_PATH="${BASE_PATH}/inc"
 DB_LIB_PATH="${BASE_PATH}/lib"
 DB_BIN_PATH="${BASE_PATH}/bin"
 DB_BUILD_PATH="${BASE_PATH}/build-cmake"
-SCANNER_DIR="${BASE_PATH}/../../FS_Scanner"
-BACKUP_DIR="${BASE_PATH}/../../FS_Backup"
-MODULE_DIR="${BASE_PATH}/../../Module"
+MODULE_DIR="${BASE_PATH}/../common/Module"
 
 ReplaceFlagsMake()
 {
