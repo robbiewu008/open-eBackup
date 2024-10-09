@@ -13,9 +13,10 @@
 #
 # build plugin framework
 FILE_ROOT_DIR=$(cd $(dirname $0)/..; pwd)
-FRAMEWORK_DIR=$(cd "${FILE_ROOT_DIR}/../../framework"; pwd)
-MODULE_PATH=$(cd "${FILE_ROOT_DIR}/../../Module"; pwd)
+FRAMEWORK_DIR=$(cd "${FILE_ROOT_DIR}/../common/framework"; pwd)
+MODULE_PATH=$(cd "${FILE_ROOT_DIR}/../common/Module"; pwd)
 build_type=$1
+type=$2
 build_framework()
 {
     if [ -z ${MODULE_BRANCH} ];then
@@ -26,8 +27,7 @@ build_framework()
         fi
     fi
     if [ "$(uname -s)" != "AIX" ] && [ "$(uname -s)" != "SunOS" ]; then
-        if [ "${build_type}" == "ASAN" ] || [ "${build_type}" == "TSAN" ];then
-            sh ${MODULE_PATH}/build/download_3rd.sh
+        if [ "X${type}" == "XOPENSOURCE" ];then
             sh ${MODULE_PATH}/build/build_module.sh "-type=${build_type}"
         else
             sh ${FRAMEWORK_DIR}/build/download_module_from_cmc.sh "${MODULE_BRANCH}"
@@ -35,8 +35,6 @@ build_framework()
         if [ $? -ne 0 ];then
             return 1
         fi
-    elif [ "${build_type}" == "OPENSOURCE" ]; then
-        echo "build for opensource repo, no need to download from cmc!"
     else
         # AIX上Module的动态库无法从cmc下载，通过编译得到
         echo "start build module."
@@ -46,7 +44,7 @@ build_framework()
         fi
     fi
 
-    sh ${FRAMEWORK_DIR}/build/build.sh "${build_type}"
+    # sh ${FRAMEWORK_DIR}/build/build.sh "${build_type}"
     exit $?
 }
 

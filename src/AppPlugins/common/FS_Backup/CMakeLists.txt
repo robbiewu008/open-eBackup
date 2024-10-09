@@ -232,14 +232,6 @@ if(NAS)
         nfs_ctx
     )
 endif ()
-if (VOLUME AND "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
-    target_link_libraries(
-        Backup
-        PUBLIC
-        bare_metal_recovery_obj
-        VOLUMEPROTECT_OBJ
-    )
-endif()
 if (OBS)
     target_link_libraries(Backup
         PUBLIC

@@ -13,13 +13,21 @@
 #
 # build plugin framework
 FILE_ROOT_DIR=$(cd $(dirname $0)/..; pwd)
-SCANNER_DIR=$(cd "${FILE_ROOT_DIR}/../../FS_Scanner"; pwd)
-MODULE_DIR=$(cd "${FILE_ROOT_DIR}/../../Module"; pwd)
-build_type=$1
+SCANNER_DIR=${FILE_ROOT_DIR}/../common/FS_Scanner
+MODULE_DIR=${FILE_ROOT_DIR}/../common/Module
+OBLIGATION_ROOT=${MODULE_DIR}/open-source-obligation
 build_scanner()
 {
-    sh ${SCANNER_DIR}/build/make_file_scanner.sh --path=${MODULE_DIR} --NAS=OFF "-type=${build_type}"
-    exit $?
+    arch_type=$(uname -m)
+    if [ "${arch_type}" = "x86_64" ]; then
+        arch_type_dir="x86_64_centos6"
+    elif [ "${arch_type}" = "aarch64" ]; then
+        arch_type_dir="aarch64"
+    else
+        echo "ERR: Unsupported system architecture"
+    fi
+    mkdir -p ${SCANNER_DIR}/lib
+    tar xzf ${OBLIGATION_ROOT}/FS_SCANNER/Linux/${arch_type_dir}/scanner.tar.gz -C ${SCANNER_DIR}
 }
 
 build_scanner

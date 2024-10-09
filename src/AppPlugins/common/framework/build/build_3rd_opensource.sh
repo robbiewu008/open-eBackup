@@ -85,7 +85,9 @@ main()
         cd ${PLUGIN_ROOT_DIR}/dep/agent_sdk
     else
         arch_type=$(uname -m)
-        tar xzf ${OBLIGATION_ROOT}/PluginSDK/Linux/${arch_type}/plugin_sdk.tar.gz -C ${ROOT_DIR}/framework/dep/agent_sdk
+        mkdir -p ${FRAMEWORK_ROOT_DIR}/dep/agent_sdk
+        tar xzf ${OBLIGATION_ROOT}/PluginSDK/Linux/${arch_type}/plugin_sdk.tar.gz -C ${FRAMEWORK_ROOT_DIR}/dep/agent_sdk
+        cd ${FRAMEWORK_ROOT_DIR}/dep/agent_sdk
     fi
     mkdir -p ${PLUGIN_FRAMEWORK_LIB_PATH}/agent_sdk
     cp -rf lib/libpluginsdk*  ${PLUGIN_FRAMEWORK_LIB_PATH}/agent_sdk

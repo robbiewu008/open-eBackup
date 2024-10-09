@@ -12,11 +12,15 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 FILE_ROOT_DIR=$(cd $(dirname $0)/../..; pwd)
-FRAMEWORK_DIR=$(cd "${FILE_ROOT_DIR}/../../framework"; pwd)
+FRAMEWORK_DIR=$(cd "${FILE_ROOT_DIR}/../common/framework"; pwd)
+MODULE_PATH=$(cd "${FILE_ROOT_DIR}/../common/Module"; pwd)
 COMMON_PATH=${FRAMEWORK_DIR}/build/common
 . ${COMMON_PATH}/common.sh
 SCRIPT_NAME=$(basename $0)
 build_type=$1
+if [ -z "${build_type}" ];then
+    build_type="Debug"
+fi
 
 main()
 {
@@ -27,10 +31,24 @@ main()
         exit 1
     fi
 
+    # build Module
+    sh ${MODULE_PATH}/build/build_module.sh "-type=${build_type}"
+    if [ $? -ne 0 ]; then
+        log_echo "ERROR" "Building Module failed"
+        exit 1
+    fi
+
     # build backup
     sh ${FILE_ROOT_DIR}/build/build_backup.sh "-type=${build_type}"
     if [ $? -ne 0 ]; then
         log_echo "ERROR" "Building backup module failed"
+        exit 1
+    fi
+
+    # build scanner
+    sh ${FILE_ROOT_DIR}/build/build_scanner.sh "-type=${build_type}"
+    if [ $? -ne 0 ]; then
+        log_echo "ERROR" "Building plugin scanner failed"
         exit 1
     fi
 

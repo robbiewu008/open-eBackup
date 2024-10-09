@@ -3,8 +3,7 @@ add_library(host_index_obj
     ${CMAKE_CURRENT_SOURCE_DIR}/HostIndex.cpp
 )
 
-SET(PLUGIN_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../Module)
-MESSAGE("MODULE_PATH : ${PLUGIN_MODULE_PATH}")
+MESSAGE("MODULE_PATH : ${MODULE_ROOT_PATH}")
 
 target_include_directories(host_index_obj
     PRIVATE
@@ -19,22 +18,22 @@ target_include_directories(host_index_obj
     ${PLUGIN_SRC_PATH}
     ${PLUGIN_SRC_PATH}/common
     ${PLUGIN_SRC_PATH}/utils
-    ${PLUGIN_MODULE_PATH}/third_open_src/thrift_rel/include
-    ${PLUGIN_MODULE_PATH}/third_open_src/boost_rel/include
-    ${PLUGIN_MODULE_PATH}/src
-    ${PLUGIN_MODULE_PATH}/src/libsmb_ctx
+    ${MODULE_ROOT_PATH}/third_open_src/thrift_rel/include
+    ${MODULE_ROOT_PATH}/third_open_src/boost_rel/include
+    ${MODULE_ROOT_PATH}/src
+    ${MODULE_ROOT_PATH}/src/libsmb_ctx
     ${PLUGIN_SCANNER_PATH}/interface
-    ${PLUGIN_ROOT_PATH}
+    ${PLUGIN_ROOT_PATH}/common
     ${MODULE_PLATFORM_PATH}/SecureCLib_rel/include
     ${OPEN_SRC_PATH}/jsoncpp_rel/include
-    ${PLUGIN_SCANNER_PATH}/localhost_src/common
-    ${PLUGIN_SCANNER_PATH}/localhost_src/checkpoint
-    ${PLUGIN_SCANNER_PATH}/localhost_src/filter
-    ${PLUGIN_SCANNER_PATH}/localhost_src/interface
-    ${PLUGIN_SCANNER_PATH}/localhost_src/model
-    ${PLUGIN_SCANNER_PATH}/localhost_src/service
-    ${PLUGIN_SCANNER_PATH}/localhost_src/statistics
-    ${PLUGIN_SCANNER_PATH}/localhost_src/utils
+    ${PLUGIN_SCANNER_PATH}/include/common
+    ${PLUGIN_SCANNER_PATH}/include/checkpoint
+    ${PLUGIN_SCANNER_PATH}/include/filter
+    ${PLUGIN_SCANNER_PATH}/include/interface
+    ${PLUGIN_SCANNER_PATH}/include/model
+    ${PLUGIN_SCANNER_PATH}/include/service
+    ${PLUGIN_SCANNER_PATH}/include/statistics
+    ${PLUGIN_SCANNER_PATH}/include/utils
 )
 
 target_link_libraries(host_index_obj

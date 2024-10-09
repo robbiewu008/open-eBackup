@@ -149,5 +149,4 @@ main()
     build_module "$@"
 }
 main "$@"
-exit 0
 exit $?

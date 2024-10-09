@@ -18,9 +18,6 @@
 #include "utils/PluginUtilities.h"
 #include "config_reader/ConfigIniReader.h"
 #include "host_backup/HostBackup.h"
-#ifdef __linux__
-#include "volume_backup/VolumeBackup.h"
-#endif
 
 using namespace std;
 using namespace AppProtect;
@@ -230,13 +227,7 @@ FILEPLUGIN_API void CheckBackupJobType(ActionResult& returnValue, const AppProte
     auto jobCommonInfoPtr = make_shared<JobCommonInfo>(make_shared<BackupJob>(job));
     std::string appType = job.protectObject.subType;
     if (appType == VOLUME_STR) {
-#ifdef __linux__
-        auto jobptr = std::make_shared<VolumeBackup>();
-        jobptr->SetJobInfo(jobCommonInfoPtr);
-        ret = jobptr->CheckBackupJobType();
-#else
-    ERRLOG("Volume backup is not implemented on this platform");
-#endif
+        ERRLOG("Volume backup is not implemented on this platform");
     } else if (appType == FILESET_STR) {
         auto jobptr = std::make_shared<HostBackup>();
         jobptr->SetJobInfo(jobCommonInfoPtr);

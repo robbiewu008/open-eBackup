@@ -13,8 +13,8 @@
 #
 # build plugin framework
 FILE_ROOT_DIR=$(cd $(dirname $0)/..; pwd)
-BACKUP_DIR=$(cd "${FILE_ROOT_DIR}/../../FS_Backup"; pwd)
-MODULE_DIR=$(cd "${FILE_ROOT_DIR}/../../Module"; pwd)
+BACKUP_DIR=$(cd "${FILE_ROOT_DIR}/../common/FS_Backup"; pwd)
+MODULE_DIR=$(cd "${FILE_ROOT_DIR}/../common/Module"; pwd)
 build_type=$1
 build_backup()
 {

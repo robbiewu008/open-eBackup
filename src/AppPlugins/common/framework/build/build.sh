@@ -119,17 +119,17 @@ main()
     fi
 
     # first: build 3rd opensource (build thrift tool, etc.)
-    if [ "X${type}" == "X" -o "X${type}" == "Xcompile_opensrc" -o ${type_beyond} -gt 0 ];then
+    if [ "X${type}" == "X" -o "X${type}" == "XOPENSOURCE" -o ${type_beyond} -gt 0 ];then
         build_plugin_opensrc ${type}
     fi
 
     # second: generate thrift codes
-    if [ "X${type}" == "X" -o "X${type}" == "Xgenerate_thrift" -o ${type_beyond} -gt 0 ];then
+    if [ "X${type}" == "X" -o "X${type}" == "Xgenerate_thrift" -o "X${type}" == "XOPENSOURCE" -o ${type_beyond} -gt 0 ];then
         genrate_thrift_files
     fi
 
     # third: build plugin codes
-    if [ "X${type}" == "X" -o "X${type}" == "Xbuild" -o ${type_beyond} -gt 0 ];then
+    if [ "X${type}" == "X" -o "X${type}" == "Xbuild" -o "X${type}" == "XOPENSOURCE" -o ${type_beyond} -gt 0 ];then
         build_plugin_framework "${type}"
     fi
 }

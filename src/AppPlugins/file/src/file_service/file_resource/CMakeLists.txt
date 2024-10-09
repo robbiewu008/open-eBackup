@@ -15,7 +15,7 @@ target_include_directories(app_service_obj
     ${PLUGIN_COMMON_PATH}/constant
     ${PLUGIN_COMMON_PATH}
     ${PLUGIN_SRC_PATH}
-    ${PLUGIN_ROOT_PATH}
+    ${PLUGIN_ROOT_PATH}/common
     ${MODULE_ROOT_PATH}/src
     ${OPEN_SRC_PATH}/boost_rel/include
     ${OPEN_SRC_PATH}/jsoncpp_rel/include
