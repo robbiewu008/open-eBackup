@@ -20,31 +20,12 @@ else
     BASE_PATH="$(cd "$(dirname "$BASH_SOURCE")/../.." && pwd)"
 fi
 BUILD_SRC_PATH=${BASE_PATH}/build
-FRAMEWORK_PATH=${BASE_PATH}/../../framework
+FRAMEWORK_PATH=${BASE_PATH}/../common/framework
 FRAMEWORK_BUILD_PATH=${FRAMEWORK_PATH}/build
 DATABESE_PLUGIN_PATH=${BASE_PATH}/applications
 
-move_generaldb_plugin_code()
-{
-    # 强制覆盖上层目录
-    if [ "${SYS_NAME}" = "AIX" ]; then
-        \cp -R "${BASE_PATH}"/plugins/database/* "${BASE_PATH}"/
-    else
-        cp -rf "${BASE_PATH}"/plugins/database/* "${BASE_PATH}"/
-    fi
-    if [ $? -ne 0 ]; then
-        echo "Failed to move generaldb code."
-        exit 1
-    fi
-}
-
 main()
 {
-    move_generaldb_plugin_code
-    # 内置编译framework框架之前先修改PLUGIN_TYPE=1
-    if [ ${INTERNAL_PLUGIN} = "1" ]; then
-        sed -i "s/PLUGIN_TYPE=0/PLUGIN_TYPE=1/g" ${FRAMEWORK_BUILD_PATH}/common/common.sh
-    fi
     sh ${FRAMEWORK_BUILD_PATH}/build.sh OPENSOURCE
     if [ $? -ne 0 ] ; then
         echo "build framework failed."

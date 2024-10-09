@@ -23,20 +23,22 @@ else
 fi
 APPLICATIONS_BUILD_PATH="${DATABASE_PATH}/applications/build"
 PLUGINS_PATH="${DATABASE_PATH%/*}"
-FRAMEWORK_PATH="${PLUGINS_PATH%/*}/framework"
-MODULE_PATH="${PLUGINS_PATH%/*}/Module"
-OUTPUT_PKG_PATH="${PLUGINS_PATH%/*}/framework/output_pkg"
+FRAMEWORK_PATH="${PLUGINS_PATH%/*}/AppPlugins/common/framework"
+MODULE_PATH="${PLUGINS_PATH%/*}/AppPlugins/common/Module"
+OUTPUT_PKG_PATH="${PLUGINS_PATH%/*}/AppPlugins/common/framework/output_pkg"
 
 # open-source-obligation
-OPEN_OBLIGATION_ROOT_PATH="${PLUGINS_PATH}/../../open-source-obligation"
+OPEN_OBLIGATION_ROOT_PATH="${MODULE_PATH}/open-source-obligation"
 OPEN_OBLIGATION_TRDPARTY_PATH="${OPEN_OBLIGATION_ROOT_PATH}/ThirdParty"
 OPEN_OBLIGATION_PLUGIN_PATH="${OPEN_OBLIGATION_ROOT_PATH}/Plugin"
 PYTHON_PLG_PKG_PATH=${PLUGINS_PATH}/python3_pluginFrame
 
 MODULE_PKG_PATH=${OPEN_OBLIGATION_PLUGIN_PATH}/Module
-FS_SCANNER_PKG_PATH=${OPEN_OBLIGATION_PLUGIN_PATH}/FS_SCANNER
-FS_BACKUP_PKG_PATH=${OPEN_OBLIGATION_PLUGIN_PATH}/FS_BACKUP
-APP_GENERALDB_PKG_PATH=${OPEN_OBLIGATION_PLUGIN_PATH}/AppPlugins_GeneralDB/Linux/plugins/database
+FS_SCANNER_PKG_PATH=${OPEN_OBLIGATION_ROOT_PATH}/FS_SCANNER
+FS_BACKUP_PKG_PATH=${OPEN_OBLIGATION_ROOT_PATH}/FS_BACKUP
+APP_GENERALDB_PKG_PATH=${OPEN_OBLIGATION_ROOT_PATH}/Plugins
+
+INTERNAL_PLUGIN=0
 
 function download_module_pkg() {
     if [ "${SYS_ARCH}" == "aarch64" ]; then
@@ -68,8 +70,8 @@ download_and_pack_module() {
         return 0
     fi
 
-    #下载Module_rel.tar.gz软件包
-    download_module_pkg
+    #编译Moudle
+    sh ${MODULE_PATH}/build/build_module.sh
     if [ $? -ne 0 ]; then
         exit 1
     fi
@@ -235,7 +237,7 @@ download_python3_pluginFrame() {
     COMPOENT_VERSION="1.2.1RC1"
     OPEN_SOURCE_TYPE="third_party_groupware"
     pkg_name=OceanProtect_X8000_${COMPOENT_VERSION}_Opensrc_3rd_SDK_${SYSTEM_NAME}_${OS_TYPE}.tar.gz
-    cp ${OPEN_OBLIGATION_TRDPARTY_PATH}/${SYSTEM_NAME}/${OPEN_SOURCE_TYPE}/${pkg_name} ${ext_pkg_path}
+    cp ${OPEN_OBLIGATION_TRDPARTY_PATH}/${SYSTEM_NAME}/${OS_TYPE}/${OPEN_SOURCE_TYPE}/${pkg_name} ${ext_pkg_path}
     if [ $? -ne 0 ]; then
         echo "Copy ${pkg_name} python package failed."
         exit 1
@@ -507,6 +509,8 @@ download_and_pack_backup() {
 }
 
 execute_app_build() {
+    mkdir -p ${OUTPUT_PKG_PATH}/bin/applications
+    mkdir -p ${OUTPUT_PKG_PATH}/conf
     sh ${APPLICATIONS_BUILD_PATH}/build.sh ${OUTPUT_PKG_PATH}/bin/applications ${OUTPUT_PKG_PATH}/conf
     if [ $? -ne 0 ]; then
         echo "Failed to execute the application build script."
@@ -515,10 +519,16 @@ execute_app_build() {
 }
 
 copy_app_binary() {
-    local apps_path="$APP_GENERALDB_PKG_PATH/applications"
+    mkdir -p ${PLUGINS_PATH}/opensrc_temp
+    tar -xvf $APP_GENERALDB_PKG_PATH/database_x86_64.tar.gz -C ${PLUGINS_PATH}/opensrc_temp
+    local apps_path="${PLUGINS_PATH}/opensrc_temp/applications"
     local script_dest_path="${OUTPUT_PKG_PATH}/bin/applications"
-    cp -rf "$apps_path/*" ${script_dest_path}
+    cp -rf $apps_path/* $script_dest_path
+    rm -rf $script_dest_path/conf
+    cp -rf $apps_path/conf/*  ${OUTPUT_PKG_PATH}/conf
+    cp -rf ${PLUGINS_PATH}/opensrc_temp/backint ${OUTPUT_PKG_PATH}/bin
     chmod -R 550 "$script_dest_path"
+    rm -rf ${PLUGINS_PATH}/opensrc_temp
 }
 
 execute_pack_script() {
@@ -534,7 +544,6 @@ download_xtrabackup_script() {
         return 0
     fi
 
-    #xtrabackup为mysql的备份工具，只支持centos7以上，所以这里单独下载centos7的开源包
     SYSTEM_NAME="CentOS7.6"
     if [ "${SYS_ARCH}" == "aarch64" ]; then
         OS_TYPE="ARM"
@@ -545,11 +554,10 @@ download_xtrabackup_script() {
     [ -d ${ext_pkg_path} ] && rm -rf ${ext_pkg_path}
     mkdir -p ${ext_pkg_path}
 
-    #从本地的三方目录拷贝相应依赖软件包到指定目录
     COMPOENT_VERSION="1.2.1RC1"
     OPEN_SOURCE_TYPE="third_party_groupware"
     local pkg_name="OceanProtect_X8000_${COMPOENT_VERSION}_Opensrc_3rd_SDK_${SYSTEM_NAME}_${OS_TYPE}.tar.gz"
-    cp ${OPEN_OBLIGATION_TRDPARTY_PATH}/${SYSTEM_NAME}/${OPEN_SOURCE_TYPE}/${pkg_name} ${ext_pkg_path}
+    cp ${OPEN_OBLIGATION_TRDPARTY_PATH}/${SYSTEM_NAME}/${OS_TYPE}/${OPEN_SOURCE_TYPE}/${pkg_name} ${ext_pkg_path}
     if [ $? -ne 0 ]; then
         echo "Copy ${pkg_name} failed, pls check"
         exit 1
@@ -599,7 +607,6 @@ download_xtrabackup_script() {
         cp -f ${ext_pkg_path}/3rd/agent/xtrabackup_agent_rel/bin/xtrabackup ${OUTPUT_PKG_PATH}/bin/xtrabackup8
     fi
 
-    # 拷贝xtrabackup8依赖：libgcrypt.so.11
     if [ ! -f ${ext_pkg_path}/3rd/agent/xtrabackup_agent_rel/lib/libgcrypt.so.11 ]; then
         echo "The libgcrypt.so.11 cannot be found."
         exit 1
@@ -608,8 +615,6 @@ download_xtrabackup_script() {
     fi
 }
 
-#suse11的glibc是2.11 centos6编译出来的库是2.12的，所以单独编译了suse11的boost上传到cmc
-#这里下载suse11的boost库
 download_suse11_boost() {
     if [ "${SYS_ARCH}" = "aarch64" ] || [ "${SYS_NAME}" = "AIX" ]; then
         return 0
@@ -619,11 +624,11 @@ download_suse11_boost() {
     OS_TYPE="X86"
     COMPOENT_VERSION=1.2.1RC1
     OPEN_SOURCE_TYPE="third_party_groupware"
-    local ext_pkg_path=${APPLICATIONS_BUILD_PATH}/boost/
+    local ext_pkg_path=${PLUGINS_PATH}/opensrc_temp/boost/
     [ -d ${ext_pkg_path} ] && rm -rf ${ext_pkg_path}
     mkdir -p ${ext_pkg_path}
     local pkg_name=OceanProtect_X8000_${COMPOENT_VERSION}_Opensrc_3rd_SDK_${SYSTEM_NAME}_${OS_TYPE}.tar.gz
-    cp ${OPEN_OBLIGATION_TRDPARTY_PATH}/${SYSTEM_NAME}/${OPEN_SOURCE_TYPE}/${pkg_name} ${ext_pkg_path}
+    cp ${OPEN_OBLIGATION_TRDPARTY_PATH}/${SYSTEM_NAME}/${OS_TYPE}/${OPEN_SOURCE_TYPE}/${pkg_name} ${ext_pkg_path}
     if [ $? -ne 0 ]; then
         echo "Copy ${pkg_name} failed, pls check"
         exit 1
@@ -679,4 +684,4 @@ main() {
     echo "#######################################################################################################"
 }
 
-main $@
+main "$@"
