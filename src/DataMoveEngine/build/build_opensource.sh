@@ -11,9 +11,7 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 EBACK_BASE_DIR="$(cd "$(dirname "$BASH_SOURCE")/../";pwd)"
  
-CODE_BRANCH=$1
-INF_BRANCH=$2
-BIN_PATH=$3
+BIN_PATH=$1
  
 cp -r ${BIN_PATH}/DataMoveEngine/pkg ${EBACK_BASE_DIR}/
 if [ $? -ne 0 ];then
@@ -22,7 +20,7 @@ if [ $? -ne 0 ];then
 fi
 
 cd "${EBACK_BASE_DIR}/CI/script"
-sh build_image_opensource.sh ${CODE_BRANCH} ${INF_BRANCH}
+sh build_image_opensource.sh
 if [ $? -ne 0 ];then
     echo -e "Build dme images failed"
     return 1
