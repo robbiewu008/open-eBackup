@@ -19,7 +19,11 @@ COMMON_PATH=${SCRIPT_PATH}/common
 . ${COMMON_PATH}/branch.sh
 . ${COMMON_PATH}/common_artget.sh
 SCRIPT_NAME=$(basename $0)
-OBLIGATION_ROOT=${MODULE_ROOT}/open-source-obligation
+OBLIGATION_ROOT=${binary_path}
+if [ -z "$OBLIGATION_ROOT" ]; then
+    log_echo "ERROR" "Please export binary_path={open-source-obligation path}"
+    exit 1
+fi
 
 download_module_opensrc() {
     log_echo "DEBUG" "make module open src"
@@ -33,7 +37,7 @@ download_module_opensrc() {
         exit 1
     fi
 
-    sh ${MODULE_ROOT}/build/download_3rd_opensource.sh
+    sh ${MODULE_ROOT}/build/download_3rd_opensource.sh ${OBLIGATION_ROOT}
     if [ $? -ne 0 ]; then
         log_echo "ERROR" "download open src failed"
         exit 1
@@ -85,7 +89,9 @@ main()
         cd ${PLUGIN_ROOT_DIR}/dep/agent_sdk
     else
         arch_type=$(uname -m)
-        tar xzf ${OBLIGATION_ROOT}/PluginSDK/Linux/${arch_type}/plugin_sdk.tar.gz -C ${ROOT_DIR}/framework/dep/agent_sdk
+        mkdir -p ${FRAMEWORK_ROOT_DIR}/dep/agent_sdk
+        tar xzf ${OBLIGATION_ROOT}/PluginSDK/Linux/${arch_type}/plugin_sdk.tar.gz -C ${FRAMEWORK_ROOT_DIR}/dep/agent_sdk
+        cd ${FRAMEWORK_ROOT_DIR}/dep/agent_sdk
     fi
     mkdir -p ${PLUGIN_FRAMEWORK_LIB_PATH}/agent_sdk
     cp -rf lib/libpluginsdk*  ${PLUGIN_FRAMEWORK_LIB_PATH}/agent_sdk

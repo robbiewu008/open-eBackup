@@ -1,4 +1,4 @@
-FILE_ROOT_DIR=$(cd "$(dirname ${BASH_SOURCE[0]})/../.."; pwd)
+#!/bin/sh
 #
 # This file is a part of the open-eBackup project.
 # This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,35 +11,59 @@ FILE_ROOT_DIR=$(cd "$(dirname ${BASH_SOURCE[0]})/../.."; pwd)
 # EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-FRAMEWORK_DIR=$(cd "${FILE_ROOT_DIR}/../../framework"; pwd)
-MODULE_THIRD_DIR=$(cd "${FILE_ROOT_DIR}/../../Module/third_open_src"; pwd)
-FRAMEWORK_OUTPUT=${FRAMEWORK_DIR}/output_pkg
-source ${FRAMEWORK_DIR}/build/common/common.sh
-SCRIPT_NAME="${BASH_SOURCE[0]##*/}"
-MODULE_LIB_DIR="${FILE_ROOT_DIR}/../../Module/lib"
-REPO_ROOT_PATH="${FILE_ROOT_DIR}/../.."
-open_source_obligation_path="${REPO_ROOT_PATH}/../../open-source-obligation/AppPlugins_NAS"
-copy_path=$1
+FILE_ROOT_DIR=$(cd $(dirname $0)/../..; pwd)
+FRAMEWORK_DIR=$(cd "${FILE_ROOT_DIR}/../common/framework"; pwd)
+MODULE_PATH=$(cd "${FILE_ROOT_DIR}/../common/Module"; pwd)
+COMMON_PATH=${FRAMEWORK_DIR}/build/common
+. ${COMMON_PATH}/common.sh
+SCRIPT_NAME=$(basename $0)
+OBLIGATION_ROOT=${binary_path}
+if [ -z "$OBLIGATION_ROOT" ]; then
+    log_echo "ERROR" "Please export binary_path={open-source-obligation path}"
+    exit 1
+fi
+build_type=$1
+if [ -z "${build_type}" ];then
+    build_type="Debug"
+fi
 
-function main()
+main()
 {
-    system_name=$(uname -p)
-    if [ "X${system_name}" != "Xaarch64" ];then
-        echo "system is no aarch64"
-        return 0
+    # build framework
+    sh ${FRAMEWORK_DIR}/build/build.sh
+    if [ $? -ne 0 ]; then
+        log_echo "ERROR" "Building plugin framework failed"
+        exit 1
     fi
-    cp -r $open_source_obligation_path/framework $REPO_ROOT_PATH
-    cp -r $open_source_obligation_path/FS_Scanner $REPO_ROOT_PATH
-    cp -r $open_source_obligation_path/Module $REPO_ROOT_PATH
-    find $REPO_ROOT_PATH -name CMakeCache.txt | xargs rm -f
-    ls $REPO_ROOT_PATH
-    ls $REPO_ROOT_PATH/framework
-    ls $REPO_ROOT_PATH/Module
-    sh pack_openrepo.sh
 
-    mkdir -p ${REPO_ROOT_PATH}/../../open-source-obligation/Plugins/Linux/aarch64
-    cp $FRAMEWORK_DIR/framework/output_pkg/* ${REPO_ROOT_PATH}/../../open-source-obligation/Plugins/Linux/aarch64
+    # build Module
+    sh ${MODULE_PATH}/build/build_module.sh "-type=${build_type}"
+    if [ $? -ne 0 ]; then
+        log_echo "ERROR" "Building Module failed"
+        exit 1
+    fi
+
+    # build backup
+    sh ${FILE_ROOT_DIR}/build/build_backup.sh "-type=${build_type}"
+    if [ $? -ne 0 ]; then
+        log_echo "ERROR" "Building backup module failed"
+        exit 1
+    fi
+
+    # build scanner
+    sh ${FILE_ROOT_DIR}/build/build_scanner.sh ${OBLIGATION_ROOT}
+    if [ $? -ne 0 ]; then
+        log_echo "ERROR" "Building plugin scanner failed"
+        exit 1
+    fi
+
+    # build file plugin
+    sh ${FILE_ROOT_DIR}/build/build_file.sh "${build_type}"
+    if [ $? -ne 0 ]; then
+        log_echo "ERROR" "Building file lib failed"
+        exit 1
+    fi
+    exit 0
 }
 
-main "$@"
-exit $?
+main

@@ -13,7 +13,7 @@
 #
 # build file plugin
 FILE_ROOT_DIR=$(cd $(dirname $0)/..; pwd)
-FRAMEWORK_DIR=$(cd "${FILE_ROOT_DIR}/../../framework"; pwd)
+FRAMEWORK_DIR=$(cd "${FILE_ROOT_DIR}/../common/framework"; pwd)
 COMMON_PATH=${FRAMEWORK_DIR}/build/common
 . ${COMMON_PATH}/common.sh
 SCRIPT_NAME=$(basename $0)

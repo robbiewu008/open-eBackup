@@ -16,7 +16,7 @@ SCRIPT_PATH=$(dirname ${BASH_SOURCE[0]})
 CURRENT_DIR=$(cd "${SCRIPT_PATH}"; pwd)
 BUILD_ROOT_DIR=$(cd "${CURRENT_DIR}/../../build"; pwd)
 # 下载 open_src 和 platform
-sh ${BUILD_ROOT_DIR}/download_3rd.sh
+sh ${BUILD_ROOT_DIR}/download_3rd_opensource.sh
 if [ $? -ne 0 ];then
     echo "Downlaod 3rd failed"
     exit 1

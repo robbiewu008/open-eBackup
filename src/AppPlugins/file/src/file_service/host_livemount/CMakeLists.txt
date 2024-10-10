@@ -4,8 +4,7 @@ add_library(host_livemount_obj
     ${CMAKE_CURRENT_SOURCE_DIR}/HostCancelLivemount.cpp
 )
 
-SET(PLUGIN_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../Module)
-MESSAGE("MODULE_PATH : ${PLUGIN_MODULE_PATH}")
+MESSAGE("MODULE_PATH : ${MODULE_ROOT_PATH}")
 
 target_include_directories(host_livemount_obj
     PRIVATE
@@ -21,10 +20,10 @@ target_include_directories(host_livemount_obj
     ${PLUGIN_SRC_PATH}/common
     ${PLUGIN_SRC_PATH}/utils
     ${PLUGIN_SRC_PATH}/file_service/snapshot_provider
-    ${PLUGIN_MODULE_PATH}/third_open_src/thrift_rel/include
-    ${PLUGIN_MODULE_PATH}/third_open_src/boost_rel/include
-    ${PLUGIN_MODULE_PATH}/src
-    ${PLUGIN_ROOT_PATH}
+    ${MODULE_ROOT_PATH}/third_open_src/thrift_rel/include
+    ${MODULE_ROOT_PATH}/third_open_src/boost_rel/include
+    ${MODULE_ROOT_PATH}/src
+    ${PLUGIN_ROOT_PATH}/common
     ${OPEN_SRC_PATH}/jsoncpp_rel/include
     ${MODULE_PLATFORM_PATH}/SecureCLib_rel/include
 )

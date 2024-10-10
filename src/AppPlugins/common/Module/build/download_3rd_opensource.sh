@@ -17,7 +17,11 @@ MODULE_ROOT=$(cd "${CURRENT_DIR}/.."; pwd)
 COMPOENT_VERSION=1.2.1RC1
 OPEN_SRC_PATH=${MODULE_ROOT}/third_open_src
 EXT_PKG_DOWNLOAD_PATH=${MODULE_ROOT}/ext_pkg
-OBLIGATION_ROOT=${MODULE_ROOT}/open-source-obligation
+OBLIGATION_ROOT=$1
+if [ -z "$OBLIGATION_ROOT" ]; then
+    echo "ERROR: Please provide open-source-obligation path"
+    exit 1
+fi
 
 # 日构建环境使用branch
 if [ -z "$THIRD_BRANCH" ];then
@@ -26,13 +30,6 @@ fi
 if [ -z "$THIRD_BRANCH" ]; then
     THIRD_BRANCH="debug_OceanProtect_DataBackup_1.6.0_openeBackup_v2"
 fi
-
-download_third_open() {
-    cd ${MODULE_ROOT}/
-    # 下载二进制仓
-    git clone -b ${THIRD_BRANCH} ssh://git@codehub-dg-y.huawei.com:2222/dpa/open-source-obligation.git
-    cd -
-}
 
 init_env_para()
 {
@@ -142,8 +139,6 @@ build_kmcv3()
 function main()
 {
     init_env_para
-
-    download_third_open
 
     uncompress_platform_pkg
 
