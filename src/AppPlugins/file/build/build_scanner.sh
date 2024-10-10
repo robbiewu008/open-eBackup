@@ -15,7 +15,11 @@
 FILE_ROOT_DIR=$(cd $(dirname $0)/..; pwd)
 SCANNER_DIR=${FILE_ROOT_DIR}/../common/FS_Scanner
 MODULE_DIR=${FILE_ROOT_DIR}/../common/Module
-OBLIGATION_ROOT=${MODULE_DIR}/open-source-obligation
+OBLIGATION_ROOT=$1
+if [ -z "$OBLIGATION_ROOT" ]; then
+    echo "ERROR: Please provide open-source-obligation path"
+    exit 1
+fi
 build_scanner()
 {
     arch_type=$(uname -m)

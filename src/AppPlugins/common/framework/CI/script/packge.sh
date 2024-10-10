@@ -25,7 +25,7 @@ main()
 {
     # build
     chmod u+x ${FRAMEWORK_DIR}/build/build.sh
-    ${FRAMEWORK_DIR}/build/build.sh
+    ${FRAMEWORK_DIR}/build/build.sh "OPENSOURCE"
     if [ $? -ne 0 ]; then
         log_echo "ERROR" "Building framework lib failed"
         exit 1

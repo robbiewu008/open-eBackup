@@ -44,14 +44,8 @@ clean_pkgs()
     rm -rf ${PLUGIN_ROOT_DIR}/build-cmake
     rm -rf ${EXT_PKG_DOWNLOAD_PATH}
 
-    chmod u+x ${PLUGIN_ROOT_DIR}/build/dme/dme_make-cmake.sh
-    ${PLUGIN_ROOT_DIR}/build/dme/dme_make-cmake.sh clean
-
-    chmod u+x ${PLUGIN_ROOT_DIR}/build/dme/download_frame_third_platform.sh
-    ${PLUGIN_ROOT_DIR}/build/dme/download_frame_third_platform.sh clean
-
-    chmod u+x ${PLUGIN_ROOT_DIR}/build/build_3rd.sh
-    ${PLUGIN_ROOT_DIR}/build/build_3rd.sh clean
+    chmod u+x ${PLUGIN_ROOT_DIR}/build/build_3rd_opensource.sh
+    ${PLUGIN_ROOT_DIR}/build/build_3rd_opensource.sh clean
 
     chmod u+x ${PLUGIN_ROOT_DIR}/build/gen_thrift.sh
     ${PLUGIN_ROOT_DIR}/build/gen_thrift.sh clean
@@ -68,13 +62,8 @@ init_comile_env()
 build_plugin_opensrc()
 {
     cd ${PLUGIN_ROOT_DIR}/build
-    if [ "$1" == "OPENSOURCE" ]; then
-        chmod u+x ${PLUGIN_ROOT_DIR}/build/build_3rd_opensource.sh
-        ${PLUGIN_ROOT_DIR}/build/build_3rd_opensource.sh
-    else
-        chmod u+x build_3rd.sh
-        ./build_3rd.sh
-    fi
+    chmod u+x ${PLUGIN_ROOT_DIR}/build/build_3rd_opensource.sh
+    ${PLUGIN_ROOT_DIR}/build/build_3rd_opensource.sh
     if [ $? -ne 0 ]; then
         log_echo "ERROR" "Compile third libs failed"
         exit 1
@@ -119,17 +108,17 @@ main()
     fi
 
     # first: build 3rd opensource (build thrift tool, etc.)
-    if [ "X${type}" == "X" -o "X${type}" == "XOPENSOURCE" -o ${type_beyond} -gt 0 ];then
-        build_plugin_opensrc ${type}
+    if [ "X${type}" == "X" -o ${type_beyond} -gt 0 ];then
+        build_plugin_opensrc
     fi
 
     # second: generate thrift codes
-    if [ "X${type}" == "X" -o "X${type}" == "Xgenerate_thrift" -o "X${type}" == "XOPENSOURCE" -o ${type_beyond} -gt 0 ];then
+    if [ "X${type}" == "X" -o "X${type}" == "Xgenerate_thrift" -o ${type_beyond} -gt 0 ];then
         genrate_thrift_files
     fi
 
     # third: build plugin codes
-    if [ "X${type}" == "X" -o "X${type}" == "Xbuild" -o "X${type}" == "XOPENSOURCE" -o ${type_beyond} -gt 0 ];then
+    if [ "X${type}" == "X" -o "X${type}" == "Xbuild" -o ${type_beyond} -gt 0 ];then
         build_plugin_framework "${type}"
     fi
 }

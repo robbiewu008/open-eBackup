@@ -19,7 +19,11 @@ COMMON_PATH=${SCRIPT_PATH}/common
 . ${COMMON_PATH}/branch.sh
 . ${COMMON_PATH}/common_artget.sh
 SCRIPT_NAME=$(basename $0)
-OBLIGATION_ROOT=${MODULE_ROOT}/open-source-obligation
+OBLIGATION_ROOT=${binary_path}
+if [ -z "$OBLIGATION_ROOT" ]; then
+    log_echo "ERROR" "Please export binary_path={open-source-obligation path}"
+    exit 1
+fi
 
 download_module_opensrc() {
     log_echo "DEBUG" "make module open src"
@@ -33,7 +37,7 @@ download_module_opensrc() {
         exit 1
     fi
 
-    sh ${MODULE_ROOT}/build/download_3rd_opensource.sh
+    sh ${MODULE_ROOT}/build/download_3rd_opensource.sh ${OBLIGATION_ROOT}
     if [ $? -ne 0 ]; then
         log_echo "ERROR" "download open src failed"
         exit 1

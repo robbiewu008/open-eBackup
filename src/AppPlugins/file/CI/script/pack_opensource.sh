@@ -11,12 +11,12 @@
 # EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-set -x
+
 FILE_ROOT_DIR=$(cd $(dirname $0)/../..; pwd)
-FRAMEWORK_DIR=$(cd "${FILE_ROOT_DIR}/../../framework"; pwd)
-PLUGIN_ROOT_PATH=$(cd "${FILE_ROOT_DIR}/../.."; pwd)
-MODULE_THIRD_DIR=$(cd "${FILE_ROOT_DIR}/../../Module/third_open_src"; pwd)
-MODULE_LIB_DIR=${PLUGIN_ROOT_PATH}/Module/lib
+APPPLUGINS_ROOT_PATH=$(cd "${FILE_ROOT_DIR}/.."; pwd)
+FRAMEWORK_DIR=$(cd "${APPPLUGINS_ROOT_PATH}/common/framework"; pwd)
+MODULE_THIRD_DIR=$(cd "${APPPLUGINS_ROOT_PATH}/common/Module/third_open_src"; pwd)
+MODULE_LIB_DIR=${APPPLUGINS_ROOT_PATH}/common/Module/lib
 FRAMEWORK_OUTPUT=${FRAMEWORK_DIR}/output_pkg
 COMMON_PATH=${FRAMEWORK_DIR}/build/common
 . ${COMMON_PATH}/common.sh
@@ -30,7 +30,7 @@ copy_boost_for_suse()
     if [ ${system_name} != "x86_64" ]; then
         return 0
     fi
-    local third_branch="develop_backup_software_1.3.0"
+    local third_branch="debug_OceanProtect_DataBackup_1.6.0_openeBackup_v2"
     if [ ${branch} != "" ];then
         third_branch=${branch}
     fi
@@ -70,12 +70,12 @@ copy_file()
     find ${MODULE_LIB_DIR} -name $libName | xargs -I{} cp -f {} ${FRAMEWORK_OUTPUT}/lib/service
 
     # Copy file plugin library
-    SCANNER_DIR=$(cd "${PLUGIN_ROOT_PATH}/FS_Scanner"; pwd)
+    SCANNER_DIR=$(cd "${APPPLUGINS_ROOT_PATH}/common/FS_Scanner"; pwd)
     SCANNER_LIB_PATH=${SCANNER_DIR}/build-cmake-file
     find ${SCANNER_LIB_PATH} -name $libName | xargs -I{} cp -f {} ${FRAMEWORK_OUTPUT}/lib/service
 
     # Copy file plugin library
-    BACKUP_DIR=$(cd "${PLUGIN_ROOT_PATH}/FS_Backup"; pwd)
+    BACKUP_DIR=$(cd "${APPPLUGINS_ROOT_PATH}/common/FS_Backup"; pwd)
     BACKUP_LIB_PATH=${BACKUP_DIR}/build-cmake
     find ${BACKUP_LIB_PATH} -name $libName | xargs -I{} cp -f {} ${FRAMEWORK_OUTPUT}/lib/service
 
@@ -100,7 +100,7 @@ copy_file()
 main()
 {
     # build plugin
-    sh ${FILE_ROOT_DIR}/CI/script/build.sh "$@"
+    sh ${FILE_ROOT_DIR}/CI/script/build_opensource.sh "$@"
     if [ $? -ne 0 ]; then
         log_echo "ERROR" "Building file lib failed"
         exit 1
