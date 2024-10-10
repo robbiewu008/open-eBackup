@@ -27,7 +27,11 @@ MODULE_PATH="${PLUGINS_PATH%/*}/AppPlugins/common/Module"
 OUTPUT_PKG_PATH="${PLUGINS_PATH%/*}/AppPlugins/common/framework/output_pkg"
 
 # open-eBackup-bin
-OPEN_OBLIGATION_ROOT_PATH="${PLUGINS_PATH}/../../open-eBackup-bin"
+OPEN_OBLIGATION_ROOT_PATH=${binary_path}
+if [ -z "$OPEN_OBLIGATION_ROOT_PATH" ]; then
+    echo "ERROR: Please export binary_path={open-source-obligation path}"
+    exit 1
+fi
 OPEN_OBLIGATION_TRDPARTY_PATH="${OPEN_OBLIGATION_ROOT_PATH}/ThirdParty"
 OPEN_OBLIGATION_PLUGIN_PATH="${OPEN_OBLIGATION_ROOT_PATH}/Plugin"
 PYTHON_PLG_PKG_PATH=${PLUGINS_PATH}/python3_pluginFrame
