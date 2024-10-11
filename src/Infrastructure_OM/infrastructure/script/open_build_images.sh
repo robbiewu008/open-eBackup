@@ -19,7 +19,7 @@ CURRENT_PATH=$(cd `dirname $0`; pwd)
 BASE_PATH=${CURRENT_PATH}/../..
 CI_PATH=${BASE_PATH}/ci
 OM_PATH=${BASE_PATH}/om
-PKG_DIR="${BASE_PATH}/../../open-source-obligation/Infrastructure_OM/infrastructure"
+PKG_DIR="${BASE_PATH}/../../../open-source-obligation/Infrastructure_OM/infrastructure"
 sh ${CI_PATH}/script/open_comm_param.sh
 source $CURRENT_PATH/commParam.sh
 G_INFRASTRUCTURE_NAME="elasticsearch gaussdb kafka redis zookeeper sftp"
@@ -40,7 +40,7 @@ function compile_gaussdb_package()
     mkdir -p GaussDB-${gaussdb_version}-aarch-64bit-Green
 
 
-    cp ${BIN_PATH}/../../openGauss-Lite-5.0.0-openEuler-aarch64.tar.gz .
+    cp ${BIN_PATH}/../openGauss-Lite-5.0.0-openEuler-aarch64.tar.gz .
     tar -zxf openGauss-Lite-5.0.0-openEuler-aarch64.tar.gz -C GaussDB-${gaussdb_version}-aarch-64bit-Green
     sed -i '561a\kernel=openEuler'  GaussDB-${gaussdb_version}-aarch-64bit-Green/install.sh
 
