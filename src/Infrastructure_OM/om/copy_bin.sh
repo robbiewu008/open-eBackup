@@ -20,7 +20,7 @@ sed -i "s/^om_version=.*/om_version=${MS_IMAGE_TAG}/g" $CURRENT_PATH/commParam.s
 source $CURRENT_PATH/commParam.sh
 PM_MS_DIR=${CURRENT_PATH}/..
 LCRP_XML_PATH=${PM_MS_DIR}/conf
-OM_PATH=${PM_MS_DIR}/../../open-source-obligation/Infrastructure_OM/om
+OM_PATH=${binary_path}/Infrastructure_OM/om
 COMPONENT_TYPE="mspkg"
 PRODUCT="dorado"
 
@@ -57,15 +57,6 @@ function compile_pkg()
     # 编译连接数据库所需的组件
     # 编译动态链接库libpq.so.5.5
     cd ${PM_MS_DIR}/package/3rd
-    #tar zxf GaussDB-Kernel_*_Server_ARM_Lite.tar.gz
-    #tar zxf GaussDB-Kernel_*_Euler_64bit_Libpq.tar.gz
-    #cp lib/libpq.so.5.5 ${PM_MS_DIR}/package/3rd/libpq.so.5.5
-    #cp lib/libssl.so ${PM_MS_DIR}/package/3rd/
-    #cp lib/libcrypto.so ${PM_MS_DIR}/package/3rd/
-    #tar zxf GaussDB-Kernel_*_Euler_64bit_Python.tar.gz
-    #rm -rf ${PM_MS_DIR}/package/3rd/GaussDB-Kernel*
-    #rm -rf ${PM_MS_DIR}/package/3rd/GaussDB-Kernel_${gaussdb_version}_Server_ARM_Lite.tar.gz
-    
     rm -rf psycopg2 lib
     tar -zxvf ${binary_path}/openGauss-*openEuler-aarch64-Python.tar.gz
     rm -f lib/libstdc++.*
@@ -112,7 +103,7 @@ function build_pkg()
     if [ ! -d ${PM_MS_DIR}/package/script ];then
         mkdir ${PM_MS_DIR}/package/script
     fi
-    
+
     cp ${CURRENT_PATH}/../scripts/check_health.sh ${PM_MS_DIR}/package
     cp ${CURRENT_PATH}/../scripts/run.sh ${PM_MS_DIR}/package
     cp ${CURRENT_PATH}/../scripts/delete_infrastructure_conf.sh ${PM_MS_DIR}/package/script

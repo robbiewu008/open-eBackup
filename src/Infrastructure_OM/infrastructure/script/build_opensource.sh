@@ -21,12 +21,6 @@ source $CURRENT_PATH/open_comm_param.sh
 # base_image
 cd "${CURRENT_PATH}"
 
-#sh build_base_image.sh debug $2
-if [ $? -ne 0 ];then
-    echo "build base images failed"
-    exit 1
-fi
-
 sh open_build_base_image.sh debug $2
 if [ $? -ne 0 ];then
     echo "build base images failed"
@@ -36,7 +30,7 @@ fi
 echo "build base images success"
 
 # om
-cd "${CURRENT_PATH}"/../../om/build
+cd "${CURRENT_PATH}"/../../om
 sh build_opensource.sh
 if [ $? -ne 0 ];then
     echo "build om images failed"

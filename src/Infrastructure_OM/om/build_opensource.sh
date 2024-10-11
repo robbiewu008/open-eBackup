@@ -19,21 +19,17 @@ CURRENT_PATH=$(cd `dirname $0`; pwd)
 echo "CURRENT_PATH"
 source $CURRENT_PATH/open_comm_param.sh
 PM_MS_DIR=${CURRENT_PATH}/..
-OM_PATH=${PM_MS_DIR}/../../../open-source-obligation/Infrastructure_OM/om
+OM_PATH=${binary_path}/Infrastructure_OM/om
 LCRP_XML_PATH=${PM_MS_DIR}/conf
-CI_DIR=${PM_MS_DIR}/../ci
+CI_DIR=${PM_MS_DIR}/../Infrastructure_OM/ci
 sh ${CI_DIR}/script/open_comm_param.sh
-
-code_branch=$(echo ${CODE_BRANCH} | tr [A-Z] [a-z])
-echo tag_image=${tag_image}
-echo code_branch=${code_branch}
 
 function build_image() {
 
     NAME=om
-    echo "Begin to build $MS_NAME"
     L_TAG=${NAME}':'${MS_IMAGE_TAG}
     MS_NAME=$(echo ${L_TAG} | sed 's/:/-/g')
+    echo "Begin to build $MS_NAME"
 
     mkdir -p "${PM_MS_DIR}/tmp/$MS_NAME/"
 
