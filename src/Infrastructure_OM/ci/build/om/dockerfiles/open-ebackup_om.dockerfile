@@ -17,6 +17,10 @@ ADD om-${OM_VERSION}.tar.gz /opt/om
 
 WORKDIR /opt/om/package
 
+RUN cd /opt/om/package/3rd \
+    && tar xzf psycopg2.tar.gz
+
+
 ## 第二阶段
 #指定基础镜像
 FROM open-ebackup-1.0:base
@@ -52,11 +56,13 @@ RUN cd /opt/om/package/3rd \
     && python3 setup.py install
 
 COPY --from=0 /opt/om/package/3rd/psycopg2 /usr/local/lib64/python3.9/site-packages/psycopg2
-COPY --from=0 /opt/om/package/3rd/lib /usr/local/lib
 
 RUN cd /opt/om/package/3rd \
+    && cp libpq.so.5.5 /usr/local/lib \
+    && cp libssl.so /usr/local/lib \
+    && cp libcrypto.so /usr/local/lib \
     && cd /usr/local/lib \
-    && ln -s libpq.so.5 libpq.so \
+    && ln -sf libpq.so.5.5 libpq.so.5 && ln -s libpq.so.5 libpq.so \
     && ldconfig \
     && cd /opt/om/package/3rd/requirements \
     && pip3 install *.whl \
@@ -80,9 +86,11 @@ RUN cd /opt/om/package/3rd \
 
 RUN echo "/usr/local/lib" >> /etc/ld.so.conf \
     && ldconfig \
-    && chown nobody:nobody /usr/local/lib/libpq.so.* \
-    && chown nobody:nobody /usr/local/lib/libssl.so.* \
-    && chown nobody:nobody /usr/local/lib/libcrypto.so.*
+    && chown nobody:nobody /usr/local/lib/libpq.so.5.5 \
+    && chown nobody:nobody /usr/local/lib/libpq.so.5 \
+    && chown nobody:nobody /usr/local/lib/libpq.so \
+    && chown nobody:nobody /usr/local/lib/libssl.so \
+    && chown nobody:nobody /usr/local/lib/libcrypto.so
 
 RUN rpm -qa | grep ^libxcrypt-devel-[0-9] | xargs -i rpm -e {} --nodeps \
     && rpm -qa | grep ^glibc-devel-[0-9] | xargs -i rpm -e {} --nodeps \

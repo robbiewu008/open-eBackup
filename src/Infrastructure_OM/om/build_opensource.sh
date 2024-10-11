@@ -19,9 +19,9 @@ CURRENT_PATH=$(cd `dirname $0`; pwd)
 echo "CURRENT_PATH"
 source $CURRENT_PATH/open_comm_param.sh
 PM_MS_DIR=${CURRENT_PATH}/..
-OM_PATH=${PM_MS_DIR}/../../../open-source-obligation/Infrastructure_OM/om
+OM_PATH=${binary_path}/Infrastructure_OM/om
 LCRP_XML_PATH=${PM_MS_DIR}/conf
-CI_DIR=${PM_MS_DIR}/../ci
+CI_DIR=${PM_MS_DIR}/../Infrastructure_OM/ci
 sh ${CI_DIR}/script/open_comm_param.sh
 
 function build_image() {

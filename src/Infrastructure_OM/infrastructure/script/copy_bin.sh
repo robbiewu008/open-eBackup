@@ -17,7 +17,7 @@
 set -x
 CURRENT_PATH=$(cd `dirname $0`; pwd)
 source $CURRENT_PATH/commParam.sh
-PACKAGE_PATH="${CURRENT_PATH}/../../../open-source-obligation/Infrastructure_OM/infrastructure"
+PACKAGE_PATH="${binary_path}/Infrastructure_OM/infrastructure"
 LCRP_XML_PATH=${CURRENT_PATH}/../conf/
 FILECLIENT_BRANCH="master_OceanProtect_DataBackup_1.6.0_smoke"
 KMC_PATH=${CURRENT_PATH}/upgrade_opensrc/kmc
@@ -118,10 +118,11 @@ function main()
         echo "cp om bin error"
         exit 1
     fi
-    rm ${PACKAGE_PATH}/gaussdb*.tar.gz
-    rm ${PACKAGE_PATH}/GaussDB*.tar.gz
-    rm ${PACKAGE_PATH}/euleros*.tar.gz
-    rm ${PACKAGE_PATH}/EulerOS*.tar.gz
+    rm -f ${PACKAGE_PATH}/gaussdb*.tar.gz
+    rm -f ${PACKAGE_PATH}/GaussDB*.tar.gz
+    rm -f ${PACKAGE_PATH}/euleros*.tar.xz
+    rm -f ${PACKAGE_PATH}/EulerOS*.tar.gz
+    rm -f ${PACKAGE_PATH}/devel_tools.tar.gz
 
     echo "cp bin success"
 }

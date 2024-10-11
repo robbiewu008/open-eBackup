@@ -20,7 +20,7 @@ source $CURRENT_PATH/commParam.sh
 LCRP_XML_PATH=${CURRENT_PATH}/../conf/
 PACKAGE_PATH=${CURRENT_PATH}/../../package
 COMPILE_PATH=${PACKAGE_PATH}/compileLib
-BIN_PATH=${CURRENT_PATH}/../../../open-source-obligation/Infrastructure_OM/infrastructure
+BIN_PATH=${binary_path}/Infrastructure_OM/infrastructure
 if [ ! -d ${COMPILE_PATH} ];then
   mkdir -p ${COMPILE_PATH}
 fi
@@ -346,7 +346,7 @@ function compile_sftp_package()
 
 function compile_package()
 {
-    # 编译publicLib下的三方开源软件，kafka、zookeeper、redis、es
+    # 编译publicLib下的三方开源软件kafka、zookeeper、redis、es
     compile_kafka_package
     compile_es_package
     compile_zk_package

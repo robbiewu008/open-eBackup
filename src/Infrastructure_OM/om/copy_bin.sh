@@ -20,7 +20,8 @@ sed -i "s/^om_version=.*/om_version=${MS_IMAGE_TAG}/g" $CURRENT_PATH/commParam.s
 source $CURRENT_PATH/commParam.sh
 PM_MS_DIR=${CURRENT_PATH}/..
 LCRP_XML_PATH=${PM_MS_DIR}/conf
-OM_PATH=${PM_MS_DIR}/../../open-source-obligation/Infrastructure_OM/om
+OM_PATH=${binary_path}/Infrastructure_OM/om
+REST_PATH=${PM_MS_DIR}/../../REST_API/Infrastructure_OM/om
 COMPONENT_TYPE="mspkg"
 PRODUCT="dorado"
 
@@ -57,21 +58,14 @@ function compile_pkg()
     # 编译连接数据库所需的组件
     # 编译动态链接库libpq.so.5.5
     cd ${PM_MS_DIR}/package/3rd
-    #tar zxf GaussDB-Kernel_*_Server_ARM_Lite.tar.gz
-    #tar zxf GaussDB-Kernel_*_Euler_64bit_Libpq.tar.gz
-    #cp lib/libpq.so.5.5 ${PM_MS_DIR}/package/3rd/libpq.so.5.5
-    #cp lib/libssl.so ${PM_MS_DIR}/package/3rd/
-    #cp lib/libcrypto.so ${PM_MS_DIR}/package/3rd/
-    #tar zxf GaussDB-Kernel_*_Euler_64bit_Python.tar.gz
-    #rm -rf ${PM_MS_DIR}/package/3rd/GaussDB-Kernel*
-    #rm -rf ${PM_MS_DIR}/package/3rd/GaussDB-Kernel_${gaussdb_version}_Server_ARM_Lite.tar.gz
-    
-    rm -rf psycopg2 lib
-    tar -zxvf ${binary_path}/openGauss-*openEuler-aarch64-Python.tar.gz
-    rm -f lib/libstdc++.*
-    rm -f lib/libgcc_s.*
-    chmod -R 755 psycopg2 lib
-
+    tar zxf GaussDB-Kernel_*_Server_ARM_Lite.tar.gz
+    tar zxf GaussDB-Kernel_*_Euler_64bit_Libpq.tar.gz
+    cp lib/libpq.so.5.5 ${PM_MS_DIR}/package/3rd/libpq.so.5.5
+    cp lib/libssl.so ${PM_MS_DIR}/package/3rd/
+    cp lib/libcrypto.so ${PM_MS_DIR}/package/3rd/
+    tar zxf GaussDB-Kernel_*_Euler_64bit_Python.tar.gz
+    rm -rf ${PM_MS_DIR}/package/3rd/GaussDB-Kernel*
+    rm -rf ${PM_MS_DIR}/package/3rd/GaussDB-Kernel_${gaussdb_version}_Server_ARM_Lite.tar.gz
     # 编译postgresql
     cd ${PM_MS_DIR}/package/3rd
     if [ -d ${PM_MS_DIR}/package/3rd/postgresql_lib ];then
@@ -90,8 +84,8 @@ function compile_pkg()
     rm -rf ${PM_MS_DIR}/package/3rd/postgresql-${postgresql_version}*
     # 修改psycopg2权限
     cd ${PM_MS_DIR}/package/3rd
-    #chmod -R 755 psycopg2
-    #tar -zcf psycopg2.tar.gz psycopg2
+    chmod -R 755 psycopg2
+    tar -zcf psycopg2.tar.gz psycopg2
     # 修改SQLAlchemy权限
     tar xzf SQLAlchemy-${SQLALCHEMY_VERSION}.tar.gz
     sed -i 's/v,/"PostgreSQL 9.2.1",/'  SQLAlchemy-${SQLALCHEMY_VERSION}/lib/sqlalchemy/dialects/postgresql/base.py
@@ -181,6 +175,7 @@ function build_pkg()
     mkdir -p ${OM_PATH}
     mkdir -p ${OM_PATH}/pkg
 	  cp -f ${PM_MS_DIR}/${om_name}-${om_version}.tar.gz ${OM_PATH}/pkg/
+	  cp -rf ${PM_MS_DIR}/package ${REST_PATH}/
 	  if [ $? -ne 0 ]; then
     echo "cp om tar.gz to WORKSPACE failed"
     exit 1
