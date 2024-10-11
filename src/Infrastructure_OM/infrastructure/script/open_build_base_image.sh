@@ -29,15 +29,6 @@ KMC_PAYH=${CURRENT_PATH}/../../../../open-source-obligation/Infrastructure_OM/in
 CBB_PYTHON_PATH=${CURRENT_PATH}/../../cbb_python
 POSTGRESQL_VERSION=15.2
 
-if [ "${CODE_BRANCH}" = "" ]; then
-    echo "Please specify base image upload branch!"
-    echo "CODE_BRANCH=$2"
-    exit 1
-else
-    inf_branch=$(echo ${CODE_BRANCH} | tr [A-Z] [a-z])
-    echo inf_branch=${inf_branch}
-fi
-
 function build_slim_image()
 {
     docker load -i ${PACKAGE_PATH}/../../openEuler-docker.aarch64.tar.xz
