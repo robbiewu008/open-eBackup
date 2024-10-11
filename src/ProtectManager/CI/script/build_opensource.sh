@@ -12,8 +12,6 @@
 
 CUR_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 BASE_PATH=${CUR_PATH}/../..
-PRODUCT="dorado" 
-CODE_BRANCH=""
 Service_Name="ProtectManager"
 REPO_PATH=$1
 STEP_LEVEL=$5
