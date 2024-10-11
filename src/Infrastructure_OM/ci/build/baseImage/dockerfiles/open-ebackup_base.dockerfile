@@ -2,9 +2,9 @@
 FROM openeuler-22.03-lts:latest
 
 #jdk版本
-ENV JDK_PACKAGE jre-8u422-linux-aarch64.tar.gz
-ENV JDK_VERSION jre1.8.0_422
-ENV COMMON_INIT_VERSION 1.0
+ENV JDK_PACKAGE jdk_package
+ENV JDK_VERSION jdk_version
+ENV COMMON_INIT_VERSION product_version
 
 WORKDIR /usr/local
 

@@ -62,7 +62,7 @@ RUN cd /opt/om/package/3rd \
     && cp libssl.so /usr/local/lib \
     && cp libcrypto.so /usr/local/lib \
     && cd /usr/local/lib \
-    && ln -sf libpq.so.5.5 libpq.so.5 && ln -s libpq.so.5 libpq.so \
+    && ln -sf libpq.so.5.5 libpq.so.5 && ln -sf libpq.so.5 libpq.so \
     && ldconfig \
     && cd /opt/om/package/3rd/requirements \
     && pip3 install *.whl \
