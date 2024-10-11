@@ -26,7 +26,7 @@ DATABESE_PLUGIN_PATH=${BASE_PATH}/applications
 
 main()
 {
-    sh ${FRAMEWORK_BUILD_PATH}/build.sh OPENSOURCE
+    sh ${FRAMEWORK_BUILD_PATH}/build.sh
     if [ $? -ne 0 ] ; then
         echo "build framework failed."
         exit 1
