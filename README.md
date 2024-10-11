@@ -101,11 +101,11 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 
     **表 1**  软件依赖
 
-|所需软件|建议版本|说明|
-|--|--|--|
-|Docker|18.09.0及后续版本|用于构建、管理、运行open-eBackup编译镜像和容器。|
-|Helm|3.13.3及后续版本|用于构建、部署open-eBackup的容器。下载地址：https://github.com/helm/helm/releases/tag/v3.13.3https://get.helm.sh/helm-v3.13.3-linux-arm64.tar.gz|
-|Git|2.33.0及后续版本|用于下载源码。|
+|所需软件|建议版本| 说明                                                                                                                                |
+|--|--|-----------------------------------------------------------------------------------------------------------------------------------|
+|Docker|18.09.0及后续版本| 用于构建、管理、运行open-eBackup编译镜像和容器。                                                                                                    |
+|Helm|3.13.3及后续版本| 用于构建、部署open-eBackup的容器。下载地址：https://github.com/helm/helm/releases/tag/v3.13.3 https://get.helm.sh/helm-v3.13.3-linux-arm64.tar.gz |
+|Git|2.33.0及后续版本| 用于下载源码。                                                                                                                           |
 
 
 1.  软件安装
@@ -156,7 +156,8 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 3.  执行以下命令下载open-eBackup引擎源码。
 
     ```
-    git clone https://gitee.com/openeuler/open-eBackup.git
+    // git clone https://gitee.com/openeuler/open-eBackup.git
+    git clone git@gitcode.com:eBackup/open-eBackup.git
     ```
 
 4.  创建open-eBackup-bin目录存放二进制文件。
@@ -170,7 +171,8 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 5.  执行以下命令下载open-eBackup所依赖的GUI源码。
 
     ```
-    git clone https://gitee.com/openeuler/LiveUI.git
+    // git clone https://gitee.com/openeuler/LiveUI.git
+    git clone https://gitcode.com/eBackup/LiveUI.git
     ```
 
     按照LiveUI的指导编译LiveUI，生成二进制包@iux，并拷贝@iux包到open-eBackup-bin目录下。
