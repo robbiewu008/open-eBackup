@@ -14,9 +14,9 @@ CUR_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 BASE_PATH=${CUR_PATH}/../..
 Service_Name="ProtectManager"
 REPO_PATH=$1
-STEP_LEVEL=$5
-BUILD_PKG_TYPE=$6
-PRODUCT_IMAGE_PATH=$7
+STEP_LEVEL=$2
+BUILD_PKG_TYPE=$3
+PRODUCT_IMAGE_PATH=$4
 
 #set bep
 if [ "${BEP}" == "YES" ]; then
