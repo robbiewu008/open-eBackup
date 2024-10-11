@@ -14,32 +14,14 @@ BASE_PATH="$(
         pwd
     )"
 
-if [ -z ${INF_BRANCH} ]; then
-	echo "Please specify base image branch!"
-	exit 1
-fi
-
-code_branch=$(echo ${CODE_BRANCH} | tr [A-Z] [a-z])
-inf_branch=$(echo ${INF_BRANCH} | tr [A-Z] [a-z])
 G_BUILD_LIST=""
 G_FIST_BUILD=""
 G_App_Common="PM_Data_Protection_Service PM_Database_Version_Migration PM_Resource_Manager PM_Config"
 
-if [ -z "${harbor_project}" ]; then
-    echo "Must specify image upload harbor_project name"
-    exit 1
-fi
-
-if [ -z "${MS_IMAGE_TAG}" ]; then
-    echo "MS_IMAGE_TAG does not exist."
-    exit 1
-fi
 echo "MS_IMAGE_TAG=${MS_IMAGE_TAG}"
 
 echo harbor_project=${harbor_project}
 echo tag_image=${tag_image}
-echo code_branch=${code_branch}
-echo inf_branch=${inf_branch}
 
 echo "modify PM version."
 sh ${BASE_PATH}/CI/script/common.sh
@@ -61,18 +43,6 @@ function copy_pkg() {
 
     rm -rf ${BASE_PATH}/pkg/image
     mkdir ${BASE_PATH}/pkg/image
-}
-
-function clean_all_docker() {
-    echo "cleanring running container!"
-    docker ps -aq > docker_id.txt
-    if [ -s docker_id.txt ];then
-        docker stop $(docker ps -qa)
-        # docker rm -f $(docker ps -qa)
-    fi
-
-    echo "Clearing all docker images"
-    docker images | tr -s ' ' | cut -d ' ' -f 3 | xargs -I {} # docker rmi -f {}
 }
 
 function build_image() {
@@ -158,13 +128,11 @@ function build_ms_image() {
     if [[ "${G_App_Common}" =~ "${MS_NAME}" ]]; then
         build_image ${MS_NAME}
     else
-        import_base_image
         build_image ${MS_NAME}
     fi
 }
 
 function main() {
-    clean_all_docker
     copy_pkg
     if [ $# = 0 ]; then
         build_all_image
