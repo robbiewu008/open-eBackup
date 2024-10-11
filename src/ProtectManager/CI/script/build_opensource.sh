@@ -12,27 +12,13 @@
 
 CUR_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 BASE_PATH=${CUR_PATH}/../..
-PRODUCT=$1
-CODE_BRANCH=$2
-Service_Name=$3
-REPO_PATH=$4
+PRODUCT="dorado" 
+CODE_BRANCH=""
+Service_Name="ProtectManager"
+REPO_PATH=$1
 STEP_LEVEL=$5
 BUILD_PKG_TYPE=$6
 PRODUCT_IMAGE_PATH=$7
-
-if [ -z ${PRODUCT} ]; then
-  echo "No product parameter, please specify"
-	exit 1
-fi
-
-if [ -z ${CODE_BRANCH} ]; then
-	echo "No branch parameter, please specify"
-	exit 1
-fi
-
-if [ -z ${AGENT_BRANCH} ]; then
-	AGENT_BRANCH=${CODE_BRANCH}
-fi
 
 #set bep
 if [ "${BEP}" == "YES" ]; then
@@ -53,6 +39,7 @@ function compile() {
 	cd ${BASE_PATH}/component/PM_Common/
 	pwd
 	mvn dependency:tree
+	mkdir -p ${BASE_PATH}/pkg/mspkg
 	PM_MS_LIST="PM_GUI PM_System_Base_Common_Service PM_Data_Protection_Service PM_Nginx PM_Database_Version_Migration PM_Config"
 	for pmservice in ${PM_MS_LIST}; do
 		echo "start compile ${pmservice}!"
