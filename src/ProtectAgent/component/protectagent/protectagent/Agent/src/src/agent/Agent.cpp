@@ -1,3 +1,4 @@
+#if (defined LINUX) && (!defined ENABLE_TSAN)
 #include <gperftools/malloc_extension.h>
 #endif
 

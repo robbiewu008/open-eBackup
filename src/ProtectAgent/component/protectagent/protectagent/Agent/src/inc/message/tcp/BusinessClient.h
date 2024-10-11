@@ -1,3 +1,6 @@
+#ifndef _BUSINIESS_CONNECTION_H_
+#define _BUSINIESS_CONNECTION_H_
+
 #include "common/Types.h"
 #include "message/tcp/CConnection.h"
 #include "message/tcp/CDppMessage.h"
@@ -41,4 +44,4 @@ private:
     mp_void DelBusiClientFromDB();
     mp_int32 NewMsgPair(CDppMessage *&reqMsg, CDppMessage *&rspMsg, mp_uint64 seqNo);
 };
-#endif  // !defined(__BUSINIESS_CONNECTION_H__)
+#endif  // _BUSINIESS_CONNECTION_H_

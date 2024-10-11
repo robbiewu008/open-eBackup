@@ -522,7 +522,7 @@ main_enter()
             copy_shell
         fi
 
-        ${AGENT_ROOT}/build/agent_make_opensrc.sh no_opensrc ${MAKE_OPTION}
+        ${AGENT_ROOT}/build/agent_prepare_platform.sh
         if [ $? -ne 0 ]; then
             echo "make open_src failed!"
             exit 1
@@ -562,6 +562,7 @@ main_enter()
         fi
         make $MAKE_JOB -f ${AGENT_ROOT}/build/makefile ${MAKE_OPTION}
     fi
+    echo "make finish..............."
 }
 
 compile_gcov_out()
@@ -621,13 +622,16 @@ StartTime=`date '+%Y-%m-%d %H:%M:%S'`
 
 make_init $*
 
+echo "hjf check param is $*"
+
 if [ "$sys" = "SunOS" ]; then
     sed 's/-lsnmp++/-lsnmp++ -lresolv/g' makefile > makefile.bak
     mv makefile.bak makefile
 fi
 
 if [ ${CLEAN_ALL} -ne 1 ] && [ ${NO_OPENSRC} -ne 1 ]; then
-    ${AGENT_ROOT}/build/agent_make_opensrc.sh no_opensrc
+    # ${AGENT_ROOT}/build/agent_make_opensrc.sh no_opensrc
+    echo "hjf will not make open src"
     if [ $? -ne 0 ]; then
         echo "make open_src failed!"
         exit 1
@@ -643,7 +647,7 @@ main_enter
 
 main_result=$?
 
-Create_python_executalbe_file
+# Create_python_executalbe_file
 
 compile_gcov_out
 

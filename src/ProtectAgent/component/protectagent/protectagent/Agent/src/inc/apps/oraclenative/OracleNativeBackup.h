@@ -1,3 +1,6 @@
+#ifndef _ORACLE_NATIVE_BACKUP_H_
+#define _ORACLE_NATIVE_BACKUP_H_
+
 #include <map>
 #include <set>
 #include <vector>
@@ -57,4 +60,4 @@ private:
 private:
     Oracle m_oracle;
 };
-#endif  // !defined(EA_D163ECBB_394E_4005_B063_2E501765B4E2__INCLUDED_)
+#endif  // _ORACLE_NATIVE_BACKUP_H_
