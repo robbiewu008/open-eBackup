@@ -32,7 +32,7 @@ RUN echo "proxy=http://peulerosci:EulerOS_123@proxy.huawei.com:8080" >> /etc/dnf
     && echo 'no_proxy="172.19.*,9.82.1.253,localhost,127.0.0.1,.huawei.com,.inhuawei.com"' >> /etc/dnf.conf
 
 RUN sed -i '/update/,$d' /etc/yum.repos.d/openEuler.repo
-RUN dnf install -y python3-pip python39 openssl libatomic net-tools libuser shadow-utils openssh expect sudo iptables vim kmod libatomic dnsmasq\
+RUN dnf install -y python3-pip python39 openssl libatomic net-tools libuser shadow-utils openssh expect sudo iptables vim kmod dnsmasq\
     && chown -R root:root /usr/local/common-init \
     && dnf clean all \
     && chmod -R 555 "/usr/bin/restclient" \
