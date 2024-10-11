@@ -13,15 +13,25 @@ EBACK_BASE_DIR="$(cd "$(dirname "$BASH_SOURCE")/../";pwd)"
  
 BIN_PATH=$1
  
-cp -r ${BIN_PATH}/DataMoveEngine/pkg ${EBACK_BASE_DIR}/
-if [ $? -ne 0 ];then
-    echo -e "Copy dme pkg failed"
-    return 1
-fi
+function main() {
+  cp -r ${BIN_PATH}/DataMoveEngine/pkg ${EBACK_BASE_DIR}/
+  if [ $? -ne 0 ];then
+      echo -e "Copy dme pkg failed"
+      return 1
+  fi
 
-cd "${EBACK_BASE_DIR}/CI/script"
-sh build_image_opensource.sh
-if [ $? -ne 0 ];then
+  docker load -i ${EBACK_BASE_DIR}/pkg/mspkg/oceanprotect-dataprotect-1.0.rc1-cbb-python.tar
+  if [ $? -ne 0 ];then
+      echo -e "Load cbb-python image failed"
+      return 1
+  fi
+
+  cd "${EBACK_BASE_DIR}/CI/script"
+  sh build_image_opensource.sh
+  if [ $? -ne 0 ];then
     echo -e "Build dme images failed"
     return 1
-fi
+  fi
+}
+
+main
