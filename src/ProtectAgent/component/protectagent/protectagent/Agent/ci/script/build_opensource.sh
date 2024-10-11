@@ -20,12 +20,17 @@ OUTPUT_DIR_ASAN=${WORKSPACE}/output/finalpkg_ASAN/
 SDK_DIR=${WORKSPACE}/../../../../open-source-obligation/PluginSDK/${systemtypeage}/
 AGENT_PKG=${WORKSPACE}/../../../../open-source-obligation/dependency/Linux+
 OPENSOURCE_BIN_PATH=${WORKSPACE}/../../../../open-source-obligation/Agent
-cd ${WORKSPACE}/
-export HOME=${WORKSPACE}
+
+CURRENT_DIR=$(cd "$(dirname $0)" && pwd)
+
 OUTPUT_DIR=${WORKSPACE}/output/finalpkg/
 if [ ! -d ${OUTPUT_DIR} ];then
     mkdir -p ${OUTPUT_DIR}
 fi
+
+AGENT_HOME=$(readlink -f "${CURRENT_DIR}/../../../")
+echo AGENT_HOME=$AGENT_HOME
+
 
 if [ ! -d ${SDK_DIR} ];then
     mkdir -p ${SDK_DIR}
@@ -37,33 +42,34 @@ fi
 #set bep
 if [ "${BEP}" == "YES" ]; then
 	echo "start set Bep_Time!"
-	source bep_env.sh -s ${WORKSPACE}/Agent/ci/conf/bep_env.conf
+	source bep_env.sh -s ${AGENT_HOME}/Agent/ci/conf/bep_env.conf
 fi
 
+# build
 if [ "${systemtypeage}" != "ASAN" ];then
-    sh ${WORKSPACE}/Agent/build/download_opensrc.sh copy
-    cd ${WORKSPACE}/
-    source ${WORKSPACE}/Agent/build/env.sh
+    sh ${AGENT_HOME}/Agent/build/get_open_third_party.sh "${WORKSPACE}/open-source-obligation/ThirdParty"
+    cd ${AGENT_HOME}/
+    source ${AGENT_HOME}/Agent/build/env.sh
     if [[ ${packagetype} == 'sdk' ]] ;then
-        sh ${WORKSPACE}/Agent/build/agent_make_cmake.sh sdk_no_opensrc
-        [[ ! -d ${WORKSPACE}/tmp ]] && mkdir ${WORKSPACE}/tmp || echo "tmp 目录存在"
-        cp ${WORKSPACE}/Agent/plugin_sdk.tar.gz ${SDK_DIR}
+        sh ${AGENT_HOME}/Agent/build/agent_make_cmake.sh sdk_no_opensrc
+        [[ ! -d ${AGENT_HOME}/tmp ]] && mkdir ${AGENT_HOME}/tmp || echo "tmp 目录存在"
+        cp ${AGENT_HOME}/Agent/plugin_sdk.tar.gz ${SDK_DIR}
     else
         if [ "$1" == "sanclient" ];then
             echo "SanClient compile and packing..."
-            sh ${WORKSPACE}/Agent/build/sanclient_pack_backup.sh no_opensrc
+            sh ${AGENT_HOME}/Agent/build/sanclient_pack_backup.sh no_opensrc
         else
             echo "Agent compile and packing..."
-            sh ${WORKSPACE}/Agent/build/agent_pack_backup.sh no_opensrc
+            sh ${AGENT_HOME}/Agent/build/agent_pack_backup.sh no_opensrc
         fi
         echo "Copy output packages..."
-        cp ${WORKSPACE}/AGENT_PACK_TEMP/*.tar.xz ${AGENT_PKG}
+        cp ${AGENT_HOME}/AGENT_PACK_TEMP/*.tar.xz ${AGENT_PKG}
         echo "Build done."
     fi
 else
-    cd ${WORKSPACE}
-    source ${WORKSPACE}/Agent/build/env.sh
+    cd ${AGENT_HOME}
+    source ${AGENT_HOME}/Agent/build/env.sh
     cp -f OPENSOURCE_BIN_PATH ./
-    sh ${WORKSPACE}/Agent/build/agent_pack_backup.sh ASAN
-    cp ${WORKSPACE}/AGENT_PACK_TEMP/*.tar.xz ${OUTPUT_DIR}
+    sh ${AGENT_HOME}/Agent/build/agent_pack_backup.sh ASAN
+    cp ${AGENT_HOME}/AGENT_PACK_TEMP/*.tar.xz ${OUTPUT_DIR}
 fi
