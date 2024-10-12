@@ -1,0 +1,145 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# @brief   : 2018/10/10 16:56
+# @File    : app ctrl
+#  @Software: Software management infrastructure
+
+import os
+import subprocess
+import sys
+import logging
+import yaml
+
+logging.basicConfig(level=logging.INFO,
+                    filename="/OSM/log/cur_debug/message_euler",
+                    format='[%(asctime)s][%(levelname)s][%(message)s][%(filename)s, %(lineno)d]',
+                    datefmt='%Y-%m-%d %H:%M:%S')
+
+
+def get_dir_and_parse_yml():
+    # appctl文件绝对路径
+    file_abspath = os.path.abspath(__file__)
+    # appctl文件绝对路径的上级目录
+    dir_abspath = file_abspath.strip(file_abspath.split('/')[-1])
+    with open(dir_abspath + '/manifest.yml', encoding='utf-8') as cfg_file:
+        image_dict = yaml.safe_load(cfg_file)
+    return dir_abspath, image_dict
+
+
+def check_image(image_dict):
+    logging.info("begin to check image")
+    image_list = list(image_dict['ImageList'].keys())
+    image_list_count = len(image_list)
+    for i in range(image_list_count):
+        image = image_list[i]
+        name = image_dict['ImageList'][image]['name']
+        tag = image_dict['ImageList'][image]['tag']
+        result = os.system("imagectl -c " + name + ":" + tag)
+        if result:
+            return 1
+    return 0
+
+
+def import_image(current_path, image_dict):
+    logging.info("start import images")
+    package_name = image_dict['PackageName']
+    software_name = image_dict['Name']
+    version = image_dict['Version']
+    image_file = os.path.join(current_path, package_name)
+    logging.info("the images path is: %s" % image_file)
+    cmds = ['imagectl', '-l', image_file, '-n', '%s:%s' % (software_name, version)]
+    process = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process.wait()
+    if process.returncode != 0:
+        stdout, stderr = process.communicate()
+        logging.error("import images failed, stdout:%s, stderr:%s." % (stdout, stderr))
+    else:
+        logging.info("import images success.")
+
+    return process.returncode
+
+
+def load():
+    dir_abspath, image_dict = get_dir_and_parse_yml()
+    result = import_image(dir_abspath, image_dict)
+    if result:
+        logging.exception("swm run cmd(%s) failed.", "import_image")
+        return 1
+    res = check_image(image_dict)
+    if res:
+        logging.exception("swm run cmd(%s) failed.", "check_image")
+        return 1
+    else:
+        return 0
+
+
+def delete_image(image_dict):
+    logging.info("begin to delete image")
+    software_name = image_dict['Name']
+    version = image_dict['Version']
+    image_list = list(image_dict['ImageList'].keys())
+    image_list_count = len(image_list)
+    for i in range(image_list_count):
+        image = image_list[i]
+        name = image_dict['ImageList'][image]['name']
+        tag = image_dict['ImageList'][image]['tag']
+        result = os.system("imagectl -d " + name + ":" + tag + " -n " + software_name + ":" + version)
+        if result:
+            logging.exception("delete image " + name + ":" + tag + " failed.")
+            return 1
+    return 0
+
+
+def delete():
+    dir_abspath, image_dict = get_dir_and_parse_yml()
+    result = delete_image(image_dict)
+    if result:
+        logging.exception("swm run cmd(%s) failed.", "delete_image")
+        return 1
+    logging.info("delete images success")
+    return result
+
+
+def show_help():
+    usage = (
+        "\nUsage: load container images.\n"
+        "Options:"
+        "    load , load images from absolute path of a tar file\n"
+        "Examples:\n"
+        "    ./appctl load \n"
+        "    ./appctl delete \n"
+    ).format(os.path.basename(__file__))
+    print(usage)
+
+
+def exec_cmd(args):
+    """
+    :param args:
+    :return:
+    """
+    if 2 != len(args):
+        logging.error("number of params is error!")
+        show_help()
+        return 1
+    func_name = args[1]
+    this_module = sys.modules[__name__]
+    try:
+        func = getattr(this_module, str(func_name))
+    except Exception as e:
+        logging.exception("param is error %s", e)
+        show_help()
+        return 1
+    if func is None:
+        show_help()
+        return 1
+    try:
+        return func()
+    except:
+        logging.exception("swm run cmd(%s) failed.", func_name)
+        show_help()
+        return 1
+
+
+if __name__ == "__main__":
+    ret = exec_cmd(sys.argv)
+    sys.exit(ret)

@@ -1,0 +1,12 @@
+{
+    "fileVerison": "1",
+    "serviceName": "AdminConsoleHome",
+    "description": "The AdminConsoleHome delivers home page integration, which provides administrators with user-defined workspaces. ",
+    "description-zh_CN": "提供首页集成能力，为管理员提供可以自定义的workspace。",
+    "dependencies": {
+        "MySQL": "~1.0.0",
+        "Redis": "~1.0.0",
+        "FEBS": "~1.0.0",
+        "AuditLog": "~1.0.0"
+    }
+}

@@ -1,0 +1,246 @@
+# Default values for OceanProtect.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  deploy_type: ""
+  gaussdbpwd: ""
+  logLevel: INFO
+  backupNetPlane: ""
+  archiveNetPlane: ""
+  updateTimestamp: {}
+  environment: Dorado
+  region_id: ""
+  domain_name: ""
+  external_domain_name: ""
+  replicas: 2
+  pm_replicas: 3
+  pe_replicas: 3
+  version: product_version
+  updateAppTimestamp:
+    default: 0
+  clusterUpdateTimeStamp: 0
+  GaussDBSelector: "gaussdb"
+  support_board_type:
+    x9000:
+      - D6800V6_X
+      - D6800V6_N_C_X
+      - D6800V6_C_X_H
+      - D6800V6_C_X
+    x9000k:
+      - D6800KV6_C_X
+      - D6800KV6_C_X_H
+    x8000:
+      - D5600V6_X
+      - D5600V6_X_H
+    x8000k:
+      - D5600KV6_X
+      - D5600KV6_X_H
+    x6000:
+      - D5500V6_C_X
+      - D5500V6_C_X_H
+    x3000:
+      - D2000V6_C_X
+      - D2000V6_C_X_H
+    E8000:
+      - E8000
+    cloudbackup:
+      - D5000V6
+      - D5000V6_C
+      - D5000V6_I
+      - D5000V6_I_C
+      - D5000V6_N
+      - D5000V6_N_C
+      - D5500V6
+      - D5500V6_C
+      - D5500V6_I
+      - D5500V6_I_C
+      - D5500V6_N
+      - D5500V6_N_C
+      - D6000V6
+      - D6000V6_I
+      - D6000V6_N
+      - D5600V6
+      - D5600V6_I
+      - D5600V6_N
+      - D8000V6
+      - D8000V6_C
+      - D8000V6_I
+      - D8000V6_I_C
+      - D8000V6_N
+      - D8000V6_N_C
+      - D6800V6
+      - D6800V6_C
+      - D6800V6_I
+      - D6800V6_I_C
+      - D6800V6_N
+      - D6800V6_N_C
+      - D18000V6
+      - D18000V6_C
+      - D18000V6_I
+      - D18000V6_I_C
+      - D18000V6_N
+      - D18000V6_N_C
+      - D18500V6
+      - D18500V6_C
+      - D18500V6_I
+      - D18500V6_I_C
+      - D18500V6_N
+      - D18500V6_N_C
+      - D18800V6
+      - D18800V6_C
+      - D18800V6_I
+      - D18800V6_I_C
+      - D18800V6_N
+      - D18800V6_N_C
+      - 5510_M_C
+      - 5610_M_C
+      - 6810_M_C
+      - 6810_N_C
+      - 18510_C
+      - 18510_M_C
+      - 18510_N_C
+      - 18810_C
+      - 18810_M_C
+      - 18810_N_C
+    ransomware:
+      - D5000V6
+      - D5000V6_C
+      - D5000V6_I
+      - D5000V6_I_C
+      - D5000V6_N
+      - D5000V6_N_C
+      - D5500V6
+      - D5500V6_C
+      - D5500V6_I
+      - D5500V6_I_C
+      - D5500V6_N
+      - D5500V6_N_C
+      - D5500V6_N_C_X
+      - D6000V6
+      - D6000V6_I
+      - D6000V6_N
+      - D5600V6
+      - D5600V6_I
+      - D5600V6_N
+      - D5600V6_N_X
+      - D8000V6
+      - D8000V6_C
+      - D8000V6_I
+      - D8000V6_I_C
+      - D8000V6_N
+      - D8000V6_N_C
+      - D6800V6
+      - D6800V6_C
+      - D6800V6_I
+      - D6800V6_I_C
+      - D6800V6_N
+      - D6800V6_N_C
+      - D18000V6
+      - D18000V6_C
+      - D18000V6_I
+      - D18000V6_I_C
+      - D18000V6_N
+      - D18000V6_N_C
+      - D18500V6
+      - D18500V6_C
+      - D18500V6_I
+      - D18500V6_I_C
+      - D18500V6_N
+      - D18500V6_N_C
+      - D18800V6
+      - D18800V6_C
+      - D18800V6_I
+      - D18800V6_I_C
+      - D18800V6_N
+      - D18800V6_N_C
+      - A300V6_N_C
+      - 5310_Q
+      - 5310_Q_RV
+      - 5510_Q_L1
+      - 5510_Q_L2
+      - 5510_Q_L3
+      - 5510_Q_L1_RV
+      - 5510_Q_L2_RV
+      - 5510_Q_L3_RV
+      - 5510_M_C
+      - 5610_M_C
+      - 6810_M_C
+      - 6810_N_C
+      - 18510_C
+      - 18510_M_C
+      - 18510_N_C
+      - 18810_C
+      - 18810_M_C
+      - 18810_N_C
+      - 18500K_C
+      - 18500K_M_C
+      - 18500K_N_C
+
+wait:
+  true
+
+timeout:
+  1800
+
+infrastructure:
+  enabled: true
+
+data-enable-engine:
+  enabled: true
+
+proctect-engine-e:
+  enabled: true
+
+proctect-engine-a:
+  enabled: true
+
+proctect-manager:
+  enabled: true
+
+dm-dynamic-params:
+  timeout: 1800
+  wait: true
+  global.replicas:
+  global.gaussdbpwd:
+  global.deploy_type:
+  global.backupNetPlane:
+
+sensitive-params:
+  global.gaussdbpwd:
+
+app-dynamic-params:
+  timeout:
+    - CloudBackup
+    - HyperDetect
+  wait:
+    - CloudBackup
+    - HyperDetect
+  global.replicas:
+    - CloudBackup
+    - HyperDetect
+  global.gaussdbpwd:
+    - CloudBackup
+    - HyperDetect
+  global.deploy_type:
+    - CloudBackup
+    - HyperDetect
+  global.backupNetPlane:
+    - CloudBackup
+
+check-dynamic-params:
+  timeout: "^([1][8][0][0]|[1][0-7][0-9][0-9])"
+  global.gaussdbpwd: "^([R][2][F][1][c][3][N][k][Y][l][8][x][M][j][M][=])"
+  global.replicas: "^([1-8])"
+  global.deploy_type: "^(d[0-6]|dataprotect|cloudbackup|ransomware)$"
+  global.backupNetPlane: "^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1][0][0-2][0-4]|)$"
+
+dm-extend-params:
+  - configName: name
+    configValue: dataprotect
+    isCommonParam: true
+    isStatic: true
+  - configName: namespace
+    configValue: dpa
+    isCommonParam: true
+    isStatic: true

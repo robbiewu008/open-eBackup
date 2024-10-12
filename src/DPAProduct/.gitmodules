@@ -1,0 +1,12 @@
+[submodule "component/DME_CI"]
+	path = component/DME_CI
+	url = ssh://git@gitlab.huawei.com:2222/dpa/DataMoveEngine/DataMoveEngine.git
+[submodule "component/PM_CI"]
+	path = component/PM_CI
+	url = ssh://git@gitlab.huawei.com:2222/dpa/protectmanager/ProtectManager.git
+[submodule "component/INF_CI"]
+	path = component/INF_CI
+	url = ssh://git@gitlab.huawei.com:2222/dpa/Infrastructure_OM/Infrastructure_OM.git
+[submodule "component/DEE_CI"]
+	path = component/DEE_CI
+	url = ssh://git@gitlab.huawei.com:2222/dpa/dataenableengine/DataEnableEngine.git

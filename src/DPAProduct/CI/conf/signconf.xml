@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<signtasks>
+  <signtask name="cms_single">
+      <alias>CMS_Computing_RSA2048_CN_20220810_Huawei</alias>
+      <file>{pkg_dir}/sha256sum_sync</file>
+      <crlfile>{pkg_dir}/crldata.crl</crlfile>
+      <hashtype>1</hashtype>
+      <param name="signatureStandard" value="5"/>
+      <proxylist>10.29.154.209:12056</proxylist>
+      <signaturestandard>5</signaturestandard>
+      <productlineid>049944</productlineid>
+      <versionid>260927445</versionid>
+  </signtask>
+</signtasks>

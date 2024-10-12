@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<manifest>
+    <!-- PM_opensource -->
+    <project remote="codehub" name="OpenSourceCenter/librdkafka.git" path="ProtectManager/component/PM_App_Common_Lib/librdkafka_temp" revision="refs/tags/v1.7.0" groups="PM_OpenSource" />
+    <project remote="codehub" name="OpenSourceCenter/urllib3.git" path="ProtectManager/component/temp_third" revision="refs/tags/1.25.10-h1.dsiv.dorado.r1" groups="PM_OpenSource" />
+    <project remote="codehub" name="OpenSourceCenter/openssl.git" path="ProtectManager/component/PM_API_Gateway/third_party_groupware/openssl/openssl" revision="refs/tags/1.1.1k-h0.cloudcore.csp.omcache.r2" groups="PM_OpenSource" />
+    <!-- DME_opensource -->
+    <project remote="codehub" name="HWPlatform_KMC/KMC.git" path="DataMoveEngine/component/DME_Framework/src/src/KMCv3_infra/External/kmc" revision="7e4eaf1fd4e6694d8f3e40b792ffd230ee758ae6" groups="DME_OpenSource" />
+    <project remote="codehub" name="OpenSourceCenter/openssl.git" path="DataMoveEngine/component/DME_Framework/src/src/KMCv3_infra/External/openssl" revision="refs/tags/1.1.1k-h2" groups="DME_OpenSource" />
+    <project remote="codehub" name="hwsecurec_group/huawei_secure_c.git" path="DataMoveEngine/component/DME_Framework/src/src/KMCv3_infra/External/secure_c" revision="8ffd7c06585ad3570e8422dd1d4f14c247c49663" groups="DME_OpenSource" />
+    <!-- INF_opensource -->
+    <project remote="codehub" name="OpenSourceCenter/redis.git" path="Infrastructure_OM/package/redis-6.0.16" revision="refs/tags/redis-6.0.16-h0.dsiv.oceanprotect_a8000.r1" groups="INF_OpenSource" />
+    <project remote="codehub" name="OpenSourceCenter/zookeeper.git" path="Infrastructure_OM/package/apache-zookeeper-3.6.2" revision="huawei/dsiv/oceanprotect_a8000/zookeeper-3.6.2" groups="INF_OpenSource" />
+    <project remote="codehub" name="OpenSourceCenter/psycopg2.git" path="Infrastructure_OM/om/package/3rd/psycopg2-2.8.5" revision="huawei/dsiv/oceanprotect_a8000/psycopg2-2.8.5" groups="INF_OpenSource" />
+    <project remote="codehub" name="OpenSourceCenter/sqlalchemy.git" path="Infrastructure_OM/om/package/3rd/SQLAlchemy-1.3.23" revision="huawei/dsiv/oceanprotect_a8000/1.3.23" groups="INF_OpenSource" />
+    <!-- DEE_opensource -->
+    <project remote="codehub" name="OpenSourceCenter/xgboost.git" path="DataEnableEngine/component/DEE_Anti_Ransomware/src/MachineLearning/build/xgboost" revision="refs/tags/v1.0.2" groups="DEE_OpenSource" />
+    <project remote="codehub" name="OpenSourceCenter/dmlc-core.git" path="DataEnableEngine/component/DEE_Anti_Ransomware/src/MachineLearning/build/xgboost/dmlc-core" revision="552f7de748fbff34f2708b03f930a47ded45d78e" groups="DEE_OpenSource" />
+    <project remote="codehub" name="OpenSourceCenter/rabit.git" path="DataEnableEngine/component/DEE_Anti_Ransomware/src/MachineLearning/build/xgboost/rabit" revision="2f7fcff4d770a3eb4fba6b25ded74b45e196ccd6" groups="DEE_OpenSource" />
+    <!--Agent_opensource-->
+</manifest>

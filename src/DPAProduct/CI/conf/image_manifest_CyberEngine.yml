@@ -1,0 +1,58 @@
+#main.yml是组件内部的配置文件，对外的接口、版本等信息请在manifest.yml中描述
+Type:  Image
+Name:  OceanCyber
+Version:  current_version
+ReleaseTime:  current_time
+Description:  "OceanCyber Software"
+DigitalVersion: current_digital_version
+
+PackageName: OceanCyber_current_version_image_ARM_64.tar.gz
+ImageList:
+  zookeeper:
+    name: zookeeper
+    tag: NA
+  redis:
+    name: redis
+    tag: NA
+  kafka:
+    name: kafka
+    tag: NA
+  gaussdb:
+    name: gaussdb
+    tag: NA
+  om:
+    name: om
+    tag: NA
+  pm-system-base:
+    name: pm-system-base
+    tag: NA
+  pm-gui:
+    name: pm-gui
+    tag: NA
+  pm-protection-service:
+    name: pm-protection-service
+    tag: NA
+  pm-database-version-migration:
+    name: pm-database-version-migration
+    tag: NA
+  pm-nginx:
+    name: pm-nginx
+    tag: NA
+  dme_nginx:
+    name: dme_nginx
+    tag: NA
+  dme_initcontainer:
+    name: dme_initcontainer
+    tag: NA
+  dee_anti_ransomware:
+    name: dee_anti_ransomware
+    tag: NA
+  dee_initcontainer:
+    name: dee_initcontainer
+    tag: NA
+  dme_unifiedbackupcontroller:
+    name: dme_unifiedbackupcontroller
+    tag: NA
+  protectagent:
+    name: protectagent
+    tag: NA

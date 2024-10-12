@@ -1,0 +1,95 @@
+---
+version: 2.0
+
+#构建环境
+envs:
+  - condition: ENV_VM == "VPC"
+    label: OceanProtect_X8000_1.3.0_euler_arm_VPC
+  - condition: ENV_VM != "VPC"
+    label: X8000_1.3.0_euler_arm
+
+#是否固定构建根目录
+buildspace:
+  fixed: true
+
+#构建参数，构建命令可通过环境变量使用
+params:
+  - name: IS_SNAPSHOT
+    value: ${IS_SNAPSHOT}
+  - name: PBI_NAME
+    value: '${PBI_NAME}'
+  - name: PRODUCT
+    value: ${PRODUCT}
+  - name: CODE_BRANCH
+    value: ${branch}
+  - name: PM_BRANCH
+    value: ${branch}
+  - name: DME_BRANCH
+    value: ${branch}
+  - name: DEE_BRANCH
+    value: ${branch}
+  - name: INF_BRANCH
+    value: ${branch}
+  - name: DMA_BRANCH
+    value: ${branch}
+  - name: MS_IMAGE_TAG
+    value: ${MS_IMAGE_TAG}
+
+#构建步骤
+steps:
+  CONFIG_ENV:
+    - sh:
+        command: |
+          systemctl restart docker
+          chmod -R 777 /var/run/docker*
+          chmod 777 /run/docker*
+          ls -l /run/docker*
+        sudo: true
+  PRE_BUILD: # 构建准备
+    - manifest_checkout:
+        manifest_file: ${dependency_path}
+        groups: ${manifest_groups}
+        strict: "false"
+  BUILD:
+    - build_execute:
+        command: bash -c "
+          echo "buildVersion=$(cat DPAProduct/app_define.json | awk -F '\"version":' '{print $2}' | awk -F ',' '{print $1}' | sed 's/\"//g').${ENV_PIPELINE_STARTTIME}" > buildInfo.properties
+          && cat buildInfo.properties
+          && sh DPAProduct/CI/script/Patch_Package.sh -s ${IS_SNAPSHOT} -p ${PBI_NAME} "
+        accelerate: false
+        check:
+          auto: true
+          mode: sync
+  POST_BUILD:
+    - when:
+        condition: IS_ComponentVersion == 'N'
+        steps:
+          - build_info_dump:
+            location: ${dependencyInfoPath}
+            type:
+              - yaml
+          - sh:
+              command: |
+                mkdir -p ${dependencyInfoPath}
+                cd ${dependencyInfoPath}/../ && tar -zcf dependency_tree.tar.gz *
+                mkdir -p ${WORKSPACE}/DPAProduct/pkg/${BUILD_PKG_TYPE}/cmcUpload/dependency_tree
+                cp dependency_tree.tar.gz  ${WORKSPACE}/DPAProduct/pkg/${BUILD_PKG_TYPE}/cmcUpload/dependency_tree/
+          - get_build_metadata
+          - artget:
+              action: push
+              artifact_type: cmcbinary
+              dependency: DPAProduct/CI/LCRP/conf/bversion.xml
+              track_by_record_id: true
+              add_source_code: restore
+              add_env_image: true
+              agent: DPAProduct/pkg/${BUILD_PKG_TYPE}
+              params:
+                IS_SNAPSHOT: ${IS_SNAPSHOT}
+              version_output_path: .
+              username: ${cmc_user}
+              password: ${cmc_pwd}
+          - get_build_metadata
+    - artget:
+        artifact_type: cloudartifact
+        file_path: 'DPAProduct/pkg/${BUILD_PKG_TYPE}/final/*.tgz'
+    - version_set

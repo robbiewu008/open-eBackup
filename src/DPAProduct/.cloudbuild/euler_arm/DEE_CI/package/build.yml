@@ -1,0 +1,50 @@
+---
+version: 2.0
+
+#构建环境
+envs:
+  - condition: ENV_VM == "VPC"
+    label: OceanProtect_X8000_1.3.0_euler_arm_VPC
+  - condition: ENV_VM != "VPC"
+    label: X8000_1.3.0_euler_arm
+
+#是否固定构建根目录
+buildspace:
+  fixed: true
+
+#构建参数，构建命令可通过环境变量使用
+params:
+  - name: PRODUCT
+    value: ${PRODUCT}
+  - name: DEE_BRANCH
+    value: ${branch}
+  - name: INF_BRANCH
+    value: ${branch}
+
+#构建步骤
+steps:
+  CONFIG_ENV:
+    - sh:
+        command: |
+          systemctl restart docker
+          chmod -R 777 /var/run/docker*
+          chmod 777 /run/docker*
+          ls -l /run/docker*
+        sudo: true
+  PRE_BUILD:
+    - manifest_checkout:
+        manifest_file: ${dependency_path}
+        groups: ${manifest_groups}
+        strict: "false"
+  BUILD:
+    - build_execute:
+        command: bash -c "
+          cd DataEnableEngine/build
+          && sh dee_pack.sh ${PRODUCT} ${DEE_BRANCH} ${Service_Name}
+          && sh CI_build_images.sh ${DEE_BRANCH} ${INF_BRANCH} ${Service_Name}"
+        accelerate: 
+          isAccelerate: false
+          isCache: true
+        check:
+          auto: true
+          mode: sync

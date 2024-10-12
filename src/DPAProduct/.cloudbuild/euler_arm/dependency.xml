@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+    <!-- 描述一个代码平台 -->
+    <remote name="gitlab" fetch="https://gitlab.huawei.com/"/>
+    <remote name="codehub" fetch="https://szv-y.codehub.huawei.com/"/>
+    <remote name="isource" fetch="https://rnd-isource.huawei.com/"/>
+    <!-- 下载代码仓库的分支 -->
+    <!-- <default remote="gitlab" revision="master"> -->
+    <!-- includes for self -->
+    <include name=".cloudbuild/euler_arm/code.xml"/>
+    <include name=".cloudbuild/euler_arm/opensource.xml"/>
+    <!-- includes for dependencies -->
+</manifest>
