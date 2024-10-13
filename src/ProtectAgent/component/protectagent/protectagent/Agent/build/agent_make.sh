@@ -531,7 +531,7 @@ main_enter()
 
         CFLAGS=$CFLAGS" -Wl,--whole-archive"
         export CFLAGS
-        make $MAKE_JOB -f ${AGENT_ROOT}/build/makefile ${MAKE_OPTION} ${MAKE_OPTION_AGENT}
+        make -s $MAKE_JOB -f ${AGENT_ROOT}/build/makefile ${MAKE_OPTION} ${MAKE_OPTION_AGENT}
     # compile all
     else
         if [ ${CLEAN_ALL} -eq 1 ]; then
@@ -562,7 +562,9 @@ main_enter()
         fi
         make $MAKE_JOB -f ${AGENT_ROOT}/build/makefile ${MAKE_OPTION}
     fi
+    main_result=$?
     echo "make finish..............."
+    return $main_result
 }
 
 compile_gcov_out()
@@ -616,7 +618,7 @@ Create_python_executalbe_file()
 
 echo "#########################################################"
 echo "   Copyright (C), 2013-2014, Huawei Tech. Co., Ltd."
-echo "   Start to compile Agent "
+echo "   Start to compile Agent $*"
 echo "#########################################################"
 StartTime=`date '+%Y-%m-%d %H:%M:%S'`
 
@@ -645,7 +647,7 @@ touch build_make.log
 
 main_enter
 
-main_result=$?
+# main_result=$?
 
 # Create_python_executalbe_file
 
@@ -653,7 +655,7 @@ compile_gcov_out
 
 if [ ${main_result} != 0 ]; then
     echo "#########################################################"
-    echo "   Compile Agent failed."
+    echo "   Compile Agent $* failed."
     echo "#########################################################"
 
     exit ${main_result}
@@ -661,7 +663,7 @@ fi
 
 EndTime=`date '+%Y-%m-%d %H:%M:%S'`
 echo "#########################################################"
-echo "   Compile Agent completed."
+echo "   Compile Agent $* completed."
 echo "   begin at ${StartTime}"
 echo "   end   at ${EndTime}"
 echo "#########################################################"

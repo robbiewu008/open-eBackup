@@ -410,6 +410,8 @@ AgentCompile()
                     echo "#########################################################"
                     exit 1
                 fi
+                echo "hjf debug do not make other"
+                exit 0
 
                 #step3.1 Compile Dpp Process
                 ${AGENT_ROOT}/build/agent_make.sh dp $*
