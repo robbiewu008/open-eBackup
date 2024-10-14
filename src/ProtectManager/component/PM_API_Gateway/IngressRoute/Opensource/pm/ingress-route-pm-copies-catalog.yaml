@@ -1,0 +1,27 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if eq $deploytype "d10" }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-route-pm-copies-catalog
+  namespace: dpa
+spec:
+  entryPoints:
+    - third
+    - third6
+    - third_node
+    - internal
+  routes:
+    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/copies`) && !Path(`/v1/copies/{copy_id}/cyber`,`/v1/copies/{copy_id}/action/update-retention-cyber`,`/v1/copies/{copy_id}/detect-status-cyber`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
+  tls:
+     secretName: secret-pm-tls
+{{- end }}

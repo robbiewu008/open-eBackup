@@ -1,0 +1,8 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: middleware-pm-request-limit
+  namespace: dpa
+spec:
+  buffering:
+    maxRequestBodyBytes: 2147483648
