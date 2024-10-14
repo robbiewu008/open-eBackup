@@ -410,9 +410,7 @@ AgentCompile()
                     echo "#########################################################"
                     exit 1
                 fi
-                echo "hjf debug do not make other"
-                exit 0
-
+            
                 #step3.1 Compile Dpp Process
                 ${AGENT_ROOT}/build/agent_make.sh dp $*
                 if [ $? != 0 ];then
@@ -423,6 +421,7 @@ AgentCompile()
                     echo "#########################################################"
                     exit 1
                 fi
+
                 # compile xbsa
                 ${AGENT_ROOT}/build/agent_make.sh xbsa $*
                 if [ $? != 0 ];then
@@ -433,7 +432,7 @@ AgentCompile()
                     echo "#########################################################"
                     exit 1
                 fi
-            fi 
+            fi
         else
             ${AGENT_ROOT}/build/agent_make.sh $*
         fi

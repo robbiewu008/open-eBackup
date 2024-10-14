@@ -166,8 +166,6 @@ main()
         return 1
     fi
 
-    cp -f $PLATFORM_SECUREC_DIR/lib/libsecurec.a $PLATFORM_KMC_DIR/lib/
-
     PrepareThriftTool
 
     GenerateXbsaThriftCPP

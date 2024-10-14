@@ -562,8 +562,6 @@ main_enter()
         fi
         make $MAKE_JOB -f ${AGENT_ROOT}/build/makefile ${MAKE_OPTION}
     fi
-    main_result=$?
-    echo "make finish..............."
     return $main_result
 }
 
@@ -624,8 +622,6 @@ StartTime=`date '+%Y-%m-%d %H:%M:%S'`
 
 make_init $*
 
-echo "hjf check param is $*"
-
 if [ "$sys" = "SunOS" ]; then
     sed 's/-lsnmp++/-lsnmp++ -lresolv/g' makefile > makefile.bak
     mv makefile.bak makefile
@@ -647,7 +643,7 @@ touch build_make.log
 
 main_enter
 
-# main_result=$?
+main_result=$?
 
 # Create_python_executalbe_file
 
