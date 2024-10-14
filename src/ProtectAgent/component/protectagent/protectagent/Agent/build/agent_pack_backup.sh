@@ -43,6 +43,12 @@ sys=`uname -s`
 # san pkg flag
 SAN_PKG_FLAG=0
 
+Log()
+{
+    DATE=`date +%y-%m-%d--%H:%M:%S`
+    echo " [${DATE}] $1 "
+}
+
 AddPackFilesBin()
 {
     echo "AddPackFilesBin()"
@@ -208,6 +214,7 @@ ConfigPackageVersion
 #step 2 of agent common pack
 if [ "`uname -s`" != "SunOS" ]; then
     AgentCommonClean
+    echo "hjf debug skip clean"
 fi
 
 #step 1.2 copy compile VM's libstadc+++.so.6.0.*, thus it can be packed to Agent
@@ -217,12 +224,14 @@ if [ "`uname -s`" = "Linux" ]; then
     PackLibSecurecSo
 fi
 
+Log "start AgentCompile"
 #step 3 of agent common pack
 if [ $# != 0 ]; then
     if [ "$1" = "rest_publish" ]; then
         AgentCompile rest_publish
     elif [ "$1" = "no_opensrc" ]; then
         AgentCompile no_opensrc
+        echo "hjf debug skip compile 1"
     elif [ "$1" = "ASAN" ]; then
         SAN_PKG_FLAG=1
         AgentCompile asan
@@ -236,19 +245,26 @@ if [ $# != 0 ]; then
     fi
 else 
     AgentCompile
+    echo "hjf debug skip compile 2"
 fi
 
+Log "start ConfigPluginsVersion"
 #step 4 of agent common pack
 ConfigPluginsVersion
 
+Log "start PrepareAgentPackage"
 #step 5 of agent common pack
 PrepareAgentPackage
+
+Log "start AddPackFilesBin"
 #step 5.1: add appbackup files into package
 AddPackFilesBin
 
+Log "start RootCopyToSbin"
 # add root permission to sbin directory
 RootCopyToSbin
 
+Log "start AgentPack"
 #step 6 of agent common pack
 AgentPack
 

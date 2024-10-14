@@ -508,10 +508,10 @@ main_enter()
     if [ ${CLEAN} -eq 1 ]; then
         gmake $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "clean"
     elif [ ${DATAPROCESS} -eq 1 ]; then
-        make $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "dp"
+        make -s $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "dp"
     # compile xbsa
     elif [ ${XBSA} -eq 1 ]; then
-        make $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "xbsa"
+        make -s $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "xbsa"
     # compile agent
     elif [ ${AGENT} -eq 1 ] || [ ${SANCLIENT_PLUIN} -eq 1 ]; then
         if [ ${CLEAN_ALL} -eq 1 ]; then
