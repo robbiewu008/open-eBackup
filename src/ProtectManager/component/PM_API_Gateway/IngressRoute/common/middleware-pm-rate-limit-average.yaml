@@ -1,0 +1,10 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: middleware-pm-rate-limit-average
+  namespace: dpa
+spec:
+  rateLimit:
+    period: 1s
+    average: 150
+    burst: 100

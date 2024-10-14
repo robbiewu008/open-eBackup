@@ -1,0 +1,13 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSStore
+metadata:
+  name: default
+  namespace: dpa
+
+spec:
+  defaultCertificate:
+    secretName: secret-pm-tls
+  {{- if ne $deploytype "d5" }}
+  minVersion: VersionTLS12
+  {{- end }}

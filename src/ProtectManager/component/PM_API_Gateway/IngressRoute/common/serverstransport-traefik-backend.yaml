@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: ServersTransport
+metadata:
+  name: serverstransport-traefik-backend
+  namespace: dpa
+
+spec:
+  serverName: "*.dpa.svc.cluster.local"
+  insecureSkipVerify: false
+  disableHTTP2: false
+  rootCAsSecrets:
+    - secret-traefik-backend-rootcas
+  certificatesSecrets:
+    - secret-traefik-backend-mtls
