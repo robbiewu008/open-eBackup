@@ -55,7 +55,6 @@ function compile() {
 				echo "${pmservice} compile failed"
 				exit 1
 			fi
-			cp ${REPO_PATH}/ProtectManager/${pmservice}.tar.gz  ${BASE_PATH}/pkg/mspkg/
 		else 
 			local L_COMPONENTS_DIR="${BASE_PATH}/component"
 			if [ -d ${L_COMPONENTS_DIR}/${pmservice}/pkg ]; then

@@ -25,12 +25,12 @@ function build_npm(){
         mv /devcloud/node_modules ${PM_MS_DIR}/src/service/console/
     fi
 
-    npm install
+    tar -zxvf ${BIN_PATH}/PM_GUI.tar.gz -C ${PM_MS_DIR}/src/service/console/
     if [[ $? -ne 0 ]]; then
         echo [INFO] Install Dependences for Frontend Project Failed.
         exit 1
     fi
-    npm run build
+    npm run open-build
     if [[ $? -ne 0 ]]; then
         echo [INFO] Compile Frontend Project Failed.
         exit 1
