@@ -15,7 +15,8 @@ CUR_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PM_MS_DIR=${CUR_PATH}/..
 BASE_PATH=${PM_MS_DIR}/../..
 
-merge_id=$1
+BIN_PATH=$1
+merge_id=$2
 
 function build_npm(){
 	cd ${PM_MS_DIR}/src/service/console/
