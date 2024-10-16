@@ -43,6 +43,15 @@ function build_package(){
     jar cvfM0 ${PM_MS_DIR}/tmp/pm-main-server.jar *
     cd ${PM_MS_DIR}/tmp/
     rm -rf ${PM_MS_DIR}/tmp/pmtmp/
+    
+    mkdir -p ${PM_MS_DIR}/tmp/pmtmp/
+    mv ${PM_MS_DIR}/tmp/pm-main-server.jar ${PM_MS_DIR}/tmp/pmtmp/pm-main-server.jar
+    cd ${PM_MS_DIR}/tmp/pmtmp/
+    jar xvf pm-main-server.jar
+    rm -rf pm-main-server.jar
+    jar cvfM0 ${PM_MS_DIR}/tmp/pm-main-server.jar *
+    cd ${PM_MS_DIR}/tmp/
+    rm -rf ${PM_MS_DIR}/tmp/pmtmp/
 
     find "${PM_MS_DIR}/tmp" -type d | xargs chmod 700
     find "${PM_MS_DIR}/tmp" -type f | xargs chmod 550

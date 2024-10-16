@@ -20,11 +20,6 @@ merge_id=$1
 function build_npm(){
 	cd ${PM_MS_DIR}/src/service/console/
 
-    if [ -d /devcloud/node_modules ];then
-        echo "Dependence fils already exists!"
-        mv /devcloud/node_modules ${PM_MS_DIR}/src/service/console/
-    fi
-
     tar -zxvf ${BIN_PATH}/PM_GUI.tar.gz -C ${PM_MS_DIR}/src/service/console/
     if [[ $? -ne 0 ]]; then
         echo [INFO] Install Dependences for Frontend Project Failed.
