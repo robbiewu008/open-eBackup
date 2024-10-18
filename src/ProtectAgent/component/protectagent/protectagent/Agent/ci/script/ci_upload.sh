@@ -4,7 +4,7 @@ set -ex
 CUR_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 BASE_PATH=${CUR_PATH}/../../../
 SIGN_TOOL_PATH=${SIGNATURE_HOME}
-OPENSOURCE_REPOSITORY_DIR=${BASE_PATH}/../../../../open-source-obligation
+OPENSOURCE_REPOSITORY_DIR=${CLOUD_BUILD_WORKSPACE}/open-source-obligation
 
 if [ -z ${branch} ]; then
     echo "Please specify build branch!"
@@ -43,16 +43,20 @@ cd ${BASE_PATH}/final_pkg/ && find -type f | xargs sha256sum >../sha256sum_sync
 mv ../sha256sum_sync .
 echo "agent files sha256 finish"
 #sign_pkgs
-SHA_PATH="${BASE_PATH}/final_pkg/"
-cp ${BASE_PATH}/Agent/ci/signconf.xml ${SHA_PATH}/..
-sed -i "s#{pkg_dir}#${SHA_PATH}#g" ${SHA_PATH}/../signconf.xml
-cd ${SIGN_TOOL_PATH}
-java -jar signature.jar ${SHA_PATH}/../signconf.xml
-if [ $? -ne 0 ]; then
-    echo "${SHA_PATH} files Signing failed."
-    exit 1
+if [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
+    echo "Do not sign."
+else
+    SHA_PATH="${BASE_PATH}/final_pkg/"
+    cp ${BASE_PATH}/Agent/ci/signconf.xml ${SHA_PATH}/..
+    sed -i "s#{pkg_dir}#${SHA_PATH}#g" ${SHA_PATH}/../signconf.xml
+    cd ${SIGN_TOOL_PATH}
+    java -jar signature.jar ${SHA_PATH}/../signconf.xml
+    if [ $? -ne 0 ]; then
+        echo "${SHA_PATH} files Signing failed."
+        exit 1
+    fi
+    echo "${SHA_PATH} sign finished."
 fi
-echo "${SHA_PATH} sign finished."
 
 cd ${BASE_PATH}/final_pkg
 zip -r DataProtect_${Version}_client.zip ./*
@@ -68,6 +72,7 @@ function upload_artifact() {
     if [ "$BUILD_PKG_TYPE" = "OceanCyber" ]; then
         artget push -d OceanCyber_pkg_from_cmc.xml -p "{'componentVersion':'${componentVersion}','AGENT_BRANCH':'${branch}','Version':'${Version}', 'PKG_TYPE':'${PKG_TYPE}'}" -ap ${BASE_PATH}/final_pkg -user ${cmc_user} -pwd ${cmc_pwd}
     elif [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
+    mkdir -p ${OPENSOURCE_REPOSITORY_DIR}/${PKG_TYPE}/linux/
         cp ${BASE_PATH}/final_pkg/DataProtect_${Version}_client*.zip ${OPENSOURCE_REPOSITORY_DIR}/${PKG_TYPE}/linux/
     else
         artget push -d pkg_from_cmc.xml -p "{'componentVersion':'${componentVersion}','AGENT_BRANCH':'${branch}','Version':'${Version}', 'PKG_TYPE':'${PKG_TYPE}'}" -ap ${BASE_PATH}/final_pkg -user ${cmc_user} -pwd ${cmc_pwd}
@@ -115,10 +120,14 @@ if [ "${BUILD_TYPE}" == "ASAN" ];then
 fi
 
 # hwp7s后缀签名
-sed -i "s#{fileset_path}#${BASE_PATH}/final_pkg#g" ${BASE_PATH}/Agent/ci/product_signconf.xml
-sed -i "s#{pkg_dir}#${SHA_PATH}#g" ${BASE_PATH}/Agent/ci/product_signconf.xml
-cd ${SIGN_TOOL_PATH}
-java -jar signature.jar ${BASE_PATH}/Agent/ci/product_signconf.xml
+if [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
+    echo "Do not sign."
+else
+    ed -i "s#{fileset_path}#${BASE_PATH}/final_pkg#g" ${BASE_PATH}/Agent/ci/product_signconf.xml
+    sed -i "s#{pkg_dir}#${SHA_PATH}#g" ${BASE_PATH}/Agent/ci/product_signconf.xml
+    cd ${SIGN_TOOL_PATH}
+    java -jar signature.jar ${BASE_PATH}/Agent/ci/product_signconf.xml
+fi
 
 if [ "${IS_ComponentVersion}" == "N" ] && [ "$BUILD_PKG_TYPE" != "OceanCyber" ] && [ "$BUILD_PKG_TYPE" != "OpenSource" ];then
     upload_Bversion
