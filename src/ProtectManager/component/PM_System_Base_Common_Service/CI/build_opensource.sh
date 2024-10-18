@@ -38,7 +38,7 @@ function build_package(){
     mv ${PM_MS_DIR}/tmp/pm-main-server.jar ${PM_MS_DIR}/tmp/pmtmp/pm-main-server.jar
     cd ${PM_MS_DIR}/tmp/pmtmp/
     jar xvf pm-main-server.jar
-    find ${PM_MS_DIR}/src/ -name "*.jar" -exec cp {} ${PM_MS_DIR}/tmp/pmtmp/BOOT-INF/lib \
+    find ${PM_MS_DIR}/src/ -name "*.jar" -exec cp {} ${PM_MS_DIR}/tmp/pmtmp/BOOT-INF/lib \;
     rm -rf ${PM_MS_DIR}/tmp/pmtmp/BOOT-INF/lib/jsp-api-2.1.jar
     rm -rf pm-main-server.jar
     jar cvfM0 ${PM_MS_DIR}/tmp/pm-main-server.jar *
@@ -64,9 +64,9 @@ function build_package(){
 function build_base(){
   # 编译base代码工程
 	if [ 'OceanCyber' == "${BUILD_PKG_TYPE}" ]; then
-	  mvn -T 16 -Pocean-cyber install -nsu -DskipTests -Dkmc.build.enabled=true -gs ${BASE_PATH}/CI/conf/settings.xml
+	  mvn -T 16 -Pocean-cyber install -nsu -DskipTests -Dkmc.build.enabled=true
 	else
-	  mvn -T 16 -Preal install -nsu -DskipTests -Dkmc.build.enabled=true -gs ${BASE_PATH}/CI/conf/settings.xml
+	  mvn -T 16 -Preal install -nsu -DskipTests -Dkmc.build.enabled=true
 	fi
 	if [ $? -ne 0 ]; then
 		echo "maven compile failed."

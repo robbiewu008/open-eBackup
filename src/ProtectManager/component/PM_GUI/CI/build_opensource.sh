@@ -33,6 +33,10 @@ function build_npm(){
     fi
 
     echo "[INFO] Move dependence files"
+    if [ -d /devcloud/node_modules ];then
+        echo "Dependence fils already exists!"
+        rm -rf /devcloud/node_modules
+    fi
     mv ${PM_MS_DIR}/src/service/console/node_modules  /devcloud/
     cp -r dist/pm-gui/* ${PM_MS_DIR}/src/service/console
     rm -rf dist
@@ -40,7 +44,7 @@ function build_npm(){
 
 function build_maven(){
 	cd ${PM_MS_DIR}/src/service/
-	mvn -Preal install -nsu -Dmaven.test.skip=true -s ${BASE_PATH}/CI/conf/settings.xml
+	mvn -Preal install -nsu -Dmaven.test.skip=true
 	if [ $? -ne 0 ]; then
 		echo [INFO] maven compile Failed.
 		exit 1

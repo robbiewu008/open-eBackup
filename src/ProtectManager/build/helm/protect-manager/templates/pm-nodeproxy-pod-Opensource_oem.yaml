@@ -54,6 +54,7 @@ metadata:
     app: pm-nodeproxy
   namespace: dpa
 spec:
+  serviceName: pm-nodeproxy
   replicas: {{$realreplicas}}
   selector:
     matchLabels:
