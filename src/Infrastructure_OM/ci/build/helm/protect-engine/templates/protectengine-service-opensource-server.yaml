@@ -74,6 +74,7 @@ spec:
     - port: {{ .Values.dme_openstorageapi_port }}
       name: dme-openstorageapi
       protocol: TCP
+---
 apiVersion: v1
 kind: Service
 metadata:
