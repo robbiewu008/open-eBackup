@@ -629,7 +629,6 @@ fi
 
 if [ ${CLEAN_ALL} -ne 1 ] && [ ${NO_OPENSRC} -ne 1 ]; then
     # ${AGENT_ROOT}/build/agent_make_opensrc.sh no_opensrc
-    echo "hjf will not make open src"
     if [ $? -ne 0 ]; then
         echo "make open_src failed!"
         exit 1

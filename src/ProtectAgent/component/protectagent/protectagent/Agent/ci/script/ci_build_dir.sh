@@ -79,7 +79,7 @@ cd ${BASE_PATH}/Agent/ci/LCRP/conf
 if [ "$BUILD_PKG_TYPE" = "OceanCyber" ]; then
     artget pull -d OceanCyber_pkg_from_cmc.xml -p "{'componentVersion':'${componentVersion}','AGENT_BRANCH':'${branch}','Version':'${Version}', 'PKG_TYPE':'${PKG_TYPE}', 'FILEPLUGIN_BRANCH':'${FILEPLUGIN_BRANCH}'}" -ap ${BASE_PATH}/Plugins -user ${cmc_user} -pwd ${cmc_pwd}
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "aarch64" ]; then
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/HadoopPlugin_aarch64.tar.gz ${BASE_PATH}/Plugins
+    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/HadoopPlugin.tar.gz ${BASE_PATH}/Plugins
     cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/ElasticSearchPlugin_aarch64.tar.gz ${BASE_PATH}/Plugins
     cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/NasPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
     cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/FilePlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
@@ -89,7 +89,7 @@ elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "aarch64" ]; t
     cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/ObsPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
     cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/cppframework-Linux_aarch64.tar.xz ${BASE_PATH}/Plugins
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "x86_64" ]; then
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/HadoopPlugin_x86_64.tar.gz ${BASE_PATH}/Plugins
+    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/HadoopPlugin.tar.gz ${BASE_PATH}/Plugins
     cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/ElasticSearchPlugin_x86_64.tar.gz ${BASE_PATH}/Plugins
     cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/NasPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
     cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/FilePlugin_x86_64.tar.xz ${BASE_PATH}/Plugins

@@ -518,7 +518,6 @@ PrepareAgentPackage()
         echo "mkdir ${AGENT_ROOT}/selfdevelop"
     fi
 
-    echo "hjf check 1"
     if [ ! -d "${AGENT_ROOT}/db/AgentDB.db" ]; then
         mkdir -p ${AGENT_ROOT}/db
         chmod 755 ${AGENT_ROOT}/db

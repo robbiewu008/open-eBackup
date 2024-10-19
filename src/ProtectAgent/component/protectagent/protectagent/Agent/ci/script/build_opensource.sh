@@ -17,9 +17,9 @@ packagetype=$3
 
 OUTPUT_CODE_DIR=${WORKSPACE}/output/code
 OUTPUT_DIR_ASAN=${WORKSPACE}/output/finalpkg_ASAN/
-SDK_DIR=${WORKSPACE}/../../../../open-source-obligation/PluginSDK/${systemtypeage}/
-AGENT_PKG=${WORKSPACE}/../../../../open-source-obligation/dependency/Linux+
-OPENSOURCE_BIN_PATH=${WORKSPACE}/../../../../open-source-obligation/Agent
+SDK_DIR=${binary_path}/PluginSDK/${systemtypeage}/
+AGENT_PKG=${binary_path}/dependency/Linux
+OPENSOURCE_BIN_PATH=${binary_path}/Agent
 
 CURRENT_DIR=$(cd "$(dirname $0)" && pwd)
 
@@ -47,7 +47,7 @@ fi
 
 # build
 if [ "${systemtypeage}" != "ASAN" ];then
-    sh ${AGENT_HOME}/Agent/build/get_open_third_party.sh "${WORKSPACE}/open-source-obligation/ThirdParty"
+    sh ${AGENT_HOME}/Agent/build/get_open_third_party.sh "${binary_path}/ThirdParty"
     if [ $? != 0 ]; then
         echo "Get open third party fail."
     fi

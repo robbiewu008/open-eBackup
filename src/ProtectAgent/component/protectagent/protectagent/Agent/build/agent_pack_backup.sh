@@ -214,7 +214,6 @@ ConfigPackageVersion
 #step 2 of agent common pack
 if [ "`uname -s`" != "SunOS" ]; then
     AgentCommonClean
-    echo "hjf debug skip clean"
 fi
 
 #step 1.2 copy compile VM's libstadc+++.so.6.0.*, thus it can be packed to Agent
@@ -231,7 +230,6 @@ if [ $# != 0 ]; then
         AgentCompile rest_publish
     elif [ "$1" = "no_opensrc" ]; then
         AgentCompile no_opensrc
-        echo "hjf debug skip compile 1"
     elif [ "$1" = "ASAN" ]; then
         SAN_PKG_FLAG=1
         AgentCompile asan
@@ -245,7 +243,6 @@ if [ $# != 0 ]; then
     fi
 else 
     AgentCompile
-    echo "hjf debug skip compile 2"
 fi
 
 Log "start ConfigPluginsVersion"

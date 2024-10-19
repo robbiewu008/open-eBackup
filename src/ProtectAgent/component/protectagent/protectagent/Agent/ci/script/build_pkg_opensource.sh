@@ -5,10 +5,6 @@ export branch="debug_OceanProtect_DataBackup_1.6.0_openeBackup"
 export FusionCompute_Branch="$branch"
 export Virtualization_Branch="$branch"
 export product_branch="$branch"
-export open_code_path="${CLOUD_BUILD_WORKSPACE}/REST_API/${Service_Name}"
-export open_bin_path="${CLOUD_BUILD_WORKSPACE}/open-source-obligation/${Service_Name}"
-export code_path="${CLOUD_BUILD_WORKSPACE}/REST_API"
-export binary_path="${CLOUD_BUILD_WORKSPACE}/open-source-obligation"
 
 export Version=1.6.RC2
 export componentVersion=1.1.0
@@ -20,28 +16,32 @@ export FUSIONCOMPUTE_BRANCH="$branch"
 export BUILD_TYPE=release
 
 # file build_opensource
-cd ${WORKSPACE}/AppPlugins_NAS/plugins/file/CI/script
-sh copy_code.sh ${code_path}/
-sh copy_bin.sh ${binary_path}/
-
-# hadoop build 
-cd ${CLOUD_BUILD_WORKSPACE}/ProtectAgent/AppPlugins_Hadoop/build
-sed -i "s#<mirrorOf>central</mirrorOf>#<mirrorOf>central,apache release,apache.snapshots,java.net.Releases,jvnet-nexus-snapshots</mirrorOf>#g" /opt/buildtools/apache_maven*/conf/settings.xml || true
-sh copy_code.sh ${code_path}/
-sh copy_bin.sh ${binary_path}/
+cd ${code_path}/src/AppPlugins/file/CI/script/
+sh pack_opensource.sh
+cp -rf ${code_path}/src/AppPlugins/common/framework/output_pkg/FilePlugin*.tar.xz  ${binary_path}/Plugins/Linux/$(uname -m)/
+echo "FilePlugin build success."
 
 # genaradb build 
-cd ${WORKSPACE}/AppPlugins_NAS/plugins/database/CI/script
-sh copy_code.sh ${code_path}/
-sh copy_bin.sh ${binary_path}/
+cd ${code_path}/src/AppPlugins/database/CI/script/
+sh pack_opensource.sh
+cp -rf ${code_path}/src/AppPlugins/common/framework/output_pkg/GeneralDBPlugin*.tar.xz  ${binary_path}/Plugins/Linux/$(uname -m)/
+echo "GeneralDBPlugin build success."
 
 # vir
-cd ${WORKSPACE}/AppPlugins_NAS/plugins/virtualization/plugins/virtualization/build
-sh copy_code.sh ${code_path}/
-sh copy_bin.sh ${binary_path}/
+cd ${code_path}/src/AppPlugins/virtualization/build/
+sh pack_opensource.sh
+cp -rf ${code_path}/src/AppPlugins/common/framework/output_pkg/Virtualization*.tar.xz  ${binary_path}/Plugins/Linux/$(uname -m)/
+echo "Virtualization build success."
 
-export WORKSPACE="$CLOUD_BUILD_WORKSPACE"/REST_API/ProtectAgent/component/protectagent
-sh "$WORKSPACE"/Agent/ci/script/build_opensource.sh sanclient
-sh "$WORKSPACE"/Agent/ci/script/build_opensource.sh arm aarch64 sdk
-sh "$WORKSPACE"/Agent/ci/script/build_opensource.sh arm ${BUILD_TYPE}
-sh Agent/ci/script/build_pkg.sh OpenSource
+
+if [ $(uname -m) == "x86_64" ]; then
+    echo "This is a x86_64 system."
+    sh "$code_path"/src/ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_opensource.sh sanclient
+    sh "$code_path"/src/ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_opensource.sh x86 x86_64 sdk
+    sh "$code_path"/src/ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_opensource.sh x86 ${BUILD_TYPE}
+    sh "$code_path"/src/ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_pkg.sh OpenSource x86_64
+elif [ $(uname -m) == "aarch64" ]; then
+    echo "This is an aarch64 system."
+    sh "$code_path"/src/ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_opensource.sh arm ${BUILD_TYPE}
+    sh "$code_path"/src/ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_pkg.sh OpenSource aarch64
+fi
