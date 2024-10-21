@@ -1,0 +1,38 @@
+{{- if eq .Values.global.environment "Dorado" }}
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if eq $deploytype "d10"}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "comm-nas"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 50Gi
+  selector:
+    matchLabels:
+      pv: comm-nas
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: "comm-nas"
+  namespace: dpa
+  labels:
+    type: local
+    pv: comm-nas
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  capacity:
+    storage: 50Gi
+  hostPath:
+    path: "/opt/DataBackup/comm-data"
+{{- end }}
+{{- end }}

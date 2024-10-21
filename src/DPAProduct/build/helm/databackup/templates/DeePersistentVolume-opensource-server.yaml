@@ -1,0 +1,39 @@
+{{- if eq .Values.global.environment "Dorado" }}
+
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if eq $deploytype "d10"}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "dee-nas"
+  namespace: dpa
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 1024Gi
+  selector:
+    matchLabels:
+      pv: dee-nas
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: "dee-nas"
+  namespace: dpa
+  labels:
+    type: local
+    pv: dee-nas
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  capacity:
+    storage: 1024Gi
+  hostPath:
+    path: "/opt/DataBackup/d-data"
+{{- end }}
+{{- end }}

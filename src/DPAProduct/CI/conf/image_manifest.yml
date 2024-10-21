@@ -1,0 +1,100 @@
+#main.yml是组件内部的配置文件，对外的接口、版本等信息请在manifest.yml中描述
+Type:  Image
+Name:  DataBackup
+Version:  current_version
+ReleaseTime:  current_time
+Description:  "DataBackup Software"
+DigitalVersion: current_digital_version
+
+PackageName: OceanProtect_DataProtect_current_version_image_ARM_64.tar.xz
+ImageList:
+  zookeeper:
+    name: zookeeper
+    tag: NA
+  redis:
+    name: redis
+    tag: NA
+  kafka:
+    name: kafka
+    tag: NA
+  gaussdb:
+    name: gaussdb
+    tag: NA
+  elasticsearch:
+    name: elasticsearch
+    tag: NA
+  om:
+    name: om
+    tag: NA
+  sftp:
+    name: sftp
+    tag: NA
+  pm-system-base:
+    name: pm-system-base
+    tag: NA
+  pm-gui:
+    name: pm-gui
+    tag: NA
+  pm-protection-service:
+    name: pm-protection-service
+    tag: NA
+  pm-database-version-migration:
+    name: pm-database-version-migration
+    tag: NA
+  pm-nginx:
+    name: pm-nginx
+    tag: NA
+  dme_vmware:
+    name: dme_vmware
+    tag: NA
+  dme_jobmanager:
+    name: dme_jobmanager
+    tag: NA
+  dme_initcontainer:
+    name: dme_initcontainer
+    tag: NA
+  dme_dmc:
+    name: dme_dmc
+    tag: NA
+  dme_archive:
+    name: dme_archive
+    tag: NA
+  dmc_nginx:
+    name: dmc_nginx
+    tag: NA
+  dme_nginx:
+    name: dme_nginx
+    tag: NA
+  dme_replication:
+    name: dme_replication
+    tag: NA
+  dme_dns:
+    name: dme_dns
+    tag: NA
+  dma_nginx:
+    name: dma_nginx
+    tag: NA
+  dee_global_search:
+    name: dee_global_search
+    tag: NA
+  dee_indexer:
+    name: dee_indexer
+    tag: NA
+  dee_base_parser:
+    name: dee_base_parser
+    tag: NA
+  dee_db_anonymization:
+    name: dee_db_anonymization
+    tag: NA
+  dee_anti_ransomware:
+    name: dee_anti_ransomware
+    tag: NA
+  dee_initcontainer:
+    name: dee_initcontainer
+    tag: NA
+  dme_unifiedbackupcontroller:
+    name: dme_unifiedbackupcontroller
+    tag: NA
+  protectagent:
+    name: protectagent
+    tag: NA
