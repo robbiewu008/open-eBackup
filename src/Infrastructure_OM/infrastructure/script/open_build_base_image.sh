@@ -140,7 +140,7 @@ function build_cbb_image()
         rm -rf ${CBB_PYTHON_IMAGE_PATH}
     fi
     mkdir -p ${CBB_PYTHON_IMAGE_PATH}
-install --no-index --find-links=../lib/ --no-cache-dir -r /public_cbb/requirements.txt
+
     if [ ${tag_image} == "debug" ] || [ ${tag_image} == "asan" ];then
         docker save -o ${CBB_PYTHON_IMAGE_PATH}/${product_name}-${product_version}-cbb-python-image-ARM_64-debug.tar ${product_name,,}-${product_version,,}-cbb-python:base
         if [ $? -ne 0 ];then
