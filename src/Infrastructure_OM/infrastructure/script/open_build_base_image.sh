@@ -95,72 +95,10 @@ function initEnv() {
     fi
 }
 
-function compile_cbb_dependency() {
-    tar -zxf "${CBB_PYTHON_IMAGE_PATH}"/postgresql-${POSTGRESQL_VERSION}.tar.gz
-    cd postgresql-${POSTGRESQL_VERSION}
-    ./configure --without-readline --without-zlib --disable-rpath --disable-spinlocks --prefix="${CBB_PYTHON_DOCKERFILE_PATH}"/postgresql_dep CFLAGS="-O2 -fPIE -fstack-protector-all -pie" LDFLAGS="-Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack"
-    make && make install
-    if [ $? -ne 0 ];then
-        echo "failed to build postgresql"
-        exit 1
-    fi
-    rm -f "${CBB_PYTHON_DOCKERFILE_PATH}"/postgresql_dep/lib64/*.a
-    find "${CBB_PYTHON_DOCKERFILE_PATH}/postgresql_dep" -exec strip {} \;
-    cd ..
-}
-
-function build_cbb_image()
-{
-    cp -r "${CBB_PYTHON_PATH}"/public_cbb "${CBB_PYTHON_DOCKERFILE_PATH}"
-    cp -r "${CBB_PYTHON_PATH}"/setup.py "${CBB_PYTHON_DOCKERFILE_PATH}"
-    mkdir -p ${PACKAGE_PATH}/gaussdb/gaussdb_python
-    tar -zxvf ${PACKAGE_PATH}/../../Infrastructure_OM/infrastructure/cbb/python/openGauss-5.0.0-openEuler-aarch64-Python.tar.gz -C ${PACKAGE_PATH}/gaussdb/gaussdb_python
-    rm -rf ${CBB_PYTHON_DOCKERFILE_PATH}/psycopg2
-    cp -rf ${PACKAGE_PATH}/gaussdb/gaussdb_python/psycopg2 ${CBB_PYTHON_DOCKERFILE_PATH}
-    cp -rf ${PACKAGE_PATH}/gaussdb/gaussdb_python/lib ${CBB_PYTHON_DOCKERFILE_PATH}
-    cd ${CBB_PYTHON_DOCKERFILE_PATH}
-    chmod -R 755 psycopg2 lib
-    rm -f ${CBB_PYTHON_DOCKERFILE_PATH}/lib/libstdc++.*
-    rm -f ${CBB_PYTHON_DOCKERFILE_PATH}/lib/libgcc_s.*
-    rm -f ${CBB_PYTHON_DOCKERFILE_PATH}/lib/libssl.*
-    rm -f ${CBB_PYTHON_DOCKERFILE_PATH}/lib/libcrypto.*
-    rm -rf ${PACKAGE_PATH}/gaussdb/
-
-    compile_cbb_dependency
-    cd ${CBB_PYTHON_DOCKERFILE_PATH}
-    mkdir lib
-    tar -zxvf ${PACKAGE_PATH}/../../Infrastructure_OM/infrastructure/cbb/python/cbb_lib.tar.gz -C ./lib
-
-    docker build -f ${product_name}_cbb_python.dockerfile -t ${product_name,,}-${product_version,,}-cbb-python:base .
-    if [ $? -ne 0 ];then
-        echo "docker build cbb python image is failed. pleaser retry it."
-        exit 1
-    fi
-    if [ -d ${CBB_PYTHON_IMAGE_PATH} ];then
-        rm -rf ${CBB_PYTHON_IMAGE_PATH}
-    fi
-    mkdir -p ${CBB_PYTHON_IMAGE_PATH}
-install --no-index --find-links=../lib/ --no-cache-dir -r /public_cbb/requirements.txt
-    if [ ${tag_image} == "debug" ] || [ ${tag_image} == "asan" ];then
-        docker save -o ${CBB_PYTHON_IMAGE_PATH}/${product_name}-${product_version}-cbb-python-image-ARM_64-debug.tar ${product_name,,}-${product_version,,}-cbb-python:base
-        if [ $? -ne 0 ];then
-            echo "docker save cbb python image is failed. pleaser retry it."
-            exit 1
-        fi
-    else
-        docker save -o ${CBB_PYTHON_IMAGE_PATH}/${product_name}-${product_version}-cbb-python-image-ARM_64.tar ${product_name,,}-${product_version,,}-cbb-python:base
-        if [ $? -ne 0 ];then
-            echo "docker save cbb python image is failed. pleaser retry it."
-            exit 1
-        fi
-    fi
-}
-
 function main()
 {
     initEnv
     build_base_image
-    build_cbb_image
 }
 
 main
