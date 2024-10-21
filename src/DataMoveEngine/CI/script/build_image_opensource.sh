@@ -14,9 +14,7 @@ BASE_PATH="$(
         pwd
     )"
 
-DME_BRANCH=$1
-INF_BRANCH=$2
-MS_NAME=$3
+MS_NAME=$1
 if [ -z "${MS_IMAGE_TAG}" ]; then
     echo "MS_IMAGE_TAG does not exist."
     exit 1
@@ -25,8 +23,6 @@ fi
 G_BUILD_LIST=""
 G_FIST_BUILD="dme_3rd"
 VERSION=${MS_IMAGE_TAG}
-code_branch=$(echo ${DME_BRANCH} | tr [A-Z] [a-z])
-inf_branch=$(echo ${INF_BRANCH} | tr [A-Z] [a-z])
 
 echo tag_image=${tag_image}
 echo code_branch=${code_branch}
