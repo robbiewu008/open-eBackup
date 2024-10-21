@@ -28,7 +28,7 @@ cp -rf ${code_path}/src/AppPlugins/common/framework/output_pkg/GeneralDBPlugin*.
 echo "GeneralDBPlugin build success."
 
 # vir
-cd ${code_path}/src/AppPlugins/virtualization/build/
+cd ${code_path}/src/AppPlugins/virtualization/CI/script/
 sh pack_opensource.sh
 cp -rf ${code_path}/src/AppPlugins/common/framework/output_pkg/Virtualization*.tar.xz  ${binary_path}/Plugins/Linux/$(uname -m)/
 echo "Virtualization build success."
@@ -36,8 +36,6 @@ echo "Virtualization build success."
 
 if [ $(uname -m) == "x86_64" ]; then
     echo "This is a x86_64 system."
-    sh "$code_path"/src/ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_opensource.sh sanclient
-    sh "$code_path"/src/ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_opensource.sh x86 x86_64 sdk
     sh "$code_path"/src/ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_opensource.sh x86 ${BUILD_TYPE}
     sh "$code_path"/src/ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_pkg.sh OpenSource x86_64
 elif [ $(uname -m) == "aarch64" ]; then
