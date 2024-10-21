@@ -1,4 +1,19 @@
 #!/bin/bash
+########################################
+#  This file is part of the open-eBackup project.
+# Copyright (c) 2024 Huawei Technologies Co.,Ltd.
+#
+# open-eBackup is licensed under MPL v2.
+# You can use this software according to the terms and conditions of the MPL v2.
+# You may obtain a copy of MPL v2 at:
+#
+#          https://www.mozilla.org/en-US/MPL/2.0
+#
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+# See the MPL v2 for more details.
+########################################
 set -x
 source "$(dirname "$BASH_SOURCE")/buildcommon.sh"
 G_CURRENT_PATH=$(cd `dirname $0`; pwd)
@@ -111,9 +126,9 @@ function package_final() {
     # update PBI_NAME
     cd ${G_BASE_DIR}/pkg/${PKG_PATH_NAME}/final
     if [ "${tag_image}" == "debug" ]; then
-        sudo tar cf - ./${PRODUCT}_${PKG_VERSION}_${PKG_NAME}* | pigz -p 12 > ${G_BASE_DIR}/package/${PRODUCT}_${PKG_VERSION}_${PKG_NAME}_debug.tgz
+        sudo tar cf - ./*${PKG_NAME}* | pigz -p 12 > ${G_BASE_DIR}/package/${PRODUCT}_${PKG_VERSION}_${PKG_NAME}_debug.tgz
     else
-        sudo tar cf - ./${PRODUCT}_${PKG_VERSION}_${PKG_NAME}* | pigz -p 12 > ${G_BASE_DIR}/package/${PRODUCT}_${PKG_VERSION}_${PKG_NAME}.tgz
+        sudo tar cf - ./*${PKG_NAME}* | pigz -p 12 > ${G_BASE_DIR}/package/${PRODUCT}_${PKG_VERSION}_${PKG_NAME}.tgz
     fi
     echo "Package final pkg finish"
     return 0

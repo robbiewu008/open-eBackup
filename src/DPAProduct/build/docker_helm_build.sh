@@ -1,15 +1,31 @@
 #!/bin/bash
+########################################
+#  This file is part of the open-eBackup project.
+# Copyright (c) 2024 Huawei Technologies Co.,Ltd.
+#
+# open-eBackup is licensed under MPL v2.
+# You can use this software according to the terms and conditions of the MPL v2.
+# You may obtain a copy of MPL v2 at:
+#
+#          https://www.mozilla.org/en-US/MPL/2.0
+#
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+# See the MPL v2 for more details.
+########################################
+set -x
 source "$(dirname "$BASH_SOURCE")/buildcommon.sh"
 
 if [ -z "${LAST_MS_TAG}" ]; then
     echo "LAST_MS_TAG does not exist."
     exit 1
-fi 
+fi
 
 echo LAST_MS_TAG=${LAST_MS_TAG}
 
 function download_patch_images() {
-    
+
     echo "Downloading patch Images from harbor!"
     sh ${G_BASE_DIR}/build/download_images_from_harbor.sh patch
     if [ $? -ne 0 ]; then
@@ -60,6 +76,60 @@ function build_all_helm() {
     try_check_chart_syntax
 }
 
+function initialize_inf_pm() {
+    if [ ! -f "${G_BASE_DIR}/component/INF_CI/script/commParam.sh" ]; then
+        echo "No commParam.sh found, check component dir"
+        exit 1
+    fi
+    sh "${G_BASE_DIR}/component/INF_CI/script/commParam.sh"
+
+    if [ ! -f "${G_BASE_DIR}/component/PM_CI/CI/script/common.sh" ]; then
+        echo "No common.sh found, check component dir"
+        exit 1
+    fi
+    sh "${G_BASE_DIR}/component/PM_CI/CI/script/common.sh"
+
+    #替换基础设施yaml文件中的数字版本号
+    sed -i "s/current_digital_version/${digitalVersion}/g" ${G_BASE_DIR}/component/INF_CI/build/helm/infrastructure/templates/DigitalVersionConfig.yaml
+}
+
+function copy_files() {
+    # 复制CI库的文件
+    cd ${G_BASE_DIR}/..
+    cp -rf ProtectManager/build ${G_BASE_DIR}/component/PM_CI
+    cp -rf ProtectManager/CI ${G_BASE_DIR}/component/PM_CI
+    cp -rf Infrastructure_OM/ci/* ${G_BASE_DIR}/component/INF_CI
+
+    #拷贝PM_API_Gateway配置文件到ProtectManager的chart/template/目录下
+ #   cp -rf ProtectManager/component/PM_API_Gateway/IngressRoute/*   ${G_BASE_DIR}/component/PM_CI/build/helm/protect-manager/templates/
+
+    # 替换基础设施和管控面文件中的变量
+    initialize_inf_pm
+    if [ $? -ne 0 ]; then
+        echo " INF PM initialization failed!"
+        exit 1
+    fi
+
+    rm -rf ${G_BASE_DIR}/build/dockerfiles
+    mkdir -p ${G_BASE_DIR}/build/dockerfiles
+    rm -rf ${G_BASE_DIR}/build/helm/components
+    mkdir -p ${G_BASE_DIR}/build/helm/components
+    echo "Begin to copy all docker files"
+
+    find "${G_BASE_DIR}/component" \( ! -path "*build-dev*" -a ! -path "*DMA_CI*" \) \( -name "*.dockerfile" -o -name "*.name" \) -exec cp -f "{}" "${G_BASE_DIR}/build/dockerfiles" \;
+
+    rm -f "${G_BASE_DIR}/build/dockerfiles/open-ebackup_base.dockerfile"
+    rm -f "${G_BASE_DIR}/build/dockerfiles/ba se.name"
+
+    echo -e "\nAfter copy docker files, ${G_BASE_DIR}/build/dockerfiles contains:"
+    ls -l ${G_BASE_DIR}/build/dockerfiles
+
+    echo "Begin to copy all helm files"
+    find "${G_BASE_DIR}/component" -maxdepth 4 -type d -iregex '.*helm/.*' -exec cp -rf "{}" "${G_BASE_DIR}/build/helm/components" \;
+    echo -e "\nAfter copy helm dirs, ${G_BASE_DIR}/build/helm/components contains:"
+    ls -l ${G_BASE_DIR}/build/helm/components
+}
+
 function build_open_helm() {
     rm -rf ${G_BASE_DIR}/pkg/helm
     mkdir -p ${G_BASE_DIR}/pkg/helm
@@ -70,6 +140,8 @@ function build_open_helm() {
     find ./ -name "*.yaml" | xargs -I {} sed -i "s/{{ .Values.global.version }}/${LAST_MS_TAG}/g" {}
 
     if [ "${BUILD_MODULE}" == "system_pm" ] ; then
+        copy_files
+        cd ${G_BASE_DIR}/build/helm/components
         cp -rf ${G_BASE_DIR}/build/helm/components/protect-engine/conf ${G_BASE_DIR}/build/helm/components/infrastructure/
         rm -rf ${G_BASE_DIR}/build/helm/components/protect-engine
         for h in $(ls "${G_BASE_DIR}/build/helm/components"); do
@@ -87,8 +159,9 @@ function build_open_helm() {
         echo "helm build ${BUILD_MODULE} success"
     fi
     if [ "${BUILD_MODULE}" == "system_dme" ] ; then
-        rm -rf ${G_BASE_DIR}/build/helm/components/infrastructure
-        rm -rf ${G_BASE_DIR}/build/helm/components/protect-manager
+        copy_files
+        cd ${G_BASE_DIR}/build/helm/components
+        find . -maxdepth 1 -type d ! -name 'protect-engine'  ! -name '.' -exec rm -rf {} +
         rm -rf ${G_BASE_DIR}/build/helm/databackup/templates/*.yaml
         for h in $(ls "${G_BASE_DIR}/build/helm/components"); do
             find ./ -name "*dee*.yaml" -exec rm -rf {} +
@@ -104,6 +177,7 @@ function build_open_helm() {
         echo "helm build ${BUILD_MODULE} success"
     fi
     if [ "${BUILD_MODULE}" == "system_dee" ] ; then
+        copy_files
         mkdir -p "${G_BASE_DIR}/build/helm/components/dee"
         mkdir -p "${G_BASE_DIR}/build/helm/components/dee/templates"
         cp ${G_BASE_DIR}/build/helm/components/protect-engine/templates/*dee*.yaml ${G_BASE_DIR}/build/helm/components/dee/templates
@@ -185,15 +259,15 @@ function saveall_docker() {
     else
         ARCH="X86_64"
     fi
-    
+
     rm -rf ${G_BASE_DIR}/pkg/images
     mkdir ${G_BASE_DIR}/pkg/images
 
     docker images | grep -v rancher | grep -v '<none>' |  grep -v 'oceanprotect-dataprotect' | grep -v 'harbor' | grep -v 'dme_3rd' | grep -v "dee_common" | grep -v "pm-app-common" | grep "${LAST_MS_TAG}"
     docker images | sed 1d | grep -v rancher | grep -v '<none>' |  grep -v 'oceanprotect-dataprotect' | grep -v 'harbor' | grep -v 'dme_3rd' | grep -v "dee_common" | grep -v "pm-app-common" | grep "${LAST_MS_TAG}" | tr -s ' ' | awk '{printf "%s:%s ",$1,$2}'
 
-    
-    
+
+
     if [ -f /usr/bin/xz ]; then
         echo "Run docker save to ${G_BASE_DIR}/pkg/images/${PRODUCT}_${PKG_VERSION}_image_${ARCH}.tar.xz"
         echo "Using xz to zip. It will be slow maybe, but high compress ratio."
@@ -348,4 +422,3 @@ function main() {
 
 main $@
 exit $?
-
