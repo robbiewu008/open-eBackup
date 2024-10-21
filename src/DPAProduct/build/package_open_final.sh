@@ -29,18 +29,7 @@ function package_final() {
     cur_time=$(date "+%Y%m%d%H%M%S")
     rm -rf "${G_BASE_DIR}/pkg/final"
     mkdir -p "${G_BASE_DIR}/pkg/final/${PRODUCT}_${PKG_VERSION}_${PKG_NAME}"
-    if [ "${BUILD_PKG_TYPE}" == "OceanCyber" ];then
-        mkdir -p "${G_BASE_DIR}/pkg/OceanCyber/final"
-        sed -i "s#DataBackup#OceanCyber#g" $G_CURRENT_PATH/../CI/conf/chart_manifest.yml
-        cd ${G_BASE_DIR}/pkg/helm/
-        mv databackup*.tgz OceanCyber-${INTERNAL_VERSION}.tgz
-        sed -i "s/current_version/${PKG_VERSION}/g" $G_CURRENT_PATH/../CI/conf/image_manifest_CyberEngine.yml
-        sed -i "s/^ReleaseTime:.*/ReleaseTime:  ${cur_time}/g" $G_CURRENT_PATH/../CI/conf/image_manifest_CyberEngine.yml
-        sed -i "s/tag:.*/tag: ${LAST_MS_TAG}/g" $G_CURRENT_PATH/../CI/conf/image_manifest_CyberEngine.yml
-        sed -i "s/^DigitalVersion:.*/DigitalVersion:  ${digitalVersion}/g" $G_CURRENT_PATH/../CI/conf/image_manifest_CyberEngine.yml
-        cp -f $G_CURRENT_PATH/../CI/conf/image_manifest_CyberEngine.yml "${G_BASE_DIR}/pkg/final/${PRODUCT}_${PKG_VERSION}_image_${ARCH}/manifest.yml"
-#        download_ibma_from_cmc
-    elif [ "${BUILD_PKG_TYPE}" == "OpenSource" ]; then
+    if [ "${BUILD_PKG_TYPE}" == "OpenSource" ]; then
         mkdir -p "${G_BASE_DIR}/pkg/open-eBackup/final"
         sed -i "s/package_name/${PKG_NAME}/g" $G_CURRENT_PATH/../CI/conf/image_manifest_${PKG_NAME}.yml
         sed -i "s/current_version/${PKG_VERSION}/g" $G_CURRENT_PATH/../CI/conf/image_manifest_${PKG_NAME}.yml
@@ -71,13 +60,6 @@ function package_final() {
     sed -i "s/^ReleaseTime:.*/ReleaseTime:  ${cur_time}/g" $G_CURRENT_PATH/../CI/conf/chart_manifest.yml
     sed -i "s/^DigitalVersion:.*/DigitalVersion:  ${digitalVersion}/g" $G_CURRENT_PATH/../CI/conf/chart_manifest.yml
     cp -f $G_CURRENT_PATH/../CI/conf/chart_manifest.yml "${G_BASE_DIR}/pkg/final/${PRODUCT}_${PKG_NAME}_chart/manifest.yml"
-    if [ "${BUILD_PKG_TYPE}" == "OceanCyber" ];then
-        mkdir -p "${G_BASE_DIR}/pkg/final/${PRODUCT}_${PKG_VERSION}_chart_${ARCH}/install_script"
-        cp -r ${G_BASE_DIR}/../Infrastructure_OM/infrastructure/script/oceancyber/* "${G_BASE_DIR}/pkg/final/${PRODUCT}_${PKG_NAME}_chart/install_script/"
-        cp ${G_BASE_DIR}/../ProtectManager/component/PM_System_Base_Common_Service/scripts/sysbackup_recovery.sh "${G_BASE_DIR}/pkg/final/${PRODUCT}_${PKG_NAME}_chart/install_script/"
-        artget pull -d $G_CURRENT_PATH/../CI/LCRP/conf/down_verify_tool.xml -ap "${G_BASE_DIR}/pkg/final/${PRODUCT}_${PKG_NAME}_chart/install_script/" -user ${cmc_user} -pwd ${cmc_pwd}
-        chmod 550 ${G_BASE_DIR}/pkg/final/${PRODUCT}_${PKG_NAME}_chart/install_script/verify_tool
-    fi
     #替换app_upg.yml版本号和镜像tag号
     mkdir -p "${G_BASE_DIR}/pkg/final/${PRODUCT}_${PKG_NAME}_chart/swm_script"
     mkdir -p "${G_BASE_DIR}/pkg/final/${PRODUCT}_${PKG_NAME}_chart/databackup_script"

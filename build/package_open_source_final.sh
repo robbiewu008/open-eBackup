@@ -48,13 +48,6 @@ sh DataMoveEngine/build/build_opensource.sh ${binary_path}/
 # build final pkg
 cd ${WORKSPACE}/REST_API/src
 
-# DME 大包
-# open-eBackup_1.x.0_MediaServer.tgz
-export BUILD_MODULE=system_dme
-export BUILD_PKG_TYPE=OpenSource
-
-# 镜像制作
-sh DPAProduct/CI/script/Package_100P.sh
 
 # INF & PM 大包
 # open-eBackup_1.x.0_MasterServer.tgz
@@ -63,3 +56,12 @@ export BUILD_PKG_TYPE=OpenSource
 
 # 镜像制作
 sh DPAProduct/CI/script/Package_100P.sh
+
+# DME 大包
+# open-eBackup_1.x.0_MediaServer.tgz
+export BUILD_MODULE=system_dme
+export BUILD_PKG_TYPE=OpenSource
+
+# 镜像制作
+sh DPAProduct/CI/script/Package_100P.sh
+
