@@ -15,28 +15,28 @@ CUR_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PM_MS_DIR=${CUR_PATH}/..
 BASE_PATH=${PM_MS_DIR}/../..
 
-merge_id=$1
+BIN_PATH=$1
+merge_id=$2
 
 function build_npm(){
 	cd ${PM_MS_DIR}/src/service/console/
 
-    if [ -d /devcloud/node_modules ];then
-        echo "Dependence fils already exists!"
-        mv /devcloud/node_modules ${PM_MS_DIR}/src/service/console/
-    fi
-
-    npm install
+    tar -zxvf ${BIN_PATH}/PM_GUI.tar.gz -C ${PM_MS_DIR}/src/service/console/
     if [[ $? -ne 0 ]]; then
         echo [INFO] Install Dependences for Frontend Project Failed.
         exit 1
     fi
-    npm run build
+    npm run open-build
     if [[ $? -ne 0 ]]; then
         echo [INFO] Compile Frontend Project Failed.
         exit 1
     fi
 
     echo "[INFO] Move dependence files"
+    if [ -d /devcloud/node_modules ];then
+        echo "Dependence fils already exists!"
+        rm -rf /devcloud/node_modules
+    fi
     mv ${PM_MS_DIR}/src/service/console/node_modules  /devcloud/
     cp -r dist/pm-gui/* ${PM_MS_DIR}/src/service/console
     rm -rf dist
@@ -44,7 +44,7 @@ function build_npm(){
 
 function build_maven(){
 	cd ${PM_MS_DIR}/src/service/
-	mvn -Preal install -nsu -Dmaven.test.skip=true -s ${BASE_PATH}/CI/conf/settings.xml
+	mvn -Preal install -nsu -Dmaven.test.skip=true
 	if [ $? -ne 0 ]; then
 		echo [INFO] maven compile Failed.
 		exit 1

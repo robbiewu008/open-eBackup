@@ -5,6 +5,7 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/lib64:/usr/lib:/usr/local/lib:/usr/l
 WORKDIR /opt/OceanStor/100P/ProtectManager/PM_Config
 COPY --chown=99:99 /opt/OceanStor/100P/ProtectManager/PM_Config /opt/OceanStor/100P/ProtectManager/PM_Config
 COPY --chown=99:99 /opt/OceanStor/100P/ProtectManager/3rd_inc /opt/OceanStor/100P/ProtectManager/3rd_inc
+RUN yum install iproute -y
 RUN luseradd -u 99 -g nobody -s /sbin/nologin nobody && \
     echo "nobody   ALL=(ALL) NOPASSWD:/usr/sbin/ip" >> /etc/sudoers && \
     pip3 install --no-index --find-links=../3rd_inc/ --no-cache-dir setuptools==65.6.3 && \
