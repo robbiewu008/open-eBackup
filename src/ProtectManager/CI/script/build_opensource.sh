@@ -136,9 +136,10 @@ function compile_image() {
 }
 
 function main() {
+  tar -zxvf ${REPO_PATH}/ProtectManager/PM_MAVEN.tar.gz -C ${BASE_PATH}/repo
 	echo "compile PM_Boot_Dependencies before build"
 	cd ${BASE_PATH}/component/PM_Boot_Dependencies
-	mvn clean install
+	mvn clean install -gs ${BASE_PATH}/CI/conf/settings.xml
 	if [ $? -ne 0 ]; then
 		echo "PM_Boot_Dependencies mvn compile failed!"
 		exit 1
