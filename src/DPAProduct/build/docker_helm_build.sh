@@ -127,7 +127,7 @@ function copy_files() {
     echo "Begin to copy all helm files"
     find "${G_BASE_DIR}/component" -maxdepth 4 -type d -iregex '.*helm/.*' -exec cp -rf "{}" "${G_BASE_DIR}/build/helm/components" \;
     echo -e "\nAfter copy helm dirs, ${G_BASE_DIR}/build/helm/components contains:"
-    ls -l ${G_BASE_DIR}/build/helm/components
+    ls -l 
 }
 
 function build_open_helm() {
@@ -137,11 +137,11 @@ function build_open_helm() {
     mkdir -p ${G_BASE_DIR}/build/helm/databackup/charts
 
     echo "Build helm $(ls "${G_BASE_DIR}/build/helm/components")"
-    find ./ -name "*.yaml" | xargs -I {} sed -i "s/{{ .Values.global.version }}/${LAST_MS_TAG}/g" {}
 
     if [ "${BUILD_MODULE}" == "system_pm" ] ; then
         copy_files
         cd ${G_BASE_DIR}/build/helm/components
+        find ./ -name "*.yaml" | xargs -I {} sed -i "s/{{ .Values.global.version }}/${LAST_MS_TAG}/g" {}
         cp -rf ${G_BASE_DIR}/build/helm/components/protect-engine/conf ${G_BASE_DIR}/build/helm/components/infrastructure/
         rm -rf ${G_BASE_DIR}/build/helm/components/protect-engine
         for h in $(ls "${G_BASE_DIR}/build/helm/components"); do
@@ -161,7 +161,9 @@ function build_open_helm() {
     if [ "${BUILD_MODULE}" == "system_dme" ] ; then
         copy_files
         cd ${G_BASE_DIR}/build/helm/components
+        find ./ -name "*.yaml" | xargs -I {} sed -i "s/{{ .Values.global.version }}/${LAST_MS_TAG}/g" {}
         find . -maxdepth 1 -type d ! -name 'protect-engine'  ! -name '.' -exec rm -rf {} +
+        #和system_pm的包共用一套pv
         rm -rf ${G_BASE_DIR}/build/helm/databackup/templates/*.yaml
         for h in $(ls "${G_BASE_DIR}/build/helm/components"); do
             find ./ -name "*dee*.yaml" -exec rm -rf {} +
@@ -179,6 +181,7 @@ function build_open_helm() {
     if [ "${BUILD_MODULE}" == "system_dee" ] ; then
         copy_files
         mkdir -p "${G_BASE_DIR}/build/helm/components/dee"
+        find ./ -name "*.yaml" | xargs -I {} sed -i "s/{{ .Values.global.version }}/${LAST_MS_TAG}/g" {}
         mkdir -p "${G_BASE_DIR}/build/helm/components/dee/templates"
         cp ${G_BASE_DIR}/build/helm/components/protect-engine/templates/*dee*.yaml ${G_BASE_DIR}/build/helm/components/dee/templates
         cp ${G_BASE_DIR}/build/helm/components/protect-engine/Chart.yaml ${G_BASE_DIR}/build/helm/components/dee
