@@ -98,10 +98,11 @@ function copy_files() {
     cd ${G_BASE_DIR}/..
     cp -rf ProtectManager/build ${G_BASE_DIR}/component/PM_CI
     cp -rf ProtectManager/CI ${G_BASE_DIR}/component/PM_CI
+    cp -rf ProtectManager/component ${G_BASE_DIR}/component/PM_CI
     cp -rf Infrastructure_OM/ci/* ${G_BASE_DIR}/component/INF_CI
 
     #拷贝PM_API_Gateway配置文件到ProtectManager的chart/template/目录下
- #   cp -rf ProtectManager/component/PM_API_Gateway/IngressRoute/*   ${G_BASE_DIR}/component/PM_CI/build/helm/protect-manager/templates/
+    cp -rf ProtectManager/component/PM_API_Gateway/IngressRoute/*   ${G_BASE_DIR}/component/PM_CI/build/helm/protect-manager/templates/
 
     # 替换基础设施和管控面文件中的变量
     initialize_inf_pm
@@ -137,11 +138,11 @@ function build_open_helm() {
     mkdir -p ${G_BASE_DIR}/build/helm/databackup/charts
 
     echo "Build helm $(ls "${G_BASE_DIR}/build/helm/components")"
-    find ./ -name "*.yaml" | xargs -I {} sed -i "s/{{ .Values.global.version }}/${LAST_MS_TAG}/g" {}
 
     if [ "${BUILD_MODULE}" == "system_pm" ] ; then
         copy_files
         cd ${G_BASE_DIR}/build/helm/components
+        find ./ -name "*.yaml" | xargs -I {} sed -i "s/{{ .Values.global.version }}/${LAST_MS_TAG}/g" {}
         cp -rf ${G_BASE_DIR}/build/helm/components/protect-engine/conf ${G_BASE_DIR}/build/helm/components/infrastructure/
         rm -rf ${G_BASE_DIR}/build/helm/components/protect-engine
         for h in $(ls "${G_BASE_DIR}/build/helm/components"); do
@@ -161,7 +162,9 @@ function build_open_helm() {
     if [ "${BUILD_MODULE}" == "system_dme" ] ; then
         copy_files
         cd ${G_BASE_DIR}/build/helm/components
+        find ./ -name "*.yaml" | xargs -I {} sed -i "s/{{ .Values.global.version }}/${LAST_MS_TAG}/g" {}
         find . -maxdepth 1 -type d ! -name 'protect-engine'  ! -name '.' -exec rm -rf {} +
+        #和system_pm的包共用一套pv
         rm -rf ${G_BASE_DIR}/build/helm/databackup/templates/*.yaml
         for h in $(ls "${G_BASE_DIR}/build/helm/components"); do
             find ./ -name "*dee*.yaml" -exec rm -rf {} +
@@ -179,6 +182,7 @@ function build_open_helm() {
     if [ "${BUILD_MODULE}" == "system_dee" ] ; then
         copy_files
         mkdir -p "${G_BASE_DIR}/build/helm/components/dee"
+        find ./ -name "*.yaml" | xargs -I {} sed -i "s/{{ .Values.global.version }}/${LAST_MS_TAG}/g" {}
         mkdir -p "${G_BASE_DIR}/build/helm/components/dee/templates"
         cp ${G_BASE_DIR}/build/helm/components/protect-engine/templates/*dee*.yaml ${G_BASE_DIR}/build/helm/components/dee/templates
         cp ${G_BASE_DIR}/build/helm/components/protect-engine/Chart.yaml ${G_BASE_DIR}/build/helm/components/dee
