@@ -36,7 +36,6 @@ function compile() {
 	echo "RUN:mvn dependency:tree"
 	cd ${BASE_PATH}/component/PM_Common/
 	pwd
-	mvn dependency:tree
 	mkdir -p ${BASE_PATH}/pkg/mspkg
 	PM_MS_LIST="PM_GUI PM_System_Base_Common_Service PM_Data_Protection_Service PM_Nginx PM_Database_Version_Migration PM_Config"
 	for pmservice in ${PM_MS_LIST}; do
