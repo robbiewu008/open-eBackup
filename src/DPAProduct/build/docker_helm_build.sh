@@ -127,7 +127,7 @@ function copy_files() {
     echo "Begin to copy all helm files"
     find "${G_BASE_DIR}/component" -maxdepth 4 -type d -iregex '.*helm/.*' -exec cp -rf "{}" "${G_BASE_DIR}/build/helm/components" \;
     echo -e "\nAfter copy helm dirs, ${G_BASE_DIR}/build/helm/components contains:"
-    ls -l 
+    ls -l ${G_BASE_DIR}/build/helm/components
 }
 
 function build_open_helm() {
