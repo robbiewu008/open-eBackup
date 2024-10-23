@@ -12,15 +12,95 @@
 #  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 # 初始化环境变量
-source ./common_opensource.sh
+
+# open-eBackup-bin
+OPEN_OBLIGATION_ROOT_PATH=${binary_path}
+if [ -z "$OPEN_OBLIGATION_ROOT_PATH" ]; then
+    echo "ERROR: Please export binary_path={open-source-obligation path}"
+    exit 1
+fi
+
+build_type=$1
+OPEN_VIRT_PATH="${OPEN_OBLIGATION_ROOT_PATH}/Plugins/Linux"
+REST_VIRT_PATH="${OPEN_ROOT_PATH}/REST_API/src/AppPlugins/virtualization"
+FRAMEWORK_PATH="${OPEN_ROOT_PATH}/REST_API/src/AppPlugins/common/framework"
+MODULE_PATH="${OPEN_ROOT_PATH}/REST_API/src/AppPlugins/common/Module"
+REST_VIRT_LIB_PATH="${REST_VIRT_PATH}/lib"
+
+SYS_NAME=`uname -s`
+if [ "${SYS_NAME}" = "arrch64" ]; then
+    VIRT_PACK="VirtualizationPlugin_Linux_aarch64.tar.xz"
+elif [ "${SYS_NAME}" = "x86_64" ]; then
+    VIRT_PACK="VirtualizationPlugin_Linux_x86_64.tar.xz"
+else
+    echo "ERROR: Unsupport OS."
+    exit 1
+fi
+OPEN_VIRT_PACK="${OPEN_VIRT_PATH}/${SYS_NAME}/${VIRT_PACK}"
+
+YAMLCPP=yaml-cpp-yaml-cpp-0.6.3
+
+Framework_lib_list=(
+    ${FRAMEWORK_PATH}/lib
+    ${FRAMEWORK_PATH}/lib/agent_sdk
+    
+    ${REST_VIRT_PATH}/lib
+    ${REST_VIRT_PATH}/deps/local/lib
+)
+
+Module_lib_list=(
+    ${MODULE_PATH}/lz4_rel/lib
+    ${MODULE_PATH}/boost_rel/lib
+    ${MODULE_PATH}/jsoncpp_rel/libs
+    ${MODULE_PATH}/curl_rel/lib/
+    ${MODULE_PATH}/thrift_rel/lib
+    ${MODULE_PATH}/libaio_rel/lib
+    ${MODULE_PATH}/tinyxml2_rel/lib
+    ${MODULE_PATH}/SecureCLib_rel/lib
+)
+
+Framework_inc_list=(
+    ${FRAMEWORK_PATH}/inc
+    ${FRAMEWORK_PATH}/inc/common
+    ${FRAMEWORK_PATH}/inc/client
+    ${FRAMEWORK_PATH}/inc/rpc
+    ${FRAMEWORK_PATH}/inc/rpc/certificateservice/
+    ${FRAMEWORK_PATH}/inc/thrift_interface
+)
+Module_inc_list=(
+    ${MODULE_PATH}/boost_rel/include
+    ${MODULE_PATH}/lz4_rel/include
+    ${MODULE_PATH}/jsoncpp_rel/include
+    ${MODULE_PATH}/curl_rel/include
+    ${MODULE_PATH}/openssl_rel/include
+    ${MODULE_PATH}/thrift_rel/include
+    ${MODULE_PATH}/libaio_rel/include
+    ${MODULE_PATH}/esdk_rel/include
+    ${MODULE_PATH}/tinyxml2_rel/include
+    ${MODULE_PATH}/libssh2_rel/include
+    ${MODULE_PATH}/platform/SecureCLib_rel/include
+    ${REST_VIRT_PATH}/deps/local/include
+)
+
+FusionStorage_list=(
+    ${REST_VIRT_PATH}/vbstool
+    ${REST_VIRT_PATH}/vbstool/conf
+    ${REST_VIRT_PATH}/vbstool/lib
+)
+
+FusionStorage_file_list=(
+    ${REST_VIRT_PATH}/vbstool/vrmVBSTool.sh
+    ${REST_VIRT_PATH}/vbstool/lib/vrmVBSTool.jar
+
+)
 
 function copy_lib_2_special_path()
 {
-    local libPath="${REST_API_PATH}/build-cmake"
+    local libPath="${REST_VIRT_PATH}/build-cmake"
     local count=$(find ${libPath} -name "*.so" 2>/dev/null | wc -l)
     if [ $count -gt 0 ]; then
-        mkdir -p ${OPEN_VIRT_LIB_PATH}
-        find ${libPath} -name "*.so" | xargs -I {} cp -arf {} "${OPEN_VIRT_LIB_PATH}"
+        mkdir -p ${REST_VIRT_LIB_PATH}
+        find ${libPath} -name "*.so" | xargs -I {} cp -arf {} "${REST_VIRT_LIB_PATH}"
     fi
 }
 
@@ -35,48 +115,79 @@ function python_check()
     fi
 }
 
+function uncompress_deps
+{
+    local tmp_path="${REST_VIRT_PATH}/tmps"
+    mkdir -p "${tmp_path}"
+    cp "${OPEN_VIRT_PACK}" "${tmp_path}"
+    xz -d "${tmp_path}/${VIRT_PACK}"
+    rm "${tmp_path}/${VIRT_PACK}"
+    tar -xvf "${tmp_path}/*.tar"
+
+    local vir_path="${tmp_path}/AppPlugins_virtualization"
+    if [ ! -d "${REST_VIRT_PATH}/lib/service" ]; then
+        mkdir -p ${REST_VIRT_PATH}/lib/service
+    fi
+    cp -arf "${vir_path}/tmps/lib/service/*" "${REST_VIRT_PATH}/lib/service"
+
+    if [ ! -d "${REST_VIRT_PATH}/lib/3rd" ]; then
+        mkdir -p ${REST_VIRT_PATH}/lib/3rd
+    fi
+    cp -arf "${vir_path}/tmps/lib/3rd/*" "${REST_VIRT_PATH}/lib/3rd"
+
+    if [ ! -d "${REST_VIRT_PATH}/deps" ]; then
+        mkdir -p ${REST_VIRT_PATH}/deps
+    fi
+    cp -arf "${vir_path}/deps/*" "${REST_VIRT_PATH}/deps"
+
+    if [ ! -d "${REST_VIRT_PATH}/vbstool" ]; then
+        mkdir -p ${REST_VIRT_PATH}/vbstool
+    fi
+    cp -arf "${vir_path}/vbstool/*" "${REST_VIRT_PATH}/vbstool"
+
+    rm -rf "${REST_VIRT_PATH}/tmps"
+}
+
 function copy_deps()
 {
-    local deps_path="${REST_API_PATH}/deps"
-    if [ ! -d "${deps_path}" ]; then
-        mkdir -p ${deps_path}
-    fi
-    cp -arf ${OPENSOURCE_PATH}/deps/* ${deps_path}/
+    if [ ${build_type} = "release" ]; then
+        uncompress_deps
+    else
+        local deps_path="${REST_API_PATH}/deps"
+        if [ ! -d "${deps_path}" ]; then
+            mkdir -p ${deps_path}
+        fi
+        cp -arf ${OPENSOURCE_PATH}/deps/* ${deps_path}/
 
-    local module_path="${REST_API_PATH}/Module"
-    if [ ! -d "${module_path}" ]; then
-        mkdir -p ${module_path}
-    fi
-    cp -arf ${OPENSOURCE_PATH}/Module/* ${module_path}/
+        local module_path="${REST_API_PATH}/Module"
+        if [ ! -d "${module_path}" ]; then
+            mkdir -p ${module_path}
+        fi
+        cp -arf ${OPENSOURCE_PATH}/Module/* ${module_path}/
 
-    local framework_path="${REST_API_PATH}/framework"
-    if [ ! -d "${framework_path}" ]; then
-        mkdir -p ${framework_path}
-    fi
-    cp -arf ${OPENSOURCE_PATH}/framework/* ${framework_path}/
+        local framework_path="${REST_API_PATH}/framework"
+        if [ ! -d "${framework_path}" ]; then
+            mkdir -p ${framework_path}
+        fi
+        cp -arf ${OPENSOURCE_PATH}/framework/* ${framework_path}/
 
-    local vir_lib_path="${REST_API_PATH}/lib"
-    if [ ! -d "${vir_lib_path}" ]; then
-        mkdir -p ${vir_lib_path}
+        local vir_lib_path="${REST_API_PATH}/lib"
+        if [ ! -d "${vir_lib_path}" ]; then
+            mkdir -p ${vir_lib_path}
+        fi
+        cp -arf ${OPENSOURCE_PATH}/lib/* ${vir_lib_path}/
     fi
-    cp -arf ${OPENSOURCE_PATH}/lib/* ${vir_lib_path}/
 }
 
 function cmake_all()
 {
-    copy_deps
-    if [ $? -ne 0 ]; then
-        log_echo "ERROR" "copy_deps error"
-        exit 1
-    fi
-
     log_echo "INFO" "begin to build virtualization plugin"
     local type="$1"
     COMPILE_PARA=""
     BUILD_MODULE=""
-    cd ${REST_API_PATH}
-    mkdir -p "${REST_API_PATH}/build-cmake"
-    cd "${REST_API_PATH}/build-cmake"
+    cd ${REST_VIRT_PATH}
+    mkdir -p "${REST_VIRT_PATH}/build-cmake"
+    cd "${REST_VIRT_PATH}/build-cmake"
     rm -rf build-*
     if [ "${type}" = "LLT" ]; then
         echo "This is LLT compile" > build-llt_mark
@@ -99,16 +210,16 @@ function cmake_all()
         COMPILE_PARA=" -D TRACEPOINT=ON "
     elif [[ "${type}" = "Release"  || "$BUILD_TYPE" = "Release" || "$BUILD_TYPE" = "release" ]]; then
         echo "This is Release compile" > build-asan_mark
-        COMPILE_PARA=" -D CMAKE_BUILD_TYPE=Release "
+        COMPILE_PARA=" -D CMAKE_BUILD_TYPE=Release -D OPENSOURCE=ON "
     else
         COMPILE_PARA=" "
     fi
 
-    log_echo "INFO" "cmake ${COMPILE_PARA} ${REST_API_PATH}/plugins/virtualization"
+    log_echo "INFO" "cmake ${COMPILE_PARA} ${REST_VIRT_PATH}"
     if [ -z ${BUILD_MODULE} ]; then
-        cmake ${COMPILE_PARA} ${REST_API_PATH}/plugins/virtualization -DCMAKE_EXPORT_COMPILE_COMMANDS=YES -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+        cmake ${COMPILE_PARA} ${REST_API_PATH} -DCMAKE_EXPORT_COMPILE_COMMANDS=YES -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
     else
-        cmake ${COMPILE_PARA} ${REST_API_PATH}/plugins/virtualization -DCMAKE_EXPORT_COMPILE_COMMANDS=YES -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -D${BUILD_MODULE}=ON
+        cmake ${COMPILE_PARA} ${REST_VIRT_PATH} -DCMAKE_EXPORT_COMPILE_COMMANDS=YES -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -D${BUILD_MODULE}=ON
     fi
 
     if [ $? -ne 0 ]; then
@@ -127,7 +238,7 @@ function cmake_all()
     copy_lib_2_special_path
 
     if [ "$RUN_LLT" = "true" ]; then
-        pushd ${REST_API_PATH}/plugins/virtualization
+        pushd REST_VIRT_PATH
         sh make-test.sh
         if [ $? != 0 ]; then
             popd
@@ -141,12 +252,16 @@ function main()
 {
     local type="$1"
     if [ "X${type}" == "Xclean" ]; then
-        rm -rf ${REST_API_PATH}/build-cmake
-        rm -rf ${REST_API_PATH}/lib/*.so
+        rm -rf ${REST_VIRT_PATH}/build-cmake
+        rm -rf ${REST_VIRT_PATH}/lib/*.so
         log_echo "INFO" "Finish to clean build-make folder"
         return 0
     fi
-
+    copy_deps
+    if [ $? -ne 0 ]; then
+        log_echo "ERROR" "copy_deps error"
+        exit 1
+    fi
     ### 检查Framework
     for path in "${Framework_lib_list[@]}"
     do
