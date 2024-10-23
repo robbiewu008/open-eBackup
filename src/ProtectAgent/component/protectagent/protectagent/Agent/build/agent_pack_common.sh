@@ -518,7 +518,7 @@ PrepareAgentPackage()
         echo "mkdir ${AGENT_ROOT}/selfdevelop"
     fi
 
-    if [ ! -d "${AGENT_ROOT}/db/AgentDB.db" ]; then
+    if [ ! -f "${AGENT_ROOT}/db/AgentDB.db" ]; then
         mkdir -p ${AGENT_ROOT}/db
         chmod 755 ${AGENT_ROOT}/db
 
@@ -531,7 +531,7 @@ PrepareAgentPackage()
         echo "Agent db created successfully."
     fi
 
-    if [ ! -d "${AGENT_ROOT}/db/DwsDB.db" ]; then
+    if [ ! -f "${AGENT_ROOT}/db/DwsDB.db" ]; then
         if [ "$1" != "sanclient" ]; then
             sqlite3 ${AGENT_ROOT}/selfdevelop/DwsDB.db "`cat ${AGENT_ROOT}/build/create_dws_table.sql`"
             if [ $? -ne 0 ]; then

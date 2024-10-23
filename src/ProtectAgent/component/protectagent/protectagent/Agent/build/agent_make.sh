@@ -627,14 +627,6 @@ if [ "$sys" = "SunOS" ]; then
     mv makefile.bak makefile
 fi
 
-if [ ${CLEAN_ALL} -ne 1 ] && [ ${NO_OPENSRC} -ne 1 ]; then
-    # ${AGENT_ROOT}/build/agent_make_opensrc.sh no_opensrc
-    if [ $? -ne 0 ]; then
-        echo "make open_src failed!"
-        exit 1
-    fi
-fi
-
 export CPPC CC cc CFLAGS cFLAGS CXXFLAGS  OFLAGS oFLAGS DFLAGS dFLAGS AGENT_BUILD_NUM ARNew STFLAGS DYFLAGS STLIBS
 export COV_CFLAGS COV_OFLAGS
 
@@ -643,8 +635,6 @@ touch build_make.log
 main_enter
 
 main_result=$?
-
-# Create_python_executalbe_file
 
 compile_gcov_out
 
