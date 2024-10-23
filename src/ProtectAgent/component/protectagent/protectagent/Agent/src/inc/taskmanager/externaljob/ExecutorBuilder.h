@@ -2,6 +2,7 @@
 #define EXECUTOR_BUILDER_H_
 #include <functional>
 #include <vector>
+#include <stdint.h>
 
 namespace AppProtect {
 using Executor = std::function<int32_t(int32_t)>;

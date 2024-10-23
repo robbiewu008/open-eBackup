@@ -16,16 +16,16 @@ export FUSIONCOMPUTE_BRANCH="$branch"
 export BUILD_TYPE=release
 
 # file build_opensource
-cd ${code_path}/src/AppPlugins/file/CI/script/
-sh pack_opensource.sh
-cp -rf ${code_path}/src/AppPlugins/common/framework/output_pkg/FilePlugin*.tar.xz  ${binary_path}/Plugins/Linux/$(uname -m)/
-echo "FilePlugin build success."
+# cd ${code_path}/src/AppPlugins/file/CI/script/
+# sh pack_opensource.sh
+# cp -rf ${code_path}/src/AppPlugins/common/framework/output_pkg/FilePlugin*.tar.xz  ${binary_path}/Plugins/Linux/$(uname -m)/
+# echo "FilePlugin build success."
 
 # genaradb build 
-cd ${code_path}/src/AppPlugins/database/CI/script/
-sh pack_opensource.sh
-cp -rf ${code_path}/src/AppPlugins/common/framework/output_pkg/GeneralDBPlugin*.tar.xz  ${binary_path}/Plugins/Linux/$(uname -m)/
-echo "GeneralDBPlugin build success."
+# cd ${code_path}/src/AppPlugins/database/CI/script/
+# sh pack_opensource.sh
+# cp -rf ${code_path}/src/AppPlugins/common/framework/output_pkg/GeneralDBPlugin*.tar.xz  ${binary_path}/Plugins/Linux/$(uname -m)/
+# echo "GeneralDBPlugin build success."
 
 # vir
 # cd ${code_path}/src/AppPlugins/virtualization/CI/script/
@@ -33,6 +33,9 @@ echo "GeneralDBPlugin build success."
 # cp -rf ${code_path}/src/AppPlugins/common/framework/output_pkg/Virtualization*.tar.xz  ${binary_path}/Plugins/Linux/$(uname -m)/
 # echo "Virtualization build success."
 
+CURRENT_DIR=$(cd "$(dirname $0)" && pwd)
+export AGENT_CODE_HOME=$(readlink -f "${CURRENT_DIR}/../../../")
+echo AGENT_CODE_HOME=$AGENT_CODE_HOME
 
 if [ $(uname -m) == "x86_64" ]; then
     echo "This is a x86_64 system."

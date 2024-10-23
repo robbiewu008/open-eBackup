@@ -393,8 +393,8 @@ int32_t thinPoolBridge::collectDeviceidMap()
             delete[] devid_node_buf;
             return ret;
         }
-
-        m_map_devid.insert(pair<uint64_t, char *>((devid_node->keys)[index], root_node));
+        uint64_t key = devid_node->keys[index];
+        m_map_devid.insert(std::make_pair(key, root_node));
     }
 
     delete[] devid_node_buf;

@@ -24,7 +24,7 @@ CFLAGS=
 cFLAGS=
 OFLAGS=
 DFLAGS=
-OS_NAME=
+OS_NAME=UN_DEFINE_OS
 NGINX_CPU_OPT=
 NGINX_CPU_OPT_FLAG=0
 #Linux version 2.6.29 support the file system freeze and thaw
@@ -398,6 +398,8 @@ make_init()
             OS_NAME=REDHAT
         elif [ -f /etc/euleros-release ]; then
             OS_NAME=EULER
+        elif [ -f /etc/openEuler-release ]; then
+            OS_NAME=OPEN_EULER
         elif [ "${sysLinuxName}" != "" ]; then
             OS_NAME=ROCKY
         elif [ -z "${sysLinuxName}" ]; then
