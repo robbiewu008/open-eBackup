@@ -6,10 +6,19 @@ add_compile_options(-fPIC -ftest-coverage)
 set(CMAKE_CXX_FLAGS -g)
 
 # set project variable
-set(PROTECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../)
-set(MODULE_ROOT_PATH ${PROTECT_ROOT_DIR}/Module)
-set(MODULE_OPEN_SRC_PATH ${MODULE_ROOT_PATH}/third_open_src)
-set(MODULE_PLATFORM_PATH ${MODULE_ROOT_PATH}/platform)
+if (OPENSOURCE)
+    set(PROTECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../common)
+    set(VIRT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../)
+    set(MODULE_ROOT_PATH ${PROTECT_ROOT_DIR}/Module)
+    set(MODULE_OPEN_SRC_PATH ${MODULE_ROOT_PATH}/third_open_src)
+    set(MODULE_PLATFORM_PATH ${MODULE_ROOT_PATH}/platform)
+else()
+    set(PROTECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../)
+    set(VIRT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../)
+    set(MODULE_ROOT_PATH ${PROTECT_ROOT_DIR}/Module)
+    set(MODULE_OPEN_SRC_PATH ${MODULE_ROOT_PATH}/third_open_src)
+    set(MODULE_PLATFORM_PATH ${MODULE_ROOT_PATH}/platform)
+endif()
 
 find_package(Python3 COMPONENTS Interpreter Development)
 include_directories(${Python3_INCLUDE_DIRS})
@@ -154,8 +163,8 @@ endif()
 target_link_directories(virtualization_plugin
     PUBLIC
     ${FRAMEWORK_LIBS}
-    ${PROTECT_ROOT_DIR}/lib/service
-    ${PROTECT_ROOT_DIR}/lib/3rd
+    ${VIRT_ROOT_DIR}/lib/service
+    ${VIRT_ROOT_DIR}/lib/3rd
 )
 
 target_include_directories(virtualization_plugin

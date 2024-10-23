@@ -1,0 +1,8 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: middleware-pm-add-path-prefix
+  namespace: dpa
+spec:
+  addPrefix:
+    prefix: /v1/external

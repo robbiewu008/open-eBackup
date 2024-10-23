@@ -1,0 +1,2 @@
+patch_microservices_list：指定本次补丁包要出的补丁镜像微服务名称，按照组件区分，多个镜像名称之间用空格分开
+initial_image_version：原始环境中的镜像TAG号，即基于哪个镜像TAG号做补丁

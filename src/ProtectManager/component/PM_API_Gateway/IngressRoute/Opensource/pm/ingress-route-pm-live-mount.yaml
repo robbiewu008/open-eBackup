@@ -1,0 +1,37 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if eq $deploytype "d10" }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-route-pm-live-mount
+  namespace: dpa
+spec:
+  entryPoints:
+    - third
+    - third6
+    - third_node
+    - internal
+  routes:
+    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/live-mount`) && !Path(`/v1/live-mount/cyber`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
+    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/livemount-policies`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
+  tls:
+    secretName: secret-pm-tls
+{{- end }}

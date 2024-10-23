@@ -1,0 +1,11 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: tls-option-pm-ha
+  namespace: dpa
+spec:
+  clientAuth:
+    secretNames:
+      - secret-pm-ha
+    clientAuthType: RequireAndVerifyClientCert
+  minVersion: VersionTLS12

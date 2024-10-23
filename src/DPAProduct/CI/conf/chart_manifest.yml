@@ -1,0 +1,8 @@
+#main.yml是组件内部的配置文件，对外的接口、版本等信息请在manifest.yml中描述
+Type:  Chart
+Name:  DataBackup
+Version:  current_version
+ReleaseTime:  current_time
+Description:  "DataBackup Software"
+DigitalVersion: current_digital_version
+

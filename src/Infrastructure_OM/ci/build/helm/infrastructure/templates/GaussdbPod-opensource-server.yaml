@@ -3,18 +3,12 @@ Get running environment
 */}}
 {{- $environment:= "" }}
 {{- $cluster_enable:= "" }}
-{{- $master_node0:= "" }}
-{{- $master_node1:= "" }}
 {{- if .Values.global }}
 {{- $environment = .Values.global.environment }}
 {{- $cluster_enable = .Values.global.cluster_enable | toString }}
-{{- $master_node0 = .Values.global.master_node0 }}
-{{- $master_node1 = .Values.global.master_node1 }}
 {{- else }}
 {{- $environment = .Values.local.environment }}
 {{- $cluster_enable:= "false" }}
-{{- $master_node0:= "" }}
-{{- $master_node1:= "" }}
 {{- end }}
 
 {{- $deploytype:= include "getDeployType" . | default "" }}
@@ -47,21 +41,29 @@ spec:
     spec:
       affinity:
         nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - MASTER
+                      - SLAVE
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 2
               preference:
                 matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: role
                     operator: In
                     values:
-                      - {{ $master_node1 }}
+                      - MASTER
             - weight: 1
               preference:
                 matchExpressions:
-                  - key: kubernetes.io/hostname
+                  - key: role
                     operator: In
                     values:
-                      - {{ $master_node0 }}
+                      - SLAVE
       serviceAccountName: gaussdb-sa
       terminationGracePeriodSeconds: 0
       securityContext:
@@ -89,7 +91,7 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: DEPLOY_TYPE
-              value: {{ $deploytype }}
+              value: d8
             {{- if eq $cluster_enable "true" }}
             - name: CLUSTER
               value: "TRUE"

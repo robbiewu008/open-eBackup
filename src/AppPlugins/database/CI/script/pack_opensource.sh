@@ -218,7 +218,7 @@ download_python3_pluginFrame() {
     if [ "${SYS_NAME}" = "AIX" ]; then
         # CI下载python安装包，这里只负责拷贝
         python3_aix_file=python3.pluginFrame.AIX.tar.gz
-        cp ${PYTHON_PLG_PKG_PATH}/${psutil_packages} ${OUTPUT_PKG_PATH}/install
+        cp ${PYTHON_PLG_PKG_PATH}/${python3_aix_file} ${OUTPUT_PKG_PATH}/install
         if [ $? -ne 0 ]; then
             echo "Copy aix python package failed."
             exit 1

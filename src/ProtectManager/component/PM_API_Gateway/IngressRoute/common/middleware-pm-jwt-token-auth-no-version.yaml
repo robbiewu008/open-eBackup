@@ -1,0 +1,10 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: middleware-pm-jwt-token-auth-no-version
+  namespace: dpa
+spec:
+  forwardAuth:
+    address: https://127.0.0.1:25081/v1/auth/token/verify/action/no-version
+    tls:
+      insecureSkipVerify: true

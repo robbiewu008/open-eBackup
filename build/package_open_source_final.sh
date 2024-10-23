@@ -20,9 +20,12 @@ set -x
 export WORKSPACE=${1:-"/usr1/"} # 工作目录
 export code_path=${2:-"${WORKSPACE}/REST_API"}  # 开源代码存放路径
 export binary_path=${3:-"${WORKSPACE}/open-source-obligation"} # 开源二进制文件存放路径
+export gui_code_path=${4:-"${WORKSPACE}/gui"} # gui代码存放路径
 export tag_image="release"
 export BUILD_TYPE="release"
-export MS_IMAGE_TAG=${5:"1.6.RC2.010"}
+export MS_IMAGE_TAG=${5:-"1.6.RC2.010"}
+export Version=${6:-"1.6.RC2"}
+export INTERNAL_VERSION=${7:-"1.6.0-RC2"}
 export Compile_image="Y"
 export OPENSOURCE_BUILD="Y"
 
@@ -45,13 +48,6 @@ sh DataMoveEngine/build/build_opensource.sh ${binary_path}/
 # build final pkg
 cd ${WORKSPACE}/REST_API/src
 
-# DME 大包
-# open-eBackup_1.x.0_MediaServer.tgz
-export BUILD_MODULE=system_dme
-export BUILD_PKG_TYPE=OpenSource
-
-# 镜像制作
-sh DPAProduct/CI/script/Package_100P.sh
 
 # INF & PM 大包
 # open-eBackup_1.x.0_MasterServer.tgz
@@ -60,3 +56,12 @@ export BUILD_PKG_TYPE=OpenSource
 
 # 镜像制作
 sh DPAProduct/CI/script/Package_100P.sh
+
+# DME 大包
+# open-eBackup_1.x.0_MediaServer.tgz
+export BUILD_MODULE=system_dme
+export BUILD_PKG_TYPE=OpenSource
+
+# 镜像制作
+sh DPAProduct/CI/script/Package_100P.sh
+

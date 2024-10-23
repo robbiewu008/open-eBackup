@@ -28,6 +28,7 @@ function borrow_package(){
     echo "=========== start to borrow PM_System_Base_Service.tar.gz ==========="
     mkdir -p ${PM_MS_DIR}/tmp/
     tar -zxvf ${BIN_PATH}/PM_System_Base_Service.tar.gz -C ${PM_MS_DIR}/tmp
+    cp ${BASE_PATH}/../ProtectAgent/component/protectagent/protectagent/final_pkg/DataProtect_*_client.zip ${PM_MS_DIR}/tmp
     echo "=========== Borrow PM_System_Base_Service.tar.gz success ==========="
 }
 
@@ -38,7 +39,8 @@ function build_package(){
     mv ${PM_MS_DIR}/tmp/pm-main-server.jar ${PM_MS_DIR}/tmp/pmtmp/pm-main-server.jar
     cd ${PM_MS_DIR}/tmp/pmtmp/
     jar xvf pm-main-server.jar
-    find ${PM_MS_DIR}/src/ -name "*.jar" -exec cp {} ${PM_MS_DIR}/tmp/pmtmp/BOOT-INF/lib \
+    find ${PM_MS_DIR}/src/ -name "*.jar" -exec cp {} ${PM_MS_DIR}/tmp/pmtmp/BOOT-INF/lib \;
+    rm -rf ${PM_MS_DIR}/tmp/pmtmp/BOOT-INF/lib/jsp-api-2.1.jar
     rm -rf pm-main-server.jar
     jar cvfM0 ${PM_MS_DIR}/tmp/pm-main-server.jar *
     cd ${PM_MS_DIR}/tmp/

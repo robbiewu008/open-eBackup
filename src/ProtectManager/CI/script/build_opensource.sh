@@ -12,27 +12,11 @@
 
 CUR_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 BASE_PATH=${CUR_PATH}/../..
-PRODUCT=$1
-CODE_BRANCH=$2
-Service_Name=$3
-REPO_PATH=$4
-STEP_LEVEL=$5
-BUILD_PKG_TYPE=$6
-PRODUCT_IMAGE_PATH=$7
-
-if [ -z ${PRODUCT} ]; then
-  echo "No product parameter, please specify"
-	exit 1
-fi
-
-if [ -z ${CODE_BRANCH} ]; then
-	echo "No branch parameter, please specify"
-	exit 1
-fi
-
-if [ -z ${AGENT_BRANCH} ]; then
-	AGENT_BRANCH=${CODE_BRANCH}
-fi
+Service_Name="ProtectManager"
+REPO_PATH=$1
+STEP_LEVEL=$2
+BUILD_PKG_TYPE=$3
+PRODUCT_IMAGE_PATH=$4
 
 #set bep
 if [ "${BEP}" == "YES" ]; then
@@ -52,7 +36,7 @@ function compile() {
 	echo "RUN:mvn dependency:tree"
 	cd ${BASE_PATH}/component/PM_Common/
 	pwd
-	mvn dependency:tree
+	mkdir -p ${BASE_PATH}/pkg/mspkg
 	PM_MS_LIST="PM_GUI PM_System_Base_Common_Service PM_Data_Protection_Service PM_Nginx PM_Database_Version_Migration PM_Config"
 	for pmservice in ${PM_MS_LIST}; do
 		echo "start compile ${pmservice}!"
@@ -70,7 +54,6 @@ function compile() {
 				echo "${pmservice} compile failed"
 				exit 1
 			fi
-			cp ${REPO_PATH}/ProtectManager/${pmservice}.tar.gz  ${BASE_PATH}/pkg/mspkg/
 		else 
 			local L_COMPONENTS_DIR="${BASE_PATH}/component"
 			if [ -d ${L_COMPONENTS_DIR}/${pmservice}/pkg ]; then
@@ -152,9 +135,10 @@ function compile_image() {
 }
 
 function main() {
+  tar -zxvf ${REPO_PATH}/ProtectManager/PM_MAVEN.tar.gz -C ${BASE_PATH}/repo
 	echo "compile PM_Boot_Dependencies before build"
 	cd ${BASE_PATH}/component/PM_Boot_Dependencies
-	mvn clean install
+	mvn clean install -gs ${BASE_PATH}/CI/conf/settings.xml
 	if [ $? -ne 0 ]; then
 		echo "PM_Boot_Dependencies mvn compile failed!"
 		exit 1

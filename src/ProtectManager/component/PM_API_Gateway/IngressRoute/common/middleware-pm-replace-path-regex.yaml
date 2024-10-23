@@ -1,0 +1,9 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: middleware-pm-replace-path-regex
+  namespace: dpa
+spec:
+  replacePathRegex:
+    regex: (\.\.|\.;)
+    replacement: '{'
