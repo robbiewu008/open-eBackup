@@ -36,7 +36,6 @@ function compile() {
 	echo "RUN:mvn dependency:tree"
 	cd ${BASE_PATH}/component/PM_Common/
 	pwd
-	mvn dependency:tree
 	mkdir -p ${BASE_PATH}/pkg/mspkg
 	PM_MS_LIST="PM_GUI PM_System_Base_Common_Service PM_Data_Protection_Service PM_Nginx PM_Database_Version_Migration PM_Config"
 	for pmservice in ${PM_MS_LIST}; do
@@ -136,9 +135,10 @@ function compile_image() {
 }
 
 function main() {
+  tar -zxvf ${REPO_PATH}/ProtectManager/PM_MAVEN.tar.gz -C ${BASE_PATH}/repo
 	echo "compile PM_Boot_Dependencies before build"
 	cd ${BASE_PATH}/component/PM_Boot_Dependencies
-	mvn clean install
+	mvn clean install -gs ${BASE_PATH}/CI/conf/settings.xml
 	if [ $? -ne 0 ]; then
 		echo "PM_Boot_Dependencies mvn compile failed!"
 		exit 1

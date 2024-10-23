@@ -44,7 +44,7 @@ function build_npm(){
 
 function build_maven(){
 	cd ${PM_MS_DIR}/src/service/
-	mvn -Preal install -nsu -Dmaven.test.skip=true
+	mvn -Preal install -nsu -Dmaven.test.skip=true -gs ${BASE_PATH}/CI/conf/settings.xml
 	if [ $? -ne 0 ]; then
 		echo [INFO] maven compile Failed.
 		exit 1

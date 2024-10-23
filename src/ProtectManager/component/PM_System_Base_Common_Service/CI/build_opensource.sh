@@ -64,9 +64,9 @@ function build_package(){
 function build_base(){
   # 编译base代码工程
 	if [ 'OceanCyber' == "${BUILD_PKG_TYPE}" ]; then
-	  mvn -T 16 -Pocean-cyber install -nsu -DskipTests -Dkmc.build.enabled=true
+	  mvn -T 16 -Pocean-cyber install -nsu -DskipTests -Dkmc.build.enabled=true -gs ${BASE_PATH}/CI/conf/settings.xml
 	else
-	  mvn -T 16 -Preal install -nsu -DskipTests -Dkmc.build.enabled=true
+	  mvn -T 16 -Preal install -nsu -DskipTests -Dkmc.build.enabled=true -gs ${BASE_PATH}/CI/conf/settings.xml
 	fi
 	if [ $? -ne 0 ]; then
 		echo "maven compile failed."
