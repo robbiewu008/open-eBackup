@@ -8,14 +8,15 @@
 #include "common/ConfigXmlParse.h"
 #include "include/wsecv2_type.h"
 #include "wsecv2_itf.h"
-#include "src/sdp/sdpv2_itf.h"
-#include "src/sdp/sdpv1_itf.h"
+#include "sdp/sdpv2_itf.h"
+#include "sdp/sdpv1_itf.h"
 #include "include/kmcv2_itf.h"
 #include "securec.h"
 #include "include/wsecv2_errorcode.h"
+#include "cac/cacv2_pri.h"
+#include "common/wsecv2_order.h"
+
 #include "securecom/KmcCallback.h"
-#include "src/cac/cacv2_pri.h"
-#include "src/common/wsecv2_order.h"
 
 using namespace std;
 namespace {

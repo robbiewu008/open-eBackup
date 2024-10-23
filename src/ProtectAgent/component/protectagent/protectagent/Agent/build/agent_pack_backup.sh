@@ -43,6 +43,12 @@ sys=`uname -s`
 # san pkg flag
 SAN_PKG_FLAG=0
 
+Log()
+{
+    DATE=`date +%y-%m-%d--%H:%M:%S`
+    echo " [${DATE}] $1 "
+}
+
 AddPackFilesBin()
 {
     echo "AddPackFilesBin()"
@@ -217,6 +223,7 @@ if [ "`uname -s`" = "Linux" ]; then
     PackLibSecurecSo
 fi
 
+Log "start AgentCompile"
 #step 3 of agent common pack
 if [ $# != 0 ]; then
     if [ "$1" = "rest_publish" ]; then
@@ -238,17 +245,23 @@ else
     AgentCompile
 fi
 
+Log "start ConfigPluginsVersion"
 #step 4 of agent common pack
 ConfigPluginsVersion
 
+Log "start PrepareAgentPackage"
 #step 5 of agent common pack
 PrepareAgentPackage
+
+Log "start AddPackFilesBin"
 #step 5.1: add appbackup files into package
 AddPackFilesBin
 
+Log "start RootCopyToSbin"
 # add root permission to sbin directory
 RootCopyToSbin
 
+Log "start AgentPack"
 #step 6 of agent common pack
 AgentPack
 

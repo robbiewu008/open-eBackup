@@ -508,10 +508,10 @@ main_enter()
     if [ ${CLEAN} -eq 1 ]; then
         gmake $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "clean"
     elif [ ${DATAPROCESS} -eq 1 ]; then
-        make $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "dp"
+        make -s $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "dp"
     # compile xbsa
     elif [ ${XBSA} -eq 1 ]; then
-        make $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "xbsa"
+        make -s $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "xbsa"
     # compile agent
     elif [ ${AGENT} -eq 1 ] || [ ${SANCLIENT_PLUIN} -eq 1 ]; then
         if [ ${CLEAN_ALL} -eq 1 ]; then
@@ -522,7 +522,7 @@ main_enter()
             copy_shell
         fi
 
-        ${AGENT_ROOT}/build/agent_make_opensrc.sh no_opensrc ${MAKE_OPTION}
+        ${AGENT_ROOT}/build/agent_prepare_platform.sh
         if [ $? -ne 0 ]; then
             echo "make open_src failed!"
             exit 1
@@ -531,7 +531,7 @@ main_enter()
 
         CFLAGS=$CFLAGS" -Wl,--whole-archive"
         export CFLAGS
-        make $MAKE_JOB -f ${AGENT_ROOT}/build/makefile ${MAKE_OPTION} ${MAKE_OPTION_AGENT}
+        make -s $MAKE_JOB -f ${AGENT_ROOT}/build/makefile ${MAKE_OPTION} ${MAKE_OPTION_AGENT}
     # compile all
     else
         if [ ${CLEAN_ALL} -eq 1 ]; then
@@ -562,6 +562,7 @@ main_enter()
         fi
         make $MAKE_JOB -f ${AGENT_ROOT}/build/makefile ${MAKE_OPTION}
     fi
+    return $main_result
 }
 
 compile_gcov_out()
@@ -615,7 +616,7 @@ Create_python_executalbe_file()
 
 echo "#########################################################"
 echo "   Copyright (C), 2013-2014, Huawei Tech. Co., Ltd."
-echo "   Start to compile Agent "
+echo "   Start to compile Agent $*"
 echo "#########################################################"
 StartTime=`date '+%Y-%m-%d %H:%M:%S'`
 
@@ -624,14 +625,6 @@ make_init $*
 if [ "$sys" = "SunOS" ]; then
     sed 's/-lsnmp++/-lsnmp++ -lresolv/g' makefile > makefile.bak
     mv makefile.bak makefile
-fi
-
-if [ ${CLEAN_ALL} -ne 1 ] && [ ${NO_OPENSRC} -ne 1 ]; then
-    ${AGENT_ROOT}/build/agent_make_opensrc.sh no_opensrc
-    if [ $? -ne 0 ]; then
-        echo "make open_src failed!"
-        exit 1
-    fi
 fi
 
 export CPPC CC cc CFLAGS cFLAGS CXXFLAGS  OFLAGS oFLAGS DFLAGS dFLAGS AGENT_BUILD_NUM ARNew STFLAGS DYFLAGS STLIBS
@@ -643,13 +636,11 @@ main_enter
 
 main_result=$?
 
-Create_python_executalbe_file
-
 compile_gcov_out
 
 if [ ${main_result} != 0 ]; then
     echo "#########################################################"
-    echo "   Compile Agent failed."
+    echo "   Compile Agent $* failed."
     echo "#########################################################"
 
     exit ${main_result}
@@ -657,7 +648,7 @@ fi
 
 EndTime=`date '+%Y-%m-%d %H:%M:%S'`
 echo "#########################################################"
-echo "   Compile Agent completed."
+echo "   Compile Agent $* completed."
 echo "   begin at ${StartTime}"
 echo "   end   at ${EndTime}"
 echo "#########################################################"

@@ -650,8 +650,10 @@ process_enter()
 main()
 {
     param_init $*
+    echo "param_init finish."
 
     process_enter
+    echo "process_enter finish."
 
     return $?
 }

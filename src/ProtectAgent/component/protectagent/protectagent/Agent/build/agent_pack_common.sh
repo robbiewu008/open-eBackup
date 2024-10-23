@@ -216,11 +216,6 @@ pack_files_sbin="
     sbin/clearmountpoint.sh            \
     sbin/setcgroup.sh                  \
     sbin/CreateDataturbolink           \
-    sbin/sanclientaction.sh            \
-    sbin/sanclientactioniscsi.sh       \
-    sbin/sanclientcopylogmeta.sh       \
-    sbin/sanclientcheck.sh             \
-    sbin/sanclientclear.sh             \
     sbin/vmfs_check_tool.sh            \
     sbin/vmfs_mount.sh                 \
     sbin/vmfs_umount.sh                \
@@ -228,6 +223,24 @@ pack_files_sbin="
     sbin/config_dpc_flow_control.sh         \
     sbin/config_dpc_policy_route.sh         \
     "
+
+pack_files_sanclient_bin="
+    bin/sanclient                      \
+    "
+
+pack_files_sanclient_sbin="
+    sbin/sanclientaction.sh            \
+    sbin/sanclientactioniscsi.sh       \
+    sbin/sanclientcopylogmeta.sh       \
+    sbin/sanclientcheck.sh             \
+    sbin/sanclientclear.sh             \
+    "
+
+if [ "$1" = "sanclient" ];then
+    pack_files_bin="${pack_files_bin} ${pack_files_sanclient_bin}"
+
+    pack_files_sbin="${pack_files_sbin} ${pack_files_sanclient_sbin}"
+fi
 
 if [ -f ${AGENT_ROOT}/conf/svn ]
 then 
@@ -410,7 +423,7 @@ AgentCompile()
                     echo "#########################################################"
                     exit 1
                 fi
-
+            
                 #step3.1 Compile Dpp Process
                 ${AGENT_ROOT}/build/agent_make.sh dp $*
                 if [ $? != 0 ];then
@@ -421,6 +434,7 @@ AgentCompile()
                     echo "#########################################################"
                     exit 1
                 fi
+
                 # compile xbsa
                 ${AGENT_ROOT}/build/agent_make.sh xbsa $*
                 if [ $? != 0 ];then
@@ -431,7 +445,7 @@ AgentCompile()
                     echo "#########################################################"
                     exit 1
                 fi
-            fi 
+            fi
         else
             ${AGENT_ROOT}/build/agent_make.sh $*
         fi
@@ -490,17 +504,34 @@ PrepareAgentPackage()
     echo "#########################################################"
     StartTime=`date '+%Y-%m-%d %H:%M:%S'`
 
+
     if [ ! -d ${AGENT_ROOT}/db ]
     then
         mkdir -p ${AGENT_ROOT}/db
         chmod 755 ${AGENT_ROOT}/db
+        echo "mkdir ${AGENT_ROOT}/db"
+    fi
+
+    if [ ! -d "${AGENT_ROOT}/selfdevelop" ]; then
+        mkdir -p ${AGENT_ROOT}/selfdevelop
+        chmod 755 ${AGENT_ROOT}/selfdevelop
+        echo "mkdir ${AGENT_ROOT}/selfdevelop"
+    fi
+
+    if [ ! -f "${AGENT_ROOT}/db/AgentDB.db" ]; then
+        mkdir -p ${AGENT_ROOT}/db
+        chmod 755 ${AGENT_ROOT}/db
+
         sqlite3 ${AGENT_ROOT}/selfdevelop/AgentDB.db "`cat ${AGENT_ROOT}/build/create_table.sql`"
         if [ $? -ne 0 ]; then
             echo "Create agent DB failed."
             exit 1
         fi
-        echo "Agent db created successfully."
         cp ${AGENT_ROOT}/selfdevelop/AgentDB.db ${AGENT_ROOT}/db
+        echo "Agent db created successfully."
+    fi
+
+    if [ ! -f "${AGENT_ROOT}/db/DwsDB.db" ]; then
         if [ "$1" != "sanclient" ]; then
             sqlite3 ${AGENT_ROOT}/selfdevelop/DwsDB.db "`cat ${AGENT_ROOT}/build/create_dws_table.sql`"
             if [ $? -ne 0 ]; then
@@ -510,6 +541,7 @@ PrepareAgentPackage()
             cp ${AGENT_ROOT}/selfdevelop/DwsDB.db ${AGENT_ROOT}/db
         fi
         cp -rf "${AGENT_ROOT}/bin/install/Linux/ProtectClient-E/upgrade" "${AGENT_ROOT}/db"
+        echo "dws db created successfully."
     fi
 
     cp "${AGENT_ROOT}/build/copyRight/Open Source Software Notice.doc" ${AGENT_ROOT}/
