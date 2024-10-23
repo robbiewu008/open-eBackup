@@ -28,6 +28,7 @@ function borrow_package(){
     echo "=========== start to borrow PM_System_Base_Service.tar.gz ==========="
     mkdir -p ${PM_MS_DIR}/tmp/
     tar -zxvf ${BIN_PATH}/PM_System_Base_Service.tar.gz -C ${PM_MS_DIR}/tmp
+    cp ${BASE_PATH}/../ProtectAgent/component/protectagent/protectagent/final_pkg/DataProtect_*_client.zip ${PM_MS_DIR}/tmp
     echo "=========== Borrow PM_System_Base_Service.tar.gz success ==========="
 }
 
