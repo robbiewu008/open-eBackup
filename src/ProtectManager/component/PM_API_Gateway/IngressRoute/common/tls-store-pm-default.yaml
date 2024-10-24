@@ -8,6 +8,3 @@ metadata:
 spec:
   defaultCertificate:
     secretName: secret-pm-tls
-  {{- if ne $deploytype "d5" }}
-  minVersion: VersionTLS12
-  {{- end }}
