@@ -40,9 +40,8 @@ RUN rpm -qa | grep ^libxcrypt-devel-[0-9] | xargs -i rpm -e {} --nodeps \
 ENV PYTHONPATH=/opt/script
 
 USER 99
-RUN pip3 install --user -i https://cmc.centralrepo.rnd.huawei.com/pypi/simple \
-    --trusted-host cmc.centralrepo.rnd.huawei.com --no-cache-dir \
-    -r /opt/script/requirements.txt
+RUN cd /opt/script/requirements \
+    && pip3 install *.whl \
 
 USER root
 RUN rm -f /root/.config/pip/pip.conf
