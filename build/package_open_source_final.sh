@@ -30,23 +30,23 @@ export Compile_image="Y"
 export OPENSOURCE_BUILD="Y"
 
 # 外置插件包编译
-cd ${WORKSPACE}/REST_API/src
+cd ${code_path}/src
 sh ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_pkg_opensource.sh
 
 # 镜像模块编译
 
-cd ${WORKSPACE}/REST_API/src
+cd ${code_path}/src
 sh Infrastructure_OM/infrastructure/script/build_opensource.sh mspkg
 
-cd ${WORKSPACE}/REST_API/src
+cd ${code_path}/src
 sh ProtectManager/CI/script/build_opensource.sh ${binary_path}/ "$@"
 
-cd ${WORKSPACE}/REST_API/src
+cd ${code_path}/src
 sh DataMoveEngine/build/build_opensource.sh ${binary_path}/
 
 
 # build final pkg
-cd ${WORKSPACE}/REST_API/src
+cd ${code_path}/src
 
 
 # INF & PM 大包

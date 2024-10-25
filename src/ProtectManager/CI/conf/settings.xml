@@ -18,7 +18,7 @@
         <mirror>
             <id>mirror</id>
             <mirrorOf>*,!maven-center,!selfdev,!rd-release,!dev-test</mirrorOf>
-            <url>https://cmc.centralrepo.rnd.huawei.com/artifactory/maven-central-repo/</url>
+            <url>file:///${code_path}/src/ProtectManager/repo</url>
         </mirror>
     </mirrors>
 
