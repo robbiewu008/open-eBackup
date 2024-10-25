@@ -69,6 +69,11 @@ function compile_kafka_package()
         rm -rf kafka-scripts
     fi
     mkdir kafka-scripts
+    cd kafka-scripts
+    mkdir -p requirements
+    cd requirements
+    pip3 download -r "${CURRENT_PATH}"/kafka/requirements.txt
+    cd ${PACKAGE_PATH}
     cp -r "${CURRENT_PATH}"/kafka/* kafka-scripts/
     cp -r "${CURRENT_PATH}"/common kafka-scripts/
     cp -r "${CURRENT_PATH}"/kmc kafka-scripts/
