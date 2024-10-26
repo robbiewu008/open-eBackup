@@ -15,6 +15,10 @@ export VIRTUALIZATION_BRANCH="$branch"
 export FUSIONCOMPUTE_BRANCH="$branch"
 export BUILD_TYPE=release
 
+CURRENT_DIR=$(cd "$(dirname $0)" && pwd)
+export AGENT_CODE_HOME=$(readlink -f "${CURRENT_DIR}/../../../")
+echo AGENT_CODE_HOME=$AGENT_CODE_HOME
+
 # file build_opensource
 cd ${code_path}/src/AppPlugins/file/CI/script/
 sh pack_opensource.sh
@@ -32,7 +36,6 @@ echo "GeneralDBPlugin build success."
 # sh pack_opensource.sh
 # cp -rf ${code_path}/src/AppPlugins/common/framework/output_pkg/Virtualization*.tar.xz  ${binary_path}/Plugins/Linux/$(uname -m)/
 # echo "Virtualization build success."
-
 
 if [ $(uname -m) == "x86_64" ]; then
     echo "This is a x86_64 system."

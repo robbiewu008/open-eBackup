@@ -5,8 +5,8 @@ BUILD_OS_TYPE=$2
 
 set -ex
 
-WORKHOME=${WORKSPACE}/REST_API/src/ProtectAgent/component/protectagent/protectagent
-cd ${WORKHOME}/Agent/ci/script
+WORKHOME=${AGENT_CODE_HOME}/REST_API/src/ProtectAgent/component/protectagent/protectagent
+cd ${AGENT_CODE_HOME}/Agent/ci/script
 
 #set bep
 if [ "${BEP}" == "YES" ]; then
@@ -30,7 +30,10 @@ if [ "${BUILD_PKG_TYPE}" != "OpenSource" ]; then
 fi
 
 sh ci_build_dir.sh ${BUILD_PKG_TYPE} ${BUILD_OS_TYPE}
-mkdir -p ${WORKHOME}/temp
+
+if [ ! -d ${WORKHOME}/temp ]; then
+	mkdir -p ${WORKHOME}/temp
+fi
 
 if [ "${BUILD_PKG_TYPE}" != "OpenSource" ]; then
 	artget pull -d ${WORKHOME}/Agent/ci/LCRP/conf/dependency_client.xml -p "{'AGENT_BRANCH':'${AGENT_BRANCH}','componentVersion':'${componentVersion}','PKG_TYPE':'Linux'}" -user ${cmc_user} -pwd ${cmc_pwd} -ap ${WORKHOME}/temp/

@@ -21,13 +21,12 @@ SDK_DIR=${binary_path}/PluginSDK/${systemtypeage}/
 AGENT_PKG=${binary_path}/dependency/Linux
 OPENSOURCE_BIN_PATH=${binary_path}/Agent
 
-CURRENT_DIR=$(cd "$(dirname $0)" && pwd)
-
 OUTPUT_DIR=${WORKSPACE}/output/finalpkg/
 if [ ! -d ${OUTPUT_DIR} ];then
     mkdir -p ${OUTPUT_DIR}
 fi
 
+CURRENT_DIR=$(cd "$(dirname $0)" && pwd)
 AGENT_HOME=$(readlink -f "${CURRENT_DIR}/../../../")
 echo AGENT_HOME=$AGENT_HOME
 
