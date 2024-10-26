@@ -41,7 +41,7 @@ ENV PYTHONPATH=/opt/script
 
 USER 99
 RUN cd /opt/script/requirements \
-    && pip3 install *.whl \
+    && pip3 install *.whl 
 
 USER root
 RUN rm -f /root/.config/pip/pip.conf
