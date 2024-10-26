@@ -8,7 +8,7 @@ PKG_TYPE=Plugins
 PKG_TYPE_FFILCLIENT=FileClient
 componentVersion_fileclient="1.6.0"    # fileclient包在1.6，需要后续agent和插件包归档到1.6之后需更改
 
-OPENSOURCE_REPOSITORY_DIR=${CLOUD_BUILD_WORKSPACE}/open-source-obligation
+OPENSOURCE_REPOSITORY_DIR=${OPENSOURCE_REPOSITORY_BIN}
 
 if [ -z ${branch} ];then
     echo "Please specify build branch!"
@@ -56,19 +56,36 @@ if [ -z "$BUILD_OS_TYPE" ]; then
 fi
 echo BUILD_OS_TYPE=${BUILD_OS_TYPE}
 
-cd ${BASE_PATH}/
-mkdir temp
-mkdir Plugins
-mkdir tmp_zip
+MakeDir()
+{
+    if [ ! -d "$1" ]; then
+        mkdir -p "$1"
+        echo "mkdir $1"
+    fi
+}
 
-mkdir -p final_pkg
-mkdir -p final_pkg/ProtectClient-e
-mkdir -p final_pkg/third_party_software
-mkdir -p final_pkg/PackageScript
-mkdir -p final_pkg/Plugins
-mkdir -p final_pkg/package
-mkdir -p final_pkg/PackageScript/windows
-mkdir -p final_pkg/PackageScript/like-unix
+CpFile()
+{
+    if [ ! -f "$1" ]; then
+        echo "=== $1 file noy exist ==="
+        return 1
+    fi
+    cp "$1" "$2"
+}
+
+cd ${BASE_PATH}/
+MakeDir temp
+MakeDir Plugins
+MakeDir tmp_zip
+
+MakeDir final_pkg
+MakeDir final_pkg/ProtectClient-e
+MakeDir final_pkg/third_party_software
+MakeDir final_pkg/PackageScript
+MakeDir final_pkg/Plugins
+MakeDir final_pkg/package
+MakeDir final_pkg/PackageScript/windows
+MakeDir final_pkg/PackageScript/like-unix
 
 #################################### 拷贝第三方软件 ####################################
 # package
@@ -79,50 +96,50 @@ cd ${BASE_PATH}/Agent/ci/LCRP/conf
 if [ "$BUILD_PKG_TYPE" = "OceanCyber" ]; then
     artget pull -d OceanCyber_pkg_from_cmc.xml -p "{'componentVersion':'${componentVersion}','AGENT_BRANCH':'${branch}','Version':'${Version}', 'PKG_TYPE':'${PKG_TYPE}', 'FILEPLUGIN_BRANCH':'${FILEPLUGIN_BRANCH}'}" -ap ${BASE_PATH}/Plugins -user ${cmc_user} -pwd ${cmc_pwd}
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "aarch64" ]; then
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/HadoopPlugin.tar.gz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/ElasticSearchPlugin_aarch64.tar.gz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/NasPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/FilePlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/GeneralDBPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/VirtualizationPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/FusionComputePlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/ObsPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/cppframework-Linux_aarch64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/HadoopPlugin.tar.gz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/ElasticSearchPlugin.tar.gz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/NasPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/FilePlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/GeneralDBPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/VirtualizationPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/FusionComputePlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/ObsPlugin_aarch64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/cppframework-Linux_aarch64.tar.xz ${BASE_PATH}/Plugins
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "x86_64" ]; then
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/HadoopPlugin.tar.gz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/ElasticSearchPlugin_x86_64.tar.gz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/NasPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/FilePlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/GeneralDBPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/VirtualizationPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/FusionComputePlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/ObsPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/cppframework-Linux_x86_64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/HadoopPlugin.tar.gz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/ElasticSearchPlugin.tar.gz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/NasPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/FilePlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/GeneralDBPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/VirtualizationPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/FusionComputePlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/ObsPlugin_x86_64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/cppframework-Linux_x86_64.tar.xz ${BASE_PATH}/Plugins
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "solaris" ]; then
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Solaris/FilePlugin_sun4v.tar.gz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Solaris/FilePlugin_sun4v.tar.gz ${BASE_PATH}/Plugins
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "aix" ]; then
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/FilePlugin_ppc_64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/GeneralDBPlugin.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/FilePlugin_ppc_64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/GeneralDBPlugin.tar.xz ${BASE_PATH}/Plugins
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/HadoopPlugin.tar.gz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/ElasticSearchPlugin.tar.gz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/NasPlugin.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/FilePlugin.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/FilePlugin_ppc_64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Solaris/FilePlugin_sun4v.tar.gz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/GeneralDBPlugin.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/VirtualizationPlugin.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/GeneralDBPlugin_ppc_64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/FusionComputePlugin.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/FilePlugin.zip ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/VirtualizationPlugin.zip ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/GeneralDBPlugin.zip ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/ADDSPlugin.zip ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/ObsPlugin.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/cppframework-Linux_aarch64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/cppframework-Linux_x86_64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/cppframework-AIX_ppc_64.tar.xz ${BASE_PATH}/Plugins
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Solaris/cppframework-SunOS_sun4v.tar.gz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/HadoopPlugin.tar.gz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/ElasticSearchPlugin.tar.gz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/NasPlugin.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/FilePlugin.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/FilePlugin_ppc_64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Solaris/FilePlugin_sun4v.tar.gz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/GeneralDBPlugin.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/VirtualizationPlugin.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/GeneralDBPlugin_ppc_64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/FusionComputePlugin.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/FilePlugin.zip ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/VirtualizationPlugin.zip ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/GeneralDBPlugin.zip ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/ADDSPlugin.zip ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/ObsPlugin.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/aarch64/cppframework-Linux_aarch64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/x86_64/cppframework-Linux_x86_64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/cppframework-AIX_ppc_64.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Solaris/cppframework-SunOS_sun4v.tar.gz ${BASE_PATH}/Plugins
 else
 #full download
     artget pull -d pkg_from_cmc.xml -p "{'componentVersion':'${componentVersion}','AGENT_BRANCH':'${branch}','Version':'${Version}', 'HADOOP_BRANCH':'${HADOOP_BRANCH}', 'PKG_TYPE':'${PKG_TYPE}', 'GENERALDB_BRANCH':'${GENERALDB_BRANCH}', 'FILEPLUGIN_BRANCH':'${FILEPLUGIN_BRANCH}', 'VIRTUALIZATION_BRANCH':'${VIRTUALIZATION_BRANCH}', 'BLOCKSERVICE_BRANCH':'${BLOCKSERVICE_BRANCH}', 'FUSIONCOMPUTE_BRANCH':'${FUSIONCOMPUTE_BRANCH}'}" -ap ${BASE_PATH}/Plugins -user ${cmc_user} -pwd ${cmc_pwd}
@@ -136,15 +153,15 @@ fi
 # download fileclient
 echo "start download fileclient"
 if [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "aarch64" ]; then
-    mkdir -p ${BASE_PATH}/FileClient
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/fileClient_aarch64.tar.gz ${BASE_PATH}/FileClient/
+    MakeDir ${BASE_PATH}/FileClient
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/fileClient_aarch64.tar.gz ${BASE_PATH}/FileClient/
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "x86_64" ]; then
-    mkdir -p ${BASE_PATH}/FileClient
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/fileClient_x86_64.tar.gz ${BASE_PATH}/FileClient/
+    MakeDir ${BASE_PATH}/FileClient
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/fileClient_x86_64.tar.gz ${BASE_PATH}/FileClient/
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" != "aix" ] && [ "$BUILD_OS_TYPE" != "solaris" ]; then
-    mkdir -p ${BASE_PATH}/FileClient
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/fileClient_aarch64.tar.gz ${BASE_PATH}/FileClient/
-    cp ${OPENSOURCE_REPOSITORY_DIR}/Plugins/fileClient_x86_64.tar.gz ${BASE_PATH}/FileClient/
+    MakeDir ${BASE_PATH}/FileClient
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/fileClient_aarch64.tar.gz ${BASE_PATH}/FileClient/
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/fileClient_x86_64.tar.gz ${BASE_PATH}/FileClient/
 else
     artget pull -d fileclient_pkg_from_cmc.xml -p "{'componentVersion':'${componentVersion}', 'componentVersion_fileclient':'${componentVersion_fileclient}','AGENT_BRANCH':'${branch}','PKG_TYPE':'${PKG_TYPE_FFILCLIENT}'}" -ap ${BASE_PATH}/FileClient -user ${cmc_user} -pwd ${cmc_pwd}
     if [ $? -ne 0 ]; then

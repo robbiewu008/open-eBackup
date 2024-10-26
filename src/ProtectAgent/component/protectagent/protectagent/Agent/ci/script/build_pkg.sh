@@ -5,7 +5,9 @@ BUILD_OS_TYPE=$2
 
 set -ex
 
-WORKHOME=${AGENT_CODE_HOME}/REST_API/src/ProtectAgent/component/protectagent/protectagent
+OPENSOURCE_REPOSITORY_DIR=${OPENSOURCE_REPOSITORY_BIN}
+
+WORKHOME=${AGENT_CODE_HOME}
 cd ${AGENT_CODE_HOME}/Agent/ci/script
 
 #set bep
@@ -40,12 +42,13 @@ if [ "${BUILD_PKG_TYPE}" != "OpenSource" ]; then
 	artget pull -d ${WORKHOME}/Agent/ci/LCRP/conf/dependency_client.xml -p "{'AGENT_BRANCH':'${AGENT_BRANCH}','componentVersion':'${componentVersion}','PKG_TYPE':'common'}" -user ${cmc_user} -pwd ${cmc_pwd} -ap ${WORKHOME}/temp/
 	artget pull -d ${WORKHOME}/Agent/ci/LCRP/conf/dependency_client.xml -p "{'AGENT_BRANCH':'${AGENT_BRANCH}','componentVersion':'${componentVersion}','PKG_TYPE':'Windows'}" -user ${cmc_user} -pwd ${cmc_pwd} -ap ${WORKHOME}/temp/
 elif [ "$BUILD_OS_TYPE" = "aarch64" ] || [ "$BUILD_OS_TYPE" = "x86_64" ]; then
-	cp -rf ${CLOUD_BUILD_WORKSPACE}/open-source-obligation/dependency/Linux/* ${WORKHOME}/temp
+	cp -rf ${OPENSOURCE_REPOSITORY_DIR}/dependency/Linux/* ${WORKHOME}/temp
 elif [ "$BUILD_OS_TYPE" = "aix" ] || [ "$BUILD_OS_TYPE" = "solaris" ]; then
-	cp -rf ${CLOUD_BUILD_WORKSPACE}/open-source-obligation/dependency/common/* ${WORKHOME}/temp
+	cp -rf ${OPENSOURCE_REPOSITORY_DIR}/dependency/common/* ${WORKHOME}/temp
 else
-	cp -rf ${CLOUD_BUILD_WORKSPACE}/open-source-obligation/dependency/Linux/* ${WORKHOME}/temp
-	cp -rf ${CLOUD_BUILD_WORKSPACE}/open-source-obligation/dependency/common/* ${WORKHOME}/temp
-	cp -rf ${CLOUD_BUILD_WORKSPACE}/open-source-obligation/dependency/Windows/* ${WORKHOME}/temp
+	cp -rf ${OPENSOURCE_REPOSITORY_DIR}/dependency/Linux/* ${WORKHOME}/temp
+	cp -rf ${OPENSOURCE_REPOSITORY_DIR}/dependency/common/* ${WORKHOME}/temp
+	cp -rf ${OPENSOURCE_REPOSITORY_DIR}/dependency/Windows/* ${WORKHOME}/temp
 fi
+
 sh ci_upload.sh ${BUILD_PKG_TYPE}
