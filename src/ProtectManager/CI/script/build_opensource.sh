@@ -135,6 +135,7 @@ function compile_image() {
 }
 
 function main() {
+  mkdir ${BASE_PATH}/repo
   tar -zxvf ${REPO_PATH}/ProtectManager/PM_MAVEN.tar.gz -C ${BASE_PATH}/repo
 	echo "compile PM_Boot_Dependencies before build"
 	cd ${BASE_PATH}/component/PM_Boot_Dependencies
