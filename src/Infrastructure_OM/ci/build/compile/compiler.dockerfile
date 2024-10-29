@@ -14,5 +14,5 @@ RUN dnf -y install python3 python3-pip python3-devel shadow-utils libuser tar gc
 ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk
 ENV PATH $JAVA_HOME/bin:$PATH
 ENV LANG C.utf8
-ENV NODE_HOME /open-eBackup/open-eBackup-bin/node-v18.20.1-linux-arm64/
+ENV NODE_HOME /open-eBackup/open-eBackup-bin/nodejs/
 ENV PATH $NODE_HOME/bin:$PATH
