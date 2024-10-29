@@ -40,7 +40,7 @@ function compile_gaussdb_package()
     mkdir -p GaussDB-${gaussdb_version}-aarch-64bit-Green
 
 
-    cp ${PKG_DIR}/../openGauss-Lite-5.0.0-openEuler-aarch64.tar.gz .
+    cp ${binary_path}/openGauss-Lite-5.0.0-openEuler-aarch64.tar.gz .
     tar -zxf openGauss-Lite-5.0.0-openEuler-aarch64.tar.gz -C GaussDB-${gaussdb_version}-aarch-64bit-Green
     sed -i '561a\kernel=openEuler'  GaussDB-${gaussdb_version}-aarch-64bit-Green/install.sh
 
