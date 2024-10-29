@@ -8,7 +8,7 @@ PKG_TYPE=Plugins
 PKG_TYPE_FFILCLIENT=FileClient
 componentVersion_fileclient="1.6.0"    # fileclient包在1.6，需要后续agent和插件包归档到1.6之后需更改
 
-OPENSOURCE_REPOSITORY_DIR=${OPENSOURCE_REPOSITORY_BIN}
+OPENSOURCE_REPOSITORY_DIR=${binary_path}
 
 if [ -z ${branch} ];then
     echo "Please specify build branch!"
