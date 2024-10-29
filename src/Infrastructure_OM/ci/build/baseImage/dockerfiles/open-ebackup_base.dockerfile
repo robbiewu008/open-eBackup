@@ -28,9 +28,6 @@ RUN cp /opt/FileClient/lib/libkmcv3.so /usr/lib64/  \
     && echo "Defaults    env_keep += \"FILECLIENT_CONF_PATH FILECLIENT_LOG_PATH\"" >> /etc/sudoers
 ADD common-init-${COMMON_INIT_VERSION}.tar.gz /usr/local/
 
-RUN echo "proxy=http://peulerosci:EulerOS_123@proxy.huawei.com:8080" >> /etc/dnf/dnf.conf \
-    && echo 'no_proxy="172.19.*,9.82.1.253,localhost,127.0.0.1,.huawei.com,.inhuawei.com"' >> /etc/dnf.conf
-
 RUN sed -i '/update/,$d' /etc/yum.repos.d/openEuler.repo
 RUN dnf install -y python3-pip python39 openssl libatomic net-tools libuser shadow-utils openssh expect sudo iptables vim kmod libatomic dnsmasq nfs-utils\
     && chown -R root:root /usr/local/common-init \
