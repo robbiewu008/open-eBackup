@@ -113,6 +113,7 @@ function package_final() {
         sudo tar cf - ./*${PKG_NAME}* | pigz -p 12 > ${G_BASE_DIR}/package/${PRODUCT}_${PKG_VERSION}_${PKG_NAME}.tgz
     fi
     echo "Package final pkg finish"
+    cd ${G_BASE_DIR}/package
     zip -r open-ebackup-1.0.zip  ./*.tgz
     echo "The address where the package exists is：${G_BASE_DIR}/package/ "
     return 0
