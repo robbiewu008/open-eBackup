@@ -281,7 +281,6 @@ spec:
             limits:
               cpu: "7"
               memory: "6G"
-              dorado/dev_fuse: "1" # 闪存提供的devpassthrough使用的名称为dorado/dev_fuse，保持一致
           securityContext:
             seccompProfile:
               type: RuntimeDefault
