@@ -321,7 +321,7 @@
 <ng-template #helpContentTpl>
   <div class="help-menu-container">
     <section class="help-menu-section">
-      <div class="n-help-link" (click)="openHelp()">
+      <div class="n-help-link" (click)="openHelp()" *ngIf="!isOpenVersion">
         <div class="help-wrapper">
           <span>{{ 'common_online_help_label' | i18n }}</span>
         </div>

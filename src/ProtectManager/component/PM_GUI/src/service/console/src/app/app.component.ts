@@ -314,6 +314,8 @@ export class AppComponent implements OnInit, OnDestroy {
       ? this.i18n.get('common_whitebox_about_warning_label', [
           this.whitebox.oem[`warn_${this.isZh ? 'zh' : 'en'}`]
         ])
+      : this.isOpenVersion
+      ? this.i18n.get('common_about_open_backup_label')
       : this.i18n.get('common_about_warning_label');
     this.copyRightLabel = this.whitebox.isWhitebox
       ? this.whitebox.oem[`copyright_${this.isZh ? 'zh' : 'en'}`]
