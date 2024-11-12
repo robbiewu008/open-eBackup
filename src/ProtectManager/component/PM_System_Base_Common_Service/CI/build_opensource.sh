@@ -63,6 +63,7 @@ function build_package(){
 }
 
 function build_base(){
+  echo "start build"
   # 编译base代码工程
 	if [ 'OceanCyber' == "${BUILD_PKG_TYPE}" ]; then
 	  mvn -T 16 -Pocean-cyber install -nsu -DskipTests -Dkmc.build.enabled=true -gs ${BASE_PATH}/CI/conf/settings.xml
