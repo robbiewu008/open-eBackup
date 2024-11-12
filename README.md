@@ -64,11 +64,17 @@ open-eBackup的业务流程主要集中在ProtectAgent、DataProtect Engine和Da
 
 ## 工程简介<a name="ZH-CN_TOPIC_0000001976511326"></a>
 
-open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI。
+open-eBackup工程中包含3个重要的目录：
 
--   REST\_API：存放open-eBackup备份软件的所有开源的源代码。
--   open-source-obligation：存放open-eBackup备份软件所有依赖的所有二进制文件，包含自研二进制和三方开源二进制文件。
--   GUI：存放open-eBackup备份软件所依赖的GUI的框架源码。
+-   build: 编译脚本入口，所有的编译构建从这里开始。
+-   doc: 文件目录，关于open-eBackup的相关文档都归档在这里。
+-   src: 代码所在路径，所有的开源代码都归档这里。
+    -   ProtectAgent： 数据保护客户端，负责抓取生产应用数据，并写入备份存储。或读取备份存储数据，写入生产应用。
+    -   AppPlugins: 应用备份插件，其中包含数据库备份插件、虚拟化备份插件、文件备份插件等。
+    -   ProtectManager: 数据保护管理引擎，负责配置策略、策略调度、副本管理、任务管理等。
+    -   DataMoverEngine: 数据移动引擎，负责管理备份存储、封装存储接口、副本复制、副本归档等。
+    -   Infrastructure\_OM：基础设施，负责基础能力管理，如：数据库管理、缓存管理、检索引擎管理、消息队列管理等。
+    -   DPAProduct: 构建脚本目录。
 
 # 编译指导<a name="ZH-CN_TOPIC_0000001976671066"></a>
 
@@ -363,10 +369,14 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 
     ```
     tar -zxvf open-eBackup_1.6.RC2_MasterServer.tgz
-    
     mkdir open-eBackup_MasterServer_image
     tar -zxvf open-eBackup_1.6.RC2_MasterServer.tgz -C open-eBackup_MasterServer_image
     docker load -i open-eBackup_MasterServer_image/open-eBackup_1.6.RC2_MasterServer.tar.xz
+    
+    tar -zxvf open-eBackup_1.6.RC2_MediaServer.tgz
+    mkdir open-eBackup_MediaServer_image
+    tar -zxvf open-eBackup_1.6.RC2_MediaServer.tgz -C open-eBackup_MediaServer_image
+    docker load -i open-eBackup_MediaServer_image/open-eBackup_1.6.RC2_MediaServer.tar.xz
     
     mkdir open-eBackup_MasterServer_chart
     tar -zxvf open-eBackup_MasterServer_chart.tgz -C open-eBackup_MasterServer_chart
@@ -391,12 +401,6 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 1.  安装MediaServer
 
     ```
-    tar -zxvf open-eBackup_1.6.RC2_MediaServer.tgz
-    
-    mkdir open-eBackup_MediaServer_image
-    tar -zxvf open-eBackup_1.6.RC2_MediaServer.tgz -C open-eBackup_MediaServer_image
-    docker load -i open-eBackup_MediaServer_image/open-eBackup_1.6.RC2_MediaServer.tar.xz
-    
     mkdir open-eBackup_MediaServer_chart
     tar -zxvf open-eBackup_MediaServer_chart.tgz -C open-eBackup_MediaServer_chart
     tar -zxvf open-eBackup_MediaServer_chart/databackup-1.6.0-RC2.tgz -C open-eBackup_MediaServer_chart
@@ -421,15 +425,13 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 1.  安装DataManager
 
     ```
-    tar -zxvf open-eBackup_1.0_DataManager_release.tgz
+    mkdir open-eBackup_DataManager_image
+    tar -zxvf open-eBackup_DataManagerServer_image.tgz -C open-eBackup_Manager_image
+    docker load -i open-eBackup_DataManager_image/open-eBackup_1.0_DataManager.tar.xz
     
-    mkdir open-eBackup_MediaServer_image
-    tar -zxvf open-eBackup_MediaServer_image.tgz -C open-eBackup_MediaServer_image
-    docker load -i open-eBackup_MediaServer_image/open-eBackup_1.0_MediaServer.tar.xz
-    
-    mkdir open-eBackup_MediaServer_chart
-    tar -zxvf open-eBackup_MediaServer_chart.tgz -C open-eBackup_MediaServer_chart
-    helm install data-manager open-eBackup_MediaServer_chart --set global.gaussdbpwd=R2F1c3NkYl8xMjM= --set global.replicas=1 --set global.deploy_type=d10 -n dpa
+    mkdir open-eBackup_DataManager_chart
+    tar -zxvf open-eBackup_DataManager_chart.tgz -C open-eBackup_DataManager_chart
+    helm install data-manager open-eBackup_DataManager_chart --set global.gaussdbpwd=R2F1c3NkYl8xMjM= --set global.replicas=1 --set global.deploy_type=d10 -n dpa
     ```
 
 2.  查看安装结果
