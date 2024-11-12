@@ -533,7 +533,7 @@ main_enter()
 
         CFLAGS=$CFLAGS" -Wl,--whole-archive"
         export CFLAGS
-        make -s $MAKE_JOB -f ${AGENT_ROOT}/build/makefile ${MAKE_OPTION} ${MAKE_OPTION_AGENT}
+        make $MAKE_JOB -f ${AGENT_ROOT}/build/makefile ${MAKE_OPTION} ${MAKE_OPTION_AGENT}
     # compile all
     else
         if [ ${CLEAN_ALL} -eq 1 ]; then

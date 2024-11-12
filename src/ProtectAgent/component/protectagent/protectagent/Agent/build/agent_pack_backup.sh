@@ -114,9 +114,6 @@ PackLibcryptSO()
 
 PackLibSecurecSo()
 {
-    if [ ! -f /etc/euleros-release ]; then
-        return 0
-    fi
     
     sys_arch=`uname -p`
     if [ "${sys_arch}" != "aarch64" ] && [ "${sys_arch}" != "aarch32" ]; then
