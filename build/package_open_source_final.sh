@@ -63,5 +63,5 @@ export BUILD_MODULE=system_dme
 export BUILD_PKG_TYPE=OpenSource
 
 # 镜像制作
-sh DPAProduct/CI/script/Package_100P.sh || || exit 1
+sh DPAProduct/CI/script/Package_100P.sh || exit 1
 
