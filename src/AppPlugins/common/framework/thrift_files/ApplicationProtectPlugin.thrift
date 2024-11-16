@@ -840,6 +840,8 @@ service ApplicationService extends PluginServiceBase {
             successful if the ActionResult.code is 0, failed otherwise
     */
     ActionResult RemoveProtect(1:ApplicationEnvironment appEnv, 2:Application application) throws(1:AppProtectPluginException e);
+
+    ActionResult FinalizeClear(1:ApplicationEnvironment appEnv, 2:Application application, 3:map<string, string> extendInfo) throws(1:AppProtectPluginException e);
 }
 
 /** 

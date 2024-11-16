@@ -127,6 +127,7 @@ static void StructToJson(const HostAddress& st, Json::Value& jsonValue)
 {
     Module::JsonHelper::TypeToJsonValue(st.ip, jsonValue["ip"]);
     Module::JsonHelper::TypeToJsonValue(st.port, jsonValue["port"]);
+    Module::JsonHelper::TypeToJsonValue(st.supportProtocol, jsonValue["supportProtocol"]);
 }
 
 static void StructToJson(const StorageRepository& st, Json::Value& jsonValue)
