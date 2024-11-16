@@ -27,6 +27,8 @@ namespace {
     const auto MODULE = "ApplicationServiceImp";
     const auto LIST_RESOURCE_REQUEST = "ListResourceRequest";
     constexpr int MAX_ERR_MSG_LEN = 256;
+    constexpr int CLEAR_CHAR = 0;
+    constexpr int DEFAULT_ERROR_CODE = -1;
 }
 
 using DiscoverApplicationsFun = void(std::vector<Application>& returnValue, const std::string& appType);
@@ -48,6 +50,8 @@ using DiscoverAppClusterFun = void(ApplicationEnvironment& returnEnv, const Appl
 using ListApplicationConfigFun = void(std::map<std::string, std::string>& resources, const std::string& script);
 using RemoveProtectFun = void(
         ActionResult& returnValue, const ApplicationEnvironment& appEnv, const Application& application);
+using FinalizeClearFun = void(ActionResult& returnValue, const ApplicationEnvironment& appEnv,
+    const Application& application, const std::map<std::string, std::string>& extendInfo);
 
 ApplicationServiceImp::ApplicationServiceImp()
 {}
@@ -227,4 +231,23 @@ EXTER_ATTACK void ApplicationServiceImp::RemoveProtect(ActionResult& returnValue
 
     ParamCheck({{"ApplicationEnvironment", StructToJson(appEnv)}, {"Application", StructToJson(application)}});
     fun(returnValue, appEnv, application);
+}
+
+EXTER_ATTACK void ApplicationServiceImp::FinalizeClear(ActionResult& _return, const ApplicationEnvironment& appEnv,
+    const Application& application, const std::map<std::string, std::string>& extendInfo)
+{
+    HCP_Log(INFO, MODULE) << "Enter FinalizeClear" << HCPENDLOG;
+    auto fun = OpenLibMgr::GetInstance().GetObj<FinalizeClearFun>("FinalizeClear");
+    if (fun == nullptr) {
+        // 初始化字符串数组为空
+        char errMsg[MAX_ERR_MSG_LEN] = {CLEAR_CHAR};
+        HCP_Log(ERR, MODULE) << "Get FinalizeClear function failed error" <<
+            Module::DlibError(errMsg, sizeof(errMsg)) << HCPENDLOG;
+        AppProtectPluginException exception;
+        // 未实现对应的函数 将错误码置为默认错误码
+        exception.code = DEFAULT_ERROR_CODE;
+        exception.message = "Invoke FinalizeClear error";
+        throw exception;
+    }
+    fun(_return, appEnv, application, extendInfo);
 }

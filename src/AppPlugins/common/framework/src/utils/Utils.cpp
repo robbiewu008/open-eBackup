@@ -63,6 +63,7 @@ bool ParamCheck(const std::string& name, const Json::Value argJv, ActionResult& 
     bool ret = Module::StructChecker::Instance().Check(name, argJv);
     if (!ret) {
         returnValue.__set_code(ERROR_COMMON_INVALID_PARAM);
+        returnValue.__set_bodyErr(ERROR_COMMON_INVALID_PARAM);
     }
     return ret;
 }
@@ -78,6 +79,7 @@ bool ParamCheck(const std::unordered_map<std::string, Json::Value>& params, Acti
         bool ret = Module::StructChecker::Instance().Check(iter->first, iter->second);
         if (!ret) {
             returnValue.__set_code(ERROR_COMMON_INVALID_PARAM);
+            returnValue.__set_bodyErr(ERROR_COMMON_INVALID_PARAM);
             return false;
         }
     }
