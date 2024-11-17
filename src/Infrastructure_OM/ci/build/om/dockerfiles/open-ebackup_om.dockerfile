@@ -75,6 +75,7 @@ RUN cd /opt/om/package/3rd \
     && echo "nobody  ALL=(root)      NOPASSWD:/opt/script/service_log_process.sh" >> /etc/sudoers \
     && echo "nobody  ALL=(root)      NOPASSWD:/opt/script/change_permission.sh" >> /etc/sudoers \
     && echo 'Defaults    env_keep += "NODE_NAME"' >> /etc/sudoers \
+    && echo 'Defaults    env_keep += "DEPLOY_TYPE"' >> /etc/sudoers \
     && mv /opt/om/package/script /opt/ \
     && chown -R root:root /opt/script \
     && chmod 750 /opt/om \

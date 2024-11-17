@@ -44,4 +44,17 @@ RUN lgroupadd nobody -g 99
 # 不需要登录的账号禁止登录，当前涉及root和dnsmasq两个账号
 # 禁止root ssh登录
 RUN sed -i "s/\/bin\/bash/\/sbin\/nologin/" /etc/passwd \
-    && sed -i "s/PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
+    && sed -i "s/PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config \
+
+# 解決低权限目录/opt下面有root文件，导致提权
+RUN rm -rf "/opt/euleros-base.json" "/opt/uvp" "/opt/oceanprotect-base.json"
+
+# /usr/bin/newrole二进制权限太高，删除对应rpm包
+RUN rpm -qa | grep ^policycoreutils-[0-9] | xargs -i rpm -e {} --nodeps
+
+# 临时解决openeuler的漏洞, build阶段rpm没有权限, 升级时注意关注是否引入其他安全相关软件包，需要同步卸载
+ENV tmp_openeuler_url "https://mirrors.tools.huawei.com/openeuler/openEuler-20.03-LTS-SP3/OS/aarch64/"
+ENV base_openeuler_yum_url "https://mirrors.tools.huawei.com/openeuler/openEuler-20.03-LTS/everything/aarch64/"
+RUN sed -i "/^baseurl=.*/c\baseurl=${tmp_openeuler_url}" /etc/yum.repos.d/openeuler.repo \
+    && echo "y" | yum install augeas \
+    && sed -i "/^baseurl=.*/c\baseurl=${base_openeuler_yum_url}" /etc/yum.repos.d/openeuler.repo
