@@ -180,6 +180,7 @@
     <ClInclude Include="..\..\..\src\inc\common\Types.h" />
     <ClInclude Include="..\..\..\src\inc\common\Utils.h" />
     <ClInclude Include="..\..\..\src\inc\common\Uuid.h" />
+    <ClInclude Include="..\..\..\src\inc\common\StaticConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\src\common\AlarmInfoXmlParser.cpp" />
@@ -200,6 +201,7 @@
     <ClCompile Include="..\..\..\src\src\common\Time.cpp" />
     <ClCompile Include="..\..\..\src\src\common\TimeOut.cpp" />
     <ClCompile Include="..\..\..\src\src\common\Utils.cpp" />
+    <ClCompile Include="..\..\..\src\src\common\StaticConfig.cpp" />
     <ClCompile Include="..\..\..\src\src\common\Uuid.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

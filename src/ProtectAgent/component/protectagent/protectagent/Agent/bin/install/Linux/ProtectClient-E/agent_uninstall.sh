@@ -401,6 +401,7 @@ UninstallPlugins()
         RET_CODE=$?
         if [ ${RET_CODE} -ne 0 ]; then
             Log "Uninstall $pluginName fail."
+            ShowError "Uninstall $pluginName fail."
             exit 1
         fi
         cd ${tmpPluginPath}
@@ -589,9 +590,11 @@ HandleUninstallDataTurbo
 
 # uninstall fileclient
 UninstallFileClient
+ShowInfo "FileClient has been uninstalled successfully."
 
 # 3.Uninstalling external plugin
 UninstallPlugins
+ShowInfo "Plugins have been uninstalled successfully."
 
 # 4.check user's environment variables, add env file if not exists
 CheckUserEnv
