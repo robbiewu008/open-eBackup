@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "dataprocess/ioscheduler/FileIOEngine.h"
 #include <thread>
 #include "common/Log.h"
@@ -115,7 +127,7 @@ EXTER_ATTACK mp_int32 FileIOEngine::OpenForWrite()
     }
 
     mp_string diskFile = folder + PATH_SEPARATOR + m_volInfo.strDiskID + DISK_FILE_EXT;
-    if (!CMpFile::FileExist(diskFile) && CreateDiskFile(diskFile, deeGroupId) != MP_SUCCESS) {
+    if (CreateDiskFile(diskFile, deeGroupId) != MP_SUCCESS) {
         COMMLOG(OS_LOG_ERROR, "Disk file '%s' does not exist, but create file failure.", diskFile.c_str());
         return MP_FAILED;
     }
@@ -137,6 +149,19 @@ EXTER_ATTACK mp_int32 FileIOEngine::OpenForWrite()
 
 mp_int32 FileIOEngine::CreateDiskFile(const mp_string &diskFile, mp_int32 deeGroupId)
 {
+    if (CMpFile::FileExist(diskFile)) {
+        mp_uint64 diskSize = 0;
+        if (CMpFile::FileSize(diskFile.c_str(), diskSize) != MP_SUCCESS) {
+            COMMLOG(OS_LOG_ERROR, "Get disk file size failed, disk: %s", diskFile.c_str());
+            return MP_FAILED;
+        }
+        if (m_volInfo.ulDiskSize == diskSize) {
+            return MP_SUCCESS;
+        }
+        COMMLOG(OS_LOG_WARN, "Disk file size changed, need recreate, disk: %s, old disk size: %ld, new disk size: %ld",
+                diskFile.c_str(), diskSize, m_volInfo.ulDiskSize);
+    }
+
     if (CMpFile::CreateFile(diskFile) != MP_SUCCESS) {
         COMMLOG(OS_LOG_ERROR, "Create file '%s' failure.", diskFile.c_str());
         return MP_FAILED;

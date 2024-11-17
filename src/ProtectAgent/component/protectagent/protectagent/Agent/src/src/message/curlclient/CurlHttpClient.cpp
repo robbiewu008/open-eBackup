@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include <sstream>
 #include <set>
 #include <algorithm>
@@ -361,22 +373,18 @@ void CurlHttpResponse::SetBindToDevice(const mp_string& networkCardName)
     if (networkCardName != "") {
         curl_easy_setopt(m_Curl, CURLOPT_INTERFACE, networkCardName.c_str());
     }
-    mp_int32 installType = 0;
-    mp_int32 iRet = CConfigXmlParser::GetInstance().GetValueInt32(CFG_BACKUP_SECTION, CFG_BACKUP_SCENE, installType);
-    if (iRet != MP_SUCCESS) {
-        COMMLOG(OS_LOG_ERROR, "Get back up scene failed.");
+
+    if (!StaticConfig::IsInnerAgent()) {
         return;
     }
+
     mp_string deployType;
-    iRet = CConfigXmlParser::GetInstance().GetValueString(CFG_SYSTEM_SECTION, CFG_DEPLOY_TYPE, deployType);
+    mp_int32 iRet = CConfigXmlParser::GetInstance().GetValueString(CFG_SYSTEM_SECTION, CFG_DEPLOY_TYPE, deployType);
     if (iRet != MP_SUCCESS) {
         COMMLOG(OS_LOG_ERROR, "Get deploy type failed.");
         return;
     }
 
-    if (installType != AGENT_INSTALL_TYPE_INTERNAL) {
-        return;
-    }
     if (deployType == HOST_ENV_DEPLOYTYPE_HYPERDETECT ||
         deployType == HOST_ENV_DEPLOYTYPE_HYPERDETECT_NO_BRAND ||
         deployType == HOST_ENV_DEPLOYTYPE_HYPERDETECT_CYBER_ENGINE ||

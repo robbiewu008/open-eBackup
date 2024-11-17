@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "taskmanager/externaljob/ReportJobDetailFactory.h"
 
 #include <chrono>
@@ -33,6 +45,8 @@ const std::string Log_Param_Sub_Job_ID = "SubJobID";
 const std::string Log_Param_Main_Job_Type = "MainJobType";
 const std::string Log_Param_Sub_Job_Type = "SubJobType";
 const std::string Script_Result = "ScriptResult";
+const std::string Script_FileName = "ScriptFileName";
+
 const std::string NULL_PARAM = "";
 
 struct LogMainKey {
@@ -72,10 +86,10 @@ std::map<LogMainKey, LogData> MainJobLogMap = {
     {{PluginMainJob::ActionEvent::GENE_POST_JOB, PluginMainJob::EventResult::START},
         {"agent_execute_prepare_task_success_label", {Log_Param_Agent_IP}, JobLogLevel::type::TASK_LOG_INFO, 0}},
     {{PluginMainJob::ActionEvent::EXEC_PRE_SCRIPTR, PluginMainJob::EventResult::SUCCESS},
-        {"agent_execute_pre_script_success_label", {Log_Param_Agent_IP, Script_Result},
+        {"agent_execute_pre_script_success_label", {Script_FileName, Log_Param_Agent_IP, Script_Result},
             JobLogLevel::type::TASK_LOG_INFO, 0}},
     {{PluginMainJob::ActionEvent::EXEC_PRE_SCRIPTR, PluginMainJob::EventResult::FAILED},
-        {"agent_execute_pre_script_fail_label", {Log_Param_Agent_IP, Script_Result},
+        {"agent_execute_pre_script_fail_label", {Log_Param_Agent_IP, Script_FileName, Script_Result},
             JobLogLevel::type::TASK_LOG_ERROR, 0}},
     {{PluginMainJob::ActionEvent::EXEC_PRE_SUBJOB, PluginMainJob::EventResult::EXECUTING},
         {"agent_execute_prerequisit_task_success_label", {Log_Param_Agent_IP}, JobLogLevel::type::TASK_LOG_INFO, 0}},
@@ -101,9 +115,10 @@ std::map<LogSubKey, LogData> SubJobLogMap = {
         {"agent_execute_post_task_fail_label", {Log_Param_Agent_IP, Log_Param_Sub_Job_ID},
             JobLogLevel::type::TASK_LOG_ERROR, 0}},
     {{PluginSubJob::ActionEvent::EXEC_POST_SCRIPT, PluginSubJob::EventResult::EXEC_SCRIPT_FAILED},
-        {"agent_execute_post_script_fail_label", {Log_Param_Agent_IP, Script_Result}, JobLogLevel::type::TASK_LOG_WARNING, 0}},
+        {"agent_execute_post_script_fail_label", {Log_Param_Agent_IP, Script_FileName, Script_Result},
+            JobLogLevel::type::TASK_LOG_WARNING, 0}},
     {{PluginSubJob::ActionEvent::EXEC_POST_SCRIPT, PluginSubJob::EventResult::EXEC_SCRIPT_SUCCESS},
-        {"agent_execute_post_script_success_label", {Log_Param_Agent_IP, Script_Result},
+        {"agent_execute_post_script_success_label", {Script_FileName, Log_Param_Agent_IP, Script_Result},
             JobLogLevel::type::TASK_LOG_INFO, 0}},
     {{PluginSubJob::ActionEvent::EXEC_BUSI_SUBJOB, PluginSubJob::EventResult::FAILED},
         {"agent_execute_sub_task_fail_label", {Log_Param_Agent_IP, Log_Param_Sub_Job_ID},
@@ -167,6 +182,8 @@ static std::vector<std::string> FillParams(const std::vector<std::string>& parma
             p.push_back(data.subID);
         } else if (it == Script_Result) {
             p.push_back(data.scriptResult);
+        } else if (it == Script_FileName) {
+            p.push_back(data.scriptFileName);
         } else if (it == NULL_PARAM) {
             continue;
         } else {

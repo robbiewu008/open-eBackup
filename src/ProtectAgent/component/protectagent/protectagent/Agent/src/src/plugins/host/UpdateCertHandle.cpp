@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "plugins/host/UpdateCertHandle.h"
 #include <fstream>
 #include <sstream>
@@ -8,6 +20,7 @@
 #include "common/ConfigXmlParse.h"
 #include "common/CSystemExec.h"
 #include "common/Ip.h"
+#include "common/Utils.h"
 #include "securecom/RootCaller.h"
 #include "securecom/CryptAlg.h"
 #include "securecom/CertHandler.h"
@@ -269,7 +282,7 @@ mp_int32 UpdateCertHandle::CheckIfSafe()
     SSL_load_error_strings();
     OpenSSL_add_all_algorithms();
 
-    SSL_CTX* ctx = SSL_CTX_new(SSLv23_client_method());
+    SSL_CTX* ctx = SSL_CTX_new(TLSv1_2_client_method());
     if (!ctx) {
         ERRLOG("SSL_CTX_new error.");
         return MP_FAILED;
@@ -419,7 +432,7 @@ bool UpdateCertHandle::AddCertCNToHosts()
 #ifdef WIN32
 mp_int32 UpdateCertHandle::WriteCertCNToWindowsHosts(mp_string& cnNameOfServerCrt)
 {
-    mp_string hostsFile = "C:\\Windows\\System32\\drivers\\etc\\hosts";
+    mp_string hostsFile = GetSystemDiskChangedPathInWin("C:\\Windows\\System32\\drivers\\etc\\hosts");
     std::vector<mp_string> vecFileContent;
     mp_int32 iRet = CIPCFile::ReadFile(hostsFile, vecFileContent);
     if (iRet != MP_SUCCESS) {

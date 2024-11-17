@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "servicecenter/services/device/PrepareFileSystem.h"
 
 #include "common/Log.h"
@@ -266,8 +278,7 @@ EXTER_ATTACK mp_int32 PrepareFileSystem::CheckAndCreateDataturboLink(const mp_st
     const MountNasParam &mountNasParam)
 {
     LOGGUARD("");
-    mp_int32 agentType = AppProtect::AppProtectJobHandler::GetInstance()->GetAgentType();
-    if (agentType == AGENT_INSTALL_TYPE_INTERNAL) {
+    if (StaticConfig::IsInnerAgent()) {
         ERRLOG("Inner agent don't support dataturbo.");
         return ERR_NOT_SUPPORT_DATA_TURBO;
     }
@@ -275,13 +286,26 @@ EXTER_ATTACK mp_int32 PrepareFileSystem::CheckAndCreateDataturboLink(const mp_st
         ERRLOG("File system %s have no valid ip.", storageName.c_str());
         return ERR_NOT_CONFIG_DATA_TURBO_LOGIC_PORT;
     }
-    mp_string ipList = CMpString::StrJoin(mountNasParam.vecDataturboIP, ",");
+
     ostringstream scriptParam;
     if (mountNasParam.isFcOn) {
         scriptParam << "storageName=" << storageName << NODE_COLON << "linkType=FC" << NODE_COLON
                     << "userName=" << mountNasParam.authKey << NODE_COLON << "password=" << mountNasParam.authPwd
                     << NODE_COLON << "dedupSwitch=" << (mountNasParam.isDeduptionOn ? "ON" : "OFF");
     } else {
+        std::vector<mp_string> connectableIP;
+        std::shared_ptr<IHttpClient> httpClient = IHttpClient::CreateNewClient();
+        if (httpClient == nullptr) {
+            COMMLOG(OS_LOG_ERROR, "HttpClient create failed.");
+            return ERR_NOT_CONFIG_DATA_TURBO_LOGIC_PORT;
+        }
+        for (const mp_string &ip : mountNasParam.vecDataturboIP) {
+            if (httpClient->TestConnectivity(ip, G_ProtocolTypePortMap[MOUNT_PROTOCOL_DATATURBO])) {
+                COMMLOG(OS_LOG_INFO, "Can connect ip(%s).", ip.c_str());
+                connectableIP.push_back(ip);
+            }
+        }
+        mp_string ipList = CMpString::StrJoin(connectableIP, ",");
         scriptParam << "storageName=" << storageName << NODE_COLON << "ipList=" << ipList << NODE_COLON
                     << "userName=" << mountNasParam.authKey << NODE_COLON << "password=" << mountNasParam.authPwd
                     << NODE_COLON << "dedupSwitch=ON";

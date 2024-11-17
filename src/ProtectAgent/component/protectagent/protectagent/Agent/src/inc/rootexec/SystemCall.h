@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef _SYSTEM_CALL_H_
 #define _SYSTEM_CALL_H_
 #include "common/Defines.h"
@@ -51,6 +63,7 @@ public:
     static mp_bool MountWhiteListVerify(const mp_string& strParam);
     static mp_bool VerifyProcess(const mp_string& processInfo);
     static mp_bool RmWhiteListVerify(const mp_string &filePath);
+    static mp_bool ChmodOtherReadWhiteListVerify(const mp_string &filePath);
     static mp_int32 ChecVddkVersion(const mp_string& version);
     static mp_bool GetParentPid(mp_string& ppid);
     static mp_bool GetParentPidImpl(const mp_string& pid, mp_string& ppid);
@@ -79,6 +92,7 @@ private:
         std::vector<mp_string> &rootfilepath);
     static mp_int32 GetFolderPath(mp_string &strFolder, std::vector<mp_string> &vecFolderPath);
     static mp_int32 GetFilePath(mp_string &strFolder, std::vector<mp_string> &vecFolderPath);
+    static mp_int32 CheckPathIsValid(const mp_string &filePath);
 };
 
 class CCommandMap {

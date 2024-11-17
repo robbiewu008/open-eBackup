@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "taskmanager/externaljob/PluginSubPrepJob.h"
 #include "common/Log.h"
 #include "common/JsonUtils.h"
@@ -41,15 +53,18 @@ mp_int32 PluginSubPrepJob::ExecRestoreJob()
         std::vector<Json::Value> vecJsonArchiveIp;
         Json::Value vecJsonConnectArchiveIp;
         if (!m_data.param["copies"][index].isObject() || !m_data.param["copies"][index]["type"].isString() ||
-            m_data.param["copies"][index]["type"].asString() != "s3Archive") {
+            (m_data.param["copies"][index]["type"].asString() != "s3Archive" &&
+            m_data.param["copies"][index]["type"].asString() != "tapeArchive")) {
             continue;
         }
         INFOLOG("It is a archive-restore job.Start to check connection with archive.");
         for (Json::ArrayIndex index1 = 0; index1 < m_data.param["copies"][index]["repositories"].size(); ++index1) {
             if (!m_data.param["copies"][index]["repositories"][index1].isObject() ||
                 !m_data.param["copies"][index]["repositories"][index1]["protocol"].isInt() ||
+                (m_data.param["copies"][index]["repositories"][index1]["protocol"].asInt() !=
+                RepositoryProtocolType::type::S3 &&
                 m_data.param["copies"][index]["repositories"][index1]["protocol"].asInt() !=
-                RepositoryProtocolType::type::S3) {
+                RepositoryProtocolType::type::TAPE)) {
                 continue;
             }
             CJsonUtils::GetJsonArrayJson(
@@ -60,6 +75,7 @@ mp_int32 PluginSubPrepJob::ExecRestoreJob()
         }
     }
     JsonToStruct(m_data.param, jobParam);
+
     INFOLOG("Restore pre jobId=%s.", jobParam.jobId.c_str());
     ProtectServiceCall(&ProtectServiceIf::AsyncRestorePrerequisite, ret, jobParam);
     return ret.code;

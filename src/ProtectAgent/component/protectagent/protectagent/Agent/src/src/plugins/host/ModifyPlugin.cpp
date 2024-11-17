@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include <fstream>
 #include <sstream>
 #include <chrono>
@@ -28,7 +40,7 @@ namespace HandleNamespace {
     const mp_string MODIFY_STATUS_DISK_CHECK_FAILED = "3";
     const mp_string MODIFY_STATUS_ABNORMAL = "8";
     const mp_string MODIFY_STATUS_INITIAL = "9";
-    const mp_string MODIFY_PKG_NAME = "DataProtect_client.zip";
+    const mp_string MODIFY_PKG_NAME = "DataProtect_client.";
     const mp_string MODIFY_PARAM_DOWNLOADLINK = "downloadLink=";
     const mp_string MODIFY_PARAM_DISPOSITION = "Content-Disposition";
     const mp_string MODIFY_PARAM_SIGNATURE = "Signature";
@@ -67,6 +79,7 @@ mp_string ModifyPluginHandle::m_modifyUrl;
 mp_string ModifyPluginHandle::m_sha256;
 mp_string ModifyPluginHandle::m_signature;
 mp_int32 ModifyPluginHandle::m_modifyPackageSize;
+mp_string ModifyPluginHandle::m_packageType;
 
 #ifdef WIN32
 DWORD WINAPI ModifyPluginHandle::ModifyPluginAgentHandle(mp_void* param)
@@ -86,6 +99,7 @@ mp_void* ModifyPluginHandle::ModifyPluginAgentHandle(mp_void* param)
         CMPTHREAD_RETURN;
     }
 
+    m_packageType = hostPlugin->GetCompressType();
     m_modifyPackageSize = hostPlugin->GetNewPackageSize();
     if (m_modifyPackageSize == 0) {
         ERRLOG("Invalid package size.");
@@ -125,9 +139,7 @@ mp_void* ModifyPluginHandle::ModifyPluginAgentHandle(mp_void* param)
     INFOLOG("Handle the ModifyPlugin request step 4: call root execute.");
     LabelRepoter(jobId, PROCESS_80_PERCENT, MODIFY_START_MODIFY_LABLE, JOB_STATUS_RUNNING);
     iRet = CallModifyPluginScript();
-    if (iRet != MP_SUCCESS) {
-        ERRLOG("Failed to excute ModifyPlugin script.");
-    }
+    INFOLOG("excute ModifyPlugin script result:%d.", iRet);
 
     CMPTHREAD_RETURN;
 }
@@ -473,7 +485,11 @@ mp_int32 ModifyPluginHandle::InitRequest(HttpRequest& req)
 
     req.domaininfo.append("https://");
     req.domaininfo.append(m_domainName);
-    req.fileName = CPath::GetInstance().GetTmpPath() + PATH_SEPARATOR + HandleNamespace::MODIFY_PKG_NAME;
+    if (m_packageType.empty() || m_packageType != "tar") {
+        m_packageType = "zip";
+    }
+    req.fileName = CPath::GetInstance().GetTmpPath() + PATH_SEPARATOR + HandleNamespace::MODIFY_PKG_NAME +
+                   m_packageType;
     req.method = "GET";
     return iRet;
 }
@@ -543,7 +559,7 @@ mp_int32 ModifyPluginHandle::LabelRepoter(
     mp_string url = "/v1/internal/jobs/" + jobId + "/action/update";
     DmeRestClient::HttpReqParam param("PUT", url, context);
     param.port = atol(m_pmPort.c_str());
-    param.mainJobId = jobId;
+    param.vecIpList = m_vecPMIp;
     HttpResponse response;
     mp_int32 iRet = DmeRestClient::GetInstance()->SendRequest(param, response);
     if (iRet != MP_SUCCESS) {
