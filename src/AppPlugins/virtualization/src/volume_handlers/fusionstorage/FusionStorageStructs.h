@@ -131,6 +131,32 @@ struct VBSNodeInfoList {
     END_SERIAL_MEMEBER
 };
 
+struct StoragePool {
+    int32_t mPoolId;
+    int64_t mTotalCapacity;
+    int64_t mUsedCapacity;
+    double mUsedCapacityRate;
+    int32_t mPoolServerType;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mPoolId, poolId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mTotalCapacity, totalCapacity)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mUsedCapacity, usedCapacity)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mUsedCapacityRate, usedCapacityRate)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mPoolServerType, poolServerType)
+    END_SERIAL_MEMEBER
+};
+
+struct StoragePools {
+    int32_t mResult;
+    std::vector<StoragePool> mStoragePools;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mResult, result)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mStoragePools, storagePools)
+    END_SERIAL_MEMEBER
+};
+
 VIRT_PLUGIN_NAMESPACE_END
 
 #endif

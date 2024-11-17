@@ -126,6 +126,24 @@ function get_Disk_list() {
     }
     foreach ($drive in $hdDrives) {
         if (![String]::IsNullOrEmpty($drive.Path)) {
+            if (Test-Path $drive.Path -PathType Leaf) {
+                $drive | Add-Member -MemberType NoteProperty -Name 'IsPhysicalHardDisk' -Value $false -Force
+            } else {
+                $drive | Add-Member -MemberType NoteProperty -Name 'IsPhysicalHardDisk' -Value $true -Force
+                $phyDisk = New-Object PSObject -Property @{
+                               IsPhysicalHardDisk = $true
+                               VhdType = "Physical drive"
+                               DiskIdentifier = $drive.Id
+                               Path = $drive.Path
+                           }
+                if ($result.GetType().IsArray) {
+                    $result += $phyDisk
+                } else {
+                    $array = @($result)
+                    $array += $phyDisk
+                    $result = $array
+                }
+            }
             $path = $drive.Path
             try {
                 $driveMap.Add($path, $drive)
@@ -146,6 +164,7 @@ function get_Disk_list() {
         $disk | Add-Member -MemberType NoteProperty -Name 'VMId' -Value $driveMap.($disk.Path).VMId
         $disk | Add-Member -MemberType NoteProperty -Name 'NeedAttension' -Value $driveMap.($disk.Path).NeedAttension
         $disk | Add-Member -MemberType NoteProperty -Name 'SupportPersistentReservations' -Value $driveMap.($disk.Path).SupportPersistentReservations
+        $disk | Add-Member -MemberType NoteProperty -Name 'IsPhysicalHardDisk' -Value $driveMap.($disk.Path).IsPhysicalHardDisk
     }
 
     return write_cache $CACHE_NAME_DISK_LIST $result

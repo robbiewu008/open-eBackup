@@ -101,10 +101,7 @@ bool CinderVolumeHandler::FormCreateVolmeInfo(const VolSnapInfo &snapshot, std::
         return FAILED;
     }
     Json::Value metadataBody;
-    std::string flag = Module::ConfigReader::getString("OpenStackConfig", "SupportCloneVolume");
-    if (flag == "true") {
-        metadataBody["full_clone"] = "0"; // 表示创建链接克隆卷
-    }
+    metadataBody["full_clone"] = "0"; // 表示创建链接克隆卷
     jsonBody["volume_type"] = extendInfo.m_volumeType;
     jsonBody["consistencygroup_id"] =
         extendInfo.m_groupSnapShotId.empty() ? Json::Value::null : extendInfo.m_groupSnapShotId;

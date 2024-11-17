@@ -21,6 +21,7 @@
 #include <config_reader/ConfigIniReader.h>
 #include "protect_engines/cnware/common/ErrorCode.h"
 #include "repository_handlers/factory/RepositoryFactory.h"
+#include "common/Utils.h"
 #include "CNwareProtectEngine.h"
 
 using namespace VirtPlugin;
@@ -1096,7 +1097,7 @@ bool CNwareProtectEngine::FormLiveVolumeMap(const VMInfo &liveVm, const std::str
                     m_jobId.c_str());
                 DomainDiskDevicesReq diskReq;
                 diskReq.mBus = DISK_BUS_MAP[vol.m_type];
-                diskReq.mCache = std::stoi(vol.m_volumeType);
+                diskReq.mCache = Module::SafeStoi(vol.m_volumeType);
                 diskReq.mPreallocation = PREALLOCATION_OFF;
                 diskReq.mOldPool = storageName;
                 diskReq.mOldVol = live.m_name;
@@ -1197,7 +1198,6 @@ int32_t CNwareProtectEngine::ShutDownBridgeInterface(const std::string &vmId)
 int32_t CNwareProtectEngine::BuildLiveVm(const VMInfo &liveVm, VMInfo &newVm, const std::string &hostId,
     const std::string &storageId, const std::string &storageName)
 {
-    INFOLOG("Enter");
     // 入参为副本虚拟机信息，将id置零，防止创建失败后，误删原虚拟机
     if (!FormLiveVolumeMap(liveVm, storageId, storageName)) {
         return FAILED;
@@ -1221,6 +1221,7 @@ int32_t CNwareProtectEngine::BuildLiveVm(const VMInfo &liveVm, VMInfo &newVm, co
         ERRLOG("QueryVmIdByName vm failed.");
         return FAILED;
     }
+    WaitVMTaskEmpty(dInfo.id);
     newVm.m_uuid = dInfo.id;
     if (!ModifyLiveDevBoots(dInfo, liveVm)) {
         ERRLOG("Modify VM(%s) dev boots failed. %s", dInfo.id.c_str(), m_jobId.c_str());
@@ -1298,9 +1299,9 @@ void CNwareProtectEngine::SetConfigInfo(AddDomainRequest &domainInfo)
     if (!m_config.m_config.m_cpu.m_useOriginal) {
         DBGLOG("Get new vm m_cpu info %s. %s", m_config.m_config.m_cpu.m_core.c_str(),
             m_config.m_config.m_cpu.m_socket.c_str());
-        domainInfo.mCpuInfo.mCore = std::stoi(m_config.m_config.m_cpu.m_socket);
-        domainInfo.mCpuInfo.mSockets = std::stoi(m_config.m_config.m_cpu.m_core) /
-            std::stoi(m_config.m_config.m_cpu.m_socket);
+        domainInfo.mCpuInfo.mCore = Module::SafeStoi(m_config.m_config.m_cpu.m_socket);
+        domainInfo.mCpuInfo.mSockets = Module::SafeStoi(m_config.m_config.m_cpu.m_core) /
+            Module::SafeStoi(m_config.m_config.m_cpu.m_socket);
 
         cpuNums = domainInfo.mCpuInfo.mCore * domainInfo.mCpuInfo.mSockets;
         DBGLOG("Get new vm m_cpu info %d. %d", domainInfo.mCpuInfo.mCore,
@@ -1323,7 +1324,7 @@ void CNwareProtectEngine::SetConfigInfo(AddDomainRequest &domainInfo)
 
     if (!m_config.m_config.m_memory.m_useOriginal) {
         WARNLOG("Get new vm m_memory info %d.", m_config.m_config.m_memory.m_size);
-        domainInfo.mMemorySize = std::stol(m_config.m_config.m_memory.m_size) * MB;
+        domainInfo.mMemorySize = Module::SafeStol(m_config.m_config.m_memory.m_size) * MB;
     }
 }
 

@@ -17,8 +17,6 @@
 #include "protect_engines/hcs/utils/HCSTokenMgr.h"
 #include "protect_engines/hcs/common/HcsMacros.h"
 #include "protect_engines/hcs/common/HcsConstants.h"
-#include "protect_engines/hcs/api/cinder/model/ActiveSnapConsistencyRequest.h"
-#include "protect_engines/hcs/api/cinder/model/ActiveSnapConsistencyResponse.h"
 #include "protect_engines/hcs/api/cinder/model/ShowSnapshotListRequest.h"
 #include "protect_engines/hcs/api/cinder/model/ShowSnapshotListResponse.h"
 #include "protect_engines/openstack/api/cinder/CinderClient.h"
@@ -48,7 +46,6 @@ public:
     virtual ~HcsCinderClient() {};
 
     bool CheckParams(ModelBase& model) override;
-    std::shared_ptr<ActiveSnapConsistencyResponse> ActiveSnapConsistency(ActiveSnapConsistencyRequest &request);
     std::shared_ptr<GetSnapshotResponse> GetSnapshot(GetSnapshotRequest &request) override;
     std::shared_ptr<ShowSnapshotListResponse> ShowSnapshotList(ShowSnapshotListRequest &request);
 

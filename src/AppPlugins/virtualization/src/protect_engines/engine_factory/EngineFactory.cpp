@@ -18,6 +18,7 @@
 #include "protect_engines/openstack/OpenStackProtectEngine.h"
 #include "protect_engines/cnware/CNwareProtectEngine.h"
 #include "protect_engines/apsara_stack/ApsaraStackProtectEngine.h"
+#include "protect_engines/nutanix/NutanixProtectEngine.h"
 #else
 #include "protect_engines/hyperv/HyperVProtectEngine.h"
 #endif
@@ -34,6 +35,7 @@ const std::string ENV_APPTYPE_HYPERV_SCVMM = "HyperV.SCVMM";
 const std::string ENV_APPTYPE_HYPERV_CLUSTER = "HyperV.Cluster";
 const std::string ENV_APPTYPE_HYPERV_HOST = "HyperV.Host";
 const std::string ENV_APPTYPE_HYPERV_VM = "HyperV.VM";
+const std::string ENV_APPTYPE_NUTANIX = "Nutanix";
 }
 
 namespace VirtPlugin {
@@ -44,7 +46,8 @@ EngineFactoryPipeline EngineFactory::m_enginePipeline = {
     {ENV_APPTYPE_HCSENVOP, CreateHCSEngine},
     {ENV_APPTYPE_OPENSTACK, CreateOpenStackEngine},
     {ENV_APPTYPE_APSARASTACK, CreateApsaraStackEngine},
-    {ENV_APPTYPE_CNWARE, CreateCNwareEngine}
+    {ENV_APPTYPE_CNWARE, CreateCNwareEngine},
+    {ENV_APPTYPE_NUTANIX, CreateNutanixEngine}
 #else
     {ENV_APPTYPE_HYPERV_SCVMM, CreateHyperVEngine},
     {ENV_APPTYPE_HYPERV_CLUSTER, CreateHyperVEngine},
@@ -106,6 +109,13 @@ std::shared_ptr<ProtectEngine> EngineFactory::CreateCNwareEngine(std::shared_ptr
     return std::make_shared<CNwarePlugin::CNwareProtectEngine>(jobHandle, jobId, subJobId);
 }
 
+std::shared_ptr<ProtectEngine> EngineFactory::CreateNutanixEngine(std::shared_ptr<JobHandle> jobHandle,
+    std::string jobId, std::string subJobId)
+{
+    INFOLOG("Creating Nutanix ProtectEngine");
+    return std::make_shared<NutanixPlugin::NutanixProtectEngine>(jobHandle, jobId, subJobId);
+}
+
 #else
 
 std::shared_ptr<ProtectEngine> EngineFactory::CreateHyperVEngine(std::shared_ptr<JobHandle> jobHandle,
@@ -131,6 +141,8 @@ std::shared_ptr<ProtectEngine> EngineFactory::CreateProtectEngineWithoutTask(con
         retValuePtr = std::make_shared<CNwarePlugin::CNwareProtectEngine>();
     } else if (appType == ENV_APPTYPE_APSARASTACK) {
         retValuePtr = std::make_shared<ApsaraStackPlugin::ApsaraStackProtectEngine>();
+    } else if (appType == ENV_APPTYPE_NUTANIX) {
+        retValuePtr = std::make_shared<NutanixPlugin::NutanixProtectEngine>();
     } else {
         WARNLOG("Can't create projectEngine object. appType: %s", appType.c_str());
         retValuePtr = nullptr;

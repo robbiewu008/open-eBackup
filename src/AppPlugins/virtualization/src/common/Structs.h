@@ -124,6 +124,7 @@ struct DatastoreInfo {
     std::string m_ip;       // IP地址
     std::string m_port;     // 端口
     std::string m_poolId;   // 存储池ID
+    int32_t mPoolIdInt;    // 存储池ID int类型
     std::string m_volumeName; // 底层存储卷名称 fusionstorage使用
     std::string m_ipList;
     /**
@@ -146,6 +147,7 @@ struct DatastoreInfo {
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_ip, ip)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_port, port)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_poolId, poolId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mPoolIdInt, poolIdInt)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_volumeName, volumeName)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_ipList, ipList)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_extendInfo, extendInfo)
@@ -437,7 +439,18 @@ public:
     std::string extendInfo = "";
 };
 
-struct ApplicationLabelType {
+class ApplicationLabelType {
+public:
+    ApplicationLabelType(std::string label, std::vector<std::string> params,
+        JobLogLevel::type level = JobLogLevel::TASK_LOG_INFO, int64_t errCode = 0)
+    {
+        this->label = label;
+        this->params = params;
+        this->level = level;
+        this->errCode = errCode;
+    };
+    ApplicationLabelType() {};
+    ~ApplicationLabelType() {};
     std::string label;
     JobLogLevel::type level{ JobLogLevel::TASK_LOG_INFO };
     std::vector<std::string> params; /* log description(label) parameters */
@@ -716,6 +729,7 @@ const std::string VIRT_PLUGIN_RESTORE_TARGET_VM_INFO = VIRT_PLUGIN_CACHE_RESTORE
 const std::string VIRT_PLUGIN_GEN_MAIN_TASK_STATUS_INFO = VIRT_PLUGIN_CACHE_ROOT + "/main_task_status.info";
 const std::string VIRT_PLUGIN_PRE_VOLUMES_INFO = VIRT_PLUGIN_CACHE_ROOT + "/volumes/";
 const std::string VIRT_PLUGIN_LIVE_MOUNT_INFO = VIRT_PLUGIN_CACHE_ROOT + "/live.tobedeleted";
+const std::string VIRT_PLUGIN_NEW_VOLUME_INFO = VIRT_PLUGIN_CACHE_RESTOREJOB_ROOT + "new_volume_info/";
 
 /* metadata saved in meta repository */
 const std::string VIRT_PLUGIN_VM_INFO = VIRT_PLUGIN_META_ROOT + "vm.info";

@@ -207,6 +207,12 @@ public:
         return CALCULATE_INITIAL_STATE;
     }
 
+    virtual int32_t QueryStoragePoolUsedRate(double &usedCapacityRate)
+    {
+        usedCapacityRate = VirtPlugin::DEFAULT_STORAGE_THRESHOLD_LIMIT;
+        return SUCCESS;
+    }
+
     static std::shared_ptr<uint8_t[]> GetAllZeroDirtyRangeDataPtr()
     {
         if (m_allZeroDirtyRangeDataPtr != nullptr) {

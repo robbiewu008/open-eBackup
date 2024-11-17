@@ -51,6 +51,7 @@ public:
     std::string m_progress;
     std::string m_projectId;
     std::string m_groupSnapshotId;
+    std::string m_providerLocation;
     bool m_consumesQuota;
     SnapshotMetadata m_metadata;
 
@@ -69,6 +70,7 @@ public:
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_groupSnapshotId, m_groupSnapshotId)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_consumesQuota, consumes_quota)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_metadata, metadata)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_providerLocation, os-extended-snapshot-attributes:provider_location)
     END_SERIAL_MEMEBER
 };
 

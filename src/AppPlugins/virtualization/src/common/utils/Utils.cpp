@@ -553,6 +553,16 @@ int32_t GetBoolValueByKeyFromJsonString(const std::string& bodyStr, const std::s
     return SUCCESS;
 }
 
+double SafeStod(const std::string& str, double defaultValue)
+{
+    try {
+        return std::stod(str);
+    } catch (const std::exception& e) {
+        ERRLOG("Invalid Argument for stoi: %s, ERR:%s", str.c_str(), e.what());
+        return defaultValue;
+    }
+}
+
 void InitAndRegTracePoint()
 {
 #ifdef EBK_TRACE_POINT

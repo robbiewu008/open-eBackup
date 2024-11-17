@@ -49,7 +49,7 @@ struct Project {
     std::string m_domainId;
     bool m_enabled;
     std::string m_tenantId;
-    bool m_isShare;
+    bool m_isShare;  // todo
     std::string m_tenantName;
     std::string m_createUserId;
     std::string m_createUserName;
