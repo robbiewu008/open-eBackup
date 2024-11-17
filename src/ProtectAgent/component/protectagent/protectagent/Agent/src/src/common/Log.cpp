@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "common/Log.h"
 #ifdef WIN32
 #include <process.h>
@@ -714,6 +726,26 @@ mp_string CLogger::FilterModleNamePath(const mp_string& str)
     return str.substr(begin, count);
 }
 
+mp_void CLogger::StrReplaceSpecSymbols(mp_string &logContent)
+{
+    //  替换特殊字符
+    std::vector<std::pair<mp_string, mp_string>> replaceRules = {
+        {"\n", " "},
+        {"\r", " "},
+        {"\b", " "},
+        {"\x08", " "},
+        {"\x0a", " "},
+        {"\x0b", " "},
+        {"\x0c", " "},
+        {"\x0d", " "},
+        {"\x7f", " "}
+    };
+    for (const auto &rule : replaceRules) {
+        logContent = CMpString::StrReplace(logContent, rule.first, rule.second);
+    }
+    return;
+}
+
 mp_int32 CLogger::InitLogContent(const mp_int32 iLevel, const mp_int32 iFileLine, const mp_string& pszFileName,
     const mp_string& pszFuncction, const mp_string& pszFormat, va_list& pszArgp, std::ostringstream& strMsg)
 {
@@ -732,9 +764,7 @@ mp_int32 CLogger::InitLogContent(const mp_int32 iLevel, const mp_int32 iFileLine
         return MP_FAILED;
     }
     mp_string strLog = acMsg;
-    strLog = CMpString::StrReplace(strLog, "\n", " ");
-    strLog = CMpString::StrReplace(strLog, "\r", " ");
-    strLog = CMpString::StrReplace(strLog, "\b", " ");
+    StrReplaceSpecSymbols(strLog);
 
     mp_char acMsgHead[LOG_HEAD_LENGTH] = {0};
     iRet = MkHead(iLevel, acMsgHead, sizeof(acMsgHead));

@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "host/CheckConnectStatus.h"
 #include <iostream>
 #include <sstream>
@@ -14,12 +26,14 @@
 #include "common/Path.h"
 #include "common/CSystemExec.h"
 #include "securecom/RootCaller.h"
+#include "host/ConnectivityManager.h"
 
 using namespace std;
 CheckConnectStatus CheckConnectStatus::m_Instance;
 namespace {
 const mp_string REGISTER_HOST = "registerHost";
 mp_int32 isRegisteredToPM = MP_FALSE;
+mp_uint64 lastReportFinishTime = 0;
 
 const mp_string DELETE_HOST("DeleteHost");
 const mp_int32 MAX_RETRY_TIMES = 3;
@@ -30,6 +44,8 @@ const mp_uint32 FIVE_MINUTES = 5 * 60 * 1000;
 const mp_uint32 THREE_MINUTES = 3 * 60 * 1000;
 const mp_uint32 CHECH_VSPHERE_STATE_INTERVAL = 2 * 60 * 60;     // 2h/7200s
 const mp_uint32 DISABLE_CHECK_INTERVAL = 3 * 1000;
+const mp_uint32 TO_MILLISECOND = 1000;
+const int DEFAULT_TEST_CONNECTIVITY_TIMEOUT = 5;
 
 // host info
 const mp_string PARAM_KEY_HOSTID = "host_id";
@@ -498,17 +514,16 @@ mp_void* CheckConnectStatus::CheckConnectivity(mp_void* param)
     CheckConnectStatus* pthis = static_cast<CheckConnectStatus*>(param);
     vector<pFuncGetComList> getComList;
     // if VMBackupAgent, need check connect status
+    getComList.push_back(&CheckConnectStatus::GetPmControllerIpFromConfig);
     if (!strcmp(pthis->m_AgentRole.c_str(), VMBACKUP_AGENT.c_str())) {
         getComList.push_back(&CheckConnectStatus::GetvSphereIp);
-        getComList.push_back(&CheckConnectStatus::GetDMEIp);
         COMMLOG(OS_LOG_DEBUG, "Current role is VMBackupAgent, need check connect status.");
     }
-    getComList.push_back(&CheckConnectStatus::GetPmControllerIpFromConfig);
     pthis->CheckConnectivitySub(pthis, getComList);
     CMPTHREAD_RETURN;
 }
 
-mp_void CheckConnectStatus::CheckVsphereConnectivity(mp_uint64 &lastTime)
+mp_void CheckConnectStatus::CheckVsphereConnectivity()
 {
     mp_uint64 curTime = CMpTime::GetTimeSec();
 
@@ -520,20 +535,16 @@ mp_void CheckConnectStatus::CheckVsphereConnectivity(mp_uint64 &lastTime)
         timeInterval = CHECH_VSPHERE_STATE_INTERVAL; // 从配置文件获取失败，赋予默认值2小时
     }
 
-    if (curTime - lastTime > timeInterval) {
-        lastTime = curTime;
+    if (curTime - m_lastUpdateVsphereConnectivityTime > timeInterval || m_lastUpdateVsphereConnectivityTime == 0) {
+        m_lastUpdateVsphereConnectivityTime = curTime;
         UpdateVsphereConnectivity();
     }
 }
 
 mp_void* CheckConnectStatus::CheckConnectivitySub(CheckConnectStatus* pthis, vector<pFuncGetComList>& getComList)
 {
-    mp_uint64 curTime = CMpTime::GetTimeSec();
-    pthis->UpdateVsphereConnectivity();
-
+    mp_uint32 intervalTime = 0;
     while (pthis->GetExitFlag() == MP_FALSE) {
-        pthis->CheckVsphereConnectivity(curTime);
-
         vector<Componet>().swap(pthis->m_ComList);
         for (int i = 0; i < getComList.size(); ++i) {
             mp_int32 iRet = (pthis->*getComList[i])();
@@ -541,15 +552,32 @@ mp_void* CheckConnectStatus::CheckConnectivitySub(CheckConnectStatus* pthis, vec
                 COMMLOG(OS_LOG_ERROR, "ComList parse failed, iRet = %d.", iRet);
             }
         }
+        if (pthis->GetUpdateInterval(intervalTime) != MP_SUCCESS) {
+            intervalTime = CK_MAX_TIMER_INTERVAL;
+            COMMLOG(OS_LOG_ERROR, "GetUpdateInterval failed.");
+        }
         if (pthis->m_ComList.size() < 1) {
             COMMLOG(OS_LOG_INFO, "ComList is null.");
+            DoSleep(intervalTime);
         } else {
             mp_int32 iRet = pthis->CheckConnect();
             if (iRet != MP_SUCCESS) {
                 COMMLOG(OS_LOG_ERROR, "IP curl failed, iRet = %d.", iRet);
                 return ((void*)0);
             }
+            mp_uint64 tCurrentTime = CMpTime::GetTimeSec();
+            COMMLOG(OS_LOG_DEBUG, "tCurrentTime %llu, lastReportFinishTime %llu", tCurrentTime, lastReportFinishTime);
+            if (lastReportFinishTime < tCurrentTime) {
+                mp_uint32 sleepTime = ((tCurrentTime - lastReportFinishTime) * TO_MILLISECOND >= intervalTime) ? 0 :
+                (intervalTime - ((tCurrentTime - lastReportFinishTime) * TO_MILLISECOND));
+                COMMLOG(OS_LOG_DEBUG, "Will sleep %u ms", sleepTime);
+                DoSleep(sleepTime);
+            }
             iRet = pthis->UpdatePMInfo();
+            if (iRet == MP_SUCCESS) {
+                COMMLOG(OS_LOG_INFO, "Update link status success");
+                lastReportFinishTime = CMpTime::GetTimeSec();
+            }
         }
         // register agent to pm
         if (isRegisteredToPM == MP_FAILED) {
@@ -559,13 +587,6 @@ mp_void* CheckConnectStatus::CheckConnectivitySub(CheckConnectStatus* pthis, vec
                 isRegisteredToPM = MP_SUCCESS;
             }
         }
-        mp_uint32 intervalTime;
-        if (pthis->GetUpdateInterval(intervalTime) != MP_SUCCESS) {
-            intervalTime = CK_MAX_TIMER_INTERVAL;
-            COMMLOG(OS_LOG_ERROR, "GetUpdateInterval failed.");
-        }
-        COMMLOG(OS_LOG_DEBUG, "CheckConnectivity DoSleep is %d", intervalTime);
-        DoSleep(intervalTime);
     }
     return ((void*)0);
 }
@@ -740,7 +761,8 @@ bool CheckConnectStatus::CheckIfIpsVecEmpty(std::vector<std::string>& VecIp)
 {
     std::vector<std::string> allIps = m_PMIpVec;
     if (VecIp.empty()) {
-        VecIp = GetConnectIps(allIps, m_PMPort);
+        VecIp = ConnectivityManager::GetInstance().GetConnectedIps(
+            allIps, CMpString::SafeStoi(m_PMPort));
     }
     if (VecIp.empty()) {
         COMMLOG(OS_LOG_ERROR, "Connected ips is empty.");
@@ -887,7 +909,8 @@ mp_int32 CheckConnectStatus::ReportHeartBeatToPMInner()
     std::vector<std::string> allIps = m_PMIpVec;
 
     // select ip which host can connect
-    std::vector<std::string> connectedIps = GetConnectIps(allIps, m_PMPort);
+    std::vector<std::string> connectedIps = ConnectivityManager::GetInstance().GetConnectedIps(
+        allIps, CMpString::SafeStoi(m_PMPort));
     if (connectedIps.empty()) {
         COMMLOG(OS_LOG_ERROR, "Connected ips is empty.");
         return MP_FAILED;
@@ -905,6 +928,8 @@ mp_int32 CheckConnectStatus::ReportHeartBeatToPMInner()
     iRet = SendHeatBeatRequest(connectedIps, jsonBody);
     if (iRet != MP_SUCCESS) {
         COMMLOG(OS_LOG_ERROR, "Report heartbeat to PM fail.");
+    } else {
+        COMMLOG(OS_LOG_INFO, "Report heartbeat to PM success.");
     }
     return iRet;
 }
@@ -942,7 +967,6 @@ mp_int32 CheckConnectStatus::SendHeatBeatRequest(const std::vector<mp_string>& i
         mp_string rspBody;
         iRet = SendRequest(req, rspBody);
         if (iRet == MP_SUCCESS) {
-            COMMLOG(OS_LOG_INFO, "Report heartbeat to PM success.");
             return MP_SUCCESS;
         }
         COMMLOG(OS_LOG_WARN, "Report heartbeat to PM use ip(%s) fail.", ip.c_str());
@@ -962,7 +986,8 @@ mp_int32 CheckConnectStatus::RequestPmIpList()
     std::vector<std::string> allIps = m_PMIpVec;
 
     // select ip which host can connect
-    std::vector<std::string> connectedIps = GetConnectIps(allIps, m_PMPort);
+    std::vector<std::string> connectedIps = ConnectivityManager::GetInstance().GetConnectedIps(
+        allIps, CMpString::SafeStoi(m_PMPort));
     if (connectedIps.empty()) {
         COMMLOG(OS_LOG_ERROR, "Connected ip-list is empty.");
         return MP_FAILED;
@@ -998,6 +1023,7 @@ mp_int32 CheckConnectStatus::RequestPmIpList()
         COMMLOG(OS_LOG_ERROR, "Update PM's ip-list failed.");
         return iRet;
     }
+    COMMLOG(OS_LOG_INFO, "Request for PM's ip-list success.");
     return iRet;
 }
 
@@ -1183,23 +1209,23 @@ mp_int32 CheckConnectStatus::UpdatePMInfo()
         COMMLOG(OS_LOG_ERROR, "Get host info failed, iRet %d.", iRet);
         return iRet;
     }
-    iRet = UpdatePMInfo(registerReq, m_PMIpIndex, m_PMIpVec.size());
-    if (iRet != MP_SUCCESS) {
-        iRet = UpdatePMInfo(registerReq, 0, m_PMIpIndex);
-    }
+    iRet = UpdatePMInfo(registerReq);
 
     return iRet;
 }
 
-mp_int32 CheckConnectStatus::UpdatePMInfo(Json::Value registerReq, mp_int32 startIndex, mp_int32 endIndex)
+mp_int32 CheckConnectStatus::UpdatePMInfo(Json::Value registerReq)
 {
     HttpRequest req;
     mp_string reqmethod = "PUT";
     mp_string requrl = PUT_INTERFACE;
 
     mp_int32 iRet = MP_FAILED;
-    for (int i = startIndex; i < endIndex; ++i) {
-        iRet = InitRequest(reqmethod, requrl, m_PMIpVec[i], req);
+    if (m_connectedPMInLastRound.size() == 0) {
+        COMMLOG(OS_LOG_ERROR, "m_connectedPMInLastRound is empty");
+    }
+    for (int i = 0; i < m_connectedPMInLastRound.size(); ++i) {
+        iRet = InitRequest(reqmethod, requrl, m_connectedPMInLastRound[i], req);
         if (iRet != MP_SUCCESS) {
             COMMLOG(OS_LOG_ERROR, "InitRequest failed, iRet = %d.", iRet);
             continue;
@@ -1212,11 +1238,11 @@ mp_int32 CheckConnectStatus::UpdatePMInfo(Json::Value registerReq, mp_int32 star
         COMMLOG(OS_LOG_DEBUG, "UpdatePMInfo body");
         iRet = SendRequest(req, rspBody);
         if (iRet != MP_SUCCESS) {
-            COMMLOG(OS_LOG_ERROR, "Update PM info failed, pm_ip = %s, iRet = %d.", m_PMIpVec[i].c_str(), iRet);
+            COMMLOG(OS_LOG_ERROR, "Update PM info failed, pm_ip = %s, iRet = %d.",
+                m_connectedPMInLastRound[i].c_str(), iRet);
             continue;
         } else {
             COMMLOG(OS_LOG_DEBUG, "UpdatePMInfo success.");
-            m_PMIpIndex = i;
             break;
         }
     }
@@ -1292,13 +1318,15 @@ mp_int32 CheckConnectStatus::BuildPMBody(Json::Value& PMMsg)
     return MP_SUCCESS;
 }
 
-mp_int32 CheckConnectStatus::CheckCompnetConnect(Componet& comp, const mp_string& MP_PORT)
+mp_int32 CheckConnectStatus::CheckComponentConnect(Componet& comp, const mp_string& MP_PORT)
 {
     CURL* curl = curl_easy_init();
     if (curl == NULL) {
         return MP_FAILED;
     }
-
+    int timeout = DEFAULT_TEST_CONNECTIVITY_TIMEOUT;
+    CConfigXmlParser::GetInstance().GetValueInt32(CFG_SYSTEM_SECTION, CFG_CURL_CONNECTIVITY_TIMEOUT, timeout);
+    timeout = (timeout > 0) ? timeout : DEFAULT_TEST_CONNECTIVITY_TIMEOUT;
     string url = comp.destAddr;
     string destRole = comp.destRole;
     if (destRole == CONTROLLER) {
@@ -1310,7 +1338,7 @@ mp_int32 CheckConnectStatus::CheckCompnetConnect(Componet& comp, const mp_string
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
     }
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 1);
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeout);
     CURLcode CurlCode = curl_easy_perform(curl);
     if (CurlCode == CURLE_OK) {
         comp.state = CAN_CONNECT;
@@ -1353,7 +1381,9 @@ mp_int32 CheckConnectStatus::CheckConnect()
             COMMLOG(OS_LOG_ERROR, "Invalid VDDK lib, stop reporting connectivity to Vsphere");
             m_ComList[i].state = CAN_NOT_CONNECT;
         } else {
-            if (CheckCompnetConnect(m_ComList[i], MP_PORT) != MP_SUCCESS) {
+            // only to check the connectivity of vSphere destinations (controllers have been checked before)
+            if (m_ComList[i].mainType == "vSphere" && CheckComponentConnect(m_ComList[i], MP_PORT) != MP_SUCCESS) {
+                COMMLOG(OS_LOG_ERROR, "Check connectivity of vSphere %s failed", m_ComList[i].destAddr.c_str());
                 return MP_FAILED;
             }
         }
@@ -1370,18 +1400,19 @@ mp_int32 CheckConnectStatus::GetvSphereJsonValue(
     mp_string reqmethod = "GET";
     mp_string responseBody;
     Json::Value jsonRspBody;
-    for (int i = 0; i < m_PMIpVec.size(); ++i) {
-        mp_int32 iRet = InitRequest(reqmethod, requrl, m_PMIpVec[i], req);
+    for (int i = 0; i < m_connectedPMInLastRound.size(); ++i) {
+        mp_int32 iRet = InitRequest(reqmethod, requrl, m_connectedPMInLastRound[i], req);
         if (iRet != MP_SUCCESS) {
             COMMLOG(OS_LOG_ERROR, "InitRequest failed, iRet = %d.", iRet);
             return iRet;
         }
         iRet = SendRequest(req, responseBody);
         if (iRet == MP_SUCCESS) {
-            m_PMIp = m_PMIpVec[i];
+            m_PMIp = m_connectedPMInLastRound[i];
             break;
         } else {
-            COMMLOG(OS_LOG_ERROR, "SendRequest failed, PM ip = %s, iRet = %d.", m_PMIpVec[i].c_str(), iRet);
+            COMMLOG(OS_LOG_ERROR,
+                "SendRequest failed, PM ip = %s, iRet = %d.", m_connectedPMInLastRound[i].c_str(), iRet);
         }
     }
     mp_int32 iRet = CJsonUtils::ConvertStringtoJson(responseBody, jsonRspBody);
@@ -1403,13 +1434,13 @@ mp_int32 CheckConnectStatus::GetvSphereJsonValue(
         return iRet;
     }
     ++page_no;
-    stringstream ss;
-    ss << page_no;
-    mp_string strPageNum = ss.str();
-    mp_string newRequrl = "/v1/internal/environments?page_no=" + strPageNum +
-                          "&page_size=" + CHECKCONNECTPAGESIZE;
-
-    if (page_no <= pages) {
+    // page_no is start from 0, so 'page_no < pages' means all the pages have been get from PM
+    if (page_no < pages) {
+        stringstream ss;
+        ss << page_no;
+        mp_string strPageNum = ss.str();
+        mp_string newRequrl = "/v1/internal/environments?page_no=" + strPageNum +
+                              "&page_size=" + CHECKCONNECTPAGESIZE;
         GetvSphereJsonValue(page_no, newRequrl, vecJsonValue);
     }
 
@@ -1419,6 +1450,7 @@ mp_int32 CheckConnectStatus::GetvSphereJsonValue(
 mp_int32 CheckConnectStatus::GetvSphereIp()
 {
     CThreadAutoLock lock(&m_Mutex);
+    CheckVsphereConnectivity();
 
     int size = m_vecValue.size();
     for (int i = 0; i < size; ++i) {
@@ -1470,8 +1502,6 @@ mp_int32 CheckConnectStatus::CheckVDDK()
 mp_int32 CheckConnectStatus::UpdateVsphereConnectivity()
 {
     mp_int32 iRet = MP_SUCCESS;
-    CThreadAutoLock lock(&m_Mutex);
-
     if (strcmp(m_AgentRole.c_str(), VMBACKUP_AGENT.c_str()) == 0) {
         vector<Json::Value> vecValue;
         iRet = GetvSphereJsonValue(0, GET_INTERFACE, vecValue);
@@ -1558,29 +1588,37 @@ mp_int32 CheckConnectStatus::GetPmControllerIpFromConfig()
         COMMLOG(OS_LOG_ERROR, "Split PM controller ip failed, PM ip list is empty(%s).", strPmControllerIp.c_str());
         return MP_FAILED;
     }
-
+    // check PM ip connectivity by ConnectivityManager
+    m_connectedPMInLastRound =
+        ConnectivityManager::GetInstance().GetConnectedIps(vecValue, CMpString::SafeStoi(m_PMPort));
+    std::set<std::string> connectedIpSet;
+    for (const std::string& a : m_connectedPMInLastRound) {
+        COMMLOG(OS_LOG_DEBUG, "IP: %s Port: %s can be connected", a.c_str(), m_PMPort.c_str());
+        connectedIpSet.insert(a);
+    }
     for (int i = 0; i < vecValue.size(); ++i) {
         Componet temp;
+        temp.state = CAN_NOT_CONNECT;
         temp.destRole = CONTROLLER;
         if (CIP::IsIPV4(vecValue[i]) && vecValue[i] != ANY_IP) {
             temp.destAddr = vecValue[i];
+            if (connectedIpSet.count(temp.destAddr) > 0) {
+                temp.state = CAN_CONNECT;
+            }
         }
 
         if (CIP::IsIPv6(vecValue[i]) && vecValue[i] != ANY_IP) {
             temp.destAddr6 = vecValue[i];
+            if (connectedIpSet.count(temp.destAddr6) > 0) {
+                temp.state = CAN_CONNECT;
+            }
         }
         temp.destAddr6 = CIP::FormatFullUrl(temp.destAddr6);
         m_ComList.push_back(temp);
-        COMMLOG(OS_LOG_DEBUG, "ClusterNodes %d destRole=%s destAddr=%s destAddr6=%s destName=%s",
-            i, temp.destRole.c_str(), temp.destAddr.c_str(), temp.destAddr6.c_str(), temp.destName.c_str());
+        COMMLOG(OS_LOG_DEBUG, "ClusterNodes %d destRole=%s destAddr=%s destAddr6=%s destName=%s state:%llu",
+            i, temp.destRole.c_str(), temp.destAddr.c_str(), temp.destAddr6.c_str(), temp.destName.c_str(), temp.state);
     }
 
-    return MP_SUCCESS;
-}
-
-mp_int32 CheckConnectStatus::GetDMEIp()
-{
-    COMMLOG(OS_LOG_DEBUG, "Begin to GetDMEIp().");
     return MP_SUCCESS;
 }
 

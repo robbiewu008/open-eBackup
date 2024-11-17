@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "dataprocess/datamessage/DataMessage.h"
 
 #include <sstream>
@@ -132,8 +144,8 @@ mp_uint16 DataMessage::GetRandomPort(mp_socket servSock, const mp_string& ip)
     mp_int32 attempts = 0;
     mp_int32 maxattempts = 100;
     mp_uint16 uiPort = 0;
-    mp_uint16 upper = 65535;
-    mp_uint16 lower = 1024;
+    mp_uint16 upper = 59520;
+    mp_uint16 lower = 59510;
     mp_bool portFound = MP_FALSE;
 
     for (attempts = 0; attempts < maxattempts; attempts++) {

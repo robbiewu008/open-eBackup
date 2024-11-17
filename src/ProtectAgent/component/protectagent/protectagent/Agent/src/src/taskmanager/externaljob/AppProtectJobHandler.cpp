@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "taskmanager/externaljob/PluginMainJob.h"
 #include "taskmanager/externaljob/PluginJobFactory.h"
 #include "taskmanager/externaljob/ReportJobDetailFactory.h"
@@ -1148,6 +1160,7 @@ mp_int32 AppProtectJobHandler::Run(const MainJobInfoPtr& mainJobInfo)
         }
         if (mainJobInfo->IsNetworkLongTimeError()) {
             INFOLOG("Delete job due to network long time error, jobId=%s.", mainJobInfo->mainID.c_str());
+            Umount(mainJobInfo->mainID);
             ClearJobInMemory(mainJobInfo);
         }
 
@@ -1311,8 +1324,23 @@ mp_void AppProtectJobHandler::CheckAndSubcribeJobs(const std::vector<std::shared
 mp_void AppProtectJobHandler::GetDataTurboPid(mp_string& pid)
 {
 #ifdef WIN32
-    return;
-#endif
+    mp_string strCmd = "cmd.exe /c tasklist | findstr dpc.exe";
+    std::vector<mp_string> vecRlt;
+    mp_int32 iRet = CSystemExec::ExecSystemWithEcho(strCmd, vecRlt);
+    if (iRet != MP_SUCCESS || vecRlt.size() == 0) {
+        WARNLOG("The system not install dataturbo or the service is not running.");
+        SleepForMS(TEN_SECONDS * ONE_THOUSAND_MILLISECONDS);
+        iRet = CSystemExec::ExecSystemWithEcho(strCmd, vecRlt);
+        if (iRet != MP_SUCCESS || vecRlt.size() == 0) {
+            WARNLOG("The system not install dataturbo or the service is not running after 10 seconds.");
+            return;
+        }
+    }
+    std::stringstream ss(vecRlt[0]);
+    mp_string pname;
+    ss >> pname;
+    ss >> pid;
+#else
     mp_string strCmd = "ps -ef | grep /opt/oceanstor/dataturbo/bin/dpc | grep -v grep | awk '{print $2}'";
     std::vector<mp_string> vecRes;
     mp_int32 iRet = CSystemExec::ExecSystemWithEcho(strCmd, vecRes);
@@ -1321,6 +1349,7 @@ mp_void AppProtectJobHandler::GetDataTurboPid(mp_string& pid)
         return;
     }
     pid = vecRes[0];
+#endif
     INFOLOG("the current dataturbo pid is:%s.", pid.c_str());
     return;
 }

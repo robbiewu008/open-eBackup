@@ -29,9 +29,8 @@ public:
     bool Register(std::string name)
     {
         return IServiceCenter::GetInstance()->Register(name, []() -> std::shared_ptr<IService> {
-                return std::dynamic_pointer_cast<IService>(std::make_shared<T>());
-            }
-        );
+            return std::dynamic_pointer_cast<IService>(std::make_shared<T>());
+        });
     }
 
     bool Unregister(std::string name)

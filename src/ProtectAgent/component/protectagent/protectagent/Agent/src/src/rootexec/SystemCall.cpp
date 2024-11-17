@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "rootexec/SystemCall.h"
 #include <algorithm>
 #include <fstream>
@@ -1557,6 +1569,10 @@ mp_bool CSystemCall::WhiteListVerify(mp_int32 iCommandID, const mp_string& strPa
             bRet = RmWhiteListVerify(strParam);
             break;
         }
+        case ROOT_COMMAND_CHMOD_OTHER_READ: {
+            bRet = ChmodOtherReadWhiteListVerify(strParam);
+            break;
+        }
     }
     return bRet;
 }
@@ -1644,6 +1660,11 @@ mp_bool CSystemCall::RmWhiteListVerify(const mp_string &filePath)
         }
     }
     ERRLOG("File path (%s) is not in remove white list.", filePath.c_str());
+    return MP_FALSE;
+}
+
+mp_bool CSystemCall::ChmodOtherReadWhiteListVerify(const mp_string &filePath)
+{
     return MP_FALSE;
 }
 
@@ -1851,8 +1872,43 @@ mp_int32 CSystemCall::WriteScanResultForInstantlyMount(const mp_string &strUniqu
     } else {
         vecFilePath.assign(vecParam.begin() + 1, vecParam.end());
     }
+
+    // 检查写入文件路径和目录是否有效
+    mp_int32 iRet = CheckPathIsValid(filepath);
+    if (iRet != MP_SUCCESS) {
+        ERRLOG("filepath %s is invalid.", filepath.c_str());
+        return MP_FAILED;
+    }
+
     CIPCFile::WriteFile(filepath, vecFilePath);
     INFOLOG("Write %s succ.", filepath.c_str());
+    return MP_SUCCESS;
+}
+
+mp_int32 CSystemCall::CheckPathIsValid(const mp_string &filePath)
+{
+    // E6000设备即时挂载，需要扫描副本目录用于创建文件克隆，写入扫描结果时，需要提权到root执行
+    // root执行会校验目录，修改时需要同步修改PluginSubPostJob::ScanAndRecordFile()和PrepareFileSystem定义
+    static const mp_string RECORD_FILE_NAME = "RecordFile.txt";     // 保存扫描出来的文件
+    static const mp_string RECORD_DIR_NAME = "RecordDir.txt";       // 保存扫描出来的目录
+    static const mp_string MOUNT_PUBLIC_PATH = "/mnt/databackup/";  // 挂载目录的前置，文件在AIX和soalris上文件系统/mnt开头，文件不会走当前流程
+
+    mp_string realPath = filePath;
+    // FormattingPath的目录不存在会返回失败，当前函数只归一化目录，不判断返回值
+    (mp_void) CMpString::FormattingPath(realPath);
+    INFOLOG("Format path is %s.", realPath.c_str());
+    
+    if (realPath.find(MOUNT_PUBLIC_PATH) != 0) {
+        ERRLOG("realPath %s isn't begin with %s.", realPath.c_str(), MOUNT_PUBLIC_PATH.c_str());
+        return MP_FAILED;
+    }
+
+    mp_string fileName = BaseFileName(realPath);
+    if ((fileName != RECORD_FILE_NAME) && (fileName != RECORD_DIR_NAME)) {
+        ERRLOG("File name %s isn't fix file name.", fileName.c_str());
+        return MP_FAILED;
+    }
+
     return MP_SUCCESS;
 }
 

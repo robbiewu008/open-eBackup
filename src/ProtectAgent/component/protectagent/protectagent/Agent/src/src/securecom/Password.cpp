@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "securecom/Password.h"
 #include <sstream>
 #include <algorithm>
@@ -1002,72 +1014,6 @@ mp_int32 CPassword::EncPwd(mp_string& ciphertext, const mp_string& strvalue)
     }
 
     return MP_SUCCESS;
-}
-
-/* ------------------------------------------------------------
-Description  :  解密并混淆密码
-------------------------------------------------------------- */
-mp_int32 CPassword::DecPwdAndConfuse(const mp_string& ciphertext, mp_string& plaintext)
-{
-    mp_string plaintextTmp;
-    DecryptStrKMC(ciphertext, plaintextTmp);
-    if (plaintextTmp == "") {
-        COMMLOG(OS_LOG_ERROR, "Decrypt failed.");
-        return MP_FAILED;
-    }
-
-    Confuse(plaintextTmp, plaintext);
-    ClearString(plaintextTmp);
-    return MP_SUCCESS;
-}
-
-/* ------------------------------------------------------------
-Description  :  混淆并反序密码
-------------------------------------------------------------- */
-mp_void CPassword::Confuse(const mp_string& inStr, mp_string& outStr)
-{
-    // Index:  1    2    3    4    5    6    7    8    9    10   11   12   13   14   15   16   17   18   19
-    // 20   21   22
-    const char cMap[] = {
-        'a', '2', 'b', 'J', 'c', '5', 'd', 'L', 'e', 'n', 'f', 'c', 'g', 'h', 'h', 's', 'i',
-        '7', 'j', 'E', 'k', 'C', 'l', 'Q', 'm', 'V', 'n', 'T', 'o', 'R', 'p', 'f', 'q', 'q',
-        'r', 'X', 's', 'k', 't', '4', 'u', 'b', 'v', 'U', 'w', 'r', 'x', 'H', 'y', 'x', 'z',
-        'v', 'A', 'B', 'B', 'I', 'C', 'd', 'D', '3', 'E', 'm', 'F', 'A', 'G', 'o', 'H', 't',
-        'I', 'K', 'J', 'M', 'K', 'g', 'L', 'e', 'M', 'F', 'N', 'D', 'O', 'a', 'P', 'S', 'Q',
-        'u', 'R', 'w', 'S', 'G', 'T', 'z', 'U', 'Y', 'V', 'O', 'W', 'W', 'X', 'y', 'Y', '8',
-        'Z', 'l', '0', 'Z', '1', 'i', '2', 'N', '3', '0', '4', 'j', '5', '9', '6', '6', '7',
-        '1', '8', 'P', '9', 'p'
-    };
-    outStr = "";
-    if (inStr == "") {
-        return;
-    }
-
-    mp_int32 mapLength = sizeof(cMap);
-    mp_int32 startIndex = 0;  // 0: 用偶数位置替换奇数位置, 1:用奇数位置替换偶数位置, 只能是0或1
-    mp_int32 offset = ((startIndex == 0) ? 1 : -1);
-    char outStrTmp[PASSSWD_NUM_2] = {0};
-    for (mp_uint32 strIndex = 0; strIndex < inStr.length(); strIndex++) {
-        outStrTmp[0] = inStr[strIndex];
-        for (mp_int32 mapIndex = startIndex; mapIndex < mapLength; mapIndex += PASSSWD_NUM_2) {
-            if (outStrTmp[0] == cMap[mapIndex]) {
-                outStrTmp[0] = cMap[mapIndex + offset];
-                break;
-            }
-        }
-        outStr.append(outStrTmp);
-    }
-
-    // 逆序
-    mp_uint32 beginIndex = 0;
-    mp_uint32 endIndex = outStr.length() - 1;
-    while (beginIndex < endIndex) {
-        char tmp = outStr[beginIndex];
-        outStr[beginIndex] = outStr[endIndex];
-        outStr[endIndex] = tmp;
-        beginIndex++;
-        endIndex--;
-    }
 }
 
 /* ------------------------------------------------------------

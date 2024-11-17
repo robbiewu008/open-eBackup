@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include <memory>
 #include <algorithm>
 #ifndef WIN32
@@ -473,6 +485,7 @@ mp_int32 PluginMainJob::ExecutePreSubJob()
         m_data.param,
         m_data.mainType,
         SubJobType::type::PRE_SUB_JOB};
+
     m_pPrepJob = PluginJobFactory::GetInstance()->CreatePluginJob(jobData);
     if (m_pPrepJob.get() == nullptr) {
         ERRLOG("ExecutePreSubJob faild, pointer is null.");
@@ -813,7 +826,8 @@ mp_int32 PluginMainJob::SetQosStrategy()
     JsonToStruct(m_data.param, jobParam);
     mp_int32 dataRepositorieSize = 0;
     for (const auto iter : jobParam.repositories) {
-        if (iter.repositoryType == RepositoryDataType::type::DATA_REPOSITORY) {
+        if (iter.repositoryType == RepositoryDataType::type::DATA_REPOSITORY ||
+            iter.repositoryType == RepositoryDataType::type::LOG_REPOSITORY) {
             dataRepositorieSize++;
         }
     }

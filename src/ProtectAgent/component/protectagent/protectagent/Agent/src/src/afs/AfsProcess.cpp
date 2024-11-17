@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "afs/AfsProcess.h"
 
 #include <cstdio>
@@ -8,6 +20,7 @@
 #include <string>
 #include "dataprocess/vmwarenative/AgentTimer.h"
 #include "common/Log.h"
+#include "common/Utils.h"
 
 namespace {
 const uint32_t BYTE_UNIT = 8;
@@ -240,6 +253,11 @@ Tail:
 int32_t AfsProcess::PrepareFilterBitmapParams(AFS_HANDLE *&pHandles, bool specified, int64_t *&bufSize,
     char **&ppBitmapBuf, char **&filelist)
 {
+#ifdef WIN32
+    for (int i = 0; i < m_tmpFilesWin.size(); ++i) {
+        m_tmpFilesWin[i] = GetSystemDiskChangedPathInWin(m_tmpFilesWin[i]);
+    }
+#endif
     std::vector<std::string> filterList = m_tmpFilesWin;
     size_t fileTotal = m_tmpFilesWin.size();
     if (specified) {

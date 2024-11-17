@@ -215,7 +215,6 @@ EXTER_ATTACK void ProtectServiceImp::AsyncBackupPrerequisite(ActionResult& retur
     StructToJson(job, backupJobStr);
     HCP_Log(DEBUG, MODULE) << "AsyncBackupPrerequisite, parameter:" <<
         WIPE_SENSITIVE(backupJobStr.toStyledString()) << HCPENDLOG;
-
     if (!ParamCheck("BackupJob", backupJobStr, returnValue)) {
         return;
     }
