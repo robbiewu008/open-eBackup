@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "common/Utils.h"
 #ifndef WIN32
 #include <csignal>
@@ -436,6 +448,26 @@ mp_int32 GetCurrentUserNameW(mp_wstring& strUserName, mp_ulong& iErrCode)
     iErrCode = 0;
     memset_s(pUsername, WINDOWS_USERNAME_LEN, 0, WINDOWS_USERNAME_LEN);
     return MP_SUCCESS;
+}
+
+mp_string GetSystemDiskChangedPathInWin(const mp_string& oriPath)
+{
+    if (SYSTEM_DISK_NAME == "") {
+        mp_int32 iRet = CConfigXmlParser::GetInstance().GetValueString(CFG_SYSTEM_SECTION, CFG_WIN_SYSTEM_DISK_VALUE,
+        SYSTEM_DISK_NAME);
+        if (iRet != MP_SUCCESS) {
+            SYSTEM_DISK_NAME = "C";
+            WARNLOG("Get system disk name from config failed, use default system disk name: C.");
+        }
+    }
+    if (SYSTEM_DISK_NAME == "C" || SYSTEM_DISK_NAME == "c") {
+        DBGLOG("The default system disk name is C, no need to change.");
+        return oriPath;
+    }
+    mp_string changePath = SYSTEM_DISK_NAME + oriPath.substr(1, oriPath.length() - 1);
+    DBGLOG("System disk name is %s, the oripath %s has been changed to %s.", SYSTEM_DISK_NAME.c_str(),
+        oriPath.c_str(), changePath.c_str());
+    return changePath;
 }
 
 const mp_wstring BaseFileNameW(const mp_wstring& pszFileName)

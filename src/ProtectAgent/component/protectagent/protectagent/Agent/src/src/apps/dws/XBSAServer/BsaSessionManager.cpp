@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "apps/dws/XBSAServer/BsaSessionManager.h"
 #include <atomic>
 #include <list>
@@ -130,15 +142,14 @@ mp_int32 BsaSessionManager::CloseSession(mp_long bsaHandle)
     info.totalSizeInMB = m_taskDataSize[taskId].dataSize / MB_TO_BYTE;
     if (info.totalSizeInMB == 0) {
         DBGLOG("task:%s,TotalSizeInMB is 0.no need to write speed file", taskId.c_str());
-        return ret;
     }
     std::string jsonStr;
     if (!JsonHelper::StructToJsonString(info, jsonStr)) {
         ERRLOG("Struct to json string failed.");
-        return ret;
+    } else {
+        DBGLOG("SpeedInfo:%s", jsonStr.c_str());
+        WriteSpeedFile(info.totalSizeInMB, jsonStr, cacheInfo);
     }
-    DBGLOG("SpeedInfo:%s", jsonStr.c_str());
-    WriteSpeedFile(info.totalSizeInMB, jsonStr, cacheInfo);
     m_sessionMap.erase(iter);
 
     INFOLOG("close session end.bsaHandle=%lld", bsaHandle);

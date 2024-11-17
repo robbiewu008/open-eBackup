@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "securecom/RootCaller.h"
 #include "common/JsonUtils.h"
 #include "common/Log.h"
@@ -18,6 +30,9 @@ namespace {
     constexpr mp_int32 SUBJOB_MINI_SIZE = 1;
     constexpr int64_t DATA_REPO_TYPE = 1;
     constexpr int64_t META_REPO_TYPE = 0;
+    
+    // E6000设备即时挂载，需要扫描副本目录用于创建文件克隆，写入扫描结果时，需要提权到root执行
+    // root执行会校验目录，修改时需要同步修改ROOT_COMMAND_WRITE_SCAN_RESULT命令字的定义
     static const mp_string RECORD_FILE_NAME = "RecordFile.txt"; // 保存扫描出来的文件
     static const mp_string RECORD_DIR_NAME = "RecordDir.txt";   // 保存扫描出来的目录
 }
@@ -32,6 +47,9 @@ mp_int32 PluginSubPostJob::ExecBackupJob()
     if (iRet != MP_SUCCESS) {
         WARNLOG("Fail to get plugin name for apptype=%s.", m_data.appType.c_str());
     }
+
+    // E6000设备即时挂载，需要扫描副本目录用于创建文件克隆，写入扫描结果时，需要提权到root执行
+    // root执行会校验目录，FilePlugin在AIX和solaris以/mnt开头，如果放开FilePlugin，ROOT_COMMAND_WRITE_SCAN_RESULT需要同步修改检验开头目录
     if (pluginName != "NasPlugin" && pluginName != "FilePlugin" && pluginName != "" && pluginName != "ObsPlugin") {
         StartKeepAliveThread();
         iRet = ScanAndRecordFile();
@@ -69,6 +87,11 @@ mp_int32 PluginSubPostJob::ScanAndRecordFile()
         if ((jsonData["repositories"][index]["type"] != META_REPO_TYPE &&
                 jsonData["repositories"][index]["type"] != DATA_REPO_TYPE) ||
             jsonData["repositories"][index]["path"].empty()) {
+            continue;
+        }
+        if (!jsonData["repositories"][index].isMember("isCloneFileSystem") ||
+            jsonData["repositories"][index]["isCloneFileSystem"].isString() &&
+            jsonData["repositories"][index]["isCloneFileSystem"].asString() == "true") {
             continue;
         }
         for (Json::ArrayIndex index1 = 0; index1 < jsonData["repositories"][index]["path"].size(); ++index1) {

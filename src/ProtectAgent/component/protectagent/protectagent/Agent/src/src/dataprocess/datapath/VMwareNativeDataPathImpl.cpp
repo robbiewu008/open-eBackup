@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "dataprocess/datapath/VMwareNativeDataPathImpl.h"
 #include <map>
 #include <iostream>
@@ -2494,8 +2506,18 @@ void VMwareNativeDataPathImpl::DoRmVmUuidFile(Json::Value &msgBody)
 {
     Json::Value body = msgBody[MANAGECMD_KEY_BODY];
     if (body.isObject() && body.isMember(EXT_CMD_PROTECT_VM_UUID) && body[EXT_CMD_PROTECT_VM_UUID].isString()) {
-        std::string uuid = "/tmp/vmware-root/";
-        uuid += body[EXT_CMD_PROTECT_VM_UUID].asString();
+        std::string uuid = "/tmp/vmware-root";
+        struct stat buf;
+        mp_int32 ret = lstat(uuid.c_str(), &buf);
+        if (ret != MP_SUCCESS) {
+            ERRLOG("Get file stat failed! filePath(%s),errno=%d", uuid.c_str(), errno);
+            return;
+        }
+        if (S_ISLNK(buf.st_mode)) { // safe check:link file not permitted.
+            ERRLOG("File is link file! filePath(%s)", uuid.c_str());
+            return;
+        }
+        uuid += "/" + body[EXT_CMD_PROTECT_VM_UUID].asString();
         uuid = uuid + "-" + m_vmProtectionParams.vmInfo.strVmRef;
         if (CheckPathParm(uuid) != MP_SUCCESS) {
             WARNLOG("Invalid file path %s, skip remove", uuid.c_str());

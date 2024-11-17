@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "common/Ip.h"
 #include <sstream>
 #include <fstream>
@@ -18,6 +30,8 @@
 #include "common/Path.h"
 #include "common/File.h"
 #include "common/Utils.h"
+#include "common/JsonUtils.h"
+#include "common/JsonHelper.h"
 #include "common/CSystemExec.h"
 #include "message/tcp/CSocket.h"
 
@@ -755,8 +769,33 @@ mp_int32 CIP::GetApplications(mp_string& applications)
         ERRLOG("The testcfg.tmp file format error");
         return MP_FAILED;
     }
-    applications = strApplicationText.substr(start + 1);
- 
+    return GetApplicationJson(strApplicationText.substr(start + 1), applications);
+}
+
+mp_int32 CIP::GetApplicationJson(const mp_string& applicationText, mp_string& applications)
+{
+    Json::Value menuJson;
+    JsonHelper::JsonStringToJsonValue(applicationText, menuJson);
+    if (!menuJson.isMember("menus") || !menuJson["menus"].isArray()) {
+        ERRLOG("Json is not array");
+        return MP_FAILED;
+    }
+    Json::Value menuArray = menuJson["menus"];
+    mp_uint32 uiSize = menuArray.size();
+    for (mp_uint32 i = 0; i < uiSize; i++) {
+        if (!menuArray[i].isMember("applications") || !menuArray[i]["applications"].isArray()) {
+            continue;
+        }
+        Json::Value appArray = menuArray[i]["applications"];
+        mp_uint32 appSize = appArray.size();
+        for (mp_uint32 j = 0; j < appSize; j++) {
+            if (!appArray[j].isMember("appValue")) {
+                continue;
+            }
+            applications.append(appArray[j]["appValue"].asString());
+        }
+    }
+    DBGLOG("Applications : %s", applications.c_str());
     return MP_SUCCESS;
 }
 

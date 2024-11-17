@@ -10,7 +10,6 @@ if(LINUX_COMPILE)
         TaskManager.cpp
         TaskStepLinkTarget.cpp
         TaskStepPrepareNasMedia.cpp
-        TaskStepPreSufScript.cpp
         TaskStepScanDisk.cpp
         TaskStepScript.cpp
         ${SRC_LIST}
@@ -23,7 +22,6 @@ else()
         TaskManager.cpp
         TaskStepLinkTarget.cpp
         TaskStepPrepareNasMedia.cpp
-        TaskStepPreSufScript.cpp
         TaskStepScanDisk.cpp
         TaskStepScript.cpp
     )

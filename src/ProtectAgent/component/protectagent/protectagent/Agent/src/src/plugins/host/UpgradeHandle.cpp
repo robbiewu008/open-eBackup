@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "plugins/host/UpgradeHandle.h"
 #include <fstream>
 #include <sstream>
@@ -28,7 +40,7 @@ namespace HandleNamespace {
     const mp_string UPGRADE_STATUS_DISK_CHECK_FAILED = "3";
     const mp_string UPGRADE_STATUS_ABNORMAL = "8";
     const mp_string UPGRADE_STATUS_INITIAL = "9";
-    const mp_string UPGRADE_PKG_NAME = "DataProtect_client.zip";
+    const mp_string UPGRADE_PKG_NAME = "DataProtect_client.";
     const mp_string UPGRADE_PARAM_DOWNLOADLINK = "downloadLink=";
     const mp_string UPGRADE_PARAM_DISPOSITION = "Content-Disposition";
     const mp_string UPGRADE_PARAM_SIGNATURE = "Signature";
@@ -37,13 +49,17 @@ namespace HandleNamespace {
 
 namespace {
     const mp_int32 PROCESS_30_PERCENT = 30;
+    const mp_int32 PROCESS_35_PERCENT = 35;
     const mp_int32 PROCESS_40_PERCENT = 40;
     const mp_int32 PROCESS_70_PERCENT = 70;
     const mp_int32 PROCESS_80_PERCENT = 80;
     const mp_uint32 JOB_STATUS_RUNNING = 2;
+    const mp_uint32 JOB_STATUS_FAILED = 4;
     const mp_uint32 JOB_STATUS_SUCCESS = 5;
     const mp_string LABLE_INFO_LEVEL = "info";
+    const mp_string LABLE_WARNING_LEVEL = "warning";
     const mp_string UPGRADE_PRECHECK_LABLE = "job_log_agent_register_check_label";
+    const mp_string UPGRADE_PRECHECK_DATATURBO_LABLE = "job_log_agent_register_check_dataturbo_label";
     const mp_string UPGRADE_BEGIN_DOWNLOAD_PKG_LABLE = "job_log_agent_register_download_start_label";
     const mp_string UPGRADE_FINISH_DOWNLOAD_OKG_LABLE = "job_log_agent_register_download_finish_label";
     const mp_string UPGRADE_START_UPGRADE_LABLE = "job_log_agent_register_upgrade_start_label";
@@ -67,6 +83,7 @@ mp_string UpgradeHandle::m_upgradeUrl;
 mp_string UpgradeHandle::m_sha256;
 mp_string UpgradeHandle::m_signature;
 mp_int32 UpgradeHandle::m_upgradePackageSize;
+mp_string UpgradeHandle::m_packageType;
 
 #ifdef WIN32
 DWORD WINAPI UpgradeHandle::UpgradeAgentHandle(mp_void* param)
@@ -86,50 +103,62 @@ mp_void* UpgradeHandle::UpgradeAgentHandle(mp_void* param)
         CMPTHREAD_RETURN;
     }
 
+    m_packageType = hostPlugin->GetCompressType();
     m_upgradePackageSize = hostPlugin->GetNewPackageSize();
     if (m_upgradePackageSize == 0) {
-        ERRLOG("Invalid package size.");
+        ERRLOG("Invalid package size, jobid=%s.", jobId.c_str());
+        LabelRepoter(jobId, PROCESS_30_PERCENT, UPGRADE_PRECHECK_LABLE, JOB_STATUS_FAILED, LABLE_WARNING_LEVEL);
         CMPTHREAD_RETURN;
     }
 
-    mp_int32 iRet = InitRequestCommon();
-    if (iRet != MP_SUCCESS) {
-        ERRLOG("Failed to do InitRequestCommon.");
+    if (InitRequestCommon() != MP_SUCCESS) {
+        ERRLOG("Failed to do InitRequestCommon, jobid=%s.", jobId.c_str());
+        LabelRepoter(jobId, PROCESS_30_PERCENT, UPGRADE_PRECHECK_LABLE, JOB_STATUS_FAILED, LABLE_WARNING_LEVEL);
         CMPTHREAD_RETURN;
     }
 
-    INFOLOG("Handle the upgrade request step 1: check resource.");
-    LabelRepoter(jobId, PROCESS_30_PERCENT, UPGRADE_PRECHECK_LABLE, JOB_STATUS_RUNNING);
-    iRet = CheckBeforeUpgrade();
-    if (iRet != MP_SUCCESS) {
-        ERRLOG("Failed to check resource before upgrade.");
-        CMPTHREAD_RETURN;
-    }
-
-    INFOLOG("Handle the upgrade request step 2: obtain and verify package.");
-    LabelRepoter(jobId, PROCESS_40_PERCENT, UPGRADE_BEGIN_DOWNLOAD_PKG_LABLE, JOB_STATUS_RUNNING);
-    iRet = ObtainUpgradePac();
-    if (iRet != MP_SUCCESS) {
-        ERRLOG("Failed to obtain the upgrade package correctly.");
-        CMPTHREAD_RETURN;
-    }
-    LabelRepoter(jobId, PROCESS_70_PERCENT, UPGRADE_FINISH_DOWNLOAD_OKG_LABLE, JOB_STATUS_RUNNING);
-
-    INFOLOG("Handle the upgrade request step 3: prepare for upgrade.");
-    iRet = PrepareForUpgrade();
-    if (iRet != MP_SUCCESS) {
-        ERRLOG("Failed to prepare for the upgration.");
-        CMPTHREAD_RETURN;
-    }
-
-    INFOLOG("Handle the upgrade request step 4: call root execute.");
-    LabelRepoter(jobId, PROCESS_80_PERCENT, UPGRADE_START_UPGRADE_LABLE, JOB_STATUS_RUNNING);
-    iRet = CallUpgradeScript();
-    if (iRet != MP_SUCCESS) {
-        ERRLOG("Failed to excute upgrade script.");
-    }
-
+    UpgradeAgentHandleInner(jobId);
     CMPTHREAD_RETURN;
+}
+
+/* ------------------------------------------------------------
+Description  : 升级流程内部函数
+Return       : NA
+------------------------------------------------------------- */
+mp_void UpgradeHandle::UpgradeAgentHandleInner(const mp_string &jobId)
+{
+    INFOLOG("Handle the upgrade request step 1: check resource, jobid=%s.", jobId.c_str());
+    LabelRepoter(jobId, PROCESS_30_PERCENT, UPGRADE_PRECHECK_LABLE, JOB_STATUS_RUNNING, LABLE_INFO_LEVEL);
+    if (CheckBeforeUpgrade(jobId) != MP_SUCCESS) {
+        ERRLOG("Failed to check resource before upgrade, jobid=%s.", jobId.c_str());
+        LabelRepoter(jobId, PROCESS_30_PERCENT, UPGRADE_PRECHECK_LABLE, JOB_STATUS_FAILED, LABLE_WARNING_LEVEL);
+        return;
+    }
+
+    INFOLOG("Handle the upgrade request step 2: obtain and verify package, jobid=%s.", jobId.c_str());
+    LabelRepoter(jobId, PROCESS_40_PERCENT, UPGRADE_BEGIN_DOWNLOAD_PKG_LABLE, JOB_STATUS_RUNNING, LABLE_INFO_LEVEL);
+    if (ObtainUpgradePac() != MP_SUCCESS) {
+        ERRLOG("Failed to obtain the upgrade package correctly, jobid=%s.", jobId.c_str());
+        LabelRepoter(
+            jobId, PROCESS_40_PERCENT, UPGRADE_BEGIN_DOWNLOAD_PKG_LABLE, JOB_STATUS_FAILED, LABLE_WARNING_LEVEL);
+        return;
+    }
+    LabelRepoter(jobId, PROCESS_70_PERCENT, UPGRADE_FINISH_DOWNLOAD_OKG_LABLE, JOB_STATUS_RUNNING, LABLE_INFO_LEVEL);
+
+    INFOLOG("Handle the upgrade request step 3: prepare for upgrade, jobid=%s.", jobId.c_str());
+    if (PrepareForUpgrade() != MP_SUCCESS) {
+        ERRLOG("Failed to prepare for the upgration, jobid=%s.", jobId.c_str());
+        LabelRepoter(
+            jobId, PROCESS_70_PERCENT, UPGRADE_FINISH_DOWNLOAD_OKG_LABLE, JOB_STATUS_FAILED, LABLE_WARNING_LEVEL);
+        return;
+    }
+
+    INFOLOG("Handle the upgrade request step 4: call root execute, jobid=%s.", jobId.c_str());
+    LabelRepoter(jobId, PROCESS_80_PERCENT, UPGRADE_START_UPGRADE_LABLE, JOB_STATUS_RUNNING, LABLE_INFO_LEVEL);
+    if (CallUpgradeScript() != MP_SUCCESS) {
+        ERRLOG("Failed to excute upgrade script, jobid=%s.", jobId.c_str());
+        LabelRepoter(jobId, PROCESS_80_PERCENT, UPGRADE_START_UPGRADE_LABLE, JOB_STATUS_FAILED, LABLE_WARNING_LEVEL);
+    }
 }
 
 /* ------------------------------------------------------------
@@ -137,13 +166,24 @@ Description  : 升级流程之前检查主机资源：可用空间大小等
 Return       : MP_SUCCESS -- 成功
                非MP_SUCCESS -- 失败，返回特定错误码
 ------------------------------------------------------------- */
-mp_int32 UpgradeHandle::CheckBeforeUpgrade()
+mp_int32 UpgradeHandle::CheckBeforeUpgrade(const mp_string &jobId)
 {
     DBGLOG("Begin to check the host's resource before upgrade.");
 #ifdef WIN32
     mp_string strScriptPath =  CPath::GetInstance().GetBinFilePath(UPGRADE_CHECK_SCRIPT);
     mp_string strCmd = "cmd.exe /c " + strScriptPath + " " + std::to_string(m_upgradePackageSize);
     mp_int32 iRet = CSystemExec::ExecSystemWithoutEcho(strCmd);
+    
+    std::vector<mp_string> vecReturn;
+    strCmd = "cmd.exe /c dataturbo show mount_dir";
+    mp_int32 ret = CSystemExec::ExecSystemWithEcho(strCmd, vecReturn);
+    if (ret == MP_SUCCESS && vecReturn.size() > 0) {
+        if (std::string::npos != vecReturn[0].find("mnt")) {
+            WARNLOG("There are dataturbo mount directory left on the agent.");
+            LabelRepoter(jobId, PROCESS_35_PERCENT, UPGRADE_PRECHECK_DATATURBO_LABLE, JOB_STATUS_RUNNING,
+                         LABLE_WARNING_LEVEL);
+        }
+    }
 #else
     CRootCaller rootCaller;
     std::ostringstream scriptParam;
@@ -466,7 +506,11 @@ mp_int32 UpgradeHandle::InitRequest(HttpRequest& req)
 
     req.domaininfo.append("https://");
     req.domaininfo.append(m_domainName);
-    req.fileName = CPath::GetInstance().GetTmpPath() + PATH_SEPARATOR + HandleNamespace::UPGRADE_PKG_NAME;
+    if (m_packageType.empty() || m_packageType != "tar") {
+        m_packageType = "zip";
+    }
+    req.fileName = CPath::GetInstance().GetTmpPath() + PATH_SEPARATOR + HandleNamespace::UPGRADE_PKG_NAME +
+                   m_packageType;
     req.method = "GET";
     return iRet;
 }
@@ -514,13 +558,13 @@ mp_int32 UpgradeHandle::SendRequest(IHttpClient* httpClient, const HttpRequest& 
 }
 
 mp_int32 UpgradeHandle::LabelRepoter(
-    const mp_string &jobId, mp_int32 process, const mp_string &lableName, mp_int32 status)
+    const mp_string &jobId, mp_int32 process, const mp_string &lableName, mp_int32 status, const mp_string &labelLevel)
 {
     Lable label;
     JobLog jobLog;
     jobLog.jobId = jobId;
     jobLog.logInfo = lableName;
-    jobLog.level = LABLE_INFO_LEVEL;
+    jobLog.level = labelLevel;
     label.jobLogs.push_back(jobLog);
     label.status = status;
     label.progress = process;
@@ -536,7 +580,7 @@ mp_int32 UpgradeHandle::LabelRepoter(
     mp_string url = "/v1/internal/jobs/" + jobId + "/action/update";
     DmeRestClient::HttpReqParam param("PUT", url, context);
     param.port = atol(m_pmPort.c_str());
-    param.mainJobId = jobId;
+    param.vecIpList = m_vecPMIp;
     HttpResponse response;
     mp_int32 iRet = DmeRestClient::GetInstance()->SendRequest(param, response);
     if (iRet != MP_SUCCESS) {

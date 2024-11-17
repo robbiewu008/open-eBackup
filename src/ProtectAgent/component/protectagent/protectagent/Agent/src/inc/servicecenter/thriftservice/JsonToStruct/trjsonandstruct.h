@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef TR_JSON_WITH_STRUCT_H
 #define TR_JSON_WITH_STRUCT_H
 
@@ -293,6 +305,7 @@ static mp_void JsonToStruct(const Json::Value& jsonValue, AppProtect::RestoreJob
         st.__set_restoreType(it->second);
     }
     JSON_TO_STRUCT_ENUM(restoreType, restoreType, AppProtect::RestoreJobType::type);
+    JSON_TO_STRUCT(restoreMode, restoreMode)
     JSON_TO_STRUCT_ARRAY(filters, filters, AppProtect::ResourceFilter);
     JSON_TO_STRUCT_STRUCT(qos, qos)
     JSON_TO_STRUCT_STRUCT(scripts, scripts)

@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifdef LINUX
 #include <netdb.h>
 #include <sys/types.h>
@@ -200,16 +212,28 @@ mp_bool DmeRestClient::IsDmeIpValid(const mp_string& dmeIp)
         DBGLOG("Get domain: %s ip: %s.", m_domainName.c_str(), ip.c_str());
     }
 #endif
-    mp_bool isIpv4;
-    if (CIP::IsIPV4(ip)) {
-        isIpv4 = true;
-    } else if (CIP::IsIPv6(ip)) {
-        isIpv4 = false;
+
+    std::vector<mp_string> useLocalIps;
+    if (StaticConfig::IsInnerAgentMainDeploy()) {
+        mp_string agentIp;
+        if (!StaticConfig::GetAgentIp(agentIp)) {
+            COMMLOG(OS_LOG_ERROR, "Get agent ip failed.");
+            return MP_FALSE;
+        }
+        useLocalIps.push_back(agentIp);
     } else {
-        ERRLOG("ip address %s is invalid.", ip.c_str());
-        return MP_FALSE;
+        mp_bool isIpv4;
+        if (CIP::IsIPV4(ip)) {
+            isIpv4 = true;
+        } else if (CIP::IsIPv6(ip)) {
+            isIpv4 = false;
+        } else {
+            ERRLOG("ip address %s is invalid.", ip.c_str());
+            return MP_FALSE;
+        }
+        useLocalIps = isIpv4 ? m_localIpv4List : m_localIpv6List;
     }
-    std::vector<mp_string>& useLocalIps = isIpv4 ? m_localIpv4List : m_localIpv6List;
+
     for (auto localIp : useLocalIps) {
         if (CSocket::CheckHostLinkStatus(localIp, ip, m_dmePort) == MP_SUCCESS) {
             INFOLOG("Local ip %s link dst ip %s success.", dmeIp.c_str(), ip.c_str());

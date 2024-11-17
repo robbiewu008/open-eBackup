@@ -1,9 +1,23 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef _AGENTCLI_CHECK_CONNECT_STATUS_H_
 #define _AGENTCLI_CHECK_CONNECT_STATUS_H_
 
 #include <atomic>
 #include <vector>
 #include <thread>
+#include <atomic>
+#include <functional>
 #include "message/curlclient/CurlHttpClient.h"
 #include "common/Defines.h"
 #include "common/JsonUtils.h"
@@ -50,14 +64,13 @@ public:
     CheckConnectStatus()
     {
         m_bNeedExit = MP_FALSE;
-        m_PMIpIndex = 0;
         (mp_void) memset_s(&m_CheckConnectivityThread, sizeof(m_CheckConnectivityThread),
             0, sizeof(m_CheckConnectivityThread));
     }
     ~CheckConnectStatus();
     mp_int32 Init();
     mp_int32 UpdateVsphereConnectivity();
-    mp_void CheckVsphereConnectivity(mp_uint64 &lastTime);
+    mp_void CheckVsphereConnectivity();
     mp_bool GetExitFlag()
     {
         return m_bNeedExit;
@@ -85,7 +98,6 @@ private:
     mp_int32 GetvSphereJsonValue(mp_int32 page_no, const mp_string& requrl, std::vector<Json::Value>& vecJsonValue);
     mp_int32 DoSendRequestClusterNodes(const mp_string& requrl, std::vector<Json::Value>& vecJsonValue);
     // 解析DME IP和服务器类型
-    mp_int32 GetDMEIp();
     mp_int32 GetUpdateInterval(mp_uint32& intervaltime);
     mp_int32 GetPMIPandPort();
 #ifdef LINUX
@@ -94,7 +106,7 @@ private:
     mp_void  ConfigDpcFlowControl();
 #endif
     mp_int32 UpdatePMInfo();
-    mp_int32 UpdatePMInfo(Json::Value registerReq, mp_int32 startIndex, mp_int32 endIndex);
+    mp_int32 UpdatePMInfo(Json::Value registerReq);
     mp_int32 InitRequest(const mp_string& reqmethod, const mp_string& requrl, const mp_string& ip, HttpRequest& req);
     mp_int32 InitDeleteHostReq(const mp_string hostid, HttpRequest& req);
     mp_int32 BuildPMBody(Json::Value& PMMsg);
@@ -156,7 +168,7 @@ private:
     };
 
     static mp_void* CheckConnectivitySub(CheckConnectStatus* pthis, std::vector<pFuncGetComList>& getComList);
-    mp_int32 CheckCompnetConnect(Componet& comp, const mp_string& MP_PORT);
+    mp_int32 CheckComponentConnect(Componet& comp, const mp_string& MP_PORT);
     std::vector<Componet> m_ComList;
     static CheckConnectStatus m_Instance;
     // 发送check请求线程id
@@ -170,7 +182,6 @@ private:
     mp_string m_AgentIp;
     mp_string m_AgentPort;
     mp_string m_PMIp;
-    mp_int32 m_PMIpIndex;
     mp_string m_PMPort;
     mp_string m_outputStr;
     mp_bool m_isDpcNode;
@@ -181,6 +192,8 @@ private:
     int m_heartbeatToPmInterval { 300 };
     int m_resourceUsageToPmInterval { 3000 };
     int m_sysCpuMemRestPrint { 300 };
+    std::vector<std::string> m_connectedPMInLastRound;
+    mp_uint64 m_lastUpdateVsphereConnectivityTime = 0;
 };
 
 #endif

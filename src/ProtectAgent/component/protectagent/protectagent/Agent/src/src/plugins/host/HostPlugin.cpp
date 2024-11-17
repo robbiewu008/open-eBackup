@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "plugins/host/HostPlugin.h"
 #include <sstream>
 #include <tuple>
@@ -279,6 +291,7 @@ mp_void HostPlugin::InitApi()
     REGISTER_ACTION(REST_HOST_UPDATE_VCENTER_INFO, REST_URL_METHOD_GET, &HostPlugin::UpdateLinksInfo);
     REGISTER_ACTION(REST_HOST_QUERY_MODIFY_STATUS, REST_URL_METHOD_GET, &HostPlugin::QueryModifyStatus);
     REGISTER_ACTION(REST_HOST_V1_MODIFY_PLUGINS, REST_URL_METHOD_POST, &HostPlugin::ModifyPlugin);
+    REGISTER_ACTION(REST_HOST_V1_COMPRESS_TOOL, REST_URL_METHOD_GET, &HostPlugin::CheckCompressTool);
 
     REGISTER_ACTION(REST_HOST_PUSH_CERT_AGENT, REST_URL_METHOD_POST, &HostPlugin::PushNewCert);
     REGISTER_ACTION(REST_HOST_UPDATE_CERT_AGENT, REST_URL_METHOD_POST, &HostPlugin::RequestUpdateCert);
@@ -640,6 +653,8 @@ EXTER_ATTACK mp_int32 HostPlugin::UpgradeAgent(CRequestMsg& req, CResponseMsg& r
     CHECK_FAIL_EX(CheckParamStringEnd(agentName, 0, MAX_STRING_LEN));
     GET_JSON_STRING(jReqBody, REST_PARAM_AGENT_UPGRADE_JOBID, upgradeJobId);
     CHECK_FAIL_EX(CheckParamStringEnd(upgradeJobId, 0, MAX_STRING_LEN));
+    GET_JSON_STRING(jReqBody, REST_PARAM_AGENT_PACKAGE_TYPE, compressType);
+    CHECK_FAIL_EX(CheckParamStringEnd(compressType, 0, MAX_STRING_LEN));
     GET_JSON_INT32(jReqBody, REST_PARAM_AGENT_UPGRADE_PACKAGESIZE, m_newPackageSize);
     CHECK_FAIL_EX(CheckParamInteger32(m_newPackageSize, 1, MAX_SINGED_INTEGER_VALUE));
 
@@ -651,12 +666,14 @@ EXTER_ATTACK mp_int32 HostPlugin::UpgradeAgent(CRequestMsg& req, CResponseMsg& r
     mp_int32 iRet = CIPCFile::WriteFile(strUpdateTmpFile, vecReqInfo);
     if (MP_SUCCESS != iRet) {
         COMMLOG(OS_LOG_ERROR, "Write upgrade info to file failed.");
+        return iRet;
     }
 
     // 将更新状态置为中间状态: 0-失败 1-成功 2-中间状态 8-异常状态 9-初始状态
     iRet = UpgradeHandle::UpdateUpgradeStatus(UPGRADE_STATUS::UPGRADE_STATUS_INTERMEDIATE);
     if (iRet != MP_SUCCESS) {
         COMMLOG(OS_LOG_ERROR, "Set value into testcfg.tmp file failed.");
+        return iRet;
     }
 
     // 创建异步处理更新流程的线程
@@ -667,6 +684,7 @@ EXTER_ATTACK mp_int32 HostPlugin::UpgradeAgent(CRequestMsg& req, CResponseMsg& r
     iRet = CMpThread::Create(&m_upgradThread, UpgradeHandle::UpgradeAgentHandle, this);
     if (iRet != MP_SUCCESS) {
         COMMLOG(OS_LOG_ERROR, "Create thread failed, iRet = %d.", iRet);
+        return iRet;
     }
     
     Json::Value& jRspBody = rsp.GetJsonValueRef();
@@ -761,6 +779,33 @@ EXTER_ATTACK mp_int32 HostPlugin::CheckConnectPmToAgent(CRequestMsg& req, CRespo
     return MP_SUCCESS;
 }
 
+EXTER_ATTACK mp_int32 HostPlugin::CheckCompressTool(CRequestMsg& req, CResponseMsg& rsp)
+{
+#ifdef WIN32
+    return MP_FAILED;
+#endif
+    INFOLOG("Start to check supported compress tool.");
+    Json::Value& jValueRsp = rsp.GetJsonValueRef();
+    mp_string strCmd = "command -v tar";
+    std::vector<mp_string> vecRes;
+    mp_int32 iRet = CSystemExec::ExecSystemWithEcho(strCmd, vecRes);
+    if (iRet != MP_SUCCESS) {
+        WARNLOG("The system  not support tar tool.");
+        jValueRsp["isSupportTar"] = "false";
+    } else {
+        jValueRsp["isSupportTar"] = "true";
+    }
+    strCmd = "command -v unzip";
+    iRet = CSystemExec::ExecSystemWithEcho(strCmd, vecRes);
+    if (iRet != MP_SUCCESS) {
+        WARNLOG("The system  not support unzip tool.");
+        jValueRsp["isSupportUnzip"] = "false";
+    } else {
+        jValueRsp["isSupportUnzip"] = "true";
+    }
+    return MP_SUCCESS;
+}
+
 /* ------------------------------------------------------------
 Description  : 清理证书文件
 Input        : req -- 请求消息
@@ -834,6 +879,8 @@ mp_int32 HostPlugin::ModifyPlugin(CRequestMsg& req, CResponseMsg& rsp)
     CHECK_FAIL_EX(CheckParamStringEnd(agentName, 0, MAX_STRING_LEN));
     GET_JSON_STRING(jReqBody, REST_PARAM_AGENT_UPGRADE_JOBID, modifyJobId);
     CHECK_FAIL_EX(CheckParamStringEnd(modifyJobId, 0, MAX_STRING_LEN));
+    GET_JSON_STRING(jReqBody, REST_PARAM_AGENT_PACKAGE_TYPE, compressType);
+    CHECK_FAIL_EX(CheckParamStringEnd(compressType, 0, MAX_STRING_LEN));
     GET_JSON_INT32(jReqBody, REST_PARAM_AGENT_UPGRADE_PACKAGESIZE, m_newPackageSize);
     CHECK_FAIL_EX(CheckParamInteger32(m_newPackageSize, 1, MAX_SINGED_INTEGER_VALUE));
 
@@ -1705,6 +1752,25 @@ mp_int32 HostPlugin::VerifySnmp(CRequestMsg& req, CResponseMsg& rsp)
 }
 
 /* ------------------------------------------------------------
+Description  : 确认DME合法IP地址
+Input        : dmeIp -- IP地址
+Output       : int32_t -- 响应消息
+Return       : MP_SUCCESS -- 成功
+               MP_FAILED -- 非法IP
+Create By    : feisijia 30044274
+------------------------------------------------------------- */
+mp_int32 HostPlugin::CheckValidDMEIpAddr(const mp_string& dmeIp)
+{
+    if (!strcmp(dmeIp.c_str(), SNMP_CONNECT_DME_INVALID_IPV4.c_str())) {
+        return MP_FAILED;
+    }
+    if (!strcmp(dmeIp.c_str(), SNMP_CONNECT_DME_INVALID_IPV6.c_str())) {
+        return MP_FAILED;
+    }
+    return MP_SUCCESS;
+}
+
+/* ------------------------------------------------------------
 Description  : ͨ通知连接DME business server
 Input        : req -- 请求消息
 Output       : rsp -- 响应消息
@@ -1722,6 +1788,7 @@ EXTER_ATTACK mp_int32 HostPlugin::ConnectDME(CRequestMsg& req, CResponseMsg& rsp
     GET_JSON_INT32(jv, SNMP_CONNECT_DME_TYPE, dmeType);
     GET_JSON_STRING(jv, SNMP_CONNECT_DME_IP, dmeIP);
     CHECK_FAIL_EX(CheckParamStringIsIP(dmeIP));
+    CHECK_FAIL_EX(CheckValidDMEIpAddr(dmeIP));
     GET_JSON_UINT32(jv, SNMP_CONNECT_DME_PORT, dmePort);
     CHECK_FAIL_EX(CheckParamInteger32(dmePort, 0, HOST_PLUGIN_NUM_65535));
 
@@ -1898,6 +1965,12 @@ EXTER_ATTACK mp_int32 HostPlugin::CleanAgentExportedLog(CRequestMsg& req, CRespo
     const Json::Value& jv = req.GetMsgBody().GetJsonValueRef();
     mp_string collectId;
     GET_JSON_STRING(jv, REST_PARAM_HOST_LOG_EXPORT_ID, collectId);
+    CHECK_FAIL_EX(CheckPathTraversal(collectId));
+    if (!CheckParamValid(collectId)) {
+        COMMLOG(OS_LOG_ERROR, "Check CleanAgentExportedLog param valid failed, collectId(%s).", collectId.c_str());
+        rsp.SetHttpStatus(SC_BAD_REQUEST);
+        return ERROR_COMMON_INVALID_PARAM;
+    }
     return m_host.CleanLogPackage(collectId);
 }
 

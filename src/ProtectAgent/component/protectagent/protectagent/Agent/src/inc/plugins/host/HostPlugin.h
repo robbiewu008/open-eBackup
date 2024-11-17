@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef __AGENT_HOST_PLUGIN_H__
 #define __AGENT_HOST_PLUGIN_H__
 
@@ -46,6 +58,7 @@ static const mp_string REST_PARAM_AGENT_UPGRADE_PACKAGESIZE = "newPackageSize";
 static const mp_string REST_PARAM_AGENT_UPGRADE_REVSTATUS = "revStatus";
 static const mp_string REST_PARAM_AGENT_UPGRADE_STATUS = "upgradeStatus";
 static const mp_string REST_PARAM_AGENT_UPGRADE_JOBID = "jobId";
+static const mp_string REST_PARAM_AGENT_PACKAGE_TYPE = "packageType";
 static const mp_string REST_PARAM_AGENT_MODFIY_STATUS = "modifyStatus";
 
 static const mp_string REST_PARAM_AGENT_ERROR_CODE = "errorCode";
@@ -77,6 +90,10 @@ static const mp_string SNMP_CONNECT_DME_IP = "dmeIP";
 static const mp_string SNMP_CONNECT_DME_PORT = "dmePort";
 
 static const mp_string ADD_CONTROLLER_RESPONDS = "revStatus";
+
+static const mp_string SNMP_CONNECT_DME_INVALID_IPV4 = "127.0.0.1";
+static const mp_string SNMP_CONNECT_DME_INVALID_IPV6 = ":::1";
+
 class HostPlugin : public CServicePlugin {
 public:
     HostPlugin();
@@ -90,6 +107,12 @@ public:
     {
         return upgradeJobId;
     }
+
+    mp_string GetCompressType() const
+    {
+        return compressType;
+    }
+
     mp_string GetModifyJobId() const
     {
         return modifyJobId;
@@ -162,6 +185,7 @@ private:
     EXTER_ATTACK mp_int32 UpdateLinksInfo(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 NotifyManagerServer(CRequestMsg& reqMsg, CResponseMsg& rspMsg);
     EXTER_ATTACK mp_int32 ModifyPlugin(CRequestMsg& req, CResponseMsg& rsp);
+    EXTER_ATTACK mp_int32 CheckCompressTool(CRequestMsg& req, CResponseMsg& rsp);
     mp_int32 CheckExportLogParams(const mp_string &strLogId, const mp_string &strMaxSize, CResponseMsg& rsp);
 
     mp_string GetLogName()
@@ -172,7 +196,7 @@ private:
     EXTER_ATTACK mp_int32 DeviceOnline(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 DeviceBatchOnline(CRequestMsg& req, CResponseMsg& rsp);
 #endif
-
+    mp_int32 CheckValidDMEIpAddr(const mp_string& dmeIp);
     EXTER_ATTACK mp_int32 ConnectDME(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 GetInitiators(CDppMessage& reqMsg, CDppMessage& rspMsg);
     EXTER_ATTACK mp_int32 ScanDiskByDpp(CDppMessage& reqMsg, CDppMessage& rspMsg);
@@ -182,6 +206,7 @@ private:
     mp_string modifyJobId;
     mp_string updateCertJobId;
     mp_int32 m_newPackageSize;
+    mp_string compressType;
 };
 
 #endif  // __AGENT_HOST_PLUGIN_H__
