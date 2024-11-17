@@ -12,7 +12,6 @@
 #
 
 
-
 class NumberConst:
     NEGATIVE_ONE = -1
     ZERO = 0
@@ -45,3 +44,5 @@ class NumberConst:
     NINETY_FOUR = 94
     NINETY_NINE = 99
     HUNDRED = 100
+    ONE_THOUSAND_TWO_HUNDRED = 1200
+    ZERO_POINT_ONE = 0.1

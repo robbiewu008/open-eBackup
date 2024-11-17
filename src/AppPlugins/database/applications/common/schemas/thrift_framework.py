@@ -16,7 +16,7 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
-from common.schemas.thrift_base_data_type import StorageRepository, JobPermission
+from common.schemas.thrift_base_data_type import StorageRepository, JobPermission, Copy
 
 
 class ResourceScope(int, Enum):
@@ -78,14 +78,21 @@ class JobLogLevel(int, Enum):
     TASK_LOG_SERIOUS_WARN = 4
 
 
+class DBLogLevel(int, Enum):
+    INFO = 1
+    WARN = 2
+    ERROR = 3
+    SERIOUS_WARN = 4
+
+
 class LogDetail(BaseModel):
-    level: JobLogLevel = Field(default=None, description='JobLogLevel')
-    description: str = Field(default=None, description='description')
-    params: List[str] = Field(default=None, description='params')
-    timestamp: int = Field(default=None, description='timestamp')
-    error_code: int = Field(default=None, description='errorCode', alias='errorCode')
-    error_params: List[str] = Field(default=None, description='errorParams', alias='errorParams')
-    additional_desc: List[str] = Field(default=None, description='additionalDesc', alias='additionalDesc')
+    log_info: str = Field(None, description="", alias="logInfo")
+    log_info_param: list = Field(None, description="", alias="logInfoParam")
+    log_timestamp: int = Field(None, description="", alias="logTimestamp")
+    log_detail: int = Field(None, description="", alias="logDetail")
+    log_detail_param: list = Field(None, description="", alias="logDetailParam")
+    log_detail_info: list = Field(None, description="", alias="logDetailInfo")
+    log_level: DBLogLevel = Field(None, description="", alias="logLevel")
 
 
 class CheckPoint(BaseModel):
@@ -93,9 +100,9 @@ class CheckPoint(BaseModel):
 
 
 class SubJobDetails(BaseModel):
-    job_id: str = Field(default=None, description='jobId', alias='jobId')
-    sub_job_id: str = Field(default=None, description='subJobId', alias='subJobId')
-    job_status: SubJobStatus = Field(default=None, description='jobStatus', alias='jobStatus')
+    task_id: str = Field(default=None, description='主任务ID', alias='taskId')
+    sub_task_id: str = Field(default=None, description='子任务ID', alias='subTaskId')
+    task_status: SubJobStatus = Field(default=None, description='任务状态', alias='taskStatus')
     additional_status: str = Field(default=None, description='additionalStatus', alias='additionalStatus')
     log_detail: List[LogDetail] = Field(default=None, description='logDetail', alias='logDetail')
     progress: int = Field(default=None, description='progress')
@@ -108,3 +115,11 @@ class PrepareRepositoryByPlugin(BaseModel):
     repository: List[StorageRepository] = Field(default=None, description='repository')
     permission: JobPermission = Field(default=None, description='permission')
     extend_info: int = Field(default=None, description='extendInfo', alias='extendInfo')
+
+
+class ReportCopyInfo(BaseModel):
+    """
+    用于插件主动上报副本信息的结构
+    """
+    job_id: str = Field(None, alias="jobId")
+    copy_info: Copy = Field(None, alias="copy")

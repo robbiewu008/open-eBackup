@@ -65,6 +65,7 @@ class RestoreProgress(BaseModel):
 class ClupCluster(BaseModel):
     cluster_id: str = Field(default=None, description='集群id')
     cluster_data: str = Field(default=None, description='集群详情')
+    cluster_state: str = Field(default=None, description='集群状态')
 
 
 class ClupDb(BaseModel):
@@ -74,6 +75,7 @@ class ClupDb(BaseModel):
     port: str = Field(default=None, description='端口')
     pg_bin_path: str = Field(default=None, description='PG软件目录')
     version: str = Field(default=None, description='版本')
+    os_user: str = Field(default=None, description='操作系统用户')
 
 
 class ClupClusterNodeInfo(BaseModel):
@@ -99,4 +101,4 @@ class QueryClupClusterResponse(BaseModel):
     sub_type: str = Field(default=None, description='resource sub type', alias='subType')
     role: RoleType = Field(default=3, description='env role')
     nodes: List[ClupClusterNodeInfo] = Field(default=[], description='node info')
-    extend_info: dict = Field(None, description='extend info', alias='extendInfo')
+    extend_info: dict = Field({}, description='extend info', alias='extendInfo')

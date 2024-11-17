@@ -74,6 +74,8 @@ class GaussCluster:
         """
         if not self.nodes:
             self.get_cluster_nodes()
+        if SubApplication.CMDB in self.db_version:
+            return DeployType.SHARDING_TYPE.value if len(self.nodes) > 1 else DeployType.SINGLE_TYPE.value
         if self.nodes:
             return DeployType.CLUSTER_TYPE.value if len(self.nodes) > 1 else DeployType.SINGLE_TYPE.value
         return DeployType.INVALID_TYPE.value
@@ -170,7 +172,7 @@ class GaussCluster:
         db_path = self.get_instance_data_path()
         ret, cont = self.cmd_obj.get_control_data(db_path)
         if not ret:
-            logger.error("Failed execute cmd to get system identifier")
+            logger.error(f"Failed execute cmd to get system identifier")
             return ""
         system_identifier = re.search("system identifier:\s+(\d+)", cont)
         if not system_identifier:
@@ -318,6 +320,11 @@ class GaussCluster:
         detail_cont = self._get_gs_status_detail()
         if detail_cont:
             self._parse_detail_status(detail_cont)
+        if not self.nodes:
+            self.get_cluster_nodes()
+        if SubApplication.CMDB in self.db_version and len(self.nodes) > 1:
+            logger.info(f"CMDB distribute no need to get other info")
+            return
         all_status_info = self._get_gs_status_all()
         if all_status_info:
             self._parse_status_all_info(all_status_info)
@@ -511,6 +518,8 @@ class GaussCluster:
     def _get_sync_state(self):
         if not self.nodes:
             self.get_cluster_nodes()
+        if SubApplication.CMDB in self.db_version and len(self.nodes) > 1:
+            return SyncMode.SYNC
         default_sync_state = SyncMode.SINGER
         data_path = self.get_instance_data_path()
         ret, sync_state_cont = self.cmd_obj.get_sync_state(data_path)

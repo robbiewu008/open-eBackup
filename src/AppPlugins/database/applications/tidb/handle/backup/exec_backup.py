@@ -27,13 +27,14 @@ from common.common import execute_cmd, execute_cmd_list, execute_cmd_with_expect
     output_execution_result_ex, output_result_file
 from common.common_models import LogDetail, SubJobDetails, SubJobModel
 from common.const import BackupTypeEnum, CMDResult, CMDResultInt, CopyDataTypeEnum, DBLogLevel, ExecuteResultEnum, \
-    ParamConstant, RepositoryDataTypeEnum, RpcParamKey, SubJobStatusEnum
+    ParamConstant, RepositoryDataTypeEnum, RpcParamKey, SubJobStatusEnum, SubJobTypeEnum, SubJobPriorityEnum, \
+    SubJobPolicyEnum
 from common.file_common import change_mod, change_owner_by_name, change_path_permission, create_dir_recursive
 from common.util.checkout_user_utils import get_path_owner
 from common.util.scanner_utils import scan_dir_size
 from goldendb.handle.backup.parse_backup_params import write_file
 from tidb.common.const import BackupGranEnum, ClusterRequiredHost, ErrorCode, LastCopyType, SqliteServiceField, \
-    SubJobPolicy, SubJobPriorityEnum, SubJobType, TiDBConst, TiDBDataBaseFilter, TidbSubJobName, TiDBTaskType
+    TiDBConst, TiDBDataBaseFilter, TidbSubJobName, TiDBTaskType
 from tidb.common.safe_get_information import ResourceParam
 from tidb.common.tidb_common import convert_tso_time_to_ts, create_file_append, drop_db, exec_rc_tool_cmd, \
     get_backup_tso_validate, get_cluster_user, get_db, get_err_msg, get_log_path, get_log_stat_info, \
@@ -168,7 +169,7 @@ class BackUp:
         output_execution_result_ex(deploy_user_file, {"deploy_user": deploy_user})
 
     def build_sub_job(self, job_priority, policy, job_name, node_id, job_info):
-        return SubJobModel(jobId=self.job_id, jobType=SubJobType.BUSINESS_SUB_JOB.value, execNodeId=node_id,
+        return SubJobModel(jobId=self.job_id, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB.value, execNodeId=node_id,
                            jobPriority=job_priority, jobName=job_name, policy=policy, jobInfo=job_info,
                            ignoreFailed=False).dict(by_alias=True)
 
@@ -198,11 +199,12 @@ class BackUp:
         sub_job_array = []
         up_job_info = ''
         # 添加子任务1, 记录tiup节点deploy user
-        sub_job_tiup_deploy_user = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_1, SubJobPolicy.FIXED_NODE.value,
+        sub_job_tiup_deploy_user = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_1,
+                                                      SubJobPolicyEnum.FIXED_NODE.value,
                                                       TidbSubJobName.SUB_DEPLOY_USER, self._tiup_uuid, "")
         sub_job_array.append(sub_job_tiup_deploy_user)
         # 添加子任务2, 记录tiup，tikv, tiflash节点uid
-        sub_job_tiup_uid = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_2, SubJobPolicy.FIXED_NODE.value,
+        sub_job_tiup_uid = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_2, SubJobPolicyEnum.FIXED_NODE.value,
                                               TidbSubJobName.SUB_RECORD_UID, self._tiup_uuid, "")
         sub_job_array.append(sub_job_tiup_uid)
         kvs = self._cluster_info_.tikv_nodes
@@ -211,11 +213,11 @@ class BackUp:
         self.add_sub_job_to_node(sub_job_array, flashes, SubJobPriorityEnum.JOB_PRIORITY_2,
                                  TidbSubJobName.SUB_RECORD_UID)
         # 添加子任务3, 检查tikv, tiflash节点uid
-        sub_job_check_kf = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_3, SubJobPolicy.FIXED_NODE.value,
+        sub_job_check_kf = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_3, SubJobPolicyEnum.FIXED_NODE.value,
                                               TidbSubJobName.SUB_CHECK_UID, self._tiup_uuid, "")
         sub_job_array.append(sub_job_check_kf)
         # 添加子任务4, up节查日志备份状态，时间
-        sub_job_up_log = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_4, SubJobPolicy.FIXED_NODE.value,
+        sub_job_up_log = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_4, SubJobPolicyEnum.FIXED_NODE.value,
                                             TidbSubJobName.SUB_UP_LOG, self._tiup_uuid, up_job_info)
         sub_job_array.append(sub_job_up_log)
         # 添加子任务5, tikv, tiflash节点预处理，检查日志备份路径，新建数据备份路径
@@ -233,11 +235,11 @@ class BackUp:
         file_path = os.path.join(ParamConstant.RESULT_PATH, f"result{self.pid}")
         sub_job_array = []
         # 添加子任务1, up节查库表信息, 查询集群用户名
-        sub_job_check = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_1, SubJobPolicy.FIXED_NODE.value,
+        sub_job_check = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_1, SubJobPolicyEnum.FIXED_NODE.value,
                                            TidbSubJobName.SUB_CHECK_UP, self._tiup_uuid, "")
         sub_job_array.append(sub_job_check)
         # 添加子任务2, 记录tiup，tikv, tiflash节点uid
-        sub_job_tiup = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_2, SubJobPolicy.FIXED_NODE.value,
+        sub_job_tiup = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_2, SubJobPolicyEnum.FIXED_NODE.value,
                                           TidbSubJobName.SUB_RECORD_UID, self._tiup_uuid, "")
         sub_job_array.append(sub_job_tiup)
         kvs = self._cluster_info_.tikv_nodes
@@ -246,21 +248,21 @@ class BackUp:
         self.add_sub_job_to_node(sub_job_array, flashes, SubJobPriorityEnum.JOB_PRIORITY_2,
                                  TidbSubJobName.SUB_RECORD_UID)
         # 添加子任务3, 检查tikv, tiflash节点uid
-        sub_job_check_kf = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_3, SubJobPolicy.FIXED_NODE.value,
+        sub_job_check_kf = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_3, SubJobPolicyEnum.FIXED_NODE.value,
                                               TidbSubJobName.SUB_CHECK_UID, self._tiup_uuid, "")
         sub_job_array.append(sub_job_check_kf)
         # 添加子任务4, tikv, tiflash, tiup节点新建数据备份路径
         self.add_sub_job_to_node(sub_job_array, kvs, SubJobPriorityEnum.JOB_PRIORITY_4, TidbSubJobName.SUB_CREATE)
         self.add_sub_job_to_node(sub_job_array, flashes, SubJobPriorityEnum.JOB_PRIORITY_4, TidbSubJobName.SUB_CREATE)
-        sub_job_create = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_4, SubJobPolicy.FIXED_NODE.value,
+        sub_job_create = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_4, SubJobPolicyEnum.FIXED_NODE.value,
                                             TidbSubJobName.SUB_CREATE, self._tiup_uuid, "")
         sub_job_array.append(sub_job_create)
         # 添加子任务5, tiup节点执行数据备份
-        sub_job_exec = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_5, SubJobPolicy.FIXED_NODE.value,
+        sub_job_exec = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_5, SubJobPolicyEnum.FIXED_NODE.value,
                                           TidbSubJobName.SUB_EXEC, self._tiup_uuid, "")
         sub_job_array.append(sub_job_exec)
         # 添加子任务6, tiup记录数据备份结果
-        sub_job_record = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_6, SubJobPolicy.FIXED_NODE.value,
+        sub_job_record = self.build_sub_job(SubJobPriorityEnum.JOB_PRIORITY_6, SubJobPolicyEnum.FIXED_NODE.value,
                                             TidbSubJobName.SUB_RECORD, self._tiup_uuid, "")
         sub_job_array.append(sub_job_record)
         output_execution_result_ex(file_path, sub_job_array)
@@ -271,7 +273,7 @@ class BackUp:
     def add_sub_job_to_node(self, sub_job_array, nodes, priority, sub_job_name):
         for node in nodes:
             uuid = node['hostManagerResourceUuid']
-            sub_job = self.build_sub_job(priority, SubJobPolicy.FIXED_NODE.value, sub_job_name, uuid, uuid)
+            sub_job = self.build_sub_job(priority, SubJobPolicyEnum.FIXED_NODE.value, sub_job_name, uuid, uuid)
             sub_job_array.append(sub_job)
 
     def exec_sub_jobs(self):

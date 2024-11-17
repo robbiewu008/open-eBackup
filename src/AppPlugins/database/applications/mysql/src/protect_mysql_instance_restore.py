@@ -14,7 +14,6 @@
 import os
 import uuid
 
-from common.cleaner import clear
 from common.common import exter_attack, check_command_injection_exclude_quote, is_clone_file_system
 from common.const import SubJobStatusEnum
 from common.file_common import get_user_info, exec_lchown_dir_recursively
@@ -22,12 +21,10 @@ from common.util.check_utils import check_repo_path
 from common.util.cmd_utils import cmd_format
 from common.util.exec_utils import su_exec_rm_cmd, exec_mkdir_cmd, exec_cat_cmd, exec_mv_cmd, exec_cp_cmd
 from mysql import log
-from mysql.src.common.constant import ExecCmdResult, SystemServiceType
 from mysql.src.common.constant import MySQLStrConstant, RestorePath, MySQLRestoreStep, MysqlBackupToolName
 from mysql.src.common.error_code import MySQLErrorCode
 from mysql.src.common.execute_cmd import check_delete_mysql_bin_log_file, \
     is_certificate_file
-from mysql.src.common.execute_cmd import safe_get_environ
 from mysql.src.protect_mysql_base import RestoreType
 from mysql.src.protect_mysql_restore_base import MysqlRestoreBase
 from mysql.src.protect_mysql_restore_common import MysqlRestoreCommon, G_NEED_PERPARE_MYSQL_TYPE
@@ -102,32 +99,23 @@ class MysqlInstanceRestore(MysqlRestoreBase):
         if not self.delete_target_log_bin_path(copy_path, mysql_data_dir):
             log.error("Delete target log bin file failed.")
             return False
-        passwd_str = ""
-        try:
-            channel_number = self.get_channel_number()
-            tool_name = self.get_backup_tool_name()
-            if tool_name == MysqlBackupToolName.MARIADBBACKUP:
-                passwd_str = f"={safe_get_environ(self._mysql_pwd)}"
-            elif restore_type in G_NEED_PERPARE_MYSQL_TYPE:
-                log.info(f"Start prepare. pid:{self._p_id} jobId:{self._job_id}")
-                # mysql 5.7 8.0需要再恢复前执行prepare做一次未提交事务的回滚
-                prepare_param = cmd_format("--prepare {} --parallel={} --target-dir={}",
-                                           self._restore_comm.get_force_recover_str(), channel_number, copy_path)
-                ret, output = self.exec_xtrabackup_cmd(prepare_param, tool_name)
-                if not ret:
-                    log.error(f"Exec prepare cmd failed. output:{output} pid:{self._p_id} jobId:{self._job_id}")
-                    return False
-            restore_way = "--copy-back" if is_clone_file_system(self.get_json_param()) else "--move-back"
-            restore_cmd_param = cmd_format("--host={} --user={} --password'{}' {} --port={} --parallel={} "
-                                           "--datadir={} {} --target-dir={} ",
-                                           self._mysql_ip, self._mysql_user, passwd_str,
-                                           self._restore_comm.get_force_recover_str(), self._mysql_port, channel_number,
-                                           mysql_data_dir, restore_way, copy_path)
-
-            restore_cmd_param_undo = self.init_restore_cmd_param_undo(restore_cmd_param)
-            ret, output = self.exec_xtrabackup_cmd(restore_cmd_param_undo, tool_name, self._mysql_pwd)
-        finally:
-            clear(passwd_str)
+        channel_number = self.get_channel_number()
+        tool_name = self.get_backup_tool_name()
+        if tool_name != MysqlBackupToolName.MARIADBBACKUP and restore_type in G_NEED_PERPARE_MYSQL_TYPE:
+            log.info(f"Start prepare. pid:{self._p_id} jobId:{self._job_id}")
+            # mysql 5.7 8.0需要再恢复前执行prepare做一次未提交事务的回滚
+            prepare_param = cmd_format("--prepare {} --parallel={} --target-dir={}",
+                                       self._restore_comm.get_force_recover_str(), channel_number, copy_path)
+            ret, output = self.exec_xtrabackup_cmd(prepare_param, tool_name)
+            if not ret:
+                log.error(f"Exec prepare cmd failed. output:{output} pid:{self._p_id} jobId:{self._job_id}")
+                return False
+        restore_way = "--copy-back" if is_clone_file_system(self.get_json_param()) else "--move-back"
+        restore_cmd_param = cmd_format(" {} --parallel={} --datadir={} {} --target-dir={}",
+                                       self._restore_comm.get_force_recover_str(), channel_number,
+                                       mysql_data_dir, restore_way, copy_path)
+        restore_cmd_param_undo = self.init_restore_cmd_param_undo(restore_cmd_param)
+        ret, output = self.exec_xtrabackup_cmd(restore_cmd_param_undo, tool_name)
         if not ret:
             log.error(f"Exec restore cmd failed. pid:{self._p_id} jobId:{self._job_id}")
             return False
@@ -177,10 +165,8 @@ class MysqlInstanceRestore(MysqlRestoreBase):
         @param mysql_data_dir: data目录
         @return:True 删除成功 False 删除失败
         """
-        ret, mysql_log_bin_index_path = self.get_mysql_log_index_path()
-        if not ret:
-            return False
-        if mysql_data_dir in mysql_log_bin_index_path:
+        mysql_binlog_dir = self.get_restore_binlog_dir()
+        if mysql_data_dir in mysql_binlog_dir:
             log.info("The mysql log bin file is in mysql data dir.")
             return True
         # 拿到副本中将要移除的文件列表
@@ -190,7 +176,7 @@ class MysqlInstanceRestore(MysqlRestoreBase):
             return True
         # 删除目标实例的bin log
         for file in remove_bin_log_list:
-            target_log_bin_file = os.path.join(mysql_log_bin_index_path[:mysql_log_bin_index_path.rfind('/')], file)
+            target_log_bin_file = os.path.join(mysql_binlog_dir, file)
             if (check_delete_mysql_bin_log_file(target_log_bin_file) and
                     not su_exec_rm_cmd(target_log_bin_file, check_white_black_list_flag=False)):
                 log.error(f"Rm file failed. path:[{target_log_bin_file}]. pid:{self._p_id} jobId:{self._job_id}")
@@ -230,22 +216,15 @@ class MysqlInstanceRestore(MysqlRestoreBase):
         if not MysqlUndoService.change_undo_files_permission(self._job_id, self.my_cnf_path):
             return False
         log.info(f"start change permission,{mysql_data_dir}")
-        ret, mysql_log_bin_dir = self.get_mysql_log_index_path()
-        # 两种场景，是一个mysql-bin.index这种标识文件；
-        # 或者是/data/mysql/binlog/mysql-bin.index这种指定的文件
-        log.info(f"ret {ret}, mysql_log_bin_dir:{mysql_log_bin_dir}")
-        if mysql_log_bin_dir.find("/") != -1:
-            log.info(f"mysql log bin index path is full path.")
-        else:
-            mysql_log_bin_dir = MysqlUtils.get_data_dir_by_config_file(self.my_cnf_path) + "/" + mysql_log_bin_dir
-        log.info(f"mysql log bin index path: {mysql_log_bin_dir}")
-        if not self.operate_chown(mysql_log_bin_dir[:mysql_log_bin_dir.rfind("/")]) or \
+        mysql_log_bin_dir = self.get_restore_binlog_dir()
+        log.info(f"mysql_log_bin_dir:{mysql_log_bin_dir}")
+        if not self.operate_chown(mysql_log_bin_dir) or \
                 not self.operate_chown(mysql_data_dir):
             return False
         if not self._restore_comm.chown_ibd_files(self.my_cnf_path):
             return False
         if not MysqlRestoreCommon.operate_chcon_contest(mysql_data_dir) or \
-                not MysqlRestoreCommon.operate_chcon_contest(mysql_log_bin_dir[:mysql_log_bin_dir.rfind("/")]):
+                not MysqlRestoreCommon.operate_chcon_contest(mysql_log_bin_dir):
             return False
         if not self._restore_comm.operate_chcon_contest_ibd():
             return False
@@ -279,7 +258,7 @@ class MysqlInstanceRestore(MysqlRestoreBase):
         if str(undo_size) != str(cnf_undo_size):
             log.error("copy undo size not equals to cnf undo size")
             self._error_code = MySQLErrorCode.DIFF_INNODB_UNDO_TABLESPACES
-            self._log_detail_params = [str(cnf_undo_size), str(undo_size)]
+            self.set_log_detail_params([str(cnf_undo_size), str(undo_size)])
             return False
         return True
 

@@ -13,13 +13,12 @@
 
 import sys
 
-from mysql import log
 from common.common import exter_attack
 from common.const import BackupTypeEnum, SubJobStatusEnum, JobData
 from common.parse_parafile import ParamFileUtil
 from common.util.check_utils import is_valid_id
-from mysql.src.common.constant import MySQLProgressFileType, MySQLExecPower, MySQLJsonConstant, \
-    MySQLCmdStr, MySQLClusterType
+from mysql import log
+from mysql.src.common.constant import MySQLProgressFileType, MySQLCmdStr, MySQLClusterType
 from mysql.src.common.error_code import BodyErr, MySQLCode
 from mysql.src.common.parse_parafile import ParseParaFile
 from mysql.src.protect_eapp_mysql_backup_full import EAppMysqlBackupFull
@@ -101,28 +100,6 @@ class MysqlBackupComm(object):
             self._mysql_object.output_action_result(tmp_code, tmp_body_err, tmp_message)
 
     @exter_attack
-    def allow_backup_in_local_node(self):
-        tmp_ret, tmp_body_err = self._mysql_object.check_allow_backup_in_local()
-        tmp_code = self.get_code(tmp_ret)
-        return tmp_code, tmp_body_err, ""
-
-    @exter_attack
-    def check_backup_job_type(self):
-        tmp_ret = self._mysql_object.check_backup_job_type()
-        tmp_body_err = 0
-        tmp_code = MySQLCode.SUCCESS.value
-        if tmp_ret:
-            tmp_body_err = BodyErr.ERR_INC_TO_FULL.value
-            tmp_code = MySQLCode.FAILED.value
-        return tmp_code, tmp_body_err, ""
-
-    @exter_attack
-    def backup_prerequisite(self):
-        tmp_ret = self._mysql_object.exec_pre_job()
-        tmp_code = self.get_code(tmp_ret)
-        return tmp_code, self.format_body_err(tmp_ret), ""
-
-    @exter_attack
     def backup(self):
         tmp_ret = self._mysql_object.exec_sub_job()
         tmp_code = self.get_code(tmp_ret)
@@ -178,19 +155,6 @@ class MysqlBackupComm(object):
         return tmp_code, self.format_body_err(tmp_ret), ""
 
     @exter_attack
-    def query_job_permission(self):
-        json_str = {
-            "user": MySQLExecPower.MYSQL_USER,
-            "fileMode": MySQLExecPower.MYSQL_FILE_MODE
-        }
-        tmp_ret = self._mysql_object.is_live_mount_job()
-        if tmp_ret:
-            extend_dict = {MySQLJsonConstant.PATH: MySQLExecPower.MYSQL_LIVEMOUNT_PATH}
-            json_str[MySQLJsonConstant.EXTENDINFO] = extend_dict
-        self._mysql_object.output_other_result(json_str)
-        return MySQLCode.SUCCESS.value, True, ""
-
-    @exter_attack
     def report_progress_live_mount(self):
         tmp_ret = self._mysql_object.report_progress_live_mount()
         tmp_code = self.get_code(tmp_ret)
@@ -235,20 +199,6 @@ if __name__ == '__main__':
     mysql_backup = MysqlBackupComm.get_instance()
 
     CMD_DICT = {
-        MySQLCmdStr.ALLOW_BACKUP_IN_LOCAL: [
-            mysql_backup.create_mysql_backuper_by_backup_type,
-            mysql_backup.allow_backup_in_local_node,
-            mysql_backup.write_action_result
-        ],
-        MySQLCmdStr.CHECK_BACKUP_JOB_TYPE: [
-            mysql_backup.create_mysql_backuper_comm,
-            mysql_backup.check_backup_job_type,
-            mysql_backup.write_action_result
-        ],
-        MySQLCmdStr.BACKUP_PER: [
-            mysql_backup.create_mysql_backuper_by_backup_type,
-            mysql_backup.backup_prerequisite
-        ],
         MySQLCmdStr.BACKUP: [
             mysql_backup.create_mysql_backuper_by_backup_type,
             mysql_backup.backup,
@@ -262,11 +212,6 @@ if __name__ == '__main__':
         MySQLCmdStr.QUERY_COPY: [
             mysql_backup.create_mysql_backuper_by_backup_type,
             mysql_backup.query_backup_copy,
-            mysql_backup.write_action_result_when_failed
-        ],
-        MySQLCmdStr.QUERY_PERMMISSION: [
-            mysql_backup.create_mysql_backuper_comm,
-            mysql_backup.query_job_permission,
             mysql_backup.write_action_result_when_failed
         ],
         MySQLCmdStr.PROGRESS_LIVE_MOUNT: [

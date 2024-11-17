@@ -115,7 +115,7 @@ class EAppMysqlBackupInc(MysqlBackupInc):
             return False
         self.check_and_del_target_dir(copy_path)
         # 副本信息记录cache仓
-        ret = self.write_copy_info(backup_time)
+        ret = self.write_copy_info(backup_time, self.get_full_copy_path())
         if not ret:
             log.error(f"Write_copy_info_failed. pid:{self._p_id} jobId:{self._job_id}")
             return False

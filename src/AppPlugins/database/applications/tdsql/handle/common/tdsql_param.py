@@ -11,6 +11,8 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
+import random
+
 from common.common import check_command_injection
 from common.const import RepositoryDataTypeEnum
 from common.parse_parafile import ParamFileUtil
@@ -35,7 +37,12 @@ class JsonParam:
         paths = param.get("job", {}).get("copies", [{}])[0].get("repositories", [{}])
         for path in paths:
             if path.get("repositoryType", -1) == RepositoryDataTypeEnum.DATA_REPOSITORY:
-                data_path = path.get("path", [""])[0]
+                path_list = path.get("path", [])
+                path_len = len(path_list)
+                if path_len > 0:
+                    index = random.randint(0, path_len - 1)
+                    log.info(f"get_data_path path_len {path_len}, index {index}")
+                    data_path = path.get("path", [""])[index]
         if not data_path or check_command_injection(data_path):
             log.error("Fail get data path!")
             return ""

@@ -10,7 +10,7 @@
 # EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-
+# coding: utf-8
 import grp
 import json
 import os
@@ -21,6 +21,7 @@ import shutil
 import stat
 import time
 import uuid
+from pathlib import Path
 
 import psutil
 
@@ -34,6 +35,7 @@ from common.logger import Logger
 from common.number_const import NumberConst
 from common.util import check_user_utils
 from common.util.backup import backup, backup_files, query_progress
+from common.util.exec_utils import exec_overwrite_file
 from common.util.exec_utils import su_exec_cmd_list, ExecFuncParam
 from common.util.scanner_utils import scan_dir_size
 from common.util.validators import ValidatorEnum
@@ -46,7 +48,7 @@ from kingbase.common.util import resource_util
 from kingbase.common.util.resource_util import check_special_character, check_black_list, \
     check_is_path_exists, check_white_list, convert_path_to_realpath, is_wal_file, \
     create_soft_link, get_parallel_process, get_db_version_id_and_system_id, \
-    delete_soft_link, get_sys_rman_configuration_item, extract_ip, get_current_repo_host
+    delete_soft_link, get_sys_rman_configuration_item, extract_ip, get_current_repo_host, get_database_timeline
 
 LOGGER = Logger().get_logger("kingbase.log")
 
@@ -91,11 +93,9 @@ class KbBackup(object):
             else:
                 self._os_user_name, self._install_path, self._data_path, self._service_ip = ("", "", "", "")
                 self._host_port = "54321"
-        kb_sql_params = (self._pid, self._install_path, self._service_ip, self._host_port,
-                         self._deploy_type)
-        self._repo_path = get_sys_rman_configuration_item(self._install_path, self._job_id)
-        self._archive_info_file_path = os.path.join(self._repo_path, KbConst.ARCHIVE_DIR_NAME,
-                                                    KbConst.KINGBASE_DIR_NAME, KbConst.ARCHIVE_INFO_FILE_NAME)
+        kb_sql_params = (self._pid, self._install_path, self._service_ip, self._host_port, self._deploy_type)
+        self._archive_info_file_path = None
+        self._repo_path = None
         self._kb_sql = ExecKbSql(kb_sql_params)
         self._backup_type = self._job_dict.get("jobParam", {}).get("backupType", -1)
         repositories_info = self.parse_repositories_path(self._job_dict.get("repositories", []))
@@ -409,7 +409,105 @@ class KbBackup(object):
         """
         检查job类型
         """
+
+        # 当此次任务是增量量备份，且之前没做过全量备份，需要增量转全量
+        def check_last_copy_is_null(backup_type):
+            # 读取last_copy_info
+            last_copy_type = [
+                CopyDataTypeEnum.FULL_COPY.value,
+                CopyDataTypeEnum.INCREMENT_COPY.value
+            ]
+            last_copy_id_path = 'last_increment_copy_id'
+            if backup_type == BackupTypeEnum.LOG_BACKUP:
+                last_copy_type = [
+                    CopyDataTypeEnum.FULL_COPY.value,
+                    CopyDataTypeEnum.INCREMENT_COPY.value,
+                    CopyDataTypeEnum.LOG_COPY.value
+                ]
+                last_copy_id_path = 'last_copy_id'
+            ret, pre_copy_info = self.get_last_copy_info(last_copy_type)
+            if ret and pre_copy_info:
+                # 读取cache仓中记录的上一次副本ID,
+                # 如果此次是增量备份，检测上次增量备份副本是否存在；
+                # 如果此次是日志备份，检测上次任意任意副本是否存在:
+                cache_path_parent = Path(self._cache_area).parent
+                last_copy_id_file = os.path.join(cache_path_parent, last_copy_id_path)
+                with open(last_copy_id_file, "r", encoding='utf-8') as copy_info:
+                    last_copy_id = copy_info.read().strip()
+
+                # 从rpc接口中查询上一次副本ID
+                last_copy_info_id = pre_copy_info.get("id", "")
+                LOGGER.info(f"get last_copy_info_id {last_copy_info_id}, last_copy_id {last_copy_id}")
+
+                # 判断上一次副本是否被删除, 如果被删除，转全量备份
+                if last_copy_info_id == last_copy_id:
+                    return False
+                else:
+                    LOGGER.warn("last_copy_info_id is different from last_copy_id")
+                    return True
+            else:
+                LOGGER.warn("last_copy_info is empty")
+                return True
+
+        LOGGER.info(f"Start to check backup job type:{self._backup_type}")
+        if not self._backup_type:
+            return False
+        elif self._backup_type == BackupTypeEnum.FULL_BACKUP:
+            return True
+        if self.check_timeline_change() or check_last_copy_is_null(self._backup_type):
+            self.set_action_result(ExecuteResultEnum.INTERNAL_ERROR.value,
+                                   BodyErrCode.ERROR_INCREMENT_TO_FULL.value,
+                                   f"Can not apply this type backup job")
+            LOGGER.info(f"Change backup_type to full")
+            return False
+        # 成功没写记录
+        LOGGER.info(f'Finish execute check_backup_job_type, pid: {self._pid}, job_id:{self._job_id}')
         return True
+
+    def check_timeline_change(self):
+        """
+        pitr恢复后执行了promote操作（select pg_wal_replay_resume()），或者备节点提升为主节点场景下，会产生新时间线，日志不连续需要转全备
+        """
+        # 获取上次备份时间线
+        cache_path_parent = Path(self._cache_area).parent
+        pre_timeline_file = os.path.join(cache_path_parent, 'timeline')
+        if not os.path.exists(pre_timeline_file):
+            LOGGER.info(f"Not find timeline file, job id: {self._job_id}.")
+            return False
+        with open(pre_timeline_file, "r", encoding='utf-8') as copy_info:
+            pre_timeline = copy_info.read().strip()
+        # 获取本次备份时间线
+        current_timeline = get_database_timeline(self._install_path, self._data_path, self._os_user_name, self._job_id)
+        LOGGER.info(f"get current_timeline {current_timeline}, pre_timeline {pre_timeline}, job id: {self._job_id}.")
+
+        if current_timeline and current_timeline != pre_timeline:
+            LOGGER.warn("The current_timeline is different from pre_timeline, job id: {self._job_id}.")
+            return True
+        return False
+
+    def save_last_id(self):
+        # 记录上次备份时间线
+        cache_path_parent = Path(self._cache_area).parent
+        timeline_path = 'timeline'
+        last_timeline_file = os.path.join(cache_path_parent, timeline_path)
+        current_timeline = get_database_timeline(self._install_path, self._data_path, self._os_user_name, self._job_id)
+        exec_overwrite_file(last_timeline_file, current_timeline, json_flag=False)
+        LOGGER.info(f"Save timeline:{current_timeline}")
+
+        # 记录上一次copy_id
+        # 记录全备、增备、日志备份 副本ID
+        last_copy_id_path = 'last_copy_id'
+        last_copy_id_file = os.path.join(cache_path_parent, last_copy_id_path)
+        exec_overwrite_file(last_copy_id_file, self._job_id, json_flag=False)
+        LOGGER.info(f"Save copy id:{self._job_id}")
+        if self._backup_type == BackupTypeEnum.LOG_BACKUP.value:
+            return
+
+        # 记录全备、增备副本ID
+        last_increment_copy_id_path = 'last_increment_copy_id'
+        last_increment_copy_id_file = os.path.join(cache_path_parent, last_increment_copy_id_path)
+        exec_overwrite_file(last_increment_copy_id_file, self._job_id, json_flag=False)
+        LOGGER.info(f"Save increment copy id:{self._job_id}")
 
     @exter_attack
     def backup_prerequisite(self):
@@ -424,11 +522,6 @@ class KbBackup(object):
         if not resource_util.check_os_name(self._os_user_name, self._install_path):
             LOGGER.error(f"Backup prerequisite failed.")
             return False
-        # 日志备份时，集群实例需要先查询上次全量副本的主备信息
-        if self._deploy_type == str(
-                DeployType.CLUSTER_TYPE.value) and self._backup_type == BackupTypeEnum.LOG_BACKUP.value:
-            if not self.check_cluster_role_is_not_switch():
-                return False
         # get database user id
         user_id = pwd.getpwnam(self._os_user_name).pw_uid
         dir_path = self._data_area if (self._backup_type == BackupTypeEnum.FULL_BACKUP.value
@@ -1131,6 +1224,8 @@ class KbBackup(object):
             # 首次日志备份读取全量备份的结束时间
             res, code = self.save_last_backup_meta(self.archive_dir)
             return res, code
+        # 存储上一次copy_id
+        self.save_last_id()
         LOGGER.info(f"Succeed to save backup info file, job id: {self._job_id}.")
         return True, NumberConst.ZERO
 
@@ -1179,8 +1274,9 @@ class KbBackup(object):
         copy_dict["repositories"] = self.get_out_repositories()
         LOGGER.info(f"Backup copy info, job id: {self._job_id}.")
         # 记录副本信息文件
-        copy_info = {"stop_time": stop_time, "wal_file": wal_file, "backup_file": backup_file,
-                     "copy_dict": copy_dict}
+        copy_info = {
+            "stop_time": stop_time, "wal_file": wal_file, "backup_file": backup_file, "copy_dict": copy_dict
+        }
         LOGGER.info(f"Write copy info :{copy_info}")
         try:
             self.write_tmp_json_file(copy_info, DirAndFileNameConst.COPY_FILE_INFO)
@@ -1200,6 +1296,7 @@ class KbBackup(object):
                                                     KbConst.BACKUP_DIR_NAME, KbConst.KINGBASE_DIR_NAME)
                 latest_copy_name = os.path.basename(
                     os.path.realpath(os.path.join(self._data_area, remote_kingbase_path, "latest")))
+                LOGGER.info(f"Current backup set: {latest_copy_name}")
                 repository["remotePath"] = os.path.join(repository["remotePath"], remote_kingbase_path,
                                                         latest_copy_name)
                 out_repositories.append(repository)
@@ -1235,8 +1332,9 @@ class KbBackup(object):
             return False, ErrCode.BACKUP_FAILED
         last_backup_file_path = os.path.join(archive_dir, last_backup_file)
         stop_time = self.get_last_backup_stop_time(last_backup_file_path)
-        copy_meta_info = {"copy_id": self._job_id, "timestamp": stop_time,
-                          "backup_file": last_backup_file_path}
+        copy_meta_info = {
+            "copy_id": self._job_id, "timestamp": stop_time, "backup_file": last_backup_file_path
+        }
         self.save_copy_meta_info_to_file(copy_meta_info)
         LOGGER.info(f"Success to get and save last backup stop time, stop_time:{stop_time}.")
         return True, NumberConst.ZERO
@@ -1272,6 +1370,9 @@ class KbBackup(object):
             self._service_ip = primary_ip
             kb_sql_params = (self._pid, self._install_path, self._service_ip, self._host_port, self._deploy_type)
             self._kb_sql = ExecKbSql(kb_sql_params)
+        self._repo_path = get_sys_rman_configuration_item(self._install_path, self._job_id)
+        self._archive_info_file_path = os.path.join(self._repo_path, KbConst.ARCHIVE_DIR_NAME,
+                                                    KbConst.KINGBASE_DIR_NAME, KbConst.ARCHIVE_INFO_FILE_NAME)
         if (self._backup_type == BackupTypeEnum.FULL_BACKUP.value
                 or self._backup_type == BackupTypeEnum.INCRE_BACKUP.value):
             # 全量/增量备份
@@ -1471,9 +1572,11 @@ class KbBackup(object):
         db_system_id = copy_info.get("db_system_id")
         max_connections = copy_info.get("max_connections")
         backup_file_path = os.path.join(self._cache_area, backup_file)
-        copy_meta_info = {"copy_id": self._job_id, "timestamp": stop_time, "wal_file": wal_file,
-                          "backup_file": backup_file_path, "new_copy": new_copy, "max_connections": max_connections,
-                          "db_system_id": db_system_id}
+        copy_meta_info = {
+            "copy_id": self._job_id, "timestamp": stop_time, "wal_file": wal_file,
+            "backup_file": backup_file_path, "new_copy": new_copy, "max_connections": max_connections,
+            "db_system_id": db_system_id
+        }
         self.save_copy_meta_info_to_file(copy_meta_info)
         LOGGER.info(f"Backup copy info, job id: {self._job_id}, copy dict :{copy_dict}.")
         output_result_file(self._pid, copy_dict)

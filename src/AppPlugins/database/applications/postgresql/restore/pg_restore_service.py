@@ -690,22 +690,23 @@ class PostgreRestoreService:
         return param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {}).get("osUsername", "")
 
     @staticmethod
-    def backup_conf_file(data_path):
+    def backup_conf_file(data_path, job_id):
         data_upper_path = os.path.realpath(os.path.join(data_path, ".."))
         for f_name in PgConst.NEED_BAK_CFG_FILES:
             tmp_src_file = os.path.realpath(os.path.join(data_path, f_name))
             if os.path.isfile(tmp_src_file):
                 # 将配置文件备份到数据目录的上级目录
-                PostgreCommonUtils.preserve_copy_file(tmp_src_file, data_upper_path, tgt_file_name=f"{f_name}.bak")
+                PostgreCommonUtils.preserve_copy_file(tmp_src_file, data_upper_path,
+                                                      tgt_file_name=f"{f_name}_{job_id}.bak")
                 LOGGER.info(f"Backup config file: {f_name} successfully before restore.")
             else:
                 LOGGER.warning(f"Backup config file: {f_name} on restore but doesn't exist.")
 
     @staticmethod
-    def restore_conf_file(data_path):
+    def restore_conf_file(data_path, job_id):
         data_upper_path = os.path.realpath(os.path.join(data_path, ".."))
         for f_name in PgConst.NEED_BAK_CFG_FILES:
-            bak_f_name = f"{f_name}.bak"
+            bak_f_name = f"{f_name}_{job_id}.bak"
             tmp_src_file = os.path.realpath(os.path.join(data_upper_path, bak_f_name))
             if os.path.isfile(tmp_src_file):
                 # 将备份在数据目录上级目录的配置文件恢复到数据目录
@@ -845,7 +846,7 @@ class PostgreRestoreService:
         if not PostgreRestoreService.check_params_for_standby([os_user, repl_user], [tgt_install_path, tgt_data_path],
                                                               primary_ip, inst_port):
             raise ErrCodeException(ErrorCode.RESTORE_DATA_FAILED, message="Sync master data to target data path failed")
-        if not PostgreCommonUtils.check_os_name(os_user, tgt_install_path, enable_root)[0]:
+        if not PostgreCommonUtils.check_os_user(os_user, tgt_install_path, enable_root)[0]:
             raise ErrCodeException(ErrorCode.RESTORE_DATA_FAILED, message="Os username is not exist!")
         PostgreCommonUtils.check_file_path(pg_backup_path)
         PostgreCommonUtils.check_path_islink(pg_backup_path)
@@ -1002,9 +1003,10 @@ class PostgreRestoreService:
                 PostgreCommonUtils.delete_path(tmp_path)
 
     @staticmethod
-    def delete_useless_bak_files(tgt_data_path):
-        for file_name in PgConst.DELETE_FILE_NAMES_OF_BAK_CONF:
-            tmp_path = os.path.realpath(os.path.join(tgt_data_path, "..", file_name))
+    def delete_useless_bak_files(tgt_data_path, job_id):
+        for file_name in PgConst.NEED_BAK_CFG_FILES:
+            bak_f_name = f"{file_name}_{job_id}.bak"
+            tmp_path = os.path.realpath(os.path.join(tgt_data_path, "..", bak_f_name))
             PostgreCommonUtils.delete_path(tmp_path)
 
     @staticmethod
@@ -1380,10 +1382,9 @@ class PostgreRestoreService:
             os.path.join(cfg_param.target_install_path, *PgConst.RECOVERY_CONF_SAMPLE_PATHS))
         recovery_conf_file = os.path.realpath(
             os.path.join(cfg_param.target_data_path, PgConst.RECOVERY_CONF_FILE_NAME))
-        use_curr_recovery_sample = False
         if not PostgreCommonUtils.check_special_characters(cfg_param.system_user):
             raise Exception("String contains special characters!")
-        if not PostgreCommonUtils.check_os_name(cfg_param.system_user, cfg_param.target_install_path, enable_root)[0]:
+        if not PostgreCommonUtils.check_os_user(cfg_param.system_user, cfg_param.target_install_path, enable_root)[0]:
             raise Exception("Os username os not exist!")
         if not enable_root:
             if not check_user_utils.check_path_owner(cfg_param.target_data_path, [cfg_param.system_user]):
@@ -1391,13 +1392,11 @@ class PostgreRestoreService:
         if os.path.isfile(recovery_conf_sample_file):
             LOGGER.info(
                 f"Creating recovery conf file. Copy file from {recovery_conf_sample_file} to {recovery_conf_file}")
-            ret = exec_cp_cmd(recovery_conf_sample_file, recovery_conf_file,
-                              user_name=cfg_param.system_user, is_check_white_list=False)
+            ret = exec_cp_cmd(recovery_conf_sample_file, recovery_conf_file, is_check_white_list=False)
             if not ret:
                 raise Exception("Create recovery conf file failed")
             LOGGER.info(f"Create recovery conf file success.")
         else:
-            use_curr_recovery_sample = True
             LOGGER.warning("Recovery conf sample does not exist in database instance")
             sample_cfg_file = PostgreCommonUtils.get_local_recovery_conf_sample_by_ver(cfg_param.target_version)
             LOGGER.info(f"Creating recovery conf file. Copy file from {sample_cfg_file} to {recovery_conf_file}")
@@ -1407,8 +1406,7 @@ class PostgreRestoreService:
             LOGGER.info(f"Create recovery conf file success.")
 
         # 使用插件中recovery.conf.sample样例，需要修改用户用户组、权限
-        if use_curr_recovery_sample:
-            PostgreRestoreService.change_owner_and_mode_of_recovery_conf(cfg_param, recovery_conf_file)
+        PostgreRestoreService.change_owner_and_mode_of_recovery_conf(cfg_param, recovery_conf_file)
 
         if str(role) == str(RoleType.STANDBY.value):
             PostgreRestoreService.set_recovery_cfg_for_standby_node(cfg_param, recovery_conf_file)

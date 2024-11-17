@@ -33,8 +33,10 @@ class EnvNameValue:
     IAM_USERNAME_BACKUP = "job_protectEnv_auth_authKey"
     IAM_PASSWORD_BACKUP = "job_protectEnv_auth_authPwd"
     IAM_USERNAME_RESTORE = "job_targetEnv_auth_authKey"
-    IAM_PASSWORD_RESTORE = "job_targetEnv_auth_authKey"
+    IAM_PASSWORD_RESTORE = "job_targetEnv_auth_authPwd"
     IAM_OSADAUTHPORT = "job_extendInfo_OSADAuthPort"
+    IAM_USERNAME_LIVEMOUNT = "job_copy_0_protectEnv_auth_authKey"
+    IAM_PASSWORD_LIVEMOUNT = "job_copy_0_protectEnv_auth_authPwd"
 
 
 class TdsqlSubJobName:
@@ -386,6 +388,11 @@ class ArchiveType:
 
 class MySQLVersion:
     MARIADB = "mariadb"
+    MYSQL = "mysql"
+    PERCONA = "percona"
+    MARIADB_START = "mariadb-"
+    MYSQL_START = "mysql-"
+    PERCONA_START = "percona-"
 
 
 class InstanceConfigInfo(BaseModel):

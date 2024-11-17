@@ -49,6 +49,7 @@
       <PreprocessorDefinitions>NDEBUG;WIN32;__WINDOWS__;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\src;..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\platform\SecureCLib_rel\include;..\..\..\..\plugins\database\src\..\..\..\Windows_Compile\Module\third_open_src\boost_rel\include;..\..\..\..\Windows_Compile\Module\platform\securec\include;..\..\..\..\Windows_Compile\framework\dep\agent_sdk\include;..\..\..\..\Windows_Compile\framework\dep\agent_sdk\include\securec;..\..\..\..\Windows_Compile\Module\open_src\jsoncpp\include;..\..\..\..\Windows_Compile\framework\inc;..\..\..\..\Windows_Compile\framework\inc\rpc;..\..\..\..\Windows_Compile\framework\inc\common;..\..\..\..\Windows_Compile\Module\open_src\thrift\lib\cpp\src;..\..\..\..\Windows_Compile\Module\open_src\boost\.libs\include;..\..\..\..\Windows_Compile\framework\inc\rpc\certificateservice;..\..\..\..\Windows_Compile\framework\inc\thrift_interface;..\..\..\..\plugins\database\src\common;..\..\..\..\plugins\database\src\executor</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

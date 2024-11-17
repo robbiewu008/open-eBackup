@@ -62,7 +62,7 @@ class RestoreClusterGroup:
         self.is_new_cluster = self.check_is_new_cluster(self._json_param_object)
         log.info(f"tdsql_group_restore is_new_cluster: {self.is_new_cluster}")
         self._oss_nodes = self.get_oss_nodes()
-        self._business_addr = f'http://{self._oss_nodes[0].get("ip")}:8080/tdsql'
+        self._business_addr = f'http://{self._oss_nodes[0].get("ip")}:{self._oss_nodes[0].get("port")}/tdsql'
         self._restore_hosts = self.get_restore_hosts()
         self._repositories = json_param.get("job", {}).get("copies", [{}])[0].get("repositories", [{}])
         self._mount_type = self._job_extend_info.get("agentMountType")
@@ -74,10 +74,6 @@ class RestoreClusterGroup:
     def restore_prerequisite():
         error_code = SubJobStatusEnum.COMPLETED.value
         return True, error_code
-
-    @staticmethod
-    def do_post():
-        return True
 
     @staticmethod
     def check_is_new_cluster(json_param):
@@ -274,8 +270,7 @@ class RestoreClusterGroup:
             TdsqlClusterGroupRestoreSubJobName.SUB_CHECK_MYSQL_VERSION: self.sub_check_mysql_version,
             TdsqlClusterGroupRestoreSubJobName.SUB_CHECK_HOST_AGENT: self.sub_check_host_agent,
             TdsqlClusterGroupRestoreSubJobName.SUB_EXEC_MOUNT: self.sub_exec_mount,
-            TdsqlClusterGroupRestoreSubJobName.SUB_EXEC_RESTORE: self.sub_exec_restore,
-            TdsqlClusterGroupRestoreSubJobName.SUB_EXEC_UMOUNT: self.sub_exec_umount
+            TdsqlClusterGroupRestoreSubJobName.SUB_EXEC_RESTORE: self.sub_exec_restore
         }
         progress_thread = threading.Thread(name='exec_restore', target=self.upload_restore_progress)
         progress_thread.daemon = True
@@ -334,6 +329,7 @@ class RestoreClusterGroup:
             oss_node = {}
             oss_node["ip"] = target_oss_node.get("ip")
             oss_node["parentUuid"] = target_oss_node.get("parentUuid")
+            oss_node["port"] = target_oss_node.get("port")
             oss_nodes.append(oss_node)
         log.info(f"get_oss_nodes oss_nodes is {oss_nodes}")
         return oss_nodes
@@ -384,15 +380,6 @@ class RestoreClusterGroup:
         choice_node = random.choice(self._restore_hosts)
         sub_job = self.gen_sub_job_info(choice_node, job_priority, job_name)
         sub_job_array.append(sub_job)
-
-        # 子任务4：执行解挂载子任务
-        log.info("step 2-4 gen_sub_job sub_job_04")
-        job_name = TdsqlClusterGroupRestoreSubJobName.SUB_EXEC_UMOUNT
-        job_priority = SubJobPriorityEnum.JOB_PRIORITY_4
-        # 所有的数据节点都要执行解挂载子任务
-        for restore_host in self._restore_hosts:
-            sub_job = self.gen_sub_job_info(restore_host, job_priority, job_name)
-            sub_job_array.append(sub_job)
 
         log.info(f"step 2-3 Sub-job splitting succeeded. sub_job_array:{sub_job_array}")
         output_execution_result_ex(file_path, sub_job_array)
@@ -697,23 +684,26 @@ class RestoreClusterGroup:
         log.info(f"step 2-6 exec_restore_to_original is task_id {task_id}")
         return task_id
 
-    def sub_exec_umount(self):
+    def do_post(self):
         if self.is_new_cluster:
             group_path = os.path.join("/tdsqlbackup/tdsqlzk/", self._group_id)
-            log.info(f"step 2-7 sub_exec_umount group_path {group_path}")
+            log.info(f"step 3 post job, umount group_path {group_path}")
             umount_bind_path(group_path, self._mount_type)
             if self._restore_time_stamp:
                 local_group_path = os.path.join("/tdsqlbackup/tdsqlzk/", self._group_id, "autocoldbackup/sets")
-                for dir_path, _, filenames in os.walk(local_group_path):
-                    if os.path.basename(dir_path) == 'binlog':
-                        self.exec_unlink(dir_path, filenames)
+                self.unlink_files_by_basename(local_group_path)
         else:
-            log.info(f"step 2-7 exec unlink")
+            log.info(f"step 3 post job, exec unlink")
             local_group_path = os.path.join("/tdsqlbackup/tdsqlzk/", self._group_id, "autocoldbackup/sets")
-            for dir_path, _, filenames in os.walk(local_group_path):
-                if os.path.basename(dir_path) == 'xtrabackup':
-                    self.exec_unlink(dir_path, filenames)
-                if os.path.basename(dir_path) == 'binlog':
-                    self.exec_unlink(dir_path, filenames)
-        self.write_progress_file(SubJobStatusEnum.COMPLETED, 100)
-        return True
+            self.unlink_files_by_basename(local_group_path)
+        log.info(f"step 3 post job success, job id: {self._job_id}")
+
+    def unlink_files_by_basename(self, local_group_path):
+        for dir_path, _, filenames in os.walk(local_group_path):
+            if os.path.basename(dir_path) == 'binlog':
+                self.exec_unlink(dir_path, filenames)
+            elif os.path.basename(dir_path) == 'xtrabackup':
+                self.exec_unlink(dir_path, filenames)
+            else:
+                log.info(f"No need to unlink this directory, job id: {self._job_id}")
+        log.info(f"All files in {local_group_path} are unlinked, job id: {self._job_id}")

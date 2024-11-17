@@ -23,6 +23,16 @@ class BaseCmd:
         self.env_path = env_path
         self.db_user = db_user
 
+    @staticmethod
+    def _get_systemctl_status(serivce):
+        if not check_injection_char(serivce):
+            return False, "Invalid params to execute."
+        status_cmd = f"systemctl status {serivce}"
+        return_code, out_info, err_info = execute_cmd(status_cmd)
+        ret = (return_code in ("0", "3"))
+        res_cont = out_info if ret else err_info
+        return ret, res_cont
+
     def execute_cmd(self, cmd: str):
         return self._get_dbtool_cmd_result(cmd)
 
@@ -69,16 +79,6 @@ class BaseCmd:
     def execute_sql_cmd(self, data_port, sql_cmd):
         ret, cont = self._execute_sql_cmd(sql_cmd, data_port)
         return ret, cont
-
-
-    def _get_systemctl_status(self, serivce):
-        if not check_injection_char(serivce):
-            return False, "Invalid params to execute."
-        status_cmd = f"systemctl status {serivce}"
-        return_code, out_info, err_info = execute_cmd(status_cmd)
-        ret = (return_code in ("0", "3"))
-        res_cont = out_info if ret else err_info
-        return ret, res_cont
 
     def _su_dbuser_prefix(self):
         if not check_injection_char(self.db_user) and not self.check_user():

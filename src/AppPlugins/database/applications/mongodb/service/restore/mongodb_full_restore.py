@@ -20,9 +20,9 @@ import time
 import yaml
 
 from common import common
-from common.common import check_port_is_used, check_del_file
+from common.common import check_port_is_used
 from common.common_models import SubJobModel
-from common.const import EnumPathType, SubJobPolicyEnum, SubJobTypeEnum
+from common.const import EnumPathType, SubJobPolicyEnum, SubJobTypeEnum, AuthType
 from common.file_common import check_file_or_dir, change_path_permission
 from common.util.backup import backup, query_progress
 from common.util.exec_utils import exec_mkdir_cmd, su_exec_rm_cmd
@@ -33,6 +33,7 @@ from mongodb.comm.const import MongoDBCode, ErrorCode, MongoDBCopyDataRet, TMP_C
     MongoSubJob, MongoRoles, MongoTool, INSTANCE_DIRECTORY, TMP_MONGODB_SOCK
 from mongodb.comm.const import ParamField
 from mongodb.comm.exception_err import DBAuthenticationError, DBOperationError, DBConnectionError
+from mongodb.comm.mongo_executor import get_mongodb_version, compare_version
 from mongodb.comm.mongod_relationship import MongodCommandRelationship
 from mongodb.comm.mongos_relationship import MongosCommandRelationship
 from mongodb.comm.utils import get_mkdir_user, check_real_path
@@ -50,6 +51,7 @@ class FullRestore:
         self.cmd = Cmd(pid)
         self._local_instances = self.param.get_local_insts_info()
         self.job_id = self.param.job_id
+        self.auth_type = self.cmd.get_db_restore_job_auth_type()
 
     @classmethod
     def build_sub_job(cls, job_id, job_name, job_priority, agent_id, job_info=""):
@@ -222,7 +224,7 @@ class FullRestore:
         复制备份数据到data_path
         """
         if not os.path.exists(origin_data_path) or not data_path:
-            LOGGER.error("Backup db file failed, data path not exists, job id: %s.", self.job_id)
+            LOGGER.error(f"Backup db file failed, data path not exists, job id: {self.job_id}.")
             return False
         # 判断文件夹是否存在,不存在创建
         if not os.path.exists(data_path):
@@ -230,7 +232,7 @@ class FullRestore:
         # 获取到job_id
         result = backup(self.param.job_id, origin_data_path, data_path)
         if not result:
-            LOGGER.error("End to backup db file failed, job id: %s.", self.job_id)
+            LOGGER.error(f"End to backup db file failed, job id: {self.job_id}.")
             return False
         # 每间隔2s，查看一次数据拷贝情况，超过2000s，默认数据拷贝超时
         query_progress_interval = 2
@@ -240,7 +242,7 @@ class FullRestore:
             time.sleep(query_progress_interval)
             status, progress, data_size = query_progress(self.param.job_id)
             if status != MongoDBCopyDataRet.RUNNING:
-                LOGGER.debug("Backup not running, interval: %s, job id: %s.", interval, self.param.job_id)
+                LOGGER.debug(f"Backup not running, interval: {interval}, job id: {self.param.job_id}.")
                 return True
 
     def get_local_instances_status(self, online_instance, offline_instance, auth_failed_instance):
@@ -269,9 +271,10 @@ class FullRestore:
         if not flag:
             return ErrorCode.CLEAN_DATA_DIR_ERROR.value, msg
         # 拷贝全量副本数据到目标实例的数据目录下
-        body_err_code, msg = self.copy_data_to_dir(node, agent_path)
-        if body_err_code:
-            return body_err_code, msg
+        if compare_version(get_mongodb_version('')) or str(MongoRolesStatus.PRIMARY.value) == node.get(ParamField.ROLE):
+            body_err_code, msg = self.copy_data_to_dir(node, agent_path)
+            if body_err_code:
+                return body_err_code, msg
         # 修改目录权限：宿主的权限
         body_err_code, msg = self.modify_dir_permission(node)
         if body_err_code:
@@ -312,49 +315,51 @@ class FullRestore:
         if body_err_code:
             return body_err_code, msg
         # 全部默认不开启认证，注释掉replSet,security等参数
-        conf_file_path = self.build_parsed_data_to_conf("replication", node=node)
-        # 启动此节点
-        body_err_code, msg = self.start_local_instance(conf_file_path, node)
-        if body_err_code:
-            return body_err_code, msg
-        # 进入此节点, 删除local数据库, 使用本机关闭实例
-        try:
-            with self.param.db_command(node) as mongo:
-                mongo.drop_local_database()
-            LOGGER.info(f'replset node_start_new_process drop local database')
-            user = get_mkdir_user(self.param.get_db_path(node))
-            _, instance_user = self.param.get_start_instance_user()
-            user = instance_user if instance_user else user
-            mongod_bin_dir = self.param.get_mongo_bin_path(ParamField.BIN_PATH.value, MongoTool.MONGOD.value, node)
-            self.cmd.shutdown_instance(mongod_bin_dir, user, self.param.get_db_path(node))
-        except DBConnectionError:
-            LOGGER.error("DBConnectionError to handle db, job_id: %s", self.job_id)
-            return ErrorCode.CONNECT_TO_DB_ERROR.value, msg
-        except DBAuthenticationError:
-            msg = "DBAuthenticationError to handle db, job_id: %s" % self.job_id
-            LOGGER.error("DBAuthenticationError to handle db, job_id: %s", self.job_id)
-            return ErrorCode.ERROR_AUTH.value, msg
-        except DBOperationError as ex:
-            msg = "DBOperationError to handle node, job_id: %s, error: %s" % (self.job_id, ex)
-            return ErrorCode.CONNECT_TO_DB_ERROR.value, msg
-        except Exception as ex:
-            msg = "Exception to connect node, job_id: %s, error: %s" % (self.job_id, ex)
-            return ErrorCode.OPERATE_FAILED.value, msg
+        role = node.get(ParamField.ROLE)
+        if compare_version(get_mongodb_version('')) or str(MongoRolesStatus.SECENDARY.value) != role:
+            conf_file_path = self.build_parsed_data_to_conf("replication", node=node)
+            # 启动此节点
+            body_err_code, msg = self.start_local_instance(conf_file_path, node)
+            if body_err_code:
+                return body_err_code, msg
+            # 进入此节点, 删除local数据库, 使用本机关闭实例
+            try:
+                with self.param.db_command(node) as mongo:
+                    mongo.drop_local_database()
+                LOGGER.info(f'replset node_start_new_process drop local database')
+                user = get_mkdir_user(self.param.get_db_path(node))
+                _, instance_user = self.param.get_start_instance_user()
+                user = instance_user if instance_user else user
+                mongod_bin_dir = self.param.get_mongo_bin_path(ParamField.BIN_PATH.value, MongoTool.MONGOD.value, node)
+                self.cmd.shutdown_instance(mongod_bin_dir, user, self.param.get_db_path(node))
+            except DBConnectionError:
+                LOGGER.error(f"DBConnectionError to handle db, job_id: {self.job_id}")
+                return ErrorCode.CONNECT_TO_DB_ERROR.value, msg
+            except DBAuthenticationError:
+                msg = "DBAuthenticationError to handle db, job_id: %s" % self.job_id
+                LOGGER.error(f"DBAuthenticationError to handle db, job_id: {self.job_id}")
+                return ErrorCode.ERROR_AUTH.value, msg
+            except DBOperationError as ex:
+                msg = "DBOperationError to handle node, job_id: %s, error: %s" % (self.job_id, ex)
+                return ErrorCode.CONNECT_TO_DB_ERROR.value, msg
+            except Exception as ex:
+                msg = "Exception to connect node, job_id: %s, error: %s" % (self.job_id, ex)
+                return ErrorCode.OPERATE_FAILED.value, msg
         # 默认不开启认证，放开replSet参数, 继续保留注释keyFile,auth等参数
-        LOGGER.debug("Start to build parsed data to conf, job_id: %s", self.job_id)
+        LOGGER.debug(f"Start to build parsed data to conf, job_id: {self.job_id}")
         conf_file_path = self.build_parsed_data_to_conf(node=node)
         # 启动此节点
-        LOGGER.debug("Start to start_local_instance, job_id: %s", self.job_id)
+        LOGGER.debug(f"Start to start_local_instance, job_id: {self.job_id}")
         body_err_code, msg = self.delete_mongod_lock_file(node)
         if body_err_code:
             return body_err_code, msg
         body_err_code, msg = self.start_local_instance(conf_file_path, node)
-        LOGGER.debug("End to start_local_instance, job_id: %s", self.job_id)
+        LOGGER.debug(f"End to start_local_instance, job_id: {self.job_id}")
         if body_err_code:
             return body_err_code, msg
         # 检查实例进程状态
         error_code, msg = self.connect_instance(node)
-        LOGGER.debug("End to connect_instance, job_id: %s", self.job_id)
+        LOGGER.debug(f"End to connect_instance, job_id: {self.job_id}")
         if error_code:
             return error_code, msg
         return MongoDBCode.SUCCESS.value, ""
@@ -392,9 +397,9 @@ class FullRestore:
         auth_failed_instance = []
         self.get_local_instances_status(online_instance, offline_instance, auth_failed_instance)
         if online_instance or auth_failed_instance:
-            LOGGER.error("Check instance status error, online instance: %s, auth failed instance: %s, "
-                         "offline_instance: %s, job_id: %s.",
-                         online_instance, auth_failed_instance, offline_instance, self.job_id)
+            LOGGER.error(f"Check instance status error, online instance:{online_instance}, "
+                         f"auth failed instance: {auth_failed_instance}, offline_instance: {offline_instance}, "
+                         f"job_id: {self.job_id}.")
             return True
         return False
 
@@ -433,9 +438,13 @@ class FullRestore:
         for node in nodes:
             node_url = node.get(ParamField.HOSTURL, ":")
             _, tmp_port = node_url.split(":")
-            if check_port_is_used(int(tmp_port)):
-                LOGGER.error("Port %s is used in %s. main job_id :%s.", tmp_port, node_url, self.job_id)
-                return True
+            try:
+                if check_port_is_used(int(tmp_port)):
+                    LOGGER.error("Port %s is used in %s. main job_id :%s.", tmp_port, node_url, self.job_id)
+                    return True
+            except Exception as exception_str:
+                LOGGER.exception(f'Function check_port_is_used exception {exception_str}.')
+                return False
         return False
 
     def check_instance_user_status(self):
@@ -492,14 +501,14 @@ class FullRestore:
             # 检查目录是否存在，是否存在软连接
             db_path = self.param.get_db_path(node)
             if not db_path:
-                LOGGER.error("Db path is empty, job id: %s.", self.job_id)
+                LOGGER.error(f"Db path is empty, job id: {self.job_id}.")
                 return True
             path_type = check_file_or_dir(db_path)
             if path_type != EnumPathType.DIR_TYPE:
-                LOGGER.error("Db path is invalid type: %s can not copy, job id: %s.", path_type, self.job_id)
+                LOGGER.error(f"Db path is invalid type: {path_type} can not copy, job id: {self.job_id}.")
                 return True
             if path_type == EnumPathType.LINK_TYPE:
-                LOGGER.error("Db path is link type can not copy, job id: %s.", self.job_id)
+                LOGGER.error(f"Db path is link type can not copy, job id: {self.job_id}.")
                 return True
         return False
 
@@ -508,11 +517,11 @@ class FullRestore:
         功能描述：清理新实例data目录数据信息
         """
         url = node.get(ParamField.HOSTURL, "")
-        LOGGER.info('Delete original data! url: %s, job id: %s', url, self.job_id)
+        LOGGER.info(f'Delete original data! url: {url}, job id: {self.job_id}.')
         data_path = self.param.get_db_path(node)
         if not data_path or not os.path.exists(data_path):
-            LOGGER.error("Check target instance data error, dir path: '%s', uri: '%s', job id: '%s'.",
-                         data_path, url, self.job_id)
+            LOGGER.error(f"Check target instance data error, dir path: '{data_path}', uri: '{url}', "
+                         f"job id: '{self.job_id}'.")
             return False, "Check target instance data error, dir path: '%s'." % data_path
         else:
             common.clean_dir(data_path)
@@ -548,11 +557,11 @@ class FullRestore:
         :return:
         """
         origin_copies_path = os.path.join(repository, self.instance_directory, copy_id, agent_path)
-        LOGGER.info("Mongo origin copies path is %s, copy id: %s, job id: %s.", origin_copies_path, copy_id,
-                    self.job_id)
+        LOGGER.info(f"Mongo origin copies path is {origin_copies_path}, copy id: {copy_id}, "
+                    f"job id: {self.job_id}.")
         path = os.listdir(origin_copies_path)
         if not path:
-            LOGGER.error("Mongo origin copies path is empty, job id: %s.", self.job_id)
+            LOGGER.error(f"Mongo origin copies path is empty, job id: {self.job_id}.")
             return ""
         return os.path.join(origin_copies_path, path[0] + "/")
 
@@ -581,12 +590,12 @@ class FullRestore:
         data_path = self.param.get_db_path(node)
         # 校验合法的路径
         if not data_path or not os.path.exists(data_path):
-            LOGGER.error("Data path is not exits: '%s', job id : %s.", data_path, self.job_id)
+            LOGGER.error(f"Data path is not exits: '{data_path}', job id : {self.job_id}.")
             msg = "Data path is not exits: '%s'" % data_path
             return ErrorCode.MODIFY_DATA_DIR_ERROR.value, msg
         log_path = self.param.get_data_log_path(node)
         if not log_path or not os.path.exists(log_path):
-            LOGGER.error("Log path is not exits: '%s', job id : %s.", log_path, self.job_id)
+            LOGGER.error(f"Log path is not exits: '{log_path}', job id : {self.job_id}.")
             msg = "Log path is not exits: '%s'" % data_path
             return ErrorCode.MODIFY_DATA_DIR_ERROR.value, msg
         uid, gid = self.get_data_path_user_and_group(data_path)
@@ -610,7 +619,7 @@ class FullRestore:
         mongod_lock_file = os.path.join(self.param.get_db_path(node), "mongod.lock")
         if os.path.exists(mongod_lock_file):
             su_exec_rm_cmd(mongod_lock_file, check_white_black_list_flag=False)
-        LOGGER.debug('Delete mongod.lock file success! job id: %s.', self.job_id)
+        LOGGER.debug(f'Delete mongod.lock file success! job id: {self.job_id}.')
         return MongoDBCode.SUCCESS.value, ""
 
     def build_parsed_data_to_conf(self, *args, node, mongo_type=MongoTool.MONGOD.value):
@@ -751,11 +760,12 @@ class FullRestore:
             for filed in args:
                 if str(filed) in parsed_json:
                     del parsed_json[filed]
-        if "security" in parsed_json:
-            del parsed_json["security"]
+        if str(self.auth_type) == str(AuthType.NO_AUTO.value):
+            if "security" in parsed_json:
+                del parsed_json["security"]
         if "config" in parsed_json:
             del parsed_json["config"]
-        LOGGER.info("Parsed json data: %s, job id: %s.", parsed_json, self.job_id)
+        LOGGER.info(f"Parsed json data: {parsed_json}, job id: {self.job_id}.")
         return parsed_json
 
     def create_yaml_conf_by_parsed_data(self, local_host, parsed_json):
@@ -765,7 +775,7 @@ class FullRestore:
         :param parsed_json:
         :return: yaml的绝对路径
         """
-        LOGGER.info("Start create conf file, job id: %s", self.job_id)
+        LOGGER.info(f"Start create conf file, job id: {self.job_id}.")
         local_host = "_".join(local_host.split(":")[0].split(".")) + "_" + local_host.split(":")[1]
         timestamp_str = str(int(time.time()))
         conf_file_name = local_host + "_" + timestamp_str + "_mongod.conf"
@@ -783,19 +793,18 @@ class FullRestore:
         modes = stat.S_IWUSR | stat.S_IRUSR
         with os.fdopen(os.open(conf_file_path, flags, modes), 'w', encoding='utf-8') as fout:
             yaml.dump(parsed_json, fout, allow_unicode=True, indent=4)
-        LOGGER.info("Create yaml format conf file: %s success, job id: %s.", conf_file_path, self.job_id)
+        LOGGER.info(f"Create yaml format conf file: {conf_file_path} success, job id: {self.job_id}.")
         return conf_file_path
 
     def drop_local_database_update_info(self, node, relative_path):
         # 进入此节点, 删除local数据库, 使用本机关闭实例
         try:
             with self.param.db_command(node) as mongo:
-                LOGGER.info("Start to drop local database, relative_path: %s, job id: %s", relative_path, self.job_id)
+                LOGGER.info(f"Start to drop local database, relative_path: {relative_path}, job id: {self.job_id}")
                 mongo.drop_local_database()
-                if relative_path == "0":
-                    mongo.update_config_info(self.param.get_shard_list())
-                else:
-                    mongo.update_shard_info(self.param.get_config_list())
+                if compare_version(get_mongodb_version('')) or str(MongoRolesStatus.SECENDARY.value) != node.get(
+                        ParamField.ROLE, ""):
+                    self.update_info(mongo, relative_path)
             LOGGER.info("drop_local_database success")
             user = get_mkdir_user(self.param.get_db_path(node))
             _, instance_user = self.param.get_start_instance_user()
@@ -803,8 +812,7 @@ class FullRestore:
             LOGGER.info("get instance user success")
             mongod_bin_dir = self.param.get_mongo_bin_path(ParamField.BIN_PATH.value, MongoTool.MONGOD.value, node)
             self.cmd.shutdown_instance(mongod_bin_dir, user, self.param.get_db_path(node))
-            LOGGER.info(
-                "End shutdown server, relative_path: %s, job id: %s", relative_path, self.job_id)
+            LOGGER.info(f"End shutdown server, relative_path: {relative_path}, job id: {self.job_id}")
         except DBConnectionError:
             return ErrorCode.CONNECT_TO_DB_ERROR.value, "Error to connect db."
         except DBAuthenticationError:
@@ -812,6 +820,12 @@ class FullRestore:
         except Exception:
             return ErrorCode.ERR_DB_SERVICES.value, "Drop or shut down db error."
         return MongoDBCode.SUCCESS.value, "Drop local database success."
+
+    def update_info(self, mongo, relative_path):
+        if relative_path == "0":
+            mongo.update_config_info(self.param.get_shard_list())
+        else:
+            mongo.update_shard_info(self.param.get_config_list())
 
     def start_local_instance(self, conf_file_path, node):
         """
@@ -825,14 +839,14 @@ class FullRestore:
             # 执行启动命令 mongod的路径 -f conf文件路径, 0-执行成功
             result, error_param = self.cmd.start_up_instance(mongod_bin_dir, conf_file_path, user)
         else:
-            LOGGER.error("Mongo local instance start failed, conf path is empty, job id: %s.", self.job_id)
+            LOGGER.error(f"Mongo local instance start failed, conf path is empty, job id: {self.job_id}.")
             return ErrorCode.PARSE_YAML_FILE_ERROR.value, "Mongo local instance start conf file path is not exist."
         # 异常处理
         if result:
-            LOGGER.debug("Mongo local instance start success, conf path: %s, job id: %s.", conf_file_path, self.job_id)
+            LOGGER.debug(f"Mongo local instance start success, conf path: {conf_file_path}, job id: {self.job_id}.")
             return MongoDBCode.SUCCESS.value, "mongo local instance start success."
         else:
-            LOGGER.error("Mongo local instance start failed, conf path: %s, job id: %s.", conf_file_path, self.job_id)
+            LOGGER.error(f"Mongo local instance start failed, conf path: {conf_file_path}, job id: {self.job_id}.")
             return ErrorCode.INSTANCE_START_ERROR.value, "mongo local instance start failed."
 
     def connect_instance(self, node):
@@ -852,7 +866,7 @@ class FullRestore:
         except Exception as e:
             msg = "Connect to %s failed! Error: %s, job id: %s." % url % e % self.job_id
             return ErrorCode.CONNECT_TO_DB_ERROR.value, msg
-        LOGGER.debug("End to check connect instance: %s,  job_id: %s", url, self.job_id)
+        LOGGER.debug(f"End to check connect instance: {url},  job_id: {self.job_id}")
         return MongoDBCode.SUCCESS.value, ""
 
     def initiate_cluster(self, node, intiate_instances):
@@ -891,7 +905,7 @@ class FullRestore:
                 member[ParamField.ARBITER_ONLY.value] = True
             members.append(member)
         initiate_param = {ParamField.CLUSTER_ID.value: cluster_instance_name, ParamField.MEMBERS.value: members}
-        LOGGER.debug("Mongo initiate cluster, initiate_param: %s, job id: %s.", initiate_param, self.job_id)
+        LOGGER.debug(f"Mongo initiate cluster, initiate_param:{initiate_param}, job id: {self.job_id}.")
         try:
             with self.param.db_command(node) as mongo:
                 mongo.initiate_cluster(initiate_param)
@@ -904,5 +918,5 @@ class FullRestore:
         except Exception as ex:
             msg = "DB Operation Error to url: %s! Error: %s" % (url, ex)
             return ErrorCode.CLUSTER_INITIATE_ERROR.value, msg
-        LOGGER.info("Mongo restore replSet initiate server success! job id: %s", self.job_id)
+        LOGGER.info(f"Mongo restore replSet initiate server success! job id: {self.job_id}")
         return MongoDBCode.SUCCESS.value, ""

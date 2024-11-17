@@ -21,17 +21,11 @@ import sys
 
 def clear(secret):
     """
-    清除secret
+    遗留待删除方法，安全已有结论，对于python语言无需清理
     :param secret: 变量
     :return: 无
     """
-    if secret is not None:
-        length = len(secret)
-        sizeof = sys.getsizeof(secret)
-        offset = sizeof - length - 1
-        itemid = id(secret)
-        for _ in range(3):
-            ctypes.memset(itemid + offset, 0, length)
+    pass
 
 
 def clear_repository_dir(file_path):

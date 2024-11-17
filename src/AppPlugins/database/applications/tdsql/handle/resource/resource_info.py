@@ -19,9 +19,10 @@ import time
 from common.cleaner import clear
 from common.common import output_result_file, execute_cmd, check_command_injection
 from common.const import SysData, CMDResult, PathConstant
-from tdsql.common.const import BackupPath, MountType
+from tdsql.common.const import BackupPath, MountType, MySQLVersion, ConnectParam
 from tdsql.common.tdsql_common import check_ip, check_port, execute_cmd_list
-from tdsql.common.util import check_priv_is_ok, get_version_path, get_tdsql_config
+from tdsql.common.util import check_priv_is_ok, get_version_path, get_tdsql_config, exec_sql, is_valid_port, \
+    get_mysql_version_path, get_mysql_version_from_defaults_file_path
 from tdsql.handle.common.const import ClusterNodeCheckType, ErrorCode, TDSQLResourceInterface, TDSQLNodeService, \
     TDSQLResourceType, TDSQLSubType, TDSQLResourceKeyName, TDSQLDataNodeStatus, TDSQLGroupSetStatus
 from tdsql.handle.common.exec_sql_cmd import get_mysql_db_session
@@ -56,10 +57,9 @@ def build_instance_info(instance_list):
             data_node["ip"] = db.get("ip")
             data_node["port"] = port
             data_node["isMaster"] = db.get("master")
-            conf_file = "my_" + port + ".cnf"
             log.info(f"port:{port}")
-            version_path = get_version_path(db_version)
-            defaults_file = os.path.join(BackupPath.BACKUP_PRE, port, f"{version_path}/etc", conf_file)
+            defaults_file = get_defaults_file(port)
+            log.info(f"build_instance_info defaults_file {defaults_file}")
             data_node["defaultsFile"] = defaults_file
             # 改成从my.conf文件读取
             exec_cmd_list = [f"cat {defaults_file}", "grep mysql.sock", "head -n 1", "awk -F '=' '{print $2}'"]
@@ -73,6 +73,28 @@ def build_instance_info(instance_list):
         groups.append(group)
 
     return groups
+
+
+def get_defaults_file(port):
+    defaults_file = ''
+    try:
+        exec_cmd_list = ["ps -ef", "grep -v grep", "grep mysqld", f"grep {port}", "grep -v 'mysqld_safe'"]
+        return_code, out_info, err_info = execute_cmd_list(exec_cmd_list)
+        log.info(f"get_defaults_file execute_cmd_list return_code {return_code},"
+                 f" out_info {out_info}, err_info {err_info}")
+    except Exception as e:
+        log.error(f"get defaults file failed, ex {str(e)}")
+        return ''
+
+    if return_code != CMDResult.SUCCESS:
+        log.error(f'get defaults file failed, err_info {err_info}')
+        return ''
+
+    for item in out_info.strip().split(" "):
+        if "--defaults-file=" in item:
+            if len(item.split("=")) > 1:
+                defaults_file = item.split("=")[1]
+    return defaults_file
 
 
 def build_group_info(instance_list):
@@ -232,7 +254,7 @@ class TDSQLResourceInfo:
             ]
         return_code, out_info, err_info = execute_cmd_list(cmd_list)
         if int(out_info) <= 0:
-            log.error(f"Check node service failed, {server_type} not exists")
+            log.error(f"Check node service failed, {server_type} not exists, out_info {out_info}, err_info {err_info}")
             raise ErrCodeException(ErrorCode.ERROR_SERVICE, f"service {server_type} not exists", server_type)
 
         # 根据节点业务IP和当前agent是否在同一台机器上
@@ -243,6 +265,7 @@ class TDSQLResourceInfo:
         cmd_list = ["ifconfig", f"grep {host_ip}", "wc -l"]
         return_code, out_info, err_info = execute_cmd_list(cmd_list)
         if int(out_info) <= 0:
+            log.error(f"check_node_status failed, out_info {out_info}, err_info {err_info}")
             raise ErrCodeException(ErrorCode.ERROR_IP_NOT_MATCH_AGENT, f"host_ip {host_ip} not match agent", host_ip)
 
         # 校验oss节点相关信息
@@ -256,7 +279,7 @@ class TDSQLResourceInfo:
     def check_oss_connection(self, single_node):
         # 校验oss节点端口信息是否正确
         port = single_node.get("port")
-        if port != "8080":
+        if not is_valid_port(port):
             raise ErrCodeException(ErrorCode.ERROR_OSS_PORT, f"ossNode port {port} incorrect")
 
         host_ip = single_node.get("ip")
@@ -310,7 +333,7 @@ class TDSQLResourceInfo:
             raise ErrCodeException(ErrorCode.ERROR_AUTH, "Check connectivity: auth info error!")
 
         # 校验数据库用户是否有权限
-        version = defaults_file_path.split("/")[4]
+        version = self.get_mysql_version()
         if not check_priv_is_ok(user, pwd, socket_path, version):
             raise ErrCodeException(ErrorCode.CHECK_PRIVILEGE_FAILED,
                                    "Check connectivity: user have no privilege for any ip")
@@ -408,6 +431,7 @@ class TDSQLResourceInfo:
         self.out_resource_list(extend_info, ret_body.get("returnData"))
 
     def out_resource_list(self, extend_info, return_data):
+        log.info(f"get_data_nodes return_data {return_data}")
         resource_list = []
         resource = dict()
         cluster_instance_info = dict()
@@ -589,3 +613,51 @@ class TDSQLResourceInfo:
             return False
         log.info("Remove protect success.")
         return True
+
+    def finalize_clear(self):
+        log.info(f"Exec finalize_clear")
+        data_node_info = json.loads(self.app_extend_info.get('dataNode', '{}'))
+        if not data_node_info:
+            return False
+        output = ""
+        extend_info = self.param.get_param().get('extendInfo', {})
+        log.info(f"finalize_clear extend_info: {extend_info}")
+        end_time = extend_info.get('endTime')
+        end_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(end_time)))
+        log.info(f"finalize_clear end_time: {end_time}")
+        ip = data_node_info.get('ip')
+        port = data_node_info.get('port')
+        mysql_version = self.get_mysql_version()
+        mysql_socket = data_node_info.get('socket', '')
+        user_name = get_env_variable(TDSQLResourceKeyName.APPLICATION_AUTH_AUTHKEY + self.pid)
+        user_pwd = get_env_variable(TDSQLResourceKeyName.APPLICATION_AUTH_AUTHPWD + self.pid)
+        if mysql_version.startswith(MySQLVersion.MARIADB):
+            connect_param = ConnectParam(socket='', ip=ip, port=port)
+        else:
+            connect_param = ConnectParam(socket=mysql_socket, ip=ip, port=port)
+        try:
+            ret, output = exec_sql(user_name, user_pwd, connect_param,
+                                   f"purge binary logs before '{end_time}'")
+        except Exception as exception_str:
+            log.error(f"finalize_clear failed: {exception_str}")
+            ret = False
+        if not ret:
+            log.error(f"finalize_clear failed, ret:{ret} output is {output}")
+            return False
+        return True
+
+    def get_mysql_version(self):
+        log.info(f"get_mysql_version resource_param : {self.param}")
+        app_env_enxtend_info = self.param.get_app_env_enxtend_info()
+        mysql_version = app_env_enxtend_info.get("mysql_version", "") \
+
+        if not mysql_version:
+            extend_info = self.param.get_extend_info()
+            log.info(f"get_version app_extend_info {extend_info}")
+            single_node_str = extend_info.get("singleNode", "")
+            single_node = json.loads(single_node_str)
+            defaults_file_path = single_node.get("defaultsFile", "")
+            mysql_version = get_mysql_version_from_defaults_file_path(defaults_file_path)
+
+        log.info(f"get_version mysql_version {mysql_version}")
+        return mysql_version

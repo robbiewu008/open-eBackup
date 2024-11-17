@@ -42,14 +42,6 @@ def get_lock_ddl_param():
     return config
 
 
-def delete_files_in_meta_dir(meta_path):
-    for path in os.listdir(meta_path):
-        new_path = os.path.join(meta_path, path)
-        if not su_exec_rm_cmd(new_path):
-            log.error(f"Rm file failed. path:[{new_path}]")
-        return
-
-
 def check_tool_exist(tool_name):
     cmd_exec_err = False
     ret = int(ExecCmdResult.SUCCESS)

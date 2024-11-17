@@ -143,13 +143,6 @@ class PostgresClusterRestoreAbstract(PostgresRestoreBase, ABC):
                                                          err_code=ErrorCode.PGPOOL_PORT_NOT_LISTEN_ERR_AFTER_RESTORE)
                 return
             LOGGER.info(f"Start pgpool success.")
-        # 集群恢复成功，删除备份的conf文件
-        tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
-        tgt_obj_extend_info_dict = self.param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {})
-        tgt_db_os_user = tgt_obj_extend_info_dict.get("osUsername", "")
-        is_running = PostgreCommonUtils.is_db_running(tgt_db_os_user, tgt_install_path, tgt_data_path)
-        if is_running:
-            PostgreRestoreService.delete_useless_bak_files(tgt_data_path)
         # 删除patroni日志恢复拷贝数据目录
         if install_deploy_type == InstallDeployType.PATRONI:
             PostgreRestoreService.delete_copy_dir_for_patroni(self.param_dict)

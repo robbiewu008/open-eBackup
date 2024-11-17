@@ -163,7 +163,7 @@ class MySQLResource:
         system_service_type, mysql_service_type = get_service_type(cluster_type)
         deploy_operating_system = get_operating_system()
         instance_id, instance_name = self.param.application.get("id"), self.param.application.get("name")
-        database_list = get_databases_from_sql(self.sql_param, instance_id, instance_name)
+        database_list = get_databases_from_sql(self.sql_param, instance_id, instance_name, self.version)
         log.info(f"database_list:{database_list}")
         if not database_list:
             error_message = f"Get database failed or database is not exist"

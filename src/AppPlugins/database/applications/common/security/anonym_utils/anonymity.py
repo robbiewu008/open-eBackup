@@ -11,6 +11,8 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
+#!/usr/bin/env python
+# _*_ coding:utf-8 _*_
 import copy
 import json
 import inspect
@@ -32,7 +34,8 @@ class Anonymity:
     sensitive_words = ["%pass%", "%pwd%", "%key%", "%crypto%", "%session%", "%token%", "%fingerprint%", "%auth%",
                        "%enc%", "%dec%", "%tgt%", "%iqn%", "%initiator%", "%secret%", "%cert%",  "%salt%", "%private%",
                        "%user_info%", "%verfiycode%", "%rand%", "%safe%", "%PKCS1%", "%base64%", "%AES128%", "%AES256%",
-                       "%RSA%", "%SHA1%", "%SHA256%", "%SHA384%", "%SHA521%", "%algorithm%", "@mk", "@sk", "@iv"]
+                       "%RSA%", "%SHA1%", "%SHA256%", "%SHA384%", "%SHA521%", "%algorithm%", "@mk", "@sk", "@iv",
+                       "%/\\\"%"]
 
     @classmethod
     def process(cls, data):
