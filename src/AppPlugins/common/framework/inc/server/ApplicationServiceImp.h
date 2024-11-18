@@ -146,6 +146,9 @@ public:
     */
     EXTER_ATTACK virtual void RemoveProtect(ActionResult& returnValue,
         const ApplicationEnvironment& appEnv, const Application& application) override;
+
+    EXTER_ATTACK virtual void FinalizeClear(ActionResult& _return, const AppProtect::ApplicationEnvironment& appEnv,
+        const AppProtect::Application& application, const std::map<std::string, std::string>& extendInfo) override;
 };
 
 #endif // _APPLICATION_SERVICE_IMP_H_

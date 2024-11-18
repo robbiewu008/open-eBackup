@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef AGENT_UTILS_H
 #define AGENT_UTILS_H
 #include <vector>
@@ -11,6 +23,7 @@
 #include "common/Defines.h"
 #include "common/CMpThread.h"
 #include "common/Log.h"
+#include "common/StaticConfig.h"
 
 #ifdef SANCLIENT_AGENT
 static const mp_string AGENT_RUNNING_USER = "sanclient";
@@ -21,6 +34,7 @@ static const mp_string EXAGENT_RUNNING_USER = "exrdadmin";
 #endif
 #ifdef WIN32
 static const mp_string AGENT_ROOT_USER = "local_system";
+static mp_string SYSTEM_DISK_NAME = "";
 #else
 static const mp_string AGENT_ROOT_USER = "root";
 #endif
@@ -74,10 +88,6 @@ const mp_string HOST_ENV_DEPLOYTYPE_HYPERDETECT_CYBER_ENGINE = "d5"; // 安全�
 const mp_string HOST_ENV_DEPLOYTYPE_X9000 = "d6";                    // x9000
 const mp_string HOST_ENV_DEPLOYTYPE_E6000 = "d7";             // e6000, 分布式一体机
 const mp_string HOST_ENV_DEPLOYTYPE_DATABACKUP = "d8";             // 软硬解耦, dependent
-
-// host install type
-const mp_int32 AGENT_INSTALL_TYPE_EXTERNAL = 0;
-const mp_int32 AGENT_INSTALL_TYPE_INTERNAL = 1;
 
 // label
 static const mp_string DATATURBO_FAILED_LABEL = "agent_execute_mount_dataturbo_fail_label";
@@ -189,6 +199,7 @@ AGENT_API mp_void RemoveFullPathForLog(mp_string strCmd, mp_string& strLogCmd);
 
 #ifdef WIN32
 AGENT_API mp_int32 GetCurrentUserNameW(mp_wstring& strUserName, mp_ulong& iErrCode);
+AGENT_API mp_string GetSystemDiskChangedPathInWin(const mp_string& oriPath);
 AGENT_API const mp_wstring BaseFileNameW(const mp_wstring& pszFileName);
 #else
 AGENT_API mp_int32 GetUidByUserName(const mp_string& strUserName, mp_int32& uid, mp_int32& gid);
@@ -253,6 +264,9 @@ AGENT_API mp_int32 CalibrationFormatTaskId(mp_string &params);
 AGENT_API mp_int32 CalibrationFormatErrDetail(mp_string &params);
 AGENT_API mp_int32 CalibrationFormatStorProtocol(mp_uint64 params);
 AGENT_API mp_int32 ModifyLineData(const mp_string& fileName, const mp_string& key, const mp_string& value);
+
+// common config
+AGENT_API bool IsInnerAgent();
 
 #ifndef WIN32
 AGENT_API mp_int32 ChangeGmonDir();

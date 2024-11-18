@@ -205,8 +205,12 @@ enum RepositoryProtocolType {
     BLOCK = 3,
     /** repository using local directory */
     LOCAL_DIR = 4,
+    /** repository using native nfs */
+    NATIVE_NFS = 5,
+    /** repository using native cifs */
+    NATIVE_CIFS = 6,
     /** repository using tape */
-    TAPE = 5,
+    TAPE = 7,
 }
 
 /** backup copy type */

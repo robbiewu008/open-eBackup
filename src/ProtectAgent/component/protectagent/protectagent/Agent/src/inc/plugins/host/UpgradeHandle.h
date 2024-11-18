@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef _UPGRADE_HANDLE_H_
 #define _UPGRADE_HANDLE_H_
 
@@ -51,13 +63,13 @@ public:
     static mp_void* UpgradeAgentHandle(mp_void* param);
 #endif
     // 升级流程功能函数
-    static mp_int32 CheckBeforeUpgrade();
+    static mp_int32 CheckBeforeUpgrade(const mp_string &jobId);
     static mp_int32 ObtainUpgradePac();
     static mp_int32 PrepareForUpgrade();
     static mp_int32 CallUpgradeScript();
     static mp_int32 UpdateUpgradeStatus(const mp_string& strUpgradeStatus);
-    static mp_int32 LabelRepoter(
-        const mp_string &jobId, mp_int32 process, const mp_string &lableName, mp_int32 status);
+    static mp_int32 LabelRepoter(const mp_string &jobId, mp_int32 process, const mp_string &lableName,
+                                 mp_int32 status, const mp_string &labelLevel);
 
     static mp_int32 GetDownloadInfo();
     static mp_int32 SecurityConfiguration(HttpRequest& req);
@@ -65,6 +77,7 @@ public:
     static void SetDomainResolve(HttpRequest& req, const mp_string& pmIp);
     static mp_int32 SendRequest(IHttpClient* httpClient, const HttpRequest& req, mp_string& disposition);
     static mp_int32 InitRequestCommon();
+    static mp_void UpgradeAgentHandleInner(const mp_string &jobId);
 
 private:
     static std::vector<mp_string> m_vecPMIp;
@@ -75,6 +88,7 @@ private:
     static mp_string m_sha256;
     static mp_string m_signature;
     static mp_int32 m_upgradePackageSize;
+    static mp_string m_packageType;
 };
 
 #endif    // _UPGRADE_HANDLE_H_

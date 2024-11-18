@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef __AGENT_FILE_H__
 #define __AGENT_FILE_H__
 
@@ -32,6 +44,7 @@ public:
     static mp_int32 GetPathFromFilePath(const mp_string& strFileFullPath, mp_string& strFilePath);
     static mp_int32 GetNameFromFilePath(const mp_string &strFileFullPath, mp_string &strFileName);
     static mp_int32 FileSize(const mp_char* pszFilePath, mp_uint32& uiSize);
+    static mp_int32 FileSize(const mp_char* pszFilePath, mp_uint64& uiSize);
     static mp_int32 GetlLastModifyTime(const mp_char* pszFilePath, mp_time& tLastModifyTime);
     static mp_int32 ReadFile(const mp_string& strFilePath, std::vector<mp_string>& vecOutput);
     static mp_int32 GetFolderFile(mp_string& strFolder, std::vector<mp_string>& vecFileList);

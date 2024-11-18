@@ -786,6 +786,18 @@ service ApplicationService extends PluginServiceBase {
 
     /** 
         Function description
+            after finishing the job, clear the data which is not used
+        Parameters
+            appEnv : protect application environment
+            application : check application information
+            extendInfo : information needed for future use
+        Return value
+            successful if the ActionResult.code is 0, failed otherwise
+    */
+    ActionResult FinalizeClear(1:ApplicationEnvironment appEnv, 2:Application application, 3:map<string, string> extendInfo) throws(1:AppProtectPluginException e);
+  
+    /** 
+        Function description
             list appliation resource, synchronization function, .eg query data file of oracle database
         Parameters
             appEnv : protect application environment

@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef WIN32
 #include <csignal>
 #include <libgen.h>
@@ -249,7 +261,7 @@ mp_int32 CSystemExec::ExecSystemWithoutEchoEnvWin(
 {
     mp_int32 iRet = MP_FAILED;
     // windows下多个进程会调用此函数，不能将执行结果重定向到某一个日志文件下
-    COMMLOG(OS_LOG_DEBUG, "Command is %s", strLogCmd.c_str());
+    COMMLOG(OS_LOG_DEBUG, "Command is %s", Sensitive::WipeSensitive(strLogCmd, strLogCmd).c_str());
     TCHAR chNewEnv[MAX_PATH_SIZE];
     if (strEnv.length() > MAX_PATH_SIZE) {
         COMMLOG(OS_LOG_INFO, "Env file path size wrong.");
@@ -306,7 +318,8 @@ mp_int32 CSystemExec::ExecSystemWithoutEchoEnvWin(
     // CodeDex误报，SECURE_CODING
     CloseHandle(stProcessInfo.hProcess);
     CloseHandle(stProcessInfo.hThread);
-    COMMLOG(OS_LOG_DEBUG, "Leave ExecSystemWithoutEchoEnvWin, command is %s", strLogCmd.c_str());
+    COMMLOG(OS_LOG_DEBUG, "Leave ExecSystemWithoutEchoEnvWin, command is %s",
+        Sensitive::WipeSensitive(strLogCmd, strLogCmd).c_str());
     return iRet;
 }
 

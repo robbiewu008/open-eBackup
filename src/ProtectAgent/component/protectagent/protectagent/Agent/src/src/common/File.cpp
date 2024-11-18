@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifdef WIN32
 #include <tchar.h>
 #include <atlstr.h>
@@ -285,6 +297,32 @@ Description  : 获取文件大小，单位是字节
 
 Others       :-------------------------------------------------------- */
 mp_int32 CMpFile::FileSize(const mp_char* pszFilePath, mp_uint32& uiSize)
+{
+    if (NULL == pszFilePath) {
+        return MP_FAILED;
+    }
+
+#ifdef WIN32
+    struct _stat fileSizeStat;
+    if (0 != _stat(pszFilePath, &fileSizeStat)) {
+#else
+    struct stat fileSizeStat;
+    if (0 != stat(pszFilePath, &fileSizeStat)) {
+#endif
+        return MP_FAILED;
+    }
+
+    uiSize = fileSizeStat.st_size;
+
+    return MP_SUCCESS;
+}
+
+/* ------------------------------------------------------------
+Function Name: FileSize
+Description  : 获取文件大小，单位是字节
+
+Others       :-------------------------------------------------------- */
+mp_int32 CMpFile::FileSize(const mp_char* pszFilePath, mp_uint64& uiSize)
 {
     if (NULL == pszFilePath) {
         return MP_FAILED;

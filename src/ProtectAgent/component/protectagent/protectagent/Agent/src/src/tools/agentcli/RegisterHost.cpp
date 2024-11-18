@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "tools/agentcli/RegisterHost.h"
 
 #include <iostream>
@@ -16,6 +28,7 @@
 #include "securecom/Password.h"
 #include "message/tcp/CSocket.h"
 #include "message/curlclient/RestClientCommon.h"
+#include "host/ConnectivityManager.h"
 
 namespace {
 const mp_string REGISTER_HOST("RegisterHost");
@@ -179,18 +192,16 @@ mp_int32 RegisterHost::Handle(const mp_string& actionType, const mp_string& acti
 
 mp_int32 RegisterHost::ReportHost()
 {
-    COMMLOG(OS_LOG_DEBUG, "Begin to register host to ProtectManager.");
+    COMMLOG(OS_LOG_INFO, "Begin to register host to ProtectManager.");
     // step1: if agent is inner agent, send request to get esn
-    mp_int32 installType = 0;
-    mp_int32 iRet = CConfigXmlParser::GetInstance().GetValueInt32(CFG_BACKUP_SECTION, CFG_BACKUP_SCENE, installType);
-    if (iRet == MP_SUCCESS && installType == AGENT_INSTALL_TYPE_INTERNAL) {
-        iRet = ObtainEsn();
-        if (iRet != MP_SUCCESS) {
+    if (StaticConfig::NeedClusterEsn()) {
+        if (ObtainEsn() != MP_SUCCESS) {
             COMMLOG(OS_LOG_ERROR, "Obtain esn failed.");
+            return MP_FAILED;
         }
     }
     // step2: register host to ProtectManager
-    iRet = RegisterHost2PM();
+    mp_int32 iRet = RegisterHost2PM();
     if (iRet != MP_SUCCESS) {
         return iRet;
     }
@@ -200,7 +211,7 @@ mp_int32 RegisterHost::ReportHost()
 
 mp_int32 RegisterHost::DeleteHost()
 {
-    COMMLOG(OS_LOG_DEBUG, "Begin to delete host from ProtectManager.");
+    COMMLOG(OS_LOG_INFO, "Begin to delete host from ProtectManager.");
     mp_int32 iRet = DeleteHostFromPM();
     if (iRet != MP_SUCCESS) {
         return iRet;
@@ -327,15 +338,18 @@ EXTER_ATTACK mp_int32 RegisterHost::RegisterHost2PM()
     mp_int32 iRet = -1;
     mp_uint32 statusCode = 0;
 
+    std::vector<std::string> connectedIps = ConnectivityManager::GetInstance().GetConnectedIps(
+        m_PMIpVec, CMpString::SafeStoi(REGISTER_PORT));
+
     // 发送请求在更新nginx配置文件之后，防止PM第一次访问和重启nginx过程冲突
-    for (int i = 0; i < m_PMIpVec.size(); i++) {
-        iRet = InitRegisterReq(req, m_PMIpVec[i]);
+    for (int i = 0; i < connectedIps.size(); i++) {
+        iRet = InitRegisterReq(req, connectedIps[i]);
         if (iRet != MP_SUCCESS) {
             return MP_FAILED;
         }
         iRet = SendRequest(req, rspBody, statusCode);
         if (iRet == MP_SUCCESS) {
-            registerPMIp = m_PMIpVec[i];
+            registerPMIp = connectedIps[i];
             break;
         } else {
             continue;
@@ -429,10 +443,13 @@ mp_int32 RegisterHost::DeleteHostFromPM()
         return iRet;
     }
 
+    std::vector<std::string> connectedIps = ConnectivityManager::GetInstance().GetConnectedIps(
+        m_PMIpVec, CMpString::SafeStoi(REGISTER_PORT));
+
     mp_string rspBody;
     mp_uint32 statusCode = 0;
-    for (int i = 0; i < m_PMIpVec.size(); i++) {
-        iRet = InitDeleteHostReq(hostSN, req, m_PMIpVec[i]);
+    for (int i = 0; i < connectedIps.size(); i++) {
+        iRet = InitDeleteHostReq(hostSN, req, connectedIps[i]);
         if (iRet != MP_SUCCESS) {
             continue;
         }
@@ -818,11 +835,12 @@ mp_int32 RegisterHost::ReplaceHostSN(const Json::Value& jsonRspBody)
         std::vector<mp_string> vecMacs;
         vecMacs.push_back(hostsnLastValue);
         // delete old hostsn file
-        mp_string hostsnFile = HOSTSN_DIR + HOSTSN_FILE;
 #ifdef WIN32
+        mp_string hostsnFile = GetSystemDiskChangedPathInWin(HOSTSN_DIR) + HOSTSN_FILE;
         mp_string strCmd = mp_string("cmd.exe /c del ") + hostsnFile + mp_string(" ") +
             strDestDir + mp_string("\\") + HOSTSN_FILE + " >nul";
 #else
+        mp_string hostsnFile = HOSTSN_DIR + HOSTSN_FILE;
         mp_string strCmd = mp_string("rm ") + hostsnFile + mp_string(" ") + strDestDir + mp_string("/") + HOSTSN_FILE;
         CHECK_FAIL_EX(CheckCmdDelimiter(strCmd));
 #endif
@@ -870,9 +888,7 @@ mp_int32 RegisterHost::ParseRegisterHostResponds(const mp_string& rspBody)
 
 mp_int32 RegisterHost::GetAndReplaceHostSN(const mp_string& rspBody)
 {
-    mp_int32 installType = 0;
-    mp_int32 iRet = CConfigXmlParser::GetInstance().GetValueInt32(CFG_BACKUP_SECTION, CFG_BACKUP_SCENE, installType);
-    if (iRet == MP_SUCCESS && installType != AGENT_INSTALL_TYPE_INTERNAL) {
+    if (!StaticConfig::IsInnerAgent()) {
         INFOLOG("Not inner agent do not need replace host SN.");
         return MP_SUCCESS;
     }
@@ -883,7 +899,7 @@ mp_int32 RegisterHost::GetAndReplaceHostSN(const mp_string& rspBody)
     }
 
     Json::Value jsonRspBody;
-    iRet = CJsonUtils::ConvertStringtoJson(rspBody, jsonRspBody);
+    mp_int32 iRet = CJsonUtils::ConvertStringtoJson(rspBody, jsonRspBody);
     if (iRet != MP_SUCCESS || Json::ValueType::objectValue != jsonRspBody.type()) {
         ERRLOG("Convert String to Json failed.");
         return iRet;
@@ -1109,9 +1125,7 @@ mp_bool RegisterHost::IsInstallDataTurbo()
 
 mp_int32 RegisterHost::QueryEcsMetaDataInfo(const mp_string& agentIpList, Json::Value& jv)
 {
-    mp_int32 installType = 0;
-    mp_int32 iRet = CConfigXmlParser::GetInstance().GetValueInt32(CFG_BACKUP_SECTION, CFG_BACKUP_SCENE, installType);
-    if (iRet == MP_SUCCESS && installType == AGENT_INSTALL_TYPE_INTERNAL) {
+    if (StaticConfig::IsInnerAgent()) {
         COMMLOG(OS_LOG_WARN, "Inner agent do not need query Ecs meta info.");
         return MP_FAILED;
     }

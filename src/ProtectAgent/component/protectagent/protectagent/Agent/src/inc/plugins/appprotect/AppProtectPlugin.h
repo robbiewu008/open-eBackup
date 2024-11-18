@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef APPLICATION_PROTECT_PLUGIN_H
 #define APPLICATION_PROTECT_PLUGIN_H
 
@@ -18,6 +30,7 @@ private:
     EXTER_ATTACK mp_int32 PluginCheckV1(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 PluginClusterV1(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 PluginDetailV2(CRequestMsg& req, CResponseMsg& rsp);
+    EXTER_ATTACK mp_int32 FinalizeClear(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 WakeUpJob(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 SanclientJob(CRequestMsg& req, CResponseMsg& rsp);
     EXTER_ATTACK mp_int32 SanclientJobForUbc(CRequestMsg& req, CResponseMsg& rsp);

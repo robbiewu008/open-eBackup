@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "common/Log.h"
 #include "common/CMpTime.h"
 #include "common/Ip.h"
@@ -173,12 +185,12 @@ std::vector<std::string> PmRestClient::GetConnectIps(const std::vector<std::stri
         while (retryTimes < MAX_RETRY_TIMES) {
             if (httpClient->TestConnectivity(ip, port)) {
                 connectedIps.push_back(ip);
-                COMMLOG(OS_LOG_INFO, "Can cennect ip(%s).", ip.c_str());
+                COMMLOG(OS_LOG_INFO, "Can connect  ip(%s).", ip.c_str());
                 break;
             }
             retryTimes++;
             CMpTime::DoSleep(ONE_SECOND);
-            COMMLOG(OS_LOG_WARN, "Can not cennect ip(%s).", ip.c_str());
+            COMMLOG(OS_LOG_WARN, "Can not connect  ip(%s).", ip.c_str());
         }
     }
 
