@@ -12,8 +12,6 @@
 */
 package openbackup.system.base.util;
 
-/**
- */
 
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.bean.FileValidateRule;

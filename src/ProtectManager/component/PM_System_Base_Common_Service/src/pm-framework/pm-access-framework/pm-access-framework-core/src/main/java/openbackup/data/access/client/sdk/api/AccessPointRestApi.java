@@ -31,7 +31,7 @@ public interface AccessPointRestApi {
     /**
      * import copy
      *
-     * @param uri  uri
+     * @param uri uri
      * @param token token
      * @param importParam import param
      * @return result

@@ -199,4 +199,3 @@ public class InputStringChecker implements ConstraintValidator<CheckInputString,
         return true;
     }
 }
-

@@ -43,7 +43,6 @@ public class NodeRestApiConfiguration {
             feignClientConfig.getInternalClient());
     }
 
-
     /**
      * 获取pmConfigRestApi
      *

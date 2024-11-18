@@ -37,4 +37,3 @@ public class ExportRequest {
      */
     private DownLoadCopyInfo copyInfo;
 }
-

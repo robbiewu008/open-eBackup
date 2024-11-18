@@ -54,7 +54,7 @@
         <org.mapstruct.pdmcode>0583178115</org.mapstruct.pdmcode>
         <quartz.version>2.3.2</quartz.version>
         <quartz.pdmcode>05833PXR</quartz.pdmcode>
-        <snmp4j.version>2.8.18</snmp4j.version>
+        <snmp4j.version>2.8.18-h1</snmp4j.version>
         <snmp4j.pdmcode>05859519</snmp4j.pdmcode>
         <httpclient5.version>5.2.1</httpclient5.version>
         <httpclient5.pdmcode>0583142213</httpclient5.pdmcode>
@@ -711,7 +711,7 @@
             </dependency>
         </dependencies>
 
-    <!-- 构建插件 -->
+        <!-- 构建插件 -->
     </dependencyManagement>
     <build>
         <pluginManagement>

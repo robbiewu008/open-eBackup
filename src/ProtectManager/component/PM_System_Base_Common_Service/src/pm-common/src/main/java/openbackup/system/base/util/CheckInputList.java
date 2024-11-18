@@ -114,4 +114,3 @@ public @interface CheckInputList {
      */
     Class<? extends Payload>[] payload() default {};
 }
-

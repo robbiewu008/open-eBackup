@@ -596,7 +596,6 @@ public class SSHDClientSession implements AutoCloseable {
         }
     }
 
-
     /**
      * 测试时校验文件夹权限
      *
