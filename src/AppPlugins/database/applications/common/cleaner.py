@@ -21,7 +21,6 @@ import sys
 
 def clear(secret):
     """
-    遗留待删除方法，安全已有结论，对于python语言无需清理
     :param secret: 变量
     :return: 无
     """
