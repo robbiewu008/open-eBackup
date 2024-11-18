@@ -12,8 +12,6 @@
 */
 package openbackup.data.access.framework.copy.mng.service;
 
-import openbackup.system.base.sdk.copy.model.StorageInfo;
-
 import openbackup.data.access.client.sdk.api.framework.dme.AvailableTimeRanges;
 import openbackup.data.access.framework.copy.controller.req.CatalogQueryReq;
 import openbackup.data.access.framework.core.model.CopySummaryResource;
@@ -21,6 +19,7 @@ import openbackup.system.base.common.model.PageListResponse;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyResourceSummary;
+import openbackup.system.base.sdk.copy.model.StorageInfo;
 import openbackup.system.base.sdk.dee.model.FineGrainedRestore;
 
 import java.util.List;

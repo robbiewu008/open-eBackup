@@ -12,8 +12,6 @@
 */
 package openbackup.data.access.framework.copy.controller;
 
-import openbackup.system.base.sdk.copy.model.StorageInfo;
-
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.controller.req.CopyVerifyRequest;
 import openbackup.data.access.framework.copy.index.service.impl.UnifiedCopyIndexService;
@@ -29,6 +27,7 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.PageListResponse;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.common.model.UuidObject;
+import openbackup.system.base.sdk.copy.model.StorageInfo;
 import openbackup.system.base.security.exterattack.ExterAttack;
 
 import org.hibernate.validator.constraints.Length;

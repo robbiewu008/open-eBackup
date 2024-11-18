@@ -17,7 +17,6 @@ import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
 import com.huawei.oceanprotect.base.cluster.sdk.util.ClusterUriUtil;
 import com.huawei.oceanprotect.base.cluster.sdk.util.IpUtil;
-import openbackup.system.base.sdk.copy.model.StorageInfo;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -54,6 +53,7 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyResourceSummary;
+import openbackup.system.base.sdk.copy.model.StorageInfo;
 import openbackup.system.base.sdk.dee.DeeBaseParseRest;
 import openbackup.system.base.sdk.dee.DeeInternalCopyRest;
 import openbackup.system.base.sdk.dee.model.CopyCatalogsRequest;
