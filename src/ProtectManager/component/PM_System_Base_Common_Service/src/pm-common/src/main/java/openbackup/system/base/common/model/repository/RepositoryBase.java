@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.common.model.repository;
 
-import openbackup.system.base.common.model.storage.S3StorageStatusResponse;
-
 import lombok.Data;
+import openbackup.system.base.common.model.storage.S3StorageStatusResponse;
 
 import java.math.BigDecimal;
 import java.util.List;

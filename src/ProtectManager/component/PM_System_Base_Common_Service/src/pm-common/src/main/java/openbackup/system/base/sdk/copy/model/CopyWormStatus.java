@@ -32,7 +32,12 @@ public enum CopyWormStatus {
     /**
      * WORM设置失败
      */
-    SET_FAILED(4);
+    SET_FAILED(4),
+
+    /**
+     * WORM已过期
+     */
+    SET_EXPIRED(5);
 
     private final int status;
 

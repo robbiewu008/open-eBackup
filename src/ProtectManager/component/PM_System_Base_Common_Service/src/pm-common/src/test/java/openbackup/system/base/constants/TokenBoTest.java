@@ -79,4 +79,10 @@ public class TokenBoTest {
         sysadminAndAuditor.setRoles(Arrays.asList(roleSysAdmin, dpAdmin));
         Assert.assertTrue(DefaultRoleHelper.isAdminOrAudit(sysadminAndAuditor.getId()));
     }
+
+    @Test
+    public void test_is_admin_or_audit_by_role_name_success()
+    {
+        Assert.assertTrue(DefaultRoleHelper.isAdminOrAuditByRoleName("Role_SYS_Admin"));
+    }
 }

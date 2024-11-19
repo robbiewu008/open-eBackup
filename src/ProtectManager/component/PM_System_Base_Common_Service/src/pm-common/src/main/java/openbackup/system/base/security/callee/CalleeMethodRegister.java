@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.security.callee;
 
-import openbackup.system.base.common.exception.LegoCheckedException;
-
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -47,8 +46,8 @@ public class CalleeMethodRegister implements ImportBeanDefinitionRegistrar {
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        Map<String, Object> attributes =
-            importingClassMetadata.getAnnotationAttributes(CalleeMethodScan.class.getName());
+        Map<String, Object> attributes = importingClassMetadata
+                .getAnnotationAttributes(CalleeMethodScan.class.getName());
         if (attributes == null) {
             return;
         }
@@ -68,8 +67,8 @@ public class CalleeMethodRegister implements ImportBeanDefinitionRegistrar {
 
     private void registerRestServiceProxyBeanDefinitions(BeanDefinitionRegistry registry, String basePackage) {
         Set<BeanDefinition> beanDefinitions = scanner.findCandidateComponents(basePackage);
-        Set<String> apiClassNames =
-            beanDefinitions.stream().map(BeanDefinition::getBeanClassName).collect(Collectors.toSet());
+        Set<String> apiClassNames = beanDefinitions.stream().map(BeanDefinition::getBeanClassName)
+                .collect(Collectors.toSet());
         apiClassNames.forEach(apiClassName -> registerRestServiceProxyFactoryBean(apiClassName, registry));
     }
 
@@ -87,20 +86,18 @@ public class CalleeMethodRegister implements ImportBeanDefinitionRegistrar {
         CalleeMethods calleeMethods = clazz.getAnnotation(CalleeMethods.class);
         CalleeMethod[] calleeMethodList = clazz.getAnnotationsByType(CalleeMethod.class);
         return Stream
-            .concat(
-                Stream.of(calleeMethodList)
-                    .map(calleeMethod -> getMethodByClassCalleeConfig(clazz, calleeMethods, calleeMethod)),
-                Stream.of(clazz.getMethods())
-                    .map(calleeMethod -> getMethodByMethodCalleeConfig(clazz, calleeMethods, calleeMethod)))
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .concat(Stream.of(calleeMethodList)
+                        .map(calleeMethod -> getMethodByClassCalleeConfig(clazz, calleeMethods, calleeMethod)),
+                        Stream.of(clazz.getMethods())
+                                .map(calleeMethod -> getMethodByMethodCalleeConfig(clazz, calleeMethods, calleeMethod)))
+                .filter(Objects::nonNull).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private Map.Entry<String, AbstractBeanDefinition> getMethodByClassCalleeConfig(Class<?> clazz,
-        CalleeMethods calleeMethods, CalleeMethod calleeMethod) {
+            CalleeMethods calleeMethods, CalleeMethod calleeMethod) {
         String name = calleeMethod.name();
         Class<?>[] args = calleeMethod.args();
-        boolean isDefault = Arrays.deepEquals(args, new Class<?>[] {CalleeMethod.class});
+        boolean isDefault = Arrays.deepEquals(args, new Class<?>[]{CalleeMethod.class});
         Method method;
         if (isDefault) {
             method = getMethodByName(clazz, name);
@@ -112,8 +109,8 @@ public class CalleeMethodRegister implements ImportBeanDefinitionRegistrar {
             }
         }
         String fullname = buildFullname(clazz, calleeMethods, name);
-        Map.Entry<String, AbstractBeanDefinition> entry =
-            new AbstractMap.SimpleEntry<>(fullname, createCalleeBean(clazz, method));
+        Map.Entry<String, AbstractBeanDefinition> entry = new AbstractMap.SimpleEntry<>(fullname,
+                createCalleeBean(clazz, method));
         log.info("found callee method: {}", fullname);
         return entry;
     }
@@ -129,8 +126,8 @@ public class CalleeMethodRegister implements ImportBeanDefinitionRegistrar {
     }
 
     private Method getMethodByName(Class<?> clazz, String name) {
-        List<Method> methods =
-            Stream.of(clazz.getMethods()).filter(method -> method.getName().equals(name)).collect(Collectors.toList());
+        List<Method> methods = Stream.of(clazz.getMethods()).filter(method -> method.getName().equals(name))
+                .collect(Collectors.toList());
         if (methods.isEmpty()) {
             throw new LegoCheckedException("not found method by name: " + name);
         }
@@ -141,7 +138,7 @@ public class CalleeMethodRegister implements ImportBeanDefinitionRegistrar {
     }
 
     private Map.Entry<String, AbstractBeanDefinition> getMethodByMethodCalleeConfig(Class<?> clazz,
-        CalleeMethods calleeMethods, Method method) {
+            CalleeMethods calleeMethods, Method method) {
         CalleeMethod calleeMethod = method.getAnnotation(CalleeMethod.class);
         if (calleeMethod == null) {
             return null;
@@ -152,8 +149,8 @@ public class CalleeMethodRegister implements ImportBeanDefinitionRegistrar {
     }
 
     private AbstractBeanDefinition createCalleeBean(Class<?> clazz, Method method) {
-        BeanDefinitionBuilder beanDefinitionBuilder =
-            BeanDefinitionBuilder.genericBeanDefinition(Callee.class, () -> createCallee(clazz, method));
+        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(Callee.class,
+                () -> createCallee(clazz, method));
         return beanDefinitionBuilder.getBeanDefinition();
     }
 

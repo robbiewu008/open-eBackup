@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.cluster.model;
 
-import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
-
 import lombok.Data;
+import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
 
 /**
  * member cluster vo

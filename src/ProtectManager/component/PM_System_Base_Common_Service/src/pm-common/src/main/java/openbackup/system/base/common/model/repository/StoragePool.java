@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.common.model.repository;
 
-import openbackup.system.base.common.utils.JSONObject;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.common.utils.JSONObject;
 
 import java.math.BigDecimal;
 

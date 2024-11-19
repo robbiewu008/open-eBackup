@@ -239,9 +239,34 @@ public class IsmNumberConstant {
     public static final int THREE_HUNDRED_SIXTY_FIVE = 365;
 
     /**
-     * 常量
+     * 任务主优先级常量
      */
     public static final int THOUSAND = 1000;
+
+    /**
+     * 任务主优先级常量
+     */
+    public static final int TWO_THOUSAND = 2000;
+
+    /**
+     * 任务主优先级常量
+     */
+    public static final int TWO_THOUSAND_FOUR_HUNDRED = 2400;
+
+    /**
+     * 任务主优先级常量
+     */
+    public static final int TWO_THOUSAND_FIVE_HUNDRED = 2500;
+
+    /**
+     * 任务主优先级常量
+     */
+    public static final int THREE_THOUSAND_HUNDRED = 3000;
+
+    /**
+     * scopeJobLimit为-1000000时设置为变量
+     */
+    public static final int ABNORMAL_SCOPE_JOB_LIMIT = -1000000;
 
     /**
      * 常量

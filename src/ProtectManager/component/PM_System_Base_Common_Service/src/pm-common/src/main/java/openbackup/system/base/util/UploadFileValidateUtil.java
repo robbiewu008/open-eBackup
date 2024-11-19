@@ -12,6 +12,8 @@
 */
 package openbackup.system.base.util;
 
+import jodd.io.FileUtil;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.bean.FileValidateRule;
 import openbackup.system.base.bean.ZipFileValidateRule;
 import openbackup.system.base.common.constants.CommonErrorCode;
@@ -19,10 +21,8 @@ import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
+import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import jodd.io.FileUtil;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -86,7 +86,7 @@ public class UploadFileValidateUtil {
     private static final int ZIP_HEADER_INDEX = 4;
 
     // zip文件头字节
-    private static final byte[] ZIP_TYPE_HEADER = new byte[] {80, 75};
+    private static final byte[] ZIP_TYPE_HEADER = new byte[]{80, 75};
 
     // 1MB的大小
     private static final long MB = 1024L * 1024L;
@@ -121,15 +121,12 @@ public class UploadFileValidateUtil {
      *
      * @param suffix 校验规则的文件后缀名
      * @param file 待校验的文件对象
-     * @param isRequired  true:文件对象允许为null, false:文件对象不允许为null
+     * @param isRequired true:文件对象允许为null, false:文件对象不允许为null
      * @param fileSize 校验规则的文件大小
      * @return Boolean 校验结果
      */
     public static Boolean validateMultipartFile(String suffix, MultipartFile file, boolean isRequired, long fileSize) {
-        FileValidateRule fileValidateRule = FileValidateRule.builder()
-                .maxSize(fileSize)
-                .suffix(suffix)
-                .build();
+        FileValidateRule fileValidateRule = FileValidateRule.builder().maxSize(fileSize).suffix(suffix).build();
         try {
             UploadFileValidateUtil.validateCommonFile(file, fileValidateRule, isRequired);
             return true;
@@ -147,7 +144,7 @@ public class UploadFileValidateUtil {
      * @param canNull true:文件对象允许为null,false:文件对象不允许为null
      */
     public static void validateCommonFile(MultipartFile multipartFile, FileValidateRule fileValidateRule,
-        boolean canNull) {
+            boolean canNull) {
         // 验证文件对象是否为null
         validateFileNotNull(multipartFile, canNull);
         // 如果文件对象可以为null，并且对象确实为null，则return
@@ -158,10 +155,28 @@ public class UploadFileValidateUtil {
         validateFileNameLength(multipartFile.getOriginalFilename(), fileValidateRule.getNameMaxLength());
         // 校验文件名后缀
         validateFileNameSuffix(multipartFile.getOriginalFilename(), fileValidateRule.getSuffix());
+        validateFileNameSuffixes(multipartFile.getOriginalFilename(), fileValidateRule.getSuffixes());
         // 校验文件大小
         validateFileMaxSize(multipartFile.getSize(), fileValidateRule.getMaxSize());
         // 校验文件路径
         validateFilePath(fileValidateRule.getPath(), fileValidateRule.getPathRule());
+    }
+
+    private static void validateFileNameSuffixes(String originalFilename, String[] suffixes) {
+        if (VerifyUtil.isEmpty(suffixes)) {
+            log.warn("no suffix rule.");
+            return;
+        }
+        boolean hasDot = originalFilename.contains(FILE_SUFFIX_DOT) && !originalFilename.startsWith(FILE_SUFFIX_DOT);
+        String uploadFileName = getUploadFileName(originalFilename);
+        for (String suffix : suffixes) {
+            if (hasDot && uploadFileName.endsWith(suffix)) {
+                return;
+            }
+        }
+        log.error("upload file name suffix error.");
+        throw new LegoCheckedException(CommonErrorCode.FILE_NAME_SUFFIX_VALIDATE_FAILED,
+            "upload file name suffix error.");
     }
 
     /**
@@ -202,7 +217,7 @@ public class UploadFileValidateUtil {
             validateFileHeader(fileLocalPath);
             // 4、压缩炸弹校验：解压zip压缩包，并检验zip文件的安全性，拦截zip炸弹
             validateZipSafety(fileLocalPath, unzipTempPath, zipFileValidateRule.getFileMaxNum(),
-                zipFileValidateRule.getMaxDecompressSize(), zipFileValidateRule.getSubFileList());
+                    zipFileValidateRule.getMaxDecompressSize(), zipFileValidateRule.getSubFileList());
         } finally {
             try {
                 FileUtil.cleanDir(tempPathFinal);
@@ -253,7 +268,7 @@ public class UploadFileValidateUtil {
         if (uploadFileName.length() > nameMaxLength) {
             log.error("upload file fail, file name is too long. name length : {}.", uploadFileName.length());
             throw new LegoCheckedException(CommonErrorCode.FILE_NAME_LENGTH_VALIDATE_FAILED,
-                new String[] {String.valueOf(nameMaxLength)}, "file name is too long.");
+                    new String[]{String.valueOf(nameMaxLength)}, "file name is too long.");
         }
     }
 
@@ -273,7 +288,7 @@ public class UploadFileValidateUtil {
         if (!hasDot || !uploadFileName.endsWith(suffix)) {
             log.error("upload file name suffix error.");
             throw new LegoCheckedException(CommonErrorCode.FILE_NAME_SUFFIX_VALIDATE_FAILED,
-                "upload file name suffix error.");
+                    "upload file name suffix error.");
         }
     }
 
@@ -291,7 +306,7 @@ public class UploadFileValidateUtil {
         }
         if (fileSize > maxSize) {
             throw new LegoCheckedException(CommonErrorCode.FILE_SIZE_VALIDATE_FAILED,
-                new String[] {convertFileSizeToMB(maxSize)}, "upload file is too large.");
+                    new String[]{convertFileSizeToMB(maxSize)}, "upload file is too large.");
         }
     }
 
@@ -354,7 +369,7 @@ public class UploadFileValidateUtil {
         fileName.chars().boxed().forEach(intChar -> {
             if (collect.contains(intChar)) {
                 throw new LegoCheckedException(CommonErrorCode.FILE_NAME_SECURITY_VALIDATE_FAILED,
-                    "file name illegal.");
+                        "file name illegal.");
             }
         });
         // 非法文件名
@@ -374,7 +389,7 @@ public class UploadFileValidateUtil {
      */
     @ExterAttack
     public static void validateZipSafety(String fileLocalPath, String unzipTempPath, long fileMaxNum,
-        long maxDecompressSize, List<String> subFileList) {
+            long maxDecompressSize, List<String> subFileList) {
         // 压缩文件校验必须指定解压文件的临时存放路径
         if (StringUtils.isEmpty(unzipTempPath)) {
             log.warn("unzipTempPath is null");
@@ -388,8 +403,8 @@ public class UploadFileValidateUtil {
         // 压缩文件中子文件map
         Map<String, File> inputFileMap = new HashMap<>();
         try (FileInputStream inputStream = FileUtils.openInputStream(new File(fileLocalPath));
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-            ZipInputStream zip = new ZipInputStream(bufferedInputStream, Charset.forName(DEFAULT_CHARSET))) {
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+                ZipInputStream zip = new ZipInputStream(bufferedInputStream, Charset.forName(DEFAULT_CHARSET))) {
             ZipEntry zipEntry;
             long entryCounter = 0L;
             while ((zipEntry = zip.getNextEntry()) != null) {
@@ -411,7 +426,7 @@ public class UploadFileValidateUtil {
             validateSubFileNum(inputFileMap, subFileList);
         } catch (IOException e) {
             throw new LegoCheckedException(CommonErrorCode.OPERATION_FAILED, "The zip file stream parsing failed.",
-                ExceptionUtil.getErrorMessage(e));
+                    ExceptionUtil.getErrorMessage(e));
         } finally {
             // 删除解压的文件
             deleteUnZipFilesAndDirs(unZipTempDirList);
@@ -443,7 +458,7 @@ public class UploadFileValidateUtil {
      * @throws IOException IO异常
      */
     private static void createDir(String unzipTempPath, String fileName, List<File> unZipTempDirList)
-        throws IOException {
+            throws IOException {
         File dir = new File(unzipTempPath + File.separator + fileName);
         if (dir.mkdirs()) {
             log.info("success to unzip dir path.");
@@ -462,10 +477,10 @@ public class UploadFileValidateUtil {
      * @return File 解压后的文件对象
      */
     private static File readPerEntry(InputStream zip, String unzipTempPath, String fileName, long maxDecompressSize,
-        Map<String, Long> decompressSizeMap) {
-        try (FileOutputStream fileOutputStream = FileUtils.openOutputStream(
-            new File(unzipTempPath + File.separator + fileName));
-            BufferedOutputStream os = new BufferedOutputStream(fileOutputStream)) {
+            Map<String, Long> decompressSizeMap) {
+        try (FileOutputStream fileOutputStream = FileUtils
+                .openOutputStream(new File(unzipTempPath + File.separator + fileName));
+                BufferedOutputStream os = new BufferedOutputStream(fileOutputStream)) {
             File targetDir = new File(unzipTempPath);
             if (!targetDir.exists()) {
                 targetDir.mkdirs();
@@ -480,7 +495,7 @@ public class UploadFileValidateUtil {
             }
         } catch (IOException e) {
             throw new LegoCheckedException(CommonErrorCode.OPERATION_FAILED, "Error to close the upload file stream.",
-                ExceptionUtil.getErrorMessage(e));
+                    ExceptionUtil.getErrorMessage(e));
         }
         log.info("success to unzip file.");
         return new File(unzipTempPath + File.separator + fileName);
@@ -496,7 +511,7 @@ public class UploadFileValidateUtil {
         if (maxEntriesNum > IsmNumberConstant.ZERO && entriesNum > maxEntriesNum) {
             log.error("uncompress result num is too many than max num: {}.", maxEntriesNum);
             throw new LegoCheckedException(CommonErrorCode.FILE_SIZE_VALIDATE_FAILED,
-                new String[] {String.valueOf(maxEntriesNum)}, "Uncompress result num is too many than max num.");
+                    new String[]{String.valueOf(maxEntriesNum)}, "Uncompress result num is too many than max num.");
         }
     }
 
@@ -507,13 +522,11 @@ public class UploadFileValidateUtil {
      * @param maxDecompressSize 规则限定的解压文件最大大小
      */
     private static void checkUnzipTotalSize(long decompressSize, long maxDecompressSize) {
-        long maxSize = maxDecompressSize == IsmNumberConstant.ZERO
-            ? MAX_FILE_LENGTH
-            : maxDecompressSize;
+        long maxSize = maxDecompressSize == IsmNumberConstant.ZERO ? MAX_FILE_LENGTH : maxDecompressSize;
         if (decompressSize > maxSize) {
             log.error("uncompress result size: {} more than max size: {}.", decompressSize, maxDecompressSize);
             throw new LegoCheckedException(CommonErrorCode.ERR_PARAM,
-                "Uncompress result size ({}) more than max size.");
+                    "Uncompress result size ({}) more than max size.");
         }
     }
 
@@ -552,7 +565,7 @@ public class UploadFileValidateUtil {
             log.info("success to save input file to local.");
         } catch (IOException e) {
             throw new LegoCheckedException(CommonErrorCode.OPERATION_FAILED, "Error to get source file input stream.",
-                ExceptionUtil.getErrorMessage(e));
+                    ExceptionUtil.getErrorMessage(e));
         }
         return targetFileName;
     }
@@ -571,11 +584,11 @@ public class UploadFileValidateUtil {
                 FileUtil.mkdirs(targetDir);
             } catch (IOException e) {
                 throw new LegoCheckedException(CommonErrorCode.OPERATION_FAILED, "Error to create temp directory.",
-                    ExceptionUtil.getErrorMessage(e));
+                        ExceptionUtil.getErrorMessage(e));
             }
         }
         try (InputStream inputStream = fileInputStream;
-            OutputStream os = FileUtils.openOutputStream(new File(targetPath + File.separator + targetFileName))) {
+                OutputStream os = FileUtils.openOutputStream(new File(targetPath + File.separator + targetFileName))) {
             byte[] temp = new byte[LegoNumberConstant.BYTE_SIZE];
             int len;
             while ((len = inputStream.read(temp)) != -1) {
@@ -584,7 +597,7 @@ public class UploadFileValidateUtil {
             os.flush();
         } catch (IOException e) {
             throw new LegoCheckedException(CommonErrorCode.OPERATION_FAILED, "Error to close the upload file stream.",
-                ExceptionUtil.getErrorMessage(e));
+                    ExceptionUtil.getErrorMessage(e));
         }
     }
 
@@ -604,7 +617,7 @@ public class UploadFileValidateUtil {
             if (!isValidHeader) {
                 log.error("fail to upload file, file is not a zip file. head bytes: {}", Arrays.toString(headerBytes));
                 throw new LegoCheckedException(CommonErrorCode.OPERATION_FAILED,
-                    "The uploaded file is not in .zip format.");
+                        "The uploaded file is not in .zip format.");
             }
         } catch (IOException e) {
             throw new LegoCheckedException(CommonErrorCode.OPERATION_FAILED, "Error to find local input zip file.");

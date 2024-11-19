@@ -58,4 +58,27 @@ public class JobSummary {
     private long dispatchFailed;
 
     private long cancelled;
+
+    /**
+     * 将任务统计数量进行叠加
+     *
+     * @param jobSummary jobSummary
+     */
+    public void add(JobSummary jobSummary) {
+        this.total += jobSummary.getTotal();
+        this.success += jobSummary.getSuccess();
+        this.fail += jobSummary.getFail();
+        this.pending += jobSummary.getPending();
+        this.dispatching += jobSummary.getDispatching();
+        this.redispatch += jobSummary.getRedispatch();
+        this.running += jobSummary.getRunning();
+        this.aborted += jobSummary.getAborted();
+        this.ready += jobSummary.getReady();
+        this.aborting += jobSummary.getAborting();
+        this.partialSuccess += jobSummary.getPartialSuccess();
+        this.abnormal += jobSummary.getAbnormal();
+        this.abortFailed += jobSummary.getAbortFailed();
+        this.dispatchFailed += jobSummary.getDispatchFailed();
+        this.cancelled += jobSummary.getCancelled();
+    }
 }

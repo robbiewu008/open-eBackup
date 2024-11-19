@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.common.rest;
 
+import feign.codec.Encoder;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import feign.codec.Encoder;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +26,7 @@ import java.lang.reflect.Type;
  * Feign Client Configuration
  *
  * @param <T> template param
+ *
  */
 public abstract class FeignClientFactoryBean<T> implements FactoryBean<T> {
     private final Class<T> type;

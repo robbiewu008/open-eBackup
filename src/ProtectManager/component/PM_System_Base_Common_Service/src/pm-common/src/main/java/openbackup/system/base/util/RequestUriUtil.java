@@ -12,15 +12,14 @@
 */
 package openbackup.system.base.util;
 
+import feign.Client;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.rest.ApacheHttp5ClientBuilder;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.config.DmaProxyProperties;
 import openbackup.system.base.config.DmeProxyProperties;
-
-import feign.Client;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;

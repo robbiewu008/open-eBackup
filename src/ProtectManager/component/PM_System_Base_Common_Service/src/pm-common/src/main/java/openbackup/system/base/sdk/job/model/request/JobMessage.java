@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.job.model.request;
 
-import openbackup.system.base.common.utils.JSONArray;
-import openbackup.system.base.common.utils.JSONObject;
-
 import com.fasterxml.jackson.annotation.JsonAlias;
 
 import lombok.Data;
+import openbackup.system.base.common.utils.JSONArray;
+import openbackup.system.base.common.utils.JSONObject;
 
 /**
  * Job Message

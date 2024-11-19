@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.sdk.resource.model;
 
-import openbackup.system.base.common.utils.VerifyUtil;
-import openbackup.system.base.util.EnumUtil;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.utils.VerifyUtil;
+import openbackup.system.base.util.EnumUtil;
 
 import org.apache.logging.log4j.util.Strings;
 
@@ -41,6 +40,7 @@ public enum ResourceSubTypeEnum {
     PROTECT_AGENT(6, "ProtectAgent", "AGENT"),
     FILESET(7, "Fileset", "Fileset"),
     DFS_FILESET(8, "DFSFileset", "Fileset"),
+    ORACLE_PDB(195, "Oracle-pdb", "Oracle"),
     ORACLE(9, "Oracle", "Oracle"),
     SQL_SERVER(10, "SQLServer", "SQLServer"),
     SQL_SERVER_INSTANCE(11, "SQLServer-instance", "SQLServer"),
@@ -87,7 +87,7 @@ public enum ResourceSubTypeEnum {
     MICROSOFT_VIRTUAL_MACHINE(52, "ms.VirtualMachine", "HyperV"),
     MICROSOFT_HOST_SYSTEM(53, "ms.HostSystem", "HyperV"),
     FUSION_SPHERE(54, "FusionSphere", "VMware"),
-    CLUSTER_COMPUTE_RESOURCE(55, "vim.ClusterComputeResource", "VMWare"),
+    CLUSTER_COMPUTE_RESOURCE(55, "vim.ClusterComputeResource", "VMware"),
     HOST_SYSTEM(56, "vim.HostSystem", "VMware"),
     FOLDER(57, "vim.Folder", "VMware"),
     RESOURCE_POOL(58, "vim.ResourcePool", "VMware"),
@@ -163,9 +163,9 @@ public enum ResourceSubTypeEnum {
     TPOPS_GAUSSDB_INSTANCE(126, "TPOPSGaussDBInstance", "GaussDB"),
     EXCHANGE_GROUP(127, "Exchange-group", "Exchange"),
     EXCHANGE_DATABASE(128, "Exchange-database", "Exchange"),
-    NDMP(129, "NDMP", "NasFileSystem"),
-    NDMP_BACKUPSET(130, "NDMP-BackupSet", "NasFileSystem"),
-    NDMP_SERVER(131, "NDMP-server", "NasFileSystem"),
+    NDMP(129, "NDMP", "NDMP"),
+    NDMP_BACKUPSET(130, "NDMP-BackupSet", "NDMP"),
+    NDMP_SERVER(131, "NDMP-server", "NDMP"),
     SAPHANA_INSTANCE(132, "SAPHANA-instance", "SAP_HANA"),
     SAPHANA_DATABASE(133, "SAPHANA-database", "SAP_HANA"),
     REDHAT_VIRTUALIZATION(134, "RedHatVirtualization", "REDHAT"),
@@ -382,11 +382,65 @@ public enum ResourceSubTypeEnum {
     /**
      * FusionOne Compute
      */
-    FUSION_ONE_COMPUTE(193, "FusionOneCompute", "FusionOneCompute");
+    FUSION_ONE_COMPUTE(193, "FusionOneCompute", "FusionOneCompute"),
 
+    /**
+     * oceanstore v7
+     */
+    OCEAN_STOR_V7(194, "OceanStorV7", "StorageEquipment"),
+
+    ANT_DB(196, "AntDB", "AntDB"),
+    ANT_DB_INSTANCE(197, "AntDBInstance", "AntDB"),
+    ANT_DB_CLUSTER_INSTANCE(198, "AntDBClusterInstance", "AntDB"),
+    /**
+     * SAP_ON_ORACLE
+     */
+    SAP_ON_ORACLE(200, "SAP_ON_ORACLE", "SAP_ON_ORACLE"),
+
+    /**
+     * SAP_ON_ORACLE_SINGLE
+     */
+    SAP_ON_ORACLE_SINGLE(201, "SAP_ON_ORACLE_SINGLE", "SAP_ON_ORACLE"),
+
+    /**
+     * Nutanix 环境
+     */
+    NUTANIX(202, "Nutanix", "Nutanix"),
+
+    /**
+     * Nutanix 环境集群
+     */
+    NUTANIX_CLUSTER(203, "NutanixCluster", "Nutanix"),
+
+    /**
+     * Nutanix 环境主机
+     */
+    NUTANIX_HOST(204, "NutanixHost", "Nutanix"),
+
+    /**
+     * Nutanix 环境虚拟机
+     */
+    NUTANIX_VM(205, "NutanixVm", "Nutanix"),
+
+    /**
+     * Nutanix 环境磁盘
+     */
+    NUTANIX_DISK(206, "NutanixDisk", "Nutanix"),
+
+    /**
+     * Nutanix 环境存储容器
+     */
+    NUTANIX_STORAGE_CONTAINER(207, "NutanixStorageContainer", "Nutanix"),
+
+    /**
+     * Nutanix 环境存储池
+     */
+    NUTANIX_STORAGE_POOL(208, "NutanixStoragePool", "Nutanix"),
+
+    ;
 
     private static final List<String> COMMON_AGENT_LIST = Collections.unmodifiableList(
-        Arrays.asList(U_BACKUP_AGENT.getType(), S_BACKUP_AGENT.getType(), VM_BACKUP_AGENT.getType()));
+            Arrays.asList(U_BACKUP_AGENT.getType(), S_BACKUP_AGENT.getType(), VM_BACKUP_AGENT.getType()));
 
     private final Integer order;
 
@@ -425,15 +479,15 @@ public enum ResourceSubTypeEnum {
      */
     public static Integer getOrderBySubTypeSilent(String subType) {
         ResourceSubTypeEnum resourceSubTypeEnum = EnumUtil.get(ResourceSubTypeEnum.class, ResourceSubTypeEnum::getType,
-            subType, false, true);
+                subType, false, true);
         return resourceSubTypeEnum == null ? -1 : resourceSubTypeEnum.getOrder();
     }
 
     /**
-     * get order by value
+     * get scope module by type
      *
      * @param subType subType
-     * @return order
+     * @return scope module
      */
     public static String getScopeModuleBySubType(String subType) {
         if (VerifyUtil.isEmpty(subType)) {

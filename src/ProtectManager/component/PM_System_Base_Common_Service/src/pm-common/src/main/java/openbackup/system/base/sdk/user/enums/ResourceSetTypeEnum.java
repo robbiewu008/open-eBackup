@@ -32,6 +32,7 @@ public enum ResourceSetTypeEnum {
     ALARM("ALARM"),
     EVENT("EVENT"),
     REPORT("REPORT"),
+    SCHEDULE_REPORT("SCHEDULE_REPORT"),
     EXERCISE("EXERCISE"),
     JOB_LOG("JOB_LOG"),
     FILE_SET_TEMPLATE("FILE_SET_TEMPLATE"),
@@ -40,7 +41,8 @@ public enum ResourceSetTypeEnum {
     DESENSITIZATION("DESENSITIZATION"),
     LIVE_MOUNT_POLICY("LIVE_MOUNT_POLICY"),
     LIVE_MOUNT("LIVE_MOUNT"),
-    KERBEROS("KERBEROS");
+    KERBEROS("KERBEROS"),
+    LABEL("LABEL");
 
     private String type;
 

@@ -25,6 +25,7 @@ import java.util.List;
  * page query rest api
  *
  * @param <T> template type
+ *
  */
 @FunctionalInterface
 public interface PageQueryRestApi<T> {

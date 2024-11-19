@@ -12,10 +12,10 @@
 */
 package openbackup.system.base.util;
 
+import com.google.gson.Gson;
+
 import openbackup.system.base.common.utils.CollectionUtils;
 import openbackup.system.base.lambda.Lambda;
-
-import com.google.gson.Gson;
 
 import org.springframework.beans.BeanUtils;
 
@@ -146,11 +146,8 @@ public class BeanTools {
         List<String> fields = CollectionUtils.nonNullList(properties);
         List<String> ignores;
         if (isInclude) {
-            ignores =
-                    Stream.of(BeanUtils.getPropertyDescriptors(source.getClass()))
-                            .map(PropertyDescriptor::getName)
-                            .filter(name -> !fields.contains(name))
-                            .collect(Collectors.toList());
+            ignores = Stream.of(BeanUtils.getPropertyDescriptors(source.getClass())).map(PropertyDescriptor::getName)
+                    .filter(name -> !fields.contains(name)).collect(Collectors.toList());
         } else {
             ignores = fields;
         }

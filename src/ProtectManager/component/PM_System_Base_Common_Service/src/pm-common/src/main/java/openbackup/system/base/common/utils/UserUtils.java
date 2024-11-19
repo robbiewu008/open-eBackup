@@ -12,6 +12,9 @@
 */
 package openbackup.system.base.common.utils;
 
+import com.alibaba.fastjson.JSONObject;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.constants.InitConstants;
@@ -19,18 +22,18 @@ import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.constants.UserCache;
 import openbackup.system.base.common.enums.UserTypeEnum;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.scurity.TokenVerificationService;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.OpServiceUtil;
 import openbackup.system.base.util.SpringBeanUtils;
 
-import com.alibaba.fastjson.JSONObject;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -159,8 +162,8 @@ public class UserUtils {
         if (UserUtils.isLdapGroupUser(user.getUserType()) && UserUtils.isLdapGroupUser(dbUserInfo.getUserType())) {
             return;
         }
-        if (!StringUtils.equals(user.getName(), dbUserInfo.getName()) || !StringUtils.equals(user.getUserType(),
-            dbUserInfo.getUserType())) {
+        if (!StringUtils.equals(user.getName(), dbUserInfo.getName())
+                || !StringUtils.equals(user.getUserType(), dbUserInfo.getUserType())) {
             log.info("user info is not matches");
             throw new LegoCheckedException(CommonErrorCode.ACCESS_DENIED, "user is not matches");
         }
@@ -179,12 +182,29 @@ public class UserUtils {
     public static void checkPasswordVersion(TokenBo.UserBo userBo, TokenBo.UserInfo userDbInfo) {
         if (!StringUtils.equals(String.valueOf(Constants.ROLE_DEVICE_MANAGER), userBo.getRoles().get(0).getId())) {
             if (userDbInfo.getPasswordVersion() == null || userBo.getPasswordVersion() == null
-                || !userDbInfo.getPasswordVersion().equals(userBo.getPasswordVersion())) {
+                    || !userDbInfo.getPasswordVersion().equals(userBo.getPasswordVersion())) {
                 log.error("db pass version: {}, token pass version: {}, userId: {} ", userDbInfo.getPasswordVersion(),
-                    userBo.getPasswordVersion(), userBo.getId());
+                        userBo.getPasswordVersion(), userBo.getId());
                 throw new LegoCheckedException(CommonErrorCode.ACCESS_DENIED);
             }
         }
+    }
+
+    /**
+     * Gets current user role name.
+     *
+     * @return the current user role name
+     */
+    public static Optional<String> getCurrentUserRoleName() {
+        List<TokenBo.RoleBo> roleBos = Optional.of(SpringBeanUtils.getBean(TokenVerificationService.class))
+            .map(TokenVerificationService::parsingTokenFromRequest)
+            .map(TokenBo::getUser)
+            .map(TokenBo.UserBo::getRoles)
+            .orElseGet(ArrayList::new);
+        if (CollectionUtils.isEmpty(roleBos)) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(roleBos.get(0).getName());
     }
 
     /**

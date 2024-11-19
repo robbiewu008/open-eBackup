@@ -12,10 +12,10 @@
 */
 package openbackup.system.base.sdk.job.model;
 
+import com.google.common.collect.Lists;
+
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.util.EnumUtil;
-
-import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,34 +105,27 @@ public enum JobStatusEnum {
     /**
      * 运行状态列表
      */
-    public static final List<JobStatusEnum> LONG_TIME_JOB_STOP_STATUS_LIST =
-            Arrays.asList(JobStatusEnum.RUNNING, JobStatusEnum.ABORTING, JobStatusEnum.READY);
+    public static final List<JobStatusEnum> LONG_TIME_JOB_STOP_STATUS_LIST = Arrays.asList(JobStatusEnum.RUNNING,
+            JobStatusEnum.ABORTING, JobStatusEnum.READY);
 
     /**
      * 运行状态列表
      */
-    public static final List<JobStatusEnum> RUNNING_STATUS_LIST =
-            Arrays.asList(JobStatusEnum.RUNNING, JobStatusEnum.ABORTING);
+    public static final List<JobStatusEnum> RUNNING_STATUS_LIST = Arrays.asList(JobStatusEnum.RUNNING,
+            JobStatusEnum.ABORTING);
 
     /**
      * 运行状态+就绪状态列表
      */
-    public static final List<JobStatusEnum> READY_AND_RUNNING_STATUS_LIST =
-            Collections.unmodifiableList(Arrays.asList(JobStatusEnum.READY,
-                    JobStatusEnum.RUNNING, JobStatusEnum.ABORTING));
+    public static final List<JobStatusEnum> READY_AND_RUNNING_STATUS_LIST = Collections
+            .unmodifiableList(Arrays.asList(JobStatusEnum.READY, JobStatusEnum.RUNNING, JobStatusEnum.ABORTING));
 
     /**
      * 完结状态列表
      */
-    public static final List<JobStatusEnum> FINISHED_STATUS_LIST =
-            Lists.newArrayList(
-                    JobStatusEnum.FAIL,
-                    JobStatusEnum.SUCCESS,
-                    JobStatusEnum.ABORTED,
-                    JobStatusEnum.PARTIAL_SUCCESS,
-                    JobStatusEnum.CANCELLED,
-                    JobStatusEnum.DISPATCH_FAILED,
-                    JobStatusEnum.ABORT_FAILED);
+    public static final List<JobStatusEnum> FINISHED_STATUS_LIST = Lists.newArrayList(JobStatusEnum.FAIL,
+            JobStatusEnum.SUCCESS, JobStatusEnum.ABORTED, JobStatusEnum.PARTIAL_SUCCESS, JobStatusEnum.CANCELLED,
+            JobStatusEnum.DISPATCH_FAILED, JobStatusEnum.ABORT_FAILED);
 
     /**
      * 获取所有处于未完结状态的列表
@@ -152,15 +145,14 @@ public enum JobStatusEnum {
     /**
      * 不带终止的完结状态
      */
-    public static final List<JobStatusEnum> FINISHED_STATUS_WITHOUT_ABORT_LIST =
-            Lists.newArrayList(
-                    JobStatusEnum.FAIL, JobStatusEnum.SUCCESS, JobStatusEnum.PARTIAL_SUCCESS, JobStatusEnum.CANCELLED);
+    public static final List<JobStatusEnum> FINISHED_STATUS_WITHOUT_ABORT_LIST = Lists.newArrayList(JobStatusEnum.FAIL,
+            JobStatusEnum.SUCCESS, JobStatusEnum.PARTIAL_SUCCESS, JobStatusEnum.CANCELLED);
 
     /**
      * 成功状态列表
      */
-    private static final List<JobStatusEnum> SUCCESS_STATUS_LIST =
-            Arrays.asList(JobStatusEnum.SUCCESS, JobStatusEnum.PARTIAL_SUCCESS);
+    private static final List<JobStatusEnum> SUCCESS_STATUS_LIST = Arrays.asList(JobStatusEnum.SUCCESS,
+            JobStatusEnum.PARTIAL_SUCCESS);
 
     private final int index;
 

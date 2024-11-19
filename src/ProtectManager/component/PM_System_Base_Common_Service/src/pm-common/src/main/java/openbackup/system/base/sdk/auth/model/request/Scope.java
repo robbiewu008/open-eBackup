@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.sdk.auth.model.request;
 
-import openbackup.system.base.sdk.auth.model.Domain;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.sdk.auth.model.Domain;
 
 /**
  * HcsTokenAuth 字段

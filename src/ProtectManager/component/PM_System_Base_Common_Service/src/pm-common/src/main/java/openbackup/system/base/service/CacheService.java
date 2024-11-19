@@ -12,6 +12,9 @@
 */
 package openbackup.system.base.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CacheConstant;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.DataMoverCheckedException;
@@ -22,10 +25,6 @@ import openbackup.system.base.sdk.infrastructure.InfrastructureRestApi;
 import openbackup.system.base.sdk.infrastructure.model.InfraResponseWithError;
 import openbackup.system.base.sdk.infrastructure.model.beans.NodePodInfo;
 import openbackup.system.base.util.ZKDistributeLock;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;

@@ -12,8 +12,6 @@
 */
 package openbackup.system.base.common.model.livemount;
 
-import openbackup.system.base.query.PageQueryConfig;
-
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -22,6 +20,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Data;
+import openbackup.system.base.query.PageQueryConfig;
 
 import java.sql.Timestamp;
 

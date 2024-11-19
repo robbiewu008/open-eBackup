@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.config.datasource;
 
-import openbackup.system.base.common.model.storage.StorageError;
-import openbackup.system.base.common.utils.JSONArray;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.common.model.storage.StorageError;
+import openbackup.system.base.common.utils.JSONArray;
 
 /**
  * 基础设施返回值

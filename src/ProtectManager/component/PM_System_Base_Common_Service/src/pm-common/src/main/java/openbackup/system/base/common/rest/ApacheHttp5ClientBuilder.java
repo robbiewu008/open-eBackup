@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.common.rest;
 
-import openbackup.system.base.common.constants.PoolingHttpClientConstant;
-
 import feign.hc5.ApacheHttp5Client;
+import openbackup.system.base.common.constants.PoolingHttpClientConstant;
 
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
@@ -48,21 +47,16 @@ public final class ApacheHttp5ClientBuilder {
      * @throws KeyManagementException KeyManagementException
      */
     public static ApacheHttp5Client buildSslNoVerifyClient()
-        throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+            throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         SSLConnectionSocketFactory sslConnectionSocketFactory = sslNoVerifyConnectionSocketFactory();
-        return new ApacheHttp5Client(HttpClients.custom()
-            .setConnectionManager(
-                defaultPoolingHttpClientConnectionManagerBuilder()
-                    .setSSLSocketFactory(sslConnectionSocketFactory)
-                    .build())
-            .build());
+        return new ApacheHttp5Client(
+                HttpClients.custom().setConnectionManager(defaultPoolingHttpClientConnectionManagerBuilder()
+                        .setSSLSocketFactory(sslConnectionSocketFactory).build()).build());
     }
 
     private static SSLConnectionSocketFactory sslNoVerifyConnectionSocketFactory()
-        throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        SSLContext context = new SSLContextBuilder()
-            .loadTrustMaterial(null, (chain, authType) -> true)
-            .build();
+            throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        SSLContext context = new SSLContextBuilder().loadTrustMaterial(null, (chain, authType) -> true).build();
         return new SSLConnectionSocketFactory(context, new NoopHostnameVerifier());
     }
 
@@ -73,18 +67,17 @@ public final class ApacheHttp5ClientBuilder {
      */
     public static ApacheHttp5Client buildDefaultClient() {
         return new ApacheHttp5Client(HttpClients.custom()
-            .setConnectionManager(defaultPoolingHttpClientConnectionManagerBuilder().build())
-            .build());
+                .setConnectionManager(defaultPoolingHttpClientConnectionManagerBuilder().build()).build());
     }
 
     private static PoolingHttpClientConnectionManagerBuilder defaultPoolingHttpClientConnectionManagerBuilder() {
-        return PoolingHttpClientConnectionManagerBuilder.create()
-            .setConnPoolPolicy(PoolReusePolicy.LIFO)
-            .setPoolConcurrencyPolicy(PoolConcurrencyPolicy.STRICT)
-            .setMaxConnPerRoute(PoolingHttpClientConstant.MAX_CONN_PER_ROUTE)
-            .setMaxConnTotal(PoolingHttpClientConstant.MAX_CONN_TOTAL)
-            .setConnectionTimeToLive(TimeValue.ofMilliseconds(PoolingHttpClientConstant.TIME_TO_LIVE))
-            .setValidateAfterInactivity(TimeValue.ofMilliseconds(PoolingHttpClientConstant.VALIDATE_AFTER_INACTIVITY));
+        return PoolingHttpClientConnectionManagerBuilder.create().setConnPoolPolicy(PoolReusePolicy.LIFO)
+                .setPoolConcurrencyPolicy(PoolConcurrencyPolicy.STRICT)
+                .setMaxConnPerRoute(PoolingHttpClientConstant.MAX_CONN_PER_ROUTE)
+                .setMaxConnTotal(PoolingHttpClientConstant.MAX_CONN_TOTAL)
+                .setConnectionTimeToLive(TimeValue.ofMilliseconds(PoolingHttpClientConstant.TIME_TO_LIVE))
+                .setValidateAfterInactivity(
+                        TimeValue.ofMilliseconds(PoolingHttpClientConstant.VALIDATE_AFTER_INACTIVITY));
     }
 
     /**
@@ -94,12 +87,10 @@ public final class ApacheHttp5ClientBuilder {
      * @return ApacheHttp5Client
      */
     public static ApacheHttp5Client buildClientFromSslContext(SSLContext context) {
-        SSLConnectionSocketFactory sslConnectionSocketFactory =
-            new SSLConnectionSocketFactory(context, new NoopHostnameVerifier());
-        return new ApacheHttp5Client(HttpClients.custom()
-            .setConnectionManager(
-                defaultPoolingHttpClientConnectionManagerBuilder().setSSLSocketFactory(sslConnectionSocketFactory)
-                    .build())
-            .build());
+        SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(context,
+                new NoopHostnameVerifier());
+        return new ApacheHttp5Client(
+                HttpClients.custom().setConnectionManager(defaultPoolingHttpClientConnectionManagerBuilder()
+                        .setSSLSocketFactory(sslConnectionSocketFactory).build()).build());
     }
 }

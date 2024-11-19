@@ -12,15 +12,14 @@
 */
 package openbackup.system.base.common.rest;
 
-import openbackup.system.base.config.FeignApacheClientConfig;
-import openbackup.system.base.service.SensitiveDataEliminateService;
-
 import feign.Feign;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import feign.codec.Decoder;
 import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.config.FeignApacheClientConfig;
+import openbackup.system.base.service.SensitiveDataEliminateService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

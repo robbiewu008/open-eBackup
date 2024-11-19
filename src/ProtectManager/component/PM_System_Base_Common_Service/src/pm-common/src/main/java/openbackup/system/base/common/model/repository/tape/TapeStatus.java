@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.common.model.repository.tape;
 
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.LegoCheckedException;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 /**
  * 磁盘状态Status

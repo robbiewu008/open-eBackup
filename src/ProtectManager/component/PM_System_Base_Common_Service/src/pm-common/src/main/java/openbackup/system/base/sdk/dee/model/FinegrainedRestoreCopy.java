@@ -28,6 +28,8 @@ public class FinegrainedRestoreCopy {
 
     private String resourceId;
 
+    private String resourceName;
+
     private String generatedBy;
 
     private String chainId;

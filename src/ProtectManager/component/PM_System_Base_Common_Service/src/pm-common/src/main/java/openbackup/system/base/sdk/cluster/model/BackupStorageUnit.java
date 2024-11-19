@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.sdk.cluster.model;
 
-import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
-import openbackup.system.base.sdk.repository.model.BackupClusterVo;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
+import openbackup.system.base.sdk.repository.model.BackupClusterVo;
 
 import java.math.BigDecimal;
 

@@ -12,6 +12,7 @@
 */
 package openbackup.system.base.common.aspect;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.annotation.Routing;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
@@ -19,8 +20,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.service.IpRuleService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -87,8 +86,7 @@ public class RoutingAspect {
      * @return 目标方法调用结果
      * @throws Throwable 异常
      */
-    @Around(
-        "((execution(* com.huawei..*(..))) || (execution(* openbackup..*(..)))) "
+    @Around("((execution(* com.huawei..*(..))) || (execution(* openbackup..*(..)))) "
             + "&& (routingOnMethod() || routingOnType())")
     public Object invokeMethodWithRoute(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result;
@@ -108,14 +106,15 @@ public class RoutingAspect {
         String[] destinationIps = getAnnotationValue(joinPoint, routing.destinationIp()).split(",");
 
         // 只有x系列需要添加路由 agent通信和复制集群通信
-        List<String> needAddingRouteIp =
-            Arrays.stream(destinationIps).filter(ip -> !VerifyUtil.isEmpty(ip)).collect(Collectors.toList());
-        log.info("Adding routing before method call, destinationIp:{}", needAddingRouteIp);
+        List<String> needAddingRouteIp = Arrays.stream(destinationIps).filter(ip -> !VerifyUtil.isEmpty(ip))
+                .collect(Collectors.toList());
+        log.debug("Adding routing before method call, destinationIp:{}", needAddingRouteIp);
         try {
-            needAddingRouteIp.forEach(ip -> ipRuleService.addIpRule(ip, taskType));
+            needAddingRouteIp.forEach(
+                    ip -> ipRuleService.addIpRule(ip, getAnnotationValue(joinPoint, routing.port()), taskType));
             result = joinPoint.proceed();
         } finally {
-            log.info("Removing routing after method call, destinationIp:{}", Arrays.toString(destinationIps));
+            log.debug("Removing routing after method call, destinationIp:{}", Arrays.toString(destinationIps));
             needAddingRouteIp.forEach(ip -> ipRuleService.deleteIpRule(ip, taskType));
         }
         return result;

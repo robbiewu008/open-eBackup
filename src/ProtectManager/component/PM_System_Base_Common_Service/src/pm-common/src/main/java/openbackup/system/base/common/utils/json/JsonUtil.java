@@ -12,9 +12,6 @@
 */
 package openbackup.system.base.common.utils.json;
 
-import openbackup.system.base.common.exception.DataMoverCheckedException;
-import openbackup.system.base.common.exception.DataMoverErrorCode;
-
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -26,6 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.json.JsonSanitizer;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.exception.DataMoverCheckedException;
+import openbackup.system.base.common.exception.DataMoverErrorCode;
 
 import java.io.IOException;
 import java.io.InputStream;

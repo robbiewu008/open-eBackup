@@ -277,7 +277,7 @@ public class ExprUtil {
         }
 
         private Object getValueFromCollection(Collection<?> collection, String field,
-            Function<Object, Object> converter) {
+                    Function<Object, Object> converter) {
             if ("*".equalsIgnoreCase(field)) {
                 return each(collection, converter);
             } else if ("size()".equals(field.replaceAll("\\s+", ""))) {
@@ -286,8 +286,7 @@ public class ExprUtil {
                 return collection.stream()
                     .filter(Collection.class::isInstance)
                     .map(Collection.class::cast)
-                    .flatMap(Collection::stream)
-                    .collect(Collectors.toList());
+                    .flatMap(Collection::stream).collect(Collectors.toList());
             } else if (field.matches("\\d+")) {
                 return getCollectionItemAtIndex(collection, Integer.parseInt(field), converter);
             }

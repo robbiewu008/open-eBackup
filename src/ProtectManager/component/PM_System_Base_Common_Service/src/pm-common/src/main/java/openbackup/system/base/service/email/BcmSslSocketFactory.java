@@ -12,13 +12,13 @@
 */
 package openbackup.system.base.service.email;
 
-import openbackup.system.base.common.constants.ErrorCodeConstant;
-import openbackup.system.base.common.exception.LegoCheckedException;
-import openbackup.system.base.common.utils.VerifyUtil;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.constants.ErrorCodeConstant;
+import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.utils.SecurityUtil;
+import openbackup.system.base.common.utils.VerifyUtil;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -49,16 +49,16 @@ public abstract class BcmSslSocketFactory extends SSLSocketFactory {
      * 使用指定的TrustManager构造SSLSocketFactory
      *
      * @param ipAddress ip地址
-     * @param protocols 建立连接时使用的使用加密协议，如果为空，则默认使用"TLSv1.1","TLSv1.2""TLSv1.3"协议尝试连接。
+     * @param protocols 建立连接时使用的使用加密协议，如果为空，则默认使用"TLSv1.2","TLSv1.3"协议尝试连接。
      */
-    public BcmSslSocketFactory(String ipAddress, String... protocols) {
+    public BcmSslSocketFactory(String ipAddress, String[] protocols) {
         if (VerifyUtil.isEmpty(ipAddress)) {
             log.error("ipAddress is null.");
             throw new LegoCheckedException(ErrorCodeConstant.SSL_INIT_OR_CONNECT_FAIL);
         }
 
         this.ip = ipAddress;
-        this.protocols = VerifyUtil.isEmpty(protocols) ? new String[] {"TLSv1.1", "TLSv1.2", "TLSv1.3"} : protocols;
+        this.protocols = VerifyUtil.isEmpty(protocols) ? SecurityUtil.getProtocols() : protocols;
     }
 
     /**

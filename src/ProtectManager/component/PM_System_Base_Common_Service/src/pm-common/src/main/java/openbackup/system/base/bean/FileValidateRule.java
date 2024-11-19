@@ -36,4 +36,7 @@ public class FileValidateRule {
 
     // 文件路径规则正则表达式
     private String pathRule;
+
+    // 多个文件后缀
+    private String[] suffixes;
 }

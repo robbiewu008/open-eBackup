@@ -13,9 +13,11 @@
 package openbackup.system.base.common.utils;
 
 import openbackup.system.base.common.constants.LegoNumberConstant;
+import openbackup.system.base.common.enums.TimeUnitEnum;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -54,6 +56,41 @@ public final class TimeUtil {
     public static String getTimeStringFormat() {
         SimpleDateFormat format = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS_UTC_Z);
         return format.format(new Date());
+    }
+
+    /**
+     * 计算过期时间
+     *
+     * @param time date
+     * @param durationUnit 保留时间单位
+     * @param duration 保留时间
+     * @return Date 副本过期日期
+     */
+    public static Date computeExpirationTime(long time, TimeUnitEnum durationUnit, Integer duration) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        switch (durationUnit) {
+            case MINUTES:
+                calendar.add(Calendar.MINUTE, duration);
+                break;
+            case HOURS:
+                calendar.add(Calendar.HOUR, duration);
+                break;
+            case DAYS:
+                calendar.add(Calendar.HOUR, duration * 24);
+                break;
+            case WEEKS:
+                calendar.add(Calendar.HOUR, duration * 7 * 24);
+                break;
+            case MONTHS:
+                calendar.add(Calendar.MONTH, duration);
+                break;
+            case YEARS:
+                calendar.add(Calendar.YEAR, duration);
+                break;
+            default:
+        }
+        return calendar.getTime();
     }
 
     /**

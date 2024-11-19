@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.sdk.accesspoint.model;
 
-import openbackup.system.base.config.business.initialize.StorageVolumeConfig;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.config.business.initialize.StorageVolumeConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,8 +45,7 @@ public class InitializeParam {
      * @param initializeParamNodeInfos NAS源地址
      * @param volumeNameMap NAS共享路径与类型的对应表
      */
-    public InitializeParam(List<InitializeParamNodeInfo> initializeParamNodeInfos,
-        Map<Integer, String> volumeNameMap) {
+    public InitializeParam(List<InitializeParamNodeInfo> initializeParamNodeInfos, Map<Integer, String> volumeNameMap) {
         // 将初始化参数节点信息列表排序
         initializeParamNodeInfos.sort(InitializeParamNodeInfo.getComparator());
 

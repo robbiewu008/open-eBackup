@@ -62,4 +62,19 @@ public interface AntiRansomwareApi {
      * @return 策略id列表
      */
     List<Integer> getAntiPolicyIdList();
+
+    /**
+     *  获取 防勒索&WORM策略 总数量
+     *
+     * @return 防勒索&WORM策略 的总数量
+     */
+    Integer getAllCount();
+
+    /**
+     * 根据资源id查询worm开关是否开启
+     *
+     * @param resourceId 资源id
+     * @return 该资源id对应的worm开关是否开启
+     */
+    boolean isExistWormPolicyByResourceId(String resourceId);
 }

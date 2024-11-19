@@ -12,6 +12,7 @@
 */
 package openbackup.system.base.pack.lock.zookeeper.pack;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.pack.constant.NodeMode;
 import openbackup.system.base.pack.lock.zookeeper.zookeeper.ZookeeperService;
@@ -19,8 +20,6 @@ import openbackup.system.base.pack.lock.zookeeper.zookeeper.model.ZkNodeCacheLis
 import openbackup.system.base.pack.node.NodeService;
 import openbackup.system.base.pack.node.model.NodeListener;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -58,8 +57,8 @@ public class NodeServiceImpl implements NodeService {
     /**
      * setValue
      *
-     * @param node     节点路径
-     * @param file     文件
+     * @param node 节点路径
+     * @param file 文件
      * @param nodeMode 节点类型
      */
     @ExterAttack
@@ -115,21 +114,18 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public void addNodeListener(String node, NodeListener nodeListener) {
-        zookeeperService.addNodeListener(
-                node,
-                new ZkNodeCacheListener() {
-                    @Override
-                    public void nodeChanged() {
-                        if (this.getCache().getCurrentData() == null) {
-                            // 节点被删除
-                            nodeListener.nodeRemoved(this.getCache().getPath());
-                        } else {
-                            // 节点数据改变
-                            nodeListener.nodeChanged(
-                                    this.getCache().getCurrentData().getPath(),
-                                    new String(this.getCache().getCurrentData().getData()));
-                        }
-                    }
-                });
+        zookeeperService.addNodeListener(node, new ZkNodeCacheListener() {
+            @Override
+            public void nodeChanged() {
+                if (this.getCache().getCurrentData() == null) {
+                    // 节点被删除
+                    nodeListener.nodeRemoved(this.getCache().getPath());
+                } else {
+                    // 节点数据改变
+                    nodeListener.nodeChanged(this.getCache().getCurrentData().getPath(),
+                            new String(this.getCache().getCurrentData().getData()));
+                }
+            }
+        });
     }
 }

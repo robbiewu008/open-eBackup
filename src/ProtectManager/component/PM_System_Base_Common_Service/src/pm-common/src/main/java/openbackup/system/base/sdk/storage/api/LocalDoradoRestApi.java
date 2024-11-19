@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.sdk.storage.api;
 
+import feign.Param;
+import feign.RequestLine;
 import openbackup.system.base.config.feign.dorado.DoradoClusterFeignConfiguration;
 import openbackup.system.base.sdk.storage.model.DoradoResponse;
 import openbackup.system.base.sdk.storage.model.FileSystemScrubRequest;
 import openbackup.system.base.sdk.storage.model.FileSystemScrubResponse;
-
-import feign.Param;
-import feign.RequestLine;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  */
 @FeignClient(name = "DoradoFileSystemRestApi", url = "https://${repository.storage.ip}:${repository.storage.port}",
-        configuration = DoradoClusterFeignConfiguration.class)
+    configuration = DoradoClusterFeignConfiguration.class)
 public interface LocalDoradoRestApi {
     /**
      * 修改文件系统的扫描状态
@@ -40,8 +39,8 @@ public interface LocalDoradoRestApi {
      */
     @RequestLine("POST /deviceManager/rest/{deviceId}/change_file_system_scrub")
     @ResponseBody
-    DoradoResponse<Object> changeFileSystemScrub(
-            @Param("deviceId") String deviceId, @RequestBody FileSystemScrubRequest request);
+    DoradoResponse<Object> changeFileSystemScrub(@Param("deviceId") String deviceId,
+            @RequestBody FileSystemScrubRequest request);
 
     /**
      * 查询文件系统扫描状态
@@ -52,6 +51,6 @@ public interface LocalDoradoRestApi {
      */
     @RequestLine("GET /deviceManager/rest/{deviceId}/show_fs_system_scrub?file_system_id={fsId}")
     @ResponseBody
-    DoradoResponse<FileSystemScrubResponse> queryFileSystemScrub(
-            @Param("deviceId") String deviceId, @Param("fsId") String fsId);
+    DoradoResponse<FileSystemScrubResponse> queryFileSystemScrub(@Param("deviceId") String deviceId,
+            @Param("fsId") String fsId);
 }

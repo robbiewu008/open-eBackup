@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.http.MediaType;
@@ -39,14 +38,11 @@ public class ClusterFileUtils {
      * @return MultipartFile 包含指定文件的
      */
     public static MultipartFile createMultipartFile(String path) {
-        DiskFileItem item;
-        try {
-            File file = new File(path);
-            item = new DiskFileItem("file", MediaType.MULTIPART_FORM_DATA_VALUE,
-                true, file.getName(),
+        File file = new File(path);
+        DiskFileItem item = new DiskFileItem("file", MediaType.MULTIPART_FORM_DATA_VALUE, true, file.getName(),
                 (int) file.length(), file.getParentFile());
-            OutputStream os = item.getOutputStream();
-            os.write(org.apache.commons.io.FileUtils.readFileToByteArray(file));
+        try (OutputStream os = item.getOutputStream()) {
+                os.write(org.apache.commons.io.FileUtils.readFileToByteArray(file));
         } catch (IOException e) {
             log.error("create multipart file failed.", ExceptionUtil.getErrorMessage(e));
             throw LegoCheckedException.cast(e);

@@ -12,9 +12,9 @@
 */
 package openbackup.system.base.sdk.job.model;
 
-import openbackup.system.base.util.EnumUtil;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
+
+import openbackup.system.base.util.EnumUtil;
 
 import java.util.Locale;
 

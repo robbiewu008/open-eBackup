@@ -39,6 +39,16 @@ public interface NodeRestApi {
     String getFloatIp(URI uri);
 
     /**
+     * 获取管理ip
+     *
+     * @param uri uri
+     * @return 管理ip
+     */
+    @ExterAttack
+    @GetMapping("/v1/internal/service/manager-ip")
+    String getManagerIp(URI uri);
+
+    /**
      * 同步事件转储文件
      *
      * @param uri uri
@@ -49,4 +59,15 @@ public interface NodeRestApi {
     @PostMapping(value = "/v1/internal/alarms/dumpfile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void syncAlarmDumpFile(URI uri, @RequestPart("dumpFile") MultipartFile multipartFile,
         @RequestParam("filePath") String filePath);
+
+    /**
+     * 获取可用的dme ip
+     *
+     * @param uri uri
+     * @param agentUrl agent的ip和post
+     * @return dme ip
+     */
+    @ExterAttack
+    @GetMapping("/v1/internal/host-agent/connected/dme/ips")
+    String getConnectedDmeIps(URI uri, @RequestParam("agentUrl") String agentUrl);
 }

@@ -34,5 +34,7 @@ public class FineGrainedRestore {
 
     private String resType;
 
+    private Object tapeOffsetMeta;
+
     private RestoreFilesResponse children;
 }

@@ -24,6 +24,7 @@ import java.util.Objects;
  * Callee Service
  *
  * @param <T> template type
+ *
  */
 public class CalleeService<T> implements Callee, ApplicationContextAware {
     private final Class<T> clazz;

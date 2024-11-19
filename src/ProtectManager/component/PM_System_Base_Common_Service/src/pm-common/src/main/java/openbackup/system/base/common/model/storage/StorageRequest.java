@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.common.model.storage;
 
+import lombok.Data;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.enums.StorageConnectTypeEnum;
 import openbackup.system.base.common.enums.StorageTypeEnum;
-
-import lombok.Data;
 
 import org.hibernate.validator.constraints.Length;
 

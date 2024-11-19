@@ -12,6 +12,7 @@
 */
 package openbackup.system.base.common.system;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.sdk.SystemSpecificationService;
@@ -20,8 +21,6 @@ import openbackup.system.base.sdk.infrastructure.InfrastructureRestApi;
 import openbackup.system.base.sdk.infrastructure.model.InfraResponseWithError;
 import openbackup.system.base.sdk.infrastructure.model.beans.NodeDetail;
 import openbackup.system.base.service.DeployTypeService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +43,7 @@ public class SystemSpecificationServiceImpl implements SystemSpecificationServic
      * 节点数量更新时间周期：3分钟
      */
     private static final long NODE_COUNT_UPDATE_PERIOD = IsmNumberConstant.THREE * IsmNumberConstant.MINUTES_SECONDS
-        * IsmNumberConstant.THOUSAND;
+            * IsmNumberConstant.THOUSAND;
 
     private final AtomicInteger nodeCount = new AtomicInteger();
 
@@ -58,7 +57,6 @@ public class SystemSpecificationServiceImpl implements SystemSpecificationServic
 
     @Autowired
     private ClusterNativeApi clusterNativeApi;
-
 
     @Autowired
     private InfrastructureRestApi infrastructureRestApi;

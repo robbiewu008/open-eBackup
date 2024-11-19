@@ -12,6 +12,7 @@
 */
 package openbackup.system.base.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.bean.NetWorkConfigInfo;
 import openbackup.system.base.bean.NetWorkLogicIp;
 import openbackup.system.base.common.constants.CommonErrorCode;
@@ -23,8 +24,6 @@ import openbackup.system.base.common.process.ProcessException;
 import openbackup.system.base.common.process.ProcessResult;
 import openbackup.system.base.common.process.ProcessUtil;
 import openbackup.system.base.common.utils.ExceptionUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -58,8 +57,7 @@ public class DependentDeployTypeIpUtil {
         Map<String, String> ipInfoMap = new HashMap<>();
         ipList.forEach(line -> {
             List<String> splitResult = Arrays.stream(line.split(" "))
-                .filter(split -> !" ".equals(split) && !split.isEmpty())
-                .collect(Collectors.toList());
+                    .filter(split -> !" ".equals(split) && !split.isEmpty()).collect(Collectors.toList());
             if (splitResult.size() > IsmNumberConstant.TWO) {
                 ipInfoMap.put(splitResult.get(0), splitResult.get(IsmNumberConstant.TWO));
             }

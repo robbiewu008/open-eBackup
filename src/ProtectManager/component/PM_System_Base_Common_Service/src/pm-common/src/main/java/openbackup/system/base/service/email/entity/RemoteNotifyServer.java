@@ -83,4 +83,7 @@ public class RemoteNotifyServer {
     // 当前邮件传输是否使用Tls加密
     @TableField("ISTLSENABLE")
     private Boolean isTlsEnable;
+
+    @TableField(exist = false)
+    private Boolean isContainCert = false;
 }

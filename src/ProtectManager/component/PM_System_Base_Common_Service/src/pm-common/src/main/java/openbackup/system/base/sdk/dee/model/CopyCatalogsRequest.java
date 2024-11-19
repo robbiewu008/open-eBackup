@@ -32,3 +32,4 @@ public class CopyCatalogsRequest {
 
     private String conditions;
 }
+

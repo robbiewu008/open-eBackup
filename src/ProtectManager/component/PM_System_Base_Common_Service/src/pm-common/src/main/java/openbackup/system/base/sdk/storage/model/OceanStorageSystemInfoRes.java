@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.sdk.storage.model;
 
-import openbackup.system.base.sdk.storage.enums.DoradoRunningStatus;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.sdk.storage.enums.DoradoRunningStatus;
 
 /**
  * dorado设备信息

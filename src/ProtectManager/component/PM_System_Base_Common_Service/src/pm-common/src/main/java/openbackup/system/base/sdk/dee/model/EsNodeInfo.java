@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.dee.model;
 
-import openbackup.system.base.common.validator.constants.RegexpConstants;
-
 import lombok.Data;
+import openbackup.system.base.common.validator.constants.RegexpConstants;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;

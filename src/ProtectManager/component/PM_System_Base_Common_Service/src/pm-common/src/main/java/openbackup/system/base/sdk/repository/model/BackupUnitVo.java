@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.repository.model;
 
-import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
 
 import org.springframework.beans.BeanUtils;
 

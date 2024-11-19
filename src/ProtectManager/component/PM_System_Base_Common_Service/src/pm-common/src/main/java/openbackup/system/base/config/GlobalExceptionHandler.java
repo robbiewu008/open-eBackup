@@ -12,6 +12,11 @@
 */
 package openbackup.system.base.config;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.annotation.Sensitive;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.DeviceManagerException;
@@ -19,12 +24,6 @@ import openbackup.system.base.common.exception.ErrorResponse;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.util.ErrorUtil;
-
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -154,8 +153,8 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse();
         response.setErrorCode(CommonErrorCode.ERR_PARAM + "");
         String messages = allErrors.stream()
-            .map(objectError -> getDefaultMessage(objectError).orElse(objectError.getDefaultMessage()))
-            .collect(Collectors.joining(System.lineSeparator()));
+                .map(objectError -> getDefaultMessage(objectError).orElse(objectError.getDefaultMessage()))
+                .collect(Collectors.joining(System.lineSeparator()));
         response.setErrorMessage(messages);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -232,7 +231,7 @@ public class GlobalExceptionHandler {
         String errorMessage = getErrorMessage(ex);
         String[] parameters = ex.getParameters();
         ErrorResponse errorResp = new ErrorResponse(errorCode + "", errorMessage, parameters,
-            ErrorUtil.isRetryableException(cause));
+                ErrorUtil.isRetryableException(cause));
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         if (errorCode == CommonErrorCode.ERR_PARAM) {
             status = HttpStatus.BAD_REQUEST;
@@ -274,7 +273,7 @@ public class GlobalExceptionHandler {
         if (containsSensitiveInformation(ex)) {
             MethodParameter methodParameter = ex.getParameter();
             log.error("argument {} of {} is not valid", methodParameter.getParameterIndex(),
-                methodParameter.getExecutable());
+                    methodParameter.getExecutable());
         } else {
             logException(ex);
         }
@@ -282,10 +281,8 @@ public class GlobalExceptionHandler {
 
     private boolean containsSensitiveInformation(MethodArgumentNotValidException ex) {
         MethodParameter parameter = ex.getParameter();
-        return ex.getBindingResult()
-            .getAllErrors()
-            .stream()
-            .anyMatch(error -> containsSensitiveInformation(error, parameter));
+        return ex.getBindingResult().getAllErrors().stream()
+                .anyMatch(error -> containsSensitiveInformation(error, parameter));
     }
 
     private boolean containsSensitiveInformation(ObjectError error, MethodParameter parameter) {

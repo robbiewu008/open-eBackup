@@ -64,18 +64,11 @@ public interface InfrastructureService {
     List<NodeDetail> queryHostNodeInfo();
 
     /**
-     * Get management IP
+     * 获取pm节点的endpoint ip
      *
-     * @return management IP
+     * @return pm节点的endpoint ip
      */
-    List<String> getManagementIp();
-
-    /**
-     * Get management IP
-     *
-     * @return management IP
-     */
-    List<String> getAllManagementIp();
+    List<String> getAllPmEndpointIp();
 
     /**
      * 查询所有节点的所有的备份业务网络ip

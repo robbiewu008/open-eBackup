@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.common.constants;
 
-import openbackup.system.base.util.EnumUtil;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import openbackup.system.base.util.EnumUtil;
 
 import java.util.Locale;
 
@@ -663,7 +662,6 @@ public class FaultEnum {
          * 反确认告警
          */
         ANTICONFIRM(5);
-
 
         private final int value;
 

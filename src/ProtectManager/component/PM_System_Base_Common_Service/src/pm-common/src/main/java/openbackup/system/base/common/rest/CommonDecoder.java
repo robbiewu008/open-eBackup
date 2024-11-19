@@ -12,6 +12,10 @@
 */
 package openbackup.system.base.common.rest;
 
+import feign.Response;
+import feign.Util;
+import feign.codec.Decoder;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.ErrorResponse;
@@ -19,11 +23,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.NumberUtil;
-
-import feign.Response;
-import feign.Util;
-import feign.codec.Decoder;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
@@ -40,9 +39,9 @@ import java.net.ConnectException;
  */
 @Slf4j
 public class CommonDecoder {
-    private static final String[] ERROR_RESPONSE_FIELDS =
-            new String[] {"errorCode", "errorMessage", "detailParams", "retryable"};
-    private static final String[] ERROR_FIELDS = new String[] {"timestamp", "status", "message", "path"};
+    private static final String[] ERROR_RESPONSE_FIELDS = new String[]{"errorCode", "errorMessage", "detailParams",
+            "retryable"};
+    private static final String[] ERROR_FIELDS = new String[]{"timestamp", "status", "message", "path"};
 
     private static final String STATUS = "status";
 
@@ -54,8 +53,8 @@ public class CommonDecoder {
             if (response.body() == null) {
                 log.error("response body is null. res status: {}, reason: {}", response.status(), response.reason());
                 if (response.status() == HttpStatus.UNAUTHORIZED.value()) {
-                    LegoCheckedException exception =
-                            new LegoCheckedException(CommonErrorCode.ACCESS_DENIED, response.reason());
+                    LegoCheckedException exception = new LegoCheckedException(CommonErrorCode.ACCESS_DENIED,
+                            response.reason());
                     return new LegoUncheckedException(exception);
                 }
                 return new LegoUncheckedException("response body null exception");
@@ -140,8 +139,8 @@ public class CommonDecoder {
     }
 
     private static ObjectFactory<HttpMessageConverters> feignHttpMessageConverter() {
-        final HttpMessageConverters httpMessageConverters =
-                new HttpMessageConverters(new PhpMappingJackson2HttpMessageConverter());
+        final HttpMessageConverters httpMessageConverters = new HttpMessageConverters(
+                new PhpMappingJackson2HttpMessageConverter());
         return () -> httpMessageConverters;
     }
 }

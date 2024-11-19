@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.sdk.storage.model;
 
+import lombok.Data;
 import openbackup.system.base.common.constants.IsmConstant;
 import openbackup.system.base.common.validator.constants.RegexpConstants;
-
-import lombok.Data;
 
 import org.hibernate.validator.constraints.Length;
 

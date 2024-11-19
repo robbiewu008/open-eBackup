@@ -33,6 +33,13 @@ public @interface Routing {
     String destinationIp() default "";
 
     /**
+     * 目标端口号
+     *
+     * @return 目标端口号
+     */
+    String port() default "";
+
+    /**
      * required data
      *
      * @return required data

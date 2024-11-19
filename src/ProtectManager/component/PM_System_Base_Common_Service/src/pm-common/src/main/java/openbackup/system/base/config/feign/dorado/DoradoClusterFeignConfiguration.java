@@ -12,13 +12,6 @@
 */
 package openbackup.system.base.config.feign.dorado;
 
-import openbackup.system.base.common.exception.LegoCheckedException;
-import openbackup.system.base.common.model.storage.StorageResponse;
-import openbackup.system.base.common.model.storage.StorageSession;
-import openbackup.system.base.common.rest.FeignBuilder;
-import openbackup.system.base.sdk.storage.StorageService;
-import openbackup.system.base.sdk.storage.model.DoradoResponse;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,6 +24,12 @@ import feign.RequestTemplate;
 import feign.Response;
 import feign.codec.Decoder;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.model.storage.StorageResponse;
+import openbackup.system.base.common.model.storage.StorageSession;
+import openbackup.system.base.common.rest.FeignBuilder;
+import openbackup.system.base.sdk.storage.StorageService;
+import openbackup.system.base.sdk.storage.model.DoradoResponse;
 
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
@@ -111,8 +110,8 @@ public class DoradoClusterFeignConfiguration implements RequestInterceptor {
     }
 
     private ObjectFactory<HttpMessageConverters> feignHttpMessageConverter() {
-        final HttpMessageConverters httpMessageConverters =
-            new HttpMessageConverters(new PhpMappingJackson2HttpMessageConverter());
+        final HttpMessageConverters httpMessageConverters = new HttpMessageConverters(
+                new PhpMappingJackson2HttpMessageConverter());
         return () -> httpMessageConverters;
     }
 
@@ -153,7 +152,7 @@ public class DoradoClusterFeignConfiguration implements RequestInterceptor {
                         long errorCode = Long.parseLong(storageResponse.getError().getCode());
                         String errorMsg = storageResponse.getError().getDescription();
                         log.error("get StorageSystem rest is fail, error code is {}, error description is {}",
-                            errorCode, errorMsg);
+                                errorCode, errorMsg);
                         throw new LegoCheckedException(errorCode, errorMsg);
                     }
                 }
@@ -163,7 +162,7 @@ public class DoradoClusterFeignConfiguration implements RequestInterceptor {
                 if (doradoResponse.getResult() != null) {
                     if (!REQUEST_REMOTE_STORAGE_SUCCESS.equals(doradoResponse.getResult().getCode())) {
                         log.error("get StorageSystem rest is fail, error code is {}, error description is {}",
-                            doradoResponse.getResult().getCode(), doradoResponse.getResult().getDescription());
+                                doradoResponse.getResult().getCode(), doradoResponse.getResult().getDescription());
                         throw new LegoCheckedException(convertDoradoErrorCode(doradoResponse.getResult().getCode()));
                     }
                 }

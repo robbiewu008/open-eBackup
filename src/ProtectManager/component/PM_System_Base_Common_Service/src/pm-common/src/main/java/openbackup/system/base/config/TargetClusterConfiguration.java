@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.config;
 
+import feign.codec.Encoder;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.rest.FeignBuilder;
 import openbackup.system.base.sdk.cluster.BackupClusterJobClient;
 import openbackup.system.base.sdk.cluster.TargetClusterRestApi;
 import openbackup.system.base.util.RequestUriUtil;
-
-import feign.codec.Encoder;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +45,7 @@ public class TargetClusterConfiguration {
     @Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
     public TargetClusterRestApi createTargetRequestBean(DmaProxyProperties proxyProperties) {
         return FeignBuilder.buildTargetClusterClient(TargetClusterRestApi.class, encoder,
-            RequestUriUtil.getDmaProxy(proxyProperties));
+                RequestUriUtil.getDmaProxy(proxyProperties));
     }
 
     /**
@@ -59,7 +58,7 @@ public class TargetClusterConfiguration {
     @Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
     public TargetClusterRestApi createTargetRequestBeanManagePort(DmaProxyProperties proxyProperties) {
         return FeignBuilder.buildDefaultTargetClusterClient(TargetClusterRestApi.class, encoder,
-            RequestUriUtil.getDmaProxy(proxyProperties));
+                RequestUriUtil.getDmaProxy(proxyProperties));
     }
 
     /**
@@ -94,7 +93,7 @@ public class TargetClusterConfiguration {
     @Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
     public TargetClusterRestApi createMemberClusterApiWithDmaProxyManagePort(DmaProxyProperties proxyProperties) {
         return FeignBuilder.buildMemberClusterClient(TargetClusterRestApi.class, encoder,
-            RequestUriUtil.getDmaProxy(proxyProperties));
+                RequestUriUtil.getDmaProxy(proxyProperties));
     }
 
     /**

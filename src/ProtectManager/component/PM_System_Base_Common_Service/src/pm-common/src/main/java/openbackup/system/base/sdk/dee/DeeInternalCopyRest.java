@@ -12,7 +12,7 @@
 */
 package openbackup.system.base.sdk.dee;
 
-import openbackup.system.base.common.rest.CommonFeignConfiguration;
+import openbackup.system.base.common.rest.DeeCatalogFeignConfiguration;
 import openbackup.system.base.sdk.dee.model.CopyCatalogsRequest;
 import openbackup.system.base.sdk.dee.model.RestoreFilesResponse;
 import openbackup.system.base.security.exterattack.ExterAttack;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  *
  */
 @FeignClient(name = "deeInternalCopyRest", url = "${protectengine-e-dee.url}/v1/internal",
-        configuration = CommonFeignConfiguration.class)
+    configuration = DeeCatalogFeignConfiguration.class)
 public interface DeeInternalCopyRest {
     /**
      * 浏览副本文件和目录

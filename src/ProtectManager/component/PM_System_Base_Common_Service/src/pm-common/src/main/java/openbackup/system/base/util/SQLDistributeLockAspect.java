@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.cluster.BackupClusterConfigUtil;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.pack.lock.Lock;
 import openbackup.system.base.pack.lock.LockService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -46,11 +45,10 @@ public class SQLDistributeLockAspect {
      * @return 返回值
      * @throws Throwable 异常
      */
-    @Around(
-        value = "((execution(* com.huawei..*(..))) || (execution(* openbackup..*(..)))) "
+    @Around(value = "((execution(* com.huawei..*(..))) || (execution(* openbackup..*(..)))) "
             + "&& @annotation(sqlDistributeLock)")
     public Object execTaskWithSQLLock(ProceedingJoinPoint joinPoint, SQLDistributeLock sqlDistributeLock)
-        throws Throwable {
+            throws Throwable {
         Object result = new Object();
         // 增加功能，如果当前任务必须是由主节点执行
         if (sqlDistributeLock.masterOnly() && !BackupClusterConfigUtil.isMasterCluster()) {
@@ -61,7 +59,6 @@ public class SQLDistributeLockAspect {
         long tryLockTime = sqlDistributeLock.tryLockTime();
         TimeUnit timeUnit = sqlDistributeLock.timeUnit();
         long errorCode = sqlDistributeLock.errorCode();
-        log.info("start sql distributed lock name : {}, upgrade issue.", lockName);
         Lock lock = lockService.createSQLDistributeLock(lockName);
         boolean canAcquireLock = false;
         try {

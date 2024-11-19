@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.resource.model.vmwaremodel;
 
-import openbackup.system.base.sdk.resource.model.DataStore;
-import openbackup.system.base.sdk.resource.model.ResourceEntity;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.sdk.resource.model.DataStore;
+import openbackup.system.base.sdk.resource.model.ResourceEntity;
 
 /**
  * 虚拟机disk信息

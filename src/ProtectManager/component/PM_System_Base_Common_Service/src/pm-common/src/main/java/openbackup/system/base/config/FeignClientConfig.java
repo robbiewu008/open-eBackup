@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.config;
 
-import openbackup.system.base.util.KeyToolUtil;
-
 import feign.Client;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.util.KeyToolUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,10 +77,8 @@ public class FeignClientConfig {
         if (Objects.isNull(feignTrustingSslSocketFactory)) {
             try {
                 feignTrustingSslSocketFactory = getFeignTrustingSslSocketFactory();
-            } catch (NoSuchAlgorithmException
-                | UnrecoverableKeyException
-                | KeyStoreException
-                | KeyManagementException e) {
+            } catch (NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException
+                    | KeyManagementException e) {
                 log.error("get feign ssl socket factory failed", e);
             }
         }
@@ -91,7 +88,7 @@ public class FeignClientConfig {
     }
 
     private SSLSocketFactory getFeignTrustingSslSocketFactory()
-        throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException, UnrecoverableKeyException {
+            throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException, UnrecoverableKeyException {
         // 加载keystore
         KeyStore keyStore = keyToolUtil.getInternalKeystore();
 
@@ -99,8 +96,8 @@ public class FeignClientConfig {
         keyManagerFactory.init(keyStore, keyToolUtil.getKeyStorePassword(keyStorePwdFile).toCharArray());
         KeyManager[] keyManagers = keyManagerFactory.getKeyManagers();
 
-        TrustManagerFactory trustManagerFactory =
-            TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        TrustManagerFactory trustManagerFactory = TrustManagerFactory
+                .getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(keyStore);
         TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
 

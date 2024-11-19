@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.util;
 
-import openbackup.system.base.common.exception.LegoCheckedException;
-
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -44,18 +43,17 @@ public class DistributeLockAspect {
      * @param distributeLock distributeLock
      * @return execute result
      * @throws Throwable exception
-     * */
-    @Around(
-        value = "((execution(* com.huawei..*(..))) || (execution(* openbackup..*(..)))) "
+     */
+    @Around(value = "((execution(* com.huawei..*(..))) || (execution(* openbackup..*(..)))) "
             + "&& @annotation(distributeLock)")
-    public Object processDistributeTaskWithLock(ProceedingJoinPoint joinPoint,
-        DistributeLock distributeLock) throws Throwable {
+    public Object processDistributeTaskWithLock(ProceedingJoinPoint joinPoint, DistributeLock distributeLock)
+            throws Throwable {
         String lockKey = distributeLock.lockKey();
         long tryLockTime = distributeLock.tryLockTime();
         long lockTime = distributeLock.lockTime();
         TimeUnit lockTimeUnit = distributeLock.lockTimeUnit();
-        log.info("lockKey:{}, tryLockTime:{}, lockTime:{}, lockTimeUnit:{}", lockKey,
-                tryLockTime, lockTime, lockTimeUnit);
+        log.info("lockKey:{}, tryLockTime:{}, lockTime:{}, lockTimeUnit:{}", lockKey, tryLockTime, lockTime,
+                lockTimeUnit);
         Object result = new Object();
         RLock lock = redissonClient.getLock(lockKey);
         if (!lock.tryLock(tryLockTime, lockTime, lockTimeUnit)) {

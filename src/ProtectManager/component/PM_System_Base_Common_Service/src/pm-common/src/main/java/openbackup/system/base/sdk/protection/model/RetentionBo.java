@@ -40,6 +40,16 @@ public class RetentionBo {
     private String durationUnit;
 
     /**
+     * worm retention duration
+     */
+    private Integer wormRetentionDuration;
+
+    /**
+     * worm duration unit
+     */
+    private String wormDurationUnit;
+
+    /**
      * 副本保留个数
      */
     private Integer retentionQuantity;

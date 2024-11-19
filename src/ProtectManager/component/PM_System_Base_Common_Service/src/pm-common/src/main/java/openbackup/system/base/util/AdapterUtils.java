@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.util;
 
-import openbackup.system.base.common.utils.VerifyUtil;
-
 import com.google.common.collect.ImmutableMap;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.utils.VerifyUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -49,13 +48,13 @@ public class AdapterUtils {
     private static final int SIX = 6;
 
     private static final ImmutableMap<String, String> DEVICE_MAP = ImmutableMap.of("CyberEnginePacific",
-        "OceanStor Pacific", "CyberEngineDoradoV6", "OceanStor Dorado", "CyberEngineOceanProtect", "OceanProtect");
+            "OceanStor Pacific", "CyberEngineDoradoV6", "OceanStor Dorado", "CyberEngineOceanProtect", "OceanProtect");
 
     private static final String ALARM_ENGLISH_I18N_CONFIG_FILE = "jar:file:/app/app.jar!/BOOT-INF/classes"
-        + "/conf/alarmI18nE/";
+            + "/conf/alarmI18nE/";
 
     private static final String ALARM_CHINESE_I18N_CONFIG_FILE = "jar:file:/app/app.jar!/BOOT-INF/classes"
-        + "/conf/alarmI18nZ/";
+            + "/conf/alarmI18nZ/";
 
     private AdapterUtils() {
     }
@@ -85,7 +84,7 @@ public class AdapterUtils {
      * 此方法有限制。详见实现调用
      *
      * @param packageFileName 必须是
-     * “xxx/xxx/xxx/*.”后缀名的形式，内部使用classloader实现，前面不能有"/"
+     *            “xxx/xxx/xxx/*.”后缀名的形式，内部使用classloader实现，前面不能有"/"
      * @return List URL [返回类型说明]
      */
     public static List<URL> getAllClassPathEntries(String packageFileName) {
@@ -109,7 +108,7 @@ public class AdapterUtils {
         try {
             File workDir = new File("");
             List<File> fileList = getFiles(
-                workDir.getCanonicalPath() + File.separator + "conf" + File.separator + "fault" + File.separator);
+                    workDir.getCanonicalPath() + File.separator + "conf" + File.separator + "fault" + File.separator);
             for (File file : fileList) {
                 URL url = file.toURL();
                 listReturn.add(url);

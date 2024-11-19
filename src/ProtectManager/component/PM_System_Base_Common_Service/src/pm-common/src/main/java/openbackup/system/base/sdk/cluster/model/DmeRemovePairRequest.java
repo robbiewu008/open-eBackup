@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.cluster.model;
 
-import openbackup.system.base.sdk.accesspoint.model.DmeLocalDevice;
-import openbackup.system.base.sdk.accesspoint.model.DmeRemoteDevice;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.sdk.accesspoint.model.DmeLocalDevice;
+import openbackup.system.base.sdk.accesspoint.model.DmeRemoteDevice;
 
 import java.util.List;
 

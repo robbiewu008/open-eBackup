@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.config;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.rest.FeignBuilder;
 import openbackup.system.base.sdk.kmc.KmcClusterRestApi;
 import openbackup.system.base.util.RequestUriUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

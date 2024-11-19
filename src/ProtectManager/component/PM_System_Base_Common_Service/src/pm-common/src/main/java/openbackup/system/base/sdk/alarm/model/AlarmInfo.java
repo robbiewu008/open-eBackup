@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.alarm.model;
 
-import openbackup.system.base.common.constants.FaultEnum;
-
 import lombok.Data;
+import openbackup.system.base.common.constants.FaultEnum;
 
 import java.util.List;
 

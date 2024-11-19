@@ -406,6 +406,19 @@ public interface CopyRestApi {
     @PostMapping("/internal/copies")
     UuidObject saveCopy(@RequestBody CopyInfo copyInfo);
 
+
+    /**
+     * save copy
+     *
+     * @param copyInfo copy info
+     * @param override 是否覆盖副本
+     * @return uuid object
+     */
+    @ExterAttack
+    @PostMapping("/internal/copies")
+    UuidObject saveCopy(@RequestBody CopyInfo copyInfo, @RequestParam("override") boolean override);
+
+
     /**
      * save batch copy list
      *
@@ -788,6 +801,22 @@ public interface CopyRestApi {
      */
     @PutMapping("/internal/archive/dispatch")
     void dispatchArchive(@RequestBody ArchiveMsg msg);
+
+    /**
+     * 内部接口是否允许创建归档任务
+     *
+     * @param resourceId 资源id
+     * @param storageId 存储id
+     * @param copyId 副本id
+     * @param isSupportLog 是否支持日志
+     *
+     * @return 是否允许创建归档任务
+     */
+    @ExterAttack
+    @GetMapping("/internal/archive/is-allow-create-archive-job")
+    boolean isAllowCreateArchiveJob(@RequestParam("resource_id") String resourceId,
+        @RequestParam("storage_id") String storageId, @RequestParam("copy_id") String copyId,
+        @RequestParam("is_query_log_copy") boolean isSupportLog);
 
     /**
      * 查询用户域下指定资源索引状态的副本

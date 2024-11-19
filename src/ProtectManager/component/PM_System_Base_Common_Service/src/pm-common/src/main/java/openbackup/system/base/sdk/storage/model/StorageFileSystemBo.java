@@ -73,4 +73,10 @@ public class StorageFileSystemBo {
      */
     @JsonProperty("ISCLONEFS")
     private boolean isCloneFs;
+
+    /**
+     * 是否配置了smart mobility，配置了值为 1，不配置为null
+     */
+    @JsonProperty("hasSmartMobility")
+    private String hasSmartMobility;
 }

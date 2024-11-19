@@ -12,16 +12,15 @@
 */
 package openbackup.system.base.config;
 
+import com.zaxxer.hikari.HikariDataSource;
+
+import feign.FeignException;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.config.datasource.DataSourceConfigService;
-
-import com.zaxxer.hikari.HikariDataSource;
-
-import feign.FeignException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,8 +134,7 @@ public class DataSourceConfig {
         initPoolConfig(dataSource);
         dataSource.addDataSourceProperty("ssl", true);
         dataSource.addDataSourceProperty("sslmode", "verify-ca");
-        dataSource.addDataSourceProperty(
-                "sslfactory", "openbackup.system.base.config.GaussSSLSocketFactory");
+        dataSource.addDataSourceProperty("sslfactory", "openbackup.system.base.config.GaussSSLSocketFactory");
 
         LOGGER.info("Environment realUrl: {}", dataSource.getJdbcUrl());
         return new RetryableDataSource(dataSource);
@@ -145,11 +143,8 @@ public class DataSourceConfig {
     private void initPoolConfig(HikariDataSource dataSource) {
         int minimumIdle = revise(minimumIdleValue, MINIMUM_IDLE_MIN_VALUE, MINIMUM_IDLE_MAX_VALUE);
         dataSource.setMinimumIdle(minimumIdle);
-        int maximumPoolSize =
-                revise(
-                        maximumPoolSizeValue,
-                        Math.max(MAXIMUM_POOL_SIZE_MIN_VALUE, minimumIdle),
-                        MAXIMUM_POOL_SIZE_MAX_VALUE);
+        int maximumPoolSize = revise(maximumPoolSizeValue, Math.max(MAXIMUM_POOL_SIZE_MIN_VALUE, minimumIdle),
+                MAXIMUM_POOL_SIZE_MAX_VALUE);
         dataSource.setMaximumPoolSize(maximumPoolSize);
         LOGGER.info("minimumIdle: {}, maximumPoolSize: {}", minimumIdle, maximumPoolSize);
     }

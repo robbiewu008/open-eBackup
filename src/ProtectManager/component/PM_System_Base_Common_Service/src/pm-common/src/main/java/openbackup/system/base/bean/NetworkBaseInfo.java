@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.bean;
 
-import openbackup.system.base.common.enums.AddressFamily;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.common.enums.AddressFamily;
 
 /**
  * 网络基本信息
