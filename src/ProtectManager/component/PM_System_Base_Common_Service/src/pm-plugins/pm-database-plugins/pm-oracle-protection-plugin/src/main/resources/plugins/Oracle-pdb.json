@@ -1,0 +1,17 @@
+{
+  "type": "Database",
+  "subType": "Oracle-pdb",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "resource": "",
+          "environment": "agents"
+        }
+      ]
+    },
+    "scan": {
+      "auto-scan": false
+    }
+  }
+}

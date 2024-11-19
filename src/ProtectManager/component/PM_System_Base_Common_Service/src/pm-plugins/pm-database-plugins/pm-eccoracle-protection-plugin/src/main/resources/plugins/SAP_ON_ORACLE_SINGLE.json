@@ -1,0 +1,14 @@
+{
+  "type": "Database",
+  "subType": "SAP_ON_ORACLE_SINGLE",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "resource": "",
+          "environment": "agents"
+        }
+      ]
+    }
+  }
+}
