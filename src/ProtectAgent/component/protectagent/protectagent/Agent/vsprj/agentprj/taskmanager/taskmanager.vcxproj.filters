@@ -30,9 +30,6 @@
     <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepPrepareNasMedia.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepPreSufScript.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepScanDisk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

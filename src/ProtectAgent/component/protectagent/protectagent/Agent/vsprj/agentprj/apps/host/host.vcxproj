@@ -139,6 +139,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\src\host\CheckConnectStatus.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\host\ConnectivityManager.cpp" />
     <ClCompile Include="..\..\..\..\src\src\host\Cpu.cpp" />
     <ClCompile Include="..\..\..\..\src\src\host\Gpu.cpp" />
     <ClCompile Include="..\..\..\..\src\src\host\host.cpp" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\inc\host\CheckConnectStatus.h" />
+    <ClInclude Include="..\..\..\..\src\inc\host\ConnectivityManager.h" />
     <ClInclude Include="..\..\..\..\src\inc\host\Cpu.h" />
     <ClInclude Include="..\..\..\..\src\inc\host\Gpu.h" />
     <ClInclude Include="..\..\..\..\src\inc\host\host.h" />

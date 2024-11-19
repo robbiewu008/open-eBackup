@@ -177,8 +177,8 @@ pack_files_bin="                     \
     *.doc                            \
     db/AgentDB.db                    \
     db/DwsDB.db                      \
-    db/upgrade
-    " 
+    db/upgrade                       \
+" 
 pack_files_bin="${pack_files_bin} ${pack_files_bin_common_shell}"
 
 pack_files_sbin="

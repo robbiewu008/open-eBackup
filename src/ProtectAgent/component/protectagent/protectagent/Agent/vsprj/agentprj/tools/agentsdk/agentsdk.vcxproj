@@ -173,6 +173,7 @@
     <ClInclude Include="..\..\..\..\src\inc\common\TimeOut.h" />
     <ClInclude Include="..\..\..\..\src\inc\common\Types.h" />
     <ClInclude Include="..\..\..\..\src\inc\common\Utils.h" />
+    <ClInclude Include="..\..\..\..\src\inc\common\StaticConfig.h" />
     <ClInclude Include="..\..\..\..\src\inc\message\archivestream\ArchiveStreamClient.h" />
     <ClInclude Include="..\..\..\..\src\inc\message\archivestream\ArchiveStreamClientHandler.h" />
     <ClInclude Include="..\..\..\..\src\inc\message\archivestream\ArchiveStreamService.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="..\..\..\..\src\src\common\Time.cpp" />
     <ClCompile Include="..\..\..\..\src\src\common\TimeOut.cpp" />
     <ClCompile Include="..\..\..\..\src\src\common\Utils.cpp" />
+    <ClCompile Include="..\..\..\..\src\src\common\StaticConfig.cpp" />
     <ClCompile Include="..\..\..\..\src\src\message\archivestream\ArchiveStreamClient.cpp" />
     <ClCompile Include="..\..\..\..\src\src\message\archivestream\ArchiveStreamClientHandler.cpp" />
     <ClCompile Include="..\..\..\..\src\src\message\archivestream\ArchiveStreamService.cpp" />

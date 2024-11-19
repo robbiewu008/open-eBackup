@@ -93,8 +93,8 @@ AddPackFilesBin()
 
 PackLibStdCppSo()
 {
-    LIB_STD_CPP_SO=`ls ${OPEN_SRC_PACKET_DIR}/libstdc++.so.6*`
-    if [ "${LIB_STD_CPP_SO}" = "" ];then
+    LIB_STD_CPP_SO=`ls /usr/lib64/libstdc++.so.6.*`
+    if [ "${LIB_STD_CPP_SO}" = "" ]; then
         echo "${LIB_STD_CPP_SO} : null"
         exit 1
     fi

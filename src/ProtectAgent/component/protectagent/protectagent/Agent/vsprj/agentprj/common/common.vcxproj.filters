@@ -39,6 +39,9 @@
     <ClInclude Include="..\..\..\src\inc\common\ConfigXmlParse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\common\StaticConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\src\inc\common\FileSearcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -114,6 +117,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\src\common\ConfigXmlParse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\common\StaticConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\src\common\FileSearcher.cpp">
