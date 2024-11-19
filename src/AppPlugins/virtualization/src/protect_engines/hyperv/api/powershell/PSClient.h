@@ -62,6 +62,8 @@ public:
     bool DeleteReferPointExcept(ReferrencePointResquest &request);
     std::shared_ptr<CreateVHDResponse> CreateVHD(CreateVHDRequest &request);
     bool DeleteSpecificSnapshot(DeleteSnapshotResquest &request);
+    bool IsAddClusterSuccess(Auth &auth, const std::string &vmId);
+    std::shared_ptr<GetClusterSharedVolumeResponse> PSClient::GetClusterSharedVolume(Auth &auth);
 
 private:
     template<typename T>

@@ -500,6 +500,16 @@ public:
         m_noTasksArgs = argsList;
     }
 
+    virtual void ThrowPluginException(const int32_t &code, const std::string &message,
+        const std::vector<std::string> &codeParam = {})
+    {
+        AppProtect::AppProtectPluginException exception;
+        exception.__set_code(code);
+        exception.__set_message(message);
+        exception.__set_codeParams(codeParam);
+        throw exception;
+    }
+
 protected:
     virtual void ReportJobDetail(const ApplicationLabelType &appLable) final
     {

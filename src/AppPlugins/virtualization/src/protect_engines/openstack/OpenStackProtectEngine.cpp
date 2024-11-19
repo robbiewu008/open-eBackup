@@ -49,6 +49,7 @@ namespace {
     const uint32_t RETRY_COUNT = 10;
     const std::string OPENSTACK_CONF = "OpenStackConfig";
     const uint64_t CREATE_VM_FAILED_EC = 1593988896;
+    const std::string CHECK_STORAGE_USAGE_FAILED_LABEL = "virtual_plugin_cnware_storage_usage_limit_label";
 };
 
 OPENSTACK_PLUGIN_NAMESPACE_BEGIN
@@ -689,12 +690,7 @@ bool OpenStackProtectEngine::CreateVolumeSnapshot(const VolInfo &volInfo, VolSna
 bool OpenStackProtectEngine::DoCreateSnapshot(const std::vector<VolInfo> &volList,
     SnapshotInfo &snapshot, std::string &errCode)
 {
-    if (CheckIsConsistenSnapshot()) {
-        INFOLOG("Start create consistent snapshot, %s.", m_taskId.c_str());
-        return DoCreateConsistencySnapshot(volList, snapshot, errCode);
-    }
-
-    INFOLOG("Start create common snapshot, %s.", m_taskId.c_str());
+    INFOLOG("Start create snapshot, %s.", m_taskId.c_str());
     return DoCreateCommonSnapshot(volList, snapshot, errCode);
 }
 
@@ -756,6 +752,98 @@ bool OpenStackProtectEngine::DoCreateCommonSnapshot(const std::vector<VolInfo> &
     return true;
 }
 
+int32_t OpenStackProtectEngine::ActiveSnapInit()
+{
+    if (!DoGetMachineMetadata()) {
+        ERRLOG("Get machine metadata failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+
+    return SUCCESS;
+}
+
+int32_t OpenStackProtectEngine::GetSnapshotProviderAuth(std::vector<std::string>& proAuth,
+    GetSnapshotRequest& request, const VolSnapInfo& volSnap)
+{
+    DBGLOG("Snapshot id %s. task id:%s", volSnap.m_snapshotId.c_str(), m_taskId.c_str());
+    request.SetSnapshotId(volSnap.m_snapshotId);
+    std::shared_ptr<GetSnapshotResponse> response = m_cinderClient->GetSnapshot(request);
+    if (response == nullptr) {
+        ERRLOG("Cinder get snap info failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    if (response->GetStatusCode() != static_cast<uint32_t>(Module::SC_OK)) {
+        ERRLOG("Show snapshot info failed. status code: %u, task id:%s", response->GetStatusCode(), m_taskId.c_str());
+        return FAILED;
+    }
+
+    SnapshotDetailsMsg snapshot = response->GetSnapshotDetails();
+    if (snapshot.m_snapshotDetails.m_providerLocation.empty()) {
+        ERRLOG("Provider auth is empty, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    Json::Value jsonValue;
+    jsonValue["lun_id"] = snapshot.m_snapshotDetails.m_providerLocation;
+    Json::FastWriter jsonWriter;
+    std::string providerInfo = jsonWriter.write(jsonValue);
+    DBGLOG("Snapshot provider info:%s. task id:%s", providerInfo.c_str(), m_taskId.c_str());
+    proAuth.push_back(providerInfo);
+    return SUCCESS;
+}
+
+int32_t OpenStackProtectEngine::ActiveSnapConsistency(const SnapshotInfo& snapshotInfo)
+{
+    if (!CheckIsConsistenSnapshot()) {
+        INFOLOG("Dont active snapshot consistency, %s.", m_taskId.c_str());
+        return SUCCESS;
+    }
+    if (ActiveSnapInit() != SUCCESS) {
+        ERRLOG("Active snapshot init failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+
+    GetSnapshotRequest request;
+    if (!FormHttpRequest(request, false)) {
+        ERRLOG("Initialize HCS request failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    std::shared_ptr<GetSnapshotResponse> response;
+    std::vector<std::string> providerAuthList;
+    for (const auto &snap : snapshotInfo.m_volSnapList) {
+        if (GetSnapshotProviderAuth(providerAuthList, request, snap) != SUCCESS) {
+            ERRLOG("Get volume snap provider auth  failed, task id:%s", m_taskId.c_str());
+            return FAILED;
+        }
+    }
+    ActiveSnapConsistencyRequest actRequest;
+    if (!FormHttpRequest(actRequest, false)) {
+        ERRLOG("Initialize HCS request failed. task id:%s", m_taskId.c_str());
+        return FAILED;
+    }
+    if (m_backupPara == nullptr) {
+        ERRLOG("Backup para is null, task id:%s", m_taskId.c_str());
+        return FAILED;
+    }
+    std::string volId;
+    if (m_backupPara->protectSubObject.size() == 0) {
+        volId = m_vmInfo.m_volList[0].m_uuid; // ECS任意一个卷ID
+    } else {
+        volId = m_backupPara->protectSubObject[0].id; // 已保护磁盘的任一磁盘id
+    }
+    actRequest.SetVolUUID(volId); // ECS任意一个卷ID
+    actRequest.SetSnapProviderLocationList(providerAuthList);
+    std::shared_ptr<ActiveSnapConsistencyResponse> activeResponse = m_cinderClient->ActiveSnapConsistency(actRequest);
+    if (activeResponse == nullptr) {
+        ERRLOG("Active snap consistency failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    if (activeResponse->GetStatusCode() != static_cast<uint32_t>(Module::SC_OK)) {
+        ERRLOG("Active snapshot failed. status code: %u, %s", activeResponse->GetStatusCode(), m_taskId.c_str());
+        return FAILED;
+    }
+    return SUCCESS;
+}
+
 bool OpenStackProtectEngine::DoCreateConsistencySnapshot(const std::vector<VolInfo> &volList,
     SnapshotInfo &snapshot, std::string &errCode)
 {
@@ -767,9 +855,12 @@ bool OpenStackProtectEngine::DoCreateConsistencySnapshot(const std::vector<VolIn
     return openstackConstSnapshot.DoCreateConsistencySnapshot(volList, snapshot, errCode);
 }
 
-
 int32_t OpenStackProtectEngine::BackUpAllVolumes(SnapshotInfo &snapshot, std::string &errCode)
 {
+    if (CheckBeforeCreateSnapshot(m_vmInfo.m_volList) != SUCCESS) {
+        ERRLOG("Check before create snapshot failed.");
+        return FAILED;
+    }
     DBGLOG("Begin to create snapshot. m_volList size: %d. %s", m_vmInfo.m_volList.size(), m_taskId.c_str());
     if (!DoCreateSnapshot(m_vmInfo.m_volList, snapshot, errCode)) {
         ERRLOG("DoCreateSnapshot failed, %s", m_taskId.c_str());
@@ -789,6 +880,10 @@ int32_t OpenStackProtectEngine::BackUpTargetVolumes(SnapshotInfo &snapshot, std:
     }
     if (volList.empty()) {
         ERRLOG("No volume valid to backup, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    if (CheckBeforeCreateSnapshot(volList) != SUCCESS) {
+        ERRLOG("Check before create snapshot failed.");
         return FAILED;
     }
     if (!DoCreateSnapshot(volList, snapshot, errCode)) {
@@ -855,10 +950,6 @@ int32_t OpenStackProtectEngine::DeleteSnapshot(const SnapshotInfo &snapshot)
     if (snapshot.m_volSnapList.empty()) {
         DBGLOG("Snapshot list is empty, no volume snapshot to be deleted, %s", m_taskId.c_str());
         return SUCCESS;
-    }
-    if (CheckIsConsistenSnapshot()) {
-        INFOLOG("Start Delete consistent snapshot, %s.", m_taskId.c_str());
-        return DoDeleteConsistencySnapshot(snapshot);
     }
 
     INFOLOG("Start Delete common snapshot, %s.", m_taskId.c_str());
@@ -1487,14 +1578,17 @@ bool OpenStackProtectEngine::DeleteVolumeSnapshot(const VolSnapInfo &volSnap)
 bool OpenStackProtectEngine::CheckVMStatus()
 {
     std::string jobType;
-
+    INFOLOG("Start to check server %s status.", m_jobHandle->GetApp().id.c_str());
     std::string vmSupportStatus;
+    std::string checkFailedLabel;
     if (m_jobHandle->GetJobType() == JobType::BACKUP) {
         jobType = "backup";
         vmSupportStatus = "VMSupportBackupStatus";
+        checkFailedLabel = "virtual_plugin_openstack_backup_check_server_status_failed_label";
     } else if (m_jobHandle->GetJobType() == JobType::RESTORE) {
         jobType = "restore";
         vmSupportStatus = "VMSupportRestoreStatus";
+        checkFailedLabel = "virtual_plugin_openstack_restore_check_server_status_failed_label";
         if (m_restoreLevel == RestoreLevel::RESTORE_TYPE_VM) {
             INFOLOG("Create new server, dont check server status.");
             return true;
@@ -1509,17 +1603,22 @@ bool OpenStackProtectEngine::CheckVMStatus()
 
     request.SetServerId(m_jobHandle->GetApp().id);
     std::shared_ptr<GetServerDetailsResponse> resp = m_novaClient.GetServerDetails(request);
-    if (resp == nullptr || resp->GetOsExtstsVmState() == "") {
+    if (resp == nullptr || resp->GetServerStatus() == "") {
         ERRLOG("Can not %s. %s", jobType.c_str(), m_taskId.c_str());
         return false;
     }
     std::string supportStatus = Module::ConfigReader::getString("OpenStackConfig", vmSupportStatus);
     std::set<std::string> statusList;
     boost::split(statusList, supportStatus, boost::is_any_of(","));
-    std::set<std::string>::iterator pos = statusList.find(resp->GetOsExtstsVmState());
+    std::set<std::string>::iterator pos = statusList.find(resp->GetServerStatus());
     if (pos == statusList.end()) {
         ERRLOG("Can not exec %s for vmstate: %s. %s", jobType.c_str(),
-            resp->GetOsExtstsVmState().c_str(), m_taskId.c_str());
+            resp->GetServerStatus().c_str(), m_taskId.c_str());
+        ApplicationLabelType resourceCheckLabel;
+        resourceCheckLabel.level = JobLogLevel::TASK_LOG_ERROR;
+        resourceCheckLabel.label = checkFailedLabel;
+        resourceCheckLabel.params = std::vector<std::string>{resp->GetServerStatus()};
+        ReportJobDetail(resourceCheckLabel);
         return false;
     }
     DBGLOG("Can exec %s for vmstate: %s. %s", jobType.c_str(), resp->GetServerStatus().c_str(), m_taskId.c_str());
@@ -1923,7 +2022,7 @@ int32_t OpenStackProtectEngine::UpdateVolumeBootable(const std::string &volId)
     }
     if (response->GetStatusCode() != static_cast<uint32_t>(Module::SC_OK)) {
         ERRLOG("Update volume %s bootable request failed, status(%d). body(%s), %s", volId.c_str(),
-            response->GetStatusCode(), response->GetBody().c_str(), m_taskId.c_str());
+            response->GetStatusCode(), WIPE_SENSITIVE(response->GetBody()).c_str(), m_taskId.c_str());
         return FAILED;
     }
     INFOLOG("Update volume %s bootable request success", volId.c_str());
@@ -2027,7 +2126,7 @@ int32_t OpenStackProtectEngine::SendCreateMachineRequest(VMInfo &vmInfo, OpenSta
     }
     if (response->GetStatusCode() != static_cast<uint32_t>(Module::SC_ACCEPTED)) {
         ERRLOG("Create server failed, status(%d). body(%s), %s", response->GetStatusCode(),
-            response->GetBody().c_str(), m_taskId.c_str());
+            WIPE_SENSITIVE(response->GetBody()).c_str(), m_taskId.c_str());
         serverExtendInfo.m_faultInfo.m_message = response->GetBody().c_str();
         return FAILED;
     }
@@ -2184,7 +2283,7 @@ int32_t OpenStackProtectEngine::DoDeleteServer(const std::string &serverId)
         }
         if (response->GetStatusCode() != static_cast<uint32_t>(Module::SC_NO_CONTENT)) {
             ERRLOG("Delete server failed, status(%d). body(%s), %s", response->GetStatusCode(),
-                response->GetBody().c_str(), m_taskId.c_str());
+                WIPE_SENSITIVE(response->GetBody()).c_str(), m_taskId.c_str());
             return FAILED;
         }
         if (WaitForServerDelete(serverId) == SUCCESS) {

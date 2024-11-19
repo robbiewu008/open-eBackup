@@ -31,6 +31,7 @@ public:
     uint64_t m_controllerType = 0;
     std::string m_vmId;
     std::string m_needAttension;
+    bool m_isPhysicalHardDisk;
     bool m_shared;
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_diskIdentifier, DiskIdentifier)
@@ -46,6 +47,7 @@ public:
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_controllerType, ControllerType)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_vmId, VMId)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_needAttension, NeedAttension)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_isPhysicalHardDisk, IsPhysicalHardDisk)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_shared, SupportPersistentReservations)
     END_SERIAL_MEMEBER
 };
@@ -65,6 +67,7 @@ public:
     std::string m_controllerType;
     std::string m_vmId;
     std::string m_needAttension;
+    bool m_isPhysicalHardDisk;
     bool m_shared;
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_diskIdentifier, DiskIdentifier)
@@ -79,6 +82,7 @@ public:
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_controllerType, ControllerType)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_vmId, VMId)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_needAttension, NeedAttension)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_isPhysicalHardDisk, IsPhysicalHardDisk)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_shared, IsShared)
     END_SERIAL_MEMEBER
     VolumeExtendInfo() {}
@@ -97,6 +101,7 @@ public:
         m_vmId = hyperVDiskInfo.m_vmId;
         m_needAttension = hyperVDiskInfo.m_needAttension;
         m_shared = hyperVDiskInfo.m_shared;
+        m_isPhysicalHardDisk = hyperVDiskInfo.m_isPhysicalHardDisk;
     }
 };
 
@@ -115,6 +120,22 @@ public:
     std::string m_endPoint;
     std::string m_authKey;
     std::string m_authPwd;
+};
+
+class ClusterSharedVolume {
+public:
+    std::string m_friendlyVolumeName;
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_friendlyVolumeName, FriendlyVolumeName)
+    END_SERIAL_MEMEBER
+};
+
+class GetClusterSharedVolumeResponse {
+public:
+    std::list<ClusterSharedVolume> m_clusterSharedVolumeList;
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_clusterSharedVolumeList, result)
+    END_SERIAL_MEMEBER
 };
 }
 #endif

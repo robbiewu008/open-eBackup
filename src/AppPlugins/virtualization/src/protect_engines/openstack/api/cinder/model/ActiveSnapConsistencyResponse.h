@@ -15,16 +15,16 @@
 
 #include <string>
 #include "common/model/ModelBase.h"
-#include "protect_engines/hcs/common/HcsMacros.h"
+#include "protect_engines/openstack/common/OpenStackMacros.h"
 
-using namespace VirtPlugin;
-
-namespace HcsPlugin {
+using VirtPlugin::ResponseModel;
+ 
+OPENSTACK_PLUGIN_NAMESPACE_BEGIN
 class ActiveSnapConsistencyResponse : public ResponseModel {
 public:
     ActiveSnapConsistencyResponse() {}
     virtual ~ActiveSnapConsistencyResponse() {}
 };
-}
+OPENSTACK_PLUGIN_NAMESPACE_END
 
 #endif

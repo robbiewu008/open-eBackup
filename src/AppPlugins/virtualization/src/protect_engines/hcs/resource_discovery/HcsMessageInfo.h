@@ -258,7 +258,7 @@ struct ProjectResource {
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_tenantId, tenantId)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_tenantName, tenantName)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_region, regions)
-    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_resourceVdc, vdcInfo)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_resourceVdc, vdcInfo)  // todo
     END_SERIAL_MEMEBER
 };
 

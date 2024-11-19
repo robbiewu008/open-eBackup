@@ -424,8 +424,8 @@ int BackupJob::CleanLeftovers()
 bool BackupJob::IfSaveValidDataBitMap()
 {
     // 全量备份第一段差量位图为全F, 则该卷不记有效数据位图
-    if (m_backupPara->jobParam.backupType == AppProtect::BackupJobType::FULL_BACKUP &&
-        !m_volHandler->GetIfMarkBlockValidData()) {
+    if (m_backupPara->jobParam.backupType == AppProtect::BackupJobType::FULL_BACKUP
+        && !m_volHandler->GetIfMarkBlockValidData()) {
         return false;
     }
     // 增量备份根据是否存在有效数据位图信息来判断
@@ -476,6 +476,7 @@ int BackupJob::GetDirtyRanges()
     if (m_ifSaveValidDataBitMap == INITIAL_STATE) {
         m_ifSaveValidDataBitMap = IfSaveValidDataBitMap() ? SAVE_BLOCK_BIT_MAP : NOT_SAVE_BLOCK_BIT_MAP;
     }
+        
     // 初始化块位图文件及指针
     if (m_ifSaveValidDataBitMap == SAVE_BLOCK_BIT_MAP && !InitCurSegBlockDataBitMap()) {
         ERRLOG("Init block bit map failed, %s", m_taskInfo.c_str());
@@ -1220,6 +1221,7 @@ int BackupJob::SavePreVolInfoToCache()
         }
         INFOLOG("Copy vol info %s to cache  success, %s", volMetaPath.c_str(), m_taskInfo.c_str());
     }
+    INFOLOG("SavePreVolInfoToCache success. volCachePath: %s", volCachePath.c_str());
     return SUCCESS;
 }
 
@@ -1236,7 +1238,6 @@ int BackupJob::SaveSnapshotInfo()
     if (Utils::SaveToFileWithRetry(m_metaRepoHandler, snapshotInfoMetaFile, snapshotInfoStr) != SUCCESS) {
         return FAILED;
     }
-
     INFOLOG("Save snapshot info success, vmRef: %s, %s", m_vmInfo.m_moRef.c_str(), m_taskInfo.c_str());
     return SUCCESS;
 }
@@ -1262,6 +1263,7 @@ int BackupJob::SaveVolumesMetadata()
         /* Note: We dont serialize metadata in vmInfo struct, so clear it after saved to volumes dir. */
         volume.m_metadata.clear();
         DBGLOG("Save volumes metadata success. Volume moRef: %s, %s", volume.m_uuid.c_str(), m_taskInfo.c_str());
+        INFOLOG("SaveVolumesMetadata success. volumeFileName: %s", volumeFileName.c_str());
     }
     INFOLOG("Save volumes metadata success, %s", m_taskInfo.c_str());
     return SUCCESS;
@@ -1281,6 +1283,7 @@ int BackupJob::SaveVMInfo()
         return FAILED;
     }
 
+    INFOLOG("SaveVMInfo success. vmInfoMetaFile: %s", vmInfoMetaFile.c_str());
     INFOLOG("Save vm info success. VM name: %s, %s", m_vmInfo.m_name.c_str(), m_taskInfo.c_str());
     return SUCCESS;
 }
@@ -1609,6 +1612,7 @@ int BackupJob::GetSnapshotToBeDelete()
     if (m_jobResult != AppProtect::JobResult::type::SUCCESS) {
         INFOLOG("Task is not success, need delete snapshot which created in this time. %s.", m_taskInfo.c_str());
         LoadSnapshotToBeDeleted(curSnapshotInfoMetaFile);
+        LoadFailedSnapshotsToBeDeleted();
         return SUCCESS;
     }
 
@@ -1628,6 +1632,42 @@ int BackupJob::GetSnapshotToBeDelete()
     }
 
     return SUCCESS;
+}
+
+void BackupJob::LoadFailedSnapshotsToBeDeleted()
+{
+    std::string vmInfoFile = m_metaRepoPath + VIRT_PLUGIN_VM_INFO;
+    if (Utils::LoadFileToStructWithRetry(m_metaRepoHandler, vmInfoFile, m_vmInfo) != SUCCESS) {
+        if (m_protectEngine->GetMachineMetadata(m_vmInfo) != SUCCESS) {
+            ERRLOG("Get machine metadata failed, %s", m_taskInfo.c_str());
+            return;
+        }
+    }
+
+    SnapshotInfo snapInfo;
+    for (const auto &volInfo : m_vmInfo.m_volList) {
+        INFOLOG("Volume to check snapshot: %s, %s", volInfo.m_uuid.c_str(), m_taskInfo.c_str());
+        std::vector<VolSnapInfo> snapList;
+        if (m_protectEngine->GetSnapshotsOfVolume(volInfo, snapList) != SUCCESS) {
+            ERRLOG("Get Snapshot list of volume failed, volId: %s, %s", volInfo.m_uuid.c_str(), m_taskInfo.c_str());
+            continue;
+        }
+        for (const auto &volSnap : snapList) {
+            snapInfo.m_volSnapList.push_back(volSnap);
+        }
+    }
+    if (snapInfo.m_volSnapList.empty()) {
+        INFOLOG("No more snapshots exist, vmId: %s, %s", m_vmInfo.m_uuid.c_str(), m_taskInfo.c_str());
+        return;
+    }
+    snapInfo.m_vmMoRef = m_vmInfo.m_moRef;
+    snapInfo.m_vmName = m_vmInfo.m_name;
+    snapInfo.m_deleted = false; // 默认值设置为false，表示快照未删除，需要进行删除
+    SnapToBeDeleted snap;
+    snap.m_snapshotInfo = snapInfo;
+    DBGLOG("Add snapshots(%s) to delete list, %s",
+        GetSnapshotsLogDetails(snapInfo.m_volSnapList).c_str(), m_taskInfo.c_str());
+    m_snapListToBeDeleted.m_snapList.push_back(snap);
 }
 
 void BackupJob::LoadSnapshotsOfVMToBeDeleted(const std::vector<VolSnapInfo>& exVolSnaps)

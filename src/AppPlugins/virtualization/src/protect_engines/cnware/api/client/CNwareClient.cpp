@@ -70,7 +70,7 @@ int32_t CNwareClient::InitCNwareClient(const ApplicationEnvironment &appEnv)
         ERRLOG("Init CNwareclient failed! Taskid: %s", appEnv.id.c_str());
         return FAILED;
     }
-    DBGLOG("SUCCESS Initiate CNware client, %s", appEnv.auth.extendInfo.c_str());
+    DBGLOG("SUCCESS Initiate CNware client");
     return SUCCESS;
 }
 
@@ -737,15 +737,16 @@ int32_t CNwareClient::SendRequest(std::shared_ptr<ResponseModel> response, CNwar
 bool CNwareClient::NeedRetry(std::shared_ptr<ResponseModel> response, CNwareRequest &req,
     RequestInfo &requestInfo, std::string &errorDes, int64_t &errorCode)
 {
+    std::string retryErrorCode = Module::ConfigReader::getString("CNwareConfig", "RetryErrorCode");
     if (response->GetHttpStatusCode() == CNWARE_AUTH_FAILED &&
         ResponseSuccessHandle(req, requestInfo, response, errorDes, errorCode) == SUCCESS) {
         return true;
     }
-    if (response->GetHttpStatusCode() == CNWARE_JOB_CONFLICT && (errorCode == UNFINISHED_JOB_EXISTS ||
-        errorCode == REFRESH_POOL_JOB || errorCode== REFRESH_POOL_JOB_CONFLICT)) {
-        WARNLOG(" Url: %s, http status: %d, errCode: %d, error message: %d, request conflicts. %s",
+    if (response->GetHttpStatusCode() == CNWARE_JOB_CONFLICT &&
+        (retryErrorCode.find(std::to_string(errorCode)) != std::string::npos)) {
+        WARNLOG("Url: %s, http status: %d, errCode: %d, error message: %d, request conflicts. %s",
             requestInfo.m_resourcePath.c_str(), CNWARE_JOB_CONFLICT,
-            UNFINISHED_JOB_EXISTS, errorDes.c_str(), m_taskId.c_str());
+            errorCode, errorDes.c_str(), m_taskId.c_str());
         return true;
     }
     if (response->GetErrCode() != 0 || errorCode == UNSUPPORT_LUN) {

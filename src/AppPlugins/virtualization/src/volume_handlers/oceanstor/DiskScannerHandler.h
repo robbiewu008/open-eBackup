@@ -99,6 +99,7 @@ public:
     int32_t GetIscsiDiskWwid(const std::string &diskLetter, std::string &diskWwn);
     // 扫描session
     void RescanDevice();
+    int32_t AddTypeIpRulePolicy(const std::string &targetIP, const std::string &targetType);
     int32_t AddIscsiLogicIpRoutePolicy(const std::string &targetIP);
 
 private:

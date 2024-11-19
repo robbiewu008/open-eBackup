@@ -18,6 +18,7 @@
 #include <vector>
 #include <algorithm>
 #include <common/JsonHelper.h>
+#include "common/Utils.h"
 #include "CNwareProtectEngine.h"
 
 using namespace VirtPlugin;
@@ -54,6 +55,8 @@ const int32_t PROTOCAL_NFS_CIFS = 3;
 const std::string RESTORE_LOCATION_ORIGINAL = "original";
 const std::string RESTORE_LOCATION_NEW = "new";
 const std::string CURRENT_BOOT_DISK = "YES";
+const std::string STATUS_BEGINNING_RUNNING = "0\%2C1";
+const int PAGE_1 = 1;
 const int NUM_2 = 2;
 const int NUM_100 = 100;
 const int CNWARE_VM_NAME_LIMIT = 128;
@@ -1128,7 +1131,7 @@ int32_t CNwareProtectEngine::DeleteCephSnapshot(const std::string &cephSnapFlag)
         ERRLOG("DelCephSnapshots(%s) failed.", cephSnapFlag.c_str());
         return FAILED;
     }
-    WARNLOG("Delete ceph snapshot %s, res:%s.", cephSnapFlag.c_str(), response->GetBody().c_str());
+    WARNLOG("Delete ceph snapshot %s, res:%s.", cephSnapFlag.c_str(), WIPE_SENSITIVE(response->GetBody()).c_str());
     if (response->GetBody() == "success" || response->GetBody() == "notFound") {
         return SUCCESS;
     }
@@ -1758,8 +1761,8 @@ int32_t CNwareProtectEngine::FormatDomainDiskDev(VMInfo &vmInfo, AddDomainReques
         diskDevReq.mOldVol = volPair.m_targetVol.m_name;
         diskDevReq.mOldPool = volPair.m_targetVol.m_datastore.m_name;
         diskDevReq.mPreallocation = (
-            std::stoi(volPair.m_targetVol.m_datastore.m_type) == static_cast<int>(PoolType::NAS) ||
-            std::stoi(volPair.m_targetVol.m_datastore.m_type) == static_cast<int>(PoolType::Distribute)) ?
+            Module::SafeStoi(volPair.m_targetVol.m_datastore.m_type) == static_cast<int>(PoolType::NAS) ||
+            Module::SafeStoi(volPair.m_targetVol.m_datastore.m_type) == static_cast<int>(PoolType::Distribute)) ?
             PREALLOCATION_OFF : diskDev.m_preallocation;
         diskDevReq.mType = diskDev.m_driverType;
         diskDevReq.mShareable = diskDev.m_shareable;
@@ -2018,6 +2021,71 @@ int32_t CNwareProtectEngine::AddBridgeInterface(const std::string &vmId,
     return SUCCESS;
 }
 
+void CNwareProtectEngine::WaitVMTaskEmpty(const std::string &domainId)
+{
+    if (m_cnwareClient == nullptr) {
+        ERRLOG("WaitVMTaskEmpty cnwareClient nullptr! Job id: %s", m_jobId.c_str());
+        return;
+    }
+    CNwareRequest req;
+    SetCommonInfo(req);
+    std::shared_ptr<QueryVMTaskResponse> response = std::make_shared<QueryVMTaskResponse>();
+    int wait_time = 0;
+    do {
+        sleep(COMMON_WAIT_TIME_3S);
+        wait_time += COMMON_WAIT_TIME_3S;
+        response = m_cnwareClient->QueryVMTasks(req, domainId, STATUS_BEGINNING_RUNNING, PAGE_1, NUM_100);
+        if (response == nullptr) {
+            ERRLOG("WaitVMTaskEmpty failed! domain id: %s.", domainId.c_str());
+            return;
+        }
+        if (FIFTEEN_MIN_IN_SEC < wait_time) {
+            ERRLOG("WaitVMTaskEmpty timeout! domain id: %s.", domainId.c_str());
+            break;
+        }
+    } while (!response->GetVMTaskInfo().mData.empty());
+    INFOLOG("Task empty! domain id: %s.", domainId.c_str());
+    return;
+}
+
+int32_t CNwareProtectEngine::PostProcessCreateMachine(VMInfo &vmInfo)
+{
+    // 通过虚拟机名称查询新虚拟机信息
+    GetVMListRequest getVMListReq;
+    SetCommonInfo(getVMListReq);
+    getVMListReq.SetQueryName(vmInfo.m_name);
+    std::shared_ptr<GetVMListResponse> getVMListRsp = m_cnwareClient->GetVMList(getVMListReq);
+    if (getVMListRsp == nullptr) {
+        ERRLOG("Get vm %s info by name failed. %s", vmInfo.m_name.c_str(), m_jobId.c_str());
+        return FAILED;
+    }
+    DataResponse listRsp = getVMListRsp->GetVMList();
+    if (listRsp.data.empty()) {
+        ERRLOG("Get vm info by name failed, no info return.");
+        return FAILED;
+    }
+    DomainListResponse dInfo = listRsp.data[0];
+    
+    sleep(COMMON_WAIT_TIME_3S);
+    WaitVMTaskEmpty(dInfo.id);
+    if (!ModifyVMDevBoots(dInfo, vmInfo)) {
+        ERRLOG("Modify VM(%s) dev boots failed. %s", dInfo.id.c_str(), m_jobId.c_str());
+        return FAILED;
+    }
+    vmInfo.m_uuid = dInfo.id;
+    // 清除卷信息，查询新创建的卷重新赋值
+    vmInfo.m_volList.clear();
+
+    GetVMDiskInfoRequest reqVol;
+    SetCommonInfo(reqVol);
+    reqVol.SetDomainId(vmInfo.m_uuid);
+    std::shared_ptr<GetVMDiskInfoResponse> respVol = m_cnwareClient->GetVMDiskInfo(reqVol);
+    if (respVol == nullptr || !SetVolListInfo2VMInfo(respVol->GetInfo(), vmInfo)) {
+        ERRLOG("Get VM vol list info failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    return SUCCESS;
+}
 int32_t CNwareProtectEngine::DoCreateMachine(VMInfo &vmInfo,
     const AddDomainRequest &addDomainInfo, BuildNewVMRequest &createVmReq)
 {
@@ -2034,36 +2102,8 @@ int32_t CNwareProtectEngine::DoCreateMachine(VMInfo &vmInfo,
         ERRLOG("Create vm failed.");
         return FAILED;
     }
-
-    // 通过虚拟机名称查询新虚拟机信息
-    GetVMListRequest getVMListReq;
-    SetCommonInfo(getVMListReq);
-    getVMListReq.SetQueryName(vmInfo.m_name);
-    std::shared_ptr<GetVMListResponse> getVMListRsp = m_cnwareClient->GetVMList(getVMListReq);
-    if (getVMListRsp == nullptr) {
-        ERRLOG("Get vm %s info by name failed. %s", vmInfo.m_name.c_str(), m_jobId.c_str());
-        return FAILED;
-    }
-    DataResponse listRsp = getVMListRsp->GetVMList();
-    if (listRsp.data.empty()) {
-        ERRLOG("Get vm info by name failed, no info return.");
-        return FAILED;
-    }
-    DomainListResponse dInfo = listRsp.data[0];
-    if (!ModifyVMDevBoots(dInfo, vmInfo)) {
-        ERRLOG("Modify VM(%s) dev boots failed. %s", dInfo.id.c_str(), m_jobId.c_str());
-        return FAILED;
-    }
-    vmInfo.m_uuid = dInfo.id;
-    // 清除卷信息，查询新创建的卷重新赋值
-    vmInfo.m_volList.clear();
-
-    GetVMDiskInfoRequest reqVol;
-    SetCommonInfo(reqVol);
-    reqVol.SetDomainId(vmInfo.m_uuid);
-    std::shared_ptr<GetVMDiskInfoResponse> respVol = m_cnwareClient->GetVMDiskInfo(reqVol);
-    if (respVol == nullptr || !SetVolListInfo2VMInfo(respVol->GetInfo(), vmInfo)) {
-        ERRLOG("Get VM vol list info failed, %s", m_taskId.c_str());
+    if (PostProcessCreateMachine(vmInfo) != SUCCESS) {
+        ERRLOG("PostProcessCreateMachine vm failed. %s.", m_jobId.c_str());
         return FAILED;
     }
     INFOLOG("Create vm %s id: %s success. %s", vmInfo.m_name.c_str(), vmInfo.m_uuid.c_str(), m_jobId.c_str());
@@ -2542,10 +2582,10 @@ bool CNwareProtectEngine::GetTargetStoragePoolListBackup(std::unordered_set<std:
     return true;
 }
 
-bool CNwareProtectEngine::CheckStorageUsage(const StoragePool &pool, const uint32_t &storageLimit)
+bool CNwareProtectEngine::CheckStorageUsage(const StoragePool &pool, const int32_t &storageLimit)
 {
     if ((double(pool.m_available) / double(pool.m_capacity)) * NUM_100 <
-        (double(NUM_100 - storageLimit))) {
+        (double(storageLimit))) {
         ERRLOG("storage pool(%s) usage is over limit(%d).", pool.m_name.c_str(), storageLimit);
         ApplicationLabelType resourceCheckLabel;
         resourceCheckLabel.level = JobLogLevel::TASK_LOG_ERROR;
@@ -2557,6 +2597,28 @@ bool CNwareProtectEngine::CheckStorageUsage(const StoragePool &pool, const uint3
     return true;
 }
 
+int32_t CNwareProtectEngine::GetStorageLimit()
+{
+    int32_t defaultStorageLimit = Module::ConfigReader::getInt("CNwareConfig", "StorageLimit");
+    if (m_backupPara != nullptr && !m_backupPara->extendInfo.empty()) {
+        Json::Value extendInfo;
+        if (!Module::JsonHelper::JsonStringToJsonValue(m_backupPara->extendInfo, extendInfo)) {
+            ERRLOG("Trans job extend info to json value failed");
+            return defaultStorageLimit;
+        }
+        if (extendInfo.isMember("available_capacity_threshold")) {
+            DBGLOG("Get available_capacity_threshold.");
+            int32_t capacity = extendInfo["available_capacity_threshold"].asString().empty() ?
+                defaultStorageLimit : Module::SafeStoi(extendInfo["available_capacity_threshold"].asString(),
+                defaultStorageLimit);
+            INFOLOG("Get available_capacity_threshold %d.", capacity);
+            return capacity;
+        }
+    }
+    ERRLOG("Get no backup ptr, return default.");
+    return defaultStorageLimit;
+}
+
 bool CNwareProtectEngine::CheckStorage()
 {
     std::unordered_set<std::string> poolList;
@@ -2564,7 +2626,7 @@ bool CNwareProtectEngine::CheckStorage()
         ERRLOG("Get target storage pool list Failed, %s", m_taskId.c_str());
         return false;
     }
-    uint32_t storageLimit = Module::ConfigReader::getUint("CNwareConfig", "StorageLimit");
+    int32_t storageLimit = GetStorageLimit();
     std::string unUsedPools {};
     for (auto poolId : poolList) {
         CNwareRequest req;

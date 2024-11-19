@@ -105,7 +105,7 @@ bool OpenStackTokenMgr::ReacquireToken(ModelBase &model, std::string &tokenValue
     }
     if (getTokenResponse->GetStatusCode() != static_cast<uint32_t>(Module::SC_CREATED)) {
         ERRLOG("Failed to get token by keystone api, status: %d, resp body: %s.", getTokenResponse->GetStatusCode(),
-            getTokenResponse->GetBody().c_str());
+            WIPE_SENSITIVE(getTokenResponse->GetBody()).c_str());
         return false;
     }
     if (!getTokenResponse->Serial()) {

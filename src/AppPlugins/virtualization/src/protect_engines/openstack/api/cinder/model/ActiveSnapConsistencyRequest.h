@@ -15,12 +15,14 @@
 
 #include <string>
 #include "common/model/ModelBase.h"
-#include "protect_engines/hcs/common/HcsMacros.h"
 #include "common/token_mgr/TokenDetail.h"
+#include "protect_engines/openstack/common/OpenStackMacros.h"
 
-using namespace VirtPlugin;
+using VirtPlugin::ModelBase;
+using VirtPlugin::ApiType;
+using VirtPlugin::Scope;
 
-namespace HcsPlugin {
+OPENSTACK_PLUGIN_NAMESPACE_BEGIN
 class ActiveSnapConsistencyRequest : public ModelBase {
 public:
     ActiveSnapConsistencyRequest();
@@ -38,6 +40,5 @@ protected:
     std::string m_volUUID;
     std::vector<std::string> m_snapProviderLocationList;
 };
-}
-
+OPENSTACK_PLUGIN_NAMESPACE_END
 #endif

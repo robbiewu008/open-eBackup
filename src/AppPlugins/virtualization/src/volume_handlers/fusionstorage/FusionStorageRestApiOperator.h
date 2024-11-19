@@ -62,6 +62,8 @@ public:
 
     int32_t QuerySnapshotInfoByName(const std::string &snapshotName, std::string &responseBody, std::string &errorDes);
 
+    int32_t QueryStoragePoolUsedRate(double &usedCapacityRate);
+
     int32_t TryGetToken();
     /**
      * @brief 初始化apiOperator相关指针和对象

@@ -52,6 +52,8 @@ public:
     {
         return m_spDeviceFile;
     }
+
+    int32_t QueryStoragePoolUsedRate(double &usedCapacityRate) override;
 private:
     int32_t GetStorageInfo();
     int32_t SetChangeInfo(const VolSnapInfo &preVolSnapshot, const VolSnapInfo &curVolSnapshot);

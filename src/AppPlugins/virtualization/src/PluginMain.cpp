@@ -61,7 +61,8 @@ const int MAX_TASK_AIO_MEM_IN_MB = 2048;
 const int DEFAULT_TASK_AIO_MEM_IN_MB = 1024;
 const int MIN_TASK_AIO_MEM_IN_MB = 128;
 const int MIN_TIME_OUT_ONE_VOLUME = 86400;    // 24h
-const int MAX_TIME_OUT_ONE_VOLUME = 86400 * 7;
+const int DEFAULT_TIME_OUT_ONE_VOLUME = 86400 * 5;
+const int MAX_TIME_OUT_ONE_VOLUME = 86400 * 15;
 const int MIN_RATE = 0;
 const int MAX_RATE = 100;
 const int DEFAULT_CPU_USAGE_RATE_LIMIT = 80;
@@ -123,20 +124,9 @@ EXTER_ATTACK VIRTUAL_PLUGIN_API int32_t AppInit(std::string& logPath)
         MIN_SEGMENT_THRESHOLD, MAX_SEGMENT_THRESHOLD, MAX_SEGMENT_THRESHOLD);
     Module::ConfigReaderImpl::instance()->putIntConfigInfo("VOLUME_DATA_PROCESS", "MAX_BACKUP_THREADS",
         MIN_BACKUP_THREADS, MAX_BACKUP_THREADS, MAX_BACKUP_THREADS);
-    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HcsConfig", "CreateSnapshotApigwFailedRetry",
-        MIN_CREATE_SNAPSHOT_RETRY, MAX_CREATE_SNAPSHOT_RETRY, DEFAULT_CREATE_SNAPSHOT_RETRY);
-    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HcsConfig", "CreateSnapshotLimit",
-        MIN_CREATE_SNAPSHOT_LIMIT, MAX_CREATE_SNAPSHOT_LIMIT, DEFAULT_CREATE_SNAPSHOT_LIMIT);
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "ECSSupportBackupStatus",
-        "active,stopped,suspended");
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "ECSSupportRestoreStatus", "active,stopped");
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "EVSSupportStatus", "in-use");
     Module::ConfigReaderImpl::instance()->putStringConfigInfo("General", "RecoverIgnoreBadBlock", "no");
     Module::ConfigReaderImpl::instance()->putStringConfigInfo("General", "DmiDecodeUUID", "");
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "VdcUserRole", "vdcServiceManager");
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "FusionStorageApiMode", "ISCSI");
-    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HcsConfig", "LongestTimeBackUpOneVolume",
-        MIN_TIME_OUT_ONE_VOLUME, MAX_TIME_OUT_ONE_VOLUME, MIN_TIME_OUT_ONE_VOLUME);
+    InitHCSCfg();
     InitConfigItemsForAIO();
     InitAppCfg();
 #ifndef WIN32
@@ -155,6 +145,7 @@ void InitAppCfg()
     InitOpenStackCfg();
     InitApsaraStackCfg();
     InitCNwareCfg();
+    InitNutanixCfg();
     InitHyperVCfg();
 }
 
@@ -177,6 +168,23 @@ void InitHyperVCfg()
 {
     Module::ConfigReaderImpl::instance()->putIntConfigInfo("HyperVConfig", "PathLenthLimit",
         MIN_LENTH, MAX_LENTH, DEFAULT_LENTH);
+}
+
+void InitHCSCfg()
+{
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HcsConfig", "CreateSnapshotApigwFailedRetry",
+        MIN_CREATE_SNAPSHOT_RETRY, MAX_CREATE_SNAPSHOT_RETRY, DEFAULT_CREATE_SNAPSHOT_RETRY);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HcsConfig", "CreateSnapshotLimit",
+        MIN_CREATE_SNAPSHOT_LIMIT, MAX_CREATE_SNAPSHOT_LIMIT, DEFAULT_CREATE_SNAPSHOT_LIMIT);
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "ECSSupportBackupStatus",
+        "active,stopped,suspended");
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "ECSSupportRestoreStatus", "active,stopped");
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "EVSSupportStatus", "in-use");
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "VdcUserRole", "vdcServiceManager");
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "FusionStorageApiMode", "ISCSI");
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HcsConfig", "LongestTimeBackUpOneVolume",
+        MIN_TIME_OUT_ONE_VOLUME, MAX_TIME_OUT_ONE_VOLUME, DEFAULT_TIME_OUT_ONE_VOLUME);
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "IgnoreSnapshotPreCheck", "false");
 }
 
 void InitOpenStackCfg()
@@ -248,6 +256,14 @@ void InitCNwareCfg()
     Module::ConfigReaderImpl::instance()->putIntConfigInfo("CNwareConfig", "RequestPageNums",
         MIN_RATE, MAX_PAGENUM, DEFAULT_MAX_PAGENUM);
     Module::ConfigReaderImpl::instance()->putStringConfigInfo("CNwareConfig", "DomainName", "default");
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("CNwareConfig", "RetryErrorCode",
+        "1126,2382,4095,2182");
+}
+
+void InitNutanixCfg()
+{
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("NutanixConfig", "RetryCode",
+        "{httpRetryCode:[],curlRetryCode:[]}");
 }
 
 EXTER_ATTACK VIRTUAL_PLUGIN_API void DiscoverApplications(std::vector<Application>& returnValue,

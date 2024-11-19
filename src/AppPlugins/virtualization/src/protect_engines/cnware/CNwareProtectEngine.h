@@ -244,7 +244,9 @@ protected:
     bool ModifyVMDevBootsForDiskRestore();
     bool ModifyLiveDevBoots(const DomainListResponse &domainInfo, VMInfo vmInfo);
     bool ModifyBootDisk(const VolInfo &volObj, const std::string &vmId);
+    void WaitVMTaskEmpty(const std::string &domainId);
 
+    int32_t PostProcessCreateMachine(VMInfo &vmInfo);
     int32_t FormatLiveMachineParam(const VMInfo &vmInfo, AddDomainRequest &domainInfo);
     int32_t BuildLiveVm(const VMInfo &liveVm, VMInfo &newVm, const std::string &hostId,
         const std::string &storageId, const std::string &storageName);
@@ -281,7 +283,8 @@ protected:
     bool GetStoragePoolOfSpecifiedVol(const std::string volDev,
         std::shared_ptr<GetVMDiskInfoResponse> &resp, std::unordered_set<std::string> &poolList);
     bool GetTargetStoragePoolListBackup(std::unordered_set<std::string> &poolList);
-    bool CheckStorageUsage(const StoragePool &pool, const uint32_t &storageLimit);
+    bool CheckStorageUsage(const StoragePool &pool, const int32_t &storageLimit);
+    int32_t GetStorageLimit();
     bool CheckStorage();
 
     // cancel live mount

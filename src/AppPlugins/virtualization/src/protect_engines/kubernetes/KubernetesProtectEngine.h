@@ -401,9 +401,12 @@ private:
     int32_t CheckStorageThreshold(const BatchSnapshotParam &batchSnapshotInfo,
         std::map <std::string, std::set<std::string>> &poolMap, const int32_t &storageLimit);
 
+    int32_t GetPvcLunInfo(BatchSnapshotParam &createParam);
+
     std::vector<BatchSnapshotParam> m_snapshotCache;
     std::unordered_map<std::string, VolInfo> m_restoreVolMap;  // 待恢复卷Map key-源卷的uuid, value-目标卷的VolInfo
 
-    bool m_noNeedInitOceanVolHandler{false};
+    bool m_noNeedInitOceanVolHandler { false };
+    bool m_metaDataCached { false };
 };
 }
