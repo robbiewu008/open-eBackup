@@ -28,7 +28,7 @@ function build_image() {
         --build-arg binary=${BINARY} \
         -t dme-openstorageapi-${BINARY}:${MS_IMAGE_TAG} \
         -f $DOCKER_FILE_PATH \
-        $PKG_DIR/bin
+        "${BASE_PATH}/tmp/${MS_NAME}/mstmp/"
     echo "build image ${binary} success"
 }
 
