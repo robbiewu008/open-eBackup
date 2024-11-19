@@ -15,18 +15,15 @@ import collections
 import json
 import os
 import time
-import uuid
 
 import pexpect
 from goldendb.logger import log
 from common.cleaner import clear
-from common.common import execute_cmd, write_content_to_file
-from common.common_models import SubJobDetails
 from common.const import BackupTypeEnum
 from common.parse_parafile import get_env_variable
 from common.util.exec_utils import exec_append_file
 from common.util.scanner_utils import scan_dir_size
-from goldendb.handle.common.const import MasterSlavePolicy, RpcParamKey
+from goldendb.handle.common.const import MasterSlavePolicy
 
 BackupParams = collections.namedtuple('BackupParams',
                                       ['cluster_id', 'backup_type_str', 'master_or_slave', 'cluster_user'])
@@ -56,14 +53,6 @@ class GoldenDBStructure:
                 self.data_nodes[group_id][master_or_slave] = [[user, master_or_slave, agent_id, node_type]]
             else:
                 self.data_nodes[group_id][master_or_slave].append([user, master_or_slave, agent_id, node_type])
-
-
-def get_agent_uuids(file_content):
-    agent_infos = file_content.get("job", {}).get('extendInfo', {}).get('agents', [])
-    agent_uuids = set()
-    for agent_info in agent_infos:
-        agent_uuids.add(agent_info['id'])
-    return list(agent_uuids)
 
 
 def get_goldendb_structure(file_content):
@@ -112,29 +101,6 @@ def get_master_or_slave_policy(file_content):
     if sla == 'false':
         return MasterSlavePolicy.MASTER
     return MasterSlavePolicy.SLAVE
-
-
-def report_job_details(pid, job_detail: SubJobDetails):
-    """
-    功能描述：上报进度
-    参数：无
-    @pid: pid
-    @job_detail: 任务详情
-    返回值：无
-    """
-    random_id = f'goldendb_{pid}_' + str(uuid.uuid4())
-    input_file = RpcParamKey.PARAM_FILE_PATH + random_id + '_input'
-    output_file = RpcParamKey.PARAM_FILE_PATH + random_id + '_output'
-    json_str = json.dumps(job_detail.dict(by_alias=True))
-    write_content_to_file(input_file, json_str)
-    log.info(f"input_file:{random_id}_input json_str: {json_str}")
-    cmd = f'sh {RpcParamKey.DB_BIN_PATH}rpctool.sh ReportJobDetails {input_file} {output_file}'
-    code, out, err = execute_cmd(cmd)
-    log.info(f'report_job_details, code: {code}, out: {out}, err: {err}')
-    with open(output_file, 'r', encoding='utf-8') as file_read:
-        log.info(f'{pid} report result: {file_read.readlines()}')
-    os.remove(input_file)
-    os.remove(output_file)
 
 
 def write_file(file_name, message):

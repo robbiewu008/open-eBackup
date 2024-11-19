@@ -1152,7 +1152,7 @@ class KingbaseRestoreService:
         ret, output, err = execute_cmd(sql_cmd)
         if ret != CmdRetCode.EXEC_SUCCESS.value or "errors" in err:
             raise Exception(f"Failed to execute the restore_command, sql_cmd:{sql_cmd}, err:{err}, pid: {pid}.")
-        LOGGER.info(f"Success to execute the restore_command, pid: {pid}.")
+        LOGGER.info(f"Success to execute the restore_command, output:{output}, pid: {pid}.")
 
         # 2、用sys_ctl启动数据库
         db_system_user = KingbaseRestoreService.get_db_system_user(job_dict)

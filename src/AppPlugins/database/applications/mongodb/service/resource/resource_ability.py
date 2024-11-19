@@ -57,7 +57,7 @@ class Resource:
         bind_ip = get_mongo_bind_ip(service_port, extend_info["serviceIp"])
         self.url = str(bind_ip) + ":" + str(service_port)
         self.db = DB(self.url, {"username": self.username, "password": password, "auth_type": self.auth_type},
-                     direct_connection=True)
+                     direct_connection=True, bin_path=self.bin_path)
         self._node_info = {
             "endpoint": "",
             "extendInfo": "",
@@ -87,14 +87,14 @@ class Resource:
         """
         连接认证
         """
-        LOGGER.info("Begin to connect cluster from pid :%s", self.job_manager.pid)
+        LOGGER.info(f"Begin to connect cluster from pid :{self.job_manager.pid}")
         try:
             self.db.connect()
         except DBConnectionError as e:
-            LOGGER.error("DBConnectionError, unable to connect to %s! Error: %s", self.db.uri, e)
+            LOGGER.error(f"DBConnectionError, unable to connect to {self.db.uri}! Error: {e}")
             return False, ErrorCode.INSTANCE_CONNECT_ERROR.value, self.url_arbiter
         except DBAuthenticationError as e:
-            LOGGER.error("DBAuthenticationError, unable to connect to %s! Error: %s", self.db.uri, e)
+            LOGGER.error(f"DBAuthenticationError, unable to connect to {self.db.uri}! Error: {e}")
             return False, ErrorCode.INSTANCE_AUTH_ERROR.value, self.url_arbiter
         return True, MongoDBCode.SUCCESS.value, ""
 
@@ -159,7 +159,7 @@ class Resource:
         shards = list_shards.get("shards", [])
         agent_list = list()
         for shard in shards:
-            LOGGER.info(f"Read or write dir is wrong! shard:%s", shard)
+            LOGGER.info(f"Read or write dir is wrong! shard: {shard}")
             agent_data = "%s/%s" % (shard.get("_id", ""), shard.get("host", "").split("/")[1])
             agent_list.append(agent_data)
         return ";".join(agent_list)
@@ -172,11 +172,15 @@ class Resource:
             status = self.db.admin_command("getCmdLineOpts")
         except DBOperationError as e:
             return False, ErrorCode.INSTANCE_AUTH_ERROR.value, self.url_arbiter
-        if self.auth_type == str(AuthType.NO_AUTO.value) and status.get("parsed") and not status.get("parsed").get(
-                "security"):
+        auth_type_no_auto_matches = self.auth_type == str(AuthType.NO_AUTO.value)
+        parsed_status_exists = status.get("parsed")
+        security_disabled = not parsed_status_exists.get("security") or parsed_status_exists.get("security").get(
+            "authorization") == "disabled"
+        if auth_type_no_auto_matches and parsed_status_exists and security_disabled:
             return True, MongoDBCode.SUCCESS.value, ""
-        if self.auth_type == str(AuthType.APP_PASSWORD.value) and status.get("parsed") and status.get("parsed").get(
-                "security"):
+        auth_type_password_matches = self.auth_type == str(AuthType.APP_PASSWORD.value)
+        security_enabled = status.get("parsed").get("security").get("authorization") == "enabled"
+        if auth_type_password_matches and parsed_status_exists and security_enabled:
             return True, MongoDBCode.SUCCESS.value, ""
         return False, ErrorCode.INSTANCE_AUTH_ERROR.value, self.url_arbiter
 
@@ -218,7 +222,7 @@ class Resource:
         LOGGER.info("Begin check_mongo_tool ")
         ret, result = self.cmd.check_mongo_tool(path)
         if not ret:
-            LOGGER.error("Can not find mongo help in this node, url: %s, result: %s", url, result)
+            LOGGER.error(f"Can not find mongo help in this node, url: {url}, result: {result}")
             return False, ErrorCode.INVALID_BIN_PATH.value, \
                 self.url_arbiter + ",mongo/mongos/mongod/mongodump/mongorestre"
         return True, MongoDBCode.SUCCESS.value, \
@@ -235,7 +239,7 @@ class Resource:
                 return False, ErrorCode.PARAMS_IS_INVALID.value, "Not suitable user."
             bin_path_type = check_file_or_dir(self.bin_path)
             if bin_path_type != EnumPathType.DIR_TYPE:
-                LOGGER.error("Mongo bin path is invalid type: %s, url: %s can not register", bin_path_type, url)
+                LOGGER.error(f"Mongo bin path is invalid type: {bin_path_type}, url: {url} can not register")
                 return False, ErrorCode.INVALID_BIN_PATH.value, \
                     self.url_arbiter + ",mongo/mongos/mongod/mongodump/mongorestre"
             mongo_bin_path = self.bin_path + ParamField.FORWARD_SLASH.value
@@ -250,8 +254,7 @@ class Resource:
                 return False, ErrorCode.PARAMS_IS_INVALID.value, "Not suitable user."
             mongodump_path_type = check_file_or_dir(self.mongodump_bin_path)
             if mongodump_path_type != EnumPathType.DIR_TYPE:
-                LOGGER.error("Mongo dump bin path is invalid type: %s, url: %s can not register.",
-                             mongodump_path_type, url)
+                LOGGER.error(f"Mongo dump bin path is invalid type:{mongodump_path_type}, url:{url} can not register.")
                 return False, ErrorCode.INVALID_BIN_PATH.value, \
                     self.url_arbiter + ",mongo/mongos/mongod/mongodump/mongorestre"
             mongo_tool_bin_path = self.mongodump_bin_path + ParamField.FORWARD_SLASH.value

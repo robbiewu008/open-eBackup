@@ -94,16 +94,19 @@ class Resource:
         if not all_nodes:
             return output
         for this_node in all_nodes:
-            extend_info = {'status': this_node.instance_state,
-                           'role': this_node.role_type}
-            node = {'endpoint': this_node.node_ip,
-                    'extendInfo': extend_info,
-                    'name': this_node.node_name,
-                    'subType': OpenGaussType.SUBTYPE,
-                    'type': OpenGaussType.TYPE,
-                    'uuid': "",
-                    "systemId": self.cluster.get_system_identifier()
-                    }
+            extend_info = {
+                'status': this_node.instance_state,
+                'role': this_node.role_type
+            }
+            node = {
+                'endpoint': this_node.node_ip,
+                'extendInfo': extend_info,
+                'name': this_node.node_name,
+                'subType': OpenGaussType.SUBTYPE,
+                'type': OpenGaussType.TYPE,
+                'uuid': "",
+                "systemId": self.cluster.get_system_identifier()
+            }
             nodes.append(node)
         output['nodes'] = nodes
         output['name'] = self.cluster.host_name
@@ -201,10 +204,11 @@ def run():
 
     param = ParamStruct(parm_cont_dict, pid)
     resource = Resource(pid, param)
-    execute_func = {"CheckApplication": resource.check_application,
-                    "ListApplicationResource": resource.get_applictaion_resources,
-                    "QueryHostCluster": resource.get_cluster_info
-                    }
+    execute_func = {
+        "CheckApplication": resource.check_application,
+        "ListApplicationResource": resource.get_applictaion_resources,
+        "QueryHostCluster": resource.get_cluster_info
+    }
     res_exec = execute_func.get(func_type)
     try:
         output = res_exec()

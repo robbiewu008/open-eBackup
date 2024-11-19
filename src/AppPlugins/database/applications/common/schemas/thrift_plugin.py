@@ -48,7 +48,7 @@ class DataLayout(BaseModel):
     deduption: bool = Field(default=None, description='whether deduption')
     compression: bool = Field(default=None, description='whether data compression')
     native_data: bool = Field(default=None, description='whether backup data is native backup mode', alias="nativeData")
-    extend_info: bool = Field(default=None,
+    extend_info: dict = Field(default=None,
                               description='data layout extend information, '
                                           'json string format, .eg encryption algorithm',
                               alias="extendInfo")
@@ -87,7 +87,7 @@ class BackupJob(BaseModel):
                                                           description='backup protect application resource',
                                                           alias='protectSubObject')
     repositories: List[StorageRepository] = Field(default=None, description='backup storage respository information')
-    copies: Copy = Field(default=None, description='the copy information to be created')
+    copies: List[Copy] = Field(default=None, description='the copy information to be created', alias='copy')
     extend_info: dict = Field(default=None, description='Job extend information', alias='extendInfo')
 
 

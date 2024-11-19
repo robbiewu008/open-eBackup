@@ -11,10 +11,9 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
-from common.common_models import SubJobDetails, LogDetail
+from common.common_models import SubJobDetails, LogDetail, ActionResult
 from common.const import DBLogLevel, ExecuteResultEnum, SubJobStatusEnum
 from common.common import output_result_file
-from goldendb.schemas.glodendb_schemas import ActionResponse
 from tidb.common.const import EnvName, ErrorCode
 from tidb.common.safe_get_information import ResourceParam
 from tidb.common.tidb_common import get_agent_uuids, get_tidb_structure, report_job_details
@@ -55,15 +54,15 @@ class TiDBBackupService(object):
         exec_uuids = tiup_uuid + tikv_uuids + tiflash_uuids
         for exec_uuid in exec_uuids:
             if exec_uuid not in agent_uuids:
-                response = ActionResponse(code=ExecuteResultEnum.INTERNAL_ERROR,
-                                          bodyErr=ErrorCode.ERR_ENVIRONMENT,
-                                          message=f"{exec_uuid} is offline")
+                response = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR,
+                                        bodyErr=ErrorCode.ERR_ENVIRONMENT,
+                                        message=f"{exec_uuid} is offline")
                 log_detail = LogDetail(logInfo="plugin_generate_subjob_fail_label", logLevel=DBLogLevel.ERROR)
                 report_job_details(req_id, SubJobDetails(taskId=job_id, progress=100, logDetail=[log_detail],
                                                          taskStatus=SubJobStatusEnum.FAILED.value))
                 output_result_file(req_id, response.dict(by_alias=True))
                 return False
-        response = ActionResponse(code=ExecuteResultEnum.SUCCESS)
+        response = ActionResult(code=ExecuteResultEnum.SUCCESS)
         output_result_file(req_id, response.dict(by_alias=True))
         log.info(f"step 1: execute AllowBackupInLocalNode interface success")
         return True
@@ -79,7 +78,7 @@ class TiDBBackupService(object):
         """
         log.info(
             f'step 2: start execute backup_gen_sub_job, req_id: {req_id}, job_id: {job_id},  sub_id: {sub_id}')
-        response = ActionResponse(code=ExecuteResultEnum.SUCCESS)
+        response = ActionResult(code=ExecuteResultEnum.SUCCESS)
         output_result_file(req_id, response.dict(by_alias=True))
         log.info(f"step 2: execute check_backup_job_type interface success")
         return True
@@ -95,7 +94,7 @@ class TiDBBackupService(object):
         返回值：
         """
         log.info(f'step 3: execute backup_prerequisite,req_id:{req_id} job_id:{job_id}')
-        response = ActionResponse()
+        response = ActionResult(code=ExecuteResultEnum.SUCCESS)
         log_detail = LogDetail(logInfo="plugin_execute_prerequisit_task_success_label",
                                logLevel=DBLogLevel.INFO.value)
         sub_dict = SubJobDetails(taskId=job_id, subTaskId=sub_id, progress=100, logDetail=[log_detail],
@@ -166,7 +165,7 @@ class TiDBBackupService(object):
         param = param_inst.get_param()
         backup_inst = BackUp(req_id, job_id, sub_id, std_in, param)
         backup_inst.do_post_job()
-        response = ActionResponse(code=ExecuteResultEnum.SUCCESS)
+        response = ActionResult(code=ExecuteResultEnum.SUCCESS)
         output_result_file(req_id, response.dict(by_alias=True))
         return True
 

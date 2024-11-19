@@ -21,8 +21,8 @@ from common.common_models import LogDetail
 from common.const import SubJobStatusEnum
 from common.file_common import exec_lchown, exec_lchown_dir_recursively
 from openGauss.common.common import get_dbuser_gname, \
-    write_progress_file, get_now_time, check_injection_char, execute_cmd_by_user
-from openGauss.common.const import ResultCode, CopyDirectory
+    write_progress_file, get_now_time, check_injection_char, execute_cmd_by_user, is_cmdb_distribute
+from openGauss.common.const import ResultCode, CopyDirectory, ProtectObject
 from openGauss.common.error_code import OpenGaussErrorCode
 from openGauss.restore.restore_base import RestoreBase
 
@@ -34,11 +34,25 @@ class DatabaseRestore(RestoreBase):
     def check_db_info(self):
         source_db_version = self._resource_info.get_db_version()
         copy_version = self._copy_version
+        if ProtectObject.CMDB in source_db_version:
+            if self.check_connection():
+                return True, ResultCode.SUCCESS
+            else:
+                return False, OpenGaussErrorCode.CHECK_CLUSTER_FAILED
         if copy_version != source_db_version:
             self.log.error(f'The current database version {source_db_version} does not match the replica version '
                            f'{copy_version}. job id: {self._job_id}')
             return False, OpenGaussErrorCode.ERROR_DIFFERENT_VERSION
         return True, ResultCode.SUCCESS
+
+    def check_connection(self):
+        check_cmd = "\\l"
+        ret, std_out, std_err = self.exec_sql_cmd(check_cmd)
+        if ret != ResultCode.SUCCESS or f"failed to connect" in std_out:
+            self.log.info(f"Check Connection failed, out: {std_out}, err: {std_err}")
+            return False
+        self.log.info(f"Check Connection success")
+        return True
 
     def restore_prerequisite(self, param):
         if self._copy_version != self._resource_info.get_db_version():
@@ -75,8 +89,12 @@ class DatabaseRestore(RestoreBase):
         restore_start_time = get_now_time()
         progress_line = f"{restore_start_time}\n{tmp_database} "
         write_progress_file(progress_line, speed_file)
-        restore_cmd = f'{self._sql_tool} -p {self._port} {tmp_database} -r -f {copy_file} &>> {progress_file}'
-        ret, _, std_err = execute_cmd_by_user(self._user_name, self._env_file, restore_cmd)
+        if is_cmdb_distribute(self._deploy_type, self._database_type):
+            restore_cmd = f'{self._sql_tool} {tmp_database} -r -f {copy_file} &>> {progress_file}'
+        else:
+            restore_cmd = f'{self._sql_tool} -p {self._port} {tmp_database} -r -f {copy_file} &>> {progress_file}'
+        ret, out, std_err = execute_cmd_by_user(self._user_name, self._env_file, restore_cmd)
+
         # 写入完成时间
         restore_end_time = get_now_time()
         write_progress_file(f"{restore_end_time}\n{self._target_name}", speed_file)

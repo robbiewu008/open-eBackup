@@ -12,15 +12,16 @@
 #
 
 import os
-import time
-from enum import Enum
-from ctypes import cdll, Structure, c_char_p, c_void_p, c_int, c_uint64, POINTER, c_bool
-
 import shutil
+import time
+from ctypes import cdll, Structure, c_char_p, c_void_p, c_int, c_uint64, POINTER, c_bool
+from enum import Enum
 
-from common.util.scanner_utils import Scanner, get_log_level
 from common.env_common import get_install_head_path
+from common.logger import Logger
+from common.util.scanner_utils import Scanner, get_log_level
 
+LOGGER = Logger().get_logger()
 _LIB_BACKUP_PATH = f"{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/lib"
 _SCANNER_PATH = f"{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/scantmp"
 
@@ -105,6 +106,7 @@ class Backup(object):
     def query_backup_progress(self):
         data_size = 0
         progress = 0
+        LOGGER.info(f"Backup step:{self._step}, jobId:{self._job_id}")
         if self._step == BackupStep.BACKUP_PREPARE.value:
             return BackupStatus.BACKUP_INPROGRESS.value, progress, data_size
         elif self._step == BackupStep.BACKUP_COPY.value:
@@ -121,11 +123,13 @@ class Backup(object):
             return self._query_progress(self._dir_inst)
 
     def _clean_scanner_path(self):
+        LOGGER.info(f"Begin to clean scanner path, jobId:{self._job_id}")
         backup_scan_path = os.path.realpath(os.path.join(_SCANNER_PATH, self._job_id))
         if os.path.exists(backup_scan_path):
             shutil.rmtree(backup_scan_path)
 
     def _copy(self, source, destination):
+        LOGGER.info(f"Backup file from {source} to {destination}, jobId:{self._job_id}")
         source_dir_path = os.path.dirname(source)
         backup_ctl_files = self._get_control_file(BackupType.PHASE_COPY.value)
         for ctl_file in backup_ctl_files:
@@ -160,6 +164,7 @@ class Backup(object):
         return True
 
     def _chmeta(self, source, destination):
+        LOGGER.info(f"Begin to chmeta, jobId:{self._job_id}")
         if not self._write_meta:
             self._step = BackupStep.BACKUP_DIR.value
             return True
@@ -172,6 +177,7 @@ class Backup(object):
             self._enqueue(self._dir_inst, ctl_file)
         self._start(self._dir_inst)
         self._step = BackupStep.BACKUP_DIR.value
+        LOGGER.info(f"End to chmeta, jobId:{self._job_id}")
         return self._monitor(self._dir_inst)
 
     def _backup_files_post(self, files, destination):
@@ -196,6 +202,7 @@ class Backup(object):
         return True
 
     def _query_progress(self, instance):
+        LOGGER.info(f"Begin to query process, jobId:{self._job_id}")
         progress = 0
         stats = BackupStatistics()
         status = self._get_status(instance)
@@ -205,9 +212,12 @@ class Backup(object):
         bytes_copied = stats.noOfBytesCopied
         data_size = int(stats.noOfBytesCopied / 1024)
         if dir_failed_cnt != 0:
+            LOGGER.info(
+                f"Backup failed, status:{status}, progress:{progress}, data_size:{data_size}, jobId:{self._job_id}")
             return BackupStatus.BACKUP_FAILED.value, progress, data_size
         if bytes_to_backup != 0:
             progress = int(bytes_copied * 100 / bytes_to_backup)
+        LOGGER.info(f"Backup status:{status}, progress:{progress}, data_size:{data_size}, jobId:{self._job_id}")
         return status, progress, data_size
 
     def _get_control_file(self, phase):
@@ -237,6 +247,7 @@ class Backup(object):
         return scanner.monitor(self._job_id)
 
     def _prepare_files(self, files, write_queue_size=1000):
+        LOGGER.info(f"Prepare files begin, jobId:{self._job_id}")
         if not os.path.exists(_SCANNER_PATH):
             os.makedirs(_SCANNER_PATH)
         if not os.path.exists(self._meta_path):
@@ -246,6 +257,7 @@ class Backup(object):
         scanner = Scanner()
         scanner.create(self._job_id, self._meta_path, self._meta_ctl_path, True, write_queue_size)
         scanner.start_scan_files(files)
+        LOGGER.info(f"Prepare files end, jobId:{self._job_id}")
         return scanner.monitor(self._job_id)
 
     def _create(self, source, destination, phase):

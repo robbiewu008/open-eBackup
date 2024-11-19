@@ -391,6 +391,20 @@ class BackUp:
         log.info(f'timestamp, last_copy_id info:{timestamp, last_copy_id}')
         return timestamp, last_copy_id
 
+    @staticmethod
+    def exe_mount(data_remote_path, data_repo, mount_point):
+        remote_hosts = data_repo.get("remoteHost")
+        for remote_host in remote_hosts:
+            remote_ip = remote_host.get("ip")
+            mount_cmd_str = f"sudo mount -tnfs4 -o rw,nfsvers=4.1,sync,lookupcache=positive,hard,timeo=600," \
+                            f"wsize=1048576,rsize=1048576,namlen=255 {remote_ip}:{data_remote_path} {mount_point}"
+            return_code, out_info, err_info = execute_cmd(mount_cmd_str)
+            if return_code == CMDResult.SUCCESS:
+                break
+            else:
+                log.error(f"The execute mount cmd failed! ERROR_INFO : {err_info}")
+        return return_code
+
     def gen_sub_job(self):
         node_obclient_list, node_observer_list = self.get_obclient_and_observer_node_list(self._protect_env)
         if not node_obclient_list or not node_observer_list:
@@ -485,7 +499,6 @@ class BackUp:
             if repository.get("repositoryType", "") == RepositoryDataTypeEnum.DATA_REPOSITORY.value:
                 data_repo = repository
         data_remote_path = data_repo.get("remotePath", "")
-        remote_ip = data_repo.get("remoteHost")[0].get("ip")
         # 如果挂载点已经挂载data仓的remotePath：直接返回成功
         if check_mount(mount_point) and self.deal_mount(mount_point):
             return True
@@ -512,15 +525,11 @@ class BackUp:
         if return_code != CMDResult.SUCCESS or not os.path.exists(mount_point):
             log.error(f"The execute mkdir_local_dir_path cmd failed! ERROR_INFO : {err_info}")
             err_log_detail = LogDetail(logInfo=OceanBaseReportLabel.BACKUP_MKDIR_MOUNT_POINT_FAIL_LABEL,
-                                       logInfoParam=[local_ip],
-                                       logLevel=LogLevel.ERROR)
+                                       logInfoParam=[local_ip], logLevel=LogLevel.ERROR)
             raise LogDetailException(log_detail=err_log_detail)
         # 执行挂载命令
-        mount_cmd_str = f"sudo mount -tnfs4 -o rw,nfsvers=4.1,sync,lookupcache=positive,hard,timeo=600," \
-                        f"wsize=1048576,rsize=1048576,namlen=255 {remote_ip}:{data_remote_path} {mount_point}"
-        return_code, out_info, err_info = execute_cmd(mount_cmd_str)
+        return_code = self.exe_mount(data_remote_path, data_repo, mount_point)
         if return_code != CMDResult.SUCCESS:
-            log.error(f"The execute mount cmd failed! ERROR_INFO : {err_info}")
             err_log_detail = LogDetail(logInfo=OceanBaseReportLabel.BACKUP_MOUNT_FAIL_LABEL, logInfoParam=[local_ip],
                                        logLevel=LogLevel.ERROR)
             raise LogDetailException(log_detail=err_log_detail)

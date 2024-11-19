@@ -17,17 +17,21 @@ import re
 import shutil
 import json
 import datetime
-from common.common import execute_cmd, check_dir_uid_gid, convert_time_to_timestamp, write_content_to_file
+import time
+
+from common.common import execute_cmd, check_dir_uid_gid, convert_time_to_timestamp, write_content_to_file, \
+    get_local_ips, read_tmp_json_file, convert_timestamp_to_time
 from common.common_models import SubJobModel
-from common.const import JobData, ExecuteResultEnum, SubJobStatusEnum, SubJobTypeEnum, SubJobPolicyEnum
+from common.const import JobData, ExecuteResultEnum, SubJobStatusEnum, SubJobTypeEnum, SubJobPolicyEnum, \
+    SubJobPriorityEnum
 from common.file_common import delete_file_or_dir_specified_user, exec_lchown, exec_lchown_dir_recursively, \
     change_path_permission
 from common.util.exec_utils import exec_cp_cmd, check_path_valid, su_exec_rm_cmd
 from openGauss.common.base_cmd import BaseCmd
 from openGauss.common.common import write_progress_file, read_progress, get_hostname, write_time_file, \
-    safe_get_environ, check_injection_char, check_path, get_ids_by_name, check_user_name
+    safe_get_environ, check_injection_char, check_path, get_ids_by_name, check_user_name, execute_cmd_by_user
 from openGauss.common.const import logger, Env, CopyInfoKey, SubJobType, NodeDetailRole, ProgressInfo, conf_file, \
-    ProtectObject, ResultCode, GsprobackupParam, AuthKey
+    ProtectObject, ResultCode, GsprobackupParam, AuthKey, SubJobPolicy, OpenGaussDeployType
 from openGauss.common.error_code import NormalErr, OpenGaussErrorCode
 from openGauss.resource.cluster_instance import GaussCluster
 from openGauss.common.const import Tool, DELETE_FILE_NAMES_OF_DATA_DIR
@@ -44,6 +48,8 @@ class ExecRestore:
         self.inst = GaussCluster(self.user_name, self.input_info.get("env_path"))
         self.data_path = self.inst.get_instance_data_path()
         self._database_type = self.input_info.get("version")
+        if not self._database_type:
+            self._database_type = self.input_info.get("cluster_version")
         self.init_environment_info()
         self.restore_time = self.input_info.get("restoreTimeStamp")
 
@@ -51,6 +57,54 @@ class ExecRestore:
     def write_progress_by_result(result: bool, progress_file: str):
         message = ProgressInfo.SUCCEED if result else ProgressInfo.FAILED
         write_progress_file(message, progress_file)
+
+    @staticmethod
+    def copy_file_by_user(user_name, source_path, dest_path):
+        if not check_user_name(user_name):
+            return False
+        ret = exec_cp_cmd(source_path, dest_path, user_name, is_check_white_list=False)
+        if not ret:
+            logger.error(f"Failed to exec cp cmd.")
+            return False
+        return True
+
+    @staticmethod
+    def service_control(service, option):
+        ret, _, _ = execute_cmd(f"systemctl {option} {service}")
+        return ret == ResultCode.SUCCESS
+
+    @staticmethod
+    def build_sub_job(job_name, job_priority, job_policy, job_info=None):
+        return SubJobModel(
+            jobId=JobData.JOB_ID, jobType=SubJobTypeEnum.BUSINESS_SUB_JOB.value, jobInfo=job_info,
+            jobName=job_name, jobPriority=job_priority, policy=job_policy).dict(by_alias=True)
+
+    @staticmethod
+    def delete_useless_files_of_data_dir(tgt_data_path):
+        for file_name in DELETE_FILE_NAMES_OF_DATA_DIR:
+            del_path = os.path.realpath(os.path.join(tgt_data_path, file_name))
+            logger.info(f"Start deleting path: {del_path}")
+            if not os.path.exists(del_path):
+                logger.warning(f"The path: {del_path} does not exist when trying to delete it.")
+                continue
+
+            # 文件不存在会报错
+            try:
+                os.remove(del_path)
+                logger.info(f"Delete file: {del_path} success.")
+            except Exception as ex:
+                logger.error(f"Delete file {del_path} error {str(ex)}.")
+
+    @staticmethod
+    def _build_sub_job(job_name, job_priority, node_id, job_info=""):
+        sub_job = SubJobModel(
+            jobId=JobData.JOB_ID,
+            subJobId="",
+            jobType=SubJobTypeEnum.BUSINESS_SUB_JOB.value,
+            jobName=job_name,
+            jobPriority=job_priority, policy=SubJobPolicyEnum.FIXED_NODE.value, ignoreFailed=False,
+            execNodeId=node_id, jobInfo=job_info)
+        return sub_job
 
     def copy_file(self):
         copy_files = os.path.join(self.input_info.get("cache_path"), JobData.JOB_ID)
@@ -225,7 +279,6 @@ class ExecRestore:
               f'{backup_key} --instance {CopyInfoKey.BACKUP_INSTANCE} -j {GsprobackupParam.DEFAULT_PARALLEL} --progress'
         return cmd
 
-
     def do_restore_job_restore(self):
         logger.info('Start to do restore task, subJob type: restore')
         code = ExecuteResultEnum.INTERNAL_ERROR
@@ -309,16 +362,6 @@ class ExecRestore:
         logger.info('Succeed to do restore task, subJob type: endtask')
         code = ExecuteResultEnum.SUCCESS
         return code, body_err, message
-
-    @staticmethod
-    def copy_file_by_user(user_name, source_path, dest_path):
-        if not check_user_name(user_name):
-            return False
-        ret = exec_cp_cmd(source_path, dest_path, user_name, is_check_white_list=False)
-        if not ret:
-            logger.error(f"Failed to exec cp cmd.")
-            return False
-        return True
 
     def start_dcs_has(self):
         # 单机和非vastbase数据库不需要启动dcs和has
@@ -415,28 +458,15 @@ class ExecRestore:
         logger.debug(f"Succeed to stop has service and dcs service. job id: {JobData.JOB_ID}")
         return True
 
-    @staticmethod
-    def service_control(service, option):
-        ret, _, _ = execute_cmd(f"systemctl {option} {service}")
-        return ret == ResultCode.SUCCESS
-
-    @staticmethod
-    def delete_useless_files_of_data_dir(tgt_data_path):
-        for file_name in DELETE_FILE_NAMES_OF_DATA_DIR:
-            del_path = os.path.realpath(os.path.join(tgt_data_path, file_name))
-            logger.info(f"Start deleting path: {del_path}")
-            if not os.path.exists(del_path):
-                logger.warning(f"The path: {del_path} does not exist when trying to delete it.")
-                continue
-
-            # 文件不存在会报错
-            try:
-                os.remove(del_path)
-                logger.info(f"Delete file: {del_path} success.")
-            except Exception as ex:
-                logger.error(f"Delete file {del_path} error {str(ex)}.")
-
     def stop_recovery_status(self):
+        deploy_type = self.input_info.get("deploy_type", "")
+        cluster_version = self.input_info.get("cluster_version", "")
+        logger.info(
+            f"Restore post job deploy type {deploy_type}, cluster_version: {cluster_version}")
+        if deploy_type == OpenGaussDeployType.DISTRIBUTED and ProtectObject.CMDB in cluster_version:
+            # CMDB分布式集群由pw_ctl控制恢复进程，无需手动关闭
+            logger.info("CMDB not need stop recovery process")
+            return True
         logger.info("Stopping recovery status!")
         if ProtectObject.VASTBASE in self._database_type:
             return True
@@ -513,6 +543,99 @@ class ExecRestore:
         code = ExecuteResultEnum.SUCCESS
         return code, body_err, message
 
+    def do_restore_job_cmdb(self):
+        try:
+            code, body_err, message = self.do_cmdb_restore()
+            return code, body_err, message
+        except Exception as err:
+            logger.error(f"Do cmdb restore failed, err: {err}")
+            progress_file = os.path.join(self.input_info.get("cache_path"), f'{JobData.JOB_ID}{get_hostname()}cmdb')
+            write_progress_file(ProgressInfo.FAILED, progress_file)
+            return ExecuteResultEnum.INTERNAL_ERROR, 0, ''
+
+    def do_cmdb_restore(self):
+        logger.info(f'Start to do cmdb restore task {self.input_info}')
+        progress_file = os.path.join(self.input_info.get("cache_path"), f'{JobData.JOB_ID}{get_hostname()}cmdb')
+        write_progress_file(ProgressInfo.START, progress_file)
+        code = ExecuteResultEnum.INTERNAL_ERROR
+        body_err = 0
+        message = ''
+        user_name = safe_get_environ(f"{Env.OPEN_GAUSS_USER}_{JobData.PID}")
+        # 取依赖副本ID及目录
+        base_copy_id = self.input_info.get("base_copy_id")
+        logger.info(f"Get base copy id: {base_copy_id}")
+        if not user_name:
+            logger.error("Get user name error!")
+            return code, body_err, message
+        data_dir = self.input_info.get("media_path")
+        data_path = os.path.join(data_dir, base_copy_id)
+
+        target_copy_id = self.input_info.get("target_copy_id")
+        logger.info(f"Get target copy id: {target_copy_id}")
+        recovery_time = self.get_recovery_time(target_copy_id, data_path)
+
+        # 创建并写入 restore.yml 文件
+        restore_config = os.path.join(data_path, 'restore.yml')
+        if os.path.exists(restore_config):
+            os.remove(restore_config)
+        logger.info(f"Get restore config {restore_config}")
+
+        # 取当前节点业务ip
+        restore_host = self.get_cur_ndoe_host()
+
+        backup_content = f"backup_host: {restore_host}\nbackup_dir: {data_path}\ntarget_type: time\n" \
+                         f"target: '{recovery_time}'"
+        logger.info(f"Write restore config {backup_content} to restore_config {restore_config}")
+        write_content_to_file(restore_config, backup_content)
+        os.chmod(restore_config, 0o444)
+
+        dcs_address = self.input_info.get("dcs_address")
+        dcs_port = self.input_info.get("dcs_port")
+        restore_cmd = f'ha_ctl restore all -p {data_path} -l http://{dcs_address}:{dcs_port}'
+        env_path = self.input_info.get("env_path")
+        return_code, std_out, std_err = execute_cmd_by_user(user_name, env_path, restore_cmd)
+        logger.info(f"Get restore return code: {return_code}, std out: {std_out},  std err: {std_err}")
+        if return_code != ResultCode.SUCCESS:
+            write_progress_file(ProgressInfo.FAILED, progress_file)
+            logger.error(f"Execute restore failed.")
+            return code, body_err, message
+        logger.info('Succeed to do restore cmdb restore task')
+        write_progress_file(ProgressInfo.SUCCEED, progress_file)
+        code = ExecuteResultEnum.SUCCESS
+        return code, body_err, message
+
+    def get_recovery_time(self, base_copy_id, data_path):
+        # 取恢复时间
+        recovery_time = ""
+        restore_time_stamp = self.input_info.get("restoreTimeStamp", "")
+        logger.info(f"Get recovery time stamp {restore_time_stamp}")
+        if restore_time_stamp:
+            recovery_time = f"{convert_timestamp_to_time(int(restore_time_stamp))}.000000+08"
+        else:
+            backup_history_path = os.path.join(data_path, 'backup.history')
+            backup_history_infos = read_tmp_json_file(backup_history_path)
+            logger.info(f"Get backup history: {backup_history_infos} from {backup_history_path}")
+            for backup_history_info in backup_history_infos:
+                job_id = backup_history_info.get("JobID", "")
+                if job_id != base_copy_id:
+                    continue
+                recovery_time = backup_history_info.get("Recovery Time", "")
+                break
+        logger.info(f"Get recovery time {recovery_time}")
+        return recovery_time
+
+    def get_cur_ndoe_host(self):
+        local_ips = get_local_ips()
+        logger.info(f"Get local ips {local_ips}")
+        nodes = self.input_info.get("nodes")
+        endpoints = [item['endpoint'] for item in nodes]
+        logger.info(f"Get cluster nodes {nodes}")
+        union = set(local_ips) & set(endpoints)
+        union_list = list(union)
+        restore_host = union_list[0]
+        logger.info(f"Get restore host {restore_host}")
+        return restore_host
+
     def query_restore_progress(self, sub_job_type: str):
         logger.info(f'Start to query restore progress, subJob type: {sub_job_type}')
         progress = 0
@@ -527,6 +650,8 @@ class ExecRestore:
             progress_file = os.path.join(self.input_info.get("cache_path"), f'{JobData.JOB_ID}{get_hostname()}endtask')
         elif sub_job_type == SubJobType.RESTART:
             progress_file = os.path.join(self.input_info.get("cache_path"), f'{JobData.JOB_ID}{get_hostname()}restart')
+        elif sub_job_type == SubJobType.CMDB_RESTORE:
+            progress_file = os.path.join(self.input_info.get("cache_path"), f'{JobData.JOB_ID}{get_hostname()}cmdb')
         else:
             logger.error(f'Failed to do query restore progress, subJob type: {sub_job_type} not exist!')
             return progress, status
@@ -651,7 +776,12 @@ class ExecRestore:
         return ExecuteResultEnum.SUCCESS, body_err, message
 
     def gen_sub_job(self):
-        logger.info("Start executing generate restore sub job ...")
+        deploy_type = self.input_info.get("deploy_type", "")
+        cluster_version = self.input_info.get("cluster_version", "")
+        logger.info(
+            f"Start executing generate restore sub job deploy type {deploy_type}, cluster_version: {cluster_version}")
+        if deploy_type == OpenGaussDeployType.DISTRIBUTED and ProtectObject.CMDB in cluster_version:
+            return self.gen_sub_job_cmdb()
         nodes = self.input_info.get("nodes")
         sub_jobs = list()
         index = 0
@@ -669,6 +799,19 @@ class ExecRestore:
 
         logger.info(f"Execute generate sub job task of full copy success. Sub Jobs: {sub_jobs}.")
         return sub_jobs
+
+    def gen_sub_job_cmdb(self):
+        """
+        执行分发子任务
+        """
+        logger.info(f"Start to gen cmdb restore sub task. input info: {self.input_info}")
+        sub_job_array = []
+        # 子任务1：执行恢复
+        sub_job = self.build_sub_job(SubJobType.CMDB_RESTORE, SubJobPriorityEnum.JOB_PRIORITY_1,
+                                     SubJobPolicy.ANY_NODE.value)
+        sub_job_array.append(sub_job)
+        logger.info(f"Success to gen cmdb restore sub task. sub_job_array: {sub_job_array}")
+        return sub_job_array
 
     def init_environment_info(self):
         if ProtectObject.OPENGAUSS in self._database_type or ProtectObject.MOGDB in self._database_type:
@@ -716,7 +859,6 @@ class ExecRestore:
         logger.error('Backup key not found!')
         return ''
 
-
     def prepare_pitr_restore_cmd(self):
         # 准备pitr restore cmd
         backup_key = self.get_backup_key()
@@ -734,7 +876,6 @@ class ExecRestore:
               f'{backup_key} --instance {CopyInfoKey.BACKUP_INSTANCE} -j {GsprobackupParam.DEFAULT_PARALLEL} --progress'
         logger.info(f"PITR restore cmd: {cmd}")
         return cmd
-
 
     def set_recovery_conf(self):
         # 设置recovery.conf
@@ -755,16 +896,6 @@ class ExecRestore:
         os.lchown(recovery_conf_file, user_id, group_id)
         change_path_permission(recovery_conf_file, mode=0o644)
         logger.info(f"Set recovery conf success")
-
-    def _build_sub_job(self, job_name, job_priority, node_id, job_info=""):
-        sub_job = SubJobModel(
-            jobId=JobData.JOB_ID,
-            subJobId="",
-            jobType=SubJobTypeEnum.BUSINESS_SUB_JOB.value,
-            jobName=job_name,
-            jobPriority=job_priority, policy=SubJobPolicyEnum.FIXED_NODE.value, ignoreFailed=False,
-            execNodeId=node_id, jobInfo=job_info)
-        return sub_job
 
     def _gen_restore_sub_jobs(self, node_id, priority_wight):
         job_args = (

@@ -529,7 +529,11 @@ copy_app_binary() {
     cp -rf $apps_path/* $script_dest_path
     rm -rf $script_dest_path/conf
     cp -rf $apps_path/conf/*  ${OUTPUT_PKG_PATH}/conf
-    cp -rf ${PLUGINS_PATH}/opensrc_temp/backint ${OUTPUT_PKG_PATH}/bin
+    if [ "${SYS_ARCH}" == "aarch64" ]; then
+        cp -rf ${PLUGINS_PATH}/opensrc_temp/backint/aarch64/backint ${OUTPUT_PKG_PATH}/bin
+    else
+        cp -rf ${PLUGINS_PATH}/opensrc_temp/backint/x86_64/backint ${OUTPUT_PKG_PATH}/bin
+    fi
     chmod -R 550 "$script_dest_path"
     rm -rf ${PLUGINS_PATH}/opensrc_temp
 }

@@ -56,34 +56,25 @@ class ClusterInstPitRestore(PostgresClusterRestoreAbstract):
 
         # 1.清空目标实例data目录
         tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
-        PostgreRestoreService.backup_conf_file(tgt_data_path)
+        PostgreRestoreService.backup_conf_file(tgt_data_path, self.job_id)
         PostgreRestoreService.clear_data_dir(PostgreRestoreService.parse_os_user(self.param_dict), tgt_data_path)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                RestoreProgress(progress=15, message="delete data dir success"))
+
+        # 1.1 清空目标实例的table space目录
         job_dict = self.param_dict.get("job", {})
         copies = PostgreRestoreService.parse_copies(job_dict)
         full_copy_mount_path = PostgreRestoreService.get_copy_mount_paths(
             copies[0], RepositoryDataTypeEnum.DATA_REPOSITORY.value)[0]
-
-        # 1.1 清空目标实例的table space目录
         PostgreRestoreService.clear_table_space_dir(copy_mount_path=full_copy_mount_path)
 
         # 2.恢复全量副本数据到目标实例
         # PITR依赖的全量副本挂载路径
         log_copy_merge_path = PostgreRestoreService.handle_log_copy(self.param_dict, job_id=self.job_id)
-        PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
-                                               RestoreProgress(progress=20, message="merge log copy success"))
-
-        PostgreRestoreService.change_owner_of_download_data(self.param_dict, full_copy_mount_path)
-        tgt_obj_extend_info_dict = job_dict.get("targetObject", {}).get("extendInfo", {})
-        tgt_db_os_user = tgt_obj_extend_info_dict.get("osUsername", "")
-        PostgreRestoreService.restore_data(cache_path, full_copy_mount_path,
-                                           tgt_data_path, job_id=self.job_id)
-        PostgreRestoreService.restore_conf_file(tgt_data_path)
-        PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
-                                               RestoreProgress(progress=70, message="restore data success"))
+        self.restore_full_data(cache_path, job_dict, tgt_data_path)
 
         # 3.清空目标实例archive_status目录
+        tgt_obj_extend_info_dict = job_dict.get("targetObject", {}).get("extendInfo", {})
         tgt_version = tgt_obj_extend_info_dict.get("version", "")
         PostgreRestoreService.clear_archive_status_dir(tgt_version, tgt_data_path)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
@@ -97,9 +88,30 @@ class ClusterInstPitRestore(PostgresClusterRestoreAbstract):
                                                                message="delete useless files success"))
 
         # 5.配置恢复命令
+        self.set_recovery_command_and_start_instance(cache_path, job_dict, node_role, log_copy_merge_path)
+
+    def restore_full_data(self, cache_path, job_dict, tgt_data_path):
+        PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
+                                               RestoreProgress(progress=20, message="merge log copy success"))
+
+        copies = PostgreRestoreService.parse_copies(job_dict)
+        full_copy_mount_path = PostgreRestoreService.get_copy_mount_paths(
+            copies[0], RepositoryDataTypeEnum.DATA_REPOSITORY.value)[0]
+        PostgreRestoreService.change_owner_of_download_data(self.param_dict, full_copy_mount_path)
+        PostgreRestoreService.restore_data(cache_path, full_copy_mount_path,
+                                           tgt_data_path, job_id=self.job_id)
+        PostgreRestoreService.restore_conf_file(tgt_data_path, self.job_id)
+        PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
+                                               RestoreProgress(progress=70, message="restore data success"))
+
+    def set_recovery_command_and_start_instance(self, cache_path, job_dict, node_role, log_copy_merge_path):
         recovery_timestamp = job_dict.get("extendInfo", {}).get("restoreTimestamp")
         recovery_tgt_time = PostgreCommonUtils.convert_timestamp_to_datetime(recovery_timestamp)
+        tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
         tgt_archive_path = PostgreCommonUtils.get_archive_path_offline(tgt_data_path)
+        tgt_obj_extend_info_dict = job_dict.get("targetObject", {}).get("extendInfo", {})
+        tgt_db_os_user = tgt_obj_extend_info_dict.get("osUsername", "")
+        tgt_version = tgt_obj_extend_info_dict.get("version", "")
         cfg_param = RestoreConfigParam(
             system_user=tgt_db_os_user, target_version=tgt_version, target_install_path=tgt_install_path,
             target_data_path=tgt_data_path, log_copy_path=log_copy_merge_path,
@@ -131,6 +143,10 @@ class ClusterInstPitRestore(PostgresClusterRestoreAbstract):
             copies[0], RepositoryDataTypeEnum.CACHE_REPOSITORY.value)[0]
         merged_path = os.path.realpath(os.path.join(cache_path, "merged_log_copies"))
         PostgreCommonUtils.delete_path(merged_path)
+
+        tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
+        PostgreRestoreService.delete_useless_bak_files(tgt_data_path, self.job_id)
+
         LOGGER.info("Execute restore post task success.")
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE_POST,
                                                RestoreProgress(progress=100, message="completed"))

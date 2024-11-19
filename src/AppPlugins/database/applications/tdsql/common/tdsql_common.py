@@ -28,7 +28,7 @@ import psutil
 from common.common import execute_cmd, invoke_rpc_tool_interface
 from common.const import CMDResult, IPConstant, SysData, RepositoryDataTypeEnum, RpcParamKey, PathConstant
 from dws.commons.common import get_uid_gid
-from tdsql.common.const import MountType
+from tdsql.common.const import MountType, ArchiveType
 from tdsql.handle.common.const import ErrorCode, TDSQLSubType
 from tdsql.handle.common.tdsql_exception import ErrCodeException
 from tdsql.logger import log
@@ -90,22 +90,6 @@ def set_backup_name():
 
 def get_hostname():
     return socket.gethostname()
-
-
-def remove_dir(path):
-    # 可删除目录或文件
-    # 删除目录
-    if os.path.isdir(path):
-        try:
-            shutil.rmtree(path)
-        except Exception as e:
-            log.error(f"Fail to delete dir {path} for {e}.")
-    # 删除文件
-    elif os.path.isfile(path):
-        try:
-            os.remove(path)
-        except Exception as e:
-            log.error(f"Fail to delete dir {path} for {e}.")
 
 
 def change_file_permission(path, permission_code):
@@ -201,7 +185,7 @@ def umount_bind_path(des_area, mount_type=''):
         umount_bind_cmd = f"umount -l {des_area}"
     return_code, std_out, std_err = execute_cmd(umount_bind_cmd)
     if return_code != CMDResult.SUCCESS:
-        log.warning(f"Failed to exec umount bind path: {des_area}!")
+        log.error(f"{umount_bind_cmd} failed, std_out {std_out}, std_err {std_err}")
         return False
     log.info(f"Succeed to exec umount bind path {des_area}")
     return True
@@ -218,7 +202,7 @@ def mount_bind_path(src_area, des_area, mount_type='', osad_params=None):
         mount_bind_cmd = f"mount --bind {src_area} {des_area}"
     return_code, std_out, std_err = execute_cmd(mount_bind_cmd)
     if return_code != CMDResult.SUCCESS:
-        log.error(f"Failed to exec mount bind path err: {std_err}!")
+        log.error(f"{mount_bind_cmd} failed, std_out{std_out}, err: {std_err}!")
         return False
     log.info("Succeed to exec mount bind path")
     return True
@@ -297,6 +281,15 @@ def get_log_uri(copies):
         log_uri = log_uri.replace(f'/{log_uri_strs[len(log_uri_strs) - 1]}', '')
         id_list = get_id_list(log_uri, restore_copy_id)
         log.info(f'get_log_uri, id_list is {id_list}')
+    elif restore_type in ArchiveType.archive_array:
+        # 日志恢复的最后一个副本是日志副本，倒数第二个是数据副本
+        copy = copies[-2]
+        restore_copy_id = copy['id']
+        data_uri = get_repository_path(copy, RepositoryDataTypeEnum.DATA_REPOSITORY)
+        log_uri = get_repository_path(copies[len(copies) - 1], RepositoryDataTypeEnum.LOG_REPOSITORY)
+        log_uri_strs = log_uri.split('/')
+        log_uri = log_uri.replace(f'/{log_uri_strs[len(log_uri_strs) - 1]}', '')
+        id_list = get_id_list(log_uri, restore_copy_id)
     return id_list, log_uri, data_uri
 
 

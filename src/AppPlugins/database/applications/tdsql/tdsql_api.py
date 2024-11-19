@@ -25,6 +25,7 @@ fun = {
     'CheckApplication': ResourceAbility.check_application,
     'ListApplicationResourceV2': ResourceAbility.list_application_v2,
     'QueryCluster': ResourceAbility.query_cluster,
+    'FinalizeClear': ResourceAbility.finalize_clear,
 
     'QueryBackupCopy': BackupAbility.query_backup_copy,
     'AllowBackupInLocalNode': BackupAbility.allow_backup_in_local_node,

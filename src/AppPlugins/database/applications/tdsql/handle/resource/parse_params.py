@@ -49,3 +49,6 @@ class ResourceParam:
         """
         return self._body_param.get("applications", [])[0].get("extendInfo", {})
 
+    def get_app_env_enxtend_info(self):
+        return self._body_param.get("appEnv", {}).get("extendInfo", {})
+

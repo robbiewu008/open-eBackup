@@ -226,7 +226,7 @@ class DamengCluster(DamengSource):
         LOGGER.info("Start get all node info.")
         # 1. 获取所有主节点实例名
         primary_info = self.get_primary_info(dmini_path)
-        if primary_info == []:
+        if not primary_info:
             LOGGER.error("Get primary and arch info fail.")
             return []
 
@@ -263,7 +263,7 @@ class DamengCluster(DamengSource):
         self.user_info = self.prepare_db_info(param_info_)
         cluster_resoursce.get("extendInfo", {})["bigVersion"] = self.big_version
         resoursce_info = self.get_resoursce_info()
-        if resoursce_info == []:
+        if not resoursce_info:
             LOGGER.error("Resource not found.")
             return cluster_resoursce
         try:

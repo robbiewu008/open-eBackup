@@ -13,21 +13,24 @@
 
 import os
 import sys
+import time
 
-from common.common import convert_time_to_timestamp, exter_attack
+from common.common import convert_time_to_timestamp, exter_attack, get_previous_copy_info
 from common.common_models import ActionResult, SubJobDetails
-from common.const import ExecuteResultEnum, BackupTypeEnum, SubJobStatusEnum, DeployType, RepositoryDataTypeEnum
+from common.const import ExecuteResultEnum, BackupTypeEnum, SubJobStatusEnum, DeployType, RepositoryDataTypeEnum, \
+    RpcParamKey
 from common.util.scanner_utils import scan_dir_size
 from openGauss.backup.database_full_backup import DatabaseFullBackup
 from openGauss.backup.instance_full_backup import InstanceFullBackup
 from openGauss.backup.instance_increment_backup import InstanceIncrementBackup
 from openGauss.backup.instance_pitr_backup import InstancePitrBackup
 from openGauss.backup.resource_info import ResourceInfo
-from openGauss.common.common import get_value_from_dict, get_previous_copy_info, get_dbuser_gname, check_path, \
-    safe_get_environ
+from openGauss.common.common import get_value_from_dict, get_dbuser_gname, check_path, \
+    safe_get_environ, is_cmdb_distribute
 from openGauss.common.common_models import JobPermission
 from openGauss.common.const import ParamKey, Status, ProtectSubObject, JobType, ProgressPercentage, NodeRole, logger, \
-    AuthKey, SyncMode, SUCCESS_RET, CopyDirectory, CopyInfoKey, MetaDataKey, FunctionResult, ProtectObject
+    AuthKey, SyncMode, SUCCESS_RET, CopyDirectory, CopyInfoKey, MetaDataKey, FunctionResult, ProtectObject, \
+    OpenGaussDeployType
 from openGauss.common.error_code import BodyErr, OpenGaussErrorCode
 
 
@@ -38,6 +41,8 @@ class JobDepatch:
         self._pid = pid
         self._job_id = job_id
         self._param = param
+        self._database_type = ""
+        self._deploy_type = ""
         self._user_name = ""
         self._resource_obj = None
         self.init_environment()
@@ -46,6 +51,7 @@ class JobDepatch:
             JobType.ALLOW_BACKUP_IN_LOCAL_NODE: self.allow_backup_in_local_node,
             JobType.CHECK_BACKUP_TYPE: self.check_backup_type,
             JobType.PREREQUISITE: self.prerequisite_backup,
+            JobType.BACKUPGENSUB: self.backup_gen_sub_job,
             JobType.BACKUP: self.backup,
             JobType.QUERY_BACKUP_COPY: self.query_backup_copy,
             JobType.POST: self.post_backup,
@@ -66,6 +72,12 @@ class JobDepatch:
             self._resource_obj = ResourceInfo(self._user_name, env_file)
         else:
             self._resource_obj = ResourceInfo(self._user_name)
+        _, self._database_type = get_value_from_dict(self._param, ParamKey.JOB, ParamKey.PROTECT_ENV,
+                                                    ParamKey.EXTEND_INFO,
+                                                    ParamKey.CLUSTER_VERSION)
+        _, self._deploy_type = get_value_from_dict(self._param, ParamKey.JOB, ParamKey.PROTECT_ENV,
+                                                  ParamKey.EXTEND_INFO,
+                                                  ParamKey.DEPLOY_TYPE)
 
     @exter_attack
     def query_job_permission(self):
@@ -157,6 +169,9 @@ class JobDepatch:
         return False, output.dict(by_alias=True)
 
     def local_node_allow_log_backup_cluster(self, backup_obj, backup_type):
+        # 分布式cmdb仅要求归档开启
+        if is_cmdb_distribute(self._deploy_type, self._database_type) and backup_obj.query_archive_mode():
+            return FunctionResult.SUCCESS
         if backup_type != BackupTypeEnum.LOG_BACKUP:
             # 全备增备开启归档没配归档文件夹报错
             if backup_obj.query_archive_mode() and not backup_obj.query_archive_dir():
@@ -199,7 +214,8 @@ class JobDepatch:
             self.log.info(f"Full backup or replication mode is sync, any node can backup. job id: {self._job_id}")
             return FunctionResult.SUCCESS
         _, protect_object = get_value_from_dict(self._param, ParamKey.JOB, ParamKey.PROTECT_OBJECT)
-        previous_copy = get_previous_copy_info(protect_object, self._job_id)
+        previous_copy = get_previous_copy_info(protect_object, [RpcParamKey.FULL_COPY, RpcParamKey.INCREMENT_COPY],
+                                               self._job_id)
         if not previous_copy:
             self.log.info(f"First incremental backup. job id: {self._job_id}")
             return FunctionResult.SUCCESS
@@ -208,6 +224,10 @@ class JobDepatch:
             self.log.error(f"The value of previous enable_cbm_tracking is not on. job id: {self._job_id}")
             return FunctionResult.TRACKING_ERR
         self.log.info(f"Local node allow instance increment backup. job id: {self._job_id}")
+        # cmdb分布式不需要保证前一次备份在本节点
+        if is_cmdb_distribute(self._deploy_type, self._database_type):
+            self.log.info(f"Local node is cmdb distributed, allow different from last. job id: {self._job_id}")
+            return FunctionResult.SUCCESS
         # 日志备份不需要保证前一次备份在本节点
         if backup_type == BackupTypeEnum.LOG_BACKUP:
             return FunctionResult.SUCCESS
@@ -279,7 +299,27 @@ class JobDepatch:
         :return:
         """
         self.log.info(f"No operation is performed on the previous task. job id: {self._job_id}")
+        # cmdb分布式备份任务，备份前记录仓库大小，用于备份完成后计算备份文件大小
+        if is_cmdb_distribute(self._deploy_type, self._database_type):
+            backup_obj = self.create_backup_object()
+            backup_obj.save_start_back_size()
         output = ActionResult(code=ExecuteResultEnum.SUCCESS)
+        return True, output.dict(by_alias=True)
+
+    @exter_attack
+    def backup_gen_sub_job(self):
+        """
+        执行备份分发子任务
+        :return:
+        """
+        self.log.info(f"Execute gen sub job. job id: {self._job_id}, {self._param}")
+        backup_obj = self.create_backup_object()
+        if not backup_obj:
+            self.log.error(f"Create backup object failed. job id: {self._job_id}")
+            output = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, message="Execute exec backup failed")
+            return False, output.dict(by_alias=True)
+        backup_obj.gen_sub_job()
+        output = ActionResult(code=ExecuteResultEnum.SUCCESS, message="Execute backup scan success")
         return True, output.dict(by_alias=True)
 
     @exter_attack
@@ -305,14 +345,18 @@ class JobDepatch:
     @exter_attack
     def query_backup_copy(self):
         self.log.info(f"Query backup copy. job id: {self._job_id}")
-        copy_info = self.assembly_copy_info()
+        copy_info = {}
+        try:
+            copy_info = self.assembly_copy_info()
+        except Exception as err:
+            self.log.error(f"Get assembly failed, err: {err}")
+        self.log.info(f"Get copy info {copy_info}")
         if not copy_info:
             self.log.error(f"Create backup object failed. job id: {self._job_id}")
             output = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, message="Query backup copy failed")
             return False, output.dict(by_alias=True)
         self.log.info(f"Query backup copy success. job id: {self._job_id}")
         return True, copy_info
-
 
     def assembly_copy_info(self):
         empty_info = {}
@@ -329,10 +373,20 @@ class JobDepatch:
         if not ret:
             self.log.error(f"Get copy time failed. job id: {self._job_id}")
             return empty_info
+        self.log.info(f"Get copy time success. copy time: {copy_time}")
         meta_data = backup_obj.get_copy_meta_data(copy_time)
         if not meta_data:
             self.log.error(f"Get copy meta data failed. job id: {self._job_id}")
             return empty_info
+        if is_cmdb_distribute(self._deploy_type, self._database_type):
+            ret, backup_type = get_value_from_dict(self._param, ParamKey.JOB, ParamKey.JOB_PARAM, ParamKey.BACKUP_TYPE)
+            if backup_type == BackupTypeEnum.FULL_BACKUP:
+                base_copy_id = self._job_id
+            else:
+                ret, protect_object = get_value_from_dict(self._param, ParamKey.JOB, ParamKey.PROTECT_OBJECT)
+                previous_full_copy = get_previous_copy_info(protect_object, [RpcParamKey.FULL_COPY], self._job_id)
+                base_copy_id = previous_full_copy.get("id", "")
+            meta_data[MetaDataKey.BASE_COPY_ID] = base_copy_id
         backup_copy[ParamKey.EXTEND_INFO] = meta_data
         timestamp = convert_time_to_timestamp(copy_time)
         backup_copy[ParamKey.TIMESTAMP] = timestamp
@@ -348,18 +402,25 @@ class JobDepatch:
         if not data_repository:
             self.log.error(f"Get data repository failed. job id: {self._job_id}")
             return empty_info
+        self.check_repository(data_repository, meta_data)
+        backup_copy[ParamKey.REPOSITORIES] = [data_repository]
+        return backup_copy
+
+    def check_repository(self, data_repository, meta_data):
         _, object_type = get_value_from_dict(self._param, ParamKey.JOB, ParamKey.PROTECT_OBJECT, ParamKey.SUB_TYPE)
         _, remote_path = get_value_from_dict(data_repository, ParamKey.REMOTE_PATH)
         _, backup_index_id = get_value_from_dict(meta_data, MetaDataKey.BACKUP_INDEX_ID)
         if object_type == ProtectSubObject.INSTANCE:
-            data_repository[ParamKey.REMOTE_PATH] = \
-                os.path.join(remote_path, CopyDirectory.INSTANCE_DIRECTORY,
-                             CopyInfoKey.BACKUPS, CopyInfoKey.BACKUP_INSTANCE, backup_index_id)
+            if is_cmdb_distribute(self._deploy_type, self._database_type):
+                data_repository[ParamKey.REMOTE_PATH] = os.path.join(remote_path, CopyDirectory.INSTANCE_DIRECTORY,
+                                                                     self._job_id)
+            else:
+                data_repository[ParamKey.REMOTE_PATH] = os.path.join(remote_path, CopyDirectory.INSTANCE_DIRECTORY,
+                                                                     CopyInfoKey.BACKUPS, CopyInfoKey.BACKUP_INSTANCE,
+                                                                     backup_index_id)
         else:
             data_repository[ParamKey.REMOTE_PATH] = \
                 os.path.join(remote_path, CopyDirectory.DATABASE_DIRECTORY, self._job_id)
-        backup_copy[ParamKey.REPOSITORIES] = [data_repository]
-        return backup_copy
 
     @exter_attack
     def post_backup(self):
@@ -378,7 +439,7 @@ class JobDepatch:
             output = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, message="execute post backup job failed")
             return False, output.dict(by_alias=True)
         self.log.info(f"Execute post job success. job id: {self._job_id}")
-        output = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, message="execute post backup job success")
+        output = ActionResult(code=ExecuteResultEnum.SUCCESS, message="execute post backup job success")
         return True, output.dict(by_alias=True)
 
     @exter_attack
@@ -414,6 +475,7 @@ class JobDepatch:
             output = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, message="Query backup progress failed")
             return False, output.dict(by_alias=True)
         progress, status, progress_detail = backup_obj.backup_progress()
+        self.log.info(f'Get progress: {progress}, status: {status}, progress_detail: {progress_detail}')
         sub_task_id = '0'
         if len(sys.argv) > 4:
             sub_task_id = sys.argv[4]
@@ -422,7 +484,20 @@ class JobDepatch:
                                    logDetail=[progress_detail])
         else:
             output = SubJobDetails(taskId=self._job_id, subTaskId=sub_task_id, taskStatus=status, progress=progress)
-
+        # 分布式cmdb场景
+        _, database_type = get_value_from_dict(self._param, ParamKey.JOB, ParamKey.PROTECT_ENV,
+                                               ParamKey.EXTEND_INFO,
+                                               ParamKey.CLUSTER_VERSION)
+        _, deploy_type = get_value_from_dict(self._param, ParamKey.JOB, ParamKey.PROTECT_ENV,
+                                             ParamKey.EXTEND_INFO,
+                                             ParamKey.DEPLOY_TYPE)
+        self.log.info(f'Get progress deploy type: {deploy_type} database type: {database_type} progress: {output}')
+        if is_cmdb_distribute(self._deploy_type, self._database_type):
+            data_path = backup_obj.get_cmdb_backup_path()
+            if status == SubJobStatusEnum.COMPLETED.value and data_path:
+                output.data_size = backup_obj.get_backup_size_diff()
+                self.log.info(f"Get output datasize {output}")
+            return True, output.dict(by_alias=True)
         data_path = backup_obj.get_backup_path()
         if status == SubJobStatusEnum.COMPLETED.value and data_path:
             output.data_size = self.get_backup_copy_size(data_path)

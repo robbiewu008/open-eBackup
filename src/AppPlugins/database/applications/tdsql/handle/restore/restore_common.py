@@ -26,9 +26,10 @@ from common.common import execute_cmd, clean_dir, touch_file
 from common.common_models import LogDetail, SubJobDetails
 from common.const import CMDResult, SubJobStatusEnum
 from common.util.check_utils import is_ip_address
-from tdsql.common.const import TdsqlRestoreSubJobName, TdsqlClusterGroupRestoreSubJobName
+from tdsql.common.const import TdsqlRestoreSubJobName, TdsqlClusterGroupRestoreSubJobName, MySQLVersion
 from tdsql.common.tdsql_common import extract_ip, write_file, execute_cmd_list, report_job_details
-from tdsql.common.util import get_tdsql_status, get_xtrabackup_tool_path
+from tdsql.common.util import get_tdsql_status, get_xtrabackup_tool_path, is_valid_port, \
+    get_backup_pre_from_defaults_file_path
 from tdsql.handle.common.const import TDSQLReportLabel
 from tdsql.logger import log
 
@@ -238,8 +239,10 @@ def stop_oc_agent():
     return True
 
 
-def stop_mysqlagent(mysql_port):
-    mysqlagent_path = f'/data/tdsql_run/{mysql_port}/mysqlagent/bin'
+def stop_mysqlagent(mysql_port, mysql_conf_path):
+    backup_pre = get_backup_pre_from_defaults_file_path(mysql_conf_path)
+    mysqlagent_path = os.path.join(backup_pre, mysql_port, "mysqlagent/bin")
+    log.info(f"stop_mysqlagent mysqlagent_path {mysqlagent_path}")
     cmd = f'cd {mysqlagent_path} && sh stopreport.sh ../conf/mysqlagent_{mysql_port}.xml'
     try:
         execute_command(cmd, 300)
@@ -249,10 +252,9 @@ def stop_mysqlagent(mysql_port):
     return True
 
 
-def xtrabackup_prepare(port, target_dir, mysql_conf_path):
+def xtrabackup_prepare(port, target_dir, mysql_conf_path, mysql_version):
     mysql_path = get_mysql_install_path(mysql_conf_path)
     channel_number = get_cpu_number()
-    mysql_version = mysql_path.split("/")[4]
     xtrabackup_tool_path = get_xtrabackup_tool_path(mysql_version)
     log.info(f"xtrabackup_tool_path {xtrabackup_tool_path}")
     cmd = f'{mysql_path}/{xtrabackup_tool_path} --prepare --parallel={channel_number}  --target-dir={target_dir}'
@@ -266,14 +268,13 @@ def xtrabackup_prepare(port, target_dir, mysql_conf_path):
     return True
 
 
-def xtrabackup_restore(port, target_dir, mysql_conf_path):
+def xtrabackup_restore(port, target_dir, mysql_conf_path, mysql_version):
     mysql_path = get_mysql_install_path(mysql_conf_path)
     channel_number = get_cpu_number()
-    mysql_version = mysql_path.split("/")[4]
     xtrabackup_tool_path = get_xtrabackup_tool_path(mysql_version)
     log.info(f"xtrabackup_tool_path {xtrabackup_tool_path}")
     cmd = f"{mysql_path}/{xtrabackup_tool_path} \
-          --defaults-file={mysql_path}/etc/my_{port}.cnf \
+          --defaults-file={mysql_conf_path} \
           --parallel={channel_number} --copy-back --target-dir={target_dir}"
     try:
         log.info(f'target_dir:{target_dir}')
@@ -306,11 +307,12 @@ def get_dblogs_path(myconf_file):
     return True, dblogs_path
 
 
-def mv_data_and_log_dir(data_dir, dblogs_path):
+def mv_data_and_log_dir(data_dir, dblogs_path, mysql_conf_path):
     suffix = '.old'
+    innodb_log_arch_dir = get_innodb_log_arch_dir(mysql_conf_path)
     path_list = (
         f'{data_dir}/logs', f'{data_dir}/dbdata_raw/data',
-        f'{data_dir}/dbdata_raw/dbdata', f'{dblogs_path}/bin'
+        f'{data_dir}/dbdata_raw/dbdata', f'{dblogs_path}/bin', f'{innodb_log_arch_dir}'
     )
     for path in path_list:
         log.info(f"path {path}")
@@ -323,6 +325,23 @@ def mv_data_and_log_dir(data_dir, dblogs_path):
         if os.path.exists(path):
             clean_dir(path)
     return True
+
+
+def get_innodb_log_arch_dir(mysql_conf_path):
+    with open(mysql_conf_path, "r", encoding='utf-8') as tmp:
+        lines = tmp.readlines()
+
+    innodb_log_group_home_dir_line = ''
+    for line in lines:
+        if line and '#' not in line and "innodb_log_group_home_dir" in line:
+            innodb_log_group_home_dir_line = line.strip()
+            break
+
+    innodb_log_group_home_dir = ''
+    if len(innodb_log_group_home_dir_line.split("=")) > 1:
+        innodb_log_group_home_dir = innodb_log_group_home_dir_line.split("=")[1].strip()
+    log.info(f"clear_innodb_log_arch_dir innodb_log_group_home_dir {innodb_log_group_home_dir}")
+    return innodb_log_group_home_dir
 
 
 def get_master(url, set_id, task_type, pid):
@@ -338,11 +357,14 @@ def get_master(url, set_id, task_type, pid):
 def get_url(oss_nodes):
     for node in oss_nodes:
         ip = node.get("ip", "")
+        port = node.get("port")
         if not is_ip_address(ip):
             log.error(f'ip_address is Illegal {ip}')
             raise Exception(f'ip_address is Illegal {ip}')
-        if ip:
-            return True, f'http://{ip}:8080/tdsql'
+        if not is_valid_port(port):
+            raise Exception(f"port is Illegal {port}")
+        if ip and port:
+            return True, f'http://{ip}:{port}/tdsql'
     log.error("get oss url fail")
     return False, ""
 
@@ -383,10 +405,12 @@ def get_port_and_ip(nodes):
     return False, "", ""
 
 
-def clean_backup_dir(data_dir, dblogs_path):
+def clean_backup_dir(data_dir, dblogs_path, mysql_conf_path):
     suffix = '.old'
+    innodb_log_arch_dir = get_innodb_log_arch_dir(mysql_conf_path)
     path_list = (
-        f'{data_dir}/logs', f'{data_dir}/dbdata_raw/data', f'{data_dir}/dbdata_raw/dbdata', f'{dblogs_path}/bin'
+        f'{data_dir}/logs', f'{data_dir}/dbdata_raw/data', f'{data_dir}/dbdata_raw/dbdata', f'{dblogs_path}/bin',
+        f'{innodb_log_arch_dir}'
     )
     for path in path_list:
         log.info(f"path {path}{suffix}")
@@ -525,13 +549,13 @@ def remove_deploy_conf(port):
     return True
 
 
-def create_binlog_index(dblogs_path, mysql_conf_path):
+def create_binlog_index(dblogs_path, mysql_version):
     """
     适配mariadb, 恢复时需要手动创建binlog.index文件
     :return:
     """
-    if "8." in mysql_conf_path:
-        log.warn("8.x version no need to create index file")
+    if not need_create_binlog_index(mysql_version):
+        log.warn("no need to create index file")
         return True
     binlog_bin_dir = os.path.join(dblogs_path, "bin")
     if not os.path.exists(binlog_bin_dir):
@@ -545,3 +569,16 @@ def create_binlog_index(dblogs_path, mysql_conf_path):
         log.error(f"create binlog index file: {binlog_index_file} failed")
         return False
     return True
+
+
+def need_create_binlog_index(mysql_version):
+    if MySQLVersion.MARIADB in mysql_version:
+        log.info("mariadb need to create index file")
+        return True
+    version = mysql_version.split('-')[-1]
+    if version[:1] == '8':
+        log.warn("8.x version no need to create index file")
+        return False
+    return True
+
+

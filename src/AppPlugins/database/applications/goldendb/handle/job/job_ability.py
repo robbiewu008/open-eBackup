@@ -16,12 +16,12 @@ import signal
 
 import psutil
 
+from common.common import exter_attack, output_result_file
+from common.common_models import ActionResult, JobPermissionInfo
+from common.const import ExecuteResultEnum
+from common.job_const import JobNameConst
 from goldendb.logger import log
-from clickhouse.common.clickhouse_constants import TaskStage
 from goldendb.handle.common.goldendb_param import JsonParam
-from goldendb.schemas.glodendb_schemas import PermissionInfo, ActionResponse
-from common.common import output_result_file
-from common.common import exter_attack
 
 
 class JobAbility:
@@ -40,7 +40,7 @@ class JobAbility:
         返回值：
         """
         log.info(f"step 2: execute QueryJobPermission interface pid:{req_id} job_id:{job_id}")
-        output = PermissionInfo(user="root", group="goldendb", fileMode="0770")
+        output = JobPermissionInfo(user="root", group="goldendb", fileMode="0770")
         output_result_file(req_id, output.dict(by_alias=True))
         log.info(f"step 2: execute QueryJobPermission interface success")
 
@@ -64,11 +64,11 @@ class JobAbility:
             if len(cmd_lines) < 5:
                 continue
             if str(job_id) == str(cmd_lines[4]) and (
-                    str(cmd_lines[2]) in [TaskStage.BACKUP_PREREQUISITE, TaskStage.BACKUP_GEN_SUB_JOB,
-                                          TaskStage.BACKUP]):
+                    str(cmd_lines[2]) in [JobNameConst.BACKUP_PRE, JobNameConst.BACKUP_GEN_SUB_JOB,
+                                          JobNameConst.BACKUP]):
                 os.kill(process.pid, signal.SIGKILL)
                 return
-        output_result_file(req_id, ActionResponse().dict(by_alias=True))
+        output_result_file(req_id, ActionResult(code=ExecuteResultEnum.SUCCESS).dict(by_alias=True))
 
     @staticmethod
     @exter_attack
@@ -82,5 +82,5 @@ class JobAbility:
         """
         log.info(f'execute to pause_job, pid: {req_id}, job_id: {job_id}')
         JsonParam.parse_param_with_jsonschema(req_id)
-        response = ActionResponse()
+        response = ActionResult(code=ExecuteResultEnum.SUCCESS)
         output_result_file(req_id, response.dict(by_alias=True))

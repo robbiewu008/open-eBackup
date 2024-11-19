@@ -389,6 +389,28 @@ def clean_dir(dir_path):
             shutil.rmtree(new_path)
 
 
+def clean_dir_not_walk_link(dir_path):
+    """
+    删除目标文件夹下的文件，如果目标文件夹是软链接，不处理；对于目标文件夹下的软链接，只删软链接，不删除链接目标目录
+    :param dir_path:
+    """
+    if os.path.islink(dir_path):
+        return
+    if platform.system().lower() == "windows":
+        real_dir_path = os.path.realpath(dir_path)
+        system_drive_up = os.getenv("SystemDrive").upper()
+        system_drive_down = system_drive_up.lower()
+        if real_dir_path.startswith(system_drive_up) or \
+                real_dir_path.startswith(system_drive_down):
+            return
+    for path in os.listdir(dir_path):
+        new_path = os.path.join(dir_path, path)
+        if os.path.isfile(new_path) or os.path.islink(new_path):
+            os.remove(new_path)
+        elif os.path.isdir(new_path):
+            shutil.rmtree(new_path)
+
+
 def check_del_dir(target_dir_path):
     """
     查询目标目录是否存在，存在就删除

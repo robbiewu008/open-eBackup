@@ -23,7 +23,6 @@ import datetime
 
 from common.common import execute_cmd, invoke_rpc_tool_interface, execute_cmd_list
 from common.common_models import SubJobDetails, LogDetail, SubJobModel
-from common.util.exec_utils import exec_mkdir_cmd
 from common.const import ParamConstant, SubJobStatusEnum, RepositoryDataTypeEnum, BackupTypeEnum, ReportDBLabel, \
     CMDResult, RpcParamKey, SubJobPolicyEnum, SubJobTypeEnum, DBLogLevel, SubJobPriorityEnum, PathConstant
 from common.parse_parafile import get_env_variable
@@ -84,6 +83,7 @@ class TdsqlGroupBackUp:
         # 组装资源接入请求体
         self._oss_nodes = self.get_oss_nodes()
         self.backup_type = self._json_param_object.get("job", {}).get("jobParam", {}).get("backupType")
+        self._backup_zkmeta = self._json_param_object.get("job", {}).get("extendInfo", {}).get("backup_zkmeta", "false")
         log.debug(f"tdsql_group_backup json_param_object: {json_param}")
 
     @staticmethod
@@ -164,6 +164,7 @@ class TdsqlGroupBackUp:
             # 已挂载，执行cd /tdsqlbackup
             return_code, out_info, err_info = execute_cmd(f"cd {tdsqlbackup_path}")
             if return_code != CMDResult.SUCCESS:
+                log.error(f"cd  {tdsqlbackup_path} failed, out_info {out_info}, err_info {err_info}")
                 # 执行cd /tdsqlbackup 异常，解挂载后重新挂载
                 if not mount_bind_path("/mnt", tdsqlbackup_path):
                     log.error(f"mount_bind_tdsqlbackup re mount_bind_path failed")
@@ -175,13 +176,23 @@ class TdsqlGroupBackUp:
                 return False
         return True
 
+    @staticmethod
+    def delete_files(files):
+        for file in files:
+            if os.path.exists(file):
+                os.remove(file)
+
     def get_oss_nodes(self):
         extend_info = self._json_param_object.get("job", {}).get("protectEnv", {}).get("extendInfo", {})
         oss_nodes = (json.loads(extend_info.get("clusterInfo", {}))).get("ossNodes", [])
         oss_node_ips = []
         for oss_node in oss_nodes:
-            oss_node_ips.append(oss_node.get("ip"))
-        log.info(f"oss_node_ips {oss_node_ips}")
+            oss_node_ip = {}
+            oss_node_ip["ip"] = oss_node.get("ip")
+            oss_node_ip["parentUuid"] = oss_node.get("parentUuid")
+            oss_node_ip["port"] = oss_node.get("port")
+            oss_node_ips.append(oss_node_ip)
+        log.info(f"oss_node_urls {oss_node_ips}")
         return oss_node_ips
 
     def build_sub_job(self, job_priority, policy, job_name, node_id, job_info):
@@ -615,22 +626,28 @@ class TdsqlGroupBackUp:
         log.info("step2-6 start to deleate_old_xtrabackup_data")
         curr_time = int(time.time())
         interval_time = math.ceil((curr_time - self._backup_start_time) / 60)
+        group_sets_path = os.path.join(f"/tdsqlbackup/tdsqlzk/{self._group_id}/", "autocoldbackup/sets")
         log.info(
             f"step2-6 delete_old_xtrabackup_data curr_time is : {curr_time}, "
-            f"_backup_start_time is {self._backup_start_time}, interval_time is {interval_time}")
-        group_sets_path = os.path.join(f"/tdsqlbackup/tdsqlzk/{self._group_id}/", "autocoldbackup/sets")
-        log.info(f"step2-6 delete_old_xtrabackup_data sets path is : {group_sets_path}")
+            f"_backup_start_time is {self._backup_start_time}, interval_time is {interval_time} "
+            f"group_sets_path is {group_sets_path}")
         for dirpath, _, _ in os.walk(group_sets_path):
             log.info(f"step2-6 delete_old_xtrabackup_data dirpath is : {dirpath}")
             if os.path.basename(dirpath) == 'xtrabackup':
-                delete_cmd_list = [f"find {dirpath} -type f -mmin +{interval_time}", "xargs rm -rf"]
-                log.info(f"step2-6 delete_old_xtrabackup_data cmd is : {delete_cmd_list}")
+                find_cmd = f"find {dirpath} -type f -mmin +{interval_time}"
+                log.info(f"step2-6 delete_old_xtrabackup_data find_cmd is : {find_cmd}")
                 # 找到目录下本次备份命令执行之前的文件并删除
-                return_code, out_info, err_info = execute_cmd_list(delete_cmd_list)
+                return_code, out_info, err_info = execute_cmd(find_cmd)
                 if return_code != CMDResult.SUCCESS:
-                    log.info(
-                        f"delete_old_xtrabackup_data delete_cmd_list out_info: {out_info} err_info: {err_info}")
+                    log.error(
+                        f"delete_old_xtrabackup_data find_cmd out_info: {out_info} err_info: {err_info}")
                     return False
+                if not out_info.strip():
+                    log.info(f"step2-6 delete_old_xtrabackup_data out_info is null")
+                    continue
+                files = out_info.strip().split('\n')
+                log.info(f"step2-6 delete_old_xtrabackup_data files is {files}")
+                self.delete_files(files)
         return True
 
     def exec_shard_binlog(self):
@@ -665,16 +682,7 @@ class TdsqlGroupBackUp:
             if task_status == TDSQLGroupBackupTaskStatus.SUCCEED:
                 self._backup_end_time = self.get_backup_end_time()
                 log.info(f"step 2-6 exec_backup backup_end_time: {self._backup_end_time}")
-                zkmeta_is_exist = self.check_zkmeta_is_exist()
-                if not zkmeta_is_exist:
-                    log_detail = LogDetail(logInfo=TDSQLReportLabel.CHECK_ZKMETA_NOT_EXIT_LABEL,
-                                           logInfoParam=[self._sub_job_id],
-                                           logLevel=DBLogLevel.WARN.value)
-                    report_job_details(self._pid,
-                                       SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
-                                                     logDetail=[log_detail],
-                                                     taskStatus=SubJobStatusEnum.RUNNING.value).dict(
-                                           by_alias=True))
+                zkmeta_is_exist = self.check_zkmeta()
                 if not self.exec_shard_binlog():
                     log.error(f"step 2-6 exec_shard_binlog failed")
                     return False
@@ -708,6 +716,21 @@ class TdsqlGroupBackUp:
             time.sleep(15)
         log.info("step 2-6 end to sub_job_exec")
         return True
+
+    def check_zkmeta(self):
+        if self._backup_zkmeta == "true":
+            zkmeta_is_exist = self.check_zkmeta_is_exist()
+            if not zkmeta_is_exist:
+                log_detail = LogDetail(logInfo=TDSQLReportLabel.CHECK_ZKMETA_NOT_EXIT_LABEL,
+                                       logInfoParam=[self._sub_job_id],
+                                       logLevel=DBLogLevel.WARN.value)
+                report_job_details(self._pid,
+                                   SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
+                                                 logDetail=[log_detail],
+                                                 taskStatus=SubJobStatusEnum.RUNNING.value).dict(
+                                       by_alias=True))
+            return zkmeta_is_exist
+        return False
 
     def sub_job_binlog(self):
         # 执行日志备份子任务
@@ -810,7 +833,7 @@ class TdsqlGroupBackUp:
         # 创建分布式实例备份目录mkdir -p /tdsqlbackup/tdsqlzk/group_id
         backup_path = os.path.join("/tdsqlbackup/tdsqlzk/", self._group_id)
         log.info(f"step 2-5 mkdir backup_path: {backup_path}")
-        return_code, out_info, err_info = execute_cmd(f"mkdir -p {backup_path}")
+        return_code, out_info, err_info = execute_cmd(f"mkdir -p {backup_path}", timeout=300)
         if return_code != CMDResult.SUCCESS:
             log.error(f"mkdir -p {backup_path} out_info: {out_info} err_info: {err_info}")
             umount_bind_path(backup_path, self._mount_type)
@@ -837,10 +860,37 @@ class TdsqlGroupBackUp:
             return_code, out_info, err_info = execute_cmd(mount_cmd_str)
             if return_code != CMDResult.SUCCESS:
                 log.error(f"mount group_backup_path out_info: {out_info} err_info: {err_info}")
+        else:
+            if self._mount_type != MountType.FUSE:
+                if not self.check_mount_filesystem(backup_path):
+                    return False
+
         if self._mount_type != MountType.FUSE:
             # 挂载后修改backup_path属主为tdsql
             self.chown_backup_path_owner("/tdsqlbackup/tdsqlzk/")
             self.chown_backup_path_owner(backup_path)
+        return True
+
+    def check_mount_filesystem(self, backup_path):
+        cmd_list = ["mount", f"grep {backup_path}", "awk -F' ' '{print $1}'"]
+        return_code, out_info, err_info = execute_cmd_list(cmd_list)
+        if return_code == CMDResult.SUCCESS and out_info.strip():
+            filesystem_path = out_info.strip()
+            log.info(f"data_repo_path {filesystem_path}")
+            if not filesystem_path.__contains__(self._instance_id):
+                log.error(f"mount_group_backup_path filesystem_path not match")
+                log_detail = LogDetail(logInfo=TDSQLReportLabel.TDSQL_GROUP_MOUNTED_FILESYSTEM_NOT_MATCH_LABEL,
+                                       logInfoParam=[],
+                                       logLevel=DBLogLevel.ERROR.value)
+                report_job_details(self._pid,
+                                   SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
+                                                 logDetail=[log_detail],
+                                                 taskStatus=SubJobStatusEnum.FAILED.value).dict(
+                                       by_alias=True))
+                return False
+            log.info(f"mounted filesystem_path is correct. resource_id {self._instance_id}")
+        else:
+            log.error(f"get filesystem_path of {backup_path} failed. out_info {out_info}. err_info {err_info}.")
         return True
 
     def do_post_job(self):
@@ -1043,7 +1093,7 @@ class TdsqlGroupBackUp:
 
     def get_oss_url(self, oss_nodes, executed_nodes):
         for oss_node in oss_nodes:
-            oss_url = f'http://{oss_node}:8080/tdsql'
+            oss_url = f'http://{oss_node.get("ip")}:{oss_node.get("port")}/tdsql'
             if oss_url not in executed_nodes:
                 if not self.check_oss_node_connect(oss_url):
                     log.error(f"{oss_url} can not connect")
@@ -1073,4 +1123,33 @@ class TdsqlGroupBackUp:
         log.info(f"check_oss_node_connect ret is {ret}, ret_body is {ret_body}")
         if not ret:
             return False
+        return True
+
+    def backup_pre_job(self):
+        log.info(f"start backup_pre_job")
+        rest_request = RestRequests()
+        executed_nodes = []
+        oss_url = self.get_oss_url(self._oss_nodes, executed_nodes)
+        env_variable = TDSQLProtectKeyName.PROTECTENV_AUTH_AUTHKEY + self._pid
+        has_coldbackup_node = True
+        set_id_list = []
+        for set_id in self._set_ids:
+            has_coldbackup_node, return_data = rest_request.query_coldbackup_node(
+                env_variable, oss_url, self._group_id, set_id, self._pid)
+            if not has_coldbackup_node:
+                set_id_list.append(set_id)
+                log.error(f'backup_pre_job failed, set_id {set_id} has_coldbackup_node : {has_coldbackup_node}')
+        # 如果有一个分片没有冷备节点，前置任务失败
+        log.info(f"backup_pre_job set_id_list {str(set_id_list)} has no coldbackup node.")
+        if set_id_list:
+            log_detail = LogDetail(logInfo=TDSQLReportLabel.TDSQL_GROUP_COLDBACKUP_NODE_NOT_EXIST_LABEL,
+                                   logInfoParam=[str(set_id_list)],
+                                   logLevel=DBLogLevel.ERROR.value)
+            report_job_details(self._pid,
+                               SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
+                                             logDetail=[log_detail],
+                                             taskStatus=SubJobStatusEnum.FAILED.value).dict(
+                                   by_alias=True))
+            return False
+        log.info(f"backup_pre_job succeed, set_id {self._set_ids} has_coldbackup_node {has_coldbackup_node}")
         return True

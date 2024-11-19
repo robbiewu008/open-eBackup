@@ -84,6 +84,17 @@ class JsonParam:
         return data_path
 
     @staticmethod
+    def has_repository_path(param: dict):
+        """
+        功能描述：判断下发的任务参数中，是否包含文件系统路径的字段
+        参数：
+        @param: 下发的任务参数
+        返回值： bool
+        """
+        repositories = param.get("job", {}).get("copies", [{}])[0].get("repositories", [{}])
+        return any(["path" in reps.keys() for reps in repositories])
+
+    @staticmethod
     def get_log_path(param: dict):
         log_path = ''
         job_dict = param.get("job", {})

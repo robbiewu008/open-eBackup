@@ -145,7 +145,7 @@ class PostgreCommonUtils:
         if any([not os.path.isdir(db_data_path), not os.path.exists(pg_cfg_file)]):
             LOGGER.warning(f"Database data path: {db_data_path} doest not exist or is corrupted when checking status.")
             return False
-        if not PostgreCommonUtils.check_os_name(pg_system_user, db_install_path)[0]:
+        if not PostgreCommonUtils.check_os_user(pg_system_user, db_install_path)[0]:
             return False
         pg_ctl_path = os.path.realpath(os.path.join(db_install_path, "bin", "pg_ctl"))
         PostgreCommonUtils.check_file_path(pg_ctl_path)
@@ -169,10 +169,10 @@ class PostgreCommonUtils:
         PostgreCommonUtils.check_dir_path(db_install_path)
         PostgreCommonUtils.check_dir_path(db_data_path)
         pg_ctl_path = os.path.realpath(os.path.join(db_install_path, "bin", "pg_ctl"))
-        tmp_logfile = os.path.realpath(os.path.join(db_data_path, "..", "pg_start.log"))
+        tmp_logfile = os.path.realpath(os.path.join(db_data_path, "pg_start.log"))
         PostgreCommonUtils.delete_path(tmp_logfile)
         enable_root = PostgreCommonUtils.get_root_switch()
-        if not PostgreCommonUtils.check_os_name(pg_system_user, db_install_path, enable_root)[0]:
+        if not PostgreCommonUtils.check_os_user(pg_system_user, db_install_path, enable_root)[0]:
             LOGGER.error("Execute start database command failed,because os username is not exist.")
             raise ErrCodeException(ErrorCode.EXEC_START_DB_CMD_FAILED, message="Os username is not exist.")
         if not enable_root:
@@ -333,14 +333,14 @@ class PostgreCommonUtils:
         if not check_path_valid(del_path, False):
             LOGGER.warning(f"The path: {del_path} not allowed to be deleted.")
             return
-        if os.path.isdir(del_path):
-            # 目录不存在会报错
-            shutil.rmtree(del_path)
-            LOGGER.info(f"Delete directory: {del_path} success.")
-        else:
+        if os.path.isfile(del_path) or os.path.islink(del_path):
             # 文件不存在会报错
             os.remove(del_path)
             LOGGER.info(f"Delete file: {del_path} success.")
+        else:
+            # 目录不存在会报错
+            shutil.rmtree(del_path)
+            LOGGER.info(f"Delete directory: {del_path} success.")
 
     @staticmethod
     def clear_dir_when_exist(clear_path):
@@ -348,7 +348,7 @@ class PostgreCommonUtils:
         if not os.path.isdir(clear_path):
             LOGGER.warning(f"The path: {clear_path} does not exist when trying to clear it.")
             return
-        pg_util_common.clean_dir(clear_path)
+        pg_util_common.clean_dir_not_walk_link(clear_path)
         LOGGER.info(f"Cleared directory: {clear_path} successfully.")
 
     @staticmethod
@@ -754,7 +754,7 @@ class PostgreCommonUtils:
             LOGGER.warning("The log copy are empty when checking transaction.")
             return exist_txn
         enable_root = PostgreCommonUtils.get_root_switch()
-        if not PostgreCommonUtils.check_os_name(os_user, wal_dump_path, enable_root)[0]:
+        if not PostgreCommonUtils.check_os_user(os_user, wal_dump_path, enable_root)[0]:
             return False
         # WAL日志名称是16进制，转int型排序
         wal_names.sort(key=lambda x: int(x, 16))
@@ -801,15 +801,15 @@ class PostgreCommonUtils:
         conf_file = os.path.join(current_dir, 'applications', 'postgresql', 'conf', PgConst.OWNER_FILE_NAME)
         try:
             with open(conf_file, "r", encoding='utf-8') as f:
-                result = json.loads(f.readlines()[0])
+                result = json.loads(f.readlines()[1])
         except Exception as e:
             raise Exception("Read switch failed.") from e
         enable_root = result.get("enable_root", 0)
         return enable_root
 
     @staticmethod
-    def check_os_name(os_username, file_path, enable_root=0):
-        if os_username == "root":
+    def check_os_user(os_username, file_path, enable_root=1):
+        if os_username.strip() == "root":
             LOGGER.info("The os username can not be root")
             return False, ErrorCode.USER_IS_NOT_EXIST
         try:

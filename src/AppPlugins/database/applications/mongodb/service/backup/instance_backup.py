@@ -254,12 +254,12 @@ class MetaBackup:
         LOGGER.info("Check backup type last copy id: %s, job id: %s",
                     last_copy.get("extendInfo", {}).get("copyId", ""), self.job_id)
         if not last_copy:
-            return ErrorCode.ERROR_INCREMENT_TO_FULL.value, ""
+            return ErrorCode.LOG_TO_FULL_ERR.value, ""
         last_lsn = last_copy.get("extendInfo", {}).get("lastLsn")
         LOGGER.info("Check backup type last lsn: %s, job id: %s", last_lsn, self.job_id)
         if not self.find_lsn(last_lsn):
             LOGGER.warning("Not all backup instance find lsn, need to full backup, job id: %s", self.job_id)
-            return ErrorCode.ERROR_INCREMENT_TO_FULL.value, ""
+            return ErrorCode.LOG_TO_FULL_ERR.value, ""
         return MongoDBCode.SUCCESS.value, "Check backup type success."
 
     def find_lsn(self, last_lsn):
@@ -709,7 +709,8 @@ class InstanceHandler:
         self.inst_info = inst_info
 
     def get_inst_status(self):
-        mongo = DB(self.uri, self.config, direct_connection=True)
+        bin_path = self.inst_info.get('extendInfo').get('binPath')
+        mongo = DB(self.uri, self.config, direct_connection=True, bin_path=bin_path)
         try:
             mongo.connect()
         except DBConnectionError as e:

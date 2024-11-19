@@ -27,6 +27,7 @@ class JobType:
     ALLOW_BACKUP_IN_LOCAL_NODE = "AllowBackupInLocalNode"
     CHECK_BACKUP_TYPE = "CheckBackupJobType"
     PREREQUISITE = "BackupPrerequisite"
+    BACKUPGENSUB = "BackupGenSubJob"
     BACKUP = "Backup"
     POST = "BackupPostJob"
     ASYNC_ABORT = "AbortJob"
@@ -37,9 +38,28 @@ class JobType:
     QUERY_BACKUP_COPY = "QueryBackupCopy"
     ALLOW_RESTORE_IN_LOCAL_NODE = "AllowRestoreInLocalNode"
     RESTORE_PREREQUISITE = "RestorePrerequisite"
+    RESTOREGENSUB = "RestoreGenSubJob"
     RESTORE = "Restore"
     RESTORE_POST = "RestorePost"
     RESTORE_PROGRESS = "RestoreProgress"
+
+
+class SubJobPolicy(int, Enum):
+    ANY_NODE = 0
+    LOCAL_NODE = 1,
+    EVERY_NODE_ONE_TIME = 2,
+    RETRY_OTHER_NODE_WHEN_FAILED = 3,
+    FIXED_NODE = 4
+
+
+class OpenGaussSubJobName:
+    SUB_EXEC = "sub_exec"
+    QUERY_COPY = "queryCopy"
+
+
+class OpenGaussRestoreSubJobName:
+    SUB_EXEC = "sub_exec"
+    QUERY_COPY = "queryCopy"
 
 
 class ResultCode:
@@ -62,6 +82,7 @@ class ParamKey:
     JOB = "job"
     JOB_ID = "jobId"
     REPOSITORIES = "repositories"
+    AUTH = "auth"
     PATH = "path"
     INSTANCE = "instance"
     ENDPOINT = "endpoint"
@@ -90,7 +111,11 @@ class ParamKey:
     ESN_ID = "esnId"
     REMOTE_PATH = "remotePath"
     DATA = "data"
+    DCS_ADDRESS = "dcsAddress"
+    DCS_PORT = "dcsPort"
+    DCS_USER = "dcsUser"
     CHANNEL_NUMBER = "channel_number"
+    DEPLOY_TYPE = "deployType"
 
 
 class MetaDataKey:
@@ -116,6 +141,7 @@ class MetaDataKey:
     PROTECT_SIZE = "protectSize"
     PROTECT_NAME = "protectName"
     PG_PROBACKUP_CONF = "pg_probackup.conf"
+    BASE_COPY_ID = "baseCopyId"
     USER_NAME = "userName"
     ENABLE_CBM_TRACKING = "enable_cbm_tracking"
     BEGIN_TIME = "begin_time"
@@ -137,6 +163,7 @@ class CopyInfoKey:
     BACKUP_CONTENT_CONTROL = "backup_content.control"
     WAl = "wal"
     RECOVERY_TIME = "recovery-time"
+    NO_TIME = "no_time"
 
 
 class ProtectObject:
@@ -144,6 +171,12 @@ class ProtectObject:
     VASTBASE = "Vastbase"
     MOGDB = "MogDB"
     CMDB = "PanWeiDB"
+
+
+class OpenGaussDeployType:
+    SINGLE = "1"
+    SHARDING = "3"
+    DISTRIBUTED = "4"
 
 
 class ProtectSubObject:
@@ -198,6 +231,11 @@ class ProgressPercentage(int, Enum):
     INCREMENT_BACKUP_PERCENTAGE = 50
 
 
+class BackupFileCount(int, Enum):
+    ZERO_FILE = 0
+    ONE_FILE = 1
+
+
 class CopyDirectory:
     INSTANCE_DIRECTORY = "instance_directory"
     DATABASE_DIRECTORY = "database_directory"
@@ -212,6 +250,7 @@ class SubJobType(str, Enum):
     RESTORE = "restore"
     END_TASK = "endtask"
     RESTART = "restart"
+    CMDB_RESTORE = "cmdb_restore"
 
 
 class NodeRole:
@@ -224,6 +263,8 @@ class AuthKey:
     PROBECT_ENV = "job_protectEnv_auth_authKey_"
     APPLICATION_ENV = "application_auth_authKey_"
     TARGET_ENV = "job_targetEnv_auth_authKey_"
+    PROTECT_ENV_DCS = "job_protectEnv_auth_extendInfo_dcsPassword_"
+    TARGET_ENV_DCS = "job_targetEnv_auth_extendInfo_dcsPassword_"
 
 
 class NodeDetailRole:
@@ -258,13 +299,17 @@ CLUSTER_VERSION = "clusterVersion"
 DEPLOY_TYPE = "deployType"
 GUI_NODES = "guiNodes"
 
-SOURCE_RESULT = {'uuid': '', 'name': '', 'type': 'DataBase', 'subType': 'openGauss', 'endpoint': '',
-                 'nodes': [], 'extendInfo': {}}
+SOURCE_RESULT = {
+    'uuid': '', 'name': '', 'type': 'DataBase', 'subType': 'openGauss', 'endpoint': '',
+    'nodes': [], 'extendInfo': {}
+}
 
 BASE_RET = {'code': 200, 'bodyErr': 0, 'message': ''}
 
-CLUSTER_FIELD = ("node_name", "instance_port", "data_path", "node_ip", "instance_id",
-                 "instance_state", "instance_role", "type", "receiver_replay_location")
+CLUSTER_FIELD = (
+    "node_name", "instance_port", "data_path", "node_ip", "instance_id",
+    "instance_state", "instance_role", "type", "receiver_replay_location"
+)
 
 NODE_FIELD = ("nodeName", "datanodePort", "datanodeLocalDataPath", "datanodeListenIP 1")
 

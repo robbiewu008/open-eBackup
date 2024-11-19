@@ -25,6 +25,7 @@ namespace {
     const mp_string CHECK_APPLICATION = "CheckApplication";
     const mp_string LIST_APPLICTION_V1 = "ListApplicationResource";
     const mp_string LIST_APPLICTION_V2 = "ListApplicationResourceV2";
+    const mp_string FINAL_CLEAR = "FinalizeClear";
     const mp_string GENERAL_APP_TYPE = "generaldb";
     const mp_string GENERAL_APP_CONF_FILE = "conf.json";
     const mp_int32 RPC_FAILED_CODE = 200;
@@ -241,7 +242,7 @@ mp_void ClusterOperation::ListApplicationConfig(std::map<std::string, std::strin
 #ifdef WIN32
         mp_string parentDir  = "..\\";
 #else
-        mp_string parentDir  = "../ ";
+        mp_string parentDir  = "../";
 #endif
         if (script.find(parentDir) != std::string::npos) {
             ERRLOG("application config file can not contains '../', script=%s.", script.c_str());
@@ -318,4 +319,43 @@ mp_void ClusterOperation::RemoveProtect(ActionResult& returnValue,
     }
     JsonToStruct(retValue, returnValue);
     DBGLOG("Leave RemoveProtect general.");
+}
+
+mp_void ClusterOperation::FinalizeClear(ActionResult& returnValue, const ApplicationEnvironment& appEnv,
+    const Application& application, const std::map<std::string, std::string>& extendInfo)
+{
+    INFOLOG("Enter FinalizeClear general.");
+    Json::Value jsValue;
+    Json::Value appEnvJs;
+    Json::Value applicationJs;
+    Json::Value extendInfoJs;
+
+    StructToJson(appEnv, appEnvJs);
+    StructToJson(application, applicationJs);
+    for (auto iter: extendInfo) {
+        extendInfoJs[iter.first] = iter.second;
+    }
+
+    jsValue["appEnv"] = appEnvJs;
+    jsValue["application"] = applicationJs;
+    jsValue["extendInfo"] = extendInfoJs;
+
+    Param shellParam;
+    shellParam.param = jsValue;
+    shellParam.appType = application.subType;
+    shellParam.cmdType = FINAL_CLEAR;
+    shellParam.isAsyncInterface = MP_FALSE;
+
+    Json::Value retValue;
+    mp_int32 ret = MP_SUCCESS;
+
+    LocalCmdExector::GetInstance().GetGeneralDBScriptDir(shellParam.appType, applicationJs, shellParam.scriptDir);
+    ret = LocalCmdExector::GetInstance().Exec(shellParam, retValue);
+    if (ret != MP_SUCCESS) {
+        ERRLOG("ClusterOperation::FinalizeClear： running finalize clear script failed.");
+        return;
+    }
+    GetException(retValue);
+    JsonToStruct(retValue, returnValue);
+    INFOLOG("Leave FinalizeClear general.");
 }

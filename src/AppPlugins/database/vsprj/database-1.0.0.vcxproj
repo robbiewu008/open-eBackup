@@ -54,6 +54,7 @@
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DebugInformationFormat>
       </DebugInformationFormat>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;NDEBUG;__WINDOWS__;CMAKE_INTDIR=\"Release\";database_1_0_0_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>

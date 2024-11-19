@@ -11,15 +11,10 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
-import os
-
 from common.common import exter_attack, output_execution_result_ex
-from common.const import ParamConstant
-
 from tidb.handle.resource.parse_params import ResourceParam
 from tidb.handle.resource.resource_info import TiDBResourceInfo
-from tidb.common.const import TiDBSubType, TiDBRegisterActionType, TiDBCode, ErrorCode
-from tidb.common.tidb_common import ErrCodeException
+from tidb.common.const import TiDBRegisterActionType
 from tidb.logger import log
 
 

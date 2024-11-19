@@ -11,12 +11,13 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
-from common.const import DeployType
+from common.const import DeployType, BackupTypeEnum
 from openGauss.backup.instance_backup import InstanceBackup
-from openGauss.common.const import Status, ResultCode, SyncMode,\
-    MetaDataKey, ProtectSubObject, CopyInfoKey, NodeRole, SUCCESS_RET
+from openGauss.common.const import Status, ResultCode, SyncMode, \
+    MetaDataKey, ProtectSubObject, CopyInfoKey, NodeRole, SUCCESS_RET, BackupStatus
 from openGauss.common.error_code import BodyErr
-from openGauss.common.common import get_value_from_dict, str_to_int, get_previous_copy_info, execute_cmd_by_user
+from openGauss.common.common import get_value_from_dict, str_to_int, get_previous_copy_info, execute_cmd_by_user, \
+    is_cmdb_distribute
 from common.common import convert_time_to_timestamp
 
 
@@ -25,6 +26,8 @@ class InstanceIncrementBackup(InstanceBackup):
         super(InstanceIncrementBackup, self).__init__(pid, job_id, param_json)
 
     def check_backup_type(self):
+        if is_cmdb_distribute(self._deploy_type, self._database_type):
+            return SUCCESS_RET
         self.log.info(f"Check backup type. job id: {self._job_id}")
         endpoint = self._resource_info.get_local_endpoint()
         if self._resource_info.get_node_status(endpoint) != Status.NORMAL:
@@ -55,7 +58,16 @@ class InstanceIncrementBackup(InstanceBackup):
         执行备份任务
         :return:
         """
-        self.log.info(f"Execute instance increment backup. job id: {self._job_id}")
+        self.log.info(f"Execute instance increment backup. job id: {self._job_id}. deploy type {self._deploy_type}."
+                      f"database type {self._database_type}")
+        # CMDB分布式场景
+        if is_cmdb_distribute(self._deploy_type, self._database_type):
+            try:
+                return self.exec_cmdb_instance_backup(BackupTypeEnum.INCRE_BACKUP)
+            except Exception as err:
+                self.log.error(f'exec cmdb failed, error: {err}')
+                self.update_progress(BackupStatus.FAILED)
+                return False
         if not self.pre_backup():
             self.log.error(f"Backup prepose failed. job id: {self._job_id}")
             return False

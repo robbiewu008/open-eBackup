@@ -13,10 +13,11 @@
 
 import os
 
+from common.const import BackupTypeEnum
 from openGauss.backup.instance_backup import InstanceBackup
 from openGauss.common.const import ResultCode, CopyDirectory, CopyInfoKey, MetaDataKey, \
-    ProtectSubObject, SUCCESS_RET
-from openGauss.common.common import execute_cmd_by_user, safe_remove_path
+    ProtectSubObject, SUCCESS_RET, BackupStatus
+from openGauss.common.common import execute_cmd_by_user, safe_remove_path, is_cmdb_distribute
 from common.common import convert_time_to_timestamp
 
 
@@ -52,7 +53,16 @@ class InstanceFullBackup(InstanceBackup):
         return return_code == ResultCode.SUCCESS
 
     def backup(self):
-        self.log.info(f"Execute instance full backup. job id: {self._job_id}")
+        self.log.info(f"Execute instance full backup. job id: {self._job_id}. deploy type {self._deploy_type}."
+                      f"database type {self._database_type}")
+        # CMDB分布式场景
+        if is_cmdb_distribute(self._deploy_type, self._database_type):
+            try:
+                return self.exec_cmdb_instance_backup(BackupTypeEnum.FULL_BACKUP)
+            except Exception as err:
+                self.log.error(f'exec cmdb failed, error: {err}')
+                self.update_progress(BackupStatus.FAILED)
+                return False
         if not self.check_backup_instance():
             self.log.error(f'check backup instance failed! job id: {self._job_id}')
             return False

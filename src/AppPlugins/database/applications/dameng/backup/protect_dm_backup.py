@@ -11,6 +11,7 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
+# coding=utf-8
 import json
 import os
 import re
@@ -760,19 +761,16 @@ class BackUp:
         dm_tool = DmSqlTool(self._db_info)
         if self.version != "V8":
             return self.get_backup_history_v7()
-        backup_history_sql_with_status = (
-            f"select COUNT(*) from V$BACKUP_HISTORY where PATH=\'{self.backupset_path}\'and STATUS=\'SUCCESS\';",
-        )
-        status, query_result = dm_tool.run_disql_tool(disql_cmd=backup_history_sql_with_status)
+        query_result, status = self.exec_select_history_count_include_status(dm_tool)
         if not status:
-            log.error(f"Failed exec history sql with status.{self.get_log_common()}.")
-            backup_history_sql = (
-                f"select COUNT(*) from V$BACKUP_HISTORY where PATH=\'{self.backupset_path}\';",
-            )
-            status, query_result = dm_tool.run_disql_tool(disql_cmd=backup_history_sql)
+            query_result, status = self.exec_select_history_count_sql(dm_tool)
             if not status:
-                log.error(f"Failed exec sql.{self.get_log_common()}.")
-                return err_count
+                query_result, status = self.exec_select_backup_count_sql(dm_tool)
+                if not status:
+                    log.error(f"Failed exec backupset sql.{self.get_log_common()}.")
+                    return err_count
+
+        # 获取sql count(*)结果赋值给history_cout
         result_info = query_result[ArrayIndex.INDEX_FIRST_0].strip('\n').split('\n')
         last_row = -1
         if len(result_info) < ArrayIndex.INDEX_FIRST_3:
@@ -788,6 +786,30 @@ class BackUp:
             log.error(f"History cout err.{self.get_log_common()}.")
             return err_count
         return history_cout
+
+    def exec_select_history_count_include_status(self, dm_tool):
+        backup_history_sql_with_status = (
+            f"select COUNT(*) from V$BACKUP_HISTORY where PATH=\'{self.backupset_path}\'and STATUS=\'SUCCESS\';",
+        )
+        status, query_result = dm_tool.run_disql_tool(disql_cmd=backup_history_sql_with_status)
+        return query_result, status
+
+    def exec_select_history_count_sql(self, dm_tool):
+        log.error(f"Failed exec history sql with status.{self.get_log_common()}.")
+        backup_history_sql = (
+            f"select COUNT(*) from V$BACKUP_HISTORY where PATH=\'{self.backupset_path}\';",
+        )
+        status, query_result = dm_tool.run_disql_tool(disql_cmd=backup_history_sql)
+        return query_result, status
+
+    def exec_select_backup_count_sql(self, dm_tool):
+        log.error(f"Failed exec backupset sql.{self.get_log_common()}.")
+        backup_history_sql = (
+            f"call SF_BAKSET_BACKUP_DIR_ADD('DISK', \'{self.backupset_path}\'); \
+                    select COUNT(*) from v$backupset where BACKUP_PATH=\'{self.backupset_path}\';",
+        )
+        status, query_result = dm_tool.run_disql_tool(disql_cmd=backup_history_sql)
+        return query_result, status
 
     def get_backup_history_v7(self):
         job_dict = self._json_param.get("job", {})
@@ -1516,7 +1538,7 @@ class BackUp:
                 json_dict = json.loads(f_object.read())
             except Exception:
                 return 0
-        #单位 kb
+        # 单位 kb
         copy_size = 0
         copy_name = json_dict.get(DMJsonConstant.BACKUPSETNAME, '')
         if self._db_type == BackupSubType.CLUSTER:
@@ -1651,9 +1673,9 @@ class BackUp:
             # 框架在执行备份任务30s后开始查询备份进度，针对挂载卡住导致备份在此时仍未开始的情况，返回running状态
             log.info(f"Cannot find pre_path, return running, job_id: {self._job_id}, sub_id: {self._sub_job_id}")
             output_info = SubJobDetails(taskId=self._job_id,
-                                    subTaskId=self._sub_job_id,
-                                    taskStatus=SubJobStatusEnum.RUNNING,
-                                    progress=Progress.START)
+                                        subTaskId=self._sub_job_id,
+                                        taskStatus=SubJobStatusEnum.RUNNING,
+                                        progress=Progress.START)
             return output_info
         output_info = SubJobDetails(taskId=self._job_id,
                                     subTaskId=self._sub_job_id,
