@@ -38,7 +38,7 @@ echo "#########################################################"
 
 
 if [ -f "${BASE_PATH}/pkg/mspkg/${MS_NAME}.tar.gz" ]; then
-    tar xvf "${BASE_PATH}/pkg/mspkg/dme_openstorageapi_csi_plugin.tar.gz" -C "${BASE_PATH}/tmp/${MS_NAME}/mstmp/"
+    tar xvf "${BASE_PATH}/pkg/mspkg/${MS_NAME}.tar.gz" -C "${BASE_PATH}/tmp/${MS_NAME}/mstmp/"
     if [ $? != 0 ]; then
         echo "untar $MS_NAME.tar.gz failed"
         exit 1
