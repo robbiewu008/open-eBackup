@@ -13,13 +13,13 @@
 package openbackup.data.protection.access.provider.sdk.base.v2;
 
 import com.huawei.emeistor.kms.kmc.util.KmcHelper;
-import openbackup.data.protection.access.provider.sdk.base.Authentication;
-import openbackup.data.protection.access.provider.sdk.base.Endpoint;
-import openbackup.system.base.common.utils.StringUtil;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.data.protection.access.provider.sdk.base.Authentication;
+import openbackup.data.protection.access.provider.sdk.base.Endpoint;
+import openbackup.system.base.common.utils.StringUtil;
 
 import java.util.List;
 

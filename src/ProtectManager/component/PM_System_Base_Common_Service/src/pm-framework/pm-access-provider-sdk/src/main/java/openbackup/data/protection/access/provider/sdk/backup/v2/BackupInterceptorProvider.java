@@ -22,6 +22,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 备份拦截器，通过该拦截器可以针对不同的资源在下发备份命名给数据保护引擎时
@@ -90,5 +91,16 @@ public interface BackupInterceptorProvider extends DataProtectionProvider<String
      */
     default Optional<AgentMountTypeEnum> getMountType(BackupTask backupTask) {
         return Optional.empty();
+    }
+
+    /**
+     *  多集群任务分发，过滤掉不连通的esn
+     *
+     * @param resourceId 资源id
+     * @param availableEsnList 可用节点
+     * @return 连通节点
+     */
+    default Set<String> availableEsnFilter(String resourceId, Set<String> availableEsnList) {
+        return availableEsnList;
     }
 }

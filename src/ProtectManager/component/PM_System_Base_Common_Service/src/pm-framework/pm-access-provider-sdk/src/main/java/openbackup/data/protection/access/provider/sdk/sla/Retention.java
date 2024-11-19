@@ -38,4 +38,14 @@ public class Retention {
      * duration unit
      */
     private String durationUnit;
+
+    /**
+     * worm retention duration
+     */
+    private Integer wormRetentionDuration;
+
+    /**
+     * worm duration unit
+     */
+    private String wormDurationUnit;
 }

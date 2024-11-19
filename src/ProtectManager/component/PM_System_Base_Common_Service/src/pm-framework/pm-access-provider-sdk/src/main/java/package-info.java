@@ -10,8 +10,10 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ */
 /**
  * @program: PM_System_Base_Common_Service
  * @description:
- * @create: 2021/10/9
  **/

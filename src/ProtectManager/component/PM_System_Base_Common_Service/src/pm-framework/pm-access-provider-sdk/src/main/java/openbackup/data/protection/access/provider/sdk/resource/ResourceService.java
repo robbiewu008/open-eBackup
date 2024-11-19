@@ -625,4 +625,11 @@ public interface ResourceService {
      * @return 资源列表
      */
     List<ProtectedResource> getResourceListBySubTypeList(List<String> subTypeList);
+
+    /**
+     * 获取所有已存在资源的子类型
+     *
+     * @return 所有子类型的列表
+     */
+    List<String> getAllSubTypeList();
 }

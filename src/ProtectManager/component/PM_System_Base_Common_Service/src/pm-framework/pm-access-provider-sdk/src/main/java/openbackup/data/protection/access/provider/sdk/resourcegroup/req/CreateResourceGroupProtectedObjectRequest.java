@@ -12,10 +12,9 @@
 */
 package openbackup.data.protection.access.provider.sdk.resourcegroup.req;
 
-import openbackup.system.base.common.utils.JSONObject;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.common.utils.JSONObject;
 
 import org.hibernate.validator.constraints.Length;
 

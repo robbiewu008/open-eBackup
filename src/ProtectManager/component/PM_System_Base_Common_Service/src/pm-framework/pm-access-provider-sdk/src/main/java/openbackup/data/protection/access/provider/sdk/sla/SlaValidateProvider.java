@@ -12,9 +12,10 @@
 */
 package openbackup.data.protection.access.provider.sdk.sla;
 
-import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvider;
 import com.huawei.oceanprotect.sla.sdk.dto.SlaBase;
 import com.huawei.oceanprotect.sla.sdk.validator.SlaValidateConfig;
+
+import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvider;
 
 /**
  * SLA应用校验扩展接口

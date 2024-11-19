@@ -15,6 +15,7 @@ package openbackup.data.protection.access.provider.sdk.replication;
 import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvider;
 import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
 import openbackup.data.protection.access.provider.sdk.copy.CopyReplicationImport;
+import openbackup.system.base.sdk.resource.model.ResourceEntity;
 
 /**
  * Replication Provider
@@ -33,8 +34,9 @@ public interface ReplicationProvider extends DataProtectionProvider<String> {
      *
      * @param copy copy
      * @param importParam import param
+     * @param resourceEntity resourceEntity
      */
-    void buildCopyProperties(CopyInfoBo copy, CopyReplicationImport importParam);
+    void buildCopyProperties(CopyInfoBo copy, CopyReplicationImport importParam, ResourceEntity resourceEntity);
 
     /**
      * check copy whether exist

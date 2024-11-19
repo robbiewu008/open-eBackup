@@ -12,11 +12,10 @@
 */
 package openbackup.data.protection.access.provider.sdk.backup;
 
-import openbackup.data.protection.access.provider.sdk.enums.BackupTypeEnum;
-import openbackup.data.protection.access.provider.sdk.resource.NextBackupParams;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.data.protection.access.provider.sdk.enums.BackupTypeEnum;
+import openbackup.data.protection.access.provider.sdk.resource.NextBackupParams;
 
 import java.util.Collections;
 import java.util.List;

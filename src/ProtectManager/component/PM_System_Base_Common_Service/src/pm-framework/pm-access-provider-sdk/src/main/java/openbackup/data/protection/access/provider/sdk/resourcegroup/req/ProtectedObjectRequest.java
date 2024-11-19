@@ -12,9 +12,8 @@
 */
 package openbackup.data.protection.access.provider.sdk.resourcegroup.req;
 
-import openbackup.system.base.common.utils.JSONObject;
-
 import lombok.Data;
+import openbackup.system.base.common.utils.JSONObject;
 
 /**
  * 保护中间业务实体

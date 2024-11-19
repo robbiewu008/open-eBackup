@@ -33,4 +33,11 @@ public interface PolicyServiceApi {
      * @return 策略id列表
      */
     List<String> getPolicyIdList();
+
+    /**
+     * 查询挂载更新策略的所有数据
+     *
+     * @return 挂载更新策略的所有数据
+     */
+    Integer getAllCount();
 }

@@ -12,11 +12,10 @@
 */
 package openbackup.data.protection.access.provider.sdk.agent;
 
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 
 import java.util.Map;
 

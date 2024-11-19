@@ -12,13 +12,12 @@
 */
 package openbackup.data.protection.access.provider.sdk.backup;
 
-import openbackup.data.protection.access.provider.sdk.base.Parameter;
-import openbackup.data.protection.access.provider.sdk.sla.Policy;
-import openbackup.data.protection.access.provider.sdk.sla.Sla;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.data.protection.access.provider.sdk.base.Parameter;
+import openbackup.data.protection.access.provider.sdk.sla.Policy;
+import openbackup.data.protection.access.provider.sdk.sla.Sla;
 
 import java.util.List;
 
