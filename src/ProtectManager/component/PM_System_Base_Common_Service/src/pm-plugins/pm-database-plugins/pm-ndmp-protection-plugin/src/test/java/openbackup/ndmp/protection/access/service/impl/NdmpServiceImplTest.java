@@ -13,6 +13,11 @@
 package openbackup.ndmp.protection.access.service.impl;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+
+import com.huawei.oceanprotect.nas.protection.access.service.StorageAgentService;
+
+import com.google.common.collect.Lists;
 
 import openbackup.access.framework.resource.service.provider.UnifiedClusterResourceIntegrityChecker;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
@@ -28,13 +33,11 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConnectionCheckProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import com.huawei.oceanprotect.nas.protection.access.service.StorageAgentService;
 import openbackup.ndmp.protection.access.service.NdmpService;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
-
-import com.google.common.collect.Lists;
+import openbackup.system.base.service.NetworkService;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -82,6 +85,9 @@ public class NdmpServiceImplTest {
 
     @Mock
     private ProtectedEnvironmentService protectedEnvironmentService;
+
+    @Mock
+    private NetworkService networkService;
 
     @Before
     public void setUp() throws IllegalAccessException {
@@ -221,5 +227,35 @@ public class NdmpServiceImplTest {
 
         List<ProtectedResource> interAgents = ndmpServiceImpl.getOneAgentHealthCheck(protectedResource);
         Assert.assertEquals(0, interAgents.size());
+    }
+
+    /**
+     * 用例场景：查询可使用agent
+     * 前置条件：无
+     * 检  查  点：返回正确
+     */
+    @Test
+    public void test_getAgent_success() {
+        String agents = "b9018067-d1e0-4c78-8f13-beacf5d921c8";
+        String parentUUid = "6aaf9c50-9bad-4afa-94ff-617de33f40a6";
+        ProtectedEnvironment agent = new ProtectedEnvironment();
+        agent.setEndpoint("10.160.170.10");
+        agent.setPort(5985);
+        agent.setUuid(agents);
+        agent.setLinkStatus(LinkStatusEnum.ONLINE.getStatus().toString());
+        Optional<ProtectedResource> protectedResources = Optional.of(agent);
+        PowerMockito.when(resourceService.getResourceByIdIgnoreOwner(eq(agents))).thenReturn(protectedResources);
+
+        ProtectedEnvironment protectedEnvironment = new ProtectedEnvironment();
+        protectedEnvironment.setDependencies(new HashMap<>());
+        PowerMockito.when(protectedEnvironmentService.getEnvironmentById(eq(parentUUid)))
+            .thenReturn(protectedEnvironment);
+        PowerMockito.when(protectedEnvironmentService.getEnvironmentById(eq(agents))).thenReturn(agent);
+        AgentBaseDto response = new AgentBaseDto();
+        response.setErrorCode("0");
+        PowerMockito.when(agentService.checkApplication(any(), any())).thenReturn(response);
+
+        List<Endpoint> endpoints = ndmpServiceImpl.getAgents(parentUUid, agents);
+        Assert.assertNotNull(endpoints);
     }
 }

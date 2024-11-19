@@ -12,6 +12,10 @@
 */
 package openbackup.obs.plugin.provider;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.framework.core.common.enums.v2.RestoreTypeEnum;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreLocationEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreModeEnum;
@@ -23,7 +27,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreInterceptorProvider;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
 import openbackup.data.protection.access.provider.sdk.util.TaskUtil;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.obs.plugin.common.constants.EnvironmentConstant;
 import openbackup.obs.plugin.service.ObjectStorageAgentService;
 import openbackup.system.base.common.constants.CommonErrorCode;
@@ -34,8 +37,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.service.DeployTypeService;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -96,7 +97,7 @@ public class ObjectStorageRestoreProvider implements RestoreInterceptorProvider 
             throw new LegoCheckedException(CommonErrorCode.ERR_PARAM, "TargetObject is illegal.");
         }
 
-        TaskUtil.setRestoreTaskSpeedStatisticsEnum(task, SpeedStatisticsEnum.UBC);
+        TaskUtil.setRestoreTaskSpeedStatisticsEnum(task, SpeedStatisticsEnum.APPLICATION);
 
         // 校验原始资源是否存在
         checkOriginalResource(task);
@@ -160,6 +161,10 @@ public class ObjectStorageRestoreProvider implements RestoreInterceptorProvider 
             task.setRestoreMode(RestoreModeEnum.DOWNLOAD_RESTORE.getMode());
         } else if (CopyGeneratedByEnum.BY_TAPE_ARCHIVE.value().equals(generatedBy)) {
             task.setRestoreMode(RestoreModeEnum.DOWNLOAD_RESTORE.getMode());
+            // 如果是细粒度的磁带恢复，走普通副本恢复模块
+            if (RestoreTypeEnum.FLR.getType().equals(task.getRestoreType())) {
+                task.setRestoreMode(RestoreModeEnum.LOCAL_RESTORE.getMode());
+            }
         } else {
             task.setRestoreMode(RestoreModeEnum.LOCAL_RESTORE.getMode());
         }

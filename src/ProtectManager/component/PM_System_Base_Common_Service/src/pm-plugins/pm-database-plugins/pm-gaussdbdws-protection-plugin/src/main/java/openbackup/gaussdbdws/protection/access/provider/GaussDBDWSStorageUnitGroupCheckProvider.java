@@ -12,10 +12,10 @@
 */
 package openbackup.gaussdbdws.protection.access.provider;
 
+import com.google.common.collect.ImmutableList;
+
 import openbackup.data.protection.access.provider.sdk.repository.StorageUnitGroupCheckProvider;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import com.google.common.collect.ImmutableList;
 
 import org.springframework.stereotype.Component;
 

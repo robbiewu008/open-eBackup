@@ -13,7 +13,6 @@
 package openbackup.ndmp.protection.access.interceptor;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.in;
 import static org.mockito.ArgumentMatchers.anyString;
 
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -28,6 +27,7 @@ import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.ndmp.protection.access.constant.NdmpConstant;
 import openbackup.ndmp.protection.access.service.NdmpService;
+import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
@@ -45,7 +45,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,6 +115,7 @@ public class NdmpRestoreInterceptorTest {
         RestoreTask restoreTask = new RestoreTask();
         TaskResource taskResource = new TaskResource();
         taskResource.setParentUuid("parentUuid");
+        taskResource.setRootUuid("parentUuid");
         Map<String, String> advanceParams = new HashMap<>();
         advanceParams.put("agents", "agents");
         restoreTask.setAdvanceParams(advanceParams);
@@ -151,5 +151,25 @@ public class NdmpRestoreInterceptorTest {
 
         RestoreTask task = initRestoreTask();
         assertThatNoException().isThrownBy(() -> Whitebox.invokeMethod(ndmpRestoreInterceptor, "supplyAgent", task));
+    }
+
+    @Test
+    public void test_throw_exception_while_target_object_not_exist() {
+        RestoreTask task = initRestoreTask();
+        task.getAdvanceParams().put("agents", "");
+        Assert.assertThrows(LegoCheckedException.class,
+            () -> Whitebox.invokeMethod(ndmpRestoreInterceptor, "supplyAgent", task));
+    }
+
+    @Test
+    public void test_supply_agent_success_while_user_select_agents() throws Exception {
+        RestoreTask task = initRestoreTask();
+
+        List<Endpoint> endpoints = new ArrayList<>();
+        endpoints.add(new Endpoint("1", "129.168.1.2", 5955));
+        Mockito.when(ndmpService.getAgents(anyString(), anyString())).thenReturn(endpoints);
+        Whitebox.invokeMethod(ndmpRestoreInterceptor, "supplyAgent", task);
+        Assert.assertEquals(task.getAgents(), endpoints);
+
     }
 }

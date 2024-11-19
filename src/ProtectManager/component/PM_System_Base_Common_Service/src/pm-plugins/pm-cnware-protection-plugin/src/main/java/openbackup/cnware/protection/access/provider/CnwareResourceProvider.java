@@ -40,6 +40,11 @@ public class CnwareResourceProvider extends DefaultResourceProvider {
         resource.setProtectionStatus(null);
     }
 
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        return true;
+    }
+
     /**
      * provider过滤器，过滤条件接口
      *

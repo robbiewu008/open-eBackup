@@ -12,6 +12,7 @@
 */
 package openbackup.saphana.protection.access.provider.restore;
 
+import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
@@ -41,6 +42,7 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.saphana.protection.access.constant.SapHanaConstants;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -249,17 +251,21 @@ public class SapHanaDatabaseRestoreProvider extends AbstractDbRestoreInterceptor
         task.getTargetObject().setExtendInfo(targetObjectExtendInfo);
     }
 
-    private JSONObject getCopyResource(String copyId) {
-        Copy copy = copyRestApi.queryCopyByID(copyId);
-        return JSONObject.fromObject(copy.getResourceProperties());
-    }
-
     private void setRestoreAdvanceParams(RestoreTask task) {
         Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElseGet(HashMap::new);
         advanceParams.put(DatabaseConstants.TARGET_LOCATION_KEY, task.getTargetLocation().getLocation());
-        JSONObject copyResource = getCopyResource(task.getCopyId());
+        Copy copy = copyRestApi.queryCopyByID(task.getCopyId());
+
+        JSONObject copyResource = JSONObject.fromObject(copy.getResourceProperties());
         advanceParams.put(DatabaseConstants.COPY_PROTECT_OBJECT_VERSION_KEY,
-            copyResource.getString(DatabaseConstants.VERSION));
+                copyResource.getString(DatabaseConstants.VERSION));
+
+        int backupType = copy.getBackupType();
+        if (BackupTypeConstants.DIFFERENCE_INCREMENT.getAbBackupType() == backupType
+                || BackupTypeConstants.CUMULATIVE_INCREMENT.getAbBackupType() == backupType) {
+            advanceParams.put(SapHanaConstants.SKIP_LOG_REPO_COMPOSE, SapHanaConstants.TRUE);
+            log.info("Skip log repo compose. DIFFERENCE_INCREMENT/CUMULATIVE_INCREMENT scene.");
+        }
         task.setAdvanceParams(advanceParams);
     }
 

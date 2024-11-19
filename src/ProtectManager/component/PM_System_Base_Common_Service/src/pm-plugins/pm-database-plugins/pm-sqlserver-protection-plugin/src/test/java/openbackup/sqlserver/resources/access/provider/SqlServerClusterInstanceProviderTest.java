@@ -79,7 +79,7 @@ public class SqlServerClusterInstanceProviderTest {
         sqlServerBaseService = Mockito.mock(SqlServerBaseService.class);
         agentUnifiedService = Mockito.mock(AgentUnifiedService.class);
         this.sqlServerClusterInstanceProvider = new SqlServerClusterInstanceProvider(agentUnifiedService,
-            sqlServerBaseService);
+            sqlServerBaseService, resourceService);
     }
 
     /**

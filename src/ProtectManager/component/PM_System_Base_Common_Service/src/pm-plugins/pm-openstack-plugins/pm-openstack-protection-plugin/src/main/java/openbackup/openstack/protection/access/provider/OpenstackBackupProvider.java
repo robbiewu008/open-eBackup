@@ -12,6 +12,14 @@
 */
 package openbackup.openstack.protection.access.provider;
 
+import openbackup.openstack.protection.access.common.OpenstackQuotaService;
+import openbackup.openstack.protection.access.constant.OpenstackConstant;
+import openbackup.openstack.protection.access.dto.VolInfo;
+import com.huawei.oceanprotect.system.base.quota.enums.UpdateQuotaType;
+
+import com.alibaba.fastjson.JSON;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.backup.ProtectedObject;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupInterceptorProvider;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
@@ -22,14 +30,11 @@ import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import openbackup.openstack.protection.access.common.OpenstackQuotaService;
-import openbackup.openstack.protection.access.constant.OpenstackConstant;
-import openbackup.openstack.protection.access.dto.VolInfo;
 import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.enums.RetentionTypeEnum;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
-import com.huawei.oceanprotect.system.base.quota.enums.UpdateQuotaType;
 import openbackup.system.base.sdk.cluster.api.ClusterNativeApi;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
@@ -37,10 +42,6 @@ import openbackup.system.base.sdk.copy.model.DeleteExcessCopiesRequest;
 import openbackup.system.base.sdk.protection.model.PolicyBo;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import com.alibaba.fastjson.JSON;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -83,14 +84,21 @@ public class OpenstackBackupProvider implements BackupInterceptorProvider {
             backupTask.getTaskId(), backupTask.getBackupType(), backupTask.getProtectObject().getUuid());
         // 云核场景检查
         registerOpenstackCheck(backupTask);
+
         // 填充磁盘卷信息
         fillSubObjects(backupTask);
+
         // 填充域认证信息
         fillDomainAuth(backupTask);
+
         // 填充存储库信息
         fillRepositories(backupTask);
+
         // 填充存储库esn
         fillEsn(backupTask);
+
+        // 填充生产存储剩余容量阈值
+        fillAvailableCapacityThreshold(backupTask);
         log.info("Openstack backup intercept finished, taskId: {}, backupType: {}, resourceId: {}.",
             backupTask.getTaskId(), backupTask.getBackupType(), backupTask.getProtectObject().getUuid());
         return backupTask;
@@ -224,5 +232,27 @@ public class OpenstackBackupProvider implements BackupInterceptorProvider {
             log.error("Delete resource: {} excess copies occur an exception.", resourceId,
                 ExceptionUtil.getErrorMessage(exception));
         }
+    }
+
+    private void fillAvailableCapacityThreshold(BackupTask backupTask) {
+        log.info("Start to fill available capacity threshold, taskId:{}, resourceId:{}.",
+            backupTask.getTaskId(), backupTask.getProtectObject().getUuid());
+        if (!backupTask.getAdvanceParams().containsKey(OpenstackConstant.AVAILABLE_CAPACITY_THRESHOLD)) {
+            backupTask.getAdvanceParams().put(OpenstackConstant.AVAILABLE_CAPACITY_THRESHOLD,
+                String.valueOf(IsmNumberConstant.TWENTY));
+            log.info("Fill available capacity threshold end, taskId:{}, resourceId:{}, available capacity threshold:{}",
+                backupTask.getTaskId(), backupTask.getProtectObject().getUuid(),
+                backupTask.getAdvanceParams().get(OpenstackConstant.AVAILABLE_CAPACITY_THRESHOLD));
+            return;
+        }
+        int capacityThreshold = Integer.parseInt(
+            backupTask.getAdvanceParams().get(OpenstackConstant.AVAILABLE_CAPACITY_THRESHOLD));
+        if (capacityThreshold < IsmNumberConstant.ZERO || capacityThreshold > IsmNumberConstant.HUNDRED) {
+            backupTask.getAdvanceParams().put(OpenstackConstant.AVAILABLE_CAPACITY_THRESHOLD,
+                String.valueOf(IsmNumberConstant.TWENTY));
+        }
+        log.info("Fill available capacity threshold end, taskId:{}, resourceId:{}, available capacity threshold:{}.",
+            backupTask.getTaskId(), backupTask.getProtectObject().getUuid(),
+            backupTask.getAdvanceParams().get(OpenstackConstant.AVAILABLE_CAPACITY_THRESHOLD));
     }
 }

@@ -83,4 +83,9 @@ public class NdmpResourceProvider implements ResourceProvider {
         resourceFeature.setSupportedLanFree(false);
         return resourceFeature;
     }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        return true;
+    }
 }

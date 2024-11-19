@@ -12,6 +12,7 @@
 */
 package openbackup.cnware.protection.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.cnware.protection.access.constant.CnwareConstant;
 import openbackup.cnware.protection.access.service.CnwareCommonService;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupInterceptorProvider;
@@ -23,13 +24,11 @@ import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.util.TaskUtil;
-
+import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -79,7 +78,34 @@ public class CnwareBackupProvider implements BackupInterceptorProvider {
 
         // 设置速率统计方式
         fillSpeedStatisticsType(backupTask);
+
+        // 填充生产存储剩余容量阈值
+        fillAvailableCapacityThreshold(backupTask);
+        log.info("Cnware backup initialize finished, taskId: {}, backupType: {}, resourceId: {}.",
+            backupTask.getTaskId(), backupTask.getBackupType(), backupTask.getProtectObject().getUuid());
         return backupTask;
+    }
+
+    private void fillAvailableCapacityThreshold(BackupTask backupTask) {
+        log.info("Start to fill available capacity threshold, taskId:{}, resourceId:{}.",
+            backupTask.getTaskId(), backupTask.getProtectObject().getUuid());
+        if (!backupTask.getAdvanceParams().containsKey(CnwareConstant.AVAILABLE_CAPACITY_THRESHOLD)) {
+            backupTask.getAdvanceParams().put(CnwareConstant.AVAILABLE_CAPACITY_THRESHOLD,
+                String.valueOf(IsmNumberConstant.TWENTY));
+            log.info("Fill available capacity threshold end, taskId:{}, resourceId:{}, available capacity threshold:{}",
+                backupTask.getTaskId(), backupTask.getProtectObject().getUuid(),
+                backupTask.getAdvanceParams().get(CnwareConstant.AVAILABLE_CAPACITY_THRESHOLD));
+            return;
+        }
+        int capacityThreshold = Integer.parseInt(
+            backupTask.getAdvanceParams().get(CnwareConstant.AVAILABLE_CAPACITY_THRESHOLD));
+        if (capacityThreshold < IsmNumberConstant.ZERO || capacityThreshold > IsmNumberConstant.HUNDRED) {
+            backupTask.getAdvanceParams().put(CnwareConstant.AVAILABLE_CAPACITY_THRESHOLD,
+                String.valueOf(IsmNumberConstant.TWENTY));
+        }
+        log.info("Fill available capacity threshold end, taskId:{}, resourceId:{}, available capacity threshold:{}.",
+            backupTask.getTaskId(), backupTask.getProtectObject().getUuid(),
+            backupTask.getAdvanceParams().get(CnwareConstant.AVAILABLE_CAPACITY_THRESHOLD));
     }
 
     private void fillProtectSubObjects(BackupTask backupTask) {

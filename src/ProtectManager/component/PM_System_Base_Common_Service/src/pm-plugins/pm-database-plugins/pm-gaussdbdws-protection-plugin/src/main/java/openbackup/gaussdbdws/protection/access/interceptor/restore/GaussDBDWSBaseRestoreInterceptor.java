@@ -12,6 +12,13 @@
 */
 package openbackup.gaussdbdws.protection.access.interceptor.restore;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import com.alibaba.fastjson.JSON;
+
+import com.google.common.collect.ImmutableMap;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.data.access.framework.core.common.enums.v2.RestoreTypeEnum;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -35,8 +42,6 @@ import openbackup.gaussdbdws.protection.access.constant.DwsConstant;
 import openbackup.gaussdbdws.protection.access.service.GaussDBBaseService;
 import openbackup.gaussdbdws.protection.access.util.DwsBuildRepositoryUtil;
 import openbackup.gaussdbdws.protection.access.util.DwsTaskEnvironmentUtil;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
-
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
@@ -50,12 +55,6 @@ import openbackup.system.base.sdk.job.model.JobLogLevelEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
-
-import com.alibaba.fastjson.JSON;
-
-import com.google.common.collect.ImmutableMap;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

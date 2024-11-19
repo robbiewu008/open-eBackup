@@ -12,6 +12,9 @@
 */
 package openbackup.mysql.resources.access.provider;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -22,9 +25,9 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConnectionCheckProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceFeature;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.provider.DbClusterProvider;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.mysql.resources.access.common.MysqlConstants;
 import openbackup.mysql.resources.access.common.MysqlErrorCode;
 import openbackup.mysql.resources.access.enums.MysqlResourceSubTypeEnum;
@@ -36,8 +39,6 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.host.HostRestApi;
 import openbackup.system.base.sdk.host.model.Host;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,8 @@ public class MysqlClusterInstanceProvider implements ResourceProvider {
 
     private HostRestApi hostRestApi;
 
+    private ResourceService resourceService;
+
     /**
      * DatabaseResourceProvider 构造器注入
      *
@@ -97,6 +100,11 @@ public class MysqlClusterInstanceProvider implements ResourceProvider {
     @Autowired
     public void setMysqlInstanceProvider(MysqlInstanceProvider mysqlInstanceProvider) {
         this.mysqlInstanceProvider = mysqlInstanceProvider;
+    }
+
+    @Autowired
+    public void setResourceService(ResourceService resourceService) {
+        this.resourceService = resourceService;
     }
 
     /**
@@ -371,6 +379,29 @@ public class MysqlClusterInstanceProvider implements ResourceProvider {
                 extendInfo.put(DatabaseConstants.INSTANCE_PORT, encryptorService.encrypt(instancePort));
             });
         }
+    }
+
+    /**
+     * 判断是否提供依赖资源。
+     *
+     * @param resource 要检查的受保护资源
+     * @return boolean 如果资源的依赖可以被提供，则返回true，否则返回false
+     */
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> children = resourceService.queryDependencyResources(true,
+                DatabaseConstants.CHILDREN, Collections.singletonList(resource.getUuid()));
+        children.stream().forEach(child -> {
+            Map<String, List<ProtectedResource>> childDependencies = new HashMap<>();
+            List<ProtectedResource> agents = resourceService.queryDependencyResources(true,
+                    DatabaseConstants.AGENTS, Collections.singletonList(child.getUuid()));
+            childDependencies.put(DatabaseConstants.AGENTS, agents);
+            child.setDependencies(childDependencies);
+        });
+        dependencies.put(DatabaseConstants.CHILDREN, children);
+        resource.setDependencies(dependencies);
+        return true;
     }
 
     /**

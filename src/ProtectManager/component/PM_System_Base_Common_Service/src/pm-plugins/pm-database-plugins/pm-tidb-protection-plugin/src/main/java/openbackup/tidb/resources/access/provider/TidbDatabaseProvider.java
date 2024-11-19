@@ -68,6 +68,11 @@ public class TidbDatabaseProvider implements ResourceProvider {
         return ResourceSubTypeEnum.TIDB_DATABASE.getType().equals(object.getSubType());
     }
 
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        return true;
+    }
+
     /**
      * 检查受保护资源，创建逻辑资源（文件集，NAS共享）时调用该接口
      * 检查不通过抛出DataProtectionAccessException,并携带对应的错误码

@@ -12,13 +12,12 @@
 */
 package openbackup.gaussdb.protection.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceFeature;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
 import openbackup.gaussdb.protection.access.service.GaussDBService;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

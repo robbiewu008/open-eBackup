@@ -12,6 +12,7 @@
 */
 package openbackup.db2.protection.access.provider.copy;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.verify.service.CopyVerifyHelper;
 import openbackup.data.access.framework.core.copy.CopyManagerService;
 import openbackup.data.protection.access.provider.sdk.copy.CopyVerifyInterceptor;
@@ -24,8 +25,6 @@ import openbackup.db2.protection.access.service.Db2Service;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

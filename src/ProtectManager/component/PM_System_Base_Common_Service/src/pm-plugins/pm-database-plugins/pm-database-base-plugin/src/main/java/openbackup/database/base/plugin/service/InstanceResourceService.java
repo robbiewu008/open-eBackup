@@ -13,6 +13,7 @@
 package openbackup.database.base.plugin.service;
 
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.database.base.plugin.enums.ClusterInstanceOnlinePolicy;
@@ -44,6 +45,14 @@ public interface InstanceResourceService {
      * @param resource 集群实例资源信息
      */
     void setClusterInstanceNodeRole(ProtectedResource resource);
+
+    /**
+     * 查询集群实例角色
+     *
+     * @param resource 集群实例资源信息
+     * @return 集群信息
+     */
+    AppEnvResponse queryClusterInstanceNodeRoleByAgent(ProtectedResource resource);
 
     /**
      * 检查集群实例是否已经被注册

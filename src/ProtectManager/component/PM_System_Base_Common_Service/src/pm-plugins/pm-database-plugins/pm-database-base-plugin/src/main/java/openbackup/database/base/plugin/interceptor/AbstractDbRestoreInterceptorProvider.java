@@ -12,6 +12,7 @@
 */
 package openbackup.database.base.plugin.interceptor;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.backup.NextBackupChangeCauseEnum;
 import openbackup.data.protection.access.provider.sdk.backup.NextBackupModifyReq;
@@ -24,8 +25,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreInterceptorProvider;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -69,7 +68,7 @@ public abstract class AbstractDbRestoreInterceptorProvider implements RestoreInt
             return;
         }
         NextBackupModifyReq nextBackupModifyReq = NextBackupModifyReq.build(findAssociatedResourcesToSetNextFull(task),
-                NextBackupChangeCauseEnum.RESTORE_SUCCESS_TO_FULL);
+            NextBackupChangeCauseEnum.RESTORE_SUCCESS_TO_FULL);
         resourceService.modifyNextBackup(nextBackupModifyReq, false);
     }
 

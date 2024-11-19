@@ -12,6 +12,12 @@
 */
 package openbackup.tdsql.resources.access.interceptor;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreModeEnum;
@@ -31,12 +37,6 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.tdsql.resources.access.provider.TdsqlAgentProvider;
 import openbackup.tdsql.resources.access.service.TdsqlService;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -90,7 +91,7 @@ public class TdsqlClusterGroupRestoreInterceptor extends AbstractDbRestoreInterc
     @Override
     public RestoreTask initialize(RestoreTask task) {
         // 添加恢复的agents到任务中
-        log.info("begin TDSQL restoreTask intercept");
+        log.info("begin TDSQL group restoreTask intercept");
         List<Endpoint> endpointList = buildRestoreAgents(task);
         task.setAgents(endpointList);
 
@@ -109,9 +110,14 @@ public class TdsqlClusterGroupRestoreInterceptor extends AbstractDbRestoreInterc
         // 设置速度统计方式为UBC
         TaskUtil.setRestoreTaskSpeedStatisticsEnum(task, SpeedStatisticsEnum.UBC);
 
+        // 后置任务所有节点都执行
+        Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElse(Maps.newHashMap());
+        advanceParams.put(DatabaseConstants.MULTI_POST_JOB, Boolean.TRUE.toString());
+        task.setAdvanceParams(advanceParams);
+
         // 设置恢复副本类型
         buildRestoreMode(task);
-        log.info("end TDSQL restoreTask intercept");
+        log.info("end TDSQL group restoreTask intercept");
         return task;
     }
 
@@ -139,7 +145,7 @@ public class TdsqlClusterGroupRestoreInterceptor extends AbstractDbRestoreInterc
         } else {
             task.setRestoreMode(RestoreModeEnum.LOCAL_RESTORE.getMode());
         }
-        log.info("build TDSQL copy restore mode. copy id: {}, mode: {}", task.getCopyId(), task.getRestoreMode());
+        log.info("build TDSQL group copy restore mode. copy id: {}, mode: {}", task.getCopyId(), task.getRestoreMode());
     }
 
 

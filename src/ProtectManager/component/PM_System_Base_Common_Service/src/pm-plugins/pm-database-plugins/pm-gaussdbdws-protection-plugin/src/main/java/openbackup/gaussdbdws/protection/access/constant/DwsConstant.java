@@ -13,9 +13,10 @@
 package openbackup.gaussdbdws.protection.access.constant;
 
 import com.huawei.oceanprotect.sla.sdk.enums.PolicyAction;
-import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 
 import com.google.common.collect.ImmutableMap;
+
+import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 
 import java.util.Map;
 

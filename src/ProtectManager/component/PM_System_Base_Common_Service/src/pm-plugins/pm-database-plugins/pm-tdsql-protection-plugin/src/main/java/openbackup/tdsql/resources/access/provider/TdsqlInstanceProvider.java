@@ -12,6 +12,7 @@
 */
 package openbackup.tdsql.resources.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.util.EnvironmentParamCheckUtil;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
@@ -19,6 +20,7 @@ import openbackup.data.protection.access.provider.sdk.resource.BrowseEnvironment
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -34,13 +36,14 @@ import openbackup.tdsql.resources.access.interceptor.TdsqlTaskCheck;
 import openbackup.tdsql.resources.access.service.TdsqlService;
 import openbackup.tdsql.resources.access.util.TdsqlInstanceValidator;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -55,15 +58,30 @@ public class TdsqlInstanceProvider implements ResourceProvider {
 
     private final TdsqlTaskCheck tdsqlTaskCheck;
 
+    private final ResourceService resourceService;
+
     /**
      * 构造
      *
      * @param tdsqlService tdsqlService
      * @param tdsqlTaskCheck tdsqlTashCheck
+     * @param resourceService resourceService
      */
-    public TdsqlInstanceProvider(TdsqlService tdsqlService, TdsqlTaskCheck tdsqlTaskCheck) {
+    public TdsqlInstanceProvider(TdsqlService tdsqlService, TdsqlTaskCheck tdsqlTaskCheck,
+        ResourceService resourceService) {
         this.tdsqlService = tdsqlService;
         this.tdsqlTaskCheck = tdsqlTaskCheck;
+        this.resourceService = resourceService;
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+            Collections.singletonList(resource.getUuid()));
+        dependencies.put(DatabaseConstants.AGENTS, agents);
+        resource.setDependencies(dependencies);
+        return true;
     }
 
     /**
@@ -127,23 +145,23 @@ public class TdsqlInstanceProvider implements ResourceProvider {
         conditions.setResourceType(ResourceSubTypeEnum.TDSQL_CLUSTERINSTANCE.getType());
         conditions.setConditions(JsonUtil.json(tdsqlInstance));
         ProtectedEnvironment clusterEnv = tdsqlService.getClusterEnv(resource);
-        PageListResponse<ProtectedResource> detailPageList =
-            tdsqlService.getBrowseResult(conditions, clusterEnv);
+        PageListResponse<ProtectedResource> detailPageList = tdsqlService.getBrowseResult(conditions, clusterEnv);
         if (detailPageList.getRecords().size() == 0) {
             throw new LegoCheckedException(TdsqlConstant.NO_DATA_NODE_INFO, "browse compute node zero");
         }
 
         // 和下发的请求中节点数做对比
-        String clusterInstance =
-            detailPageList.getRecords().get(0).getExtendInfo().get(TdsqlConstant.CLUSTER_INSTANCE_INFO);
+        String clusterInstance = detailPageList.getRecords()
+            .get(0)
+            .getExtendInfo()
+            .get(TdsqlConstant.CLUSTER_INSTANCE_INFO);
         TdsqlInstance instanceFromEnv = JsonUtil.read(clusterInstance, TdsqlInstance.class);
         if (instanceFromEnv.getGroups().size() == 0) {
             throw new LegoCheckedException(TdsqlConstant.NO_DATA_NODE_INFO, "browse compute node zero");
         }
         int dataNodeNum = getDataNodeNumber(BeanTools.copy(resource, ProtectedEnvironment::new));
         if (!(dataNodeNum == instanceFromEnv.getGroups().get(0).getDataNodes().size())) {
-            throw new LegoCheckedException(TdsqlConstant.MISSING_DATA_NODE,
-                "Instance dataNodes number does not match");
+            throw new LegoCheckedException(TdsqlConstant.MISSING_DATA_NODE, "Instance dataNodes number does not match");
         }
 
         // 校验单个数据节点：ip port 调用agent校验服务状态
@@ -166,9 +184,9 @@ public class TdsqlInstanceProvider implements ResourceProvider {
      */
     private void checkNodeParam(ProtectedResource resource) {
         log.info("start check dataNode");
-        List<DataNode> dataNodes =
-            Optional.ofNullable(tdsqlService.getInstanceDataNodes(BeanTools.copy(resource, ProtectedEnvironment::new)))
-                .orElseGet(ArrayList::new);
+        List<DataNode> dataNodes = Optional.ofNullable(
+                tdsqlService.getInstanceDataNodes(BeanTools.copy(resource, ProtectedEnvironment::new)))
+            .orElseGet(ArrayList::new);
         dataNodes.forEach(dataNode -> {
             checkDataNodePart1(dataNode);
             checkDataNodePart2(dataNode);

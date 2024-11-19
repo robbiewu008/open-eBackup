@@ -12,9 +12,8 @@
 */
 package openbackup.openstack.adapter.service;
 
-import openbackup.openstack.adapter.dto.OpenStackCopyDto;
-
 import lombok.extern.slf4j.Slf4j;
+import openbackup.openstack.adapter.dto.OpenStackCopyDto;
 
 import org.springframework.stereotype.Component;
 

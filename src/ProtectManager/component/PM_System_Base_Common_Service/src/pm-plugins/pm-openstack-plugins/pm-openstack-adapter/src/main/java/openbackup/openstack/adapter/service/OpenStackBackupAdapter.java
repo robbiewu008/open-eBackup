@@ -12,6 +12,10 @@
 */
 package openbackup.openstack.adapter.service;
 
+import com.huawei.oceanprotect.sla.sdk.dto.SlaDto;
+import com.huawei.oceanprotect.sla.sdk.enums.PolicyAction;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.openstack.adapter.constants.OpenStackConstants;
 import openbackup.openstack.adapter.dto.JobScheduleDto;
@@ -19,17 +23,12 @@ import openbackup.openstack.adapter.dto.OpenStackBackupJobDto;
 import openbackup.openstack.adapter.enums.OpenStackJobType;
 import openbackup.openstack.adapter.generator.OpenStackModelsGenerator;
 import openbackup.openstack.adapter.generator.ProtectionGenerator;
-import com.huawei.oceanprotect.sla.sdk.dto.SlaDto;
-import com.huawei.oceanprotect.sla.sdk.enums.PolicyAction;
-
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.enums.ProtectionStatusEnum;
 import openbackup.system.base.sdk.resource.model.ProtectedObjectInfo;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;

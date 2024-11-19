@@ -12,11 +12,13 @@
 */
 package openbackup.mysql.resources.access.provider;
 
+import static java.util.Collections.singletonList;
 import static openbackup.database.base.plugin.common.DatabaseConstants.CLUSTER_TYPE;
 import static openbackup.database.base.plugin.common.DatabaseConstants.LINK_STATUS_KEY;
 import static openbackup.database.base.plugin.common.DatabaseConstants.VERSION;
-import static java.util.Collections.singletonList;
 
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.provider.AbstractResourceScanProvider;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
@@ -42,9 +44,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ProtectionBatchOperationReq;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;

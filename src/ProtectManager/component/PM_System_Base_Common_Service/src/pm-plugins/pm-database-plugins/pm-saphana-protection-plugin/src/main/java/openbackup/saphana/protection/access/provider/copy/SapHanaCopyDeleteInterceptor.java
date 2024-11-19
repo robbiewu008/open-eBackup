@@ -14,6 +14,9 @@ package openbackup.saphana.protection.access.provider.copy;
 
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
+import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
+import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
+import openbackup.data.protection.access.provider.sdk.copy.DeleteCopyTask;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.interceptor.AbstractDbCopyDeleteInterceptor;
 import openbackup.system.base.sdk.copy.CopyRestApi;
@@ -41,8 +44,14 @@ public class SapHanaCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercepto
     }
 
     @Override
-    protected List<String> getCopiesCopyTypeIsCumulativeIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
-        // 删除下一个全量副本前所有副本
-        return CopyUtil.getCopyUuidsBetweenTwoCopy(copies, thisCopy, nextFullCopy);
+    protected boolean shouldSupplyAgent(DeleteCopyTask task, CopyInfoBo copy) {
+        return false;
+    }
+
+    @Override
+    protected List<String> getCopiesCopyTypeIsDifferenceIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
+        // 删除下一个全量副本前所有增量副本
+        List<Copy> differenceCopies = CopyUtil.getCopiesByCopyType(copies, BackupTypeConstants.DIFFERENCE_INCREMENT);
+        return CopyUtil.getCopyUuidsBetweenTwoCopy(differenceCopies, thisCopy, nextFullCopy);
     }
 }

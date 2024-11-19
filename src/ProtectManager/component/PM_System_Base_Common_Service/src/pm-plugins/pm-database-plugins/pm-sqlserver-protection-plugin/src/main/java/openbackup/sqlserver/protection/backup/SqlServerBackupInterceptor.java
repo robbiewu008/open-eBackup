@@ -12,6 +12,9 @@
 */
 package openbackup.sqlserver.protection.backup;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
@@ -25,7 +28,6 @@ import openbackup.data.protection.access.provider.sdk.util.TaskUtil;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.sqlserver.protection.service.SqlServerBaseService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
@@ -36,8 +38,6 @@ import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.model.job.request.QueryJobRequest;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

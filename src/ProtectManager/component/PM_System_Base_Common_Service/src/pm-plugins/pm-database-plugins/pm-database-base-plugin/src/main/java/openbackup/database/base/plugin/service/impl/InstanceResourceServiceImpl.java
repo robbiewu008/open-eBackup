@@ -13,6 +13,9 @@
 package openbackup.database.base.plugin.service.impl;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
@@ -44,9 +47,6 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.StreamUtil;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
@@ -224,7 +224,8 @@ public class InstanceResourceServiceImpl implements InstanceResourceService {
             .forEach(childNode -> buildClusterNodeRole(childNode, appEnvMap));
     }
 
-    private AppEnvResponse queryClusterInstanceNodeRoleByAgent(ProtectedResource resource) {
+    @Override
+    public AppEnvResponse queryClusterInstanceNodeRoleByAgent(ProtectedResource resource) {
         ProtectedResource subInstance = getSubInstance(resource);
         AppEnv appEnv = buildAppEnv(resource, subInstance);
         Application application = buildApplication(resource, subInstance);

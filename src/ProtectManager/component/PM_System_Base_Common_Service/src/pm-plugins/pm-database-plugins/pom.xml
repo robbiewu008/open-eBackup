@@ -46,6 +46,8 @@
         <module>pm-tidb-protection-plugin</module>
         <module>pm-exchange-protection-plugin</module>
         <module>pm-saphana-protection-plugin</module>
+        <module>pm-eccoracle-protection-plugin</module>
+        <module>pm-antdb-protection-plugin</module>
     </modules>
 
     <artifactId>pm-database-plugins</artifactId>

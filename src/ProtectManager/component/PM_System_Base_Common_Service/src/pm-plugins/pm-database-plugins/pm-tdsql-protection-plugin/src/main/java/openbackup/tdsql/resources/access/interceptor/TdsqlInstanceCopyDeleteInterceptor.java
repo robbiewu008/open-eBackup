@@ -23,6 +23,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.interceptor.AbstractDbCopyDeleteInterceptor;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
+import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import lombok.extern.slf4j.Slf4j;
@@ -71,6 +72,11 @@ public class TdsqlInstanceCopyDeleteInterceptor extends AbstractDbCopyDeleteInte
      */
     @Override
     protected List<String> getCopiesCopyTypeIsFull(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
+        if (Objects.equals(thisCopy.getGeneratedBy(), CopyGeneratedByEnum.BY_CLOUD_ARCHIVE.value())
+            || Objects.equals(thisCopy.getGeneratedBy(), CopyGeneratedByEnum.BY_TAPE_ARCHIVE.value())) {
+            return getAssociatedTypeCopiesByBackup(copies, thisCopy, nextFullCopy, Collections.singletonList(LOG));
+        }
+
         Optional<Copy> latestLogBackupCopy = copyRestApi.queryLatestFullBackupCopies(thisCopy.getResourceId(),
             thisCopy.getGn(), BackupTypeEnum.LOG.getAbbreviation());
         if (latestLogBackupCopy.isPresent()) {

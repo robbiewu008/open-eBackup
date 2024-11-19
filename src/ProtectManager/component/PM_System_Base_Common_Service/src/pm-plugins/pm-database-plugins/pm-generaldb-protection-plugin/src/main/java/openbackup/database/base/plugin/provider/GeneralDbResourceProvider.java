@@ -12,6 +12,7 @@
 */
 package openbackup.database.base.plugin.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceReq;
@@ -38,8 +39,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.StreamUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
@@ -137,6 +136,16 @@ public class GeneralDbResourceProvider implements ResourceProvider {
         updateCheckAfterSupport(resource, confMap);
         // 恢复要删除的dependency
         Optional.ofNullable(resource.getDependencies()).ifPresent(e -> e.putAll(toDeleteDependencies));
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> hosts = resourceService.queryDependencyResources(true,
+            GeneralDbConstant.DEPENDENCY_HOST_KEY, Collections.singletonList(resource.getUuid()));
+        dependencies.put(GeneralDbConstant.DEPENDENCY_HOST_KEY, hosts);
+        resource.setDependencies(dependencies);
+        return true;
     }
 
     private Map<String, List<ProtectedResource>> excludeToBeDeleteDependency(ProtectedResource resource) {
@@ -422,6 +431,7 @@ public class GeneralDbResourceProvider implements ResourceProvider {
             .stream()
             .filter(e -> resource.getName().equalsIgnoreCase(e.getName()))
             .filter(e -> isResourceInDbContainsHost(e, hosts))
+            .filter(e -> script.equals(GeneralDbConstant.EXTEND_SCRIPT_VAL_SAPHANA) && isSameSystemId(resource, e))
             .map(ResourceBase::getUuid)
             .collect(Collectors.toSet());
         // 修改场景需要移除自身
@@ -526,5 +536,13 @@ public class GeneralDbResourceProvider implements ResourceProvider {
                         "This general database is registered in sap hana databases.");
             }
         }
+    }
+
+    private boolean isSameSystemId(ProtectedResource resourceA, ProtectedResource resourceB) {
+        String sidA = GeneralDbUtil.getSystemIdFromCustomParams(
+                resourceA.getExtendInfoByKey(GeneralDbConstant.EXTEND_CUSTOM_PARAM));
+        String sidB = GeneralDbUtil.getSystemIdFromCustomParams(
+                resourceB.getExtendInfoByKey(GeneralDbConstant.EXTEND_CUSTOM_PARAM));
+        return sidA.equals(sidB);
     }
 }

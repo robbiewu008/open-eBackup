@@ -12,6 +12,13 @@
 */
 package openbackup.postgre.protection.access.provider.restore;
 
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.CheckAppReq;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.NodeInfo;
+import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
@@ -44,8 +51,7 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.StreamUtil;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -68,6 +74,8 @@ public class PostgreInstanceRestoreProvider extends AbstractDbRestoreInterceptor
 
     private final ProtectedEnvironmentService protectedEnvironmentService;
 
+    private final AgentUnifiedService agentUnifiedService;
+
     private final CopyRestApi copyRestApi;
 
     /**
@@ -75,12 +83,15 @@ public class PostgreInstanceRestoreProvider extends AbstractDbRestoreInterceptor
      *
      * @param postgreInstanceService postgre实例业务类
      * @param protectedEnvironmentService protected environment service
+     * @param agentUnifiedService agent unified service
      * @param copyRestApi copy REST API
      */
     public PostgreInstanceRestoreProvider(PostgreInstanceService postgreInstanceService,
-        ProtectedEnvironmentService protectedEnvironmentService, CopyRestApi copyRestApi) {
+        ProtectedEnvironmentService protectedEnvironmentService, AgentUnifiedService agentUnifiedService,
+        CopyRestApi copyRestApi) {
         this.postgreInstanceService = postgreInstanceService;
         this.protectedEnvironmentService = protectedEnvironmentService;
+        this.agentUnifiedService = agentUnifiedService;
         this.copyRestApi = copyRestApi;
     }
 
@@ -207,8 +218,8 @@ public class PostgreInstanceRestoreProvider extends AbstractDbRestoreInterceptor
         Map<String, String> advancedParams = Optional.ofNullable(task.getAdvanceParams()).orElse(new HashMap<>());
         advancedParams.put(PostgreConstants.RESTORE_MODE_KEY, task.getRestoreMode());
         task.setAdvanceParams(advancedParams);
-        log.info("PostgreSQL restore target object uuid: {}, copy id: {}, mode: {}.",
-            task.getTargetObject().getUuid(), task.getCopyId(), task.getRestoreMode());
+        log.info("PostgreSQL restore target object uuid: {}, copy id: {}, mode: {}.", task.getTargetObject().getUuid(),
+            task.getCopyId(), task.getRestoreMode());
     }
 
     /**
@@ -226,6 +237,8 @@ public class PostgreInstanceRestoreProvider extends AbstractDbRestoreInterceptor
         ResourceEntity resource = JSONObject.fromObject(copy.getResourceProperties()).toBean(ResourceEntity.class);
         // 添加副本的数据库版本号
         advancedParams.put(PostgreConstants.COPY_PROTECT_OBJECT_VERSION_KEY, resource.getVersion());
+        // 后置任务所有节点都执行
+        advancedParams.put(DatabaseConstants.MULTI_POST_JOB, Boolean.TRUE.toString());
         task.setAdvanceParams(advancedParams);
     }
 
@@ -242,13 +255,11 @@ public class PostgreInstanceRestoreProvider extends AbstractDbRestoreInterceptor
             agents.add(new Endpoint(environment.getUuid(), environment.getEndpoint(), environment.getPort()));
         } else {
             Map<String, List<ProtectedResource>> dependencies = environment.getDependencies();
-            agents.addAll(
-                dependencies.get(DatabaseConstants.AGENTS)
-                    .stream()
-                    .flatMap(StreamUtil.match(ProtectedEnvironment.class))
-                    .map(env -> new Endpoint(env.getUuid(), env.getEndpoint(), env.getPort()))
-                    .collect(Collectors.toList())
-            );
+            agents.addAll(dependencies.get(DatabaseConstants.AGENTS)
+                .stream()
+                .flatMap(StreamUtil.match(ProtectedEnvironment.class))
+                .map(env -> new Endpoint(env.getUuid(), env.getEndpoint(), env.getPort()))
+                .collect(Collectors.toList()));
         }
         task.setAgents(agents);
     }
@@ -265,12 +276,14 @@ public class PostgreInstanceRestoreProvider extends AbstractDbRestoreInterceptor
             .collect(Collectors.toList());
         ProtectedResource clusterInstResource = postgreInstanceService.getResourceById(
             task.getTargetObject().getUuid());
-        List<TaskResource> subTaskResources = clusterInstResource.getDependencies().get(DatabaseConstants.CHILDREN)
-            .stream().map(childNode -> BeanTools.copy(childNode, TaskResource::new))
+        List<TaskResource> subTaskResources = clusterInstResource.getDependencies()
+            .get(DatabaseConstants.CHILDREN)
+            .stream()
+            .map(childNode -> BeanTools.copy(childNode, TaskResource::new))
             .collect(Collectors.toList());
-        Map<String, String> hostIdRoleMap = subTaskResources.stream().collect(Collectors.toMap(
-            subInstance -> subInstance.getExtendInfo().get(DatabaseConstants.HOST_ID),
-            subInstance -> subInstance.getExtendInfo().get(DatabaseConstants.ROLE)));
+        Map<String, String> hostIdRoleMap = subTaskResources.stream()
+            .collect(Collectors.toMap(subInstance -> subInstance.getExtendInfo().get(DatabaseConstants.HOST_ID),
+                subInstance -> subInstance.getExtendInfo().get(DatabaseConstants.ROLE)));
         for (ProtectedEnvironment env : environments) {
             env.getExtendInfo().put(DatabaseConstants.ROLE, hostIdRoleMap.get(env.getUuid()));
         }
@@ -314,8 +327,9 @@ public class PostgreInstanceRestoreProvider extends AbstractDbRestoreInterceptor
      * @param task 恢复任务
      */
     private void setRestoreTaskTargetEnvExtendInfo(RestoreTask task) {
-        task.getTargetEnv().getExtendInfo().put(DatabaseConstants.DEPLOY_TYPE,
-            getTargetObjectDeployType(task.getTargetObject().getSubType()));
+        task.getTargetEnv()
+            .getExtendInfo()
+            .put(DatabaseConstants.DEPLOY_TYPE, getTargetObjectDeployType(task.getTargetObject().getSubType()));
     }
 
     /**
@@ -327,8 +341,7 @@ public class PostgreInstanceRestoreProvider extends AbstractDbRestoreInterceptor
         String deployType = getTargetObjectDeployType(task.getTargetObject().getSubType());
         Map<String, String> targetObjectExtendInfo = task.getTargetObject().getExtendInfo();
         targetObjectExtendInfo.put(DatabaseConstants.DEPLOY_TYPE, deployType);
-        ProtectedResource resource = postgreInstanceService.getResourceById(
-            task.getTargetObject().getUuid());
+        ProtectedResource resource = postgreInstanceService.getResourceById(task.getTargetObject().getUuid());
         targetObjectExtendInfo.put(DatabaseConstants.VERSION, resource.getVersion());
         targetObjectExtendInfo.put(PostgreConstants.DB_OS_USER_KEY,
             resource.getExtendInfoByKey(PostgreConstants.DB_OS_USER_KEY));
@@ -349,8 +362,20 @@ public class PostgreInstanceRestoreProvider extends AbstractDbRestoreInterceptor
      * @return 子实例信息列表
      */
     private List<TaskResource> buildTaskResourceBySubObjects(ProtectedResource clusterInstResource) {
-        List<TaskResource> subTaskResources = clusterInstResource.getDependencies().get(DatabaseConstants.CHILDREN)
-            .stream().map(childNode -> BeanTools.copy(childNode, TaskResource::new))
+        String installDeployType = clusterInstResource.getExtendInfo().get(PostgreConstants.INSTALL_DEPLOY_TYPE);
+        if (StringUtils.equals(installDeployType, PostgreConstants.CLUP)) {
+            ProtectedEnvironment clusterEnvironment = protectedEnvironmentService.getEnvironmentById(
+                clusterInstResource.getParentUuid());
+            Map<String, List<NodeInfo>> appEnvMap = queryClusterInstanceNodeRoleByClupServer(clusterInstResource,
+                clusterEnvironment);
+            clusterInstResource.getDependencies()
+                .get(DatabaseConstants.CHILDREN)
+                .forEach(childNode -> buildClusterNodeRole(childNode, appEnvMap));
+        }
+        List<TaskResource> subTaskResources = clusterInstResource.getDependencies()
+            .get(DatabaseConstants.CHILDREN)
+            .stream()
+            .map(childNode -> BeanTools.copy(childNode, TaskResource::new))
             .collect(Collectors.toList());
         for (TaskResource subResource : subTaskResources) {
             if (subResource.getExtendInfo().containsKey(DatabaseConstants.HOST_ID)) {
@@ -360,5 +385,39 @@ public class PostgreInstanceRestoreProvider extends AbstractDbRestoreInterceptor
             }
         }
         return subTaskResources;
+    }
+
+    private Map<String, List<NodeInfo>> queryClusterInstanceNodeRoleByClupServer(ProtectedResource resource,
+        ProtectedEnvironment environment) {
+        CheckAppReq checkAppReq = buildCheckAppReq(resource);
+        List<ProtectedResource> clupServers = environment.getDependencies().get(PostgreConstants.CLUP_SERVERS);
+        ProtectedEnvironment clupServerEnvironment = protectedEnvironmentService.getEnvironmentById(
+            clupServers.get(IsmNumberConstant.ZERO).getUuid());
+        AppEnvResponse clusterInstanceInfo = agentUnifiedService.getClusterInfo(
+            ResourceSubTypeEnum.POSTGRE_CLUSTER_INSTANCE.getType(), clupServerEnvironment, checkAppReq, false);
+        return clusterInstanceInfo.getNodes().stream().collect(Collectors.groupingBy(NodeInfo::getEndpoint));
+    }
+
+    private CheckAppReq buildCheckAppReq(ProtectedResource resource) {
+        AppEnv appEnv = BeanTools.copy(resource, AppEnv::new);
+        appEnv.setSubType((ResourceSubTypeEnum.POSTGRE_CLUSTER_INSTANCE.getType()));
+        CheckAppReq checkAppReq = new CheckAppReq();
+        checkAppReq.setAppEnv(appEnv);
+        Application application = BeanTools.copy(resource, Application::new);
+        application.setSubType(resource.getSubType());
+        if (VerifyUtil.isEmpty(application.getAuth())) {
+            application.setAuth(resource.getAuth());
+        }
+        checkAppReq.setApplication(application);
+        return checkAppReq;
+    }
+
+    private void buildClusterNodeRole(ProtectedResource childNode, Map<String, List<NodeInfo>> appEnvMap) {
+        NodeInfo nodeInfo = appEnvMap.get(childNode.getExtendInfoByKey(DatabaseConstants.SERVICE_IP))
+            .get(IsmNumberConstant.ZERO);
+        Map<String, String> extendInfo = nodeInfo.getExtendInfo();
+        String role = StringUtils.equals(MapUtils.getString(extendInfo, PostgreConstants.IS_PRIMARY),
+            PostgreConstants.PRIMARY) ? PostgreConstants.PRIMARY : PostgreConstants.SLAVE;
+        childNode.getExtendInfo().put(DatabaseConstants.ROLE, role);
     }
 }

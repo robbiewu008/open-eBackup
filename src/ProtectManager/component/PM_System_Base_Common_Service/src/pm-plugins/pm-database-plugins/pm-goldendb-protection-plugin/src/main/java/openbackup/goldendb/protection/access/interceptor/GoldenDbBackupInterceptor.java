@@ -12,10 +12,16 @@
 */
 package openbackup.goldendb.protection.access.interceptor;
 
+import com.google.common.collect.Maps;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.HostDto;
+import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
+import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.enums.CopyFormatEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
@@ -23,25 +29,26 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
+import openbackup.database.base.plugin.utils.AgentDtoUtil;
 import openbackup.goldendb.protection.access.constant.GoldenDbConstant;
 import openbackup.goldendb.protection.access.dto.instance.GoldenInstance;
 import openbackup.goldendb.protection.access.provider.GoldenDBAgentProvider;
 import openbackup.goldendb.protection.access.service.GoldenDbService;
+import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 
-import com.google.common.collect.Maps;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 功能描述
@@ -58,6 +65,8 @@ public class GoldenDbBackupInterceptor extends AbstractDbBackupInterceptor {
 
     private final GoldenDBAgentProvider goldenDBAgentProvider;
 
+    private final AgentUnifiedService agentUnifiedService;
+
     /**
      * 构造器
      *
@@ -65,13 +74,16 @@ public class GoldenDbBackupInterceptor extends AbstractDbBackupInterceptor {
      * @param goldenDbTaskCheck goldenDbTaskCheck
      * @param resourceService resourceService
      * @param goldenDBAgentProvider goldenDBAgentProvider
+     * @param agentUnifiedService agentUnifiedService
      */
     public GoldenDbBackupInterceptor(GoldenDbService goldenDbService, GoldenDbTaskCheck goldenDbTaskCheck,
-        ResourceService resourceService, GoldenDBAgentProvider goldenDBAgentProvider) {
+        ResourceService resourceService, GoldenDBAgentProvider goldenDBAgentProvider,
+        AgentUnifiedService agentUnifiedService) {
         this.goldenDbService = goldenDbService;
         this.goldenDbTaskCheck = goldenDbTaskCheck;
         this.resourceService = resourceService;
         this.goldenDBAgentProvider = goldenDBAgentProvider;
+        this.agentUnifiedService = agentUnifiedService;
     }
 
     @Override
@@ -151,5 +163,31 @@ public class GoldenDbBackupInterceptor extends AbstractDbBackupInterceptor {
         resource.setExtendInfoByKey(GoldenDbConstant.CLUSTER_INFO, JsonUtil.json(instance));
         resourceService.updateSourceDirectly(Collections.singletonList(resource));
         return backupTask;
+    }
+
+    @Override
+    protected void supplyNodes(BackupTask backupTask) {
+        List<Endpoint> agents = backupTask.getAgents();
+        if (CollectionUtils.isEmpty(agents)) {
+            return;
+        }
+        List<HostDto> hostDtoList = new ArrayList<>();
+        for (Endpoint agent : agents) {
+            try {
+                HostDto host = agentUnifiedService.getHost(agent.getIp(), agent.getPort());
+                log.info("job id: {}, agent: {}, id: {}, is online", backupTask.getTaskId(), agent.getIp(),
+                    agent.getId());
+                hostDtoList.add(host);
+            } catch (LegoCheckedException e) {
+                log.warn("job id: {}, agent: {}, is offline", backupTask.getTaskId(), agent.getIp());
+            }
+        }
+        List<TaskEnvironment> hostList = hostDtoList.stream()
+            .map(AgentDtoUtil::toTaskEnvironment)
+            .collect(Collectors.toList());
+        if (backupTask.getProtectEnv() == null) {
+            return;
+        }
+        backupTask.getProtectEnv().setNodes(hostList);
     }
 }

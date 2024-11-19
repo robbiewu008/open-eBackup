@@ -268,6 +268,11 @@ public class DatabaseConstants {
     public static final String VERSION = "version";
 
     /**
+     * 版本
+     */
+    public static final String ORACLE_VERSION = "database_version";
+
+    /**
      * 分片节点数
      */
     public static final String NODE_COUNT = "nodeCount";

@@ -12,6 +12,12 @@
 */
 package openbackup.oceanbase.provider;
 
+import com.huawei.oceanprotect.system.base.user.common.utils.IpCheckUtil;
+
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.util.EnvironmentParamCheckUtil;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
@@ -38,12 +44,6 @@ import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
-import com.huawei.oceanprotect.system.base.user.common.utils.IpCheckUtil;
-
-import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;

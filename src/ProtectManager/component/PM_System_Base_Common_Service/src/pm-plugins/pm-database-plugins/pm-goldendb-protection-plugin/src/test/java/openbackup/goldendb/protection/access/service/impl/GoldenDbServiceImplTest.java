@@ -29,6 +29,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.goldendb.protection.access.dto.cluster.Node;
 import openbackup.goldendb.protection.access.dto.instance.Gtm;
 import openbackup.goldendb.protection.access.dto.instance.MysqlNode;
+
 import com.huawei.oceanprotect.job.sdk.JobService;
 
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -68,7 +69,7 @@ public class GoldenDbServiceImplTest {
 
     @Before
     public void setUp() {
-        goldenDbServiceImplUnderTest = new GoldenDbServiceImpl(mockResourceService,agentUnifiedService,
+        goldenDbServiceImplUnderTest = new GoldenDbServiceImpl(mockResourceService, agentUnifiedService,
             mockJobService);
     }
 
@@ -129,10 +130,12 @@ public class GoldenDbServiceImplTest {
         AgentBaseDto agentBaseDto = new AgentBaseDto();
         agentBaseDto.setErrorCode("0");
         agentBaseDto.setErrorMessage("errorMessage");
-        boolean result = goldenDbServiceImplUnderTest.singleConnectCheck(getMysqlNode(), getInstanceEnvironment());
+        boolean result = goldenDbServiceImplUnderTest.singleConnectCheck(getMysqlNode(), getInstanceEnvironment())
+            .isAgentBaseDtoReturnSuccess();
         Assert.assertEquals(result, true);
         agentBaseDto.setErrorCode("1");
-        boolean result1 = goldenDbServiceImplUnderTest.singleConnectCheck(getMysqlNode(), getInstanceEnvironment());
+        boolean result1 = goldenDbServiceImplUnderTest.singleConnectCheck(getMysqlNode(), getInstanceEnvironment())
+            .isAgentBaseDtoReturnSuccess();
         Assert.assertEquals(result1, false);
     }
 
@@ -247,8 +250,7 @@ public class GoldenDbServiceImplTest {
         pageListResponse.setRecords(Arrays.asList(jobBo));
 
         // Optional<JobBo> optionalJobBo = Optional.of(jobBo);
-        PowerMockito.when(mockJobService.queryJobs(any(QueryJobRequest.class),
-            any(PagingParamRequest.class),
+        PowerMockito.when(mockJobService.queryJobs(any(QueryJobRequest.class), any(PagingParamRequest.class),
             any(SortingParamRequest.class), nullable(String.class))).thenReturn(pageListResponse);
         String jobId = goldenDbServiceImplUnderTest.queryLatestJob("666", "BACKUP").get().getJobId();
         Assert.assertEquals(jobId, "666");

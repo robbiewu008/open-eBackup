@@ -12,9 +12,8 @@
 */
 package openbackup.openstack.adapter.exception;
 
-import openbackup.system.base.common.exception.ErrorResponse;
-
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.exception.ErrorResponse;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice("com.huawei.oceanprotect.openstack.adapter.controller")
+@RestControllerAdvice("openbackup.openstack.adapter.controller")
 public class OpenStackExceptionHandler {
     /**
      * 处理OpenStackException

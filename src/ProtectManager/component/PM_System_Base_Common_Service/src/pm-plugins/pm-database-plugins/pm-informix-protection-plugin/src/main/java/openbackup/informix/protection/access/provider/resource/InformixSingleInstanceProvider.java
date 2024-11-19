@@ -15,13 +15,21 @@ package openbackup.informix.protection.access.provider.resource;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceFeature;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.service.InstanceResourceService;
 import openbackup.informix.protection.access.service.InformixService;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * informix单实例注册provider
@@ -33,6 +41,8 @@ public class InformixSingleInstanceProvider implements ResourceProvider {
     private final InformixService informixService;
     private final InstanceResourceService instanceResourceService;
 
+    private ResourceService resourceService;
+
     /**
      * InformixSingleInstanceProvider
      *
@@ -43,6 +53,11 @@ public class InformixSingleInstanceProvider implements ResourceProvider {
             InformixService informixService, InstanceResourceService instanceResourceService) {
         this.informixService = informixService;
         this.instanceResourceService = instanceResourceService;
+    }
+
+    @Autowired
+    public void setResourceService(ResourceService resourceService) {
+        this.resourceService = resourceService;
     }
 
     /**
@@ -100,5 +115,15 @@ public class InformixSingleInstanceProvider implements ResourceProvider {
     @Override
     public void healthCheck(ProtectedResource resource) {
         instanceResourceService.healthCheckSingleInstance(resource);
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+            Collections.singletonList(resource.getUuid()));
+        dependencies.put(DatabaseConstants.AGENTS, agents);
+        resource.setDependencies(dependencies);
+        return true;
     }
 }

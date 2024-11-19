@@ -12,6 +12,10 @@
 */
 package openbackup.obs.plugin.service.impl;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+import com.huawei.oceanprotect.repository.tapelibrary.common.util.JsonUtil;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.AgentBusinessService;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.access.framework.resource.service.provider.UnifiedResourceConnectionChecker;
@@ -22,17 +26,12 @@ import openbackup.data.protection.access.provider.sdk.resource.CheckResult;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.obs.plugin.common.constants.EnvironmentConstant;
-import com.huawei.oceanprotect.repository.tapelibrary.common.util.JsonUtil;
-
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.SymbolConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

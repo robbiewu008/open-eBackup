@@ -12,6 +12,10 @@
 */
 package openbackup.db2.protection.access.provider.copy;
 
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.ImmutableList;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dme.AvailableTimeRanges;
 import openbackup.data.access.framework.copy.mng.service.CopyService;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
@@ -44,11 +48,6 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.OpServiceUtil;
-
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.ImmutableList;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

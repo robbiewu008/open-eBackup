@@ -12,6 +12,8 @@
 */
 package openbackup.database.base.plugin.provider;
 
+import com.google.common.collect.Maps;
+
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -39,8 +41,6 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.EnumUtil;
-
-import com.google.common.collect.Maps;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;

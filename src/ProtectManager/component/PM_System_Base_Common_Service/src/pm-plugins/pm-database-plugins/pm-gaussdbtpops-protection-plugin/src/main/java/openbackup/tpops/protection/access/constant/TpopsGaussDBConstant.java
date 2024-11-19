@@ -88,6 +88,11 @@ public class TpopsGaussDBConstant {
     public static final String EXTEND_INFO_VALUE_INSTANCE_OFFLINE = "0";
 
     /**
+     * GaussDb集群的使用状态 扩展信息 extendInfo 中 实例状态为异常时 的 Key 名称
+     */
+    public static final String EXTEND_INFO_VALUE_INSTANCE_ABNORMAL = "2";
+
+    /**
      * GaussDb 实例查询状态 表示实例正常
      */
     public static final String NORMAL_VALUE_STATE = "ACTIVE";
@@ -143,6 +148,11 @@ public class TpopsGaussDBConstant {
     public static final String EXTEND_INFO_KEY_GAUSSDB_USER = "gaussdbUser";
 
     /**
+     * 副本扩展信息中的extendInfo key 值 CAN_RESTORE
+     */
+    public static final String CAN_RESTORE = "canRestore";
+
+    /**
      * python 传递的key BACKUP_TOOL_TYPE
      */
     public static final String ADVANCE_PARAMS_KEY_BACKUP_TOOL_TYPE = "backup_tool_type";
@@ -186,4 +196,9 @@ public class TpopsGaussDBConstant {
      * 资源不支持恢复
      */
     public static final String DATABASE_RESTORE_FAIL_NOT_ALLOW_LABEL = "database_restore_not_allow_restore_label";
+
+    /**
+     * FALSE字符串
+     */
+    public static final String FALSE = "false";
 }

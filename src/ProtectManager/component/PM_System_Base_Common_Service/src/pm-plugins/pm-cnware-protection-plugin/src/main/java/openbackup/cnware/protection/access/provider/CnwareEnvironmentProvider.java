@@ -12,6 +12,14 @@
 */
 package openbackup.cnware.protection.access.provider;
 
+import com.huawei.oceanprotect.system.base.cert.common.constants.CertErrorCode;
+import com.huawei.oceanprotect.system.base.cert.util.CertFileUtil;
+import com.huawei.oceanprotect.system.base.cert.util.CertUtil;
+
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.cnware.protection.access.constant.CnwareConstant;
 import openbackup.cnware.protection.access.dto.ResourceScanParam;
@@ -30,9 +38,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceBase;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import com.huawei.oceanprotect.system.base.cert.common.constants.CertErrorCode;
-import com.huawei.oceanprotect.system.base.cert.util.CertFileUtil;
-import com.huawei.oceanprotect.system.base.cert.util.CertUtil;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -43,11 +48,6 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.DefaultRoleHelper;
 import openbackup.system.base.util.OptionalUtil;
-
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -138,7 +138,7 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
         checkAndPrepareParam(environment);
 
         // 获取agent环境信息列表
-        List<ProtectedEnvironment> agentEnvList = getAgentEnvrionment(environment);
+        List<ProtectedEnvironment> agentEnvList = getAgentEnvironment(environment);
 
         // 检查连通性
         checkConnectivity(environment, agentEnvList);
@@ -274,7 +274,7 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
         env.setExtendInfo(extendInfo);
     }
 
-    private List<ProtectedEnvironment> getAgentEnvrionment(ProtectedEnvironment environment) {
+    private List<ProtectedEnvironment> getAgentEnvironment(ProtectedEnvironment environment) {
         log.info("Start to get agent info of environment: {}", environment.getUuid());
         List<ProtectedResource> agents = environment.getDependencies().get(CnwareConstant.AGENTS);
         if (VerifyUtil.isEmpty(agents)) {
@@ -284,8 +284,8 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
         for (ProtectedResource agent : agents) {
             try {
                 ProtectedEnvironment agentEnv = cnwareCommonService.getEnvironmentById(agent.getUuid());
-                if (VerifyUtil.isEmpty(agents)) {
-                    throw new LegoCheckedException(CommonErrorCode.AGENT_NOT_EXIST, "Get agent enviroment failed.");
+                if (VerifyUtil.isEmpty(agentEnv)) {
+                    throw new LegoCheckedException(CommonErrorCode.AGENT_NOT_EXIST, "Get agent environment failed.");
                 }
                 agentsEnvList.add(agentEnv);
             } catch (LegoCheckedException e) {
@@ -371,7 +371,7 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
      */
     @Override
     public void validate(ProtectedEnvironment environment) {
-        List<ProtectedEnvironment> agentEnvList = getAgentEnvrionment(environment);
+        List<ProtectedEnvironment> agentEnvList = getAgentEnvironment(environment);
         checkConnectivity(environment, agentEnvList);
     }
 

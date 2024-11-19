@@ -127,6 +127,11 @@ public class TidbTableProvider implements ResourceProvider {
             resource.getName(), resource.getParentUuid());
     }
 
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        return true;
+    }
+
     private void checkUpdateTablespaceIsRegistered(ProtectedResource resource) {
         ProtectedResource oldTablespace = tidbService.getResourceByCondition(resource.getUuid());
         List<String> oldTablespaceList = JsonUtil.read(oldTablespace.getExtendInfoByKey(TidbConstants.TABLE_NAME),

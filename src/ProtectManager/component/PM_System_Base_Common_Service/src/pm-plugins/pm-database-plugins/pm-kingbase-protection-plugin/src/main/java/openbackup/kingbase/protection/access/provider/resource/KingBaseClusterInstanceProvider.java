@@ -12,12 +12,14 @@
 */
 package openbackup.kingbase.protection.access.provider.resource;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.service.InstanceResourceService;
 import openbackup.kingbase.protection.access.service.KingBaseService;
@@ -26,8 +28,7 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -49,11 +50,18 @@ public class KingBaseClusterInstanceProvider implements ResourceProvider {
 
     private final KingBaseService kingBaseService;
 
+    private ResourceService resourceService;
+
     public KingBaseClusterInstanceProvider(ProtectedEnvironmentService protectedEnvironmentService,
         InstanceResourceService instanceResourceService, KingBaseService kingBaseService) {
         this.protectedEnvironmentService = protectedEnvironmentService;
         this.instanceResourceService = instanceResourceService;
         this.kingBaseService = kingBaseService;
+    }
+
+    @Autowired
+    public void setResourceService(ResourceService resourceService) {
+        this.resourceService = resourceService;
     }
 
     @Override
@@ -121,5 +129,22 @@ public class KingBaseClusterInstanceProvider implements ResourceProvider {
     @Override
     public boolean applicable(ProtectedResource protectedResource) {
         return ResourceSubTypeEnum.KING_BASE_CLUSTER_INSTANCE.equalsSubType(protectedResource.getSubType());
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> children = resourceService.queryDependencyResources(true, DatabaseConstants.CHILDREN,
+            Collections.singletonList(resource.getUuid()));
+        for (ProtectedResource child : children) {
+            Map<String, List<ProtectedResource>> childDependencies = new HashMap<>();
+            List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+                Collections.singletonList(child.getUuid()));
+            childDependencies.put(DatabaseConstants.AGENTS, agents);
+            child.setDependencies(childDependencies);
+        }
+        dependencies.put(DatabaseConstants.CHILDREN, children);
+        resource.setDependencies(dependencies);
+        return true;
     }
 }

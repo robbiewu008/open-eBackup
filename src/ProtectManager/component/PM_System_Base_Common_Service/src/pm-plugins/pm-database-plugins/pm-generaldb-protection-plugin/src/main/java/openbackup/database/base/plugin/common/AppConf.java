@@ -12,13 +12,12 @@
 */
 package openbackup.database.base.plugin.common;
 
-import openbackup.data.protection.access.provider.sdk.enums.CopyFormatEnum;
-import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.data.protection.access.provider.sdk.enums.CopyFormatEnum;
+import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
 
 import java.util.List;
 

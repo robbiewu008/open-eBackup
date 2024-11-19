@@ -12,6 +12,7 @@
 */
 package openbackup.db2.protection.access.provider.resource;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.provider.AbstractResourceScanProvider;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
@@ -32,8 +33,6 @@ import openbackup.system.base.common.utils.StringUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

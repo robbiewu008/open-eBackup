@@ -12,6 +12,8 @@
 */
 package openbackup.openstack.adapter.service;
 
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.openstack.adapter.constants.OpenStackErrorCodes;
 import openbackup.openstack.adapter.dto.OpenStackBackupJobDto;
 import openbackup.openstack.adapter.exception.OpenStackException;
@@ -26,9 +28,6 @@ import openbackup.system.base.sdk.resource.model.ProtectedObjectInfo;
 import openbackup.system.base.sdk.resource.model.ProtectionBatchOperationReq;
 import openbackup.system.base.sdk.resource.model.ProtectionCreationDto;
 import openbackup.system.base.sdk.resource.model.ProtectionModifyDto;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

@@ -16,6 +16,7 @@ import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import org.junit.Assert;
@@ -31,8 +32,10 @@ public class GaussDBTResourceProviderTest {
 
     private final PluginConfigManager pluginConfigManager = PowerMockito.mock(PluginConfigManager.class);
 
+    private final ResourceService resourceService = PowerMockito.mock(ResourceService.class);
+
     private GaussDBTResourceProvider gaussDBTResourceProvider = new GaussDBTResourceProvider(providerManager,
-        pluginConfigManager);
+        pluginConfigManager, resourceService);
 
     /**
      * 用例场景：gaussDBT类型识别

@@ -12,8 +12,12 @@
 */
 package openbackup.tpops.protection.access.provider;
 
-import openbackup.access.framework.resource.validator.JsonSchemaValidator;
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterBasicService;
+
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.access.framework.resource.validator.JsonSchemaValidator;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceV2Req;
@@ -39,10 +43,6 @@ import openbackup.system.base.util.BeanTools;
 import openbackup.tpops.protection.access.constant.TpopsGaussDBConstant;
 import openbackup.tpops.protection.access.service.TpopsGaussDBService;
 import openbackup.tpops.protection.access.util.TpopsGaussDBValidator;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -292,7 +292,9 @@ public class TpopsGaussDBClusterEnvironmentProvider extends DatabaseEnvironmentP
             ResourceSubTypeEnum.TPOPS_GAUSSDB_INSTANCE.getType(), filterConditions);
         try {
             // 扫描生产端的数据信息
-            log.info("start to scan resources");
+            log.info("start to check tpops project connection");
+            tpopsGaussDbService.checkConnention(environment);
+            log.info("start to scan tpops instance info");
             scan(environment);
         } catch (LegoCheckedException exception) {
             log.info("the status is offline");
@@ -358,9 +360,20 @@ public class TpopsGaussDBClusterEnvironmentProvider extends DatabaseEnvironmentP
         }
         Map<String, String> extendInfo = new HashMap<>(environment.getExtendInfo());
         extendInfo.put(TpopsGaussDBConstant.EXTEND_INFO_KEY_STATE, extendStatus);
-        extendInfo.put(TpopsGaussDBConstant.EXTEND_INFO_KEY_INSTANCE_STATUS, isDelete
-            ? TpopsGaussDBConstant.EXTEND_INFO_VALUE_INSTANCE_OFFLINE
-            : TpopsGaussDBConstant.EXTEND_INFO_VALUE_INSTANCE_ONLINE);
+        String instanceStatus = TpopsGaussDBConstant.EXTEND_INFO_VALUE_INSTANCE_ONLINE;
+
+        // 实例状态正常
+        if (!TpopsGaussDBConstant.NORMAL_VALUE_STATE.equals(
+            protectedResource.getExtendInfoByKey(TpopsGaussDBConstant.EXTEND_INFO_KEY_STATE))) {
+            instanceStatus = TpopsGaussDBConstant.EXTEND_INFO_VALUE_INSTANCE_ABNORMAL;
+        }
+
+        // 实例状态离线
+        if (isDelete) {
+            instanceStatus = TpopsGaussDBConstant.EXTEND_INFO_VALUE_INSTANCE_OFFLINE;
+        }
+        log.info("Get instanceStatus: {} status: {}", protectedResource.getName(), instanceStatus);
+        extendInfo.put(TpopsGaussDBConstant.EXTEND_INFO_KEY_INSTANCE_STATUS, instanceStatus);
         extendInfo.put(TpopsGaussDBConstant.REGION, protectedResource.getExtendInfo().get(TpopsGaussDBConstant.REGION));
         extendInfo.put(TpopsGaussDBConstant.DB_VERSION, protectedResource.getExtendInfo()
             .get(TpopsGaussDBConstant.DB_VERSION));

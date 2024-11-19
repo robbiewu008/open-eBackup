@@ -19,10 +19,12 @@ import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedObject;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.tdsql.resources.access.constant.TdsqlConstant;
 import openbackup.tdsql.resources.access.dto.instance.DataNode;
 import openbackup.tdsql.resources.access.dto.instance.TdsqlInstance;
@@ -34,7 +36,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,12 +54,19 @@ import java.util.Map;
 public class TdsqlInstanceProviderTest {
     @Mock
     private TdsqlService mockTdsqlService;
+
     @Mock
     private TdsqlTaskCheck mockTdsqlTaskCheck;
+
+    @Mock
+    private ResourceService mockResourceService;
+
     private TdsqlInstanceProvider tdsqlInstanceProviderUnderTest;
+
     @Before
     public void setUp() {
-        tdsqlInstanceProviderUnderTest = new TdsqlInstanceProvider(mockTdsqlService, mockTdsqlTaskCheck);
+        tdsqlInstanceProviderUnderTest = new TdsqlInstanceProvider(mockTdsqlService, mockTdsqlTaskCheck,
+            mockResourceService);
     }
 
     /**
@@ -96,6 +107,24 @@ public class TdsqlInstanceProviderTest {
         Assert.assertFalse(result);
     }
 
+    @Test
+    public void test_supplyDependency() {
+        final ProtectedResource protectedResource = new ProtectedResource();
+        protectedResource.setType(ResourceTypeEnum.DATABASE.getType());
+        protectedResource.setSubType(ResourceSubTypeEnum.TDSQL_CLUSTERINSTANCE.getType());
+        protectedResource.setUuid("test1");
+        ProtectedEnvironment protectedEnvironment = new ProtectedEnvironment();
+        protectedEnvironment.setUuid("uuid");
+        protectedEnvironment.setName("name1");
+        protectedEnvironment.setEndpoint("endpoint1");
+        List<ProtectedResource> list = new ArrayList<>();
+        list.add(protectedEnvironment);
+        PowerMockito.when(
+                mockResourceService.queryDependencyResources(Mockito.anyBoolean(), Mockito.any(), Mockito.any()))
+            .thenReturn(list);
+        Assert.assertTrue(tdsqlInstanceProviderUnderTest.supplyDependency(protectedResource));
+    }
+
     /**
      * 用例场景：注册/更新实例信息时对环境信息进行检查
      * 前置条件：实例信息正确
@@ -126,7 +155,6 @@ public class TdsqlInstanceProviderTest {
 
         // mock result of getBrowseResult()
         when(mockTdsqlService.getBrowseResult(any(), any())).thenReturn(getProtectedResourcePageListResponse());
-
 
         // Run the test
         ProtectedEnvironment protectedEnvironment = getEnvironment();
@@ -160,7 +188,6 @@ public class TdsqlInstanceProviderTest {
 
         // mock result of getBrowseResult()
         when(mockTdsqlService.getBrowseResult(any(), any())).thenReturn(getProtectedResourcePageListResponse());
-
 
         // Run the test
         LegoCheckedException legoCheckedException = Assert.assertThrows(LegoCheckedException.class,
@@ -378,8 +405,8 @@ public class TdsqlInstanceProviderTest {
         map.put("version", "9.11.6");
         protectedResource.setExtendInfo(map);
         protectedResource.setProtectedObject(protectedObject);
-        final PageListResponse<ProtectedResource> protectedResourcePageListResponse =
-            new PageListResponse<>(0, Arrays.asList(protectedResource));
+        final PageListResponse<ProtectedResource> protectedResourcePageListResponse = new PageListResponse<>(0,
+            Arrays.asList(protectedResource));
         List<ProtectedResource> records = new ArrayList<>();
         ProtectedResource record = getEnvironment();
         records.add(record);
@@ -388,12 +415,14 @@ public class TdsqlInstanceProviderTest {
     }
 
     private ProtectedEnvironment getEnvironment() {
-        String json ="{\"uuid\":\"7ed7f76c-7ad2-4cc5-af1b-2ec17dc6b6a7\",\"parentUuid\":\"7ed7f76c-7ad2-4cc5-af1b-2ec17dc6b6a7\",\"name\":\"test1\",\"type\":\"Database\",\"subType\":\"TDSQL-clusterInstance\",\"auth\":{\"authType\":2,\"authKey\":\"account\",\"authPwd\":\"password\"},\"port\":\"4444\",\"hostName\":\"8.40.99.99\",\"ip\":\"8.40.99.99\",\"extendInfo\":{\"linkStatus\":\"1\",\"clusterInstanceInfo\":\"{\\\"id\\\":\\\"set_1685328362_6\\\",\\\"name\\\":\\\"set_1685328362_6\\\",\\\"type\\\":\\\"0\\\",\\\"cluster\\\":\\\"cluster-150\\\",\\\"groups\\\":[{\\\"setId\\\":\\\"set_1685328362_6\\\",\\\"dataNodes\\\":[{\\\"setId\\\":\\\"set_1685328362_6\\\",\\\"ip\\\":\\\"8.40.147.38\\\",\\\"port\\\":\\\"4002\\\",\\\"isMaster\\\":1,\\\"defaultsFile\\\":\\\"/data/tdsql_run/4002/mysql-server-8.0.24/etc/my_4002.cnf\\\",\\\"socket\\\":\\\"/data1/tdengine/data/4002/prod/mysql.sock\\\"},{\\\"setId\\\":\\\"set_1685328362_6\\\",\\\"ip\\\":\\\"8.40.147.39\\\",\\\"port\\\":\\\"4002\\\",\\\"isMaster\\\":0,\\\"defaultsFile\\\":\\\"/data/tdsql_run/4002/mysql-server-8.0.24/etc/my_4002.cnf\\\",\\\"socket\\\":\\\"/data1/tdengine/data/4002/prod/mysql.sock\\\"},{\\\"setId\\\":\\\"set_1685328362_6\\\",\\\"ip\\\":\\\"8.40.147.40\\\",\\\"port\\\":\\\"4002\\\",\\\"isMaster\\\":0,\\\"defaultsFile\\\":\\\"/data/tdsql_run/4002/mysql-server-8.0.24/etc/my_4002.cnf\\\",\\\"socket\\\":\\\"/data1/tdengine/data/4002/prod/mysql.sock\\\"}]}],\\\"id\\\":\\\"set_1685328362_6\\\",\\\"type\\\":\\\"0\\\"}\"},\"dependencies\":{\"agents\":[{\"uuid\":\"7ed7f76c-7ad2-4cc5-af1b-2ec17dc6b6a7\"},{\"uuid\":\"c1099cbe-9fa2-42be-95a9-b629c29d8b48\"},{\"uuid\":\"16f74c9f-915c-4af6-91f6-40c643f13fd5\"}]}}";
+        String json
+            = "{\"uuid\":\"7ed7f76c-7ad2-4cc5-af1b-2ec17dc6b6a7\",\"parentUuid\":\"7ed7f76c-7ad2-4cc5-af1b-2ec17dc6b6a7\",\"name\":\"test1\",\"type\":\"Database\",\"subType\":\"TDSQL-clusterInstance\",\"auth\":{\"authType\":2,\"authKey\":\"account\",\"authPwd\":\"password\"},\"port\":\"4444\",\"hostName\":\"8.40.99.99\",\"ip\":\"8.40.99.99\",\"extendInfo\":{\"linkStatus\":\"1\",\"clusterInstanceInfo\":\"{\\\"id\\\":\\\"set_1685328362_6\\\",\\\"name\\\":\\\"set_1685328362_6\\\",\\\"type\\\":\\\"0\\\",\\\"cluster\\\":\\\"cluster-150\\\",\\\"groups\\\":[{\\\"setId\\\":\\\"set_1685328362_6\\\",\\\"dataNodes\\\":[{\\\"setId\\\":\\\"set_1685328362_6\\\",\\\"ip\\\":\\\"8.40.147.38\\\",\\\"port\\\":\\\"4002\\\",\\\"isMaster\\\":1,\\\"defaultsFile\\\":\\\"/data/tdsql_run/4002/mysql-server-8.0.24/etc/my_4002.cnf\\\",\\\"socket\\\":\\\"/data1/tdengine/data/4002/prod/mysql.sock\\\"},{\\\"setId\\\":\\\"set_1685328362_6\\\",\\\"ip\\\":\\\"8.40.147.39\\\",\\\"port\\\":\\\"4002\\\",\\\"isMaster\\\":0,\\\"defaultsFile\\\":\\\"/data/tdsql_run/4002/mysql-server-8.0.24/etc/my_4002.cnf\\\",\\\"socket\\\":\\\"/data1/tdengine/data/4002/prod/mysql.sock\\\"},{\\\"setId\\\":\\\"set_1685328362_6\\\",\\\"ip\\\":\\\"8.40.147.40\\\",\\\"port\\\":\\\"4002\\\",\\\"isMaster\\\":0,\\\"defaultsFile\\\":\\\"/data/tdsql_run/4002/mysql-server-8.0.24/etc/my_4002.cnf\\\",\\\"socket\\\":\\\"/data1/tdengine/data/4002/prod/mysql.sock\\\"}]}],\\\"id\\\":\\\"set_1685328362_6\\\",\\\"type\\\":\\\"0\\\"}\"},\"dependencies\":{\"agents\":[{\"uuid\":\"7ed7f76c-7ad2-4cc5-af1b-2ec17dc6b6a7\"},{\"uuid\":\"c1099cbe-9fa2-42be-95a9-b629c29d8b48\"},{\"uuid\":\"16f74c9f-915c-4af6-91f6-40c643f13fd5\"}]}}";
         return JsonUtil.read(json, ProtectedEnvironment.class);
     }
 
     private TdsqlInstance getInstance() {
-        String clusterInstanceInfo = "{\"id\":\"set_1685328362_6\",\"name\":\"set_1685328362_6\",\"type\":\"0\",\"cluster\":\"cluster-150\",\"groups\":[{\"setId\":\"set_1685328362_6\",\"dataNodes\":[{\"setId\":\"set_1685328362_6\",\"ip\":\"8.40.147.38\",\"port\":\"4002\",\"isMaster\":1,\"defaultsFile\":\"/data/tdsql_run/4002/mysql-server-8.0.24/etc/my_4002.cnf\",\"socket\":\"/data1/tdengine/data/4002/prod/mysql.sock\"},{\"setId\":\"set_1685328362_6\",\"ip\":\"8.40.147.39\",\"port\":\"4002\",\"isMaster\":0,\"defaultsFile\":\"/data/tdsql_run/4002/mysql-server-8.0.24/etc/my_4002.cnf\",\"socket\":\"/data1/tdengine/data/4002/prod/mysql.sock\"},{\"setId\":\"set_1685328362_6\",\"ip\":\"8.40.147.40\",\"port\":\"4002\",\"isMaster\":0,\"defaultsFile\":\"/data/tdsql_run/4002/mysql-server-8.0.24/etc/my_4002.cnf\",\"socket\":\"/data1/tdengine/data/4002/prod/mysql.sock\"}]}],\"id\":\"set_1685328362_6\",\"type\":\"0\"}";
+        String clusterInstanceInfo
+            = "{\"id\":\"set_1685328362_6\",\"name\":\"set_1685328362_6\",\"type\":\"0\",\"cluster\":\"cluster-150\",\"groups\":[{\"setId\":\"set_1685328362_6\",\"dataNodes\":[{\"setId\":\"set_1685328362_6\",\"ip\":\"8.40.147.38\",\"port\":\"4002\",\"isMaster\":1,\"defaultsFile\":\"/data/tdsql_run/4002/mysql-server-8.0.24/etc/my_4002.cnf\",\"socket\":\"/data1/tdengine/data/4002/prod/mysql.sock\"},{\"setId\":\"set_1685328362_6\",\"ip\":\"8.40.147.39\",\"port\":\"4002\",\"isMaster\":0,\"defaultsFile\":\"/data/tdsql_run/4002/mysql-server-8.0.24/etc/my_4002.cnf\",\"socket\":\"/data1/tdengine/data/4002/prod/mysql.sock\"},{\"setId\":\"set_1685328362_6\",\"ip\":\"8.40.147.40\",\"port\":\"4002\",\"isMaster\":0,\"defaultsFile\":\"/data/tdsql_run/4002/mysql-server-8.0.24/etc/my_4002.cnf\",\"socket\":\"/data1/tdengine/data/4002/prod/mysql.sock\"}]}],\"id\":\"set_1685328362_6\",\"type\":\"0\"}";
         return JsonUtil.read(clusterInstanceInfo, TdsqlInstance.class);
     }
 }

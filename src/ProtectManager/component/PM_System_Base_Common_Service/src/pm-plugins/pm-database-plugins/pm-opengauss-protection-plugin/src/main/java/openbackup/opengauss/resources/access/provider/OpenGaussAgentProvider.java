@@ -12,14 +12,13 @@
 */
 package openbackup.opengauss.resources.access.provider;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.agent.DataBaseAgentSelector;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.opengauss.resources.access.service.OpenGaussAgentService;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

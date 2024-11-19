@@ -12,6 +12,10 @@
 */
 package openbackup.goldendb.protection.access.interceptor;
 
+import com.google.common.collect.Maps;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
@@ -26,16 +30,13 @@ import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbRestoreInterceptorProvider;
 import openbackup.goldendb.protection.access.provider.GoldenDBAgentProvider;
 import openbackup.goldendb.protection.access.service.GoldenDbService;
+import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.Maps;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -58,18 +59,22 @@ public class GoldenDbRestoreInterceptor extends AbstractDbRestoreInterceptorProv
 
     private final GoldenDBAgentProvider goldenDBAgentProvider;
 
+    private final AgentUnifiedService agentUnifiedService;
+
     /**
      * 构造器
      *
      * @param goldenDbService goldenDbService
      * @param copyRestApi copyRestApi
      * @param goldenDBAgentProvider goldenDBAgentProvider
+     * @param agentUnifiedService agentUnifiedService
      */
     public GoldenDbRestoreInterceptor(GoldenDbService goldenDbService, CopyRestApi copyRestApi,
-        GoldenDBAgentProvider goldenDBAgentProvider) {
+        GoldenDBAgentProvider goldenDBAgentProvider, AgentUnifiedService agentUnifiedService) {
         this.goldenDbService = goldenDbService;
         this.copyRestApi = copyRestApi;
         this.goldenDBAgentProvider = goldenDBAgentProvider;
+        this.agentUnifiedService = agentUnifiedService;
     }
 
     @Override
@@ -90,9 +95,14 @@ public class GoldenDbRestoreInterceptor extends AbstractDbRestoreInterceptorProv
         task.setAgents(endpointList);
         ArrayList<TaskEnvironment> taskEnvironments = new ArrayList<>();
         // 设置nodes信息
-        endpointList.stream().map(Endpoint::getId).forEach(it -> {
-            taskEnvironments.add(getNode(it));
-        });
+        for (Endpoint endpoint : endpointList) {
+            try {
+                agentUnifiedService.getHost(endpoint.getIp(), endpoint.getPort());
+                taskEnvironments.add(getNode(endpoint.getId()));
+            } catch (LegoCheckedException e) {
+                log.warn("job id: {}, agent: {}, is offline", task.getTaskId(), endpoint.getIp());
+            }
+        }
 
         // 后置任务所有节点都执行
         Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElse(Maps.newHashMap());

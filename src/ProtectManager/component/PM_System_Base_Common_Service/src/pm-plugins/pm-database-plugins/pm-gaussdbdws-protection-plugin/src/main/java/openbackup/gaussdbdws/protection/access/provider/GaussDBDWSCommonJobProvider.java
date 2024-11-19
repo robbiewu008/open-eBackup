@@ -12,8 +12,11 @@
 */
 package openbackup.gaussdbdws.protection.access.provider;
 
-import openbackup.data.access.framework.backup.constant.BackupConstant;
 import com.huawei.oceanprotect.job.sdk.JobCommonProvider;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.framework.backup.constant.BackupConstant;
 import openbackup.system.base.common.model.job.Job;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.JSONObject;
@@ -21,9 +24,6 @@ import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.repository.api.BackupStorageApi;
 import openbackup.system.base.sdk.repository.model.NasDistributionStorageDetail;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

@@ -156,4 +156,14 @@ public class SapHanaConstants {
      * 通用数据库扩展参数--关联主机ID的key
      */
     public static final String GENERAL_DB_EXT_RELATED_HOST_IDS = "relatedHostIds";
+
+    /**
+     * 跳过日志仓路径拼接：在增量副本恢复场景不需要挂载日志仓
+     */
+    public static final String SKIP_LOG_REPO_COMPOSE = "skipLogRepoCompose";
+
+    /**
+     * 通用数据库扩展参数--true
+     */
+    public static final String TRUE = "true";
 }

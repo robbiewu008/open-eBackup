@@ -12,15 +12,15 @@
 */
 package openbackup.obs.plugin.provider;
 
+import com.huawei.oceanprotect.job.sdk.JobCommonProvider;
+
+import lombok.RequiredArgsConstructor;
 import openbackup.data.access.framework.protection.common.util.JobExtendInfoUtil;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import com.huawei.oceanprotect.job.sdk.JobCommonProvider;
 import openbackup.system.base.common.model.job.Job;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 

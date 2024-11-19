@@ -12,13 +12,17 @@
 */
 package openbackup.tpops.protection.access.util;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.google.common.collect.Lists;
+
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.enums.RepositoryProtocolEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.cluster.api.ClusterNativeApi;
@@ -27,9 +31,6 @@ import openbackup.system.base.sdk.cluster.model.TargetClusterRequestParm;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
 import openbackup.tpops.protection.access.constant.TpopsGaussDBConstant;
-
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.google.common.collect.Lists;
 
 import java.util.HashMap;
 import java.util.List;

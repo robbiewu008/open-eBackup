@@ -12,6 +12,10 @@
 */
 package openbackup.goldendb.protection.access.service.impl;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
@@ -30,8 +34,6 @@ import openbackup.goldendb.protection.access.dto.instance.Group;
 import openbackup.goldendb.protection.access.dto.instance.Gtm;
 import openbackup.goldendb.protection.access.dto.instance.MysqlNode;
 import openbackup.goldendb.protection.access.service.GoldenDbService;
-import com.huawei.oceanprotect.job.sdk.JobService;
-
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -46,9 +48,6 @@ import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
@@ -123,14 +122,14 @@ public class GoldenDbServiceImpl implements GoldenDbService {
      * @return 是否连接
      */
     @Override
-    public boolean singleConnectCheck(MysqlNode mysqlNode, ProtectedEnvironment environment) {
+    public AgentBaseDto singleConnectCheck(MysqlNode mysqlNode, ProtectedEnvironment environment) {
         // 通过agentId得到具体要使用的agentEnvironment来获得ip+port
         ProtectedEnvironment agentEnvironment = getEnvironmentById(mysqlNode.getParentUuid());
         AgentBaseDto agentBaseDto;
         try {
             agentBaseDto = agentUnifiedService.check("GoldenDB-cluster", agentEnvironment,
                 getCheckReq(environment, mysqlNode));
-            return agentBaseDto.isAgentBaseDtoReturnSuccess();
+            return agentBaseDto;
         } catch (LegoCheckedException e) {
             long errorCode = CommonErrorCode.AGENT_NETWORK_ERROR;
             ActionResult actionResult = new ActionResult();
@@ -183,7 +182,8 @@ public class GoldenDbServiceImpl implements GoldenDbService {
     @Override
     public boolean singleHealthCheck(MysqlNode mysqlNode, ProtectedEnvironment environment) {
         try {
-            return singleConnectCheck(BeanTools.copy(mysqlNode, MysqlNode::new), environment);
+            return singleConnectCheck(BeanTools.copy(mysqlNode, MysqlNode::new),
+                environment).isAgentBaseDtoReturnSuccess();
         } catch (LegoCheckedException | LegoUncheckedException | FeignException exception) {
             log.warn("fail to verify the manageDbNode,osUser is {}", mysqlNode.getOsUser());
             return false;
@@ -250,8 +250,8 @@ public class GoldenDbServiceImpl implements GoldenDbService {
         conditions.put("type", ResourceTypeEnum.DATABASE.getType());
         conditions.put("subType", ResourceSubTypeEnum.GOLDENDB_CLUSTER.getType());
         LinkedList<ProtectedResource> result = new LinkedList<>();
-        List<ProtectedResource> records =
-            resourceService.query(LegoNumberConstant.ZERO, LegoNumberConstant.HUNDRED, conditions).getRecords();
+        List<ProtectedResource> records = resourceService.query(LegoNumberConstant.ZERO, LegoNumberConstant.HUNDRED,
+            conditions).getRecords();
         records.forEach(resource -> {
             if (resource.getUuid() != null && !resource.getUuid().equals(updateUuid)) {
                 result.add(resource);

@@ -12,10 +12,11 @@
 */
 package openbackup.openstack.protection.access.provider;
 
+import openbackup.openstack.protection.access.dto.CopyVolInfo;
+
 import openbackup.data.access.framework.copy.index.provider.AbstractVmIndexerProvider;
 import openbackup.data.protection.access.provider.sdk.copy.CopyBo;
 import openbackup.data.protection.access.provider.sdk.index.IndexerProvider;
-import openbackup.openstack.protection.access.dto.CopyVolInfo;
 import openbackup.system.base.common.msg.NotifyManager;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.security.EncryptorUtil;

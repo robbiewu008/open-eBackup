@@ -12,12 +12,11 @@
 */
 package openbackup.openstack.protection.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.provider.DefaultResourceProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceFeature;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -34,6 +33,11 @@ public class OpenstackCloudServerResProvider extends DefaultResourceProvider {
         ResourceFeature resourceFeature = ResourceFeature.defaultValue();
         resourceFeature.setSupportedLanFree(false);
         return resourceFeature;
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        return true;
     }
 
     @Override
