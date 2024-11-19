@@ -12,6 +12,9 @@
 */
 package openbackup.gaussdbt.protection.access.provider.checker;
 
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.access.framework.resource.service.provider.AbstractResourceChecker;
 import openbackup.access.framework.resource.service.provider.UnifiedClusterResourceIntegrityChecker;
@@ -27,10 +30,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.asserts.PowerAssert;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

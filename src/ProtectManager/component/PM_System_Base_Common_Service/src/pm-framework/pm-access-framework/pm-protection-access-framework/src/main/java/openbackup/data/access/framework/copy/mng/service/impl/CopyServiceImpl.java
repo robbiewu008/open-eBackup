@@ -35,6 +35,7 @@ import openbackup.data.access.framework.core.entity.CopiesProtectionEntity;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.core.model.CopySummaryResource;
 import openbackup.data.protection.access.provider.sdk.copy.CopyCommonInterceptor;
+import openbackup.data.protection.access.provider.sdk.copy.CopyServiceSdk;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.ErrorCodeConstant;
 import openbackup.system.base.common.constants.TokenBo;
@@ -52,7 +53,9 @@ import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.copy.model.Copy;
+import openbackup.system.base.sdk.copy.model.CopyExtendType;
 import openbackup.system.base.sdk.copy.model.CopyResourceSummary;
+import openbackup.system.base.sdk.copy.model.CopyStatus;
 import openbackup.system.base.sdk.copy.model.StorageInfo;
 import openbackup.system.base.sdk.dee.DeeBaseParseRest;
 import openbackup.system.base.sdk.dee.DeeInternalCopyRest;
@@ -92,7 +95,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class CopyServiceImpl implements CopyService {
+public class CopyServiceImpl implements CopyService, CopyServiceSdk {
     private static final String INDEXED = "Indexed";
 
     private static final String AGGREGATION = "isAggregation";
@@ -671,5 +674,26 @@ public class CopyServiceImpl implements CopyService {
     @Override
     public void closeCopyGuestSystem(String copyId) {
         deeBaseParseRest.closeCopyGuestSystem(copyId);
+    }
+
+    @Override
+    public void deleteInvalidCopies(String sourceId, int limit) {
+        BasePage<Copy> checkPointInvalidCopies = queryCopiesByResourceIdAndStatusAndExtendType(sourceId,
+            CopyStatus.INVALID.getValue(), CopyExtendType.CHECKPOINT.getValue(), limit);
+        List<Copy> deleteCopies = checkPointInvalidCopies.getItems();
+        for (Copy c : deleteCopies) {
+            log.info("delete checkPoint invalid copies, total_num:{}, copy_id:{}", checkPointInvalidCopies.getTotal(),
+                c.getUuid());
+            copyRestApi.deleteCopy(c.getUuid(), null);
+        }
+    }
+
+    @Override
+    public void updateCopyResourceName(String newResourceName, String resourceId) {
+        if (StringUtils.isEmpty(newResourceName) || StringUtils.isEmpty(resourceId)) {
+            log.error("Update copy resource name: {} of resource: {} failed", newResourceName, resourceId);
+            throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, "Illegal resource name");
+        }
+        copyMapper.updateCopyResourceName(newResourceName, resourceId);
     }
 }

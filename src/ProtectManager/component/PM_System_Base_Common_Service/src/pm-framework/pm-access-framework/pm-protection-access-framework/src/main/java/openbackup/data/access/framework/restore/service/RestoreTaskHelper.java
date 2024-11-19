@@ -12,6 +12,11 @@
 */
 package openbackup.data.access.framework.restore.service;
 
+import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.common.enums.v2.RestoreTypeEnum;
@@ -27,7 +32,6 @@ import openbackup.data.protection.access.provider.sdk.lock.LockResourceBo;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
 import openbackup.data.protection.access.provider.sdk.verify.CopyVerifyTask;
-import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.json.JSONObjectCovert;
 import openbackup.system.base.common.utils.json.JsonUtil;
@@ -43,10 +47,6 @@ import openbackup.system.base.sdk.lock.LockRequest;
 import openbackup.system.base.sdk.lock.LockResource;
 import openbackup.system.base.sdk.lock.LockTypeEnum;
 import openbackup.system.base.util.SpringBeanUtils;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;

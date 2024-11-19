@@ -12,14 +12,13 @@
 */
 package openbackup.system.base.common.utils.files;
 
+import com.google.common.collect.Sets;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.bean.FileCheckRule;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
-
-import com.google.common.collect.Sets;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -157,7 +156,7 @@ public class FileUtil implements FileCheckInterface {
      * write content to file
      *
      * @param supplier content supplier
-     * @param file     target file
+     * @param file target file
      * @throws IOException IOException
      */
     public static void write(Callable<InputStream> supplier, File file) throws IOException {

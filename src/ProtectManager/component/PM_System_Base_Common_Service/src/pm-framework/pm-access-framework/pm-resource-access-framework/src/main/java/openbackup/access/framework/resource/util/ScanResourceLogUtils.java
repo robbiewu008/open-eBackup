@@ -12,14 +12,13 @@
 */
 package openbackup.access.framework.resource.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.persistence.dao.ProtectedResourceMapper;
 import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
 import openbackup.system.base.security.callee.CalleeMethod;
 import openbackup.system.base.security.callee.CalleeMethods;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.SpringBeanUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

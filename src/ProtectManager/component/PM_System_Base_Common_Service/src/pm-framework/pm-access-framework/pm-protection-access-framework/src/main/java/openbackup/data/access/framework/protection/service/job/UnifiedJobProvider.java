@@ -12,10 +12,9 @@
 */
 package openbackup.data.access.framework.protection.service.job;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
 import openbackup.data.protection.access.provider.sdk.job.JobProvider;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

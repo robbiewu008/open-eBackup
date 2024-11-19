@@ -306,4 +306,9 @@ public class CnwareConstant {
      * 域名正则
      */
     public static final String DOMAIN_REGEX = "^[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$";
+
+    /**
+     * 生产存储剩余容量阈值
+     */
+    public static final String AVAILABLE_CAPACITY_THRESHOLD = "available_capacity_threshold";
 }

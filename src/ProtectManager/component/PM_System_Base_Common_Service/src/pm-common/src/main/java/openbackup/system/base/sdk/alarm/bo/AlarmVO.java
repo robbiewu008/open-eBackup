@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.alarm.bo;
 
-import openbackup.system.base.common.constants.FaultEnum;
-import openbackup.system.base.sdk.alarm.i18n.I18nMrgUtil;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
+import openbackup.system.base.common.constants.FaultEnum;
+import openbackup.system.base.sdk.alarm.i18n.I18nMrgUtil;
 
 import org.apache.commons.lang3.StringUtils;
 

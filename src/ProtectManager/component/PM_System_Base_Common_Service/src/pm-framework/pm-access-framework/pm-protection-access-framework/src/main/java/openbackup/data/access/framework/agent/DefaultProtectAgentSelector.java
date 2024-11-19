@@ -14,6 +14,7 @@ package openbackup.data.access.framework.agent;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.system.base.user.bo.UserDomainRelationBo;
+import com.huawei.oceanprotect.system.base.user.common.enums.ResourceSetScopeModuleEnum;
 import com.huawei.oceanprotect.system.base.user.service.DomainResourceSetService;
 import com.huawei.oceanprotect.system.base.user.service.UserDomainRelationService;
 
@@ -29,9 +30,11 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceQueryPara
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.resource.model.AgentTypeEnum;
 import openbackup.system.base.common.constants.Constants;
+import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.auth.UserInnerResponse;
+import openbackup.system.base.sdk.auth.model.RoleBo;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
@@ -45,6 +48,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -115,7 +119,7 @@ public class DefaultProtectAgentSelector implements ProtectAgentSelector {
      */
     public List<Endpoint> selectByAgentParameter(String agents, UserInnerResponse userInnerResponse) {
         return Arrays.stream(agents.split(";"))
-            .map(id -> findAgentByUuid(id, userInnerResponse))
+            .map(id -> findAgentByToken(id, userInnerResponse))
             .filter(Optional::isPresent)
             .map(Optional::get)
             .collect(Collectors.toList());
@@ -207,7 +211,28 @@ public class DefaultProtectAgentSelector implements ProtectAgentSelector {
             .map(env -> new Endpoint(env.getUuid(), env.getEndpoint(), env.getPort(), env.getOsType()));
     }
 
-    private Optional<Endpoint> findAgentByUuid(String resUuid, UserInnerResponse userInnerResponse) {
+    /**
+     * 根据用户token信息获取agent
+     *
+     * @param resUuid agentUuid
+     * @param token token信息
+     * @return  agent信息
+     */
+    public Optional<ProtectedEnvironment> findAgentByToken(String resUuid, TokenBo token) {
+        List<String> sharedAgentIds = protectedResourceAgentMapper.querySharedAgentIds();
+        UserInnerResponse userInnerResponse = new UserInnerResponse();
+        userInnerResponse.setUserId(token.getUser().getId());
+        RoleBo roleBo = new RoleBo();
+        roleBo.setRoleName(token.getUser().getRoles().get(0).getName());
+        userInnerResponse.setRolesSet(new HashSet<>(Collections.singleton(roleBo)));
+        return resourceService.getResourceById(false, resUuid)
+            .filter(resource -> checkResourceOwnership(resource, userInnerResponse, sharedAgentIds))
+            .filter(resource -> checkResourceInternalAgent(resource))
+            .filter(resource -> resource instanceof ProtectedEnvironment)
+            .map(resource -> (ProtectedEnvironment) resource);
+    }
+
+    private Optional<Endpoint> findAgentByToken(String resUuid, UserInnerResponse userInnerResponse) {
         List<String> sharedAgentIds = protectedResourceAgentMapper.querySharedAgentIds();
         return resourceService.getResourceById(false, resUuid)
             .filter(resource -> checkResourceOwnership(resource, userInnerResponse, sharedAgentIds))
@@ -255,8 +280,9 @@ public class DefaultProtectAgentSelector implements ProtectAgentSelector {
         if (!relation.isPresent()) {
             return false;
         }
-        return !VerifyUtil.isEmpty(domainResourceSetService.getDomainResourcesRelation(relation.get().getDomainId(),
-            resource.getUuid(), ResourceSetTypeEnum.AGENT.getType()));
+        return !VerifyUtil.isEmpty(
+            domainResourceSetService.getDomainResourcesRelation(relation.get().getDomainId(), resource.getUuid(),
+                ResourceSetTypeEnum.AGENT.getType(), ResourceSetScopeModuleEnum.AGENT.getType()));
     }
 
     @Override

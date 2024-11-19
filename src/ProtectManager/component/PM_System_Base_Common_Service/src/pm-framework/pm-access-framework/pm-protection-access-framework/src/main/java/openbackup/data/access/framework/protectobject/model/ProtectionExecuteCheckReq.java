@@ -12,10 +12,9 @@
 */
 package openbackup.data.access.framework.protectobject.model;
 
-import openbackup.data.protection.access.provider.sdk.protection.model.ProtectObjectReqBase;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.data.protection.access.provider.sdk.protection.model.ProtectObjectReqBase;
 
 import java.util.List;
 

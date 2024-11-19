@@ -12,6 +12,7 @@
 */
 package openbackup.gaussdbt.protection.access.provider.resource;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
@@ -20,8 +21,6 @@ import openbackup.database.base.plugin.provider.DatabaseEnvironmentProvider;
 import openbackup.gaussdbt.protection.access.provider.service.GaussDBTSingleService;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

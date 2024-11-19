@@ -12,6 +12,9 @@
 */
 package openbackup.opengauss.resources.access.provider;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.util.EnvironmentParamCheckUtil;
 import openbackup.access.framework.resource.validator.JsonSchemaValidator;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
@@ -52,10 +55,6 @@ import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.RequestUriUtil;
 import openbackup.system.base.util.StreamUtil;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -166,7 +165,7 @@ public class OpenGaussDatabaseEnvironmentProvider extends DatabaseEnvironmentPro
         String appType = ResourceSubTypeEnum.OPENGAUSS.getType();
         AgentDetailDto response = agentUnifiedService.getDetail(appType, endpoint.getIp(), endpoint.getPort(),
             openGaussRequest);
-        return convertProtectedResources(agentResource, requestUri, response, environment.getEndpoint());
+        return convertProtectedResources(agentResource, requestUri, response, environment.getPath());
     }
 
     private List<ProtectedResource> convertProtectedResources(ProtectedResource agent, URI requestUri,
@@ -255,6 +254,9 @@ public class OpenGaussDatabaseEnvironmentProvider extends DatabaseEnvironmentPro
             }
             // 设置环境的endpoint，创建保保护的时候，会校验环境的ip信息，不传会报错。
             environment.setEndpoint(endpoints.get(0));
+            String clusterEndpoint = endpoints.stream().sorted().collect(Collectors.joining(","));
+            environment.setPath(clusterEndpoint);
+            log.info("opengauss set path: {}.", clusterEndpoint);
         }
         environment.setLinkStatus(String.valueOf(LinkStatusEnum.ONLINE.getStatus()));
         // 更新环境的扩展信息

@@ -231,4 +231,84 @@ public class OracleConstants {
      * oracle删除保护组失败告警ID
      */
     public static final String REMOVE_PROTECT_GROUP_FAILED_ID = "0x6403350001";
+
+    /**
+     * END_SCN
+     */
+    public static final String END_SCN = "endSCN";
+
+    /**
+     * BEGIN_SCN
+     */
+    public static final String BEGIN_SCN = "beginSCN";
+
+    /**
+     * BACKUP_TIME
+     */
+    public static final String BACKUP_TIME = "backupTime";
+
+    /**
+     * END_TIME
+     */
+    public static final String END_TIME = "endTime";
+
+    /**
+     * DELETE_ARCHIVED_LOG
+     */
+    public static final String DELETE_ARCHIVED_LOG = "delete_archived_log";
+
+    /**
+     * DELETE_BEFORE_TIME
+     */
+    public static final String DELETE_BEFORE_TIME = "delete_before_time";
+
+    /**
+     * DELETE_BEFORE_TIME_UNIT
+     */
+    public static final String DELETE_BEFORE_TIME_UNIT = "delete_before_time_unit";
+
+    /**
+     * FALSE字符串
+     */
+    public static final String FALSE = "false";
+
+    /**
+     * AGENT_ID
+     */
+    public static final String AGENT_ID = "agentId";
+
+    /**
+     * Oracle-pdb pbd集合
+     */
+    public static final String PDB = "pdb";
+
+    /**
+     * Oracle-pdb 数据库uuid
+     */
+    public static final String DB_UUID = "dbUuid";
+
+    /**
+     * 数据库未开启CDB
+     */
+    public static final String ERROR_ORACLE_DB_NOT_OPEN_CDB = "47";
+
+    /**
+     * PDB状态不为READ WRITE
+     */
+    public static final String ERROR_ORACLE_PDB_NOT_READ_WRITE = "48";
+
+    /**
+     * pdb状态
+     */
+    public static final String PDB_STATUS = "pdb_status";
+
+    /**
+     * 实例是否开启cdb模式
+     */
+    public static final String IS_CDB = "is_cdb";
+
+    /**
+     * PDB备份主机ID
+     */
+    public static final String HOST_ID = "hostId";
 }

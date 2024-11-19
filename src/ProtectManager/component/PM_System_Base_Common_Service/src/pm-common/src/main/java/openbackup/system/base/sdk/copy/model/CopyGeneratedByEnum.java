@@ -12,10 +12,10 @@
 */
 package openbackup.system.base.sdk.copy.model;
 
+import com.google.common.collect.ImmutableList;
+
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import com.google.common.collect.ImmutableList;
 
 import java.util.Arrays;
 import java.util.List;

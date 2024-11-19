@@ -24,8 +24,12 @@ import java.util.List;
  */
 @Data
 public class NodeDetail {
-    // 存储控制器管理ip地址，OM调用k8s接口获取
+    // k8s节点内部ip
     private String address;
+
+    //  k8s节点管理ip
+    @JsonProperty(value = "management_address")
+    private String managementAddress;
 
     private List<String> componentList;
 
@@ -35,4 +39,6 @@ public class NodeDetail {
     private String nodeName;
 
     private String nodeStatus;
+
+    private String role;
 }

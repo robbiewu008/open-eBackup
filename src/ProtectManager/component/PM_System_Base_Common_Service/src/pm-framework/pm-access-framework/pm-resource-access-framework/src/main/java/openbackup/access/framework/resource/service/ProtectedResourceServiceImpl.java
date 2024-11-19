@@ -13,7 +13,7 @@
 package openbackup.access.framework.resource.service;
 
 import com.huawei.oceanprotect.job.sdk.JobService;
-import com.huawei.oceanprotect.system.base.label.dao.LabelResourceServiceDao;
+import com.huawei.oceanprotect.system.base.label.service.LabelService;
 import com.huawei.oceanprotect.system.base.user.bo.DomainInfoBo;
 import com.huawei.oceanprotect.system.base.user.entity.ResourceSetResourceBo;
 import com.huawei.oceanprotect.system.base.user.service.DomainResourceSetService;
@@ -56,6 +56,7 @@ import openbackup.data.protection.access.provider.sdk.backup.NextBackupModifyReq
 import openbackup.data.protection.access.provider.sdk.backup.ResourceExtendInfoConstants;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
+import openbackup.data.protection.access.provider.sdk.copy.CopyServiceSdk;
 import openbackup.data.protection.access.provider.sdk.exception.DataProtectionRejectException;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginExtensionInvokeContext;
 import openbackup.data.protection.access.provider.sdk.plugin.ResourceExtensionManager;
@@ -140,6 +141,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -160,6 +163,8 @@ public class ProtectedResourceServiceImpl implements ResourceService {
     private static final Integer QUERY_PAGE_SIZE = 10000;
     private static final Integer PARTITION_SIZE = 10000;
     private static final Integer MAX_DORADO_RESOURCE_NUM = 100000;
+    private static final Integer TIMER_INTERVAL = 1000 * 60 * 30;
+    private static final Integer TIMES = 24;
     private static final String RESOURCE_CREATE_LOCK_KEY = "/resource/create/lock/";
 
     private static final String AUTO_SCAN_CONFIG_PATH = "functions.scan.auto-scan";
@@ -197,14 +202,10 @@ public class ProtectedResourceServiceImpl implements ResourceService {
      */
     private static final String SCAN_SKIP_UPDATE_AND_INSERT = "scanSkipUpdateAndInsert";
 
+    private static final String UPDATE_COPY_RESOURCE_NAME = "resource_name";
+
     @Value("${MAX_RESOURCE_NUM:20000}")
     private int maxResourceNum;
-
-    private final ProtectedResourceRepository repository;
-    private final ProtectedResourceMonitorService protectedResourceMonitorService;
-    private final ProtectedResourceMapper protectedResourceMapper;
-    private final ProtectedResourceDecryptService decryptService;
-    private final MessageTemplate<String> messageTemplate;
     private ProtectedResourceExtendInfoMapper resourceExtendInfoMapper;
     private ProviderManager providerManager;
     private LockService lockService;
@@ -226,28 +227,29 @@ public class ProtectedResourceServiceImpl implements ResourceService {
     private AntiRansomwareDeviceApi antiRansomwareDeviceApi;
 
     @Autowired
-    private LabelResourceServiceDao labelResourceServiceDao;
+    private LabelService labelService;
 
-    /**
-     * constructor
-     *
-     * @param repository repository
-     * @param protectedResourceMonitorService protectedResourceMonitorService
-     * @param protectedResourceMapper protectedResourceMapper
-     * @param decryptService decryptService
-     * @param messageTemplate messageTemplate
-     */
-    public ProtectedResourceServiceImpl(ProtectedResourceRepository repository,
-                                        ProtectedResourceMonitorService protectedResourceMonitorService,
-                                        ProtectedResourceMapper protectedResourceMapper,
-                                        ProtectedResourceDecryptService decryptService,
-                                        MessageTemplate messageTemplate) {
-        this.repository = repository;
-        this.protectedResourceMonitorService = protectedResourceMonitorService;
-        this.protectedResourceMapper = protectedResourceMapper;
-        this.decryptService = decryptService;
-        this.messageTemplate = messageTemplate;
-    }
+    @Autowired
+    private ResourceService resourceService;
+
+    @Autowired
+    private CopyServiceSdk copyServiceSdk;
+
+    @Autowired
+    private ProtectedResourceRepository repository;
+
+    @Autowired
+    private ProtectedResourceMonitorService protectedResourceMonitorService;
+
+    @Autowired
+    private ProtectedResourceMapper protectedResourceMapper;
+
+    @Autowired
+    private ProtectedResourceDecryptService decryptService;
+
+    @Autowired
+    private MessageTemplate<String> messageTemplate;
+
 
     @Autowired
     public void setJobScheduleService(JobScheduleService jobScheduleService) {
@@ -800,6 +802,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
             resourceSetResourceBo.setType(ResourceSetTypeEnum.RESOURCE);
         }
         resourceSetResourceBo.setResourceSubType(resource.getSubType());
+        resourceSetResourceBo.setScopeModule(ResourceSubTypeEnum.getScopeModuleBySubType(resource.getSubType()));
         resourceSetApi.addResourceSetRelation(resourceSetResourceBo);
     }
 
@@ -847,9 +850,33 @@ public class ProtectedResourceServiceImpl implements ResourceService {
         resourceList.forEach(resource -> mergeResourceOriginalData(types, resource));
         for (ProtectedResource resource : resourceList) {
             ResourceProvider provider = providerManager.findProvider(ResourceProvider.class, resource, null);
+            Set<String> updateCopyProperties = new HashSet<>();
+            putUpdateCopyProperties(resource, updateCopyProperties);
             Optional.ofNullable(provider).ifPresent(e -> e.updateCheck(resource));
             update(isOverwrite, resource);
             updateResourceDependency(isOverwrite, resource);
+            updateCopyProperties(resource, updateCopyProperties);
+        }
+    }
+
+    private void putUpdateCopyProperties(ProtectedResource resource, Set<String> updateCopyProperties) {
+        List<ProtectedResource> oldResources = resourceService.query(0, 1, Collections.singletonMap("uuid",
+            resource.getUuid())).getRecords();
+        if (oldResources.isEmpty()) {
+            throw new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST);
+        }
+        if (oldResources.size() > 1) {
+            throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR);
+        }
+        if (StringUtils.isNotEmpty(resource.getName())
+            && !StringUtils.equals(resource.getName(), oldResources.get(0).getName())) {
+            updateCopyProperties.add(UPDATE_COPY_RESOURCE_NAME);
+        }
+    }
+
+    private void updateCopyProperties(ProtectedResource resource, Set<String> updateCopyProperties) {
+        if (updateCopyProperties.contains(UPDATE_COPY_RESOURCE_NAME)) {
+            copyServiceSdk.updateCopyResourceName(resource.getName(), resource.getUuid());
         }
     }
 
@@ -1021,6 +1048,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
      * @param uuids current resource's uuid
      * @param updateEntry update kv
      */
+    @Override
     public void updateSubResource(List<String> uuids, Map<String, Object> updateEntry) {
         if (VerifyUtil.isEmpty(uuids) || MapUtils.isEmpty(updateEntry)) {
             return;
@@ -1141,6 +1169,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
      * @param authentications authentications
      * @return new auth object
      */
+    @Override
     public Authentication mergeAuthentication(Authentication[] authentications) {
         Authentication[] items = Optional.ofNullable(authentications).map(Arrays::asList).map(Collection::stream)
                 .orElse(Stream.empty()).filter(Objects::nonNull).toArray(Authentication[]::new);
@@ -1168,6 +1197,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
      * @param protectedResource protectedResource
      * @return resource
      */
+    @Override
     public ProtectedResource mergeProtectedResource(ProtectedResource protectedResource) {
         return getResourceById(protectedResource.getUuid())
                 .map(resource -> replenishEnvironment(
@@ -1181,6 +1211,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
      * @param resource resource
      * @return resource
      */
+    @Override
     public ProtectedResource replenishEnvironment(ProtectedResource resource) {
         ProtectedEnvironment originEnvironment = resource.getEnvironment();
         // 优先使用root uuid进行查询补全信息。在root uuid缺失的情况下，再使用parent uuid进行信息补全。
@@ -1268,6 +1299,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
      * @return 新增的子资源id列表
      */
     public List<String> executeScanProtectedResource(ProtectedResource resource) {
+        Timer timer = setTimer(resource.getUuid());
         // 再次确认资源是否还存在
         String resourceId = resource.getUuid();
         getBasicResourceById(resourceId).orElseThrow(
@@ -1314,7 +1346,38 @@ public class ProtectedResourceServiceImpl implements ResourceService {
             sendResourceInfosToDee(protectedResourceList, resourceId);
         }
         // 批量新增
-        return upsertResources(protectedResourceList, resource);
+        return upsertResources(protectedResourceList, resource, timer);
+    }
+
+    private Timer setTimer(String resourceId) {
+        Timer timer = new Timer();
+        if (deployTypeService.isHyperDetectDeployType()) {
+            List<JobBo> jobBos = resourceScanService.queryManualScanRunningJobByResId(resourceId);
+            if (jobBos.size() > 0) {
+                log.info("start deploy timer, resourceId:{}", resourceId);
+                startTimer(timer, jobBos);
+            }
+        }
+        return timer;
+    }
+
+    private void startTimer(Timer timer, List<JobBo> jobBos) {
+        timer.schedule(new TimerTask() {
+            int count = 0;
+            @Override
+            public void run() {
+                if (count < TIMES) {
+                    log.info("keep scan job, jobid:{}", jobBos.get(0).getJobId());
+                    JobBo jobBo = jobBos.get(0);
+                    UpdateJobRequest updateJobRequest = new UpdateJobRequest();
+                    updateJobRequest.setProgress(Optional.ofNullable(jobBo.getProgress()).orElse(0));
+                    jobService.updateJob(jobBo.getJobId(), updateJobRequest);
+                } else {
+                    timer.cancel();
+                }
+                count++;
+            }
+        }, 0, TIMER_INTERVAL);
     }
 
     private void deleteResources(Set<String> redundantResourceUuids) {
@@ -1331,7 +1394,8 @@ public class ProtectedResourceServiceImpl implements ResourceService {
         }
     }
 
-    private List<String> upsertResources(List<ProtectedResource> protectedResourceList, ProtectedResource resource) {
+    private List<String> upsertResources(List<ProtectedResource> protectedResourceList, ProtectedResource resource,
+        Timer timer) {
         ResourceUpsertRes upsertRes;
         if (protectedResourceList.size() >= 30000 && deployTypeService.isHyperDetectDeployType()) {
             List<List<ProtectedResource>> partitionedResources = ListUtils.partition(
@@ -1354,6 +1418,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
         if (upsertRes.isOverLimit()) {
             updateExceedLimitJobLog(resource, increaseResourceUuidList);
         }
+        timer.cancel();
         return increaseResourceUuidList;
     }
 
@@ -1398,6 +1463,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
         List<LunInfo> lunInfoList = protectedResourceList.stream()
             .filter(protectedResource -> (protectedResource.getSubType().equals("LUN"))).map((protectedResource) -> {
                 LunInfo lunInfo = new LunInfo();
+                lunInfo.setResId(protectedResource.getUuid());
                 lunInfo.setLunId(protectedResource.getExtendInfoByKey("lunId"));
                 lunInfo.setLunName(protectedResource.getName());
                 lunInfo.setVstoreId(protectedResource.getExtendInfo().get("tenantId"));
@@ -1562,7 +1628,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
                 needDeleteResourceIds);
         List<String> deletedResourceUuids = repository.delete(afterHandleDeleteParams);
         // 删除资源标签
-        labelResourceServiceDao.deleteByResourceObjectIdsAndLabelIds(deletedResourceUuids.stream()
+        labelService.deleteByResourceObjectIdsAndLabelIds(deletedResourceUuids.stream()
             .distinct()
             .collect(Collectors.toList()), StringUtils.EMPTY);
         for (String deletedResourceUuid : new HashSet<>(deletedResourceUuids)) {
@@ -1621,6 +1687,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
      * @param orders orders
      * @return page data
      */
+    @Override
     public PageListResponse<ProtectedResource> query(boolean shouldDecrypt, int page, int size,
             Map<String, Object> conditions, String... orders) {
         ResourceQueryParams context = new ResourceQueryParams();
@@ -1642,6 +1709,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
      * @param orders orders
      * @return page data
      */
+    @Override
     public PageListResponse<ProtectedResource> basicQuery(boolean shouldDecrypt, int page, int size,
             Map<String, Object> conditions, String... orders) {
         ResourceQueryParams context = new ResourceQueryParams();
@@ -1932,7 +2000,7 @@ public class ProtectedResourceServiceImpl implements ResourceService {
     }
 
     private void supplyDependency(ProtectedResource resource) {
-        log.info("supply dependency start, resource id: {}", resource.getUuid());
+        log.debug("supply dependency start, resource id: {}", resource.getUuid());
         // 是否插件执行
         ResourceProvider resourceProvider = providerManager.findProvider(ResourceProvider.class, resource, null);
         if (resourceProvider != null && resourceProvider.supplyDependency(resource)) {
@@ -1944,11 +2012,11 @@ public class ProtectedResourceServiceImpl implements ResourceService {
             queryAllRelatedAndDependencyResources(true, resource.getUuid(), resource);
         // 再将自己put进去 似乎没必要 因为上边查询中一定会查出自己
         resourceMap.put(resource.getUuid(), resource);
-        log.info("All related and dependency resources size: {}, resource id: {}.",
+        log.debug("All related and dependency resources size: {}, resource id: {}.",
             resourceMap.size(), resource.getUuid());
         // 填充资源的依赖
         doSupplyDependency(resourceMap);
-        log.info("default supply dependency end, resource id: {}", resource.getUuid());
+        log.debug("default supply dependency end, resource id: {}", resource.getUuid());
     }
 
     private void doSupplyDependency(Map<String, ProtectedResource> resourceMap) {
@@ -2045,6 +2113,9 @@ public class ProtectedResourceServiceImpl implements ResourceService {
                 return response;
             }
             map.put("filteredByPluginTypeIds", filteredByPluginTypeAgentIds);
+        }
+        if (!VerifyUtil.isEmpty(map.get("labelName")) && user != null && !VerifyUtil.isEmpty(user.getName())) {
+            map.put("userName", user.getName());
         }
         int count = repository.queryAgentResourceCount(map);
         int startIndex = (int) map.get(PAGE_SIZE) * (int) map.get(PAGE_NO);
@@ -2682,5 +2753,10 @@ public class ProtectedResourceServiceImpl implements ResourceService {
                 BeanUtils.copyProperties(protectedResourcePo, resource);
                 return resource;
             }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getAllSubTypeList() {
+        return protectedResourceMapper.getAllSubTypeList();
     }
 }

@@ -12,6 +12,7 @@
 */
 package openbackup.opengauss.resources.access.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -24,8 +25,6 @@ import openbackup.opengauss.resources.access.service.OpenGaussAgentService;
 import openbackup.opengauss.resources.access.util.OpenGaussClusterUtil;
 import openbackup.opengauss.resources.access.util.OpenGaussRestoreUtil;
 import openbackup.system.base.util.StreamUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 

@@ -72,6 +72,7 @@ public class SqlServerCopyDeleteInterceptorTest {
     @Test
     public void handle_task(){
         CopyInfoBo copyInfoBo = new CopyInfoBo();
+        copyInfoBo.setIsArchived(false);
         DeleteCopyTask task = new DeleteCopyTask();
         TaskResource taskResource = new TaskResource();
         taskResource.setUuid("test");
@@ -137,7 +138,7 @@ public class SqlServerCopyDeleteInterceptorTest {
         Copy thisCopy = copies.stream().filter(copy -> copy.getGn() == 5).findFirst().get();
         Copy nextFullCopy = copies.stream().filter(copy -> copy.getGn() == 7).findFirst().get();
         List<String> processedCopies = copyDeleteInterceptor.getCopiesCopyTypeIsCumulativeIncrement(copies, thisCopy, nextFullCopy);
-        Assert.assertEquals(1, processedCopies.size());
+        Assert.assertEquals(0, processedCopies.size());
     }
 
     /**

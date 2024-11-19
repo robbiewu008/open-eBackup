@@ -226,6 +226,9 @@ public class CopyController {
     @ExterAttack
     @Permission(roles = {Constants.Builtin.ROLE_SYS_ADMIN, Constants.Builtin.ROLE_DP_ADMIN}, resources = "copy:$1",
         resourceSetType = ResourceSetTypeEnum.COPY, operation = OperationTypeEnum.QUERY, target = "#copyId")
+    @Logging(name = "0x2064033A000D", target = "CopyCatalog",
+        details = {"$copy.resourceName", "$copy.displayTimestamp", "$1"},
+        context = @Context(name = "copy", statement = "@copy_context_loader_get_by_id.call($1)", required = true))
     @PutMapping("/v2/copies/{copyId}/close/guest-system")
     public void closeCopyGuestSystem(@PathVariable("copyId") String copyId) {
         copyService.closeCopyGuestSystem(copyId);

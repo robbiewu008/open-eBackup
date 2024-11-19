@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.copy.model;
 
-import openbackup.system.base.common.utils.JSONObject;
-
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Data;
+import openbackup.system.base.common.utils.JSONObject;
 
 import org.hibernate.validator.constraints.Length;
 

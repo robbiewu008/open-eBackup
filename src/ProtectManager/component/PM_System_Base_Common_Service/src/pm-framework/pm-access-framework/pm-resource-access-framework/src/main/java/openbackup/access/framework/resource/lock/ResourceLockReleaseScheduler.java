@@ -12,21 +12,21 @@
 */
 package openbackup.access.framework.resource.lock;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.lock.dao.ResourceLockMapper;
 import openbackup.access.framework.resource.lock.entity.ResourceLock;
 import openbackup.access.framework.resource.service.ResourceRedisLockService;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RBucket;
 import org.redisson.api.RSet;

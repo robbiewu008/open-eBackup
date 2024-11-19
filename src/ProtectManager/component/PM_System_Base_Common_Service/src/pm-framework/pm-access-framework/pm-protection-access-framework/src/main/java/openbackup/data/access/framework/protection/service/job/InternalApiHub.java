@@ -12,13 +12,13 @@
 */
 package openbackup.data.access.framework.protection.service.job;
 
-import openbackup.data.access.framework.protection.service.lock.ResourceLockService;
-import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import com.huawei.oceanprotect.job.sdk.JobService;
-import openbackup.system.base.sdk.copy.CopyRestApi;
-import openbackup.system.base.sdk.protection.QosCommonRestApi;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.framework.protection.service.lock.ResourceLockService;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.system.base.sdk.copy.CopyRestApi;
+import openbackup.system.base.sdk.protection.QosCommonRestApi;
 
 import org.springframework.stereotype.Component;
 

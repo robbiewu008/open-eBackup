@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.config;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.infrastructure.InfrastructureService;
 import openbackup.system.base.service.ConfigMapServiceImpl;
 import openbackup.system.base.util.KeyToolUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -140,13 +139,13 @@ public class RedissonClientConfig {
             serverConfig.setNodeAddresses(
                 clusterServerAddress.stream().map(this::convertServerAddress).collect(Collectors.toList()));
             serverConfig.setMasterConnectionPoolSize(100);
-            serverConfig.setMasterConnectionPoolSize(50);
+            serverConfig.setMasterConnectionMinimumIdleSize(50);
             setCommonServerConfig(serverConfig, password);
         } else {
             SingleServerConfig serverConfig = config.useSingleServer();
             serverConfig.setAddress(convertServerAddress(serverAddress));
             serverConfig.setConnectionPoolSize(100);
-            serverConfig.setConnectionPoolSize(50);
+            serverConfig.setConnectionMinimumIdleSize(50);
             setCommonServerConfig(serverConfig, password);
         }
         return Redisson.create(config);

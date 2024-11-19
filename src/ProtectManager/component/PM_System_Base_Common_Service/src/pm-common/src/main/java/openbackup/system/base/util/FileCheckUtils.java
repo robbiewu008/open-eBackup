@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -47,7 +46,7 @@ public class FileCheckUtils {
      * @throws IOException io异常
      */
     public static void checkFileNumsAndSign(String filePath, Set<String> signFilePath, String listFileName)
-        throws IOException {
+            throws IOException {
         File rootPath = new File(filePath);
         List<File> files = (List<File>) FileUtils.listFiles(rootPath, null, true);
         List<File> fileList = files.stream().filter(file -> {
@@ -93,7 +92,7 @@ public class FileCheckUtils {
     }
 
     private static String genFileSHA256(File file) {
-        try(InputStream is = new FileInputStream(file)) {
+        try (InputStream is = new FileInputStream(file)) {
             return DigestUtils.sha256Hex(is);
         } catch (IOException e) {
             log.error("genFileSHA256 exception", ExceptionUtil.getErrorMessage(e));

@@ -12,13 +12,12 @@
 */
 package openbackup.openstack.protection.access.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.List;

@@ -12,12 +12,11 @@
 */
 package openbackup.data.access.client.sdk.api.framework.agent.dto;
 
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-import openbackup.system.base.util.BeanTools;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.system.base.util.BeanTools;
 
 /**
  * Check App Req

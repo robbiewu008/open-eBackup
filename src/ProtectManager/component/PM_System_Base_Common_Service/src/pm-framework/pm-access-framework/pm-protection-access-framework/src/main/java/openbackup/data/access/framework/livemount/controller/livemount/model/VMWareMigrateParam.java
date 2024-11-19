@@ -12,9 +12,8 @@
 */
 package openbackup.data.access.framework.livemount.controller.livemount.model;
 
-import openbackup.data.access.framework.livemount.common.enums.VMWareMigrateDiskDatastoreType;
-
 import lombok.Data;
+import openbackup.data.access.framework.livemount.common.enums.VmwareMigrateDiskDatastoreType;
 
 import java.util.List;
 
@@ -25,8 +24,8 @@ import javax.validation.Valid;
  *
  */
 @Data
-public class VMWareMigrateParam {
-    private VMWareMigrateDiskDatastoreType diskDatastoreType;
+public class VmwareMigrateParam {
+    private VmwareMigrateDiskDatastoreType diskDatastoreType;
 
     @Valid
     private Datastore vmxDatastore;

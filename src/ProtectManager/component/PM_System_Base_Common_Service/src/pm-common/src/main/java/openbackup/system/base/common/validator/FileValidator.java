@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.common.validator;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.bean.FileCheckRule;
 import openbackup.system.base.common.annotation.FileCheck;
 import openbackup.system.base.common.enums.FileTypeEnum;
 import openbackup.system.base.common.utils.files.FileUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;

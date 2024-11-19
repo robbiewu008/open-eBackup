@@ -38,6 +38,14 @@ public interface HcsOpService {
     boolean addHostMapping(String ip, String host);
 
     /**
+     * 刪除域名映射
+     *
+     * @param ip 待刪除的ip
+     * @return 刪除域名映射是否成功
+     */
+    boolean deleteHostMapping(String ip);
+
+    /**
      * 获取hcs运营面的token，跨云复制使用
      *
      * @param param 获取token参数

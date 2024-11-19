@@ -12,6 +12,9 @@
 */
 package openbackup.mysql.resources.access.interceptor;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
@@ -26,10 +29,6 @@ import openbackup.mysql.resources.access.service.MysqlBaseService;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
-
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

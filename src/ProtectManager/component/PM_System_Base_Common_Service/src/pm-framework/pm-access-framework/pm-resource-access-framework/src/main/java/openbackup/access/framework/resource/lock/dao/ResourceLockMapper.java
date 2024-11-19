@@ -12,9 +12,9 @@
 */
 package openbackup.access.framework.resource.lock.dao;
 
-import openbackup.access.framework.resource.lock.entity.ResourceLock;
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import openbackup.access.framework.resource.lock.entity.ResourceLock;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;

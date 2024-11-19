@@ -12,6 +12,7 @@
 */
 package openbackup.access.framework.resource.service;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.entity.ProtectedObjectPo;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
@@ -21,8 +22,6 @@ import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.constants.LegoInternalAlarm;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.alarm.CommonAlarmService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

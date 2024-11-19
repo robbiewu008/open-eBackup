@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONObject;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -32,6 +31,7 @@ import java.util.UUID;
  * Message Template
  *
  * @param <K> template K
+ *
  */
 @Component
 @Slf4j
@@ -43,7 +43,6 @@ public class MessageTemplate<K> {
     private static final int RETRY_COUNT = 3;
 
     private static final long TWO_MINUTES = 2 * 60 * 1000L;
-
 
     @Autowired
     private KafkaTemplate<K, String> kafkaTemplate;
@@ -80,7 +79,7 @@ public class MessageTemplate<K> {
         JSONObject json = JSONObject.fromObject(data);
         String requestId = json.getString(REQUEST_ID);
         String caller = ExceptionUtil.getCaller(stack + IsmNumberConstant.TWO);
-        log.info("send message. topic: {}, requestId: {}, caller: {}", topic, requestId, caller);
+        log.info("Start send message. topic: {}, requestId: {}, caller: {}", topic, requestId, caller);
         kafkaTemplate.setProducerListener(callback);
         int count = 1;
         while (true) {
@@ -99,7 +98,7 @@ public class MessageTemplate<K> {
                 log.error("Thread sleep failed.", ExceptionUtil.getErrorMessage(e));
             }
         }
-        log.error("Send message failed after retry, topic: {}", topic);
-        throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR, "Send message failed.");
+        log.error("Send message failed after retry, topic: {}, requestId: {}", topic, requestId);
+        throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR, "Send kafka message failed.");
     }
 }

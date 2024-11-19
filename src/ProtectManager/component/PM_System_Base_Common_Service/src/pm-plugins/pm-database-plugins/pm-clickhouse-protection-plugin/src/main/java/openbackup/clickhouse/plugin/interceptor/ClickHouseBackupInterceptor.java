@@ -12,6 +12,15 @@
 */
 package openbackup.clickhouse.plugin.interceptor;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+import com.huawei.oceanprotect.system.base.kerberos.service.KerberosService;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.clickhouse.plugin.constant.ClickHouseConstant;
 import openbackup.clickhouse.plugin.provider.ClickHouseAgentProvider;
 import openbackup.clickhouse.plugin.service.ClickHouseService;
@@ -31,22 +40,12 @@ import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
 import openbackup.database.base.plugin.utils.AuthParamUtil;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
-
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
-import com.huawei.oceanprotect.system.base.kerberos.service.KerberosService;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;

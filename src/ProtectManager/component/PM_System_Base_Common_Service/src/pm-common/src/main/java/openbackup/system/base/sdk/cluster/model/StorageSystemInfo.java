@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.sdk.cluster.model;
 
+import lombok.Data;
 import openbackup.system.base.bean.DeviceNetworkInfo;
 import openbackup.system.base.sdk.infrastructure.model.beans.NodePodInfo;
-
-import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;

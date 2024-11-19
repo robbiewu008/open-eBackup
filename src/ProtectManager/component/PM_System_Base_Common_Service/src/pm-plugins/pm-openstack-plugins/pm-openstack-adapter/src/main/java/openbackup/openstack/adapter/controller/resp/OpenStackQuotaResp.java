@@ -12,8 +12,6 @@
 */
 package openbackup.openstack.adapter.controller.resp;
 
-import openbackup.openstack.adapter.dto.OpenStackQuotaDto;
-
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -21,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import openbackup.openstack.adapter.dto.OpenStackQuotaDto;
 
 import java.util.List;
 

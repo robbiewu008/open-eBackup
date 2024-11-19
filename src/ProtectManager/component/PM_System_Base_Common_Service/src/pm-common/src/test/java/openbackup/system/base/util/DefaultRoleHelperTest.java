@@ -71,11 +71,7 @@ public class DefaultRoleHelperTest {
 
     @Test
     public void test_is_device_manager_true_when_device_manager_user() {
-        RoleServiceApi roleServiceApi = mock(RoleServiceApi.class);
-        PowerMockito.when(roleServiceApi.getDefaultRolePoByUserId("def"))
-            .thenReturn(prepareRolePo(Constants.Builtin.ROLE_DEVICE_MANAGER));
-        DefaultRoleHelper helper = new DefaultRoleHelper(roleServiceApi);
-        Assert.assertTrue(DefaultRoleHelper.isDeviceManager("def"));
+        Assert.assertTrue(DefaultRoleHelper.isDeviceManagerByRoleName("Role_Device_Manager"));
     }
 
     private RolePo prepareRolePo(String roleName) {

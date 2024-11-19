@@ -14,6 +14,7 @@ package openbackup.sqlserver.protection.copy;
 
 import static openbackup.data.access.framework.copy.mng.util.CopyUtil.getCopiesBetweenTwoCopy;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
 import openbackup.data.access.framework.core.common.enums.DmeJobStatusEnum;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
@@ -27,13 +28,12 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbCopyDeleteInterceptor;
+import openbackup.sqlserver.common.SqlServerConstants;
 import openbackup.sqlserver.protection.service.SqlServerBaseService;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -97,6 +97,11 @@ public class SqlServerCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercep
         if (!copy.getIsArchived()) {
             task.setRepositories(Collections.emptyList());
         }
+
+        // 不需要UBC后置任务删除日志备份副本，设置为false
+        Map<String, String> map = new HashMap<>(1);
+        map.put(SqlServerConstants.IS_DELETE_RELATIVE_COPIES, String.valueOf(false));
+        task.addParameters(map);
     }
 
     @Override

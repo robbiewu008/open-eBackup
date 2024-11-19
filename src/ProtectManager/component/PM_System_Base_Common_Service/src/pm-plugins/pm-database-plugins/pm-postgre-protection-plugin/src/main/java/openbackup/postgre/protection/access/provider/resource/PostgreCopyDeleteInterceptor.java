@@ -14,6 +14,7 @@ package openbackup.postgre.protection.access.provider.resource;
 
 import static openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants.LOG;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
 import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
 import openbackup.data.protection.access.provider.sdk.copy.DeleteCopyTask;
@@ -24,8 +25,6 @@ import openbackup.database.base.plugin.interceptor.AbstractDbCopyDeleteIntercept
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

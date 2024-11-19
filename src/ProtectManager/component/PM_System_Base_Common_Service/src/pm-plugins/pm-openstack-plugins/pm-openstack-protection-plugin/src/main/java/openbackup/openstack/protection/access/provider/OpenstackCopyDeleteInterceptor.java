@@ -12,17 +12,17 @@
 */
 package openbackup.openstack.protection.access.provider;
 
+import openbackup.openstack.protection.access.common.OpenstackQuotaService;
+import com.huawei.oceanprotect.system.base.quota.enums.UpdateQuotaType;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.copy.CopyDeleteInterceptor;
 import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
 import openbackup.data.protection.access.provider.sdk.copy.DeleteCopyTask;
 import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import openbackup.openstack.protection.access.common.OpenstackQuotaService;
-import com.huawei.oceanprotect.system.base.quota.enums.UpdateQuotaType;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

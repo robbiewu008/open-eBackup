@@ -13,6 +13,7 @@
 package openbackup.system.base.sdk.storage;
 
 import com.huawei.emeistor.kms.kmc.util.security.exterattack.ExterAttack;
+
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.storage.model.ProductStorageInfoRes;
 import openbackup.system.base.sdk.storage.model.ProductStorageReq;
@@ -46,7 +47,7 @@ public interface ProductStorageRestApi {
     @ExterAttack
     @PutMapping("/product-storages/{storageId}")
     void updateProductStorage(@PathVariable("storageId") String storageId,
-        @RequestBody @Valid ProductStorageReq storageDeviceInfo);
+            @RequestBody @Valid ProductStorageReq storageDeviceInfo);
 
     /**
      * 根据id查询存储信息
@@ -76,7 +77,7 @@ public interface ProductStorageRestApi {
     @ExterAttack
     @PostMapping("/product-storages")
     void createStorage(@RequestBody @Valid ProductStorageReq storageDeviceInfo,
-        @RequestHeader("X-Auth-Token") String token);
+            @RequestHeader("X-Auth-Token") String token);
 
     /**
      * 根据wwn查设备信息
@@ -102,9 +103,9 @@ public interface ProductStorageRestApi {
     @ExterAttack
     @GetMapping("/product-storages")
     BasePage<ProductStorageRes> queryProductStorages(@RequestParam("page") int page, @RequestParam("size") int size,
-        @RequestParam(value = "conditions", required = false) String conditions,
-        @RequestParam(value = "orders", required = false) List<String> orders,
-        @RequestHeader("X-Auth-Token") String token);
+            @RequestParam(value = "conditions", required = false) String conditions,
+            @RequestParam(value = "orders", required = false) List<String> orders,
+            @RequestHeader("X-Auth-Token") String token);
 
     /**
      * verify storage ownership

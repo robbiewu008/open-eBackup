@@ -14,7 +14,7 @@ package openbackup.data.access.framework.protection.service.quota;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MultiClusterSummaryService;
 
-import openbackup.data.access.framework.protection.service.quota.UserQuotaManager;
+import com.huawei.oceanprotect.system.base.user.service.UserInternalService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.system.base.common.constants.CommonErrorCode;
@@ -49,8 +49,11 @@ public class UserQuotaManagerTest {
     private final ResourceService resourceService = Mockito.mock(
         ResourceService.class);
 
+    private final UserInternalService userInternalService = Mockito.mock(
+            UserInternalService.class);
+
     private final UserQuotaManager userQuotaManager = new UserQuotaManager(userQuotaService,
-        multiClusterSummaryService, resourceService);
+        multiClusterSummaryService, resourceService, userInternalService);
 
     /**
      * 用例场景：用户备份配额足够，则校验成功

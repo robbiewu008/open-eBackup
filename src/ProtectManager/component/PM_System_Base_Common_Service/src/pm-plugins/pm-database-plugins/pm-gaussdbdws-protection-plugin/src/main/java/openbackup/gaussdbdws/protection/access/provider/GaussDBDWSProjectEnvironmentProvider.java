@@ -12,6 +12,7 @@
 */
 package openbackup.gaussdbdws.protection.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.provider.UnifiedClusterResourceIntegrityChecker;
 import openbackup.access.framework.resource.util.EnvironmentParamCheckUtil;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
@@ -35,8 +36,6 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Qualifier;

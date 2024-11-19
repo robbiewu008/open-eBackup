@@ -12,6 +12,11 @@
 */
 package openbackup.data.access.framework.protection.service.archive;
 
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import jodd.util.StringUtil;
 import openbackup.data.access.framework.protection.common.constants.ArchivePolicyKeyConstant;
 import openbackup.data.protection.access.provider.sdk.archive.ArchiveRequest;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -25,11 +30,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.CreateJobRequest;
-import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import jodd.util.StringUtil;
 
 import org.springframework.stereotype.Component;
 

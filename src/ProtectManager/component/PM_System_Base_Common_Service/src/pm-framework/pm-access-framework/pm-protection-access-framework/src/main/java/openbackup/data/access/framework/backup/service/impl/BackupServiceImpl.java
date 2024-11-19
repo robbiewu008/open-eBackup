@@ -61,6 +61,7 @@ import openbackup.data.protection.access.provider.sdk.backup.v2.DataLayout;
 import openbackup.data.protection.access.provider.sdk.backup.v2.StorageRepositoryProvider;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.Qos;
+import openbackup.data.protection.access.provider.sdk.base.v2.BaseStorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
@@ -99,6 +100,7 @@ import openbackup.system.base.sdk.protection.model.SlaBo;
 import openbackup.system.base.sdk.repository.api.BackupStorageApi;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.AvailableAgentManagementDomainService;
 import openbackup.system.base.service.DeployTypeService;
@@ -400,7 +402,11 @@ public class BackupServiceImpl implements IBackupService {
             URI uri = domainService.getUrlByAgents(AgentApiUtil.getAgentIds(task.getAgents()));
             log.info("backup uri:{}, task id:{}", JSONObject.stringify(uri), task.getRequestId());
             opServiceHelper.injectVpcInfo(task);
-            log.info("start to send task to dme, requestId is {}", task.getRequestId());
+            List<Integer> repoTypeList = Optional.ofNullable(task.getRepositories())
+                .map(repos -> repos.stream().map(BaseStorageRepository::getType).collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+            log.info("start to send task to dme, requestId is {}, repoTypeList is {}, subType is {}",
+                task.getRequestId(), repoTypeList, task.getProtectEnv().getSubType());
             unifiedRestApi.createBackupTask(uri, task);
             log.info("Send backup task to data mover engine successful! requestId is {}", task.getRequestId());
 
@@ -467,9 +473,11 @@ public class BackupServiceImpl implements IBackupService {
             return true;
         }
         return resourceService.getBasicResourceById(false, agentId)
-                .filter(resource -> resource instanceof ProtectedEnvironment)
-                .map(resource -> (ProtectedEnvironment) resource)
-                .filter(env -> LinkStatusEnum.ONLINE.getStatus().toString().equals(env.getLinkStatus())).isPresent();
+            .filter(resource -> resource instanceof ProtectedEnvironment)
+            .map(resource -> (ProtectedEnvironment) resource)
+            .filter(env -> ResourceTypeEnum.HOST.getType().equals(env.getType())
+                && LinkStatusEnum.ONLINE.getStatus().toString().equals(env.getLinkStatus()))
+            .isPresent();
     }
 
     private void cleanAuthPwd(BackupTask task) {

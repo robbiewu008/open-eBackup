@@ -12,13 +12,12 @@
 */
 package openbackup.data.access.client.sdk.api.framework.dme;
 
+import lombok.Data;
 import openbackup.data.access.framework.core.common.enums.v2.CopyTypeEnum;
 import openbackup.data.protection.access.provider.sdk.backup.v2.DataLayout;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
-
-import lombok.Data;
 
 import java.util.List;
 import java.util.Map;

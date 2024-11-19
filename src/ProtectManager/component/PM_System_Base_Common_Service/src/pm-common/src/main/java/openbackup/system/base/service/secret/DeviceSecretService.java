@@ -12,6 +12,8 @@
 */
 package openbackup.system.base.service.secret;
 
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.bean.DeviceUser;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
@@ -21,9 +23,6 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.infrastructure.InfrastructureRestApi;
 import openbackup.system.base.sdk.infrastructure.model.InfraConfigMapRequest;
 import openbackup.system.base.sdk.infrastructure.model.InfraResponseWithError;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -164,11 +163,38 @@ public class DeviceSecretService {
         return SUCCESS.equals(resp.getData());
     }
 
-    // 需要deviceUsers中的id相同，且都为deviceId
-    private boolean updateSecret(String deviceId, List<DeviceUser> deviceUsers) {
+    /**
+     * 更新secret
+     *
+     * @param deviceId deviceId
+     * @param deviceUsers deviceUsers
+     * @return 是否更新成功
+     */
+    public boolean updateSecret(String deviceId, List<DeviceUser> deviceUsers) {
         String userStr = JSONArray.fromObject(deviceUsers).toString();
         InfraResponseWithError<String> resp = infrastructureRestApi.updateSecret(
                 new InfraConfigMapRequest(NAMESPACE, DEVICE_SECRET, deviceId, userStr));
+        return SUCCESS.equals(resp.getData());
+    }
+
+    /**
+     * 更新或创建secret
+     *
+     * @param deviceId deviceId
+     * @param deviceUsers deviceUsers
+     * @return 是否更新成功
+     */
+    public boolean upsertSecret(String deviceId, List<DeviceUser> deviceUsers) {
+        List<DeviceUser> existDeviceUsers = querySecret(deviceId);
+        String userStr = JSONArray.fromObject(deviceUsers).toString();
+
+        InfraResponseWithError<String> resp;
+        if (VerifyUtil.isEmpty(existDeviceUsers)) {
+            resp = infrastructureRestApi.createSecret(NAMESPACE, DEVICE_SECRET, deviceId, userStr);
+        } else {
+            resp = infrastructureRestApi.updateSecret(
+                new InfraConfigMapRequest(NAMESPACE, DEVICE_SECRET, deviceId, userStr));
+        }
         return SUCCESS.equals(resp.getData());
     }
 }

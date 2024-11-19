@@ -12,10 +12,10 @@
 */
 package openbackup.data.protection.access.provider.sdk.archive;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvider;
 import openbackup.data.protection.access.provider.sdk.job.Task;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * This interface defines the restore providers that need to be implemented by DataMover

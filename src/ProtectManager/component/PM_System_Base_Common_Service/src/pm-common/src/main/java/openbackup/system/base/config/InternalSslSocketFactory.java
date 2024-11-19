@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.config;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.util.KeyToolUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

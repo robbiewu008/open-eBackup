@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.sdk.cluster.model;
 
-import openbackup.system.base.common.validator.constants.RegexpConstants;
-
 import lombok.Getter;
 import lombok.Setter;
 import openbackup.system.base.common.constants.IsmNumberConstant;
+import openbackup.system.base.common.validator.constants.RegexpConstants;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -33,7 +32,8 @@ public class ComponentIpInfo {
     @Size(min = 1, max = 256)
     private String componentName;
 
-    @Size(max = IsmNumberConstant.TWO_HUNDRED_FIFTY_SIX, min = IsmNumberConstant.ONE, message = "The length of ip is 1-256 characters")
+    @Size(max = IsmNumberConstant.TWO_HUNDRED_FIFTY_SIX, min = IsmNumberConstant.ONE,
+            message = "The length of ip is 1-256 characters")
     @Pattern(regexp = RegexpConstants.IP_V4V6_ADDRESS, message = "cluster ip is invalid, not ipv4 or ipv6.")
     private String ip;
 }

@@ -28,7 +28,7 @@ public class BackupClusterConfigConstants {
     public static final String CLUSTER_ESN = "CLUSTER_ESN";
 
     /**
-     * 节点角色 ROLE
+     * 节点角色ROLE
      */
     public static final String CLUSTER_ROLE = "CLUSTER_ROLE";
 

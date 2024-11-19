@@ -20,6 +20,7 @@ import openbackup.system.base.bean.NetworkConnectRequest;
 import openbackup.system.base.common.utils.JSONObject;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -34,6 +35,13 @@ public interface NetworkService {
      * @return 网络信息
      */
     List<NetWorkConfigInfo> getNetWork(String networkName);
+
+    /**
+     * 获取网络信息
+     *
+     * @return 网络信息
+     */
+    Map<String, List<NetWorkConfigInfo>> getNetWorkMap();
 
     /**
      * 获取网络信息
@@ -126,4 +134,26 @@ public interface NetworkService {
      * @return 自定义漂移组名称
      */
     String getFailOverGroupOfEthPort(String ethPortId);
+
+    /**
+     * 检查两个ipv4地址是否为同网段
+     *
+     * @param ipAddress1 ipv4地址1
+     * @param mask1 ipv4格式掩码1
+     * @param ipAddress2 ipv4地址2
+     * @param mask2 掩码2
+     * @return 是否为同网段
+     */
+    boolean isIpv4SameNetworkSegment(String ipAddress1, String mask1, String ipAddress2, String mask2);
+
+    /**
+     * 检查两个ipv6地址是否为同网段
+     *
+     * @param ipAddress1 ipv6地址1
+     * @param mask1 ipv6格式掩码1
+     * @param ipAddress2 ipv6地址2
+     * @param mask2 ipv6掩码2
+     * @return 是否为同网段
+     */
+    boolean isIpv6SameNetworkSegment(String ipAddress1, String mask1, String ipAddress2, String mask2);
 }

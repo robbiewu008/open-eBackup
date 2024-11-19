@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.accesspoint.model;
 
-import openbackup.system.base.sdk.job.model.JobTypeEnum;
-
 import lombok.Data;
+import openbackup.system.base.sdk.job.model.JobTypeEnum;
 
 /**
  * Job对象

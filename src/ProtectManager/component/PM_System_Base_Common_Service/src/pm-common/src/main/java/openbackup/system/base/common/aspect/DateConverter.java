@@ -12,14 +12,14 @@
 */
 package openbackup.system.base.common.aspect;
 
-import openbackup.system.base.common.constants.Constants;
-
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.constants.Constants;
 
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * Date Converter
@@ -43,30 +43,30 @@ public class DateConverter extends AbstractConverter {
      */
     @Override
     protected Object cast(Object data) {
-        Date date = parse(data);
-        if (date == null) {
+        Optional<Date> date = parse(data);
+        if (!date.isPresent()) {
             return null;
         }
         return Constants.SIMPLE_DATE_FORMAT.format(date);
     }
 
-    private Date parse(Object data) {
+    private Optional<Date> parse(Object data) {
         if (data == null || data instanceof Date) {
-            return (Date) data;
+            return Optional.of((Date) data);
         }
         if (data instanceof String) {
             String text = (String) data;
             try {
-                return Constants.SIMPLE_DATE_FORMAT.parse(text);
+                return Optional.of(Constants.SIMPLE_DATE_FORMAT.parse(text));
             } catch (ParseException e) {
                 log.error("parse date failed. text: {}", text);
-                return null;
+                return Optional.empty();
             }
         }
         if (data instanceof Number) {
             Number num = (Number) data;
-            return new Date(num.longValue());
+            return Optional.of(new Date(num.longValue()));
         }
-        return null;
+        return Optional.empty();
     }
 }

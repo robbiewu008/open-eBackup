@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.accesspoint.model;
 
+import lombok.Data;
 import openbackup.system.base.sdk.cluster.ClusterInternalApi;
 import openbackup.system.base.sdk.cluster.model.ClusterDetailInfo;
 import openbackup.system.base.sdk.cluster.model.SourceClustersParams;
 import openbackup.system.base.sdk.cluster.model.StorageSystemInfo;
-
-import lombok.Data;
 
 import java.util.List;
 

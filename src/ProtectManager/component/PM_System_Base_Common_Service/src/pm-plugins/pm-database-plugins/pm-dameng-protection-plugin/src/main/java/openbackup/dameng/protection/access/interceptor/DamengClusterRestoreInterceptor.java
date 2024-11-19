@@ -12,6 +12,7 @@
 */
 package openbackup.dameng.protection.access.interceptor;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.dameng.protection.access.service.DamengService;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
@@ -25,8 +26,6 @@ import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbRestoreInterceptorProvider;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

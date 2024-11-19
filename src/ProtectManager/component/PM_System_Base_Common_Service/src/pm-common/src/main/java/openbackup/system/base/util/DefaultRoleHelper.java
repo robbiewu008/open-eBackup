@@ -14,13 +14,12 @@ package openbackup.system.base.util;
 
 import static openbackup.system.base.common.constants.Constants.Builtin.DEFAULT_BUILT_IN_ROLES_LIST;
 
-import openbackup.system.base.common.constants.Constants;
-import openbackup.system.base.sdk.user.RoleServiceApi;
-import openbackup.system.base.sdk.user.model.RolePo;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.constants.Constants;
+import openbackup.system.base.sdk.user.RoleServiceApi;
+import openbackup.system.base.sdk.user.model.RolePo;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -49,6 +48,16 @@ public class DefaultRoleHelper {
      */
     public static RolePo getDefaultRoleByUserId(String userId) {
         return roleServiceApi.getDefaultRolePoByUserId(userId);
+    }
+
+    /**
+     * 是否为系统管理员或审计员
+     *
+     * @param roleName 角色名称
+     * @return check result
+     */
+    public static boolean isAdminOrAuditByRoleName(String roleName) {
+        return Constants.Builtin.ADMIN_AUDITOR.contains(roleName);
     }
 
     /**
@@ -94,11 +103,11 @@ public class DefaultRoleHelper {
     /**
      * 是否为设备管理员
      *
-     * @param userId 用户id
+     * @param roleName 角色名称
      * @return true 设备管理员， false 不是设备管理员
      */
-    public static boolean isDeviceManager(String userId) {
-        return StringUtils.equals(getDefaultRoleByUserId(userId).getRoleName(), Constants.Builtin.ROLE_DEVICE_MANAGER);
+    public static boolean isDeviceManagerByRoleName(String roleName) {
+        return StringUtils.equals(roleName, Constants.Builtin.ROLE_DEVICE_MANAGER);
     }
 
     /**
@@ -108,7 +117,7 @@ public class DefaultRoleHelper {
      */
     public static List<String> getIncludeRoleList() {
         return Arrays.asList(Constants.Builtin.ROLE_RD_ADMIN, Constants.Builtin.ROLE_DR_ADMIN,
-            Constants.Builtin.ROLE_DEVICE_MANAGER, Constants.Builtin.ROLE_AUDITOR);
+                Constants.Builtin.ROLE_DEVICE_MANAGER, Constants.Builtin.ROLE_AUDITOR);
     }
 
     /**

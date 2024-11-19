@@ -12,10 +12,10 @@
 */
 package openbackup.system.base.sdk.job.model;
 
-import openbackup.system.base.util.EnumUtil;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import openbackup.system.base.util.EnumUtil;
 
 /**
  * 功能描述
@@ -199,7 +199,12 @@ public enum JobTypeEnum {
     /**
      * 资源集修改
      */
-    RESOURCE_SET_MODIFY("resource_set_modify");
+    RESOURCE_SET_MODIFY("resource_set_modify"),
+
+    /**
+     * agent修改容器前端地址
+     */
+    PROTECT_AGENT_UPDATE_CONTAINER_IP("protect_agent_update_backup_service_ip");
 
     private final String value;
 

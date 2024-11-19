@@ -12,6 +12,7 @@
 */
 package openbackup.clickhouse.plugin.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.agent.DataBaseAgentSelector;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -24,8 +25,6 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

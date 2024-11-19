@@ -29,6 +29,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import com.huawei.oceanprotect.repository.service.LocalStorageService;
 import openbackup.system.base.common.constants.LocalStorageInfoRes;
+import openbackup.system.base.sdk.alarm.CommonAlarmService;
 import openbackup.system.base.sdk.cluster.api.ClusterNativeApi;
 import openbackup.system.base.sdk.repository.api.BackupStorageApi;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
@@ -83,6 +84,8 @@ public class TpopsGaussDBBackupInterceptorTest {
 
     private DeployTypeService deployTypeService;
 
+    private CommonAlarmService commonAlarmService;
+
     private final ResourceConnectionCheckProvider resourceConnectionCheckProvider = Mockito.mock(
         ResourceConnectionCheckProvider.class);
 
@@ -100,10 +103,12 @@ public class TpopsGaussDBBackupInterceptorTest {
         clusterIntegrityChecker = Mockito.mock(UnifiedClusterResourceIntegrityChecker.class);
         clusterBasicService = Mockito.mock(ClusterBasicService.class);
         deployTypeService = Mockito.mock(DeployTypeService.class);
+        commonAlarmService = Mockito.mock(CommonAlarmService.class);
         gaussDbService = new TpopsGaussDBServiceImpl(resourceService, providerManager, resourceConnectionCheckProvider,
             clusterIntegrityChecker, taskRepositoryManager);
         gaussDBBackupInterceptor = new TpopsGaussDBBackupInterceptor(gaussDbService,
-            new TpopsGaussDBAgentProvider(null, resourceService), clusterBasicService, deployTypeService);
+            new TpopsGaussDBAgentProvider(null, resourceService), clusterBasicService, deployTypeService,
+            commonAlarmService);
 
         LocalStorageInfoRes localStorageInfoRes = new LocalStorageInfoRes();
         localStorageInfoRes.setEsn("xxxxxxxxxxxxxxxxx");
@@ -155,6 +160,8 @@ public class TpopsGaussDBBackupInterceptorTest {
         PowerMockito.mockStatic(EnvironmentLinkStatusHelper.class);
         PowerMockito.when(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(any())).thenReturn("1");
         BackupTask backupTask = MockInterceptorParameter.getBackupTask();
+        backupTask.setBackupType(TpopsGaussDBConstant.LOG_BACKUP_TYPE);
+        backupTask.setAdvanceParams(new HashMap<>());
         Optional<ProtectedResource> resourceOptional = Optional.of(MockInterceptorParameter.getProtectedEnvironment());
         PowerMockito.when(resourceService.getResourceById(any())).thenReturn(resourceOptional);
         gaussDBBackupInterceptor.supplyNodes(backupTask);

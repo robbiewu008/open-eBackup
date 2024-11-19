@@ -12,6 +12,10 @@
 */
 package openbackup.obs.plugin.service.impl;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.AgentBusinessService;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
@@ -35,11 +39,6 @@ import openbackup.system.base.query.SessionService;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -128,8 +127,9 @@ public class ObjectStorageAgentServiceImpl implements ObjectStorageAgentService 
         return Arrays.stream(agents.split(SymbolConstant.SEMICOLON))
             .map(this::getEndpoint)
             .filter(Optional::isPresent)
-            .filter(endpoint -> !(VerifyUtil.isEmpty(endpoint.get().getId())
-                || VerifyUtil.isEmpty(endpoint.get().getPort()) || VerifyUtil.isEmpty(endpoint.get().getIp())))
+            .filter(
+                endpoint -> !(VerifyUtil.isEmpty(endpoint.get().getId()) || VerifyUtil.isEmpty(endpoint.get().getPort())
+                    || VerifyUtil.isEmpty(endpoint.get().getIp())))
             .map(Optional::get)
             .collect(Collectors.toList());
     }
@@ -161,9 +161,9 @@ public class ObjectStorageAgentServiceImpl implements ObjectStorageAgentService 
      *
      * @return internal agent list
      */
+    @Override
     public List<ProtectedResource> queryBuiltInAgents() {
-        PageListResponse<ProtectedResource> response = sessionService.call(
-            () -> resourceService.query(0, SIZE,
+        PageListResponse<ProtectedResource> response = sessionService.call(() -> resourceService.query(0, SIZE,
                 ImmutableMap.of(TYPE, ResourceTypeEnum.HOST.getType(), INTERNAL_AGENT_KEY, INTERNAL_AGENT_VALUE)),
             Constants.Builtin.ROLE_SYS_ADMIN);
         return response.getRecords();
@@ -175,12 +175,13 @@ public class ObjectStorageAgentServiceImpl implements ObjectStorageAgentService 
      * @param ids agent的id列表
      * @return internal agent list
      */
+    @Override
     public List<ProtectedResource> queryAgents(List<String> ids) {
         List<Object> uuids = new ArrayList<>(ids);
         uuids.add(0, Collections.singleton("in"));
         Map<String, Object> filter = Collections.singletonMap("uuid", uuids);
-        PageListResponse<ProtectedResource> response =
-            sessionService.call(() -> resourceService.query(0, SIZE, filter), Constants.Builtin.ROLE_SYS_ADMIN);
+        PageListResponse<ProtectedResource> response = sessionService.call(() -> resourceService.query(0, SIZE, filter),
+            Constants.Builtin.ROLE_SYS_ADMIN);
         return response.getRecords();
     }
 }

@@ -12,6 +12,7 @@
 */
 package openbackup.sqlserver.protection.restore;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
@@ -38,8 +39,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.StreamUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -90,8 +89,16 @@ public class SqlServerDatabaseRestoreProvider extends AbstractDbRestoreIntercept
     @Override
     public void restoreTaskCreationPreCheck(RestoreTask task) {
         log.info("Pre check sqlserver database restore task. taskId: {}", task.getTaskId());
-        // 恢复任务参数校验
-        sqlServerBaseService.checkRestoreTaskParam(task);
+        RestoreLocationEnum targetLocation = task.getTargetLocation();
+        // 获取目标对象实例信息
+        ProtectedResource instanceRes = getInstanceInfo(targetLocation, task);
+        List<TaskEnvironment> nodeList = applyTaskEnvironment(instanceRes);
+        if (SqlServerConstants.SUPPORT_OLD_VERSION.contains(nodeList.get(0).getVersion().substring(0, 3))) {
+            sqlServerBaseService.oldVersionCheckRestoreTaskParam(task);
+        } else {
+            // 恢复任务参数校验
+            sqlServerBaseService.checkRestoreTaskParam(task);
+        }
     }
 
     /**

@@ -38,6 +38,11 @@ public class TdsqlConstant {
     public static final String CLUSTER_GROUP_INFO = "clusterGroupInfo";
 
     /**
+     * 取json里面的mysql_version
+     */
+    public static final String MYSQL_VERSION = "mysql_version";
+
+    /**
      * 参数
      */
     public static final String PARAMETERS = "parameters";
@@ -293,4 +298,39 @@ public class TdsqlConstant {
      * RESOURCE 查询集群数据节点
      */
     public static final String RESOURCE = "resource";
+
+    /**
+     * FALSE字符串
+     */
+    public static final String FALSE = "false";
+
+    /**
+     * delete_archived_log
+     */
+    public static final String DELETE_ARCHIVED_LOG = "delete_archived_log";
+
+    /**
+     * END_TIME
+     */
+    public static final String END_TIME = "endTime";
+
+    /**
+     * BACKUP_TIME
+     */
+    public static final String BACKUP_TIME = "backupTime";
+
+    /**
+     * 主节点
+     */
+    public static final String IS_MASTER = "1";
+
+    /**
+     * 备节点
+     */
+    public static final String IS_SLAVE = "0";
+
+    /**
+     * 传给UBC，标识资源是否存在
+     */
+    public static final String RESOURCE_EXISTS = "resourceExists";
 }

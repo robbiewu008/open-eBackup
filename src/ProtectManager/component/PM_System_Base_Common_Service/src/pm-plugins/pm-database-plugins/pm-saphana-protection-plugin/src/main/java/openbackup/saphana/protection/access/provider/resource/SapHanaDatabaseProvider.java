@@ -81,6 +81,7 @@ public class SapHanaDatabaseProvider implements ResourceProvider {
         hanaResourceService.checkDatabaseConnection(resource);
         ProtectedResource instResource = hanaResourceService.getResourceById(resource.getParentUuid());
         resource.setVersion(instResource.getVersion());
+        resource.setPath(instResource.getPath());
         resource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY, LinkStatusEnum.ONLINE.getStatus().toString());
         log.info("End create sap hana database, resource name: {}, uuid: {}", resource.getName(), resource.getUuid());
     }
@@ -117,11 +118,14 @@ public class SapHanaDatabaseProvider implements ResourceProvider {
             checkAllHostsOnline(resource);
         }
         SapHanaUtil.setOperationTypeExtendInfo(resource, SapHanaConstants.MODIFY_OPERATION_TYPE);
+        // 检查是否已注册（sub_type、实例资源uuid、数据库名称）
+        hanaResourceService.checkDbNameBeforeUpdate(resource);
         // 检查连通性
         hanaResourceService.checkDatabaseConnection(resource);
         SapHanaUtil.removeExtendInfoByKey(resource, SapHanaConstants.OPERATION_TYPE);
         ProtectedResource instResource = hanaResourceService.getResourceById(resource.getParentUuid());
         resource.setVersion(instResource.getVersion());
+        resource.setPath(instResource.getPath());
         resource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY, LinkStatusEnum.ONLINE.getStatus().toString());
         log.info("End create sap hana database, name: {}, uuid: {}", resource.getName(), resource.getUuid());
     }
@@ -132,5 +136,10 @@ public class SapHanaDatabaseProvider implements ResourceProvider {
         // SAP HANA数据库不检查名称重复
         resourceFeature.setShouldCheckResourceNameDuplicate(false);
         return resourceFeature;
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        return true;
     }
 }

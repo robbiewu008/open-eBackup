@@ -12,12 +12,12 @@
 */
 package openbackup.data.access.framework.core.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
 import openbackup.data.access.framework.core.entity.CopiesEntity;
 import openbackup.data.access.framework.core.model.CopySummaryCount;
 import openbackup.data.access.framework.core.model.CopySummaryResource;
 import openbackup.data.access.framework.core.model.CopySummaryResourceQuery;
-
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -71,4 +71,20 @@ public interface CopyMapper extends BaseMapper<CopiesEntity> {
      * @param status 副本状态
      */
     void updateCopyStatus(@Param("copy_id_list") List<String> copyIdList, @Param("status") String status);
+
+    /**
+     * 更新副本资源名称
+     *
+     * @param newResourceName 资源新名称
+     * @param resourceId 资源id
+     */
+    void updateCopyResourceName(@Param("new_resource_name") String newResourceName,
+        @Param("resource_id") String resourceId);
+
+    /**
+     * 定时更新副本表中worm状态：将已worm且过期时间大于当前时间的副本worm状态更新为已过期
+     *
+     * @param currentTime 当前时间
+     */
+    void updateWormCopyExpiredStatus(@Param("current_time") String currentTime);
 }

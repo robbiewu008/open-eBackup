@@ -12,6 +12,10 @@
 */
 package openbackup.data.access.framework.core.agent.impl;
 
+import feign.FeignException;
+import feign.Response;
+import feign.codec.Encoder;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.AgentUnifiedRestApi;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
@@ -25,6 +29,7 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.CheckAppReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CleanAgentLogReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CollectAgentLogRsp;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.DeliverTaskStatusDto;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.FinalizeClearReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.GetAgentLogCollectStatusRsp;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.GetClusterEsnReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.HostDto;
@@ -54,17 +59,13 @@ import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
+import openbackup.system.base.sdk.agent.model.AgentSupportCompressedPackageType;
 import openbackup.system.base.sdk.agent.model.AgentUpdateResponse;
 import openbackup.system.base.sdk.cert.request.PushUpdateCertToAgentReq;
 import openbackup.system.base.service.AvailableAgentManagementDomainService;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.RequestUriUtil;
-
-import feign.FeignException;
-import feign.Response;
-import feign.codec.Encoder;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -143,7 +144,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
             null);
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public PageListResponse<ProtectedResource> getDetailPageList(String appType, String endpoint, Integer port,
         ListResourceV2Req listResourceV2Req, boolean isUseLongTimeApi) {
@@ -151,7 +152,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
             isUseLongTimeApi);
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public PageListResponse<ProtectedResource> getDetailPageListNoRetry(String appType, String endpoint, Integer port,
         ListResourceV2Req listResourceV2Req, boolean isUseLongTimeApi) {
@@ -181,13 +182,13 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         return convertToPageList(listResourceV2Rsp);
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public AgentDetailDto getDetail(String appType, String endpoint, Integer port, ListResourceReq listResourceReq) {
         return getDetail(new AgentCommonParam(appType, endpoint, port, true), listResourceReq);
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public AgentDetailDto getDetailNoRetry(String appType, String endpoint, Integer port,
         ListResourceReq listResourceReq) {
@@ -224,7 +225,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
      * @param port agent的port
      * @return 插件转为ProtectedResource后的数据
      */
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public List<ProtectedResource> getPlugins(String endpoint, Integer port) {
         URI uri = RequestUriUtil.getRequestUri(endpoint, port);
@@ -246,7 +247,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
      * @param port agent上报环境信息的port
      * @return agent返回的主机信息
      */
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public HostDto getHost(String endpoint, Integer port) {
         URI uri = RequestUriUtil.getRequestUri(endpoint, port);
@@ -267,7 +268,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
      * @param port agent上报环境信息的port
      * @return agent返回的主机信息
      */
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public HostDto getAgentHost(String endpoint, Integer port) {
         URI uri = RequestUriUtil.getRequestUri(endpoint, port);
@@ -280,27 +281,27 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         }
     }
 
-    @Routing(destinationIp = "#{agent.endpoint}")
+    @Routing(destinationIp = "#{agent.endpoint}", port = "#{agent.port}")
     @Override
     public AgentBaseDto checkApplication(ProtectedResource resource, ProtectedEnvironment agent) {
         CheckAppReq checkAppReq = CheckAppReq.buildFrom(resource);
         return check(resource, agent, checkAppReq);
     }
 
-    @Routing(destinationIp = "#{agent.endpoint}")
+    @Routing(destinationIp = "#{agent.endpoint}", port = "#{agent.port}")
     @Override
     public AgentBaseDto checkApplicationNoRetry(ProtectedResource resource, ProtectedEnvironment agent) {
         CheckAppReq checkAppReq = CheckAppReq.buildFrom(resource);
         return checkNoRetry(resource, agent, checkAppReq);
     }
 
-    @Routing(destinationIp = "#{agent.endpoint}")
+    @Routing(destinationIp = "#{agent.endpoint}", port = "#{agent.port}")
     @Override
     public AgentBaseDto check(ProtectedResource resource, ProtectedEnvironment agent, CheckAppReq checkAppReq) {
         return check(resource, agent, checkAppReq, true);
     }
 
-    @Routing(destinationIp = "#{agent.endpoint}")
+    @Routing(destinationIp = "#{agent.endpoint}", port = "#{agent.port}")
     @Override
     public AgentBaseDto check(String subType, ProtectedEnvironment agent, CheckAppReq checkAppReq) {
         ProtectedResource resource = new ProtectedResource();
@@ -308,7 +309,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         return check(resource, agent, checkAppReq, true);
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public AgentBaseDto check(String subType, String endpoint, Integer port, CheckAppReq checkAppReq) {
         ProtectedResource resource = new ProtectedResource();
@@ -319,7 +320,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         return check(resource, environment, checkAppReq);
     }
 
-    @Routing(destinationIp = "#{agent.endpoint}")
+    @Routing(destinationIp = "#{agent.endpoint}", port = "#{agent.port}")
     @Override
     public AgentBaseDto checkNoRetry(ProtectedResource resource, ProtectedEnvironment agent, CheckAppReq checkAppReq) {
         return check(resource, agent, checkAppReq, false);
@@ -362,13 +363,13 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         return agentBaseDto;
     }
 
-    @Routing(destinationIp = "#{environment.endpoint}")
+    @Routing(destinationIp = "#{environment.endpoint}", port = "#{environment.port}")
     @Override
     public AppEnvResponse getClusterInfo(ProtectedResource resource, ProtectedEnvironment environment) {
         return getClusterInfo(resource, environment, true);
     }
 
-    @Routing(destinationIp = "#{environment.endpoint}")
+    @Routing(destinationIp = "#{environment.endpoint}", port = "#{environment.port}")
     @Override
     public AppEnvResponse getClusterInfo(String subType, ProtectedEnvironment environment, CheckAppReq checkAppReq,
         boolean isRetry) {
@@ -385,7 +386,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         }
     }
 
-    @Routing(destinationIp = "#{environment.endpoint}")
+    @Routing(destinationIp = "#{environment.endpoint}", port = "#{environment.port}")
     @Override
     public AppEnvResponse getClusterInfoNoRetry(ProtectedResource resource, ProtectedEnvironment environment) {
         return getClusterInfo(resource, environment, false);
@@ -408,7 +409,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         }
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public Map<String, Object> queryAppConf(String appType, String script, String endpoint, Integer port) {
         URI requestUri = RequestUriUtil.getRequestUri(endpoint, port);
@@ -420,7 +421,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         }
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public void deliverTaskStatus(String appType, DeliverTaskStatusDto deliverTaskStatusDto, String endpoint,
         Integer port) {
@@ -433,7 +434,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         }
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public CollectAgentLogRsp collectAgentLog(String endpoint, Integer port) {
         try {
@@ -451,7 +452,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         }
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public GetAgentLogCollectStatusRsp getCollectAgentLogStatus(String endpoint, Integer port) {
         try {
@@ -469,7 +470,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         }
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public Response exportAgentLog(String endpoint, Integer port, String id, long maxSize) {
         try {
@@ -487,7 +488,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         }
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public void updateAgentLogLevel(String endpoint, Integer port, UpdateAgentLevelReq configReq) {
         try {
@@ -505,7 +506,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         }
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public void cleanAgentLog(String endpoint, Integer port, CleanAgentLogReq cleanAgentLogReq) {
         try {
@@ -519,7 +520,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         }
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public String queryRelatedClusterEsnByAgent(String endpoint, Integer port) {
         try {
@@ -542,13 +543,13 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         }
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public void removeProtectUnmountRepo(String endpoint, Integer port, String appType, String reqBody) {
         removeProtectUnmountRepo(endpoint, port, appType, reqBody, true);
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public void removeProtectUnmountRepoNoRetry(String endpoint, Integer port, String appType, String reqBody) {
         removeProtectUnmountRepo(endpoint, port, appType, reqBody, false);
@@ -577,7 +578,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
      * @param version 调用新旧接口查询wwpn v1:通用代理查询wwpn v2:SanClient和AIX主机查询wwpn
      * @return agent返回的主机信息
      */
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public AgentWwpnInfo listWwpn(String endpoint, Integer port, String version) {
         URI uri = RequestUriUtil.getRequestUri(endpoint, port);
@@ -601,7 +602,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
      * @param agentIqnValidateRequest agentIqnValidateRequest
      * @return AgentWwpnInfo agentWwpnInfo
      */
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public AgentWwpnInfo getIqnInfoList(String endpoint, Integer port,
         AgentIqnValidateRequest agentIqnValidateRequest) {
@@ -622,7 +623,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
      * @param port agent的port
      * @return AgentWwpnInfo agentWwpnInfo
      */
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public AgentWwpnInfo scanSanClientIqnInfo(String endpoint, Integer port) {
         URI uri = RequestUriUtil.getRequestUri(endpoint, port);
@@ -642,7 +643,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
      * @param port agent上报环境信息的port
      * @return agent返回的主机信息
      */
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public AgentBaseDto reScan(String endpoint, Integer port) {
         URI uri = RequestUriUtil.getRequestUri(endpoint, port);
@@ -666,7 +667,14 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         // 返回错误码，抛出错误码
         if (Objects.nonNull(listResourceV2Rsp.getErrorCode()) && !SUCCESS_ERROR_CODE.equals(
             listResourceV2Rsp.getErrorCode())) {
-            log.info("get details error, errorCode: {}, errorMessage: {}", listResourceV2Rsp.getErrorCode(),
+            if (!VerifyUtil.isEmpty(listResourceV2Rsp.getDetailParams())) {
+                log.error("Get details error, errorCode: {}, errorMessage: {}", listResourceV2Rsp.getErrorCode(),
+                    listResourceV2Rsp.getErrorMessage());
+                String[] errorParam = listResourceV2Rsp.getDetailParams().toArray(new String[0]);
+                throw new LegoCheckedException(Long.parseLong(listResourceV2Rsp.getErrorCode()), errorParam,
+                    listResourceV2Rsp.getErrorMessage());
+            }
+            log.error("Get details error, errorCode: {}, errorMessage: {}", listResourceV2Rsp.getErrorCode(),
                 listResourceV2Rsp.getErrorMessage());
             throw new LegoCheckedException(Long.parseLong(listResourceV2Rsp.getErrorCode()),
                 listResourceV2Rsp.getErrorMessage());
@@ -756,7 +764,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         return UUID.nameUUIDFromBytes(pluginIdentity.getBytes(Charset.defaultCharset())).toString();
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public AgentUpdateResponse modifyPluginType(String endpoint, Integer port, UpdateAgentPluginTypeReq req) {
         try {
@@ -774,7 +782,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         }
     }
 
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     @Override
     public AgentUpdatePluginTypeResult getModifyPluginTypeResult(String endpoint, Integer port) {
         try {
@@ -788,6 +796,24 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         } catch (FeignException e) {
             log.error("modify agent plugin type error, endpoint: {}, port: {}", endpoint, port,
                 ExceptionUtil.getErrorMessage(e));
+            return new AgentUpdatePluginTypeResult();
+        }
+    }
+
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
+    @Override
+    public AgentSupportCompressedPackageType getCompressedPackageTypeByAgent(String endpoint, Integer port) {
+        try {
+            URI requestUri = RequestUriUtil.getRequestUri(endpoint, port);
+            log.info("Displaying Agent Installation Commands, uri: {}", requestUri);
+            return getAgentUnifiedRestApi(endpoint).queryCompressedPackageType(requestUri);
+        } catch (LegoCheckedException e) {
+            log.error("Displaying Agent Installation Commands fail, endpoint: {}, port: {}", endpoint, port,
+                ExceptionUtil.getErrorMessage(e));
+            throw e;
+        } catch (FeignException e) {
+            log.error("Displaying Agent Installation Commands error, endpoint: {}, port: {}", endpoint, port,
+                ExceptionUtil.getErrorMessage(e));
             throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error");
         }
     }
@@ -799,7 +825,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
      * @param pushUpdateCertToAgentReq 封装证书的参数
      * @return AgentBaseDto
      */
-    @Routing(destinationIp = "#{agent.endpoint}")
+    @Routing(destinationIp = "#{agent.endpoint}", port = "#{agent.port}")
     @Override
     public AgentBaseDto pushCertToAgent(ProtectedEnvironment agent, PushUpdateCertToAgentReq pushUpdateCertToAgentReq) {
         URI requestUri = RequestUriUtil.getRequestUri(agent.getEndpoint(), agent.getPort());
@@ -838,7 +864,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
      * @param pushUpdateCertToAgentReq 封装证书的参数
      * @return AgentBaseDto
      */
-    @Routing(destinationIp = "#{agent.endpoint}")
+    @Routing(destinationIp = "#{agent.endpoint}", port = "#{agent.port}")
     @Override
     public AgentBaseDto notifyAgentUpdateCert(ProtectedEnvironment agent,
         PushUpdateCertToAgentReq pushUpdateCertToAgentReq) {
@@ -880,7 +906,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
      * @param pushUpdateCertToAgentReq 封装证书的参数
      * @return AgentBaseDto
      */
-    @Routing(destinationIp = "#{agent.endpoint}")
+    @Routing(destinationIp = "#{agent.endpoint}", port = "#{agent.port}")
     @Override
     public AgentBaseDto notifyAgentFallbackCert(ProtectedEnvironment agent,
         PushUpdateCertToAgentReq pushUpdateCertToAgentReq) {
@@ -923,7 +949,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
      * @param pushUpdateCertToAgentReq 封装证书的参数
      * @return AgentBaseDto
      */
-    @Routing(destinationIp = "#{agent.endpoint}")
+    @Routing(destinationIp = "#{agent.endpoint}", port = "#{agent.port}")
     @Override
     public AgentBaseDto notifyAgentDeleteOldCert(ProtectedEnvironment agent,
         PushUpdateCertToAgentReq pushUpdateCertToAgentReq) {
@@ -965,7 +991,7 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
      * @param agent agent环境信息
      * @return AgentBaseDto
      */
-    @Routing(destinationIp = "#{agent.endpoint}")
+    @Routing(destinationIp = "#{agent.endpoint}", port = "#{agent.port}")
     @Override
     public AgentBaseDto checkConnection(ProtectedEnvironment agent) {
         URI requestUri = RequestUriUtil.getRequestUri(agent.getEndpoint(), agent.getPort());
@@ -998,15 +1024,67 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         return agentBaseDto;
     }
 
-    @Routing(destinationIp = "#{agent.endpoint}")
+    @Routing(destinationIp = "#{agent.endpoint}", port = "#{agent.port}")
     @Override
     public void updateAgentServer(ProtectedEnvironment agent, ManagementIp managementIp) {
         URI requestUri = RequestUriUtil.getRequestUri(agent.getEndpoint(), agent.getPort());
         try {
+            log.info("Update agent backup server uri: {}", requestUri);
             getAgentUnifiedRestApi(agent.getEndpoint()).modifyAgentServerList(requestUri, managementIp);
         } catch (LegoUncheckedException | FeignException e) {
             log.error("Call agent api failed, uri: {}", requestUri, ExceptionUtil.getErrorMessage(e));
             throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error");
         }
+    }
+
+    /**
+     * 副本入库后置清理任务
+     *
+     * @param agent agent
+     * @param appType appType
+     * @param finalizeClearReq finalizeClearReq
+     * @return AgentBaseDto
+     */
+    @Routing(destinationIp = "#{agent.endpoint}")
+    @Override
+    public AgentBaseDto finalizeClear(ProtectedEnvironment agent, String appType, FinalizeClearReq finalizeClearReq) {
+        return finalizeClear(agent, appType, finalizeClearReq, false);
+    }
+
+    @Routing(destinationIp = "#{agent.endpoint}")
+    private AgentBaseDto finalizeClear(ProtectedEnvironment agent, String appType, FinalizeClearReq finalizeClearReq,
+        boolean isRetry) {
+        AgentBaseDto agentBaseDto = new AgentBaseDto();
+        URI requestUri = RequestUriUtil.getRequestUri(agent.getEndpoint(), agent.getPort());
+        log.info("finalize clear, uri: {}", requestUri);
+        try {
+            agentBaseDto = (isRetry
+                ? getAgentUnifiedRestApi(agent.getEndpoint())
+                : getNoRetryAgentUnifiedRestApi(agent.getEndpoint())).finalizeClear(requestUri, appType,
+                finalizeClearReq);
+        } catch (LegoCheckedException e) {
+            log.error("Fail to finalize clear, uri: {}.", requestUri, e);
+            agentBaseDto.setErrorCode(String.valueOf(CommonErrorCode.AGENT_NETWORK_ERROR));
+            if (VerifyUtil.isEmpty(e.getMessage())) {
+                log.info("finalize clear failed, error msg is empty");
+                ActionResult actionResult = new ActionResult();
+                actionResult.setCode(CommonErrorCode.AGENT_NETWORK_ERROR);
+                actionResult.setBodyErr(String.valueOf(CommonErrorCode.AGENT_NETWORK_ERROR));
+                agentBaseDto.setErrorMessage(JSONObject.writeValueAsString(actionResult));
+            } else {
+                agentBaseDto.setErrorMessage(e.getMessage());
+            }
+        } catch (LegoUncheckedException | FeignException e) {
+            log.error("Fail to finalize clear, call agent api failed, uri: {}.", requestUri, e);
+            agentBaseDto.setErrorCode(String.valueOf(CommonErrorCode.AGENT_NETWORK_ERROR));
+            ActionResult actionResult = new ActionResult();
+            actionResult.setCode(CommonErrorCode.AGENT_NETWORK_ERROR);
+            actionResult.setBodyErr(String.valueOf(CommonErrorCode.AGENT_NETWORK_ERROR));
+            actionResult.setMessage(e.getMessage());
+            agentBaseDto.setErrorMessage(JSONObject.writeValueAsString(actionResult));
+        }
+        log.info("finalize clear finish, agentId: {}, uri: {}, code: {}, msg: {}", agent.getUuid(), requestUri,
+            agentBaseDto.getErrorCode(), agentBaseDto.getErrorMessage());
+        return agentBaseDto;
     }
 }

@@ -12,18 +12,19 @@
 */
 package openbackup.data.access.framework.core.common.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.CopyInfoConstants;
 import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
 import openbackup.data.protection.access.provider.sdk.enums.CopyFeatureEnum;
 import openbackup.data.protection.access.provider.sdk.resource.Resource;
 import openbackup.system.base.common.enums.RetentionTypeEnum;
 import openbackup.system.base.common.enums.TimeUnitEnum;
+import openbackup.system.base.common.enums.WormValidityTypeEnum;
+import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.protection.model.PolicyBo;
 import openbackup.system.base.sdk.protection.model.RetentionBo;
 import openbackup.system.base.sdk.protection.model.SlaBo;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -70,6 +71,38 @@ public class CopyInfoBuilder {
         copy.setDurationUnit(retention.getDurationUnit());
         copy.setExpirationTime(computeExpirationTime(timeStamp, TimeUnitEnum.getByUnit(retention.getDurationUnit()),
             retention.getRetentionDuration()));
+    }
+
+    /**
+     * build worm Retention Info
+     *
+     * @param copy 副本
+     * @param policyBo 策略数据
+     * @param timeStamp time stamp
+     */
+    public static void buildWormRetentionInfo(CopyInfoBo copy, PolicyBo policyBo, long timeStamp) {
+            Integer wormValidityType = policyBo.getWormValidityType();
+            if (!VerifyUtil.isEmpty(wormValidityType)) {
+                copy.setWormValidityType(wormValidityType);
+            }
+            if (wormValidityType == null || WormValidityTypeEnum.WORM_NOT_OPEN.getType().equals(wormValidityType)) {
+                return;
+            }
+            RetentionBo retention = policyBo.getRetention();
+            if (WormValidityTypeEnum.CUSTOM_RETENTION_TIME.getType().equals(wormValidityType)) {
+                copy.setWormRetentionDuration(retention.getWormRetentionDuration());
+                copy.setWormDurationUnit(retention.getWormDurationUnit());
+            } else {
+                copy.setWormDurationUnit(retention.getDurationUnit());
+                if (!VerifyUtil.isEmpty(retention.getRetentionDuration())) {
+                    copy.setWormRetentionDuration(retention.getRetentionDuration());
+                }
+            }
+        if (!VerifyUtil.isEmpty(copy.getWormDurationUnit())) {
+            copy.setWormExpirationTime(
+                computeExpirationTime(timeStamp, TimeUnitEnum.getByUnit(copy.getWormDurationUnit()),
+                    copy.getWormRetentionDuration()));
+        }
     }
 
     /**
@@ -284,6 +317,20 @@ public class CopyInfoBuilder {
             // 按数量保留副本，保留时间与永久保留一致
             copy.setRetentionType(RetentionTypeEnum.QUANTITY.getType());
         }
+        return this;
+    }
+
+    /**
+     * 设置副本WORM保留信息
+     *
+     * @param sla sla
+     * @param policyBo sla policy
+     * @param timeStamp 副本生成时间
+     * @return CopyInfoBuilder
+     * */
+    public CopyInfoBuilder setWormRetentionInfo(SlaBo sla, PolicyBo policyBo, long timeStamp) {
+        // 执行的备份类型在SLA中开启，根据SLA计算副本有效期
+        buildWormRetentionInfo(copy, policyBo, timeStamp);
         return this;
     }
 

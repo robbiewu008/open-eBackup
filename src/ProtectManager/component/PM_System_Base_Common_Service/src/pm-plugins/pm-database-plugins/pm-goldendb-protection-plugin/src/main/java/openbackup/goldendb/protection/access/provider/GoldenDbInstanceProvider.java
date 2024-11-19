@@ -12,6 +12,9 @@
 */
 package openbackup.goldendb.protection.access.provider;
 
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.util.EnvironmentParamCheckUtil;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
@@ -33,16 +36,13 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -121,18 +121,17 @@ public class GoldenDbInstanceProvider implements ResourceProvider {
      */
     private void checkNodeParam(ProtectedResource resource) {
         log.info("start check computeNode");
-        List<MysqlNode> computeNodes =
-            Optional.ofNullable(goldenDbService.getComputeNode(BeanTools.copy(resource, ProtectedEnvironment::new)))
-                .orElseGet(ArrayList::new);
+        List<MysqlNode> computeNodes = Optional.ofNullable(
+                goldenDbService.getComputeNode(BeanTools.copy(resource, ProtectedEnvironment::new)))
+            .orElseGet(ArrayList::new);
         computeNodes.forEach(mysqlNode -> {
             checkComputeNodeName(mysqlNode);
             checkComputeNodeIp(mysqlNode);
             checkComputeNodePartParent(mysqlNode);
         });
         log.info("start check gtmNode");
-        List<Gtm> gtmNodes =
-            Optional.ofNullable(goldenDbService.getGtmNode(BeanTools.copy(resource, ProtectedEnvironment::new)))
-                .orElseGet(ArrayList::new);
+        List<Gtm> gtmNodes = Optional.ofNullable(
+            goldenDbService.getGtmNode(BeanTools.copy(resource, ProtectedEnvironment::new))).orElseGet(ArrayList::new);
         gtmNodes.forEach(gtm -> {
             checkGtmNodeType(gtm);
             checkGtmNodeIp(gtm);
@@ -187,9 +186,9 @@ public class GoldenDbInstanceProvider implements ResourceProvider {
      * @param resource 受保护资源
      */
     private void checkNodeMatch(ProtectedResource resource) {
-        List<MysqlNode> computeNodes =
-            Optional.ofNullable(goldenDbService.getComputeNode(BeanTools.copy(resource, ProtectedEnvironment::new)))
-                .orElseGet(ArrayList::new);
+        List<MysqlNode> computeNodes = Optional.ofNullable(
+                goldenDbService.getComputeNode(BeanTools.copy(resource, ProtectedEnvironment::new)))
+            .orElseGet(ArrayList::new);
         computeNodes.stream().forEach(mysqlNode -> {
             ProtectedEnvironment agent = goldenDbService.getEnvironmentById(mysqlNode.getParentUuid());
             if (!agent.getExtendInfo().get(GoldenDbConstant.AGENT_IP_LIST).contains(mysqlNode.getIp())) {
@@ -206,9 +205,8 @@ public class GoldenDbInstanceProvider implements ResourceProvider {
      */
     private void checkGtmNodeMatch(ProtectedResource resource) {
         log.info("goldenDB start checkGtmNodeMatch");
-        List<Gtm> gtmNodes =
-            Optional.ofNullable(goldenDbService.getGtmNode(BeanTools.copy(resource, ProtectedEnvironment::new)))
-                .orElseGet(ArrayList::new);
+        List<Gtm> gtmNodes = Optional.ofNullable(
+            goldenDbService.getGtmNode(BeanTools.copy(resource, ProtectedEnvironment::new))).orElseGet(ArrayList::new);
         gtmNodes.forEach(gtm -> {
             ProtectedEnvironment agent = goldenDbService.getEnvironmentById(gtm.getParentUuid());
             if (!agent.getExtendInfo().get(GoldenDbConstant.AGENT_IP_LIST).contains(gtm.getGtmIp())) {
@@ -258,7 +256,7 @@ public class GoldenDbInstanceProvider implements ResourceProvider {
         List<Group> groups = JsonUtil.read(clusterInfo, GoldenInstance.class).getGroup();
         groups.stream().forEach(group -> {
             group.getMysqlNodes().stream().forEach(mysqlNode -> {
-                if (!goldenDbService.singleConnectCheck(mysqlNode, environment)) {
+                if (!goldenDbService.singleConnectCheck(mysqlNode, environment).isAgentBaseDtoReturnSuccess()) {
                     throw new LegoCheckedException(CommonErrorCode.CLUSTER_NODES_QUERY_FAILED,
                         "The GoldenDB instance computeNode query failed.");
                 }
@@ -269,7 +267,8 @@ public class GoldenDbInstanceProvider implements ResourceProvider {
     private void gtmNodeCheck(ProtectedEnvironment environment) {
         List<Gtm> gtmNodes = Optional.ofNullable(goldenDbService.getGtmNode(environment)).orElse(Lists.newArrayList());
         gtmNodes.forEach(gtm -> {
-            if (!goldenDbService.singleConnectCheck(BeanTools.copy(gtm, MysqlNode::new), environment)) {
+            if (!goldenDbService.singleConnectCheck(BeanTools.copy(gtm, MysqlNode::new), environment)
+                .isAgentBaseDtoReturnSuccess()) {
                 throw new LegoCheckedException(CommonErrorCode.CLUSTER_NODES_QUERY_FAILED,
                     "The GoldenDB instance gtmNode query failed");
             }
@@ -278,14 +277,19 @@ public class GoldenDbInstanceProvider implements ResourceProvider {
 
     private void managerNodeCheck(ProtectedEnvironment environment) {
         ProtectedEnvironment cluster = goldenDbService.getEnvironmentById(environment.getParentUuid());
-        List<Node> managerNode =
-            Optional.ofNullable(goldenDbService.getManageDbNode(cluster)).orElse(Lists.newArrayList());
+        List<Node> managerNode = Optional.ofNullable(goldenDbService.getManageDbNode(cluster))
+            .orElse(Lists.newArrayList());
+        AtomicBoolean flag = new AtomicBoolean(false);
         managerNode.forEach(node -> {
-            if (!goldenDbService.singleConnectCheck(BeanTools.copy(node, MysqlNode::new), environment)) {
-                throw new LegoCheckedException(CommonErrorCode.CLUSTER_NODES_QUERY_FAILED,
-                    "The GoldenDB instance gtmNode query failed");
+            if (goldenDbService.singleConnectCheck(BeanTools.copy(node, MysqlNode::new), environment)
+                .isAgentBaseDtoReturnSuccess()) {
+                flag.set(true);
             }
         });
+        if (!flag.get()) {
+            throw new LegoCheckedException(CommonErrorCode.CLUSTER_NODES_QUERY_FAILED,
+                "The GoldenDB instance gtmNode query failed");
+        }
     }
 
     /**

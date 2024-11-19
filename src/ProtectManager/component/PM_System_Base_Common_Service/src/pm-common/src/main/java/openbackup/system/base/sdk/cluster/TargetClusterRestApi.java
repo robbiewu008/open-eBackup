@@ -12,6 +12,10 @@
 */
 package openbackup.system.base.sdk.cluster;
 
+import feign.Headers;
+import feign.Param;
+import feign.QueryMap;
+import feign.RequestLine;
 import openbackup.system.base.common.annotation.Routing;
 import openbackup.system.base.common.constants.BackupBaseClusterInfo;
 import openbackup.system.base.common.model.PageListResponse;
@@ -77,11 +81,6 @@ import openbackup.system.base.sdk.infrastructure.model.InfraResponseWithError;
 import openbackup.system.base.sdk.infrastructure.model.beans.NodePodInfo;
 import openbackup.system.base.sdk.repository.model.NasDistributionStorageDetail;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import feign.Headers;
-import feign.Param;
-import feign.QueryMap;
-import feign.RequestLine;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -155,7 +154,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/clusters/status?sourceEsn={sourceEsn}")
     @Headers({"x-auth-token: {token}"})
     ClusterEnum.StatusEnum getClusterStatus(URI uri, @Param("token") String token,
-        @Param("sourceEsn") String sourceEsn);
+            @Param("sourceEsn") String sourceEsn);
 
     /**
      * Verify target cluster
@@ -168,7 +167,7 @@ public interface TargetClusterRestApi {
     @RequestLine("POST /v1/clusters/target/relation")
     @Headers({"x-auth-token: {token}"})
     Void manageTargetClusterRelation(URI uri, @Param("token") String token,
-        @RequestBody ClusterRelationRequest request);
+            @RequestBody ClusterRelationRequest request);
 
     /**
      * 指定某个被管理集群作为管理集群
@@ -182,7 +181,7 @@ public interface TargetClusterRestApi {
     @RequestLine("PUT /v1/multi-clusters/{clusterId}/action/grant-to-manager")
     @Headers({"x-auth-token: {token}"})
     Void grantToManager(URI uri, @Param("token") String token, @Param(value = "clusterId") Integer clusterId,
-        @RequestBody LocalClusterRequest request);
+            @RequestBody LocalClusterRequest request);
 
     /**
      * 取消管理集群
@@ -196,7 +195,7 @@ public interface TargetClusterRestApi {
     @RequestLine("PUT /v1/multi-clusters/{clusterId}/action/revoke-manager?syncToRemote={syncToRemote}")
     @Headers({"x-auth-token: {token}"})
     Void revokeManager(URI uri, @Param("token") String token, @Param(value = "clusterId") Integer clusterId,
-        @Param("syncToRemote") Boolean shouldSyncToRemote);
+            @Param("syncToRemote") Boolean shouldSyncToRemote);
 
     /**
      * 同步本地的所有被管理集群到本地的所有管理集群
@@ -234,7 +233,7 @@ public interface TargetClusterRestApi {
     @RequestLine("PUT /v1/clusters/{clusterId}")
     @Headers({"x-auth-token: {token}"})
     Void syncUpdateTargetClusterToRemote(URI uri, @Param("token") String token, @Param("clusterId") int clusterId,
-        @RequestBody TargetClusterRequest req);
+            @RequestBody TargetClusterRequest req);
 
     /**
      * sync update the target cluster to another manager cluster
@@ -249,14 +248,15 @@ public interface TargetClusterRestApi {
     @RequestLine("DELETE /v1/clusters/{clusterId}?forceDelete={forceDelete}&deleteInLocal={deleteInLocal}")
     @Headers({"x-auth-token: {token}"})
     Void syncDeleteTargetClusterToRemote(URI uri, @Param("token") String token, @Param("clusterId") int clusterId,
-        @Param("forceDelete") boolean shouldForceDelete, @Param("deleteInLocal") boolean shouldDeleteInLocal);
+            @Param("forceDelete") boolean shouldForceDelete, @Param("deleteInLocal") boolean shouldDeleteInLocal);
 
     /**
      * Get all the target cluster info of another manager cluster
      *
      * @param uri of the another manager cluster
      * @param token of the another manage cluster
-     * @return PageListResponse<ClustersInfoVo> list of target cluster info of another manager cluster
+     * @return PageListResponse<ClustersInfoVo> list of target cluster info of
+     *         another manager cluster
      */
     @ExterAttack
     @RequestLine("GET /v1/clusters")
@@ -288,7 +288,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v2/copies/{copyId}/catalogs")
     @Headers({"x-auth-token: {token}"})
     PageListResponse<FineGrainedRestore> listCopyCatalogs(URI uri, @Param("token") String token,
-        @Param("copyId") String copyId, @QueryMap Map<String, Object> queryParams);
+            @Param("copyId") String copyId, @QueryMap Map<String, Object> queryParams);
 
     /**
      * 浏览副本中文件和目录信息
@@ -303,7 +303,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v2/copies/{copyId}/catalogs-name")
     @Headers({"x-auth-token: {token}"})
     PageListResponse<FineGrainedRestore> listCopyCatalogsName(URI uri, @Param("token") String token,
-        @Param("copyId") String copyId, @QueryMap Map<String, Object> queryParams);
+            @Param("copyId") String copyId, @QueryMap Map<String, Object> queryParams);
 
     /**
      * 获取目标集群任务信息
@@ -330,7 +330,7 @@ public interface TargetClusterRestApi {
     @RequestLine("POST /v1/jobs/action/report")
     @Headers({"x-auth-token: {token}"})
     PageListResponse<JobReportBo> queryReportJobs(URI uri, @Param("token") String token,
-        @RequestBody QueryReportJobsRequest queryJobRequest);
+            @RequestBody QueryReportJobsRequest queryJobRequest);
 
     /**
      * 获取目标集群告警信息
@@ -444,7 +444,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/users/quota/action/check?userId={userId}&resourceId={resourceId}&taskType={taskType}")
     @Headers({"x-auth-token: {token}"})
     Void checkTargetQuota(URI uri, @Param("token") String token, @Param("userId") String userId,
-        @Param("resourceId") String resourceId, @Param("taskType") String taskType);
+            @Param("resourceId") String resourceId, @Param("taskType") String taskType);
 
     /**
      * 查看备份节点内部通信网络平面
@@ -458,7 +458,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/clusters/internal-communicate-netplane?infraNetPlaneIp={infraNetPlaneIp}")
     @Headers({"x-auth-token: {token}"})
     String getClusterInternalCommunicateNetPlane(URI uri, @Param("token") String token,
-        @Param("infraNetPlaneIp") String infraNetPlaneIp);
+            @Param("infraNetPlaneIp") String infraNetPlaneIp);
 
     /**
      * Add internal net plane relation
@@ -485,7 +485,7 @@ public interface TargetClusterRestApi {
     @RequestLine("PUT /v1/clusters/backup/relate/netplane")
     @Headers({"x-auth-token: {token}"})
     Void updateInternalNetPlaneRelation(URI uri, @Param("token") String token,
-        @RequestBody NetPlaneInfoReq netPlaneInfo);
+            @RequestBody NetPlaneInfoReq netPlaneInfo);
 
     /**
      * Backup cluster provide dm storage info
@@ -499,7 +499,7 @@ public interface TargetClusterRestApi {
     @RequestLine("POST /v1/clusters/backup/local-storage/action/collect")
     @Headers({"x-auth-token: {token}"})
     Void requestBackupClusterDmStorageInfo(URI uri, @Param("token") String token,
-        @RequestBody TargetClusterInfoVo targetClusterInfoVo);
+            @RequestBody TargetClusterInfoVo targetClusterInfoVo);
 
     /**
      * Main cluster save dm storage info
@@ -513,7 +513,7 @@ public interface TargetClusterRestApi {
     @RequestLine("POST /v1/clusters/backup/local-storage/action/save")
     @Headers({"x-auth-token: {token}"})
     Void responseBackupClusterDmStorageInfo(URI uri, @Param("token") String token,
-        @RequestBody List<ProductStorageInfo> dmStorageInfo);
+            @RequestBody List<ProductStorageInfo> dmStorageInfo);
 
     /**
      * 同步内部组件密码接口
@@ -527,7 +527,7 @@ public interface TargetClusterRestApi {
     @RequestLine("POST /v1/clusters/backup/component/sync-info")
     @Headers({"x-auth-token: {token}"})
     Void syncComponentInfo(URI uri, @Param("token") String token,
-        @RequestBody SyncComponentInfoRequest syncComponentInfoRequest);
+            @RequestBody SyncComponentInfoRequest syncComponentInfoRequest);
 
     /**
      * 功能说明 校验成员节点满足度
@@ -543,7 +543,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/clusters/backup/check?version={version}&netPlaneName={netPlaneName}&deployType={deployType}")
     @Headers({"x-auth-token: {token}"})
     CheckInfo checkBackupCluster(URI uri, @Param("token") String token, @Param("version") String version,
-        @Param("netPlaneName") String netPlaneName, @Param("deployType") String deployType);
+            @Param("netPlaneName") String netPlaneName, @Param("deployType") String deployType);
 
     /**
      * 功能说明 通知成员节点修改GaussDB ES映射接口
@@ -557,7 +557,7 @@ public interface TargetClusterRestApi {
     @RequestLine("POST /v1/clusters/backup/component/sync-ip")
     @Headers({"x-auth-token: {token}"})
     Void syncComponentIp(URI uri, @Param("token") String token,
-        @RequestBody SyncComponentIpRequest syncComponentIpRequest);
+            @RequestBody SyncComponentIpRequest syncComponentIpRequest);
 
     /**
      * 功能说明 通知成员节点启动/停止组件接口
@@ -571,7 +571,7 @@ public interface TargetClusterRestApi {
     @RequestLine("POST /v1/clusters/backup/component/operate")
     @Headers({"x-auth-token: {token}"})
     Void operateComponent(URI uri, @Param("token") String token,
-        @RequestBody OperateComponentRequest operateComponentRequest);
+            @RequestBody OperateComponentRequest operateComponentRequest);
 
     /**
      * 功能说明 通知成员节点设置集群角色
@@ -585,7 +585,7 @@ public interface TargetClusterRestApi {
     @RequestLine("POST /v1/clusters/backup/config-map")
     @Headers({"x-auth-token: {token}"})
     Void setUpClusterConfigMap(URI uri, @Param("token") String token,
-        @RequestBody SetupConfigMapRequest setupConfigMapRequest);
+            @RequestBody SetupConfigMapRequest setupConfigMapRequest);
 
     /**
      * 功能说明 查询集群信息
@@ -611,7 +611,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/clusters/backup/netplane/{netPlaneName}")
     @Headers({"x-auth-token: {token}"})
     NetworkPlane getNetPlaneByName(URI uri, @Param("token") String token,
-        @Param(value = "netPlaneName") String netPlaneName);
+            @Param(value = "netPlaneName") String netPlaneName);
 
     /**
      * 校验备节点浮动IP和仲裁网关
@@ -713,7 +713,7 @@ public interface TargetClusterRestApi {
     @RequestLine("PUT /v1/clusters/ha/standby")
     @Headers({"x-auth-token: {token}"})
     void updateStandbyHaConfig(URI uri, @Param("token") String token,
-        @RequestBody UpdateStandbyHaConfigRequest request);
+            @RequestBody UpdateStandbyHaConfigRequest request);
 
     /**
      * 查询聚类容量
@@ -739,7 +739,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/clusters/nodes/capacity?esnList={esnList}")
     @Headers({"x-auth-token: {token}"})
     List<ClusterCapacityInfo> getNodesCapacity(URI uri, @Param("token") String token,
-        @Param("esnList") List<String> esnList);
+            @Param("esnList") List<String> esnList);
 
     /**
      * 查询容量预测
@@ -753,7 +753,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET v1/clusters/nodes/capacity/tendency?esnList={esnList}")
     @Headers({"x-auth-token: {token}"})
     List<ClusterStorageTendencyInfo> getNodesCapacityTendency(URI uri, @Param("token") String token,
-        @Param("esnList") List<String> esnList);
+            @Param("esnList") List<String> esnList);
 
     /**
      * 查询备份软件信息
@@ -791,7 +791,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET v2/alarms")
     @Headers({"x-auth-token: {token}"})
     PageListResponse<AlarmInfo> getNodeAlarmPage(URI uri, @Param("token") String token,
-        @QueryMap Map<String, Object> queryParams);
+            @QueryMap Map<String, Object> queryParams);
 
     /**
      * 根据entityId查询告警
@@ -854,7 +854,7 @@ public interface TargetClusterRestApi {
     @RequestLine("POST /v1/clusters/replicate/removepair/dispatch")
     @Headers({"x-auth-token: {token}"})
     void dispatchRemoveReplicationPair(URI uri, @Param("token") String token,
-        @RequestBody DmeRemovePairRequest dmeRemovePairRequest);
+            @RequestBody DmeRemovePairRequest dmeRemovePairRequest);
 
     /**
      * 调用成员节点清除复制链路
@@ -916,7 +916,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/clusters/{clusterId}/nodes")
     @Headers({"x-auth-token: {token}"})
     PageListResponse<ClusterStorageNodeVo> queryClusterNodes(URI uri, @Param("clusterId") Integer clusterId,
-        @Param("token") String token);
+            @Param("token") String token);
 
     /**
      * 归档任务下发到成员集群
@@ -941,7 +941,7 @@ public interface TargetClusterRestApi {
     @RequestLine("PUT /v1/security/component-password/member")
     @Headers({"x-auth-token: {token}"})
     void updateComponentPassword(URI uri, @Param("token") String token,
-        @RequestBody List<ClusterComponentPwdInfo> clusterComponentPwdInfo);
+            @RequestBody List<ClusterComponentPwdInfo> clusterComponentPwdInfo);
 
     /**
      * 查询磁带库详情
@@ -955,7 +955,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/tape-library/media-sets/{mediaSetId}")
     @Headers({"x-auth-token: {token}"})
     TapeSetDetailResponse getTapeSetDetail(URI uri, @Param("token") String token,
-        @Param(("mediaSetId")) String mediaSetId);
+            @Param(("mediaSetId")) String mediaSetId);
 
     /**
      * 获取性能开关
@@ -1006,7 +1006,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/multi-clusters/backup/capacity/summary?isAllCluster={isAllCluster}")
     @Headers({"x-auth-token: {token}"})
     List<StorageCapacitySummaryVo> getMultiClusterBackupCapacitySummary(URI uri, @Param("token") String token,
-        @Param("isAllCluster") boolean isAllCluster);
+            @Param("isAllCluster") boolean isAllCluster);
 
     /**
      * 获取目标集群复制存储容量统计信息
@@ -1020,7 +1020,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/multi-clusters/replication/capacity/summary?isAllCluster={isAllCluster}")
     @Headers({"x-auth-token: {token}"})
     List<StorageCapacitySummaryVo> getMultiClusterReplicationCapacitySummary(URI uri, @Param("token") String token,
-        @Param("isAllCluster") boolean isAllCluster);
+            @Param("isAllCluster") boolean isAllCluster);
 
     /**
      * 获取目标集群归档存储容量统计信息
@@ -1034,7 +1034,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/multi-clusters/archive/capacity/summary?isAllCluster={isAllCluster}")
     @Headers({"x-auth-token: {token}"})
     List<StorageCapacitySummaryVo> getMultiClusterArchiveCapacitySummary(URI uri, @Param("token") String token,
-        @Param("isAllCluster") boolean isAllCluster);
+            @Param("isAllCluster") boolean isAllCluster);
 
     /**
      * 查询外部集群备份存储单元组信息
@@ -1073,7 +1073,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/jobs")
     @Headers({"x-auth-token: {token}"})
     PageListResponse<JobBo> getClusterJobsList(URI uri, @Param("token") String token,
-                                               @QueryMap RecentJobQueryReq recentJobQueryReq);
+            @QueryMap RecentJobQueryReq recentJobQueryReq);
 
     /**
      * 添加策略存储单元关联关系
@@ -1088,7 +1088,7 @@ public interface TargetClusterRestApi {
     @RequestLine("POST /v1/storage-policy-relation/policies/{policyId}")
     @Headers({"x-auth-token: {token}"})
     Void addStoragePolicyRelation(URI uri, @Param("token") String token, @Param("policyId") String policyId,
-        @RequestBody StoragePolicyRelationRequest request);
+            @RequestBody StoragePolicyRelationRequest request);
 
     /**
      * 根据策略ID删除策略存储单元关联关系
@@ -1103,7 +1103,7 @@ public interface TargetClusterRestApi {
     @RequestLine("DELETE /v1/storage-policy-relation/policies/{policyId}")
     @Headers({"x-auth-token: {token}"})
     Void deleteStoragePolicyRelationByPolicyId(URI uri, @Param("token") String token,
-        @Param("policyId") String policyId, @RequestBody StoragePolicyRelationRequest request);
+            @Param("policyId") String policyId, @RequestBody StoragePolicyRelationRequest request);
 
     /**
      * 查询指定对端用户的存储单元信息
@@ -1118,7 +1118,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/storage-user-auths/users/{userId}?authType={authType}")
     @Headers({"x-auth-token: {token}"})
     PageListResponse<StorageUserAuthRelationStorageVo> getRemoteStorageUnitInfo(URI uri, @Param("token") String token,
-        @Param("userId") String userId, @Param("authType") int authType);
+            @Param("userId") String userId, @Param("authType") int authType);
 
     /**
      * 查询指定目标集群的存储单元信息
@@ -1134,7 +1134,7 @@ public interface TargetClusterRestApi {
     @RequestLine("GET /v1/storage-units?pageNo={pageNo}&pageSize={pageSize}")
     @Headers({"x-auth-token: {token}"})
     PageListResponse<StorageUnitVo> getStorageUnitInfo(URI uri, @Param("token") String token,
-        @QueryMap Map<String, String> queryParam, @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
+            @QueryMap Map<String, String> queryParam, @Param("pageNo") int pageNo, @Param("pageSize") int pageSize);
 
     /**
      * 查询指定复制目标集群所有数据保护管理员列表

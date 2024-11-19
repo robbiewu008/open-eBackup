@@ -12,6 +12,11 @@
 */
 package openbackup.data.access.framework.copy.mng.service.impl;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dme.replicate.DmeReplicationRestApi;
 import openbackup.data.access.client.sdk.api.framework.dme.replicate.model.RemoveCopyRequest;
 import openbackup.data.access.framework.copy.mng.provider.DefaultCopyDeleteInterceptor;
@@ -31,7 +36,6 @@ import openbackup.data.protection.access.provider.sdk.copy.CopyDeleteInterceptor
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
@@ -40,10 +44,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.copy.model.ReplicatedCopies;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -321,5 +321,23 @@ public class CopyManagerServiceImpl implements CopyManagerService {
         QueryWrapper<CopiesEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("uuid", copyId);
         return copyMapper.selectOne(wrapper);
+    }
+
+    @Override
+    public Long queryCopyCounts(String resourceId, String esn, String storageUnitId, List<Integer> backupTypes) {
+        QueryWrapper<CopiesEntity> wrapper = new QueryWrapper<>();
+        if (!VerifyUtil.isEmpty(resourceId)) {
+            wrapper.eq("resource_id", resourceId);
+        }
+        if (!VerifyUtil.isEmpty(esn)) {
+            wrapper.eq("device_esn", esn);
+        }
+        if (!VerifyUtil.isEmpty(storageUnitId)) {
+            wrapper.eq("storage_unit_id", storageUnitId);
+        }
+        if (!VerifyUtil.isEmpty(backupTypes)) {
+            wrapper.in("backup_type", backupTypes);
+        }
+        return copyMapper.selectCount(wrapper);
     }
 }

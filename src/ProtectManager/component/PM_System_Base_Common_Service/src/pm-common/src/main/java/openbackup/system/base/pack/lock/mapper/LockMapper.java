@@ -12,9 +12,9 @@
 */
 package openbackup.system.base.pack.lock.mapper;
 
-import openbackup.system.base.pack.lock.entity.LockEntity;
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import openbackup.system.base.pack.lock.entity.LockEntity;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;

@@ -14,13 +14,20 @@ package openbackup.access.framework.resource.service;
 
 import static openbackup.data.protection.access.provider.sdk.backup.ResourceExtendInfoConstants.CONNECTION_RESULT_KEY;
 
+import com.huawei.oceanprotect.base.cluster.sdk.dto.MemberClusterBo;
+import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.system.base.schedule.annotation.MessageDrivenSchedule;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.ImmutableList;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
 import openbackup.access.framework.resource.service.provider.AgentDefaultLinkStatusProvider;
 import openbackup.access.framework.resource.util.ResourceConstant;
 import openbackup.access.framework.resource.util.ResourceThreadPoolTool;
-import com.huawei.oceanprotect.base.cluster.sdk.dto.MemberClusterBo;
-import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
-
 import openbackup.data.access.framework.core.common.exception.LockNotObtainedException;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -33,7 +40,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceExtendInfoService;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.resource.model.ResourceScanDto;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.constants.FaultEnum;
@@ -51,7 +57,6 @@ import openbackup.system.base.kafka.annotations.MessageListener;
 import openbackup.system.base.pack.lock.Lock;
 import openbackup.system.base.pack.lock.LockService;
 import openbackup.system.base.query.Pagination;
-import com.huawei.oceanprotect.system.base.schedule.annotation.MessageDrivenSchedule;
 import openbackup.system.base.sdk.alarm.CommonAlarmService;
 import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
 import openbackup.system.base.sdk.copy.model.BasePage;
@@ -69,12 +74,6 @@ import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.AdapterUtils;
 import openbackup.system.base.util.MessageTemplate;
 import openbackup.system.base.util.RedisContextService;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.collect.ImmutableList;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RedissonClient;
@@ -510,14 +509,13 @@ public class ProtectedEnvironmentListener implements InitializingBean {
     }
 
     private void doEnvironmentHealthCheck(String envId) {
-        log.info("environment health check begin, envId:{}", envId);
         ProtectedEnvironment environment = protectedEnvironmentService.getEnvironmentById(envId);
 
         EnvironmentProvider provider =
             providerManager.findProvider(EnvironmentProvider.class, environment.getSubType(), null);
         String linkStatus = EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(environment);
         if (StringUtils.isBlank(linkStatus) || !NEED_TO_HEALTH_CHECK_TYPES.contains(Integer.valueOf(linkStatus))) {
-            log.info("Environment: {} status not online, offline or partly_online, do not health check", envId);
+            log.info("Environment({}) status({}) can not health check.", envId, linkStatus);
             return;
         }
         if (provider == null) {
@@ -527,8 +525,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
         String currentClusterEsn = memberClusterService.getCurrentClusterEsn();
         try {
             LinkStatusEnum currentNodeLinkStatus = getEnvironmentLinkStatus(environment, provider);
-            log.info("environment health check success, envId:{}, currentNodeLinkStatus:{}", envId,
-                currentNodeLinkStatus.getStatus());
             handleHealthCheckResult(environment, currentNodeLinkStatus, currentClusterEsn);
             triggerHealthCheckAlarm(envId, currentNodeLinkStatus);
         } catch (DataProtectionAccessException e) {
@@ -545,7 +541,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
     private void handleHealthCheckResult(ProtectedEnvironment environment, LinkStatusEnum status,
                                          String currentClusterEsn) {
         // 更新本地节点与agent联调状态
-        log.info("Start to update the connection status between the current node and the Agent.");
         String envId = environment.getUuid();
         Map<String, EnvironmentConnectionResult> connectionResultMap = getConnectionResultMapByEnvId(envId);
         connectionResultMap.put(currentClusterEsn, getAgentConnectionResultBy(currentClusterEsn, status.getStatus()));
@@ -554,11 +549,8 @@ public class ProtectedEnvironmentListener implements InitializingBean {
 
         String connectionResult =
             resourceExtendInfoService.queryExtendInfo(envId, CONNECTION_RESULT_KEY).get(CONNECTION_RESULT_KEY);
-        log.info("Succeeded in updating the connection status between the current node and Agent.envId:{},status:{}, "
-            + "connectionResult:{}", envId, status.name(), connectionResult);
         if (!ClusterEnum.BackupRoleTypeEnum.PRIMARY.getBackupRoleType()
                 .equals(memberClusterService.getCurrentClusterRole())) {
-            log.info("The current node is not the primary node. The Agent status will not be updated.");
             return;
         }
         if (!deployTypeService.isE1000()) {
@@ -569,6 +561,8 @@ public class ProtectedEnvironmentListener implements InitializingBean {
             statusSet.add(status.getStatus());
             summaryAndUpdateLinkStatus(environment, statusSet);
         }
+        log.info("Update connect status success. envId:{}, status:{}, result:{}.",
+                envId, status.name(), connectionResult);
     }
 
     private EnvironmentConnectionResult getAgentConnectionResultBy(String esn, Integer status) {
@@ -588,10 +582,7 @@ public class ProtectedEnvironmentListener implements InitializingBean {
 
     private void updateEnvironmentStatusOnMasterNode(ProtectedEnvironment environment) {
         String envId = environment.getUuid();
-        log.info("The primary node starts to update the agent status. envId:{}", envId);
-
         // 清除资源扩展表里的垃圾数据
-
         Map<String, EnvironmentConnectionResult> connectionResultMap = getConnectionResultMapByEnvId(envId);
         Iterator<Map.Entry<String, EnvironmentConnectionResult>> connectionResultIterator =
             connectionResultMap.entrySet().iterator();
@@ -737,7 +728,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
     }
 
     private void updateEnvironmentLinkStatus(String envId, LinkStatusEnum status) {
-        log.info("The health status of the agent(envId :{}) will be updated to {}", envId, status.name());
         updateEnvironmentLinkStatus(envId, status.getStatus().toString());
     }
 

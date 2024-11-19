@@ -12,17 +12,6 @@
 */
 package openbackup.system.base.common.rest;
 
-import openbackup.system.base.common.constants.CertCommonConstant;
-import openbackup.system.base.common.constants.CertErrorCode;
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.constants.FeignClientConstant;
-import openbackup.system.base.common.exception.LegoCheckedException;
-import openbackup.system.base.common.scurity.BcmX509KeyManager;
-import openbackup.system.base.common.scurity.BcmX509TrustManager;
-import openbackup.system.base.common.scurity.SecurityCertificateManager;
-import openbackup.system.base.common.utils.VerifyUtil;
-import openbackup.system.base.config.SystemConfig;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import feign.Client;
@@ -37,6 +26,16 @@ import feign.codec.Encoder;
 import feign.codec.ErrorDecoder;
 import feign.form.spring.SpringFormEncoder;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.constants.CertCommonConstant;
+import openbackup.system.base.common.constants.CertErrorCode;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.constants.FeignClientConstant;
+import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.scurity.BcmX509KeyManager;
+import openbackup.system.base.common.scurity.BcmX509TrustManager;
+import openbackup.system.base.common.scurity.SecurityCertificateManager;
+import openbackup.system.base.common.utils.VerifyUtil;
+import openbackup.system.base.config.SystemConfig;
 
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
@@ -123,6 +122,20 @@ public class FeignBuilder extends Feign.Builder {
             FeignClientConstant.MEMBER_READ_TIMEOUT, TimeUnit.MILLISECONDS, true);
 
     /**
+     * 路由服务连接超时配置；连接超时时间5s, 读取超时时间10s
+     */
+    private static final Request.Options ROUTE_SERVICE_TIMEOUT_OPTIONS = new Request.Options(
+        FeignClientConstant.ROUTE_SERVICE_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS,
+        FeignClientConstant.ROUTE_SERVICE_READ_TIMEOUT, TimeUnit.MILLISECONDS, true);
+
+    /**
+     * Dme服务连接超时配置；连接超时时间30s, 读取超时时间5分钟
+     */
+    private static final Request.Options DME_SERVICE_TIMEOUT_OPTIONS = new Request.Options(
+        FeignClientConstant.CONNECT_TIMEOUT, TimeUnit.MILLISECONDS,
+        FeignClientConstant.DME_READ_TIMEOUT, TimeUnit.MILLISECONDS, true);
+
+    /**
      * 默认重试策略配置： 当前是重试周期1分钟，最多重试3次。
      */
     private static final Retryer.Default DEFAULT_RETRY_POLICY = new Retryer.Default(FeignClientConstant.PERIOD,
@@ -174,6 +187,24 @@ public class FeignBuilder extends Feign.Builder {
      */
     public static FeignBuilder getVmwareFeignBuilder() {
         return new FeignBuilder().options(VMWARE_TIMEOUT_OPTIONS);
+    }
+
+    /**
+     * 生成路由服务FeignBuilder
+     *
+     * @return RouteServiceFeignBuilder
+     */
+    public static FeignBuilder getRouteServiceFeignBuilder() {
+        return new FeignBuilder().options(ROUTE_SERVICE_TIMEOUT_OPTIONS);
+    }
+
+    /**
+     * 生成Dme服务FeignBuilder
+     *
+     * @return DmeServiceFeignBuilder
+     */
+    public static FeignBuilder getDmeServiceFeignBuilder() {
+        return new FeignBuilder().options(DME_SERVICE_TIMEOUT_OPTIONS);
     }
 
     /**

@@ -12,6 +12,7 @@
 */
 package openbackup.gaussdb.protection.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.data.access.framework.agent.DataBaseAgentSelector;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
@@ -26,8 +27,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.StreamUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

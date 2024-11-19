@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.cluster.request;
 
-import openbackup.system.base.common.constants.IsmNumberConstant;
-
 import lombok.Data;
+import openbackup.system.base.common.constants.IsmNumberConstant;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

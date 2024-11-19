@@ -12,6 +12,11 @@
 */
 package openbackup.access.framework.resource.service;
 
+import com.huawei.oceanprotect.system.base.label.service.LabelService;
+import com.huawei.oceanprotect.system.base.schedule.common.enums.ScheduleType;
+import com.huawei.oceanprotect.system.base.schedule.service.SchedulerService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.ResourceCertConstant;
 import openbackup.access.framework.resource.util.ResourceCertAlarmUtil;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
@@ -41,19 +46,13 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.pack.lock.Lock;
 import openbackup.system.base.pack.lock.LockService;
 import openbackup.system.base.query.SessionService;
-
-import com.huawei.oceanprotect.system.base.label.dao.LabelResourceServiceDao;
-import com.huawei.oceanprotect.system.base.schedule.common.enums.ScheduleType;
-import com.huawei.oceanprotect.system.base.schedule.service.SchedulerService;
 import openbackup.system.base.sdk.alarm.CommonAlarmService;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.sdk.schedule.model.Schedule;
+import openbackup.system.base.sdk.system.SystemConfigService;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
-import com.huawei.oceanprotect.system.sdk.service.SystemConfigService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.SchedulerException;
@@ -82,6 +81,7 @@ import java.util.concurrent.TimeUnit;
 public class ProtectedEnvironmentServiceImpl implements ProtectedEnvironmentService {
     private static final String PLUGIN_TYPE = "PLUGIN";
     private static final String RESOURCE_LOCK_KEY = "/resource/lock/";
+
     private static final List<String> AGENT_UPGRADE_STATUS =
             Collections.unmodifiableList(
                     Arrays.asList(
@@ -122,7 +122,7 @@ public class ProtectedEnvironmentServiceImpl implements ProtectedEnvironmentServ
     private SystemConfigService systemConfigService;
 
     @Autowired
-    private LabelResourceServiceDao labelResourceServiceDao;
+    private LabelService labelService;
 
     /**
      * 扫描受保护环境
@@ -185,7 +185,6 @@ public class ProtectedEnvironmentServiceImpl implements ProtectedEnvironmentServ
 
     @Override
     public ProtectedEnvironment getEnvironmentById(String envId) {
-        log.info("getEnvironmentById={}", envId);
         Optional<ProtectedResource> resOptional = resourceService.getResourceById(envId);
         if (resOptional.isPresent() && resOptional.get() instanceof ProtectedEnvironment) {
             return (ProtectedEnvironment) resOptional.get();
@@ -227,17 +226,18 @@ public class ProtectedEnvironmentServiceImpl implements ProtectedEnvironmentServ
     private void deleteEnvironment(ProtectedEnvironment environment) {
         EnvironmentProvider provider = manager.findProvider(EnvironmentProvider.class, environment.getSubType());
         provider.remove(environment);
+        String environmentId = environment.getUuid();
         if (deployTypeService.isCyberEngine()) {
-            cyberEngineResourceService.deleteEnvironment(environment.getUuid());
+            cyberEngineResourceService.deleteEnvironment(environmentId);
         } else {
-            resourceService.delete(new String[] {environment.getUuid()});
+            resourceService.delete(new String[] {environmentId});
         }
         afterDelete(environment);
         try {
-            scheduleService.removeJob(environment.getUuid());
+            scheduleService.removeJob(environmentId);
             // 删除环境对应标签
-            labelResourceServiceDao.deleteByResourceObjectIdsAndLabelIds(
-                Collections.singletonList(environment.getUuid()),
+            labelService.deleteByResourceObjectIdsAndLabelIds(
+                Collections.singletonList(environmentId),
                 StringUtils.EMPTY);
         } catch (SchedulerException e) {
             log.warn("Remove job failed!", e);
@@ -320,7 +320,9 @@ public class ProtectedEnvironmentServiceImpl implements ProtectedEnvironmentServ
                     updatedEnvironment.getEndpoint(),
                     updatedEnvironment.getPort());
             this.updateEnvironment(updatedEnvironment);
-            log.info("Start to delete manualUninstallation! environment :{}", environment.getUuid());
+            // 删除日志级别记录
+            protectedResourceRepository.deleteProtectResourceExtendInfoByResourceId(environment.getUuid(),
+                Constants.LOG_LEVEL);
             protectedResourceRepository.deleteProtectResourceExtendInfoByResourceId(environment.getUuid(),
                 Constants.MANUAL_UNINSTALLATION);
             // 升级失败场景，不清理use_old_private

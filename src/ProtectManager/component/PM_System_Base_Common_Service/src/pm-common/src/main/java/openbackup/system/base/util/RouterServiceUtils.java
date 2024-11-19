@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.RequestUtil;
 import openbackup.system.base.common.utils.network.Ipv6AddressUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.fileupload.FileUploadBase;
 import org.springframework.core.io.Resource;
@@ -114,9 +113,8 @@ public class RouterServiceUtils {
      */
     public static URI buildClusterUri(HttpServletRequest httpServletRequest, String ip, int port) {
         String clusterIp = Ipv6AddressUtil.isIpv6Address(ip) ? "[" + ip + "]" : ip;
-        String clusterUri = HTTP_URL_SCHEME + clusterIp + ":" + port + httpServletRequest.getRequestURI()
-            .replace(EXTERNAL_CLUSTER_PREFIXED, "")
-            .replace("/v1/member", "");
+        String clusterUri = HTTP_URL_SCHEME + clusterIp + ":" + port
+                + httpServletRequest.getRequestURI().replace(EXTERNAL_CLUSTER_PREFIXED, "").replace("/v1/member", "");
         String queryString = httpServletRequest.getQueryString();
         if (queryString != null && !isMultipartRequest(httpServletRequest)) {
             clusterUri += "?" + queryString;
@@ -138,8 +136,8 @@ public class RouterServiceUtils {
      */
     public static URI buildNodeUri(HttpServletRequest httpServletRequest, String ip, int port) {
         String nodeIp = Ipv6AddressUtil.isIpv6Address(ip) ? "[" + ip + "]" : ip;
-        String nodeUri = HTTP_URL_SCHEME + nodeIp + ":" + port + httpServletRequest.getRequestURI()
-            .replace("/v1/try-all-node", "");
+        String nodeUri = HTTP_URL_SCHEME + nodeIp + ":" + port
+                + httpServletRequest.getRequestURI().replace("/v1/try-all-node", "");
         String queryString = httpServletRequest.getQueryString();
         if (queryString != null && !isMultipartRequest(httpServletRequest)) {
             nodeUri += "?" + queryString;

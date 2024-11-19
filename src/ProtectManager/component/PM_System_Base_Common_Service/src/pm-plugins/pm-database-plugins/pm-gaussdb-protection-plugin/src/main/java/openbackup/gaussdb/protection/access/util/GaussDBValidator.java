@@ -12,12 +12,11 @@
 */
 package openbackup.gaussdb.protection.access.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.gaussdb.protection.access.constant.GaussDBConstant;
 import openbackup.gaussdb.protection.access.constant.GaussDBErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 

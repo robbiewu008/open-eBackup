@@ -12,16 +12,15 @@
 */
 package openbackup.data.protection.access.provider.sdk.backup.v2;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Data;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.Qos;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResourceFilter;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.HashMap;

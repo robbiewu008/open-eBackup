@@ -12,12 +12,14 @@
 */
 package openbackup.access.framework.resource.schedule;
 
-import openbackup.access.framework.resource.service.ResourceScanService;
 import com.huawei.oceanprotect.job.sdk.JobService;
-import openbackup.system.base.common.model.job.JobBo;
-import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.access.framework.resource.service.ResourceScanService;
+import openbackup.system.base.common.model.job.JobBo;
+import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
+import openbackup.system.base.service.DeployTypeService;
+import openbackup.system.base.util.SpringBeanUtils;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -59,9 +61,11 @@ public class ResourceScanSchedule {
         do {
             jobBos = resourceScanService.queryManualScanRunningPage(page, size);
             page++;
+            DeployTypeService deployTypeService = SpringBeanUtils.getBean(DeployTypeService.class);
             for (JobBo jobBo : jobBos) {
                 long deltaTime = System.currentTimeMillis() - jobBo.getStartTime();
-                if (deltaTime > MAX_UPDATE_SCAN_JOB_TIME) {
+                long maxUpdateTime = MAX_UPDATE_SCAN_JOB_TIME;
+                if (deltaTime > maxUpdateTime || deployTypeService.isHyperDetectDeployType()) {
                     continue;
                 }
                 UpdateJobRequest updateJobRequest = new UpdateJobRequest();

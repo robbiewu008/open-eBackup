@@ -14,19 +14,23 @@ package openbackup.postgre.protection.access.provider.resource;
 
 import static org.mockito.ArgumentMatchers.any;
 
+import com.google.common.collect.ImmutableMap;
+
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
+import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.service.InstanceResourceService;
+import openbackup.postgre.protection.access.common.PostgreConstants;
+import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import com.google.common.collect.ImmutableMap;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,6 +38,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,6 +95,26 @@ public class PostgreClusterInstanceConnectionCheckerTest {
         Assert.assertThrows(LegoCheckedException.class, () -> connectionChecker.collectConnectableResources(resource));
     }
 
+    @Test
+    public void execute_query_cluster_instance_node_role_by_clup_server_success() throws Exception {
+        ProtectedResource resource = new ProtectedResource();
+        resource.setSubType(ResourceSubTypeEnum.POSTGRE_CLUSTER_INSTANCE.getType());
+        Authentication authentication = new Authentication();
+        resource.setAuth(authentication);
+        resource.setExtendInfo(new HashMap<>());
+        ProtectedEnvironment environment = mockEnv();
+        List<ProtectedResource> clupServers = new ArrayList<>();
+        clupServers.add(mockEnv());
+        clupServers.get(IsmNumberConstant.ZERO).setUuid("ClupServerUuid");
+        environment.setDependencies(ImmutableMap.of(PostgreConstants.CLUP_SERVERS, clupServers));
+        PowerMockito.when(agentUnifiedService.getClusterInfo(any(), any(), any(), any()))
+            .thenReturn(mockAppEnvResponse());
+        Method method = PostgreClusterInstanceConnectionChecker.class.getDeclaredMethod(
+            "queryClusterInstanceNodeRoleByClupServer", ProtectedResource.class, ProtectedEnvironment.class);
+        method.setAccessible(true);
+        Assert.assertThrows(LegoCheckedException.class, () -> method.invoke(connectionChecker, resource, environment));
+    }
+
     private ProtectedEnvironment mockEnv() {
         ProtectedEnvironment environment = new ProtectedEnvironment();
         environment.setExtendInfo(new HashMap<>());
@@ -103,5 +128,12 @@ public class PostgreClusterInstanceConnectionCheckerTest {
         AgentBaseDto checkResult = new AgentBaseDto();
         checkResult.setErrorMessage(JSONObject.fromObject(map).toString());
         return checkResult;
+    }
+
+    private AppEnvResponse mockAppEnvResponse() {
+        AppEnvResponse appEnvResponse = new AppEnvResponse();
+        appEnvResponse.setExtendInfo(new HashMap<>());
+        appEnvResponse.getExtendInfo().put("clupClusterState", PostgreConstants.CLUP_CLUSTER_OFFLINE);
+        return appEnvResponse;
     }
 }

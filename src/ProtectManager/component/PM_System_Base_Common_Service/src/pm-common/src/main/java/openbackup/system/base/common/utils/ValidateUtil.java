@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.IsmConstant;
 import openbackup.system.base.common.exception.EmeiStorDefaultExceptionHandler;
 import openbackup.system.base.common.validator.constants.RegexpConstants;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,14 +32,15 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 public class ValidateUtil {
-    private ValidateUtil() {}
+    private ValidateUtil() {
+    }
 
     /**
      * 指定正则表达式，验证指定字符串是否匹配
      * 如果不匹配，会抛出异常
      *
      * @param regex 正则表达式，不允许为null，否则会抛异常
-     * @param str   字符串，不允许为null，否则会抛异常
+     * @param str 字符串，不允许为null，否则会抛异常
      */
     public static void validate(String regex, String str) {
         if (str == null || regex == null) {
@@ -56,7 +56,7 @@ public class ValidateUtil {
      * 指定正则表达式，验证指定字符串是否匹配
      *
      * @param regex 正则表达式，不允许为null，否则会抛异常
-     * @param str   字符串，不允许为null，否则会抛异常
+     * @param str 字符串，不允许为null，否则会抛异常
      * @return boolean 匹配结果，true/false
      */
     public static boolean match(String regex, String str) {
@@ -79,7 +79,7 @@ public class ValidateUtil {
      * 指定正则表达式，验证指定字符串匹配的字符数量
      *
      * @param regex 正则表达式，不允许为null，否则会抛异常
-     * @param str   字符串，不允许为null，否则会抛异常
+     * @param str 字符串，不允许为null，否则会抛异常
      * @return boolean 匹配结果，true/false
      */
     public static int matchSize(String regex, String str) {
@@ -105,7 +105,7 @@ public class ValidateUtil {
     /**
      * 指定正则表达式，验证指定字符串匹配的字符数量
      *
-     * @param str   字符串，不允许为null，否则会抛异常
+     * @param str 字符串，不允许为null，否则会抛异常
      * @return boolean 匹配结果，true/false
      */
     public static int matchSize(String str) {

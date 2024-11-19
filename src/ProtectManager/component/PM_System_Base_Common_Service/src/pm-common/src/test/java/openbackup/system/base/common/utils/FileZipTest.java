@@ -21,6 +21,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Collections;
 
 /**
  * 文件压缩测试类
@@ -42,6 +43,24 @@ public class FileZipTest {
         String baseName = "test1.zip";
         FileZip.zip(tmpPath, zipFilePath + File.separator + baseName, baseName);
         File rsFile = new File(zipFilePath + File.separator + baseName);
+        Assert.assertTrue(rsFile.exists());
+        rsFile.delete();
+    }
+
+    /**
+     * 用例场景：压缩文件
+     * 前置条件：文件存在
+     * 检查点：压缩成功
+     */
+    @Test
+    public void test_zipFolders_success() throws FileNotFoundException {
+        String filePath = StringUtils.join(new String[]{"classpath:files", "test1"}, File.separator);
+        String tmpPath = ResourceUtils.getFile(filePath).getPath();
+        File file1 = new File(tmpPath);
+        File parent = file1.getParentFile();
+        String zipFilePath = parent.getPath();
+        FileZip.zipFolders(Collections.singletonList(tmpPath), zipFilePath + File.separator + "test");
+        File rsFile = new File(zipFilePath + File.separator + "test");
         Assert.assertTrue(rsFile.exists());
         rsFile.delete();
     }

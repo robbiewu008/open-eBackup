@@ -12,11 +12,10 @@
 */
 package openbackup.access.framework.resource.dto;
 
-import openbackup.system.base.common.constants.LegoNumberConstant;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.common.constants.LegoNumberConstant;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

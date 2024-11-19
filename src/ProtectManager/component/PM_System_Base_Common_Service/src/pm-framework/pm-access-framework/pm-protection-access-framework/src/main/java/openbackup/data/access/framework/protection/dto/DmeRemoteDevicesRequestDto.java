@@ -12,10 +12,9 @@
 */
 package openbackup.data.access.framework.protection.dto;
 
-import openbackup.system.base.sdk.cluster.model.ClusterDetailInfo;
-
 import lombok.Builder;
 import lombok.Data;
+import openbackup.system.base.sdk.cluster.model.ClusterDetailInfo;
 
 import java.util.List;
 import java.util.Map;

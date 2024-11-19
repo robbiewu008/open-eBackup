@@ -14,9 +14,12 @@ package openbackup.tdsql.resources.access.interceptor;
 
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
+import openbackup.data.protection.access.provider.sdk.backup.v2.PostBackupTask;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
+import openbackup.data.protection.access.provider.sdk.enums.BackupTypeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.CopyFormatEnum;
+import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
@@ -24,7 +27,10 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
+import openbackup.system.base.common.utils.JSONObject;
+import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
+import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
@@ -39,6 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,6 +113,7 @@ public class TdsqlBackupInterceptor extends AbstractDbBackupInterceptor {
 
     @Override
     public BackupTask supplyBackupTask(BackupTask backupTask) {
+        log.info("tdsql supplyBackupTask start");
         // 副本格式 日志备份用目录格式，全量、增量备份用快照格式
         backupTask.setCopyFormat(CopyFormatEnum.INNER_SNAPSHOT.getCopyFormat());
         String backupType = backupTask.getBackupType();
@@ -127,11 +135,6 @@ public class TdsqlBackupInterceptor extends AbstractDbBackupInterceptor {
             repositories.add(logRepository);
         }
 
-        // 添加存储仓库类型：0-META_REPOSITORY
-        StorageRepository metaRepository = BeanTools.copy(repositories.get(0), StorageRepository::new);
-        metaRepository.setType(RepositoryTypeEnum.META.getType());
-        repositories.add(metaRepository);
-
         // 添加存储仓库类型：2-CACHE_REPOSITORY
         StorageRepository cacheRepository = BeanTools.copy(repositories.get(0), StorageRepository::new);
         cacheRepository.setType(RepositoryTypeEnum.CACHE.getType());
@@ -139,8 +142,9 @@ public class TdsqlBackupInterceptor extends AbstractDbBackupInterceptor {
 
         // 防止实例主备切换，此时需要再查一遍实例的信息
         log.info("rescan node roles");
-        TdsqlInstance instance = tdsqlTaskCheck.checkEnvChange(backupTask.getProtectEnv().getUuid(),
-            backupTask.getProtectObject().getUuid());
+        ProtectedResource instanceResource = tdsqlService.getResourceById(backupTask.getProtectObject().getUuid());
+        String backupInstanceJson = instanceResource.getExtendInfo().get(TdsqlConstant.CLUSTER_INSTANCE_INFO);
+        TdsqlInstance instance = JsonUtil.read(backupInstanceJson, TdsqlInstance.class);
         backupTask.getProtectObject().getExtendInfo().put(TdsqlConstant.CLUSTER_INSTANCE_INFO, JsonUtil.json(instance));
 
         // 获取oss信息下发给任务
@@ -150,16 +154,49 @@ public class TdsqlBackupInterceptor extends AbstractDbBackupInterceptor {
         backupTask.getProtectObject().getExtendInfo().put(TdsqlConstant.OSS_URL, ossUrl);
 
         // 更新数据库的信息
-        ProtectedResource instanceResource = tdsqlService.getResourceById(backupTask.getProtectObject().getUuid());
         ProtectedResource resource = new ProtectedResource();
         resource.setUuid(instanceResource.getUuid());
         resource.setExtendInfoByKey(TdsqlConstant.CLUSTER_INSTANCE_INFO, JsonUtil.json(instance));
+        resource.setExtendInfoByKey(TdsqlConstant.MYSQL_VERSION,
+            instanceResource.getExtendInfoByKey(TdsqlConstant.MYSQL_VERSION));
         resourceService.updateSourceDirectly(Collections.singletonList(resource));
+        log.info("tdsql supplyBackupTask end");
         return backupTask;
     }
 
     @Override
     public boolean isSupportDataAndLogParallelBackup(ProtectedResource resource) {
         return true;
+    }
+
+    @Override
+    public void finalize(PostBackupTask postBackupTask) {
+        if (BackupTypeEnum.LOG.getAbbreviation() != postBackupTask.getBackupType().getAbbreviation()) {
+            log.info("finalize not log backup job");
+            return;
+        }
+        if (!ProviderJobStatusEnum.SUCCESS.equals(postBackupTask.getJobStatus())) {
+            log.info("finalize backup job not success");
+            return;
+        }
+
+        CopyInfo copyInfo = postBackupTask.getCopyInfo();
+        String copyPropertiesStr = copyInfo.getProperties();
+        JSONObject copyProperties = JSONObject.fromObject(copyPropertiesStr);
+        String deleteArchivelog = copyProperties.getString(TdsqlConstant.DELETE_ARCHIVED_LOG);
+        log.info("finalize deletearchivelog {}", deleteArchivelog);
+        if (VerifyUtil.isEmpty(deleteArchivelog) || TdsqlConstant.FALSE.equals(deleteArchivelog)) {
+            log.info("finalize deletearchivelog is false");
+            return;
+        }
+        String resourceId = postBackupTask.getProtectedObject().getResourceId();
+        ProtectedResource protectedResource = tdsqlService.getResourceById(resourceId);
+        HashMap<String, String> extendInfo = new HashMap<>();
+        String endTime = copyProperties.getString(TdsqlConstant.END_TIME);
+        String backupTime = copyProperties.getString(TdsqlConstant.BACKUP_TIME);
+        extendInfo.put(TdsqlConstant.END_TIME, endTime);
+        extendInfo.put(TdsqlConstant.BACKUP_TIME, backupTime);
+        tdsqlService.deleteLogFromProductEnv(protectedResource, extendInfo);
+        log.info("finalize deletearchivelog end");
     }
 }

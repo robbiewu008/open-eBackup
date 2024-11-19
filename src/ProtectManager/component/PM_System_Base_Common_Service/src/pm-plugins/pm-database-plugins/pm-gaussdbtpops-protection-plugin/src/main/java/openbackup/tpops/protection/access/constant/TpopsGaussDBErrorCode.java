@@ -21,4 +21,9 @@ public class TpopsGaussDBErrorCode {
      * GaussDb资源已达到上限
      */
     public static final long GAUSSDB_RESOURCE_REACHED_THE_UPPER_LIMIT = 1677931389L;
+
+    /**
+     * GaussDB数据库日志备份任务异常告警
+     */
+    public static final String GAUSSDB_LOG_BACKUP_FAILED_ID = "0x64006E0001";
 }

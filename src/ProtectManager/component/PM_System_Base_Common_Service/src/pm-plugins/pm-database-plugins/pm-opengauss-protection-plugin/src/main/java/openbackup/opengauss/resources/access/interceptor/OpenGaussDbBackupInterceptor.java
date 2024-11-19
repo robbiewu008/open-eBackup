@@ -12,6 +12,7 @@
 */
 package openbackup.opengauss.resources.access.interceptor;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
@@ -26,8 +27,6 @@ import openbackup.opengauss.resources.access.service.OpenGaussAgentService;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

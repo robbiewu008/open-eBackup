@@ -12,15 +12,15 @@
 */
 package openbackup.data.access.framework.copy.verify.listener;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.verify.service.CopyVerifyTaskManager;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.restore.service.RestoreTaskHelper;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
 import openbackup.data.protection.access.provider.sdk.verify.CopyVerifyTask;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.utils.JSONObject;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;

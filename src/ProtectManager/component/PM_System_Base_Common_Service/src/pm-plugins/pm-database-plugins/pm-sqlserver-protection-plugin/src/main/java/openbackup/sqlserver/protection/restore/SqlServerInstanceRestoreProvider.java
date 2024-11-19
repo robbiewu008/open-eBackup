@@ -12,6 +12,7 @@
 */
 package openbackup.sqlserver.protection.restore;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreLocationEnum;
@@ -29,6 +30,7 @@ import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbRestoreInterceptorProvider;
 import openbackup.database.base.plugin.utils.ProtectionTaskUtils;
+import openbackup.sqlserver.common.SqlServerConstants;
 import openbackup.sqlserver.protection.service.SqlServerBaseService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
@@ -38,8 +40,6 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -94,7 +94,14 @@ public class SqlServerInstanceRestoreProvider extends AbstractDbRestoreIntercept
     public void restoreTaskCreationPreCheck(RestoreTask task) {
         // 恢复任务参数校验
         log.info("Pre check sqlserver instance restore task. taskId: {}", task.getTaskId());
-        sqlServerBaseService.checkRestoreTaskParam(task);
+        // 设置agents
+        ProtectedEnvironment agentEnv = BeanTools.copy(task.getTargetEnv(), ProtectedEnvironment::new);
+        if (SqlServerConstants.SUPPORT_OLD_VERSION.contains(agentEnv.getVersion().substring(0, 3))) {
+            sqlServerBaseService.oldVersionCheckRestoreTaskParam(task);
+        } else {
+            // 恢复任务参数校验
+            sqlServerBaseService.checkRestoreTaskParam(task);
+        }
         checkConnection(task);
     }
 

@@ -12,6 +12,7 @@
 */
 package openbackup.dameng.protection.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.util.EnvironmentParamCheckUtil;
 import openbackup.dameng.protection.access.constant.DamengConstant;
 import openbackup.dameng.protection.access.service.DamengService;
@@ -33,8 +34,6 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.UUIDGenerator;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

@@ -204,6 +204,16 @@ public class MongoDBConstants {
     public static final int AUTH_KEY_LENGTH = 32;
 
     /**
+     * 单实例类型
+     */
+    public static final String SINGLE_TYPE = "singleType";
+
+    /**
+     * 单实例
+     */
+    public static final String SINGLE = "single";
+
+    /**
      * 判断是否继续往后走类型
      */
     public static final Map<MongoDBClusterRoleEnum, String> CLUSTER_ROLE_MAP = Collections.unmodifiableMap(

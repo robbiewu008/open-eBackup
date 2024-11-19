@@ -13,21 +13,28 @@
 package openbackup.tpops.protection.access.interceptor;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterBasicService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.backup.v2.PostBackupTask;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
+import openbackup.data.protection.access.provider.sdk.enums.BackupTypeEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
+import openbackup.system.base.common.constants.FaultEnum;
+import openbackup.system.base.common.constants.IsmNumberConstant;
+import openbackup.system.base.common.constants.LegoInternalAlarm;
+import openbackup.system.base.common.utils.JSONObject;
+import openbackup.system.base.sdk.alarm.CommonAlarmService;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.tpops.protection.access.constant.TpopsGaussDBConstant;
+import openbackup.tpops.protection.access.constant.TpopsGaussDBErrorCode;
 import openbackup.tpops.protection.access.provider.TpopsGaussDBAgentProvider;
 import openbackup.tpops.protection.access.service.TpopsGaussDBService;
 import openbackup.tpops.protection.access.util.TpopsGaussDBClusterUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -50,6 +57,8 @@ public class TpopsGaussDBBackupInterceptor extends AbstractDbBackupInterceptor {
 
     private final DeployTypeService deployTypeService;
 
+    private final CommonAlarmService commonAlarmService;
+
     /**
      * 构造器
      *
@@ -57,14 +66,16 @@ public class TpopsGaussDBBackupInterceptor extends AbstractDbBackupInterceptor {
      * @param tpopsGaussDBAgentProvider tpopsGaussDBAgentProvider
      * @param clusterBasicService clusterBasicService
      * @param deployTypeService deployTypeService
+     * @param commonAlarmService commonAlarmService
      */
     public TpopsGaussDBBackupInterceptor(TpopsGaussDBService tpopsGaussDbService,
         TpopsGaussDBAgentProvider tpopsGaussDBAgentProvider, ClusterBasicService clusterBasicService,
-        DeployTypeService deployTypeService) {
+        DeployTypeService deployTypeService, CommonAlarmService commonAlarmService) {
         this.tpopsGaussDbService = tpopsGaussDbService;
         this.tpopsGaussDBAgentProvider = tpopsGaussDBAgentProvider;
         this.clusterBasicService = clusterBasicService;
         this.deployTypeService = deployTypeService;
+        this.commonAlarmService = commonAlarmService;
     }
 
     @Override
@@ -119,6 +130,29 @@ public class TpopsGaussDBBackupInterceptor extends AbstractDbBackupInterceptor {
     @Override
     public void finalize(PostBackupTask postBackupTask) {
         tpopsGaussDbService.setNextBackupTypeWhenLogBackFail(postBackupTask);
+
+        // 获取副本扩展信息canRestore，日志备份且返回false上报告警
+        String copyPropertiesStr = postBackupTask.getCopyInfo().getProperties();
+        JSONObject copyProperties = JSONObject.fromObject(copyPropertiesStr);
+        String canRestore = copyProperties.getString(TpopsGaussDBConstant.CAN_RESTORE);
+        if (BackupTypeEnum.LOG.getAbbreviation() == postBackupTask.getBackupType().getAbbreviation()
+            && TpopsGaussDBConstant.FALSE.equals(canRestore)) {
+            log.warn("The canRestore is false.");
+            // 资源（[实例名]）运行[0-备份]任务[1-部分成功]
+            String[] alarmParams = new String[] {postBackupTask.getProtectedObject().getName(), "0", "1"};
+            commonAlarmService.generateAlarm(genLogBackupFailedAlarmParam(alarmParams));
+        }
+    }
+
+    private LegoInternalAlarm genLogBackupFailedAlarmParam(String[] alarmParams) {
+        LegoInternalAlarm legoInternalAlarm = new LegoInternalAlarm();
+        legoInternalAlarm.setAlarmId(TpopsGaussDBErrorCode.GAUSSDB_LOG_BACKUP_FAILED_ID);
+        legoInternalAlarm.setMoName(TpopsGaussDBErrorCode.GAUSSDB_LOG_BACKUP_FAILED_ID);
+        legoInternalAlarm.setAlarmParam(alarmParams);
+        legoInternalAlarm.setAlarmSequence(IsmNumberConstant.ONE);
+        legoInternalAlarm.setAlarmLevel(FaultEnum.AlarmSeverity.MAJOR);
+        legoInternalAlarm.setSourceType(FaultEnum.AlarmResourceType.PROTECTION.getValue());
+        return legoInternalAlarm;
     }
 
     /**

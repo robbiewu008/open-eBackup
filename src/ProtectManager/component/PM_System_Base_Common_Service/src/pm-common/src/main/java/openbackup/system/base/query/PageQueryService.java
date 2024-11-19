@@ -12,6 +12,11 @@
 */
 package openbackup.system.base.query;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.ErrorCodeConstant;
 import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -23,12 +28,6 @@ import openbackup.system.base.common.validator.constants.RegexpConstants;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.util.IdUtil;
 import openbackup.system.base.util.RequestParamFilterUtil;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,11 +208,8 @@ public class PageQueryService {
      * @param <R> template type R
      * @return base page
      */
-    public <E, T, R> BasePage<R> pageQuery(
-        Class<T> type,
-        BiFunction<IPage<T>, QueryWrapper<T>, IPage<R>> dao,
-        Pagination<E> pageQueryParam,
-        String defaultOrder) {
+    public <E, T, R> BasePage<R> pageQuery(Class<T> type, BiFunction<IPage<T>, QueryWrapper<T>, IPage<R>> dao,
+            Pagination<E> pageQueryParam, String defaultOrder) {
         return pageQuery(type, dao, pageQueryParam, defaultOrder, null);
     }
 
@@ -230,12 +226,8 @@ public class PageQueryService {
      * @param <R> template type R
      * @return base page
      */
-    public <E, T, R> BasePage<R> pageQuery(
-        Class<T> type,
-        BiFunction<IPage<T>, QueryWrapper<T>, IPage<R>> dao,
-        Pagination<E> pageQueryParam,
-        String defaultOrder,
-        String owner) {
+    public <E, T, R> BasePage<R> pageQuery(Class<T> type, BiFunction<IPage<T>, QueryWrapper<T>, IPage<R>> dao,
+            Pagination<E> pageQueryParam, String defaultOrder, String owner) {
         JSONObject condition = pageQueryParam.conditions();
         List<String> orderList = getValidOrders(pageQueryParam, defaultOrder);
         QueryWrapper<T> wrapper = buildQueryWrapper(condition, type, pageQueryParam.getFieldNamingStrategy());
@@ -303,8 +295,8 @@ public class PageQueryService {
         return queryWrapper;
     }
 
-    private <T> QueryWrapper<T> addFieldCondition(
-        QueryWrapper<T> wrapper, String key, Map.Entry<String, List<?>> condition) {
+    private <T> QueryWrapper<T> addFieldCondition(QueryWrapper<T> wrapper, String key,
+            Map.Entry<String, List<?>> condition) {
         List<?> parameters = condition.getValue();
         String operator = condition.getKey();
         String column = StringUtil.mapCamelCaseToUnderscore(key);
@@ -347,16 +339,13 @@ public class PageQueryService {
         if (!IdUtil.isUUID(user.getDomainId())) {
             throw new LegoCheckedException(ErrorCodeConstant.ERR_PARAM, "user domain id incorrect");
         }
-        return wrapper.inSql(owner,
-            "select resource_object_id from t_domain_r_resource_object where domain_id = '" + user.getDomainId()
-                + "'");
+        return wrapper.inSql(owner, "select resource_object_id from t_domain_r_resource_object where domain_id = '"
+                + user.getDomainId() + "'");
     }
 
     private <E> List<String> getValidOrders(Pagination<E> pageQueryParam, String defaultOrder) {
-        List<String> orders =
-            Optional.ofNullable(pageQueryParam.getOrders()).orElse(Collections.emptyList()).stream()
-                .filter(order -> !VerifyUtil.isEmpty(order))
-                .filter(this::isValidOrderConfig)
+        List<String> orders = Optional.ofNullable(pageQueryParam.getOrders()).orElse(Collections.emptyList()).stream()
+                .filter(order -> !VerifyUtil.isEmpty(order)).filter(this::isValidOrderConfig)
                 .collect(Collectors.toList());
         if (defaultOrder == null) {
             return orders;
@@ -375,19 +364,17 @@ public class PageQueryService {
     }
 
     private boolean isValidOrderConfig(String config) {
-        return config != null
-            && config.matches(RegexpConstants.REGEXP_PAGE_QUERY_ORDER_BY)
-            && !config.contains(";");
+        return config != null && config.matches(RegexpConstants.REGEXP_PAGE_QUERY_ORDER_BY) && !config.contains(";");
     }
 
     private <A extends Annotation> List<A> getMergedRepeatableAnnotations(Class<?> type, Class<A> annotationType) {
         if (type == null) {
             return Collections.emptyList();
         }
-        return Stream.concat(
-            AnnotatedElementUtils.getMergedRepeatableAnnotations(type, annotationType).stream(),
-            getMergedRepeatableAnnotations(type.getSuperclass(), annotationType).stream())
-            .collect(Collectors.toList());
+        return Stream
+                .concat(AnnotatedElementUtils.getMergedRepeatableAnnotations(type, annotationType).stream(),
+                        getMergedRepeatableAnnotations(type.getSuperclass(), annotationType).stream())
+                .collect(Collectors.toList());
     }
 
     private boolean isForbidField(Class<?> type, String name, String strategy) {
@@ -399,10 +386,8 @@ public class PageQueryService {
 
     private Optional<String> getFuzzyMatchableFieldConfig(Class<?> type, String name) {
         Set<String> specials = getSpecialFieldsConfig(type);
-        return specials.stream()
-            .filter(special -> !special.startsWith("!") && special.contains("%"))
-            .filter(special -> special.replaceAll("^%|%$", "").equals(name))
-            .findFirst();
+        return specials.stream().filter(special -> !special.startsWith("!") && special.contains("%"))
+                .filter(special -> special.replaceAll("^%|%$", "").equals(name)).findFirst();
     }
 
     private Set<String> getSpecialFieldsConfig(Class<?> type) {
@@ -434,10 +419,8 @@ public class PageQueryService {
     }
 
     private FieldNamingStrategy getStrategyByName(String name) {
-        return Optional.ofNullable(name)
-            .map(component -> applicationContext.getBean(component))
-            .filter(strategyObject -> strategyObject instanceof FieldNamingStrategy)
-            .map(strategyObject -> (FieldNamingStrategy) strategyObject)
-            .orElse(null);
+        return Optional.ofNullable(name).map(component -> applicationContext.getBean(component))
+                .filter(strategyObject -> strategyObject instanceof FieldNamingStrategy)
+                .map(strategyObject -> (FieldNamingStrategy) strategyObject).orElse(null);
     }
 }

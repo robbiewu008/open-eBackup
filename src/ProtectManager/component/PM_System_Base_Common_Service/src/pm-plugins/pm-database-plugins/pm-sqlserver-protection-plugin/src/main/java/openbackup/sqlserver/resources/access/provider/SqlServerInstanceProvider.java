@@ -12,8 +12,14 @@
 */
 package openbackup.sqlserver.resources.access.provider;
 
+import static openbackup.system.base.common.constants.CommonErrorCode.ERR_PARAM;
+import static openbackup.system.base.common.constants.CommonErrorCode.OBJ_NOT_EXIST;
+import static openbackup.system.base.common.constants.CommonErrorCode.SYSTEM_ERROR;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConnectionCheckProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceFeature;
@@ -22,14 +28,15 @@ import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.provider.DatabaseResourceProvider;
 import openbackup.sqlserver.common.SqlServerConstants;
 import openbackup.sqlserver.protection.service.SqlServerBaseService;
-import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -90,16 +97,35 @@ public class SqlServerInstanceProvider extends DatabaseResourceProvider {
         // 校验是否已经存在实例
         sqlServerBaseService.checkInstanceExist(resource);
         checkConnect(resource);
+        refreshInstanceInfo(resource);
+    }
+
+    private void refreshInstanceInfo(ProtectedResource resource) {
+        String envId = resource.getExtendInfo().get(DatabaseConstants.HOST_ID);
+        ProtectedEnvironment environment = resourceService.getResourceById(envId)
+            .filter(env -> env instanceof ProtectedEnvironment)
+            .map(env -> (ProtectedEnvironment) env)
+            .orElseThrow(() -> new LegoCheckedException(SYSTEM_ERROR, "Protected environment is not exists!"));
+        List<ProtectedResource> resourceList = sqlServerBaseService.getDatabaseInfoByAgent(environment,
+            environment.getEndpoint(), environment.getPort(), resource,
+            ResourceSubTypeEnum.SQL_SERVER_INSTANCE.getType());
+        if (CollectionUtils.isEmpty(resourceList)) {
+            return;
+        }
+        String version = Optional.ofNullable(resourceList.get(0))
+            .map(protectedResource -> protectedResource.getExtendInfoByKey(DatabaseConstants.VERSION))
+            .orElse(StringUtils.EMPTY);
+        resource.setVersion(version);
     }
 
     private void checkAndSetResourceParam(ProtectedResource resource) {
         Map<String, List<ProtectedResource>> dependencies = resource.getDependencies();
         ProtectedResource protectedResource = Optional.ofNullable(dependencies)
-            .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.ERR_PARAM, "resource param is not enough."))
+            .orElseThrow(() -> new LegoCheckedException(ERR_PARAM, "resource param is not enough."))
             .get(DatabaseConstants.AGENTS)
             .get(0);
         if (protectedResource == null || resource.getExtendInfo() == null) {
-            throw new LegoCheckedException(CommonErrorCode.ERR_PARAM, "resource param is not enough.");
+            throw new LegoCheckedException(ERR_PARAM, "resource param is not enough.");
         }
 
         // 设置实例参数
@@ -112,9 +138,10 @@ public class SqlServerInstanceProvider extends DatabaseResourceProvider {
     }
 
     private void setInstanceParams(ProtectedResource resource, String hostId) {
-        resource.setPath(resource.getName() + SqlServerConstants.RESOURCE_NAME_SPLIT
-            + resourceService.getResourceById(hostId).orElseThrow(
-                () -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "resource is not exist")).getName());
+        resource.setPath(
+            resource.getName() + SqlServerConstants.RESOURCE_NAME_SPLIT + resourceService.getResourceById(hostId)
+                .orElseThrow(() -> new LegoCheckedException(OBJ_NOT_EXIST, "resource is not exist"))
+                .getName());
     }
 
     /**
@@ -127,6 +154,16 @@ public class SqlServerInstanceProvider extends DatabaseResourceProvider {
     public void beforeUpdate(ProtectedResource resource) {
         checkConnect(resource);
         setInstanceParams(resource, resource.getParentUuid());
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+            Collections.singletonList(resource.getUuid()));
+        dependencies.put(DatabaseConstants.AGENTS, agents);
+        resource.setDependencies(dependencies);
+        return true;
     }
 
     /**

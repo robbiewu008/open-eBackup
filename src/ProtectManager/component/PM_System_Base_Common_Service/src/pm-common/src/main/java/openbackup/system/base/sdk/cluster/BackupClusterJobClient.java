@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.cluster;
 
-import openbackup.system.base.sdk.resource.model.ResourceLockRequest;
-import openbackup.system.base.security.exterattack.ExterAttack;
-
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
+import openbackup.system.base.sdk.resource.model.ResourceLockRequest;
+import openbackup.system.base.security.exterattack.ExterAttack;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
@@ -46,7 +45,7 @@ public interface BackupClusterJobClient {
     @RequestLine("PUT /v1/jobs/{jobId}/action/execute?needSchedule={needSchedule}")
     @Headers({"x-auth-token: {token}"})
     void executeJob(URI uri, @Param("token") String token, @Param("jobId") @Length(max = 256) String jobId,
-        @Param("needSchedule") Boolean isNeedSchedule);
+            @Param("needSchedule") Boolean isNeedSchedule);
 
     /**
      * 通知集群其他节点任务完成

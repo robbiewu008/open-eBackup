@@ -12,6 +12,11 @@
 */
 package openbackup.gaussdbdws.protection.access.util;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
@@ -20,8 +25,6 @@ import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
 import openbackup.gaussdbdws.protection.access.constant.DwsConstant;
 import openbackup.gaussdbdws.protection.access.enums.BackupToolEnum;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
-
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
@@ -32,10 +35,6 @@ import openbackup.system.base.sdk.cluster.model.ClusterDetailInfo;
 import openbackup.system.base.sdk.cluster.model.TargetClusterRequestParm;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;

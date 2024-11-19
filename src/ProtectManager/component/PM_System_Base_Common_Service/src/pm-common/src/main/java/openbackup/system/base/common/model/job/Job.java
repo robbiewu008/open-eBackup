@@ -12,14 +12,13 @@
 */
 package openbackup.system.base.common.model.job;
 
-import openbackup.system.base.common.utils.JSONObject;
-import openbackup.system.base.query.PageQueryConfig;
-import openbackup.system.base.sdk.job.model.request.JobMessage;
-
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
+import openbackup.system.base.common.utils.JSONObject;
+import openbackup.system.base.query.PageQueryConfig;
+import openbackup.system.base.sdk.job.model.request.JobMessage;
 
 import java.util.Optional;
 

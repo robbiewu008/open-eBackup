@@ -15,6 +15,7 @@ package openbackup.tdsql.resources.access.livemount;
 import openbackup.data.access.framework.livemount.common.model.LiveMountFileSystemShareInfo;
 import openbackup.data.access.framework.livemount.common.model.LiveMountObject;
 import openbackup.data.access.framework.livemount.provider.DefaultLiveMountServiceProvider;
+import openbackup.system.base.common.constants.SymbolConstant;
 import openbackup.system.base.common.model.livemount.LiveMountEntity;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.VerifyUtil;
@@ -22,6 +23,7 @@ import openbackup.system.base.sdk.resource.model.ResourceEntity;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.util.BeanTools;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -45,12 +47,17 @@ public class TdsqlLiveMountServiceProvider extends DefaultLiveMountServiceProvid
         ResourceEntity targetResourceEntity) {
         LiveMountEntity entity = super.buildLiveMountEntity(liveMountObject, sourceResourceEntity,
             targetResourceEntity);
-        List<LiveMountFileSystemShareInfo> fileSystemShareInfoList = liveMountObject.getFileSystemShareInfoList();
+        LiveMountObject deepCopyLiveMountObject = BeanTools.deepClone(liveMountObject);
+        List<LiveMountFileSystemShareInfo> fileSystemShareInfoList =
+            deepCopyLiveMountObject.getFileSystemShareInfoList();
         if (VerifyUtil.isEmpty(fileSystemShareInfoList)) {
             return entity;
         }
         for (LiveMountFileSystemShareInfo shareInfo : fileSystemShareInfoList) {
-            shareInfo.setFileSystemName(shareInfo.getFileSystemName() + targetResourceEntity.getUuid());
+            shareInfo.setFileSystemName(
+                shareInfo.getFileSystemName() + SymbolConstant.UNDERLINE + targetResourceEntity.getUuid());
+            log.info("TDSQL getFileSystemName {}, uuid {}.", shareInfo.getFileSystemName(),
+                targetResourceEntity.getUuid());
         }
         entity.setTargetResourceName(targetResourceEntity.getEnvironmentName());
         entity.setTargetResourcePath(StringUtils.isEmpty(targetResourceEntity.getPath())

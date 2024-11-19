@@ -43,8 +43,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- **/
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TokenBo.class})
 public class AgentSelectorManagerTest {

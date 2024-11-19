@@ -61,4 +61,13 @@ public interface QosCommonRestApi {
     @ExterAttack
     @GetMapping("/internal/qos")
     BasePage<QosBo> queryQosList(@RequestParam("page_no") Integer pageNo, @RequestParam("page_size") Integer pageSize);
+
+    /**
+     * 获取qos所有的数量
+     *
+     * @return qos的数量
+     */
+    @ExterAttack
+    @GetMapping("/internal/all-count")
+    Integer getAllCount();
 }

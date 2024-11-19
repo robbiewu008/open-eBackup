@@ -4,15 +4,15 @@
 
 package openbackup.data.access.framework.protection.handler.v2.intelligentdetection;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.protection.handler.v2.UnifiedTaskCompleteHandler;
 import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

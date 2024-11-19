@@ -12,13 +12,12 @@
 */
 package openbackup.data.access.framework.copy.index.listener.v1;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.CopyIndexConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.kafka.annotation.KafkaListener;

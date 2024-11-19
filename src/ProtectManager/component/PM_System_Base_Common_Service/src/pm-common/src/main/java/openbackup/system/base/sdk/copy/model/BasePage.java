@@ -12,14 +12,13 @@
 */
 package openbackup.system.base.sdk.copy.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.livemount.model.Performance;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

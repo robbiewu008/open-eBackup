@@ -126,4 +126,15 @@ public interface CopyManagerService {
      * @return 副本信息
      */
     CopiesEntity queryCopyById(String copyId);
+
+    /**
+     * 查询副本数量
+     *
+     * @param resourceId    @NotNull 资源ID
+     * @param esn           esn
+     * @param storageUnitId 存储单元id
+     * @param backupTypes   备份类型
+     * @return 副本数量
+     */
+    Long queryCopyCounts(String resourceId, String esn, String storageUnitId, List<Integer> backupTypes);
 }

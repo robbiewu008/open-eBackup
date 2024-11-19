@@ -12,16 +12,17 @@
 */
 package openbackup.mysql.resources.access.livemount;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.livemount.common.model.LiveMountFileSystemShareInfo;
 import openbackup.data.access.framework.livemount.common.model.LiveMountObject;
 import openbackup.data.access.framework.livemount.provider.DefaultLiveMountServiceProvider;
 import openbackup.mysql.resources.access.enums.MysqlResourceSubTypeEnum;
+import openbackup.system.base.common.constants.SymbolConstant;
 import openbackup.system.base.common.model.livemount.LiveMountEntity;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.model.ResourceEntity;
-
-import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.util.BeanTools;
 
 import org.springframework.stereotype.Component;
 
@@ -44,12 +45,17 @@ public class MysqlLiveMountServiceProvider extends DefaultLiveMountServiceProvid
             ResourceEntity targetResourceEntity) {
         LiveMountEntity entity = super.buildLiveMountEntity(liveMountObject, sourceResourceEntity,
                 targetResourceEntity);
-        List<LiveMountFileSystemShareInfo> fileSystemShareInfoList = liveMountObject.getFileSystemShareInfoList();
+        LiveMountObject deepCopyLiveMountObject = BeanTools.deepClone(liveMountObject);
+        List<LiveMountFileSystemShareInfo> fileSystemShareInfoList =
+            deepCopyLiveMountObject.getFileSystemShareInfoList();
         if (VerifyUtil.isEmpty(fileSystemShareInfoList)) {
             return entity;
         }
         for (LiveMountFileSystemShareInfo shareInfo : fileSystemShareInfoList) {
-            shareInfo.setFileSystemName(shareInfo.getFileSystemName() + targetResourceEntity.getUuid());
+            shareInfo.setFileSystemName(shareInfo.getFileSystemName()
+                + SymbolConstant.UNDERLINE + targetResourceEntity.getUuid());
+            log.info("Mysql getFileSystemName {}, uuid {}.", shareInfo.getFileSystemName(),
+                targetResourceEntity.getUuid());
         }
         entity.setFileSystemShareInfo(JSONArray.fromObject(fileSystemShareInfoList).toString());
         return entity;

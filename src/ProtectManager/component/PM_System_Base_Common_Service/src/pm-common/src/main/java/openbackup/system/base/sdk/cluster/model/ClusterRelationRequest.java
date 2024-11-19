@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.cluster.model;
 
-import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
 
 import org.hibernate.validator.constraints.Length;
 

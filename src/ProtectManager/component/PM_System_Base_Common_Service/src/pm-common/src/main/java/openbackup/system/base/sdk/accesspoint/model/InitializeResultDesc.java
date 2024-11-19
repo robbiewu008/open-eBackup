@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.accesspoint.model;
 
-import openbackup.system.base.sdk.accesspoint.model.enums.InitializeResultCode;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import openbackup.system.base.sdk.accesspoint.model.enums.InitializeResultCode;
 
 /**
  * 初始化动作结果描述

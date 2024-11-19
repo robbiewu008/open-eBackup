@@ -12,11 +12,10 @@
 */
 package openbackup.data.access.framework.core.config;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.AgentUnifiedRestApi;
 import openbackup.system.base.common.rest.FeignBuilder;
 import openbackup.system.base.util.RequestUriUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

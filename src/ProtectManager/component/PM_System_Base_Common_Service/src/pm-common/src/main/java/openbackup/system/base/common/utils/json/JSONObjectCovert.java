@@ -12,9 +12,9 @@
 */
 package openbackup.system.base.common.utils.json;
 
-import openbackup.system.base.common.utils.JSONObject;
-
 import com.google.common.base.CaseFormat;
+
+import openbackup.system.base.common.utils.JSONObject;
 
 /**
  * JSONObject转换工具类
@@ -51,7 +51,7 @@ public class JSONObjectCovert {
                                 lowerCamelKey = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, key);
                             }
                             // 不为下划线格式无需转换
-                            target.put(lowerCamelKey, value);
+                            target.putRaw(lowerCamelKey, value);
                         });
         return target;
     }

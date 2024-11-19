@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.common.model.repository.tape;
 
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.LegoCheckedException;
-
 import com.google.common.collect.ImmutableSet;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 import java.util.Set;
 
@@ -57,14 +56,14 @@ public enum TapeWriteStatus {
     /**
      * 可以合法操作的状态
      */
-    public static final Set<TapeWriteStatus> WORM_LEGAL_ADD_OPERATION_WRITE_STATUS_SET =
-            ImmutableSet.of(EMPTY, WRITTEN, FULL, UNKNOWN);
+    public static final Set<TapeWriteStatus> WORM_LEGAL_ADD_OPERATION_WRITE_STATUS_SET = ImmutableSet.of(EMPTY, WRITTEN,
+            FULL, UNKNOWN);
 
     /**
      * RW类型可以合法操作的状态
      */
-    public static final Set<TapeWriteStatus> RW_LEGAL_ADD_OPERATION_WRITE_STATUS_SET =
-            ImmutableSet.of(EMPTY, WRITTEN, FULL);
+    public static final Set<TapeWriteStatus> RW_LEGAL_ADD_OPERATION_WRITE_STATUS_SET = ImmutableSet.of(EMPTY, WRITTEN,
+            FULL);
 
     /**
      * 可以移除的状态

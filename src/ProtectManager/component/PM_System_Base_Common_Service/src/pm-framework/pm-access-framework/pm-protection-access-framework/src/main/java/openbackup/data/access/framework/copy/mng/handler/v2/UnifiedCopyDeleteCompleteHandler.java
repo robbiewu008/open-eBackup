@@ -12,6 +12,9 @@
 */
 package openbackup.data.access.framework.copy.mng.handler.v2;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.index.service.impl.UnifiedCopyIndexService;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
@@ -23,7 +26,6 @@ import openbackup.data.access.framework.protection.handler.v2.UnifiedTaskComplet
 import openbackup.data.access.framework.protection.service.quota.UserQuotaManager;
 import openbackup.data.protection.access.provider.sdk.copy.CopyDeleteInterceptor;
 import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.msg.NotifyManager;
 import openbackup.system.base.common.utils.ExceptionUtil;
@@ -38,8 +40,6 @@ import openbackup.system.base.sdk.job.model.JobLogBo;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.JobStopParam;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.RecoveryCallback;

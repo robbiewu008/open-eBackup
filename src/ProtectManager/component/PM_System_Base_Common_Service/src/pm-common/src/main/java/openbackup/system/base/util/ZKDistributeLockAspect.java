@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.pack.lock.Lock;
 import openbackup.system.base.pack.lock.LockService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -45,8 +44,7 @@ public class ZKDistributeLockAspect {
      * @return Object Object
      * @throws Throwable Throwable
      */
-    @Around(
-        value = "((execution(* com.huawei..*(..))) || (execution(* openbackup..*(..)))) "
+    @Around(value = "((execution(* com.huawei..*(..))) || (execution(* openbackup..*(..)))) "
             + "&& @annotation(zkDistributeLock)")
     public Object execTaskWithZKLock(ProceedingJoinPoint joinPoint, ZKDistributeLock zkDistributeLock)
             throws Throwable {
@@ -56,7 +54,6 @@ public class ZKDistributeLockAspect {
         TimeUnit timeUnit = zkDistributeLock.timeUnit();
         long errorCode = zkDistributeLock.errorCode();
         boolean isNeedRelease = zkDistributeLock.needRelease();
-        log.info("start acquire zk distributed lock name : {}, upgrade issue.", lockName);
         Lock zkLock = lockService.createDistributeLock(lockName);
         boolean canAcquireLock = false;
         try {

@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.sdk.cluster.model;
 
-import openbackup.system.base.common.constants.IsmConstant;
-import openbackup.system.base.common.constants.IsmNumberConstant;
-import openbackup.system.base.common.validator.constants.RegexpConstants;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.common.constants.IsmConstant;
+import openbackup.system.base.common.constants.IsmNumberConstant;
+import openbackup.system.base.common.validator.constants.RegexpConstants;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -35,7 +34,8 @@ import javax.validation.constraints.Pattern;
 @Data
 public class TargetClusterRequest {
     @NotBlank(message = "The clusterName cannot be blank. ")
-    @Length(max = IsmNumberConstant.TWO_HUNDRED_FIFTY_SIX, min = IsmNumberConstant.FOUR, message = "The length of cluster name is 4-256 characters")
+    @Length(max = IsmNumberConstant.TWO_HUNDRED_FIFTY_SIX, min = IsmNumberConstant.FOUR,
+            message = "The length of cluster name is 4-256 characters")
     @Pattern(regexp = RegexpConstants.NAME_STR, message = "cluster name is invalid")
     private String clusterName;
 

@@ -12,6 +12,11 @@
 */
 package openbackup.gaussdbdws.protection.access.interceptor.copy;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
@@ -32,8 +37,6 @@ import openbackup.gaussdbdws.protection.access.constant.DwsConstant;
 import openbackup.gaussdbdws.protection.access.service.GaussDBBaseService;
 import openbackup.gaussdbdws.protection.access.util.DwsBuildRepositoryUtil;
 import openbackup.gaussdbdws.protection.access.util.DwsTaskEnvironmentUtil;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
-
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.cluster.api.ClusterNativeApi;
@@ -45,10 +48,6 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.OpServiceUtil;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,10 +142,12 @@ public class GaussDBDWSCopyDeleteInterceptor extends AbstractDbCopyDeleteInterce
             || storageRepository.getProtocol() == RepositoryProtocolEnum.TAPE.getProtocol()) {
             return;
         }
-        ClustersInfoVo clustersInfoVo = clusterNativeApi.getCurrentClusterVoInfo();
-        if (clustersInfoVo.getStorageEsn().equals(storageRepository.getId())) {
-            log.info("Local storage(id:{}) not need add auth", storageRepository.getId());
-            return;
+        if (!deployTypeService.isE1000()) {
+            ClustersInfoVo clustersInfoVo = clusterNativeApi.getCurrentClusterVoInfo();
+            if (clustersInfoVo.getStorageEsn().equals(storageRepository.getId())) {
+                log.info("Local storage(id:{}) not need add auth", storageRepository.getId());
+                return;
+            }
         }
         TargetClusterRequestParm targetClusterRequestParm = new TargetClusterRequestParm();
         targetClusterRequestParm.setEsnList(Lists.newArrayList(storageRepository.getId()));

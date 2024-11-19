@@ -52,6 +52,7 @@ public interface ResourceProvider extends DataProtectionProvider<ProtectedResour
      *
      * @param resource 受保护资源
      */
+    @Deprecated
     void beforeCreate(ProtectedResource resource);
 
     /**
@@ -63,6 +64,7 @@ public interface ResourceProvider extends DataProtectionProvider<ProtectedResour
      *
      * @param resource 受保护资源
      */
+    @Deprecated
     void beforeUpdate(ProtectedResource resource);
 
     /**

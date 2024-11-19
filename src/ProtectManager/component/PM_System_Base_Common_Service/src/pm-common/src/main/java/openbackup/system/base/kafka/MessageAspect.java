@@ -12,6 +12,9 @@
 */
 package openbackup.system.base.kafka;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -37,10 +40,6 @@ import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.service.SensitiveDataEliminateService;
 import openbackup.system.base.util.MessageTemplate;
 import openbackup.system.base.util.RedisContextService;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.common.KafkaException;
@@ -148,18 +147,16 @@ public class MessageAspect {
      * @return result
      * @throws Throwable throwable
      */
-    @Around(
-        value = "((execution(* com.huawei..*(..))) || (execution(* openbackup..*(..)))) "
-            + "&& @annotation(messageListener)",
-        argNames = "joinPoint, messageListener")
+    @Around(value = "((execution(* com.huawei..*(..))) || (execution(* openbackup..*(..)))) "
+            + "&& @annotation(messageListener)", argNames = "joinPoint, messageListener")
     public Object enhanceKafkaMethod(ProceedingJoinPoint joinPoint, MessageListener messageListener) throws Throwable {
         Object result = null;
         final List<Object> argumentList = Arrays.asList(joinPoint.getArgs());
         JSONObject params = new JSONObject();
         JSONObject payload;
         long startTime = System.currentTimeMillis();
-        MessageAspectListenerContext messageContext =
-                new MessageAspectListenerContext(messageListener, params, argumentList);
+        MessageAspectListenerContext messageContext = new MessageAspectListenerContext(messageListener, params,
+                argumentList);
         AtomicReference<String> stack = new AtomicReference<>("");
         try {
             int index = getPayloadIndex(argumentList);
@@ -208,8 +205,8 @@ public class MessageAspect {
         RMap<Object, Object> map = redissonClient.getMap(requestId, StringCodec.INSTANCE);
         if (map.containsKey(JobContextKeys.RUNNING_STATE_COUNT)) {
             map.addAndGet(JobContextKeys.RUNNING_STATE_COUNT, 1);
-            log.info("Job is running, RUNNING_STATE_COUNT: {}. JobId: {}",
-                    map.get(JobContextKeys.RUNNING_STATE_COUNT), requestId);
+            log.info("Job is running, RUNNING_STATE_COUNT: {}. JobId: {}", map.get(JobContextKeys.RUNNING_STATE_COUNT),
+                    requestId);
         }
     }
 
@@ -251,13 +248,8 @@ public class MessageAspect {
         return false;
     }
 
-    private void handleMessageException(
-            MessageListener messageListener,
-            Throwable error,
-            AtomicReference<String> stack,
-            MessageAspectListenerContext messageContext,
-            long startTime)
-            throws Throwable {
+    private void handleMessageException(MessageListener messageListener, Throwable error, AtomicReference<String> stack,
+            MessageAspectListenerContext messageContext, long startTime) throws Throwable {
         log.error("handle message {} failed", messageListener.topics(), error);
         messageContext.setCommitMsg(false);
         LegoCheckedException legoCheckedException = ExceptionUtil.lookFor(error, LegoCheckedException.class);
@@ -312,7 +304,7 @@ public class MessageAspect {
     @ExterAttack
     private RBucket<Object> getRedissonBucket(String committedMessageRedisKey) {
         RBucket<Object> bucket;
-        for (int i = 0; ; i++) {
+        for (int i = 0;; i++) {
             try {
                 bucket = redissonClient.getBucket(committedMessageRedisKey, StringCodec.INSTANCE);
                 break;
@@ -324,8 +316,7 @@ public class MessageAspect {
     }
 
     private boolean isRetryable(MessageListener messageListener) {
-        return messageListener.failures().length > 0
-                || messageListener.terminatedMessage()
+        return messageListener.failures().length > 0 || messageListener.terminatedMessage()
                 || messageListener.retryable();
     }
 
@@ -342,18 +333,15 @@ public class MessageAspect {
         log.info("restore stack for retry. topic: {}, request id: {}", listener.topics(), requestId);
     }
 
-    private Object processFailureAfterRetry(
-            MessageAspectListenerContext messageContext, List<Object> args, long startTime) {
+    private Object processFailureAfterRetry(MessageAspectListenerContext messageContext, List<Object> args,
+            long startTime) {
         JSONObject params = messageContext.getParams();
         JSONObject payload = params.getJSONObject(PAYLOAD);
         payload.remove("message.retry.failed");
         MessageListener messageListener = messageContext.getMessageListener();
         processResponseMessage(messageListener, args, params, payload, startTime);
         markJobFail(params, messageListener);
-        processTerminatedMessage(
-                messageContext,
-                startTime,
-                JobStatusEnum.FAIL.name(),
+        processTerminatedMessage(messageContext, startTime, JobStatusEnum.FAIL.name(),
                 new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR));
         sendFailureMessage(messageContext);
         acknowledge(messageListener, params, args, "commit retry failed message");
@@ -369,13 +357,8 @@ public class MessageAspect {
         context.set(JOB_STATUS, "FAIL");
     }
 
-    private Object procBusinessLogic(
-            JSONObject params,
-            MessageListener messageListener,
-            ProceedingJoinPoint joinPoint,
-            int index,
-            long startTime)
-            throws Throwable {
+    private Object procBusinessLogic(JSONObject params, MessageListener messageListener, ProceedingJoinPoint joinPoint,
+            int index, long startTime) throws Throwable {
         Object[] args = joinPoint.getArgs();
         JSONObject fullPayload = params.getJSONObject(PAYLOAD).duplicate();
         updatePayloadWithStack(messageListener, fullPayload, params);
@@ -391,8 +374,8 @@ public class MessageAspect {
         } else {
             phase = SUCCESS;
         }
-        MessageAspectListenerContext messageAspectListenerContext =
-                new MessageAspectListenerContext(messageListener, params, Arrays.asList(args));
+        MessageAspectListenerContext messageAspectListenerContext = new MessageAspectListenerContext(messageListener,
+                params, Arrays.asList(args));
         sendMessage(messageAspectListenerContext, phase);
         processTerminatedMessage(messageAspectListenerContext, startTime, phase);
 
@@ -450,8 +433,8 @@ public class MessageAspect {
         return true;
     }
 
-    private boolean processLockMessage(
-            MessageListener messageListener, List<Object> args, JSONObject params, JSONObject payload, long startTime) {
+    private boolean processLockMessage(MessageListener messageListener, List<Object> args, JSONObject params,
+            JSONObject payload, long startTime) {
         if (processResponseMessage(messageListener, args, params, payload, startTime)) {
             return true;
         }
@@ -459,8 +442,8 @@ public class MessageAspect {
             // 如果任务类型是即时挂载，直接返回false
             JSONObject context = params.getJSONObject(CONTEXT);
             String jobType = context.getString("job_type");
-            if (StringUtils.equals(jobType, JobTypeEnum.LIVE_MOUNT.getValue()) && Arrays.asList(
-                messageListener.topics()).contains(LIVE_MOUNT_EXECUTE_PROCESS)) {
+            if (StringUtils.equals(jobType, JobTypeEnum.LIVE_MOUNT.getValue())
+                    && Arrays.asList(messageListener.topics()).contains(LIVE_MOUNT_EXECUTE_PROCESS)) {
                 return false;
             }
         }
@@ -471,12 +454,12 @@ public class MessageAspect {
         return false;
     }
 
-    private boolean processResponseMessage(
-            MessageListener messageListener, List<Object> args, JSONObject params, JSONObject payload, long startTime) {
+    private boolean processResponseMessage(MessageListener messageListener, List<Object> args, JSONObject params,
+            JSONObject payload, long startTime) {
         JSONObject lock = getLockObject(params);
         String defaultPublishTopic = payload.getString("default_publish_topic");
-        MessageAspectListenerContext messageAspectListenerContext =
-                new MessageAspectListenerContext(messageListener, params, args);
+        MessageAspectListenerContext messageAspectListenerContext = new MessageAspectListenerContext(messageListener,
+                params, args);
         if (defaultPublishTopic != null) {
             if (matchResponseTopic(lock, defaultPublishTopic, LOCK_RESPONSE)) {
                 return processLockResponseMessage(messageAspectListenerContext, payload);
@@ -506,8 +489,8 @@ public class MessageAspect {
         return true;
     }
 
-    private void processUnlockResponseMessage(
-            MessageAspectListenerContext messageContext, JSONObject payload, long startTime) {
+    private void processUnlockResponseMessage(MessageAspectListenerContext messageContext, JSONObject payload,
+            long startTime) {
         // clean lock id
         JSONObject context = messageContext.getParams().getJSONObject(CONTEXT);
         String requestId = payload.getString(messageContext.getMessageListener().contextField());
@@ -522,15 +505,11 @@ public class MessageAspect {
         context.remove(LOCK);
         redisContextService.updateStringValue(requestId, LOCK, null);
 
-        JSONObject data =
-                loadDataFromStack(messageContext.getMessageListener(), payload, messageContext.getParams(), null);
-        JSONObject terminatedParams = data.pick(PAYLOAD, RETURNS).set(CONTEXT, context);
-        processTerminatedMessage(
-                new MessageAspectListenerContext(messageContext, terminatedParams),
-                startTime,
-                status.name(),
-                true,
+        JSONObject data = loadDataFromStack(messageContext.getMessageListener(), payload, messageContext.getParams(),
                 null);
+        JSONObject terminatedParams = data.pick(PAYLOAD, RETURNS).set(CONTEXT, context);
+        processTerminatedMessage(new MessageAspectListenerContext(messageContext, terminatedParams), startTime,
+                status.name(), true, null);
     }
 
     private JobStatusEnum getJobStatus(String status) {
@@ -565,14 +544,11 @@ public class MessageAspect {
             return jobStatusEnum;
         }
 
-        List<String> statusList =
-                Stream.of(contextJobStatus, payloadJobStatus, payloadStatus)
-                        .filter(Objects::nonNull)
-                        .map(String::toUpperCase)
-                        .collect(Collectors.toList());
+        List<String> statusList = Stream.of(contextJobStatus, payloadJobStatus, payloadStatus).filter(Objects::nonNull)
+                .map(String::toUpperCase).collect(Collectors.toList());
         statusList.add(phase);
-        List<JobStatusEnum> candidateStatusList =
-                Arrays.asList(JobStatusEnum.FAIL, JobStatusEnum.PARTIAL_SUCCESS, JobStatusEnum.SUCCESS);
+        List<JobStatusEnum> candidateStatusList = Arrays.asList(JobStatusEnum.FAIL, JobStatusEnum.PARTIAL_SUCCESS,
+                JobStatusEnum.SUCCESS);
         for (JobStatusEnum candidateStatus : candidateStatusList) {
             if (statusList.contains(candidateStatus.name())) {
                 return candidateStatus;
@@ -595,21 +571,15 @@ public class MessageAspect {
         String requestId = payload.getString(messageContext.getMessageListener().contextField());
 
         // 加锁成功或失败后，将之前压入栈中的数据弹出
-        JSONObject data =
-                loadDataFromStack(
-                        messageContext.getMessageListener(),
-                        payload,
-                        messageContext.getParams(),
-                        new String[] {PAYLOAD});
+        JSONObject data = loadDataFromStack(messageContext.getMessageListener(), payload, messageContext.getParams(),
+                new String[]{PAYLOAD});
         messageContext.getParams().set(PAYLOAD, data.getJSONObject(PAYLOAD));
 
         if (!"success".equals(payloadStatus)) {
             // 加锁失败场景
             updateLockInfo(requestId, messageContext.getParams(), new JSONObject().set(STATUS, "fail"));
-            log.info(
-                    "lock resource failed. topic: {}, status: {}",
-                    Arrays.asList(messageContext.getMessageListener().topics()),
-                    payloadStatus);
+            log.info("lock resource failed. topic: {}, status: {}",
+                    Arrays.asList(messageContext.getMessageListener().topics()), payloadStatus);
             sendFailureMessage(messageContext);
             return true;
         } else {
@@ -663,19 +633,16 @@ public class MessageAspect {
         TopicMessage[] topicMessages = new TopicMessage[topics.length];
         for (int i = 0; i < topics.length; i++) {
             String topic = topics[i];
-            TopicMessage topicMessage =
-                    new TopicMessageInfo(
-                            topic, new String[] {MessageContext.PAYLOAD}, new MessagePhase[] {MessagePhase.FAILURE});
+            TopicMessage topicMessage = new TopicMessageInfo(topic, new String[]{MessageContext.PAYLOAD},
+                    new MessagePhase[]{MessagePhase.FAILURE});
             topicMessages[i] = topicMessage;
         }
         return topicMessages;
     }
 
     private boolean lockResource(MessageListener messageListener, JSONObject params) {
-        JSONObject json =
-                new JSONObject()
-                        .set("wait_timeout", IsmNumberConstant.NEGATIVE_ONE)
-                        .set("priority", IsmNumberConstant.TWO);
+        JSONObject json = new JSONObject().set("wait_timeout", IsmNumberConstant.NEGATIVE_ONE).set("priority",
+                IsmNumberConstant.TWO);
         JSONObject lockParams = buildLockParams(messageListener, params);
         json.putAll(lockParams);
         JSONArray resources = json.getJSONArray("resources");
@@ -699,10 +666,8 @@ public class MessageAspect {
     }
 
     private void pushStack(MessageListener messageListener, JSONObject params, String topic, String message) {
-        prepareMessageContext(
-                messageListener,
-                params,
-                new MessageContextInfo(new String[] {message}, MessageContextInfo.STACK, topic));
+        prepareMessageContext(messageListener, params,
+                new MessageContextInfo(new String[]{message}, MessageContextInfo.STACK, topic));
     }
 
     private void updateLockInfo(String requestId, JSONObject params, JSONObject lock) {
@@ -735,8 +700,8 @@ public class MessageAspect {
         jobCenterRestApi.updateJob(requestId, request);
     }
 
-    private void acknowledge(
-            MessageListener messageListener, JSONObject params, List<Object> args, String... messages) {
+    private void acknowledge(MessageListener messageListener, JSONObject params, List<Object> args,
+            String... messages) {
         int index = getIndexOfType(args, Acknowledgment.class);
         Object arg = args.get(index);
         if (arg instanceof Acknowledgment) {
@@ -759,14 +724,7 @@ public class MessageAspect {
     private String getCommittedMessageRedisKey(String requestId, JSONObject params, MessageListener messageListener) {
         String topics = Arrays.toString(messageListener.topics());
         int payLoadHashCode = params.getJSONObject(PAYLOAD).toString().hashCode();
-        return "committed_message"
-                + "_"
-                + requestId
-                + "_"
-                + topics
-                + "_"
-                + payLoadHashCode
-                + "_"
+        return "committed_message" + "_" + requestId + "_" + topics + "_" + payLoadHashCode + "_"
                 + messageListener.groupId();
     }
 
@@ -789,7 +747,7 @@ public class MessageAspect {
     private JSONArray getLockResources(Object value) {
         JSONArray array;
         if (!(value instanceof JSONArray)) {
-            array = new JSONArray(new Object[] {value});
+            array = new JSONArray(new Object[]{value});
         } else {
             array = (JSONArray) value;
         }
@@ -865,8 +823,8 @@ public class MessageAspect {
         return loadDataFromStack(messageListener, payload, params, messageListener.stack());
     }
 
-    private JSONObject loadDataFromStack(
-            MessageListener messageListener, JSONObject payload, JSONObject params, String[] fields) {
+    private JSONObject loadDataFromStack(MessageListener messageListener, JSONObject payload, JSONObject params,
+            String[] fields) {
         JSONObject data;
         JSONObject stack = getStack(params);
         if (isStackTopicMatched(messageListener, stack)) {
@@ -949,32 +907,24 @@ public class MessageAspect {
     private boolean sendMessage(MessageAspectListenerContext messageProcessContext, String phase, JSONObject... data) {
         updateJobStatus(messageProcessContext, phase);
         Predicate<List<MessagePhase>> predicate = getMessagePredicateByPhase(phase);
-        List<TopicMessage> topicMessages =
-                getMatchedTopicMessage(
-                        messageProcessContext.getMessageListener(),
-                        predicate,
-                        messageProcessContext.getTopicMessages());
+        List<TopicMessage> topicMessages = getMatchedTopicMessage(messageProcessContext.getMessageListener(), predicate,
+                messageProcessContext.getTopicMessages());
         sendTopicMessages(topicMessages, messageProcessContext.getParams(), data);
         return !topicMessages.isEmpty();
     }
 
     private Predicate<List<MessagePhase>> getMessagePredicateByPhase(String phase) {
         Map<String, Predicate<List<MessagePhase>>> predicates = new HashMap<>();
-        addMessagePhasePredicate(
-                predicates,
-                this::onSuccessTopicMessagePhase,
-                MessagePhase.SUCCESS.name(),
+        addMessagePhasePredicate(predicates, this::onSuccessTopicMessagePhase, MessagePhase.SUCCESS.name(),
                 JobStatusEnum.PARTIAL_SUCCESS.name());
-        addMessagePhasePredicate(
-                predicates, this::onFailureTopicMessagePhase, MessagePhase.FAILURE.name(), JobStatusEnum.FAIL.name());
+        addMessagePhasePredicate(predicates, this::onFailureTopicMessagePhase, MessagePhase.FAILURE.name(),
+                JobStatusEnum.FAIL.name());
         addMessagePhasePredicate(predicates, this::onCompleteTopicMessagePhase, MessagePhase.COMPLETE.name());
         return predicates.get(phase);
     }
 
-    private void addMessagePhasePredicate(
-            Map<String, Predicate<List<MessagePhase>>> predicates,
-            Predicate<List<MessagePhase>> predicate,
-            String... keys) {
+    private void addMessagePhasePredicate(Map<String, Predicate<List<MessagePhase>>> predicates,
+            Predicate<List<MessagePhase>> predicate, String... keys) {
         for (String key : keys) {
             predicates.put(key, predicate);
         }
@@ -1004,14 +954,10 @@ public class MessageAspect {
         }
     }
 
-    private List<TopicMessage> getMatchedTopicMessage(
-            MessageListener messageListener, Predicate<List<MessagePhase>> predicate, TopicMessage... extras) {
-        TopicMessage[] topicMessages =
-                Stream.of(messageListener.messages(), extras)
-                        .filter(Objects::nonNull)
-                        .map(Arrays::asList)
-                        .flatMap(List::stream)
-                        .toArray(TopicMessage[]::new);
+    private List<TopicMessage> getMatchedTopicMessage(MessageListener messageListener,
+            Predicate<List<MessagePhase>> predicate, TopicMessage... extras) {
+        TopicMessage[] topicMessages = Stream.of(messageListener.messages(), extras).filter(Objects::nonNull)
+                .map(Arrays::asList).flatMap(List::stream).toArray(TopicMessage[]::new);
         List<TopicMessage> messages = new ArrayList<>();
         List<String> topics = Arrays.asList(messageListener.topics());
         for (TopicMessage topicMessage : topicMessages) {
@@ -1067,25 +1013,18 @@ public class MessageAspect {
         }
     }
 
-    private void processTerminatedMessage(
-            MessageAspectListenerContext messageProcessContext, long startTime, String phase) {
+    private void processTerminatedMessage(MessageAspectListenerContext messageProcessContext, long startTime,
+            String phase) {
         processTerminatedMessage(messageProcessContext, startTime, phase, null);
     }
 
-    private void processTerminatedMessage(
-            MessageAspectListenerContext messageProcessContext,
-            long startTime,
-            String phase,
-            LegoCheckedException legoCheckedException) {
+    private void processTerminatedMessage(MessageAspectListenerContext messageProcessContext, long startTime,
+            String phase, LegoCheckedException legoCheckedException) {
         processTerminatedMessage(messageProcessContext, startTime, phase, false, legoCheckedException);
     }
 
-    private void processTerminatedMessage(
-            MessageAspectListenerContext messageContext,
-            long startTime,
-            String phase,
-            boolean isUnlocked,
-            LegoCheckedException legoCheckedException) {
+    private void processTerminatedMessage(MessageAspectListenerContext messageContext, long startTime, String phase,
+            boolean isUnlocked, LegoCheckedException legoCheckedException) {
         JSONObject params = messageContext.getParams();
         JSONObject payload = params.getJSONObject(PAYLOAD);
         JSONObject context = params.getJSONObject(CONTEXT);
@@ -1129,16 +1068,15 @@ public class MessageAspect {
         String runningStateCount;
         if (isForce) {
             // 当前业务开始前，获取RUNNING_STATE_COUNT--
-            runningStateCount = Integer.toString((Integer.parseInt(
-                    map.get(JobContextKeys.RUNNING_STATE_COUNT).toString()) - 1));
+            runningStateCount = Integer
+                    .toString((Integer.parseInt(map.get(JobContextKeys.RUNNING_STATE_COUNT).toString()) - 1));
         } else {
             // 当前业务结束后，更新RUNNING_STATE_COUNT，并获取返回值
             runningStateCount = map.addAndGet(JobContextKeys.RUNNING_STATE_COUNT, -1).toString();
         }
         String abortingStateCount;
         // 没有正在运行的业务，且ABORTING_STATE_COUNT为1，则删除任务上下文
-        if ("0".equals(runningStateCount)
-                && !VerifyUtil.isEmpty(map.get(JobContextKeys.ABORTING_STATE_COUNT))
+        if ("0".equals(runningStateCount) && !VerifyUtil.isEmpty(map.get(JobContextKeys.ABORTING_STATE_COUNT))
                 && "1".equals(map.get(JobContextKeys.ABORTING_STATE_COUNT).toString())) {
             abortingStateCount = map.addAndGet(JobContextKeys.ABORTING_STATE_COUNT, -1).toString();
             log.info("RunningStateCount: {}, AbortingStateCount: {}", runningStateCount, abortingStateCount);
@@ -1149,12 +1087,9 @@ public class MessageAspect {
         }
     }
 
-    private void processTerminatedMessage(
-            MessageAspectListenerContext messageProcessContext, boolean isTerminated, boolean isUnlock, String phase) {
-        log.info(
-                "processTerminatedMessage terminated:{}, unlock:{}, commit msg:{}",
-                isTerminated,
-                isUnlock,
+    private void processTerminatedMessage(MessageAspectListenerContext messageProcessContext, boolean isTerminated,
+            boolean isUnlock, String phase) {
+        log.info("processTerminatedMessage terminated:{}, unlock:{}, commit msg:{}", isTerminated, isUnlock,
                 messageProcessContext.isCommitMsg);
         JSONObject params = messageProcessContext.getParams();
         MessageListener messageListener = messageProcessContext.getMessageListener();
@@ -1165,13 +1100,8 @@ public class MessageAspect {
             String requestId = payload.getString(messageListener.contextField());
             String jobType = getStringValue("job_type", payload, context);
             JobStatusEnum status = getProcessJobStatus(params, phase);
-            log.info(
-                    "job {} is finished.(request id: {}, topics: {}, job type: {}, status: {})",
-                    jobId,
-                    requestId,
-                    messageListener.topics(),
-                    jobType,
-                    status);
+            log.info("job {} is finished.(request id: {}, topics: {}, job type: {}, status: {})", jobId, requestId,
+                    messageListener.topics(), jobType, status);
 
             if (jobId != null) {
                 jobCenterRestApi.completeJob(jobId, status);
@@ -1181,8 +1111,8 @@ public class MessageAspect {
         }
         sendNextTopicMessageOnDemand(params);
         if (!isUnlock && messageProcessContext.isCommitMsg) {
-            acknowledge(
-                    messageListener, params, Arrays.asList(messageProcessContext.getArgs()), "commit business message");
+            acknowledge(messageListener, params, Arrays.asList(messageProcessContext.getArgs()),
+                    "commit business message");
         }
     }
 
@@ -1217,11 +1147,7 @@ public class MessageAspect {
         return false;
     }
 
-    private void updateJobLog(
-            MessageProcessContext messageProcessContext,
-            String jobId,
-            long startTime,
-            String phase,
+    private void updateJobLog(MessageProcessContext messageProcessContext, String jobId, long startTime, String phase,
             LegoCheckedException legoCheckedException) {
         if (jobId == null) {
             return;
@@ -1267,15 +1193,8 @@ public class MessageAspect {
 
     private List<String> buildLogInfoMessage(String[] items, JSONObject params) {
         return Arrays.asList(items).subList(1, items.length).stream()
-                .map(
-                        item ->
-                                buildMessageByTemplate(
-                                        item,
-                                        params,
-                                        result ->
-                                                result.endsWith("_label")
-                                                        ? result.toLowerCase(Locale.ENGLISH)
-                                                        : result))
+                .map(item -> buildMessageByTemplate(item, params,
+                        result -> result.endsWith("_label") ? result.toLowerCase(Locale.ENGLISH) : result))
                 .collect(Collectors.toList());
     }
 
@@ -1299,16 +1218,16 @@ public class MessageAspect {
         }
     }
 
-    private void prepareMessageContext(
-            MessageListener messageListener, JSONObject params, MessageContext messageContext) {
+    private void prepareMessageContext(MessageListener messageListener, JSONObject params,
+            MessageContext messageContext) {
         String[] templates = messageContext.messages();
         for (String template : templates) {
             prepareMessageContextWithTemplate(messageListener, messageContext, template, params);
         }
     }
 
-    private void prepareMessageContextWithTemplate(
-            MessageListener messageListener, MessageContext messageContext, String template, JSONObject params) {
+    private void prepareMessageContextWithTemplate(MessageListener messageListener, MessageContext messageContext,
+            String template, JSONObject params) {
         JSONObject payload = params.getJSONObject(PAYLOAD);
         Object message = buildTopicMessageByTemplate(template, params);
         String chain = messageContext.chain();
@@ -1332,8 +1251,8 @@ public class MessageAspect {
     }
 
     private Object buildTopicMessageByTemplate(String template, JSONObject arguments) {
-        return buildDataByTemplate(
-                template, arguments, (key, val) -> new JSONObject().set("topic", key).set("message", val));
+        return buildDataByTemplate(template, arguments,
+                (key, val) -> new JSONObject().set("topic", key).set("message", val));
     }
 
     private Object buildJsonMessageByTemplate(String template, JSONObject arguments) {
@@ -1341,8 +1260,8 @@ public class MessageAspect {
     }
 
     @SuppressWarnings("checkstyle:NestedIfDepth")
-    private Object buildDataByTemplate(
-            String template, JSONObject arguments, BiFunction<String, Object, JSONObject> constructor) {
+    private Object buildDataByTemplate(String template, JSONObject arguments,
+            BiFunction<String, Object, JSONObject> constructor) {
         String message = template.replaceAll("^\\s+|\\s+$", "");
         if (!message.startsWith("{")) {
             Matcher matcher = PATTERN_KEY.matcher(message);
@@ -1387,8 +1306,8 @@ public class MessageAspect {
         return object;
     }
 
-    private String buildMessageByTemplate(
-            String template, JSONObject arguments, Function<String, String>... converters) {
+    private String buildMessageByTemplate(String template, JSONObject arguments,
+            Function<String, String>... converters) {
         Matcher matcher = PATTERN_ARG.matcher(template);
         StringBuffer buffer = new StringBuffer();
         while (matcher.find()) {
@@ -1486,8 +1405,8 @@ public class MessageAspect {
         String requestId = payload.getString(messageListener.contextField());
         if (requestId == null) {
             log.error("field of request id may be incorrect or request id missing");
-            throw new LegoCheckedException(
-                    CommonErrorCode.SYSTEM_ERROR, "field of request id may be incorrect or request id missing");
+            throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR,
+                    "field of request id may be incorrect or request id missing");
         }
         return requestId;
     }

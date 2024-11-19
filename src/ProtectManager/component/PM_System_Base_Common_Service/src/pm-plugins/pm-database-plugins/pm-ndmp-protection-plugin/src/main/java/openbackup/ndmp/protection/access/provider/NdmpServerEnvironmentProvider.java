@@ -12,6 +12,10 @@
 */
 package openbackup.ndmp.protection.access.provider;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceV2Req;
@@ -32,11 +36,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -172,8 +171,6 @@ public class NdmpServerEnvironmentProvider extends DatabaseEnvironmentProvider {
     private void generateUniqueUuid(ProtectedEnvironment environment) {
         String ndmpServerUuid = getUniqueUUID(environment.getEndpoint());
         environment.setUuid(ndmpServerUuid);
-        environment.setRootUuid(ndmpServerUuid);
-        environment.setParentUuid(ndmpServerUuid);
     }
 
     private String getUniqueUUID(String managerIp) {

@@ -12,6 +12,7 @@
 */
 package openbackup.mongodb.protection.access.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.NodeInfo;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
@@ -39,8 +40,6 @@ import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -93,9 +92,7 @@ public class MongoDBBaseServiceImpl implements MongoDBBaseService {
     @Override
     public void checkMongoDBEnvironmentSize(ProtectedResource environment, boolean isRegistered) {
         int size = isRegistered ? IsmNumberConstant.ZERO : IsmNumberConstant.ONE;
-        long commonErrorCode = isRegistered
-            ? CommonErrorCode.INSTANCE_REGISTED_ERROR
-            : CommonErrorCode.ERR_PARAM;
+        long commonErrorCode = isRegistered ? CommonErrorCode.INSTANCE_REGISTED_ERROR : CommonErrorCode.ERR_PARAM;
         String ip = environment.getExtendInfo().get(MongoDBConstants.SERVICE_IP);
         String port = environment.getExtendInfo().get(MongoDBConstants.SERVICE_PORT);
         String url = ip + ":" + port;
@@ -233,9 +230,9 @@ public class MongoDBBaseServiceImpl implements MongoDBBaseService {
                     .get(DatabaseConstants.AGENTS)
                     .get(IsmNumberConstant.ZERO)
                     .getExtendInfo());
-            subInstance.getExtendInfo().put(MongoDBConstants.AGENT_UUID, subInstance.getDependencies()
-                .get(DatabaseConstants.AGENTS)
-                .get(IsmNumberConstant.ZERO).getUuid());
+            subInstance.getExtendInfo()
+                .put(MongoDBConstants.AGENT_UUID,
+                    subInstance.getDependencies().get(DatabaseConstants.AGENTS).get(IsmNumberConstant.ZERO).getUuid());
             return BeanTools.copy(subInstance, TaskEnvironment::new);
         }).collect(Collectors.toList());
     }
@@ -282,6 +279,7 @@ public class MongoDBBaseServiceImpl implements MongoDBBaseService {
      * @param count 原主节点个数
      * @param clusterNodesCollect 查询的主节点个数
      */
+    @Override
     public void checkPrimarySizeIsMeet(String count, List<NodeInfo> clusterNodesCollect) {
         List<Map<String, String>> primaryClusterList = clusterNodesCollect.stream()
             .map(NodeInfo::getExtendInfo)

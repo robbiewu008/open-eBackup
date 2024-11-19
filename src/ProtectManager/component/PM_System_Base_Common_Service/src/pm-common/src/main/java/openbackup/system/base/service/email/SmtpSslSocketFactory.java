@@ -12,12 +12,12 @@
 */
 package openbackup.system.base.service.email;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.ErrorCodeConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.scurity.BcmX509TrustManager;
 import openbackup.system.base.common.utils.ExceptionUtil;
-
-import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.utils.SecurityUtil;
 
 import org.springframework.util.StringUtils;
 
@@ -46,25 +46,15 @@ public class SmtpSslSocketFactory extends BcmSslSocketFactory {
      */
     public static final String SMTP_SSL_CONTEXT = "smtpSSLContext";
 
-    /**
-     * SSL类型
-     */
-    public static final String SSL_CONTEXT = "SSL";
-
-    /**
-     * TLS类型
-     */
-    public static final String TLS_CONTEXT = "TLS";
-
     private final Properties props;
 
     /**
-     * 构造方法，给父类的构造方法提供参数，支持TLSv1.1, TLSv1.2 TLSv1.3连接
+     * 构造方法，给父类的构造方法提供参数，支持TLSv1.2 TLSv1.3连接
      *
      * @param props Ip地址
      */
     public SmtpSslSocketFactory(Properties props) {
-        super(props.getProperty(SMTP_IP_ADDRESS), "SSLv3", "SSLv2Hello", "TLSv1.2", "TLSv1.1", "TLSv1");
+        super(props.getProperty(SMTP_IP_ADDRESS), SecurityUtil.getProtocols());
         this.props = props;
     }
 
@@ -78,7 +68,9 @@ public class SmtpSslSocketFactory extends BcmSslSocketFactory {
         SSLSocketFactory sslSocketFactory;
         try {
             String sslContext = props.getProperty(SmtpSslSocketFactory.SMTP_SSL_CONTEXT);
-            assert !StringUtils.isEmpty(sslContext);
+            if (StringUtils.isEmpty(sslContext)) {
+                throw new IllegalArgumentException("SSL context should not be empty.");
+            }
             SSLContext context = SSLContext.getInstance(sslContext);
 
             final String ipAddress = props.getProperty(SMTP_IP_ADDRESS);

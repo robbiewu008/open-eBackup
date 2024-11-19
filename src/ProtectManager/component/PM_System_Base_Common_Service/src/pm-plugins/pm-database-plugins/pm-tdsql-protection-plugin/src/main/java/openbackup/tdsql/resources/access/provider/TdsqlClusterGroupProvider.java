@@ -12,12 +12,15 @@
 */
 package openbackup.tdsql.resources.access.provider;
 
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.util.EnvironmentParamCheckUtil;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceDeleteContext;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -31,13 +34,13 @@ import openbackup.tdsql.resources.access.dto.instance.TdsqlGroup;
 import openbackup.tdsql.resources.access.service.TdsqlService;
 import openbackup.tdsql.resources.access.util.TdsqlClusterGroupValidator;
 
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -49,18 +52,32 @@ import java.util.stream.Collectors;
 public class TdsqlClusterGroupProvider implements ResourceProvider {
     private final TdsqlService tdsqlService;
 
+    private final ResourceService resourceService;
+
     /**
      * 构造
      *
      * @param tdsqlService tdsqlService
+     * @param resourceService resourceService
      */
-    public TdsqlClusterGroupProvider(TdsqlService tdsqlService) {
+    public TdsqlClusterGroupProvider(TdsqlService tdsqlService, ResourceService resourceService) {
         this.tdsqlService = tdsqlService;
+        this.resourceService = resourceService;
     }
 
     @Override
     public boolean applicable(ProtectedResource object) {
         return ResourceSubTypeEnum.TDSQL_CLUSTERGROUP.getType().equals(object.getSubType());
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+            Collections.singletonList(resource.getUuid()));
+        dependencies.put(DatabaseConstants.AGENTS, agents);
+        resource.setDependencies(dependencies);
+        return true;
     }
 
     /**

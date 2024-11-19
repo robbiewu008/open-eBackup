@@ -73,6 +73,10 @@
             <groupId>com.huawei.oceanprotect</groupId>
             <artifactId>pm-sla-sdk</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.huawei.oceanprotect</groupId>
+            <artifactId>pm-label-sdk</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

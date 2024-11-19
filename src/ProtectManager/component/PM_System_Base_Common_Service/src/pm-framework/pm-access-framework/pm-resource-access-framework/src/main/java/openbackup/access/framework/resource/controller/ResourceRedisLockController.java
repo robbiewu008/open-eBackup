@@ -12,6 +12,7 @@
 */
 package openbackup.access.framework.resource.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ResourceRedisLockService;
 import openbackup.system.base.common.constants.CommonOperationCode;
 import openbackup.system.base.common.constants.Constants;
@@ -19,8 +20,6 @@ import openbackup.system.base.sdk.resource.model.ResourceLockRequest;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.security.journal.Logging;
 import openbackup.system.base.security.permission.Permission;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;

@@ -99,16 +99,29 @@ public class SapHanaInstanceProvider extends DatabaseEnvironmentProvider {
         setInstanceEndpoint(environment, agentList);
         SapHanaUtil.setSystemId(environment);
         boolean isCreate = VerifyUtil.isEmpty(environment.getUuid());
+        String checkResult;
         // 注册场景
         if (isCreate) {
             hanaResourceService.checkInstanceNumber();
             hanaResourceService.checkInstanceIsRegistered(environment);
             environment.setUuid(UUIDGenerator.getUUID());
+            checkResult = checkInstanceConnection(environment);
         } else {
+            // 修改场景
             SapHanaUtil.setOperationTypeExtendInfo(environment, SapHanaConstants.MODIFY_OPERATION_TYPE);
+            try {
+                checkResult = checkInstanceConnection(environment);
+            } catch (LegoCheckedException e) {
+                log.error("Modify instance environment failed");
+                ProtectedResource oriResource = hanaResourceService.getResourceById(environment.getUuid());
+                if (oriResource instanceof ProtectedEnvironment) {
+                    log.info("Will re-modify to original instance environment.");
+                    ProtectedEnvironment oriEnvironment = (ProtectedEnvironment) oriResource;
+                    checkInstanceConnection(oriEnvironment);
+                }
+                throw e;
+            }
         }
-        // 检查实例连通性
-        String checkResult = checkInstanceConnection(environment);
         setSapHanaInstance(environment, checkResult);
         SapHanaUtil.removeExtendInfoByKey(environment, SapHanaConstants.OPERATION_TYPE);
         environment.setLinkStatus(LinkStatusEnum.ONLINE.getStatus().toString());

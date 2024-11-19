@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.common.enums;
 
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.LegoCheckedException;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 /**
  * 小文件聚合枚举类

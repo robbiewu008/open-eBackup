@@ -12,16 +12,15 @@
 */
 package openbackup.data.access.client.sdk.api.dme.archive.model;
 
-import openbackup.system.base.common.constants.ProtocolPortConstant;
-import openbackup.system.base.common.enums.StorageConnectTypeEnum;
-import openbackup.system.base.common.model.storage.StorageRequest;
-import openbackup.system.base.common.utils.VerifyUtil;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import openbackup.system.base.common.constants.ProtocolPortConstant;
+import openbackup.system.base.common.enums.StorageConnectTypeEnum;
+import openbackup.system.base.common.model.storage.StorageRequest;
+import openbackup.system.base.common.utils.VerifyUtil;
 
 /**
  * DME 连通性请求体

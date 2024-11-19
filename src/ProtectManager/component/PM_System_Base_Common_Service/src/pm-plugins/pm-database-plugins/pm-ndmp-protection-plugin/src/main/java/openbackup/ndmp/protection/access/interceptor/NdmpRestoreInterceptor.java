@@ -101,6 +101,11 @@ public class NdmpRestoreInterceptor extends AbstractDbRestoreInterceptorProvider
         supplyNodes(task);
         supplyRestoreMode(task);
         supplyAdvancedParams(task);
+        // NDMP支持目录恢复
+        String dirFullName = task.getAdvanceParams().get("fullName");
+        if (StringUtils.isNotEmpty(dirFullName)) {
+            task.getTargetObject().setName(dirFullName);
+        }
         return task;
     }
 
@@ -109,7 +114,14 @@ public class NdmpRestoreInterceptor extends AbstractDbRestoreInterceptorProvider
         advancedParams.put(NdmpConstant.SPEED_STATISTICS, SpeedStatisticsEnum.APPLICATION.getType());
         task.setAdvanceParams(advancedParams);
         task.getTargetEnv().getExtendInfo().put(DatabaseConstants.DEPLOY_TYPE, DatabaseDeployTypeEnum.SINGLE.getType());
-        task.getTargetEnv().getExtendInfo().put(DatabaseConstants.SERVICE_IP, task.getAgents().get(0).getIp());
+        if (StringUtils.isNotEmpty(task.getAgents().get(0).getAdvanceParams().get(NdmpConstant.MULTI_IP))) {
+            task.getTargetEnv()
+                .getExtendInfo()
+                .put(DatabaseConstants.SERVICE_IP,
+                    task.getAgents().get(0).getAdvanceParams().get(NdmpConstant.MULTI_IP));
+        } else {
+            task.getTargetEnv().getExtendInfo().put(DatabaseConstants.SERVICE_IP, task.getAgents().get(0).getIp());
+        }
     }
 
     /**
@@ -129,6 +141,16 @@ public class NdmpRestoreInterceptor extends AbstractDbRestoreInterceptorProvider
     }
 
     private void supplyAgent(RestoreTask task) {
+        String agents = task.getAdvanceParams().get(DatabaseConstants.AGENTS);
+        log.info("NdmpRestoreInterceptor supplyAgent, agents:{}", agents);
+        String parentUuid = task.getTargetObject().getRootUuid();
+        log.info("NdmpRestoreInterceptor supplyAgent, parentUuid:{}", parentUuid);
+
+        // 如果用户选择了代理主机，使用用户选择的
+        if (StringUtils.isNotEmpty(agents)) {
+            task.setAgents(ndmpService.getAgents(parentUuid, agents));
+            return;
+        }
         String resourceId = task.getTargetObject().getUuid();
         ProtectedResource resource = resourceService.getResourceById(resourceId)
             .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST,
@@ -148,13 +170,10 @@ public class NdmpRestoreInterceptor extends AbstractDbRestoreInterceptorProvider
             task.setAgents(Collections.singletonList(endpoint));
             return;
         }
-        String agents = MapUtils.getString(resource.getProtectedObject().getExtParameters(), DatabaseConstants.AGENTS);
+        agents = MapUtils.getString(resource.getProtectedObject().getExtParameters(), DatabaseConstants.AGENTS);
         if (StringUtils.isEmpty(agents)) {
             throw new LegoCheckedException(CommonErrorCode.AGENT_NOT_EXIST, "No agent found");
         }
-        log.info("NdmpRestoreInterceptor supplyAgent, agents:{}", agents);
-        String parentUuid = task.getTargetObject().getParentUuid();
-        log.info("NdmpRestoreInterceptor supplyAgent, parentUuid:{}", parentUuid);
         task.setAgents(ndmpService.getAgents(parentUuid, agents));
     }
 

@@ -93,6 +93,10 @@ public enum AuthOperationEnum {
      */
     REPORT("report"),
     /**
+     * 报表订阅
+     */
+    SCHEDULE_REPORT("scheduleReport"),
+    /**
      * 即时挂载策略
      */
     LIVE_MOUNT_POLICY("liveMountPolicy");

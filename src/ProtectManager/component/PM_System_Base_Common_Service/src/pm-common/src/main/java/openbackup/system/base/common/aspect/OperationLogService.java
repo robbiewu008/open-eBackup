@@ -12,15 +12,22 @@
 */
 package openbackup.system.base.common.aspect;
 
+import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.constants.LegoInternalEvent;
 import openbackup.system.base.common.thread.ThreadPoolTool;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.sdk.alarm.AlarmRestApi;
-
-import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.sdk.auth.api.DmeTokenApi;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.Objects;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Operation Log Service
@@ -31,6 +38,9 @@ import org.springframework.stereotype.Component;
 public class OperationLogService {
     @Autowired
     AlarmRestApi alarmRestApi;
+
+    @Autowired
+    private DmeTokenApi dmeTokenApi;
 
     /**
      * send event
@@ -49,6 +59,7 @@ public class OperationLogService {
      */
     public void syncSendEvent(LegoInternalEvent event, boolean isSync) {
         try {
+            updateDmeToken(event);
             log.info("send event thread start, isSync: {}", isSync);
             if (isSync) {
                 alarmRestApi.generateSystemLog(event);
@@ -57,6 +68,17 @@ public class OperationLogService {
             }
         } catch (Throwable e) {
             log.error("record log failed", ExceptionUtil.getErrorMessage(e));
+        }
+    }
+
+    private void updateDmeToken(LegoInternalEvent event) {
+        try {
+            HttpServletRequest request =
+                ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
+                    .getRequest();
+            event.setDmeToken(request.getHeader(Constants.DME_AUTH_TOKEN));
+        } catch (Exception ex) {
+            log.info("Invalid dme request. no need record dme operation log.", ExceptionUtil.getErrorMessage(ex));
         }
     }
 }

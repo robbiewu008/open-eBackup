@@ -12,6 +12,9 @@
 */
 package openbackup.obs.plugin.agent;
 
+import com.huawei.oceanprotect.repository.tapelibrary.common.util.JsonUtil;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.persistence.dao.ProtectedResourceAgentMapper;
 import openbackup.access.framework.resource.service.AgentBusinessService;
 import openbackup.data.access.framework.agent.ProtectAgentSelector;
@@ -22,15 +25,12 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.resource.model.AgentTypeEnum;
-import com.huawei.oceanprotect.repository.tapelibrary.common.util.JsonUtil;
 import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.auth.UserInnerResponse;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

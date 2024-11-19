@@ -12,9 +12,9 @@
 */
 package openbackup.data.access.framework.livemount.common.enums;
 
-import openbackup.system.base.util.EnumUtil;
-
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import openbackup.system.base.util.EnumUtil;
 
 /**
  * 策略调度周期枚举定义

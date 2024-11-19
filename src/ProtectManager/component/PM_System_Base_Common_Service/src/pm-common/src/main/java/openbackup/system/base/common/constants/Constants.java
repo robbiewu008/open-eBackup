@@ -12,9 +12,9 @@
 */
 package openbackup.system.base.common.constants;
 
-import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
-
 import com.google.common.collect.ImmutableList;
+
+import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -35,6 +35,11 @@ public class Constants {
      * auth token.
      */
     public static final String AUTH_TOKEN = "X-Auth-Token";
+
+    /**
+     * auth token.
+     */
+    public static final String DME_AUTH_TOKEN = "Dme-X-Auth-Token";
 
     /**
      * hcs iam auth token.
@@ -262,6 +267,11 @@ public class Constants {
     public static final String BACKUP_NETWORK_FLAG = "backupNetwork";
 
     /**
+     * resources extend info日志级别
+     */
+    public static final String LOG_LEVEL = "logLeve";
+
+    /**
      * archive network flag
      */
     public static final String ARCHIVE_NETWORK_FLAG = "archiveNetwork";
@@ -365,6 +375,12 @@ public class Constants {
             Collections.unmodifiableList(Arrays.asList(ROLE_SYS_ADMIN, ROLE_DP_ADMIN));
 
         /**
+         * 不支持CLEAN RESOURCE选项的被删除用户角色
+         */
+        public static final List<String> NO_DEL_WITH_CLEAN_RES_ROLES =
+                ImmutableList.of(ROLE_DR_ADMIN, ROLE_AUDITOR);
+
+        /**
          * 默认内置角色集合
          */
         public static final List<String> DEFAULT_BUILT_IN_ROLES_LIST = ImmutableList.of(Constants.ROLE_SYS_ADMIN,
@@ -442,6 +458,6 @@ public class Constants {
         public static final List<String> ONLY_IN_DOMAIN_RESOURCE_TYPE_LIST = ImmutableList.of(
             ResourceSetTypeEnum.JOB.getType(), ResourceSetTypeEnum.JOB_LOG.getType(),
             ResourceSetTypeEnum.ALARM.getType(), ResourceSetTypeEnum.EVENT.getType(),
-            ResourceSetTypeEnum.KERBEROS.getType());
+            ResourceSetTypeEnum.KERBEROS.getType(), ResourceSetTypeEnum.LABEL.getType());
     }
 }

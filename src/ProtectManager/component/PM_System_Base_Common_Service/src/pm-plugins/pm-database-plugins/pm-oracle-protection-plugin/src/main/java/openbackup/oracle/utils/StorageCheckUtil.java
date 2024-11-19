@@ -12,19 +12,18 @@
 */
 package openbackup.oracle.utils;
 
-import openbackup.oracle.bo.OracleStorage;
-import openbackup.oracle.constants.OracleConstants;
 import com.huawei.oceanprotect.system.base.cert.common.constants.CertErrorCode;
 import com.huawei.oceanprotect.system.base.cert.util.CertFileUtil;
 import com.huawei.oceanprotect.system.base.cert.util.CertUtil;
 
+import lombok.extern.slf4j.Slf4j;
+import openbackup.oracle.bo.OracleStorage;
+import openbackup.oracle.constants.OracleConstants;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.validator.constants.RegexpConstants;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 

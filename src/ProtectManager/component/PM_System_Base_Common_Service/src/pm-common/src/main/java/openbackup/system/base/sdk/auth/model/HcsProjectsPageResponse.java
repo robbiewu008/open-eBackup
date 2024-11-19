@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.sdk.auth.model;
 
-import openbackup.system.base.sdk.auth.model.request.HcsUserProjectInfo;
-
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.sdk.auth.model.request.HcsUserProjectInfo;
 
 import java.util.List;
 

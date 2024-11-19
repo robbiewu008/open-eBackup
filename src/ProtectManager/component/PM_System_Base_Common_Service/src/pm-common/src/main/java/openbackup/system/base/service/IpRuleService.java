@@ -21,9 +21,10 @@ public interface IpRuleService {
      * 在底座上给网卡添加到指定目的ip的路由
      *
      * @param destinationIp 目的地ip
+     * @param port 目的地端口号
      * @param taskType 任务类型
      */
-    void addIpRule(String destinationIp, String taskType);
+    void addIpRule(String destinationIp, String port, String taskType);
 
     /**
      * 在底座上删除到指定目的ip的路由
@@ -32,6 +33,7 @@ public interface IpRuleService {
      * @param taskType 任务类型
      */
     void deleteIpRule(String destinationIp, String taskType);
+
 
     /**
      * 只在本控上添加路由

@@ -28,9 +28,14 @@ public class CommonOperationCode {
     public static final String SEND_DYNAMIC_CODE = "0x2064032B0019";
 
     /**
-     * 创建用户相关操作码
+     * 创建用户相关操作码，不支持RBAC功能的部署形态
      */
     public static final String CREATE_USER = "0x2064032B0007";
+
+    /**
+     * 创建用户相关操作码，单独针对支持RBAC功能的部署形态申请的事件码
+     */
+    public static final String CREATE_USER_V2 = "0x2064032B0028";
 
     /**
      * 删除用户相关操作码
@@ -38,9 +43,14 @@ public class CommonOperationCode {
     public static final String DELETE_USER = "0x2064032B0008";
 
     /**
-     * 修改用户信息相关操作码
+     * 修改用户信息相关操作码，不支持RBAC功能的部署形态
      */
     public static final String MODIFY_USER = "0x2064032B0009";
+
+    /**
+     * 修改用户信息相关操作码，单独针对支持RBAC功能的部署形态申请的事件码
+     */
+    public static final String MODIFY_USER_V2 = "0x2064032B0029";
 
     /**
      * 修改用户找回密码邮箱操作码
@@ -171,6 +181,11 @@ public class CommonOperationCode {
      * 修改系统备份策略
      */
     public static final String MODIFY_SYSTEM_BACKUP_POLICY = "0x2064033F0001";
+
+    /**
+     * 修改系统备份策略状态
+     */
+    public static final String ENABLE_SYSTEM_BACKUP_POLICY = "0x206400790001";
 
     /**
      * 执行系统备份

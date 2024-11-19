@@ -12,6 +12,7 @@
 */
 package openbackup.mongodb.protection.access.provider.backup;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.NodeInfo;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
@@ -36,8 +37,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -107,6 +106,7 @@ public class MongoDBBackupInterceptor extends AbstractDbBackupInterceptor {
      *
      * @param backupTask backupTask
      */
+    @Override
     protected void checkConnention(BackupTask backupTask) {
         if (ResourceSubTypeEnum.MONGODB_SINGLE.equalsSubType(backupTask.getProtectObject().getSubType())) {
             super.checkConnention(backupTask);

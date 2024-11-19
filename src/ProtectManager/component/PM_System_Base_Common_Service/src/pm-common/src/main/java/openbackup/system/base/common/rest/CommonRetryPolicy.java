@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.common.rest;
 
-import openbackup.system.base.common.constants.FeignClientConstant;
-
 import lombok.Data;
+import openbackup.system.base.common.constants.FeignClientConstant;
 
 /**
  * Common Retry Policy

@@ -12,6 +12,11 @@
 */
 package openbackup.gaussdb.protection.access.provider;
 
+import com.huawei.oceanprotect.repository.service.LocalStorageService;
+
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.validator.JsonSchemaValidator;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
@@ -28,7 +33,6 @@ import openbackup.database.base.plugin.provider.DatabaseEnvironmentProvider;
 import openbackup.gaussdb.protection.access.constant.GaussDBConstant;
 import openbackup.gaussdb.protection.access.service.GaussDBService;
 import openbackup.gaussdb.protection.access.util.GaussDBValidator;
-import com.huawei.oceanprotect.repository.service.LocalStorageService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.VerifyUtil;
@@ -36,10 +40,6 @@ import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;

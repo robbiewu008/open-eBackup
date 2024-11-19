@@ -12,6 +12,7 @@
 */
 package openbackup.oracle.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.access.framework.resource.service.provider.UnifiedResourceConnectionChecker;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
@@ -25,8 +26,6 @@ import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.oracle.service.OracleBaseService;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

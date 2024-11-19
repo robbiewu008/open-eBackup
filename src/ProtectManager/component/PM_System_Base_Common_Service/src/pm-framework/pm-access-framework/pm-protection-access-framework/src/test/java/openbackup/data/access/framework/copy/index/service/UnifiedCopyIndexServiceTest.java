@@ -27,6 +27,7 @@ import openbackup.data.access.framework.core.common.enums.CopyIndexStatus;
 import openbackup.data.access.framework.core.copy.CopyManagerService;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.copy.index.service.impl.UnifiedCopyIndexService;
+import openbackup.data.access.framework.protection.service.repository.TaskRepositoryManager;
 import openbackup.data.protection.access.provider.sdk.agent.CommonAgentService;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
@@ -48,6 +49,11 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.protection.SlaRestApi;
 import openbackup.system.base.sdk.protection.model.SlaBo;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
+import openbackup.system.base.service.DeployTypeService;
+
+import com.huawei.oceanprotect.system.base.user.bo.DomainInfoBo;
+import com.huawei.oceanprotect.system.base.user.common.enums.DomainTypeEnum;
+import com.huawei.oceanprotect.system.base.user.service.DomainService;
 import com.huawei.oceanprotect.system.base.user.service.UserService;
 
 import org.junit.Assert;
@@ -80,7 +86,7 @@ import java.util.UUID;
 @SpringBootTest(classes = {UnifiedCopyIndexService.class})
 public class UnifiedCopyIndexServiceTest {
     private static String copyStr
-        = "{\"deletable\":false,\"archived\":false,\"replicated\":false,\"resource_id\":\"94820f43-4cc9-3153-a0a0-45087a337277\",\"resource_name\":\"wgh\",\"resource_type\":\"storage\",\"resource_sub_type\":\"NasFileSystem\",\"resource_location\":\"OceanStor Dorado 6.1.3+\\\\dorado28\\\\System_vStore\\\\zhudan_anti_1G\",\"resource_status\":\"EXIST\",\"resource_properties\":\"{\\\"name\\\":\\\"zhudan_anti_1G\\\",\\\"path\\\":\\\"OceanStor Dorado 6.1.3+\\\\\\\\dorado28\\\\\\\\System_vStore\\\\\\\\zhudan_anti_1G\\\",\\\"root_uuid\\\":\\\"2102353GTH10L8000008\\\",\\\"parent_name\\\":\\\"dorado28\\\",\\\"parent_uuid\\\":\\\"2102353GTH10L8000008\\\",\\\"children_uuids\\\":null,\\\"type\\\":\\\"storage\\\",\\\"sub_type\\\":\\\"NasFileSystem\\\",\\\"uuid\\\":\\\"94820f43-4cc9-3153-a0a0-45087a337277\\\",\\\"created_time\\\":\\\"2022-01-07T22:03:12.312000\\\",\\\"ext_parameters\\\":{\\\"proxy_host_mode\\\":0,\\\"agents\\\":null},\\\"authorized_user\\\":null,\\\"user_id\\\":null,\\\"version\\\":null,\\\"sla_id\\\":\\\"2bcc99b3-1ec1-46c2-9a0f-d34fb08b7dc8\\\",\\\"sla_name\\\":\\\"NasPerHour\\\",\\\"sla_status\\\":true,\\\"sla_compliance\\\":true,\\\"protection_status\\\":1,\\\"environment_uuid\\\":\\\"2102353GTH10L8000008\\\",\\\"environment_name\\\":\\\"dorado28\\\",\\\"environment_endpoint\\\":\\\"8.40.102.28\\\",\\\"environment_os_type\\\":null,\\\"environment_type\\\":\\\"StorageEquipment\\\",\\\"environment_sub_type\\\":\\\"DoradoV6\\\",\\\"environment_is_cluster\\\":\\\"False\\\",\\\"environment_os_name\\\":null,\\\"extendInfo\\\":{\\\"tenantName\\\":\\\"System_vStore\\\",\\\"fileSystemId\\\":\\\"11\\\",\\\"usedCapacity\\\":\\\"0\\\",\\\"onlineStatus\\\":\\\"27\\\",\\\"tenantId\\\":\\\"0\\\",\\\"capacity\\\":\\\"2097152\\\"}}\",\"resource_environment_name\":\"dorado28\",\"resource_environment_ip\":\"8.40.102.28\",\"uuid\":\"bfed7b8e-f7ae-47c7-878a-1542438e4997\",\"chain_id\":\"38d99a91-cd62-4fb4-a397-7a7a3cbd41cf\",\"timestamp\":\"1641647102000000\",\"display_timestamp\":\"2022-01-11T12:52:39\",\"status\":\"Normal\",\"location\":\"Local\",\"backup_type\":5,\"generated_by\":\"Backup\",\"generated_time\":\"2022-01-11T12:53:21\",\"generation_type\":\"\",\"features\":2,\"indexed\":\"Index_fail\",\"generation\":1,\"parent_copy_uuid\":\"\",\"retention_type\":2,\"retention_duration\":1,\"duration_unit\":\"d\",\"expiration_time\":1657544064000,\"properties\":\"{\\\" snapshots \\\":[{\\\" id \\\":\\\" 7 @ FilesystemSnapshot2201111308220 \\\",\\\" parentName \\\":\\\" wgh \\\"}],\\\" repositories \\\":[{\\\" type \\\":1,\\\" protocol \\\":5,\\\" extendInfo \\\":{\\\" fileSystemId \\\":\\\" 11 \\\",\\\" productEsn \\\":\\\" 2102353GTH10L8000008 \\\"}},{\\\" type \\\":0,\\\" protocol \\\":5,\\\" extendInfo \\\":{\\\" fileSystemId \\\":\\\" 11 \\\",\\\" productEsn \\\":\\\" 2102353GTH10L8000008 \\\"}}],\\\"isAggregation\\\":false}\",\"sla_name\":\"NasPerHour\",\"sla_properties\":\"{\\\"name\\\": \\\"NasPerHour\\\", \\\"type\\\": 1, \\\"application\\\": \\\"NasFileSystem\\\", \\\"created_time\\\": \\\"2022-01-07T22:03:39.897393\\\", \\\"uuid\\\": \\\"2bcc99b3-1ec1-46c2-9a0f-d34fb08b7dc8\\\", \\\"is_global\\\": false, \\\"policy_list\\\": [{\\\"uuid\\\": \\\"99283b94-84fc-4981-854a-4e178ce873d3\\\", \\\"name\\\": \\\"permanent_increment\\\", \\\"action\\\": \\\"permanent_increment\\\", \\\"ext_parameters\\\": {\\\"auto_retry\\\": true, \\\"auto_retry_times\\\": 3, \\\"auto_retry_wait_minutes\\\": 5, \\\"qos_id\\\": \\\"\\\", \\\"auto_index\\\": true}, \\\"retention\\\": {\\\"retention_type\\\": 2, \\\"duration_unit\\\": \\\"d\\\", \\\"retention_duration\\\": 1}, \\\"schedule\\\": {\\\"trigger\\\": 1, \\\"interval\\\": 1, \\\"interval_unit\\\": \\\"h\\\", \\\"start_time\\\": \\\"2022-01-06T00:00:00\\\", \\\"window_start\\\": \\\"00:00:00\\\", \\\"window_end\\\": \\\"23:59:59\\\", \\\"days_of_month\\\": null, \\\"days_of_year\\\": null, \\\"trigger_action\\\": null, \\\"days_of_week\\\": null}, \\\"type\\\": \\\"backup\\\"}], \\\"resource_count\\\": null, \\\"archival_count\\\": null, \\\"replication_count\\\": null}\",\"job_type\":\"\",\"user_id\":\"\",\"is_archived\":false,\"is_replicated\":false,\"amount\":0,\"gn\":437,\"prev_copy_id\":\"\",\"next_copy_id\":\"\",\"prev_copy_gn\":0,\"next_copy_gn\":0,\"device_esn\":\"123\"}";
+        = "{\"deletable\":false,\"archived\":false,\"replicated\":false,\"resource_id\":\"94820f43-4cc9-3153-a0a0-45087a337277\",\"resource_name\":\"wgh\",\"resource_type\":\"storage\",\"resource_sub_type\":\"NasFileSystem\",\"resource_location\":\"OceanStor Dorado 6.1.3+\\\\dorado28\\\\System_vStore\\\\zhudan_anti_1G\",\"resource_status\":\"EXIST\",\"resource_properties\":\"{\\\"name\\\":\\\"zhudan_anti_1G\\\",\\\"path\\\":\\\"OceanStor Dorado 6.1.3+\\\\\\\\dorado28\\\\\\\\System_vStore\\\\\\\\zhudan_anti_1G\\\",\\\"root_uuid\\\":\\\"2102353GTH10L8000008\\\",\\\"parent_name\\\":\\\"dorado28\\\",\\\"parent_uuid\\\":\\\"2102353GTH10L8000008\\\",\\\"children_uuids\\\":null,\\\"type\\\":\\\"storage\\\",\\\"sub_type\\\":\\\"NasFileSystem\\\",\\\"uuid\\\":\\\"94820f43-4cc9-3153-a0a0-45087a337277\\\",\\\"created_time\\\":\\\"2022-01-07T22:03:12.312000\\\",\\\"ext_parameters\\\":{\\\"proxy_host_mode\\\":0,\\\"agents\\\":null,\\\"backup_res_auto_index\\\":true},\\\"authorized_user\\\":null,\\\"user_id\\\":null,\\\"version\\\":null,\\\"sla_id\\\":\\\"2bcc99b3-1ec1-46c2-9a0f-d34fb08b7dc8\\\",\\\"sla_name\\\":\\\"NasPerHour\\\",\\\"sla_status\\\":true,\\\"sla_compliance\\\":true,\\\"protection_status\\\":1,\\\"environment_uuid\\\":\\\"2102353GTH10L8000008\\\",\\\"environment_name\\\":\\\"dorado28\\\",\\\"environment_endpoint\\\":\\\"8.40.102.28\\\",\\\"environment_os_type\\\":null,\\\"environment_type\\\":\\\"StorageEquipment\\\",\\\"environment_sub_type\\\":\\\"DoradoV6\\\",\\\"environment_is_cluster\\\":\\\"False\\\",\\\"environment_os_name\\\":null,\\\"extendInfo\\\":{\\\"tenantName\\\":\\\"System_vStore\\\",\\\"fileSystemId\\\":\\\"11\\\",\\\"usedCapacity\\\":\\\"0\\\",\\\"onlineStatus\\\":\\\"27\\\",\\\"tenantId\\\":\\\"0\\\",\\\"capacity\\\":\\\"2097152\\\"}}\",\"resource_environment_name\":\"dorado28\",\"resource_environment_ip\":\"8.40.102.28\",\"uuid\":\"bfed7b8e-f7ae-47c7-878a-1542438e4997\",\"chain_id\":\"38d99a91-cd62-4fb4-a397-7a7a3cbd41cf\",\"timestamp\":\"1641647102000000\",\"display_timestamp\":\"2022-01-11T12:52:39\",\"status\":\"Normal\",\"location\":\"Local\",\"backup_type\":5,\"generated_by\":\"Backup\",\"generated_time\":\"2022-01-11T12:53:21\",\"generation_type\":\"\",\"features\":2,\"indexed\":\"Index_fail\",\"generation\":1,\"parent_copy_uuid\":\"\",\"retention_type\":2,\"retention_duration\":1,\"duration_unit\":\"d\",\"expiration_time\":1657544064000,\"properties\":\"{\\\" snapshots \\\":[{\\\" id \\\":\\\" 7 @ FilesystemSnapshot2201111308220 \\\",\\\" parentName \\\":\\\" wgh \\\"}],\\\" repositories \\\":[{\\\" type \\\":1,\\\" protocol \\\":5,\\\" extendInfo \\\":{\\\" fileSystemId \\\":\\\" 11 \\\",\\\" productEsn \\\":\\\" 2102353GTH10L8000008 \\\"}},{\\\" type \\\":0,\\\" protocol \\\":5,\\\" extendInfo \\\":{\\\" fileSystemId \\\":\\\" 11 \\\",\\\" productEsn \\\":\\\" 2102353GTH10L8000008 \\\"}}],\\\"isAggregation\\\":false}\",\"sla_name\":\"NasPerHour\",\"sla_properties\":\"{\\\"name\\\": \\\"NasPerHour\\\",\\\"backup_res_auto_index\\\": true, \\\"type\\\": 1, \\\"application\\\": \\\"NasFileSystem\\\", \\\"created_time\\\": \\\"2022-01-07T22:03:39.897393\\\", \\\"uuid\\\": \\\"2bcc99b3-1ec1-46c2-9a0f-d34fb08b7dc8\\\", \\\"is_global\\\": false, \\\"policy_list\\\": [{\\\"uuid\\\": \\\"99283b94-84fc-4981-854a-4e178ce873d3\\\", \\\"name\\\": \\\"permanent_increment\\\", \\\"action\\\": \\\"permanent_increment\\\", \\\"ext_parameters\\\": {\\\"auto_retry\\\": true, \\\"auto_retry_times\\\": 3, \\\"auto_retry_wait_minutes\\\": 5, \\\"qos_id\\\": \\\"\\\", \\\"auto_index\\\": true}, \\\"retention\\\": {\\\"retention_type\\\": 2, \\\"duration_unit\\\": \\\"d\\\", \\\"retention_duration\\\": 1}, \\\"schedule\\\": {\\\"trigger\\\": 1, \\\"interval\\\": 1, \\\"interval_unit\\\": \\\"h\\\", \\\"start_time\\\": \\\"2022-01-06T00:00:00\\\", \\\"window_start\\\": \\\"00:00:00\\\", \\\"window_end\\\": \\\"23:59:59\\\", \\\"days_of_month\\\": null, \\\"days_of_year\\\": null, \\\"trigger_action\\\": null, \\\"days_of_week\\\": null}, \\\"type\\\": \\\"backup\\\"}], \\\"resource_count\\\": null, \\\"archival_count\\\": null, \\\"replication_count\\\": null}\",\"job_type\":\"\",\"user_id\":\"\",\"is_archived\":false,\"is_replicated\":false,\"amount\":0,\"gn\":437,\"prev_copy_id\":\"\",\"next_copy_id\":\"\",\"prev_copy_gn\":0,\"next_copy_gn\":0,\"device_esn\":\"123\"}";
 
     private static final String SLA_POLICY_ID = "99283b94-84fc-4981-854a-4e178ce873d3";
 
@@ -135,6 +141,17 @@ public class UnifiedCopyIndexServiceTest {
 
     @MockBean
     private DefaultProtectAgentSelector defaultProtectAgentSelector;
+
+    @MockBean
+    private TaskRepositoryManager taskRepositoryManager;
+
+    @MockBean
+    private DomainService domainService;
+
+    @MockBean
+    private DeployTypeService deployTypeService;
+
+
     /**
      * 用例场景：正常执行创建索引方法
      * 前置条件：索引参数
@@ -234,30 +251,6 @@ public class UnifiedCopyIndexServiceTest {
     }
 
     /**
-     * 用例场景：当sla中的开关被关闭时，创建索引失败
-     * 前置条件：1、索引参数中sla参数找不到对应策略；
-     * 检查点：副本状态为“未索引”
-     */
-    @Test
-    public void execute_create_index_task_fail_when_auto_index_is_close() {
-        CopyBo copy = JSONObject.toBean(copyStr, CopyBo.class);
-        copy.setSlaProperties(slaStr);
-        String requestId = UUID.randomUUID().toString();
-        String indexedMode = "auto";
-        PowerMockito.when(manager.findProvider(ArgumentMatchers.eq(ResourceProvider.class), any(), any()))
-            .thenReturn(null);
-        CopyIndexProvider indexProvider = PowerMockito.mock(CopyIndexProvider.class);
-        PowerMockito.when(manager.findProvider(ArgumentMatchers.eq(CopyIndexProvider.class), any(), any()))
-            .thenReturn(indexProvider);
-        PowerMockito.when(indexProvider.isSupportIndex()).thenReturn(true);
-        PowerMockito.when(manager.findProvider(ArgumentMatchers.eq(ProtectAgentSelector.class), any(), any()))
-            .thenReturn(PowerMockito.mock(ProtectAgentSelector.class));
-        CopyIndexTask indexTask = unifiedCopyIndexService.createIndexTask(copy, requestId, indexedMode);
-        Assert.assertNull(indexTask.getTriggerMode());
-        Assert.assertNull(indexTask.getCopyInfo());
-    }
-
-    /**
      * 用例场景：正常执行创建索引方法
      * 前置条件：索引参数
      * 检查点：设置的参数正确
@@ -290,6 +283,11 @@ public class UnifiedCopyIndexServiceTest {
         PowerMockito.when(slaRestApi.querySlaById(any())).thenReturn(slaBo);
         PowerMockito.when(copyRestApi.queryCopiesByResourceIdAndIndexStatus(any(), any()))
             .thenReturn(new ArrayList<>());
+        DomainInfoBo domainInfoBo = new DomainInfoBo();
+        domainInfoBo.setDomainType(DomainTypeEnum.SYS_PUBLIC_DOMAIN.getType());
+        PowerMockito.when(domainService.getDomainInfoByUserId(any()))
+            .thenReturn(domainInfoBo);
+
         unifiedCopyIndexService.deleteResourceIndexTask(UUID.randomUUID().toString(), "123456");
         Mockito.verify(copyRestApi, Mockito.times(1)).queryCopiesByResourceIdAndIndexStatus(any(), any());
     }

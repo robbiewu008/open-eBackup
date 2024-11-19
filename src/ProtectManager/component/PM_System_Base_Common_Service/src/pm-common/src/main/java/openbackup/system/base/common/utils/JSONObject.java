@@ -12,10 +12,6 @@
 */
 package openbackup.system.base.common.utils;
 
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.EmeiStorDefaultExceptionHandler;
-import openbackup.system.base.common.exception.LegoCheckedException;
-
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -27,6 +23,10 @@ import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.google.json.JsonSanitizer;
+
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.EmeiStorDefaultExceptionHandler;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.slf4j.Logger;
@@ -278,21 +278,17 @@ public class JSONObject implements Map {
         objMapper.configure(Feature.ALLOW_SINGLE_QUOTES, true);
         CustomSerializerProvider sp = new CustomSerializerProvider();
         objMapper.setSerializerProvider(sp);
-        objMapper.setAnnotationIntrospector(
-                new JacksonAnnotationIntrospector() {
-                    private static final long serialVersionUID = 7803579234214249536L;
+        objMapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector() {
+            private static final long serialVersionUID = 7803579234214249536L;
 
-                    @Override
-                    public Object findFilterId(Annotated ac) {
-                        return ac.getName();
-                    }
-                });
+            @Override
+            public Object findFilterId(Annotated ac) {
+                return ac.getName();
+            }
+        });
 
-        FilterProvider filters =
-                new SimpleFilterProvider()
-                        .addFilter(
-                                obj.getClass().getName(),
-                                SimpleBeanPropertyFilter.serializeAllExcept(ignoreProperties));
+        FilterProvider filters = new SimpleFilterProvider().addFilter(obj.getClass().getName(),
+                SimpleBeanPropertyFilter.serializeAllExcept(ignoreProperties));
         return objMapper.writer(filters);
     }
 
@@ -478,7 +474,7 @@ public class JSONObject implements Map {
      * 判断是否是合法的json字符串
      *
      * @param json 待判断字符串
-     * @return true-是合法json;  false-不是合法json
+     * @return true-是合法json; false-不是合法json
      */
     public static boolean isValidJson(String json) {
         try {
@@ -837,6 +833,21 @@ public class JSONObject implements Map {
     }
 
     /**
+     * 加入元素， 不改变格式
+     *
+     * @param key key Object
+     * @param value value Object
+     * @return Object
+     */
+    public Object putRaw(Object key, Object value) {
+        if (key == null) {
+            throw new EmeiStorDefaultExceptionHandler(
+                    "JSONObject getBoolean failed,value is null or doesn't contain this key.key" + key);
+        }
+        return this.properties.put(key, value);
+    }
+
+    /**
      * 链式设值函数
      *
      * @param key key
@@ -860,7 +871,9 @@ public class JSONObject implements Map {
     private Object convertStr2Json(Object value) {
         Object tempValue = value;
         try {
-            assert value instanceof String;
+            if (!(value instanceof String)) {
+                throw new IllegalArgumentException("Value must be an instance of String");
+            }
             if (((String) value).startsWith("{") && ((String) value).endsWith("}")) {
                 tempValue = JSONObject.fromObject(value);
             } else if (((String) value).startsWith("[") && ((String) value).endsWith("]")) {
@@ -984,12 +997,11 @@ public class JSONObject implements Map {
     public <T> Map<String, T> toMap(Class<T> type) {
         Map<String, T> map = new HashMap<>();
         if (type != null) {
-            properties.forEach(
-                    (key, value) -> {
-                        if (value == null || type.isInstance(value)) {
-                            map.put(key.toString(), type.cast(value));
-                        }
-                    });
+            properties.forEach((key, value) -> {
+                if (value == null || type.isInstance(value)) {
+                    map.put(key.toString(), type.cast(value));
+                }
+            });
         }
         return map;
     }

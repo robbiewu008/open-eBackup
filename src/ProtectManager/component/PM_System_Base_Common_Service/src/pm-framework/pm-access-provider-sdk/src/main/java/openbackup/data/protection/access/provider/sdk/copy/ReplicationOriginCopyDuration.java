@@ -30,4 +30,13 @@ public class ReplicationOriginCopyDuration {
 
     @JsonProperty("duration_unit")
     private String durationUnit;
+
+    @JsonProperty("worm_validity_type")
+    private int wormValidityType;
+
+    @JsonProperty("worm_retention_duration")
+    private int wormRetentionDuration;
+
+    @JsonProperty("worm_duration_unit")
+    private String wormDurationUnit;
 }

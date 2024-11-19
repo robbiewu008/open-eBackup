@@ -12,10 +12,10 @@
 */
 package openbackup.system.base.sdk.copy.model;
 
-import openbackup.system.base.util.EnumUtil;
-
 import com.alibaba.fastjson.annotation.JSONCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import openbackup.system.base.util.EnumUtil;
 
 /**
  * 功能描述

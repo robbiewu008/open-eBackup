@@ -12,6 +12,9 @@
 */
 package openbackup.sqlserver.resources.access.provider;
 
+import com.alibaba.fastjson.JSON;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
@@ -20,6 +23,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceDeleteContext;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceFeature;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.sqlserver.common.SqlServerConstants;
 import openbackup.sqlserver.common.SqlServerErrorCode;
@@ -31,10 +35,8 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
-import com.alibaba.fastjson.JSON;
-
-import lombok.extern.slf4j.Slf4j;
-
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -58,16 +60,20 @@ public class SqlServerClusterInstanceProvider implements ResourceProvider {
 
     private final SqlServerBaseService sqlServerBaseService;
 
+    private ResourceService resourceService;
+
     /**
      * 集群实例构造器注入
      *
      * @param agentUnifiedService agent代理属性
      * @param sqlServerBaseService 基础服务
+     * @param resourceService resourceService
      */
     public SqlServerClusterInstanceProvider(AgentUnifiedService agentUnifiedService,
-        SqlServerBaseService sqlServerBaseService) {
+        SqlServerBaseService sqlServerBaseService, ResourceService resourceService) {
         this.agentUnifiedService = agentUnifiedService;
         this.sqlServerBaseService = sqlServerBaseService;
+        this.resourceService = resourceService;
     }
 
     /**
@@ -102,8 +108,8 @@ public class SqlServerClusterInstanceProvider implements ResourceProvider {
         clusterInstance.setShouldCheckIfBeDependency(false);
         clusterInstance.setDeleteIds(Collections.singletonList(resource.getUuid()));
         resourceDeleteDependencies.add(clusterInstance);
-        List<ProtectedResource> alwaysOns = sqlServerBaseService.getResourceOfClusterByType(
-            resource.getRootUuid(), ResourceSubTypeEnum.SQL_SERVER_ALWAYS_ON.getType(), false);
+        List<ProtectedResource> alwaysOns = sqlServerBaseService.getResourceOfClusterByType(resource.getRootUuid(),
+            ResourceSubTypeEnum.SQL_SERVER_ALWAYS_ON.getType(), false);
         if (!VerifyUtil.isEmpty(alwaysOns)) {
             List<String> dependentAlwaysOnIdList = alwaysOns.stream()
                 .filter(agGroup -> Optional.ofNullable(agGroup.getDependencies())
@@ -163,19 +169,39 @@ public class SqlServerClusterInstanceProvider implements ResourceProvider {
 
     private void setClusterInstanceValues(ProtectedResource clusterInstance, List<ProtectedEnvironment> hosts) {
         // 与数据库插件对齐下属主机名列表
-        clusterInstance.getExtendInfo().put(DatabaseConstants.END_POINT, hosts.stream()
-            .map(ProtectedEnvironment::getName)
-            .collect(Collectors.joining(DatabaseConstants.SPLIT_CHAR)));
+        clusterInstance.getExtendInfo()
+            .put(DatabaseConstants.END_POINT, hosts.stream()
+                .map(ProtectedEnvironment::getName)
+                .collect(Collectors.joining(DatabaseConstants.SPLIT_CHAR)));
 
         // 复制需要使用集群实例的位置
         clusterInstance.setPath(hosts.stream()
             .map(ProtectedEnvironment::getEndpoint)
             .collect(Collectors.joining(DatabaseConstants.SPLIT_CHAR)));
+        refreshInstanceInfo(clusterInstance, hosts);
+    }
+
+    private void refreshInstanceInfo(ProtectedResource resource, List<ProtectedEnvironment> hosts) {
+        if (CollectionUtils.isEmpty(hosts)) {
+            return;
+        }
+        for (ProtectedEnvironment environment : hosts) {
+            List<ProtectedResource> resourceList = sqlServerBaseService.getDatabaseInfoByAgent(environment,
+                environment.getEndpoint(), environment.getPort(), resource,
+                ResourceSubTypeEnum.SQL_SERVER_CLUSTER_INSTANCE.getType());
+            if (CollectionUtils.isNotEmpty(resourceList)) {
+                String version = Optional.ofNullable(resourceList.get(0))
+                    .map(protectedResource -> protectedResource.getExtendInfoByKey(DatabaseConstants.VERSION))
+                    .orElse(StringUtils.EMPTY);
+                resource.setVersion(version);
+                break;
+            }
+        }
     }
 
     private void checkHostRegistered(String clusterUuid, List<ProtectedResource> hosts) {
         List<String> clusterHostUuidId = sqlServerBaseService.getResourceOfClusterByType(clusterUuid,
-            ResourceSubTypeEnum.SQL_SERVER_CLUSTER_INSTANCE.getType(), false)
+                ResourceSubTypeEnum.SQL_SERVER_CLUSTER_INSTANCE.getType(), false)
             .stream()
             .map(instance -> instance.getDependencies()
                 .get(DatabaseConstants.AGENTS)
@@ -232,8 +258,9 @@ public class SqlServerClusterInstanceProvider implements ResourceProvider {
 
     private void checkNodeOnline(List<ProtectedEnvironment> hosts) {
         if (hosts.stream()
-            .anyMatch(host -> LinkStatusEnum.OFFLINE.getStatus().toString()
-            .equals(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(host)))) {
+            .anyMatch(host -> LinkStatusEnum.OFFLINE.getStatus()
+                .toString()
+                .equals(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(host)))) {
             throw new LegoCheckedException(CommonErrorCode.HOST_OFFLINE, "[SQL Server] cluster agent is offLine!");
         }
     }
@@ -287,8 +314,8 @@ public class SqlServerClusterInstanceProvider implements ResourceProvider {
 
     private boolean analysisClusterInstanceByCheckResult(List<AgentBaseDto> checkResultList) {
         int resultSize = checkResultList.size();
-        boolean isFirstVirtualServiceRun = (boolean) getValueOfCheckResultByKey
-            (checkResultList.get(0), DatabaseConstants.STATE);
+        boolean isFirstVirtualServiceRun = (boolean) getValueOfCheckResultByKey(checkResultList.get(0),
+            DatabaseConstants.STATE);
         if (resultSize == SqlServerConstants.CLUSTER_INSTANCE_MIN_NODE_NUM
             && checkResultList.get(0).getErrorMessage() != null) {
             if (isFirstVirtualServiceRun) {
@@ -300,8 +327,8 @@ public class SqlServerClusterInstanceProvider implements ResourceProvider {
             return false;
         }
         if (resultSize == SqlServerConstants.CLUSTER_INSTANCE_MAX_NODE_NUM) {
-            boolean isSecondVirtualServiceRun = (boolean) getValueOfCheckResultByKey
-                (checkResultList.get(1), DatabaseConstants.STATE);
+            boolean isSecondVirtualServiceRun = (boolean) getValueOfCheckResultByKey(checkResultList.get(1),
+                DatabaseConstants.STATE);
             Object virtualServiceNameOfFirstNode = getValueOfCheckResultByKey(checkResultList.get(0),
                 DatabaseConstants.NAME);
             Object virtualServiceNameOfSecondNode = getValueOfCheckResultByKey(checkResultList.get(1),
@@ -348,5 +375,15 @@ public class SqlServerClusterInstanceProvider implements ResourceProvider {
             throw new LegoCheckedException(Long.parseLong(errorCode), "Cluster instance check by agent return code.");
         }
         return checkResult;
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+            Collections.singletonList(resource.getUuid()));
+        dependencies.put(DatabaseConstants.AGENTS, agents);
+        resource.setDependencies(dependencies);
+        return true;
     }
 }

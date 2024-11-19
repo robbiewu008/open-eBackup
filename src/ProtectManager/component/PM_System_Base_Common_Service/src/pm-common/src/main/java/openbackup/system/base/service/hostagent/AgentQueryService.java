@@ -47,4 +47,11 @@ public interface AgentQueryService {
      * @return 分页的客户端信息 PageListResponse<AgentInfo>
      */
     PageListResponse<AgentInfo> querySharedAgents(String pluginType);
+
+    /**
+     * 查询内置agent的uuid列表
+     *
+     * @return 内置agent的uuid列表
+     */
+    List<String> queryInternalAgentIds();
 }

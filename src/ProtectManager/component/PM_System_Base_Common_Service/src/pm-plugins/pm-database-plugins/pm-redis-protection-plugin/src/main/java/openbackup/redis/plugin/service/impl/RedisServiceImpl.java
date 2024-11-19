@@ -12,6 +12,14 @@
 */
 package openbackup.redis.plugin.service.impl;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+import com.huawei.oceanprotect.system.base.kerberos.service.KerberosService;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
@@ -27,24 +35,16 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceConstants
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.utils.AuthParamUtil;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.redis.plugin.constant.RedisConstant;
 import openbackup.redis.plugin.provider.RedisAgentProvider;
 import openbackup.redis.plugin.service.RedisService;
 import openbackup.redis.plugin.util.RedisValidator;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-import com.huawei.oceanprotect.system.base.kerberos.service.KerberosService;
 import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;

@@ -12,9 +12,6 @@
 */
 package openbackup.system.base.sdk.cluster.model;
 
-import openbackup.system.base.sdk.infrastructure.model.beans.NodePodInfo;
-import openbackup.system.base.util.Routing;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -22,6 +19,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.sdk.infrastructure.model.beans.NodePodInfo;
+import openbackup.system.base.util.Routing;
 
 import java.net.URI;
 import java.util.List;
@@ -90,11 +89,10 @@ public class TargetClusterVo {
      * @param consumer consumer
      */
     public void run(Consumer<URI> consumer) {
-        call(
-                uri -> {
-                    consumer.accept(uri);
-                    return null;
-                });
+        call(uri -> {
+            consumer.accept(uri);
+            return null;
+        });
     }
 
     private synchronized Routing routing() {

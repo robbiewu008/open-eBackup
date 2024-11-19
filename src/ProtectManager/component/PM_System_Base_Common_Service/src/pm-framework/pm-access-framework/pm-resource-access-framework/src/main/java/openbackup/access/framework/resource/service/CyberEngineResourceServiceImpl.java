@@ -14,8 +14,9 @@ package openbackup.access.framework.resource.service;
 
 import static openbackup.access.framework.resource.util.ResourceUtil.convertStorageType;
 
-import com.huawei.oceanprotect.system.base.label.dao.LabelResourceServiceDao;
+import com.huawei.oceanprotect.system.base.label.service.LabelService;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
 import openbackup.access.framework.resource.persistence.model.ResourceRepositoryQueryParams;
 import openbackup.access.framework.resource.vo.ProtectedResourceLoggingVo;
@@ -37,8 +38,6 @@ import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.security.callee.CalleeMethod;
 import openbackup.system.base.security.callee.CalleeMethods;
 import openbackup.system.base.util.MessageTemplate;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +106,7 @@ public class CyberEngineResourceServiceImpl implements CyberEngineResourceServic
     private TokenVerificationService tokenVerificationService;
 
     @Autowired
-    private LabelResourceServiceDao labelResourceServiceDao;
+    private LabelService labelService;
 
     /**
      * constructor
@@ -130,6 +129,7 @@ public class CyberEngineResourceServiceImpl implements CyberEngineResourceServic
      * @param pageSize 页面大小
      * @return 租户信息
      */
+    @Override
     public PageListResponse<TenantInfo> listAllTenants(int pageNo, int pageSize) {
         log.info("CyberEngine start to get all tenants, pageNo {}, pageSize {}", pageNo, pageSize);
         Map<String, Object> conditions = new HashMap<>();
@@ -144,6 +144,7 @@ public class CyberEngineResourceServiceImpl implements CyberEngineResourceServic
      * @param deviceId 设备Id
      * @return 租户信息
      */
+    @Override
     public PageListResponse<TenantInfo> listAllTenantsByDeviceId(String deviceId) {
         log.info("CyberEngine start to get all tenants by deviceId {}", deviceId);
         Map<String, Object> conditions = new HashMap<>();
@@ -175,6 +176,7 @@ public class CyberEngineResourceServiceImpl implements CyberEngineResourceServic
      * @param resourceId 文件系统ID
      * @return 租户信息
      */
+    @Override
     public PageListResponse<TenantInfo> listTenantByResourceId(int pageNo, int pageSize, String resourceId) {
         log.info("CyberEngine start to get tenant by resourceId, pageNo {}, pageSize {}, resourceId {}", pageNo,
             pageSize, resourceId);
@@ -245,6 +247,7 @@ public class CyberEngineResourceServiceImpl implements CyberEngineResourceServic
      * @param tenantId 租户Id
      * @return 设备信息
      */
+    @Override
     public StorageInfo listStorageInfo(String deviceId, String tenantId) {
         log.info("CyberEngine start to get storageInfo, deviceId {}", deviceId);
         Map<String, Object> conditions = new HashMap<>();
@@ -284,6 +287,7 @@ public class CyberEngineResourceServiceImpl implements CyberEngineResourceServic
      * @param resourceId 文件系统Id
      * @return 文件系统信息
      */
+    @Override
     public PageListResponse<FileSystemInfo> listFileSystems(int pageNo, int pageSize, String tenantId,
         String resourceId) {
         log.info("CyberEngine start to get file systems, pageNo {}, pageSize {}, tenantId {}", pageNo, pageSize,
@@ -309,7 +313,7 @@ public class CyberEngineResourceServiceImpl implements CyberEngineResourceServic
     @Override
     public void deleteEnvironment(String environmentId) {
         List<String> deletedResourceUuids = repository.deleteCyberEngineEnvironment(environmentId);
-        labelResourceServiceDao.deleteByResourceObjectIdsAndLabelIds(deletedResourceUuids.stream()
+        labelService.deleteByResourceObjectIdsAndLabelIds(deletedResourceUuids.stream()
             .distinct()
             .collect(Collectors.toList()), StringUtils.EMPTY);
         for (String deletedResourceUuid : new HashSet<>(deletedResourceUuids)) {

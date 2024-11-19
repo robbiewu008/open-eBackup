@@ -14,6 +14,9 @@ package openbackup.data.access.framework.servitization.controller;
 
 import static openbackup.system.base.common.constants.Constants.HUAWEI_CLOUD_STACK;
 
+import com.huawei.oceanprotect.system.base.user.entity.hcs.HcsRoleEnum;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.servitization.controller.req.VpcRequest;
 import openbackup.data.access.framework.servitization.entity.VpcInfoEntity;
 import openbackup.data.access.framework.servitization.service.IVpcService;
@@ -28,9 +31,6 @@ import openbackup.system.base.common.utils.StringUtil;
 import openbackup.system.base.sdk.auth.api.HcsTokenAPi;
 import openbackup.system.base.sdk.auth.model.HcsToken;
 import openbackup.system.base.security.exterattack.ExterAttack;
-import com.huawei.oceanprotect.system.base.user.entity.hcs.HcsRoleEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;

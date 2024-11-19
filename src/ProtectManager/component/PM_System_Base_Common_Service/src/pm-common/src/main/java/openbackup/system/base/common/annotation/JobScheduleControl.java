@@ -88,4 +88,18 @@ public @interface JobScheduleControl {
      * @return resumeStatus
      */
     JobStatusEnum resumeStatus() default JobStatusEnum.READY;
+
+    /**
+     * pendingWindow
+     *
+     * @return
+     */
+    int pendingWindow() default 0;
+
+    /**
+     * examine
+     *
+     * @return
+     */
+    String examine() default "";
 }

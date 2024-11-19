@@ -12,12 +12,11 @@
 */
 package openbackup.data.access.framework.livemount.common.model;
 
+import lombok.Data;
 import openbackup.data.access.framework.livemount.common.enums.OperationEnums;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyResourceSummary;
 import openbackup.system.base.sdk.resource.model.ResourceEntity;
-
-import lombok.Data;
 
 import java.util.List;
 

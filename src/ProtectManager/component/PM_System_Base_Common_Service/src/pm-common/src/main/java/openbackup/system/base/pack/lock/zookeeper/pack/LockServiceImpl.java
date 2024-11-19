@@ -12,6 +12,7 @@
 */
 package openbackup.system.base.pack.lock.zookeeper.pack;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.CommonUtil;
 import openbackup.system.base.pack.lock.Lock;
@@ -20,13 +21,10 @@ import openbackup.system.base.pack.lock.SQLLockService;
 import openbackup.system.base.pack.lock.zookeeper.zookeeper.ZookeeperService;
 import openbackup.system.base.security.exterattack.ExterAttack;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -191,9 +189,6 @@ public class LockServiceImpl implements LockService {
         public void lock() {
             try {
                 interProcessMutex.acquire();
-                Method getLockPath = interProcessMutex.getClass().getDeclaredMethod("getLockPath");
-                getLockPath.setAccessible(true);
-                log.info("lock path: {}", getLockPath.invoke(interProcessMutex));
             } catch (Exception e) {
                 throw LegoCheckedException.cast(e);
             }

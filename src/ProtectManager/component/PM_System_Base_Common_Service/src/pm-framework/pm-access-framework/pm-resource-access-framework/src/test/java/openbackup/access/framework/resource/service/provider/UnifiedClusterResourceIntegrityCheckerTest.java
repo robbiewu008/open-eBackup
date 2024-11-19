@@ -33,8 +33,6 @@ import org.powermock.reflect.Whitebox;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- */
 @RunWith(PowerMockRunner.class)
 public class UnifiedClusterResourceIntegrityCheckerTest {
     private AgentUnifiedService agentUnifiedService = Mockito.mock(AgentUnifiedService.class);

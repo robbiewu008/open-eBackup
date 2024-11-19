@@ -12,6 +12,9 @@
 */
 package openbackup.data.access.framework.core.security.permission.validator.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.security.permission.AuthValidator;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -22,10 +25,6 @@ import openbackup.system.base.sdk.user.ResourceSetResourceServiceApi;
 import openbackup.system.base.sdk.user.enums.OperationTypeEnum;
 import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
 import openbackup.system.base.security.permission.Permission;
-
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;

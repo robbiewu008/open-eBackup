@@ -12,10 +12,10 @@
 */
 package openbackup.system.base.sdk.resource.model;
 
-import openbackup.system.base.util.EnumUtil;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import openbackup.system.base.util.EnumUtil;
 
 /**
  * Resource type Enum
@@ -26,6 +26,8 @@ public enum ResourceTypeEnum {
     HOST("Host"),
     // 主机文件集
     FILESET("Fileset"),
+    // 表集
+    TABLESET("TableSet"),
     // 无代理框架
     AGENTLESS("Agentless"),
     // DFS文件集
@@ -101,7 +103,10 @@ public enum ResourceTypeEnum {
     // Virtualization
     VIRTUALIZATION("Virtualization"),
     // Container
-    CONTAINER("Container");
+    CONTAINER("Container"),
+    // Nutanix
+    NUTANIX("Nutanix"),
+    ;
 
     /**
      * 资源类型

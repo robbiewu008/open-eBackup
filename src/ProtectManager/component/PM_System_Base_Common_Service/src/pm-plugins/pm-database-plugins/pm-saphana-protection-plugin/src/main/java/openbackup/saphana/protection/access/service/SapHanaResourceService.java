@@ -77,6 +77,13 @@ public interface SapHanaResourceService {
     void checkDbIsRegistered(ProtectedResource resource);
 
     /**
+     * 修改SAP HANA数据库时，不能修改成已经注册的数据库（即名称不能重复）
+     *
+     * @param resource SAP HANA数据库资源信息
+     */
+    void checkDbNameBeforeUpdate(ProtectedResource resource);
+
+    /**
      * 检查SAP HANA数据库是否已在通用数据库中注册
      *
      * @param resource SAP HANA数据库资源信息

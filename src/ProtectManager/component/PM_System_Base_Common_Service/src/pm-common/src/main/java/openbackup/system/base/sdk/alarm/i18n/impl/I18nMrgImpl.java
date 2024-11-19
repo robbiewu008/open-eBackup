@@ -12,6 +12,11 @@
 */
 package openbackup.system.base.sdk.alarm.i18n.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.enums.DeployTypeEnum;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.MessageFormatUtil;
@@ -21,12 +26,6 @@ import openbackup.system.base.sdk.alarm.i18n.I18nMrgUtil;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.AdapterUtils;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -87,14 +86,13 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
     /**
      * 不处理的底座告警，原来定义在read_dorado_alarms_from_local.py中
      */
-    private static final Set<String> NOT_HANDLE_ALARMS = new HashSet<>(Arrays.asList(
-        "0xF0C90001", "0xF0C90002", "0x2064032B0001", "0x2064032B0007", "0x2064032B0008", "0x2064032B0009",
-        "0x2064032B000A", "0x2064032B000B", "0x206400770002", "0x2064032B0016", "0x2064032B0017", "0x2064032B0018",
-        "0x2064032B000C", "0x2064032B000F", "0x2064032B000D", "0x2064032B0011", "0x2064032B000E", "0x2064032B0010",
-        "0x206400770001", "0x2064032B0012", "0x2064032B0015", "0x2064032B0013", "0x2064032B0014", "0x2063032B0001",
-        "0x2013E21C0001", "0x206500C80002", "0x206403430001", "0x206403430002", "0x206403430003", "0x2064032B0019",
-        "0x206403460002", "0x206403460009", "0x20640346000A", "0x2064032C0019", "0x2064032C0017"));
-
+    private static final Set<String> NOT_HANDLE_ALARMS = new HashSet<>(Arrays.asList("0xF0C90001", "0xF0C90002",
+            "0x2064032B0001", "0x2064032B0007", "0x2064032B0008", "0x2064032B0009", "0x2064032B000A", "0x2064032B000B",
+            "0x206400770002", "0x2064032B0016", "0x2064032B0017", "0x2064032B0018", "0x2064032B000C", "0x2064032B000F",
+            "0x2064032B000D", "0x2064032B0011", "0x2064032B000E", "0x2064032B0010", "0x206400770001", "0x2064032B0012",
+            "0x2064032B0015", "0x2064032B0013", "0x2064032B0014", "0x2063032B0001", "0x2013E21C0001", "0x206500C80002",
+            "0x206403430001", "0x206403430002", "0x206403430003", "0x2064032B0019", "0x206403460002", "0x206403460009",
+            "0x20640346000A", "0x2064032C0019", "0x2064032C0017"));
 
     @Autowired
     private DeployTypeService deployTypeService;
@@ -172,11 +170,8 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
             }
             for (int i = 0; i < args.length; i++) {
                 final String arg = args[i];
-                String internalArg = Optional.of(i)
-                    .map(String::valueOf)
-                    .map(argsMap::getJSONObject)
-                    .map(paramMap -> paramMap.getString(arg))
-                    .orElse(arg);
+                String internalArg = Optional.of(i).map(String::valueOf).map(argsMap::getJSONObject)
+                        .map(paramMap -> paramMap.getString(arg)).orElse(arg);
                 newArgs[i] = internalArg;
             }
         } catch (JSONException | NumberFormatException e) {
@@ -210,7 +205,7 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
     }
 
     private void processUrlList(List<URL> urls, Locale locale, DeployTypeEnum deployTypeEnum,
-        Set<String> excludeAlarmIds, boolean isTransformFormat) {
+            Set<String> excludeAlarmIds, boolean isTransformFormat) {
         if (CollectionUtils.isEmpty(urls)) {
             return;
         }
@@ -229,16 +224,16 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
         // 底座的告警先加载中文，再加载英文，中文比较全
         // dorado底座告警
         processUrlList(AdapterUtils.getDoradoAlarmClassPathEntriesAlarmZn(), Locale.CHINESE, null, NOT_HANDLE_ALARMS,
-            true);
+                true);
         processUrlList(AdapterUtils.getDoradoAlarmClassPathEntriesAlarmEn(), Locale.ENGLISH, null, NOT_HANDLE_ALARMS,
-            true);
+                true);
         PARAM_EXPLAIN_MAP.clear();
 
         // pacific底座告警
         processUrlList(AdapterUtils.getPacificAlarmClassPathEntriesAlarmZn(), Locale.CHINESE, DeployTypeEnum.E6000,
-            NOT_HANDLE_ALARMS, true);
+                NOT_HANDLE_ALARMS, true);
         processUrlList(AdapterUtils.getPacificAlarmClassPathEntriesAlarmEn(), Locale.ENGLISH, DeployTypeEnum.E6000,
-            NOT_HANDLE_ALARMS, true);
+                NOT_HANDLE_ALARMS, true);
         PARAM_EXPLAIN_MAP.clear();
 
         processUrlList(AdapterUtils.getAllOperationTargetClassPathEntriesAlarmEn(), Locale.ENGLISH);
@@ -281,7 +276,7 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
      */
     @ExterAttack
     private void processJsonRes(URL url, Locale locale, DeployTypeEnum deployTypeEnum, Set<String> excludeAlarmIds,
-        boolean isTransformFormat) {
+            boolean isTransformFormat) {
         Map<Locale, Map<String, String>> resMap;
         if (deployTypeEnum == null) {
             resMap = RES_MAP;
@@ -310,7 +305,7 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
     }
 
     private void resolveAlarmByKey(String key, String[] values, Map<String, String> hashMap, Map<String, String> data,
-        boolean isTransformFormat) {
+            boolean isTransformFormat) {
         values[0] = hashMap.get(key);
         if (isTransformFormat && (key.contains("alarm.desc") || key.contains("alarm.advice"))) {
             String alarmId = getAlarmIdFromKey(key);

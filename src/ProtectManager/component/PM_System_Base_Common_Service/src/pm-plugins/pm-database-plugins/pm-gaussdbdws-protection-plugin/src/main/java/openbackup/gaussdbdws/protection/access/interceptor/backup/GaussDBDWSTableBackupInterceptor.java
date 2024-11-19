@@ -13,22 +13,22 @@
 package openbackup.gaussdbdws.protection.access.interceptor.backup;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterBasicService;
+import com.huawei.oceanprotect.repository.service.LocalStorageService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
 import openbackup.gaussdbdws.protection.access.provider.GaussDBDWSAgentProvider;
 import openbackup.gaussdbdws.protection.access.service.GaussDBBaseService;
 import openbackup.gaussdbdws.protection.access.util.DwsBuildRepositoryUtil;
-import com.huawei.oceanprotect.repository.service.LocalStorageService;
-
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * GaussDbDws 集群备份任务下发Provider
@@ -106,6 +106,18 @@ public class GaussDBDWSTableBackupInterceptor extends AbstractDbBackupIntercepto
         gaussDBBaseService.modifyBackupTaskParam(backupTask);
         gaussDBBaseService.modifyAdvanceParams(backupTask.getAdvanceParams(), backupTask.getProtectObject().getUuid());
         return backupTask;
+    }
+
+    /**
+     *  多集群任务分发，过滤掉不连通的esn
+     *
+     * @param resourceId 资源id
+     * @param availableEsnList 可用节点
+     * @return 连通节点
+     */
+    @Override
+    public Set<String> availableEsnFilter(String resourceId, Set<String> availableEsnList) {
+        return gaussDBBaseService.availableEsnFilter(resourceId, availableEsnList);
     }
 
     /**

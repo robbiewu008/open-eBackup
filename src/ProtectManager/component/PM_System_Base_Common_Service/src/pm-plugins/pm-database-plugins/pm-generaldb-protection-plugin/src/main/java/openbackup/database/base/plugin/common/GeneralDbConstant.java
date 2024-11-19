@@ -137,6 +137,11 @@ public class GeneralDbConstant {
      */
     public static final String NODES = "nodes";
 
+    /**
+     * 通用数据库脚本 值 SAP HANA
+     */
+    public static final String EXTEND_SCRIPT_VAL_SAPHANA = "saphana";
+
     private GeneralDbConstant() {
     }
 }

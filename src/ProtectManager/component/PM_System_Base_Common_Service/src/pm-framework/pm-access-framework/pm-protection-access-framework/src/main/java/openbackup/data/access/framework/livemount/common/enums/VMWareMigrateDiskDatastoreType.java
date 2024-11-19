@@ -12,15 +12,15 @@
 */
 package openbackup.data.access.framework.livemount.common.enums;
 
-import openbackup.system.base.util.EnumUtil;
-
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import openbackup.system.base.util.EnumUtil;
 
 /**
  * VMWare 迁移磁盘配置dataStore枚举
  *
  */
-public enum VMWareMigrateDiskDatastoreType {
+public enum VmwareMigrateDiskDatastoreType {
     /**
      * 磁盘和虚拟机配置不同的datastore
      */
@@ -33,7 +33,7 @@ public enum VMWareMigrateDiskDatastoreType {
 
     private final String name;
 
-    VMWareMigrateDiskDatastoreType(String name) {
+    VmwareMigrateDiskDatastoreType(String name) {
         this.name = name;
     }
 
@@ -49,7 +49,7 @@ public enum VMWareMigrateDiskDatastoreType {
      * @param str str
      * @return RetentionUnit
      */
-    public static VMWareMigrateDiskDatastoreType get(String str) {
-        return EnumUtil.get(VMWareMigrateDiskDatastoreType.class, VMWareMigrateDiskDatastoreType::getName, str);
+    public static VmwareMigrateDiskDatastoreType get(String str) {
+        return EnumUtil.get(VmwareMigrateDiskDatastoreType.class, VmwareMigrateDiskDatastoreType::getName, str);
     }
 }

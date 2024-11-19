@@ -12,6 +12,11 @@
 */
 package openbackup.tdsql.resources.access.interceptor;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
@@ -37,13 +42,8 @@ import openbackup.system.base.util.BeanTools;
 import openbackup.tdsql.resources.access.provider.TdsqlAgentProvider;
 import openbackup.tdsql.resources.access.service.TdsqlService;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -51,6 +51,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -102,6 +103,9 @@ public class TdsqlRestoreInterceptor extends AbstractDbRestoreInterceptorProvide
      */
     @Override
     public List<LockResourceBo> getLockResources(RestoreTask task) {
+        if (MapUtils.getBoolean(task.getAdvanceParams(), "create_new_instance", false)) {
+            return Collections.singletonList(new LockResourceBo(UUID.randomUUID().toString(), LockType.WRITE));
+        }
         return Collections.singletonList(new LockResourceBo(task.getTargetObject().getUuid(), LockType.WRITE));
     }
 

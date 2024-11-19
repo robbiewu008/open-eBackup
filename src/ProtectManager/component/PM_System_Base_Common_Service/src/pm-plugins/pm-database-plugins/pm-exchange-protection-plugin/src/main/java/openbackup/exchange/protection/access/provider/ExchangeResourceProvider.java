@@ -15,6 +15,8 @@ package openbackup.exchange.protection.access.provider;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceDeleteContext;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.exchange.protection.access.service.ExchangeService;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
@@ -22,6 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * exchange资源provider, 目前只实现资源删除前检查功能
@@ -32,6 +39,13 @@ import org.springframework.stereotype.Component;
 public class ExchangeResourceProvider implements ResourceProvider {
     @Autowired
     private ExchangeService exchangeService;
+
+    private ResourceService resourceService;
+
+    @Autowired
+    public void setResourceService(ResourceService resourceService) {
+        this.resourceService = resourceService;
+    }
 
     /**
      * 只适用于exchange 单机或可用性组
@@ -80,5 +94,15 @@ public class ExchangeResourceProvider implements ResourceProvider {
         exchangeService.checkCanDeleteResource(resource);
         log.info("exchange resource {} pre handle delete check pass.", resource.getUuid());
         return ResourceDeleteContext.defaultValue();
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+            Collections.singletonList(resource.getUuid()));
+        dependencies.put(DatabaseConstants.AGENTS, agents);
+        resource.setDependencies(dependencies);
+        return true;
     }
 }

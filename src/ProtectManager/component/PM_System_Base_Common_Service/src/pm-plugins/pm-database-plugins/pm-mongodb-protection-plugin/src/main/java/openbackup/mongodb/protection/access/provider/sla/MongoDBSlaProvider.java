@@ -22,13 +22,20 @@ import static com.huawei.oceanprotect.sla.sdk.enums.PolicyAction.REPLICATION;
 import static openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum.MONGODB;
 import static openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum.MONGODB_SINGLE;
 
-import openbackup.data.protection.access.provider.sdk.sla.SlaValidateProvider;
 import com.huawei.oceanprotect.sla.sdk.constants.SlaConstants;
 import com.huawei.oceanprotect.sla.sdk.dto.SlaBase;
 import com.huawei.oceanprotect.sla.sdk.dto.UpdateSlaCommand;
 import com.huawei.oceanprotect.sla.sdk.enums.PolicyType;
 import com.huawei.oceanprotect.sla.sdk.validator.PolicyLimitConfig;
 import com.huawei.oceanprotect.sla.sdk.validator.SlaValidateConfig;
+
+import com.google.common.collect.ImmutableSet;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.data.protection.access.provider.sdk.sla.SlaValidateProvider;
+import openbackup.mongodb.protection.access.constants.MongoDBConstants;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -37,10 +44,8 @@ import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.resource.ProtectObjectRestApi;
 import openbackup.system.base.sdk.resource.model.ProtectedObjectInfo;
 
-import com.google.common.collect.ImmutableSet;
-
-import lombok.extern.slf4j.Slf4j;
-
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -62,6 +67,9 @@ public class MongoDBSlaProvider implements SlaValidateProvider {
 
     @Autowired
     private ProtectObjectRestApi protectObjectRestApi;
+
+    @Autowired
+    private ResourceService resourceService;
 
     @Override
     public SlaValidateConfig getConfig() {
@@ -103,6 +111,9 @@ public class MongoDBSlaProvider implements SlaValidateProvider {
                 log.info("No any resource is bound to this sla: {}, no need to check.", updateSlaCommand.getUuid());
                 return;
             }
+            for (ProtectedObjectInfo protectedObjectInfo : items) {
+                checkSupportContainsSla(policyActions, protectedObjectInfo);
+            }
             page++;
         } while (items.size() >= IsmNumberConstant.HUNDRED);
     }
@@ -110,9 +121,15 @@ public class MongoDBSlaProvider implements SlaValidateProvider {
     private void checkSupportContainsSla(List<String> policyActions, ProtectedObjectInfo protectedObjectInfo) {
         String subType = protectedObjectInfo.getSubType();
         if (MONGODB_SINGLE.equalsSubType(subType) && policyActions.contains(LOG.getAction())) {
-            throw new LegoCheckedException(CommonErrorCode.SLA_NOT_SUPPORT_BACKUP_POLICY,
-                new String[] {subType, COMMON_LOG_BACKUP_LABEL},
-                "Resource: " + subType + " bound to this sla do not support type: LOG");
+            ProtectedResource resource = resourceService.getResourceById(protectedObjectInfo.getResourceId())
+                .orElseThrow(
+                    () -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "This resource is not exist"));
+            if (StringUtils.equals(MapUtils.getString(resource.getExtendInfo(), MongoDBConstants.SINGLE_TYPE),
+                MongoDBConstants.SINGLE)) {
+                throw new LegoCheckedException(CommonErrorCode.SLA_NOT_SUPPORT_BACKUP_POLICY,
+                    new String[] {subType, COMMON_LOG_BACKUP_LABEL},
+                    "Resource: " + subType + " bound to this sla do not support type: LOG");
+            }
         }
     }
 

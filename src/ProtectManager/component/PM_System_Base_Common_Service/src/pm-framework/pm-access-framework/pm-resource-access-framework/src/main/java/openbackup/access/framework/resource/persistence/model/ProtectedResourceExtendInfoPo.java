@@ -12,10 +12,10 @@
 */
 package openbackup.access.framework.resource.persistence.model;
 
-import openbackup.data.protection.access.provider.sdk.resource.model.ProtectedResourceExtendInfo;
-
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import openbackup.data.protection.access.provider.sdk.resource.model.ProtectedResourceExtendInfo;
 
 import java.util.Map;
 

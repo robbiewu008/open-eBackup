@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.bean;
 
-import openbackup.system.base.common.enums.NetworkTypeEnum;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.common.enums.NetworkTypeEnum;
 
 /**
  * 检查网络连通性请求

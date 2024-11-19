@@ -60,7 +60,7 @@ public class CnwareCommonServiceImplTest {
      * 检查点：若域名中含有非法字符则应抛出异常
      */
     @Test
-    public void test_check_envrionment_name_should_throw_exception() {
+    public void test_check_environment_name_should_throw_exception() {
         Assert.assertThrows(LegoCheckedException.class, () -> cnwareCommonServiceTest.checkEnvName("dsaf%daf"));
     }
 

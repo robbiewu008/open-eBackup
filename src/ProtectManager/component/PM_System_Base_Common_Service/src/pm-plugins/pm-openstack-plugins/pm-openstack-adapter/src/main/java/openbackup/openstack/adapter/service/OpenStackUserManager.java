@@ -13,15 +13,15 @@
 package openbackup.openstack.adapter.service;
 
 import openbackup.openstack.protection.access.constant.OpenstackConstant;
+import com.huawei.oceanprotect.system.base.user.entity.UserInfoEntity;
+import com.huawei.oceanprotect.system.base.user.service.UserService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.aspect.OperationLogAspect;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.auth.UserInnerResponse;
-import com.huawei.oceanprotect.system.base.user.entity.UserInfoEntity;
-import com.huawei.oceanprotect.system.base.user.service.UserService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

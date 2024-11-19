@@ -285,7 +285,7 @@ public class TpopsGaussDBServiceImpl implements TpopsGaussDBService {
     public void updateResourceLinkStatus(String resourceId, String status) {
         ProtectedResource updateResource = new ProtectedResource();
         updateResource.setUuid(resourceId);
-        updateResource.setExtendInfoByKey(DatabaseConstants.STATUS, status);
+        updateResource.setExtendInfoByKey(TpopsGaussDBConstant.EXTEND_INFO_KEY_INSTANCE_STATUS, status);
         resourceService.updateSourceDirectly(Collections.singletonList(updateResource));
     }
 

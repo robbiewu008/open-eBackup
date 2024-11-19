@@ -41,5 +41,5 @@ public class GeneralDbErrorCode {
      * 原因: 资源已经注册，不能重复注册。
      * 建议: 无。
      */
-    public static final long RESOURCE_IS_REGISTERED = 1677933572L;
+    public static final long RESOURCE_IS_REGISTERED = 1677931274L;
 }

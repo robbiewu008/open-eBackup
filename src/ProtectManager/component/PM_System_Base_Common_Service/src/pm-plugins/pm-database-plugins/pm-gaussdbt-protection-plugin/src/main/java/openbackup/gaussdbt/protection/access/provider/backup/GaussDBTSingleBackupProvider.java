@@ -12,6 +12,7 @@
 */
 package openbackup.gaussdbt.protection.access.provider.backup;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.enums.CopyFormatEnum;
@@ -28,8 +29,6 @@ import openbackup.gaussdbt.protection.access.provider.service.GaussDBTSingleServ
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

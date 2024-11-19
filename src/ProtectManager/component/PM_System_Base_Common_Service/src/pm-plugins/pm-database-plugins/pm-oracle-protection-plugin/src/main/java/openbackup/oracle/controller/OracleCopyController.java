@@ -12,13 +12,12 @@
 */
 package openbackup.oracle.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.oracle.constants.ScnCopy;
 import openbackup.oracle.service.OracleCopyService;
 import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.security.permission.Permission;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,7 +62,7 @@ public class OracleCopyController {
     @Permission(roles = {Constants.Builtin.ROLE_SYS_ADMIN, Constants.Builtin.ROLE_DP_ADMIN}, resources = "resource:$1",
         enableCheckAuth = false)
     public List<ScnCopy> queryCopyByScn(@NotNull @Length(max = 128) @RequestParam("resourceId") String resourceId,
-    @NotNull @Length(max = 15) @RequestParam("filterValue") String filterValue) {
+        @NotNull @Length(max = 15) @RequestParam("filterValue") String filterValue) {
         return oracleCopyService.listCopiesInfo(resourceId, filterValue);
     }
 }

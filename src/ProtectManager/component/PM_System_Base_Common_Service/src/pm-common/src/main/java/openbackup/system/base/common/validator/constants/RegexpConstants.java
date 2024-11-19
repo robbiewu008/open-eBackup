@@ -127,7 +127,7 @@ public final class RegexpConstants {
     /**
      * 通用邮箱格式长度254位
      */
-    public static final int EMAIL_MAX_LENGTH = 254;
+    public static final int EMAIL_MAX_LENGTH = 255;
 
     /**
      * UUID正则表达式

@@ -12,15 +12,15 @@
 */
 package openbackup.data.access.framework.protection.service.job;
 
-import openbackup.data.access.framework.protection.common.util.JobExtendInfoUtil;
-import openbackup.data.protection.access.provider.sdk.job.JobProvider;
 import com.huawei.oceanprotect.exercise.service.ExerciseQueryService;
 import com.huawei.oceanprotect.job.dto.JobExerciseDetail;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.framework.protection.common.util.JobExtendInfoUtil;
+import openbackup.data.protection.access.provider.sdk.job.JobProvider;
 import openbackup.system.base.common.model.job.Job;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

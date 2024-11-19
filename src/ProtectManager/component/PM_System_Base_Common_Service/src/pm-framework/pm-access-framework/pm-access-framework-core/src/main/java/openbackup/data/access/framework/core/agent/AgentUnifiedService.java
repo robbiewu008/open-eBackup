@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.core.agent;
 
+import feign.Response;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentIqnValidateRequest;
@@ -21,6 +22,7 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.CheckAppReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CleanAgentLogReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CollectAgentLogRsp;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.DeliverTaskStatusDto;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.FinalizeClearReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.GetAgentLogCollectStatusRsp;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.HostDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceReq;
@@ -33,10 +35,9 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.system.base.common.annotation.Routing;
 import openbackup.system.base.common.model.host.ManagementIp;
+import openbackup.system.base.sdk.agent.model.AgentSupportCompressedPackageType;
 import openbackup.system.base.sdk.agent.model.AgentUpdateResponse;
 import openbackup.system.base.sdk.cert.request.PushUpdateCertToAgentReq;
-
-import feign.Response;
 
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public interface AgentUnifiedService {
      * @param listResourceV2Req 查询app list的参数
      * @return 按条件查询出的详细信息 分页对象
      */
-    @Routing(destinationIp = "#{endpoint}")
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
     default PageListResponse<ProtectedResource> getDetailPageList(String appType, String endpoint, Integer port,
         ListResourceV2Req listResourceV2Req) {
         return getDetailPageList(appType, endpoint, port, listResourceV2Req, false);
@@ -353,6 +354,15 @@ public interface AgentUnifiedService {
     AgentUpdatePluginTypeResult getModifyPluginTypeResult(String endpoint, Integer port);
 
     /**
+     * 查询agent支持命令情况
+     *
+     * @param endpoint ip
+     * @param port port
+     * @return 查看应用类型返回结果
+     */
+    AgentSupportCompressedPackageType getCompressedPackageTypeByAgent(String endpoint, Integer port);
+
+    /**
      * 通过agent 查出绑定的集群esn
      *
      * @param endpoint agent的Ip
@@ -433,4 +443,14 @@ public interface AgentUnifiedService {
      * @param managementIp serverIp列表
      */
     void updateAgentServer(ProtectedEnvironment agent, ManagementIp managementIp);
+
+    /**
+     * 副本入库后置清理任务
+     *
+     * @param agent agent
+     * @param appType appType
+     * @param finalizeClearReq finalizeClearReq
+     * @return AgentBaseDto
+     */
+    AgentBaseDto finalizeClear(ProtectedEnvironment agent, String appType, FinalizeClearReq finalizeClearReq);
 }

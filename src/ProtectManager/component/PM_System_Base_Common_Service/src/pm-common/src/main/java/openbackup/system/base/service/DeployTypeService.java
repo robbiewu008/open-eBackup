@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.service;
 
-import openbackup.system.base.common.enums.DeployTypeEnum;
-import openbackup.system.base.config.configmap.ConfigMapService;
-
 import com.google.common.collect.ImmutableList;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.enums.DeployTypeEnum;
+import openbackup.system.base.config.configmap.ConfigMapService;
 
 import org.springframework.stereotype.Component;
 
@@ -46,6 +45,12 @@ public class DeployTypeService {
             DeployTypeEnum.X8000, DeployTypeEnum.X9000);
 
     /**
+     * E系列存储的设备枚举值
+     */
+    public static final ImmutableList<DeployTypeEnum> E_SERIES =
+        ImmutableList.of(DeployTypeEnum.E1000, DeployTypeEnum.E6000);
+
+    /**
      * 业务认证初始化设备类型
      */
     public static final ImmutableList<DeployTypeEnum> BUSINESS_AUTH_INIT_DEPLOY_TYPES = ImmutableList
@@ -55,8 +60,8 @@ public class DeployTypeService {
      * 不支持RBAC部署形态
      */
     public static final ImmutableList<DeployTypeEnum> NOT_SUPPORT_RBAC_DEPLOY_TYPES = ImmutableList.of(
-        DeployTypeEnum.CLOUD_BACKUP_OLD, DeployTypeEnum.CLOUD_BACKUP, DeployTypeEnum.CYBER_ENGINE,
-        DeployTypeEnum.HYPER_DETECT);
+            DeployTypeEnum.CLOUD_BACKUP_OLD, DeployTypeEnum.CLOUD_BACKUP, DeployTypeEnum.CYBER_ENGINE,
+            DeployTypeEnum.HYPER_DETECT);
 
     /**
      * 支持通过lld初始化的部署形态
@@ -196,6 +201,18 @@ public class DeployTypeService {
     }
 
     /**
+     * 判断是否是E系列存储
+     *
+     * @return true-是，false-不是
+     */
+    public boolean isESeries() {
+        if (Objects.isNull(deployType)) {
+            getDeployType();
+        }
+        return E_SERIES.contains(deployType);
+    }
+
+    /**
      * 判断是否是业务认证初始化设备类型
      *
      * @return true-是，false-不是
@@ -210,7 +227,7 @@ public class DeployTypeService {
     /**
      * 判断是否不支持RBAC
      *
-     * @return true-是，false-不是
+     * @return true-是(不支持)，false-不是(支持)
      */
     public boolean isNotSupportRBACType() {
         if (Objects.isNull(deployType)) {

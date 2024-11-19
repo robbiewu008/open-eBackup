@@ -12,6 +12,9 @@
 */
 package openbackup.db2.protection.access.provider.backup;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.protection.service.SanClientService;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
@@ -34,7 +37,6 @@ import openbackup.db2.protection.access.constant.Db2Constants;
 import openbackup.db2.protection.access.enums.Db2ClusterTypeEnum;
 import openbackup.db2.protection.access.enums.Db2ResourceStatusEnum;
 import openbackup.db2.protection.access.service.Db2Service;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -50,8 +52,6 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;

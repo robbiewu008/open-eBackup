@@ -12,10 +12,10 @@
 */
 package openbackup.access.framework.resource.persistence.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-
-import com.baomidou.mybatisplus.annotation.TableField;
 
 /**
  * Protected Environment Po

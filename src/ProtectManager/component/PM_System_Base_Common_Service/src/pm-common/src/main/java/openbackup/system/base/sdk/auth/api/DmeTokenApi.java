@@ -14,6 +14,8 @@ package openbackup.system.base.sdk.auth.api;
 
 import openbackup.system.base.sdk.auth.model.DmeToken;
 
+import java.util.Optional;
+
 /**
  * 调用DME平台的Api
  *
@@ -26,4 +28,11 @@ public interface DmeTokenApi {
      * @return DmeToken
      */
     DmeToken verifyAuthToken(String subjectToken);
+
+    /**
+     * 机机账户内置账户获取 Token
+     *
+     * @return Token
+     */
+    Optional<String> getDmeInnerAuthToken();
 }

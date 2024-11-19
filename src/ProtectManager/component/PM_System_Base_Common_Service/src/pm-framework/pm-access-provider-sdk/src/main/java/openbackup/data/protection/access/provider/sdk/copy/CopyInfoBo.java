@@ -142,4 +142,28 @@ public class CopyInfoBo extends CopyResourceBase {
      */
     @JsonProperty("extend_type")
     private String extendType;
+
+    /**
+     * WORM有效时间类型
+     */
+    @JsonProperty("worm_validity_type")
+    private int wormValidityType;
+
+    /**
+     * WORM保留时间
+     */
+    @JsonProperty("worm_retention_duration")
+    private int wormRetentionDuration;
+
+    /**
+     * worm保留时间单位类型
+     */
+    @JsonProperty("worm_duration_unit")
+    private String wormDurationUnit;
+
+    /**
+     * worm过期时间
+     */
+    @JsonProperty("worm_expiration_time")
+    private Date wormExpirationTime;
 }

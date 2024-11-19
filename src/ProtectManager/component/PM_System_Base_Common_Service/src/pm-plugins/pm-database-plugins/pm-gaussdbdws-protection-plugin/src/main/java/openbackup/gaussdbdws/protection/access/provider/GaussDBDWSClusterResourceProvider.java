@@ -12,16 +12,23 @@
 */
 package openbackup.gaussdbdws.protection.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceFeature;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.provider.DatabaseResourceProvider;
+import openbackup.gaussdbdws.protection.access.constant.DwsConstant;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * GaussDBDWS DWS资源相关接口的具体实现类
@@ -31,6 +38,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class GaussDBDWSClusterResourceProvider extends DatabaseResourceProvider {
+    private ResourceService resourceService;
+
     /**
      * Constructor
      *
@@ -39,6 +48,11 @@ public class GaussDBDWSClusterResourceProvider extends DatabaseResourceProvider 
      */
     public GaussDBDWSClusterResourceProvider(ProviderManager providerManager, PluginConfigManager pluginConfigManager) {
         super(providerManager, pluginConfigManager);
+    }
+
+    @Autowired
+    public void setResourceService(ResourceService resourceService) {
+        this.resourceService = resourceService;
     }
 
     @Override
@@ -51,5 +65,18 @@ public class GaussDBDWSClusterResourceProvider extends DatabaseResourceProvider 
         ResourceFeature resourceFeature = super.getResourceFeature();
         resourceFeature.setSupportedLanFree(false);
         return resourceFeature;
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> clusterAgents = resourceService.queryDependencyResources(true,
+            DwsConstant.DWS_CLUSTER_AGENT, Collections.singletonList(resource.getUuid()));
+        List<ProtectedResource> hostAgents = resourceService.queryDependencyResources(true, DwsConstant.HOST_AGENT,
+            Collections.singletonList(resource.getUuid()));
+        dependencies.put(DwsConstant.DWS_CLUSTER_AGENT, clusterAgents);
+        dependencies.put(DwsConstant.HOST_AGENT, hostAgents);
+        resource.setDependencies(dependencies);
+        return true;
     }
 }

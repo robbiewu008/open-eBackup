@@ -12,6 +12,8 @@
 */
 package openbackup.gaussdbt.protection.access.provider.util;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.NodeInfo;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
@@ -23,8 +25,6 @@ import openbackup.gaussdbt.protection.access.provider.constant.GaussDBTConstant;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.HashMap;
 import java.util.List;

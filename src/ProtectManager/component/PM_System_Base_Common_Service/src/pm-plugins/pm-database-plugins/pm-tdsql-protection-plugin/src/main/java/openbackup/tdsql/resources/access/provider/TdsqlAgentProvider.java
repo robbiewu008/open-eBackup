@@ -18,14 +18,22 @@ import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.database.base.plugin.common.DatabaseConstants;
+import openbackup.system.base.common.utils.json.JsonUtil;
+import openbackup.system.base.sdk.job.model.JobTypeEnum;
+import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.StreamUtil;
+import openbackup.tdsql.resources.access.constant.TdsqlConstant;
+import openbackup.tdsql.resources.access.dto.instance.DataNode;
+import openbackup.tdsql.resources.access.dto.instance.TdsqlInstance;
 import openbackup.tdsql.resources.access.service.TdsqlService;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -50,8 +58,8 @@ public class TdsqlAgentProvider extends DataBaseAgentSelector {
         ProtectedEnvironment rootEnv = tdsqlService.getEnvironmentById(backupResource.getRootUuid());
         ProtectedResource resource = tdsqlService.getResourceById(backupResource.getUuid());
         List<Endpoint> result = new LinkedList<>();
-        List<Endpoint> supplyAgent = getAgents(rootEnv);
-        List<Endpoint> supplyAgent1 = getAgents(resource);
+        List<Endpoint> supplyAgent = getAgents(rootEnv, agentSelectParam.getJobType());
+        List<Endpoint> supplyAgent1 = getAgents(resource, agentSelectParam.getJobType());
         result.addAll(supplyAgent1);
         result.addAll(supplyAgent);
         return removeDuplicateAgent(result);
@@ -68,12 +76,49 @@ public class TdsqlAgentProvider extends DataBaseAgentSelector {
             Optional.ofNullable(agentEnv.getPort()).orElse(0));
     }
 
-    private List<Endpoint> getAgents(ProtectedResource child) {
-        List<ProtectedResource> resourceList = child.getDependencies().get(DatabaseConstants.AGENTS);
+    private List<Endpoint> getAgents(ProtectedResource child, String jobType) {
+        List<ProtectedResource> resourceList;
+        if (StringUtils.equals(child.getSubType(), TdsqlConstant.TDSQL_CLUSTERINSTACE)) {
+            resourceList = getAgentsClusterInstance(child, jobType);
+        } else {
+            resourceList = child.getDependencies().get(DatabaseConstants.AGENTS);
+        }
         return resourceList.stream()
             .flatMap(StreamUtil.match(ProtectedEnvironment.class))
             .map(this::getAgentEndpoint)
             .collect(Collectors.toList());
+    }
+
+    private List<ProtectedResource> getAgentsClusterInstance(ProtectedResource child, String jobType) {
+        List<ProtectedResource> resourceList = child.getDependencies().get(DatabaseConstants.AGENTS);
+        TdsqlInstance instance = JsonUtil.read(child.getExtendInfo().get(TdsqlConstant.CLUSTER_INSTANCE_INFO),
+            TdsqlInstance.class);
+        List<DataNode> nodeList = instance.getGroups().get(0).getDataNodes();
+        List<ProtectedResource> agentResourceList = new ArrayList<>();
+        for (ProtectedResource agentResource : resourceList) {
+            if (StringUtils.equals(JobTypeEnum.RESTORE.getValue(), jobType)) {
+                agentResourceList.add(agentResource);
+            } else {
+                if (isDataNodeOnline(agentResource, nodeList)) {
+                    agentResourceList.add(agentResource);
+                }
+            }
+        }
+        return agentResourceList;
+    }
+
+    private boolean isDataNodeOnline(ProtectedResource agentResource, List<DataNode> nodeList) {
+        for (DataNode dataNode : nodeList) {
+            if (StringUtils.equals(dataNode.getParentUuid(), agentResource.getUuid())) {
+                if (StringUtils.equals(LinkStatusEnum.OFFLINE.getStatus().toString(), dataNode.getLinkStatus())
+                    && StringUtils.equals(TdsqlConstant.IS_SLAVE, dataNode.getIsMaster())) {
+                    log.warn("isDataNodeOnline node is offline,ip is {}, parentUuid is {}", dataNode.getIp(),
+                        dataNode.getParentUuid());
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private List<Endpoint> removeDuplicateAgent(List<Endpoint> agentList) {

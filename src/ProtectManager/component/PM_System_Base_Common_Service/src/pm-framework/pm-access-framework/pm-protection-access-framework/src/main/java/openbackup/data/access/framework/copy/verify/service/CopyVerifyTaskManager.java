@@ -13,9 +13,12 @@
 package openbackup.data.access.framework.copy.verify.service;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dme.CopyVerifyStatusEnum;
 import openbackup.data.access.framework.agent.AgentSelectorManager;
 import openbackup.data.access.framework.copy.verify.constant.CopyVerifyJobLabelConstant;
+import openbackup.data.access.framework.core.common.constants.TaskParamConstants;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.protection.common.converters.JobDataConverter;
@@ -27,6 +30,7 @@ import openbackup.data.access.framework.servitization.util.OpServiceHelper;
 import openbackup.data.protection.access.provider.sdk.agent.CommonAgentService;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.copy.CopyVerifyInterceptor;
+import openbackup.data.protection.access.provider.sdk.enums.AgentMountTypeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnum;
 import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
@@ -36,6 +40,7 @@ import openbackup.data.protection.access.provider.sdk.verify.CopyVerifyTask;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.VerifyUtil;
+import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyStatus;
 import openbackup.system.base.sdk.job.model.JobLogLevelEnum;
@@ -44,8 +49,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.StreamUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -96,6 +99,9 @@ public class CopyVerifyTaskManager {
 
     @Autowired
     private TaskRepositoryManager taskRepositoryManager;
+
+    @Autowired
+    private CopyRestApi copyRestApi;
 
     private CommonAgentService commonAgentService;
 
@@ -240,9 +246,7 @@ public class CopyVerifyTaskManager {
         fillAgents(task, copy);
         CopyVerifyInterceptor copyVerifyInterceptor = providerManager.findProvider(CopyVerifyInterceptor.class,
                 copy.getResourceSubType(), null);
-        if (copyVerifyInterceptor != null) {
-            copyVerifyInterceptor.interceptor(task);
-        }
+        verifyIntercept(task, copyVerifyInterceptor);
         opServiceHelper.injectVpcInfoForCopyVerify(task);
         commonAgentService.supplyAgentCommonInfo(task.getAgents());
         // agent配置了sanclient，并且副本不是san副本以及agent没有配置sanclient，且副本为san副本，不能执行恢复
@@ -278,6 +282,20 @@ public class CopyVerifyTaskManager {
                     e.getErrorCode(), null);
             throw e;
         }
+    }
+
+    private void verifyIntercept(CopyVerifyTask task, CopyVerifyInterceptor interceptor) {
+        if (interceptor != null) {
+            interceptor.interceptor(task);
+            Optional<AgentMountTypeEnum> mountTypeOp = interceptor.getMountType(task);
+            if (mountTypeOp.isPresent()) {
+                task.addParameter(TaskParamConstants.AGENT_MOUNT_TYPE, mountTypeOp.get().getValue());
+                return;
+            }
+        }
+        Copy copy = copyRestApi.queryCopyByID(task.getCopyId());
+        task.addParameter(TaskParamConstants.AGENT_MOUNT_TYPE,
+            commonAgentService.getJobAgentMountTypeByUnitId(copy.getStorageUnitId()).getValue());
     }
 
     private void fillAgents(CopyVerifyTask task, Copy copy) {

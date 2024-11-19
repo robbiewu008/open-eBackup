@@ -13,8 +13,11 @@
 package openbackup.data.protection.access.provider.sdk.copy;
 
 import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvider;
+import openbackup.data.protection.access.provider.sdk.enums.AgentMountTypeEnum;
 import openbackup.data.protection.access.provider.sdk.verify.CopyVerifyTask;
 import openbackup.system.base.sdk.copy.model.Copy;
+
+import java.util.Optional;
 
 /**
  * 副本校验拦截器
@@ -35,4 +38,14 @@ public interface CopyVerifyInterceptor extends DataProtectionProvider<String> {
      * @param copy 副本对象
      */
     void checkIsSupportVerify(Copy copy);
+
+    /**
+     * 副本校验所使用的挂载类型
+     *
+     * @param task 任务对象
+     * @return agent挂载类型
+     */
+    default Optional<AgentMountTypeEnum> getMountType(CopyVerifyTask task) {
+        return Optional.empty();
+    }
 }

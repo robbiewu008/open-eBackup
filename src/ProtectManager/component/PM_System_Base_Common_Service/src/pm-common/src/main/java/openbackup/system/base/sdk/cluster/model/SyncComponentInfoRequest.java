@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.sdk.cluster.model;
 
-import openbackup.system.base.bean.DeviceUser;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.bean.DeviceUser;
 
 import java.util.List;
 

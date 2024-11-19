@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.config;
 
-import openbackup.system.base.common.rest.ApacheHttp5ClientBuilder;
-import openbackup.system.base.util.KeyToolUtil;
-
 import feign.Client;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.rest.ApacheHttp5ClientBuilder;
+import openbackup.system.base.util.KeyToolUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

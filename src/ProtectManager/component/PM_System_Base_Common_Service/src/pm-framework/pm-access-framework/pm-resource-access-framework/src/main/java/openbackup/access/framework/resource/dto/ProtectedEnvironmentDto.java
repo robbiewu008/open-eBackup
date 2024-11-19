@@ -12,12 +12,11 @@
 */
 package openbackup.access.framework.resource.dto;
 
-import openbackup.data.protection.access.provider.sdk.base.Authentication;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import openbackup.data.protection.access.provider.sdk.base.Authentication;
 
 import org.hibernate.validator.constraints.Length;
 

@@ -12,6 +12,11 @@
 */
 package openbackup.access.framework.resource.controller.internal;
 
+import com.huawei.oceanprotect.system.base.user.service.UserService;
+
+import com.alibaba.fastjson.JSON;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.dto.AgentRegisterResponse;
 import openbackup.access.framework.resource.dto.ProtectedEnvironmentDto;
 import openbackup.access.framework.resource.service.ProtectedResourceRepository;
@@ -43,11 +48,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.enums.LinuxOsTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.security.exterattack.ExterAttack;
-import com.huawei.oceanprotect.system.base.user.service.UserService;
-
-import com.alibaba.fastjson.JSON;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -104,6 +104,8 @@ public class EnvironmentInternalController {
 
     private static final String QUERY_IP_RESPONSE_URL = "/rest/csm-cmdb/v1/instances/CLOUD_VM_NOVA";
 
+    private static final String IS_AUTO_SYNCHRONIZE_HOST_NAME = "is_auto_synchronize_host_name";
+
     private static final String SYS_ADMIN_ROLE_ID = "1";
 
     private final ProtectedEnvironmentService environmentService;
@@ -140,7 +142,8 @@ public class EnvironmentInternalController {
      */
     @ExterAttack
     @PostMapping("/environments")
-    public AgentRegisterResponse registerProtectedEnvironment(@RequestBody @Valid ProtectedEnvironmentDto environmentDto) {
+    public AgentRegisterResponse registerProtectedEnvironment(
+            @RequestBody @Valid ProtectedEnvironmentDto environmentDto) {
         log.info("Register environment,uuid:{},name:{},endpoint:{},port:{},os type:{},sub type:{},createdTime:{}.",
             environmentDto.getUuid(), environmentDto.getName(), environmentDto.getEndpoint(), environmentDto.getPort(),
             environmentDto.getOsType(), environmentDto.getSubType(), environmentDto.getCreatedTime());
@@ -243,6 +246,9 @@ public class EnvironmentInternalController {
         ProtectedEnvironment environment = new ProtectedEnvironment();
         BeanUtils.copyProperties(environmentDto, environment);
         buildEnvironmentUserId(environment, environmentDto);
+        environmentDto.getExtendInfo()
+            .put(IS_AUTO_SYNCHRONIZE_HOST_NAME, environmentDto.getIsAutoSynchronizeHostName());
+        environment.setExtendInfo(environmentDto.getExtendInfo());
         environment.setRootUuid(environmentDto.getUuid());
         environment.setLinkStatus(LinkStatusEnum.ONLINE.getStatus().toString());
         if (VerifyUtil.isEmpty(environment.getPath())) {

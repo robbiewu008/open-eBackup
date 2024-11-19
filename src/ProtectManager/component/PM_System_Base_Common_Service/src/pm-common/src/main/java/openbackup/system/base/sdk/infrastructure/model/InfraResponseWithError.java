@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
  * 基础设施回应（带错误）
  *
  * @param <T> 可变参数
+ *
  */
 @Data
 @AllArgsConstructor

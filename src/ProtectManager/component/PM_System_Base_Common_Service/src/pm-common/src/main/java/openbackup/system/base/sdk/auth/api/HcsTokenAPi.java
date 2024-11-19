@@ -12,6 +12,7 @@
 */
 package openbackup.system.base.sdk.auth.api;
 
+import feign.Response;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.HcsConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -26,12 +27,11 @@ import openbackup.system.base.sdk.auth.model.URIInfo;
 import openbackup.system.base.sdk.auth.model.request.CloudServiceQueryRequest;
 import openbackup.system.base.util.OpServiceUtil;
 
-import feign.Response;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * 调用Hcs平台的Api
@@ -75,7 +75,7 @@ public interface HcsTokenAPi {
      * @return 查询响应
      */
     QueryCloudServiceParamsPageResponse queryCloudServiceParams(URI uri, String token, String paramName,
-        CloudServiceQueryRequest cloudServiceQueryRequest);
+            CloudServiceQueryRequest cloudServiceQueryRequest);
 
     /**
      * 十统一根据region和用户名查询 统一管理sysadmin密码，不用代理
@@ -116,7 +116,7 @@ public interface HcsTokenAPi {
      * @param name name
      * @return URIInfo
      */
-    URIInfo getUrlByInterfaceTypeAndName(HcsToken token, String interfaceType, String name);
+    List<URIInfo> getUrlByInterfaceTypeAndName(HcsToken token, String interfaceType, String name);
 
     /**
      * 查询指定project信息
@@ -158,7 +158,7 @@ public interface HcsTokenAPi {
                 throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, "hcsIam get failed from env!");
             }
             String globalIamUri = StringUtils.join("https://iam-cache-proxy.", regionId, ".", globalDomainName,
-                ":26335");
+                    ":26335");
             uri = new URI(globalIamUri);
         } catch (URISyntaxException e) {
             throw new LegoCheckedException("uri error", e);
@@ -209,7 +209,7 @@ public interface HcsTokenAPi {
      * @return 查询响应
      */
     QueryCloudServiceParamsPageResponse queryCloudServiceParamsNoProxy(URI uri, String token, String paramName,
-        CloudServiceQueryRequest cloudServiceQueryRequest);
+            CloudServiceQueryRequest cloudServiceQueryRequest);
 
     /**
      * queryIpParams

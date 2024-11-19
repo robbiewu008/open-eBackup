@@ -259,14 +259,14 @@ public class RestoreTaskManager {
         log.info("Restore task init context, requestId: {}.", requestId);
 
         final RestoreTask restoreTask = RestoreTaskConverter.convertToRestoreTask(request);
-        // 填充恢复下发的agent和用户信息的扩展字段
-        fillRestoreTaskAdvanceParams(restoreTask, request);
-
-        restoreTask.setRequestId(requestId);
-        restoreTask.setTaskId(requestId);
         log.debug("Restore task init context, query copy: {}, requestId: {}.", request.getCopyId(), requestId);
         final Copy copy = this.restoreTaskService.queryCopyDetail(request.getCopyId());
         log.info("Restore task init context, ResourceSubType: {}.", copy.getResourceSubType());
+        // 填充恢复下发的agent和用户信息的扩展字段
+        fillRestoreTaskAdvanceParams(restoreTask, request, copy);
+
+        restoreTask.setRequestId(requestId);
+        restoreTask.setTaskId(requestId);
         // 安全一体机适配，Nas文件系统的快照数据被标记为CloudBackup，恢复时需修正
         if (deployTypeService.isCyberEngine()
             && ResourceSubTypeEnum.CLOUD_BACKUP_FILE_SYSTEM.getType().equals(copy.getResourceSubType())) {
@@ -280,6 +280,11 @@ public class RestoreTaskManager {
         RestoreInterceptorProvider provider = getProvider(copy.getResourceSubType());
         context.setInterceptorProvider(provider);
         return context;
+    }
+
+    private void encryptExtendInfo(CreateRestoreTaskRequest request, String resourceSubType) {
+        RestoreInterceptorProvider provider = getProvider(resourceSubType);
+        provider.encryptExtendInfo(request.getExtendInfo());
     }
 
     private void checkUserRestoreAuthOperation(RestoreTaskContext context) {
@@ -315,7 +320,9 @@ public class RestoreTaskManager {
         return restoreAuth;
     }
 
-    private void fillRestoreTaskAdvanceParams(RestoreTask restoreTask, CreateRestoreTaskRequest request) {
+    private void fillRestoreTaskAdvanceParams(RestoreTask restoreTask, CreateRestoreTaskRequest request, Copy copy) {
+        // 加密任务扩展信息中的敏感字段
+        encryptExtendInfo(request, copy.getResourceSubType());
         Map<String, String> extendInfo = request.getExtendInfo() == null
             ? new HashMap<>()
             : BeanTools.deepClone(request.getExtendInfo());
@@ -598,8 +605,13 @@ public class RestoreTaskManager {
                 JobLogLevelEnum.INFO,
                 RestoreJobLabelConstant.RESTORE_START,
                 Collections.singletonList(JobStatusLabelConstant.JOB_SUCCESS_LABEL));
-            RestoreInterceptorProvider provider = getProvider(task.getTargetObject().getSubType());
-            provider.afterSendTask(task);
+            RestoreInterceptorProvider provider = providerManager.findProvider(
+                    RestoreInterceptorProvider.class,
+                    task.getTargetObject().getSubType(),
+                    null);
+            if (provider != null) {
+                provider.afterSendTask(task);
+            }
         } catch (LegoCheckedException e) {
             jobLogRecorder.recordJobStepWithError(
                 task.getRequestId(), RestoreJobLabelConstant.RESTORE_START, e.getErrorCode(), null);

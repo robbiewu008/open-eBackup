@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.cluster.model;
 
-import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
-
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
 
 /**
  * Storage user info

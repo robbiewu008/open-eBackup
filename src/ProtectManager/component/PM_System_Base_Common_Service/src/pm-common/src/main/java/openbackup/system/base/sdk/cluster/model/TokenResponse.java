@@ -29,4 +29,6 @@ public class TokenResponse {
      */
     @JsonProperty("modifyPassword")
     private boolean shouldModifyPassword;
+
+    private String userId;
 }

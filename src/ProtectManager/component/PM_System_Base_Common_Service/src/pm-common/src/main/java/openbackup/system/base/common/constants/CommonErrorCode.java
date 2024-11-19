@@ -221,6 +221,11 @@ public final class CommonErrorCode {
     public static final long ACCESS_DENIED = 1677929497L;
 
     /**
+     * HCS用户登录时 因为当前用户在HCS中没有读写权限 登录被拒绝
+     */
+    public static final long ONLY_HAVE_READ_PERMISSION = 1677752072L;
+
+    /**
      * SLA_ACCESS_DENIED
      */
     public static final long SLA_ACCESS_DENIED = 1677931532L;
@@ -1777,6 +1782,104 @@ public final class CommonErrorCode {
      * 原因：本地盘不支持即时挂载，操作失败
      */
     public static final long LIVE_MOUNT_NOT_SUPPORT_BASIC_DISK = 1677932814L;
+
+    /**
+     * 原因：未指定证书。
+     * 建议：请指定证书后重试，或者使用http协议。
+     */
+    public static final long NO_CERTIFICATE_PROVIDED = 1677930293L;
+
+    /**
+     * 错误场景：执行添加备份存储设备时，由于仅支持OceanProtect X3000/X6000/X8000 1.5.0及以上版本的存储设备，所以操作失败。
+     * 原因：仅支持OceanProtect X3000/X6000/X8000 1.5.0及以上版本的存储设备。
+     * 建议：请更换OceanProtect X3000/X6000/X8000 1.5.0及以上版本的存储设备。
+     */
+    public static final long TARGET_CLUSTER_NOT_SUPPORT = 1677930086L;
+
+    /**
+     * 连接LDAP失败错误
+     */
+    public static final long CONNECT_LDAP_SERVER_FAILED = 1677929481L;
+
+    /**
+     * 错误场景：执行VMware备份操作时，由于虚拟机正在迁移，无法创建快照，操作失败。
+     * 原因：虚拟机正在迁移，无法创建快照。
+     * 建议：请等待虚拟机完成迁移，重新进行资源扫描后重试。
+     */
+    public static final long VM_IS_BEING_MIGRATED = 1677931473L;
+
+    /**
+     * ADFS链接网络超时
+     */
+    public static final long CONNECT_ADFS_SERVER_TIMEOUT = 1677935652L;
+
+    /**
+     * SLA POLICY不存在
+     */
+    public static final long SLA_POLICY_NOT_EXIST = 1677931554L;
+
+    /**
+     * 错误场景：执行SLA操作时，由于WORM保留时间大于副本保留时间，操作失败。
+     * 原因：WORM保留时间大于副本保留时间。
+     * 建议：请检查WORM保留时间是否小于等于副本保留时间。
+     */
+    public static final long WORM_RETENTION_TIME_ERROR = 1677929523L;
+
+    /**
+     * 错误场景：执行SLA操作时，由于WORM保留时间大于20年或7300天，操作失败。
+     * 原因：WORM保留时间大于20年或7300天。
+     * 建议：请检查WORM保留时间是否小于等于20年或7300天。
+     */
+    public static final long WORM_TIME_EXCEEDS_MAX_TIME_ERROR = 1677929524L;
+
+    /**
+     * 错误场景：执行WORM设置操作时，由于当前WORM有效时间小于以前WORM设置时间，操作失败。
+     * 原因：WORM过期时间小于以前WORM设置时间。
+     * 建议：请检查WORM有效时间是否大于等于以前WORM设置时间。
+     */
+    public static final long MODIFY_WORM_VALIDITY_TIME_LESS_THAN_EXIST_TIME_ERROR = 1677932055L;
+
+    /**
+     * 错误场景：执行修改WORM设置操作时，由于当前设置WORM过期时间大于之前副本过期时间，操作失败。
+     * 原因：当前WORM过期时间大于之前副本过期时间。
+     * 建议：请检查当前WORM设置时间是否小于等于副本过期时间。
+     */
+    public static final long MODIFY_WORM_VALIDITY_TIME_EXCEEDS_COPY_RETENTION_TIME_ERROR = 1677932056L;
+
+    /**
+     * 错误场景：执行修改副本过期时间操作时，由于副本过期时间小于WORM过期时间，操作失败。
+     * 原因：副本过期时间小于WORM过期时间。
+     * 建议：请检查副本过期时间是否大于等于WORM过期时间。
+     */
+    public static final long COPY_RETENTION_TIME_ERROR = 1677933348L;
+
+    /**
+     * 错误场景：执行保护操作时，由于该资源对应WORM策略已开启且选中SLA的WORM设置也开启，操作失败。
+     * 原因：该资源的WORM策略和SLA中WORM设置不能同时开启。
+     * 建议：请取消防勒索中的WORM设置开关或取消选择SLA中的WORM设置开关。
+     */
+    public static final long BOTH_SLA_WORM_AND_ANTI_RANSOMWARE_WORM_TURN_ON = 1677932057L;
+
+    /**
+     * 错误场景：执行SLA操作时，由于复制策略中副本保留时间小于WORM的保留时间，操作失败。
+     * 原因：复制策略中副本保留时间小于WORM的保留时间。
+     * 建议：请检查复制策略中副本保留时间是否大于等于WORM的保留时间。
+     */
+    public static final long COPY_RETENTION_TIME_LESS_THAN_WORM_RETENTION_TIME_ERROR = 1677931553L;
+
+    /**
+     * 错误场景：执行SLA操作时，由于复制策略中副本保留时间小于WORM的保留时间，操作失败。
+     * 原因：复制策略中副本保留时间小于WORM的保留时间。
+     * 建议：请检查复制策略中副本保留时间是否大于等于WORM的保留时间。
+     */
+    public static final long BASIC_DISK_NOT_SUPPORT_WORM_AND_ANTI = 1677931555L;
+
+    /**
+     * 错误场景：在代理主机上创建安装目录时，由于用户权限不足、磁盘空间不足或者文件系统只读等原因，操作失败。
+     * 原因：用户权限不足、磁盘空间不足或者文件系统只读等。
+     * 建议：请在“ProtectAgent安装指南”中搜索“安装目录”进行处理。
+     */
+    public static final long CLIENT_REGISTER_FAILED = 1677873409L;
 
     private CommonErrorCode() {
     }

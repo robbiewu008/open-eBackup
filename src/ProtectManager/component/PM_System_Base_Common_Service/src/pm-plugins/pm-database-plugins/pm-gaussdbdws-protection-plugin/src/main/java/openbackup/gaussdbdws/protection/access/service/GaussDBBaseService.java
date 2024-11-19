@@ -13,6 +13,12 @@
 package openbackup.gaussdbdws.protection.access.service;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
+
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceV2Req;
@@ -45,6 +51,7 @@ import openbackup.gaussdbdws.protection.access.util.DwsValidator;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
@@ -52,12 +59,6 @@ import openbackup.system.base.service.hostagent.AgentQueryService;
 import openbackup.system.base.service.hostagent.model.AgentInfo;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.OpServiceUtil;
-
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -323,23 +324,10 @@ public class GaussDBBaseService {
         if (!resOptional.isPresent()) {
             throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error");
         }
+        List<ProtectedEnvironment> dwsClusterAgent = getDwsClusterAgent(resOptional.get());
+        List<ProtectedEnvironment> hostAgent = getHostClusterAgent(resOptional.get());
 
-        List<ProtectedEnvironment> dwsClusterAgent = Optional.ofNullable(
-            resOptional.get().getDependencies().get(DwsConstant.DWS_CLUSTER_AGENT))
-            .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Dws cluster not exists."))
-            .stream()
-            .map(ProtectedResource::getUuid)
-            .map(this::getEnvironmentById)
-            .collect(Collectors.toList());
-        List<ProtectedEnvironment> hostAgent = Optional.ofNullable(
-            resOptional.get().getDependencies().get(DwsConstant.HOST_AGENT))
-            .orElse(new ArrayList<>())
-            .stream()
-            .map(ProtectedResource::getUuid)
-            .map(this::getEnvironmentById)
-            .collect(Collectors.toList());
-
-        checkAgent(dwsClusterAgent, hostAgent);
+        checkAgent(dwsClusterAgent, hostAgent, null);
 
         List<TaskEnvironment> nodes = new ArrayList<>();
         nodes.addAll(dwsClusterAgent.stream()
@@ -358,12 +346,34 @@ public class GaussDBBaseService {
         return nodes;
     }
 
-    private void checkAgent(List<ProtectedEnvironment> dwsClusterAgent, List<ProtectedEnvironment> hostAgent) {
+    private List<ProtectedEnvironment> getDwsClusterAgent(ProtectedResource resource) {
+        return Optional.ofNullable(
+                resource.getDependencies().get(DwsConstant.DWS_CLUSTER_AGENT))
+                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Dws cluster not exists."))
+                .stream()
+                .map(ProtectedResource::getUuid)
+                .map(this::getEnvironmentById)
+                .collect(Collectors.toList());
+    }
+
+    private List<ProtectedEnvironment> getHostClusterAgent(ProtectedResource resource) {
+        return Optional.ofNullable(
+                resource.getDependencies().get(DwsConstant.HOST_AGENT))
+                .orElse(new ArrayList<>())
+                .stream()
+                .map(ProtectedResource::getUuid)
+                .map(this::getEnvironmentById)
+                .collect(Collectors.toList());
+    }
+
+    private void checkAgent(List<ProtectedEnvironment> dwsClusterAgent,
+                            List<ProtectedEnvironment> hostAgent,
+                            String targetEsn) {
         // 1. 如果集群没有选择代理主机，你就判断是否所有集群节点在线，如果有一个不在线，就不下发
         if (hostAgent.size() == 0 && dwsClusterAgent.stream()
             .anyMatch(protectedEnvironment -> LinkStatusEnum.OFFLINE.getStatus()
                 .toString()
-                .equals(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(protectedEnvironment)))) {
+                .equals(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(protectedEnvironment, targetEsn)))) {
             log.error("Not agent and dws cluster exists offline.");
             throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error");
         }
@@ -372,7 +382,7 @@ public class GaussDBBaseService {
         if (dwsClusterAgent.stream()
             .allMatch(protectedEnvironment -> LinkStatusEnum.OFFLINE.getStatus()
                 .toString()
-                .equals(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(protectedEnvironment)))) {
+                .equals(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(protectedEnvironment, targetEsn)))) {
             log.error("All dws cluster offline.");
             throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error");
         }
@@ -380,10 +390,48 @@ public class GaussDBBaseService {
         if (!hostAgent.isEmpty() && hostAgent.stream()
             .allMatch(protectedEnvironment -> LinkStatusEnum.OFFLINE.getStatus()
                 .toString()
-                .equals(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(protectedEnvironment)))) {
+                .equals(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(protectedEnvironment, targetEsn)))) {
             log.error("All agent offline.");
             throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error");
         }
+    }
+
+    /**
+     * 多集群任务分发，过滤掉不连通的esn
+     *
+     * @param resourceId 资源id
+     * @param availableEsnList 可用节点
+     * @return 连通节点
+     */
+    public Set<String> availableEsnFilter(String resourceId, Set<String> availableEsnList) {
+        Optional<ProtectedResource> resOptional = resourceService.getResourceById(resourceId);
+        if (!resOptional.isPresent()) {
+            log.error("ProtectedResource {} is not present. Agent check network error.", resourceId);
+            throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error");
+        }
+        List<ProtectedEnvironment> dwsClusterAgentList;
+        try {
+            dwsClusterAgentList = getDwsClusterAgent(resOptional.get());
+        } catch (LegoCheckedException e) {
+            log.error("Dws cluster not exists.", ExceptionUtil.getErrorMessage(e));
+            return new HashSet<>();
+        }
+        List<ProtectedEnvironment> hostAgentList = getHostClusterAgent(resOptional.get());
+        return availableEsnList.stream()
+                .filter(targetEsn -> checkAgentByEsn(dwsClusterAgentList, hostAgentList, targetEsn))
+                .collect(Collectors.toSet());
+    }
+
+    private boolean checkAgentByEsn(List<ProtectedEnvironment> dwsClusterAgent,
+                                    List<ProtectedEnvironment> hostAgent,
+                                    String targetEsn) {
+        try {
+            checkAgent(dwsClusterAgent, hostAgent, targetEsn);
+        } catch (LegoCheckedException e) {
+            log.error("TargetEsn {} and agent link status check failed.", targetEsn, ExceptionUtil.getErrorMessage(e));
+            return false;
+        }
+        return true;
     }
 
     /**

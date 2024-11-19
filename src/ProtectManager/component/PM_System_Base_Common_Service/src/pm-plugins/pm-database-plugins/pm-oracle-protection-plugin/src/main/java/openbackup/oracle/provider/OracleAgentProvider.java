@@ -12,15 +12,15 @@
 */
 package openbackup.oracle.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.agent.DataBaseAgentSelector;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.oracle.service.OracleBaseService;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -43,9 +43,18 @@ public class OracleAgentProvider extends DataBaseAgentSelector {
 
     @Override
     public List<Endpoint> getSelectedAgents(AgentSelectParam agentSelectParam) {
-        // 如果是数据库资源，根据数据库对应的单实例对应的Agent信息，设置到备份对象中
         String parentUuid = agentSelectParam.getResource().getParentUuid();
-        if (ResourceSubTypeEnum.ORACLE.getType().equals(agentSelectParam.getResource().getSubType())) {
+        if (ResourceSubTypeEnum.ORACLE_PDB.getType().equals(agentSelectParam.getResource().getSubType())) {
+            ProtectedResource parentResource = oracleBaseService.getResource(parentUuid);
+            return getSelectedAgentsForSingleAndCluster(parentResource.getSubType(), parentResource.getParentUuid());
+        } else {
+            return getSelectedAgentsForSingleAndCluster(agentSelectParam.getResource().getSubType(), parentUuid);
+        }
+    }
+
+    private List<Endpoint> getSelectedAgentsForSingleAndCluster(String subType, String parentUuid) {
+        // 如果是数据库资源，根据数据库对应的单实例对应的Agent信息，设置到备份对象中
+        if (ResourceSubTypeEnum.ORACLE.getType().equals(subType)) {
             // 获取单实例对应的Agent信息
             ProtectedEnvironment agentEnv = oracleBaseService.getAgentBySingleInstanceUuid(parentUuid);
             // 将Agent信息，放置到备份对象中
@@ -75,6 +84,7 @@ public class OracleAgentProvider extends DataBaseAgentSelector {
     @Override
     public boolean applicable(AgentSelectParam agentSelectParam) {
         return ResourceSubTypeEnum.ORACLE.equalsSubType(agentSelectParam.getResource().getSubType())
-                || ResourceSubTypeEnum.ORACLE_CLUSTER.equalsSubType(agentSelectParam.getResource().getSubType());
+                || ResourceSubTypeEnum.ORACLE_CLUSTER.equalsSubType(agentSelectParam.getResource().getSubType())
+                || ResourceSubTypeEnum.ORACLE_PDB.equalsSubType(agentSelectParam.getResource().getSubType());
     }
 }

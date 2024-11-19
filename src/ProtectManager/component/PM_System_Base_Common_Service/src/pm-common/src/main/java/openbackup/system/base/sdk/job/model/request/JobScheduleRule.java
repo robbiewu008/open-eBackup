@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.job.model.request;
 
-import openbackup.system.base.sdk.job.model.JobStatusEnum;
-
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
+import openbackup.system.base.sdk.job.model.JobStatusEnum;
 
 import java.util.List;
 import java.util.Map;

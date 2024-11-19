@@ -12,6 +12,7 @@
 */
 package openbackup.access.framework.resource.service.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
@@ -25,8 +26,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceConnectio
 import openbackup.data.protection.access.provider.sdk.util.ResourceCheckContextUtil;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.VerifyUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

@@ -15,6 +15,9 @@ package openbackup.data.access.framework.copy.mng.provider;
 import static openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants.DIFFERENCE_INCREMENT;
 import static openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants.LOG;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
@@ -27,7 +30,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResourceChecker;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.model.job.JobBo;
@@ -36,8 +38,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
@@ -70,7 +70,8 @@ public abstract class BaseCopyDeleteInterceptor implements CopyDeleteInterceptor
      */
     private static final List<CopyGeneratedByEnum> ASSOCIATED_COPY_GENERATED_BY_LIST = new ArrayList<>(
         Arrays.asList(CopyGeneratedByEnum.BY_BACKUP, CopyGeneratedByEnum.BY_REPLICATED,
-            CopyGeneratedByEnum.BY_CASCADED_REPLICATION, CopyGeneratedByEnum.BY_REVERSE_REPLICATION));
+            CopyGeneratedByEnum.BY_CASCADED_REPLICATION, CopyGeneratedByEnum.BY_REVERSE_REPLICATION,
+            CopyGeneratedByEnum.BY_CLOUD_ARCHIVE, CopyGeneratedByEnum.BY_TAPE_ARCHIVE));
 
     /**
      * CopyRestApi copyRestApi

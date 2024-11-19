@@ -15,12 +15,11 @@ package openbackup.system.base.sdk.cluster.model.storage;
 import static openbackup.system.base.common.constants.IsmNumberConstant.FOUR;
 import static openbackup.system.base.common.constants.IsmNumberConstant.SIXTY_FOUR;
 
-import openbackup.system.base.common.validator.constants.RegexpConstants;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import openbackup.system.base.common.validator.constants.RegexpConstants;
 
 import org.hibernate.validator.constraints.Length;
 

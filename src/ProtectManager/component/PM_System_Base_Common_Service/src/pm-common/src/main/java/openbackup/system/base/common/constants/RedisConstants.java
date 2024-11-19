@@ -31,4 +31,14 @@ public interface RedisConstants {
      * 同步文件到所有k8s节点的stream name
      */
     String SYNC_FILE_TO_ALL_K8S_NODE_NAME = "syncFileToAllK8sNodeName";
+
+    /**
+     * 任务状态redis缓存key
+     */
+    String UPDATE_JOB_STATUS_KEY = "UpdateJobStatus";
+
+    /**
+     * 任务进度redis缓存key
+     */
+    String UPDATE_JOB_PROCESS_KEY = "UpdateJobProcess";
 }

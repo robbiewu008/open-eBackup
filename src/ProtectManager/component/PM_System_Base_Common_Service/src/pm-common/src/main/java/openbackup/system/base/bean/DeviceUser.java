@@ -83,4 +83,10 @@ public class DeviceUser {
      */
     @JsonProperty("role")
     private Integer role;
+
+    /**
+     * 认证类型，0：业务认证，1：登录认证
+     */
+    @JsonProperty("auth_type")
+    private Integer authType;
 }

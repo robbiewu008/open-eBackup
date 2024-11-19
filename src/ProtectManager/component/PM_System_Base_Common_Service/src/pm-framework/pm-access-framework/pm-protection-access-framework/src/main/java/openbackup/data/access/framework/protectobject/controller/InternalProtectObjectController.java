@@ -12,12 +12,11 @@
 */
 package openbackup.data.access.framework.protectobject.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.protectobject.model.ProtectionExecuteCheckReq;
 import openbackup.data.access.framework.protectobject.service.ProjectObjectService;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,6 +57,6 @@ public class InternalProtectObjectController {
     @GetMapping("/check-before-protect")
     public void checkExistCopiesLocationBeforeProtect(@RequestParam("slaId") String slaId,
         @RequestParam("resourceId") String resourceId) {
-        projectObjectService.checkExistCopiesLocationBeforeProtect(slaId, resourceId);
+        log.debug("No need checkExistCopiesLocationBeforeProtect.");
     }
 }

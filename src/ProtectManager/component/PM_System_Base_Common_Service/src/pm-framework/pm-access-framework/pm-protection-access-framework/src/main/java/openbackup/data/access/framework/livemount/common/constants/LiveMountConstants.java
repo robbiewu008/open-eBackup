@@ -61,5 +61,30 @@ public class LiveMountConstants {
      * reserve copy
      */
     public static final String FORCE_DELETE = "force_delete";
+
+    /**
+     * hcs cifs user
+     */
+    public static final String CIFS_USER_HCS = "cifsUserHcs";
+
+    /**
+     * hcs cifs username
+     */
+    public static final String CIFS_USER_HCS_NAME = "userName";
+
+    /**
+     * hcs cifs pass
+     */
+    public static final String CIFS_USER_HCS_PASS = "password";
+
+    /**
+     * cifs user not exist err code
+     */
+    public static final long CIFS_USER_NOT_EXIST_CODE = 37749698L;
+
+    /**
+     * vstore id
+     */
+    public static final String DEFAULT_VSTORE_ID = "0";
 }
 

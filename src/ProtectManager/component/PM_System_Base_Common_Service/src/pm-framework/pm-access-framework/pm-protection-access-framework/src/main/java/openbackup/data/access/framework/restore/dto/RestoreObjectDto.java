@@ -12,14 +12,13 @@
 */
 package openbackup.data.access.framework.restore.dto;
 
-import openbackup.data.protection.access.provider.sdk.base.Parameter;
-import openbackup.data.protection.access.provider.sdk.restore.RestoreTarget;
-import openbackup.system.base.sdk.resource.model.Filter;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.data.protection.access.provider.sdk.base.Parameter;
+import openbackup.data.protection.access.provider.sdk.restore.RestoreTarget;
+import openbackup.system.base.sdk.resource.model.Filter;
 
 import java.util.List;
 

@@ -34,3 +34,4 @@ public class NormalizerUtil {
         return Normalizer.normalize(item, Normalizer.Form.NFKC);
     }
 }
+

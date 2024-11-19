@@ -12,6 +12,7 @@
 */
 package openbackup.access.framework.resource.service.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.NodeInfo;
@@ -23,8 +24,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.utils.JSONObject;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -93,7 +92,9 @@ public class UnifiedClusterResourceIntegrityChecker extends AbstractResourceChec
         }
 
         Optional<Set<String>> hostNameSetOpt = hostNameDuplicateSet.stream().findFirst();
-        assert hostNameSetOpt.isPresent();
+        if (!hostNameSetOpt.isPresent()) {
+            return new ActionResult(CommonErrorCode.OPERATION_FAILED, "The cluster nodes info don't be find.");
+        }
         Set<String> hostNameSet = hostNameSetOpt.get();
 
         if (hostNameSet.size() <= 0) {

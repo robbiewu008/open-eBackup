@@ -12,9 +12,9 @@
 */
 package openbackup.ndmp.protection.access.common;
 
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-
 import lombok.extern.slf4j.Slf4j;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.ndmp.protection.access.constant.NdmpConstant;
 
 import java.util.Map;
 
@@ -37,8 +37,14 @@ public class NdmpCommon {
             String tenant = fullNames[1];
             protectedResource.setName(name);
             Map<String, String> extendInfo = protectedResource.getExtendInfo();
-            extendInfo.put("tenantName", tenant);
-            extendInfo.put("fullName", fullName);
+            extendInfo.put(NdmpConstant.TENANT_NAME, tenant);
+            extendInfo.put(NdmpConstant.FULL_NAME, fullName);
+        } else if (fullNames.length == 2) {
+            // unity没有租户，返回的fullname格式为：/ifs
+            Map<String, String> extendInfo = protectedResource.getExtendInfo();
+            String name = fullNames[1];
+            protectedResource.setName(name);
+            extendInfo.put(NdmpConstant.FULL_NAME, fullName);
         } else {
             log.info("Failed to get tenant name.");
         }

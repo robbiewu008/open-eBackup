@@ -12,6 +12,9 @@
 */
 package openbackup.sqlserver.protection.restore;
 
+import com.google.common.collect.Maps;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.enums.v2.RestoreTypeEnum;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
@@ -30,6 +33,7 @@ import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbRestoreInterceptorProvider;
 import openbackup.database.base.plugin.utils.ProtectionTaskUtils;
+import openbackup.sqlserver.common.SqlServerConstants;
 import openbackup.sqlserver.common.SqlServerErrorCode;
 import openbackup.sqlserver.protection.service.SqlServerBaseService;
 import openbackup.system.base.common.utils.JSONArray;
@@ -37,10 +41,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.StreamUtil;
-
-import com.google.common.collect.Maps;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -87,8 +87,13 @@ public class SqlServerGroupRestoreProvider extends AbstractDbRestoreInterceptorP
     @Override
     public void restoreTaskCreationPreCheck(RestoreTask task) {
         log.info("Pre check sqlserver group restore task. taskId: {}", task.getTaskId());
-        // 恢复任务参数校验
-        sqlServerBaseService.checkRestoreTaskParam(task);
+        List<TaskEnvironment> nodeList = getNodeList(task);
+        if (SqlServerConstants.SUPPORT_OLD_VERSION.contains(nodeList.get(0).getVersion().substring(0, 3))) {
+            sqlServerBaseService.oldVersionCheckRestoreTaskParam(task);
+        } else {
+            // 恢复任务参数校验
+            sqlServerBaseService.checkRestoreTaskParam(task);
+        }
     }
 
     /**

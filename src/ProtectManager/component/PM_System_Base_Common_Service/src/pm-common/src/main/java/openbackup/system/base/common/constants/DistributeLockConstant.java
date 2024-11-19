@@ -12,6 +12,8 @@
 */
 package openbackup.system.base.common.constants;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * 功能描述
  *
@@ -31,4 +33,19 @@ public interface DistributeLockConstant {
      * 更新密钥生命周期的锁
      */
     String KEY_LIFETIME_UPDATE_LOCK = "/kms/lock/KEY_LIFETIME_UPDATE_LOCK";
+
+    /**
+     * 更新device secret的锁的前缀
+     */
+    String UPDATE_DEVICE_SECRET_LOCK_PREFIX = "/secret/devicesecret/update_lock_";
+
+    /**
+     * 获取更新device secret的锁的等待时间
+     */
+    long UPDATE_DEVICE_SECRET_LOCK_WAIT_TIME = 1L;
+
+    /**
+     * 获取更新device secret的锁的等待时间单位
+     */
+    TimeUnit UPDATE_DEVICE_SECRET_LOCK_WAIT_TIME_UNIT = TimeUnit.MINUTES;
 }

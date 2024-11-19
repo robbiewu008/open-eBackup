@@ -12,10 +12,10 @@
 */
 package openbackup.system.base.common.utils;
 
+import com.google.common.collect.Lists;
+
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import com.google.common.collect.Lists;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -71,8 +71,8 @@ public class RandomPwdUtil {
         try {
             random = SecureRandom.getInstanceStrong();
         } catch (NoSuchAlgorithmException e) {
-            throw LegoCheckedException.cast(
-                    e, CommonErrorCode.OPERATION_FAILED, "There is No Strong SecureRandom Algorithm in the System");
+            throw LegoCheckedException.cast(e, CommonErrorCode.OPERATION_FAILED,
+                    "There is No Strong SecureRandom Algorithm in the System");
         }
         return random;
     }
@@ -116,4 +116,3 @@ public class RandomPwdUtil {
         return false;
     }
 }
-

@@ -12,10 +12,10 @@
 */
 package openbackup.access.framework.resource.service.impl;
 
-import openbackup.access.framework.resource.service.ResourceScanService;
-import openbackup.access.framework.resource.util.ResourceConstant;
 import com.huawei.oceanprotect.job.sdk.JobService;
 
+import openbackup.access.framework.resource.service.ResourceScanService;
+import openbackup.access.framework.resource.util.ResourceConstant;
 import openbackup.system.base.common.model.PagingParamRequest;
 import openbackup.system.base.common.model.SortingParamRequest;
 import openbackup.system.base.common.model.job.JobBo;

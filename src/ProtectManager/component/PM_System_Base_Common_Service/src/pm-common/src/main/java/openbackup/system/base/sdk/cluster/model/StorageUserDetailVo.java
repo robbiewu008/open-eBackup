@@ -35,4 +35,6 @@ public class StorageUserDetailVo {
     private String password;
 
     private String deviceType;
+
+    private String deviceModeInOp;
 }

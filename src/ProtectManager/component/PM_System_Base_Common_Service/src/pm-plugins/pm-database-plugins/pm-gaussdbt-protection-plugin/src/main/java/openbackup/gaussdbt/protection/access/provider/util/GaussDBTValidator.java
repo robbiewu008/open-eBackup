@@ -12,6 +12,7 @@
 */
 package openbackup.gaussdbt.protection.access.provider.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.database.base.plugin.common.DatabaseErrorCode;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.gaussdbt.protection.access.provider.constant.GaussDBTConstant;
@@ -19,8 +20,6 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ValidateUtil;
 import openbackup.system.base.common.validator.constants.RegexpConstants;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 

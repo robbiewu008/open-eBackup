@@ -12,14 +12,13 @@
 */
 package openbackup.data.access.framework.copy.verify.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.verify.service.CopyVerifyService;
 import openbackup.data.access.framework.copy.verify.service.CopyVerifyTaskManager;
 import openbackup.data.access.framework.protection.handler.v2.UnifiedTaskCompleteHandler;
 import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
 import openbackup.data.protection.access.provider.sdk.verify.CopyVerifyTask;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.storage.model;
 
-import openbackup.system.base.sdk.storage.enums.StorageAuthStatus;
-
 import lombok.Data;
+import openbackup.system.base.sdk.storage.enums.StorageAuthStatus;
 
 /**
  * 存储信息

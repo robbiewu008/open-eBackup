@@ -12,14 +12,21 @@
 */
 package openbackup.sqlserver.resources.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.provider.DefaultResourceProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.database.base.plugin.common.DatabaseConstants;
+import openbackup.sqlserver.common.SqlServerConstants;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -29,6 +36,13 @@ import java.util.Objects;
 @Component
 @Slf4j
 public class SqlServerAlwaysOnProvider extends DefaultResourceProvider {
+    private ResourceService resourceService;
+
+    @Autowired
+    public void setResourceService(ResourceService resourceService) {
+        this.resourceService = resourceService;
+    }
+
     @Override
     public void cleanUnmodifiableFieldsWhenUpdate(ProtectedResource resource) {
         resource.setRootUuid(null);
@@ -38,6 +52,19 @@ public class SqlServerAlwaysOnProvider extends DefaultResourceProvider {
         resource.setParentUuid(null);
         resource.setCreatedTime(null);
         resource.setProtectionStatus(null);
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> databases = resourceService.queryDependencyResources(true, SqlServerConstants.DATABASE,
+            Collections.singletonList(resource.getUuid()));
+        dependencies.put(SqlServerConstants.DATABASE, databases);
+        List<ProtectedResource> instances = resourceService.queryDependencyResources(true, DatabaseConstants.INSTANCE,
+            Collections.singletonList(resource.getUuid()));
+        dependencies.put(DatabaseConstants.INSTANCE, instances);
+        resource.setDependencies(dependencies);
+        return true;
     }
 
     /**

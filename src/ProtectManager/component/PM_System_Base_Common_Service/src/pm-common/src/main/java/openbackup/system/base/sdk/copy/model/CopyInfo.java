@@ -137,6 +137,26 @@ public class CopyInfo {
     @JsonProperty("extend_type")
     private String extendType;
 
+    /**
+     * worm有效时间类型
+     */
+    private int wormValidityType;
+
+    /**
+     * worm保留时间
+     */
+    private int wormRetentionDuration;
+
+    /**
+     * worm保留时间单位类型
+     */
+    private String wormDurationUnit;
+
+    /**
+     * worm过期时间
+     */
+    private Date wormExpirationTime;
+
     // DP中originCopyTimeStamp类型为datetime,不能传空字符串
     public void setOriginCopyTimeStamp(String originCopyTimeStamp) {
         if (StringUtils.isEmpty(originCopyTimeStamp)) {

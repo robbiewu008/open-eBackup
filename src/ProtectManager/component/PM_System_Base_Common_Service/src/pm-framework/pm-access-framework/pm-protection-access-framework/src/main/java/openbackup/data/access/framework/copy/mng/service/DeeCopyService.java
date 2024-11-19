@@ -12,6 +12,9 @@
 */
 package openbackup.data.access.framework.copy.mng.service;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dee.DeeCopiesManagementRestApi;
 import openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant;
 import openbackup.data.access.framework.copy.mng.constant.CopyResourcePropertiesConstant;
@@ -21,7 +24,6 @@ import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.restore.v2.DeeCopiesRelatedTask;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.enums.RetentionTypeEnum;
 import openbackup.system.base.common.enums.TimeUnitEnum;
@@ -31,8 +33,6 @@ import openbackup.system.base.sdk.job.util.JobUpdateUtil;
 import openbackup.system.base.sdk.protection.model.PolicyBo;
 import openbackup.system.base.sdk.protection.model.RetentionBo;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;

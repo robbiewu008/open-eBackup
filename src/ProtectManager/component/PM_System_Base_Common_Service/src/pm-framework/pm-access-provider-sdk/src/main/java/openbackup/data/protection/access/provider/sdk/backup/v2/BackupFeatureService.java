@@ -26,7 +26,18 @@ public interface BackupFeatureService {
      * @param resourceId 资源ID
      * @return 是否支持并行
      */
-    boolean isSupportDataAndLogParallelBackup(String resourceId);
+    default boolean isSupportDataAndLogParallelBackup(String resourceId) {
+        return isSupportDataAndLogParallelBackup(resourceId, false);
+    }
+
+    /**
+     * 是否支持数据备份与日志备份并行备份
+     *
+     * @param resourceId 资源ID
+     * @param isStrictMatch 是否严格匹配资源是否存在，为true时，若资源不存在，则抛出异常
+     * @return 是否支持并行
+     */
+    boolean isSupportDataAndLogParallelBackup(String resourceId, boolean isStrictMatch);
 
     /**
      * 是否支持数据备份与日志备份并行备份

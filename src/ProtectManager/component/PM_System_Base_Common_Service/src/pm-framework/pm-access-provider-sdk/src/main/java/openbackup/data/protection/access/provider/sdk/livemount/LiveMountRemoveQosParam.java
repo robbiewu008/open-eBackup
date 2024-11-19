@@ -15,6 +15,7 @@ package openbackup.data.protection.access.provider.sdk.livemount;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.common.model.storage.BackupStorage;
 
 /**
  * Live Mount Remove Qos Param
@@ -22,9 +23,14 @@ import lombok.Data;
  */
 @Data
 public class LiveMountRemoveQosParam {
+    private String mountedCopyId;
+
     @JsonProperty("BACKUPID")
     private String backupId;
 
     @JsonProperty("APPTYPE")
     private String appType;
+
+    @JsonProperty("BackupStorage")
+    private BackupStorage backupStorage;
 }

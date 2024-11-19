@@ -17,6 +17,9 @@ import com.huawei.oceanprotect.base.cluster.sdk.service.ArrayTargetClusterServic
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterQueryService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.base.cluster.sdk.util.ClusterUriUtil;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.client.sdk.api.framework.dme.replicate.DmeReplicationRestApi;
 import openbackup.data.access.framework.protection.listener.v1.replication.ReplicationProtectionRemoveProcessor;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -32,14 +35,15 @@ import openbackup.system.base.sdk.cluster.TargetClusterRestApi;
 import openbackup.system.base.sdk.cluster.model.ClusterDetailInfo;
 import openbackup.system.base.sdk.cluster.model.DmeRemovePairRequest;
 import openbackup.system.base.sdk.cluster.model.TargetClusterVo;
+import openbackup.system.base.sdk.copy.CopyRestApi;
+import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.repository.model.BackupClusterVo;
 import openbackup.system.base.sdk.repository.model.BackupUnitVo;
 import openbackup.system.base.sdk.repository.model.NasDistributionStorageDetail;
 import openbackup.system.base.sdk.resource.model.ResourceEntity;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +54,7 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -87,6 +92,18 @@ public class UnifiedReplicationRemoveProcessor implements ReplicationProtectionR
     @Autowired
     private AuthNativeApi authNativeApi;
 
+    @Autowired
+    private DeployTypeService deployTypeService;
+
+    @Autowired
+    private DmeReplicationRestApi dmeReplicationRestApi;
+
+    @Autowired
+    private CopyRestApi copyRestApi;
+
+    @Autowired
+    private RepCommonService repCommonService;
+
     /**
      * process protection remove event
      *
@@ -97,6 +114,16 @@ public class UnifiedReplicationRemoveProcessor implements ReplicationProtectionR
     public void process(ResourceEntity resourceEntity, TargetClusterVo targetCluster) {
         log.info("start dispatch remove dme pair");
         DmeRemovePairRequest request = buildDmeRemovePairRequest(resourceEntity, targetCluster);
+        if (deployTypeService.isE1000()) {
+            List<Copy> copies = copyRestApi.queryCopiesByResourceId(resourceEntity.getUuid());
+            Map<String, List<Copy>> copyByUnit = copies.stream().collect(Collectors.groupingBy(Copy::getStorageUnitId));
+            copyByUnit.keySet().forEach(unitId -> {
+                repCommonService.fillLocalDevice(request.getLocalDevice(), unitId);
+                dmeReplicationRestApi.removePair(request);
+            });
+            log.info("Send local remove pair request to dme success");
+            return;
+        }
         memberClusterService.consumeInAllMembers(memberClusterService::dispatchRemoveReplicationPair, request);
         log.info("remove pair request send to dme success, resource id:{}", request.getResourceId());
     }

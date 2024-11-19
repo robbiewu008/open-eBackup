@@ -35,6 +35,7 @@ import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.resource.ProtectObjectRestApi;
 import openbackup.system.base.sdk.resource.model.ProtectedObjectInfo;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.ResourceGroupService;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -89,6 +90,9 @@ public class ResourceGroupServiceImplTest {
 
     @Mock
     private JobService jobService;
+
+    @Mock
+    private ResourceGroupService groupService;
 
     @InjectMocks
     private ResourceGroupServiceImpl resourceGroupService;
@@ -353,5 +357,17 @@ public class ResourceGroupServiceImplTest {
         privateMethod.setAccessible(true);
         privateMethod.invoke(resourceGroupService, updateRequest);
         Assert.assertEquals("123", updateRequest.getResourceGroupId());
+    }
+
+    /**
+     * 测试用例：查询资源组是否存在成功
+     * 前置条件：无
+     * CHECK点：查询无逻辑错误
+     */
+    @Test
+    public void query_resource_group_success() {
+        PowerMockito.when(resourceGroupMapper.selectById("12"))
+            .thenReturn(any());
+        Assert.assertEquals(false, groupService.isResourceGroupExit("12"));
     }
 }

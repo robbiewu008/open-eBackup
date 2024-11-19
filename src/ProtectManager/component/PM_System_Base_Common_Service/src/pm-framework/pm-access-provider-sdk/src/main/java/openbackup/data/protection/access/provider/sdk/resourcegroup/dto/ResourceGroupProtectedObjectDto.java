@@ -12,12 +12,11 @@
 */
 package openbackup.data.protection.access.provider.sdk.resourcegroup.dto;
 
-import openbackup.system.base.common.utils.JSONObject;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.common.utils.JSONObject;
 
 import java.sql.Timestamp;
 

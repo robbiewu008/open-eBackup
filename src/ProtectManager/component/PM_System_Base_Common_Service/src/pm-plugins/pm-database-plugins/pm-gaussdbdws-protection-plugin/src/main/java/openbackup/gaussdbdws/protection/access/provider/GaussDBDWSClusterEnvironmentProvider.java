@@ -12,6 +12,11 @@
 */
 package openbackup.gaussdbdws.protection.access.provider;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
+import io.jsonwebtoken.lang.Collections;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.provider.UnifiedClusterResourceIntegrityChecker;
 import openbackup.access.framework.resource.util.EnvironmentParamCheckUtil;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
@@ -45,12 +50,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
-import io.jsonwebtoken.lang.Collections;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;

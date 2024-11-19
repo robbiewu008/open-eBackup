@@ -19,10 +19,12 @@ import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.service.InstanceResourceService;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,7 +32,9 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,8 +50,10 @@ public class PostgreClusterInstanceProviderTest {
 
     private final AgentUnifiedService agentUnifiedService = Mockito.mock(AgentUnifiedService.class);
 
+    private final ResourceService resourceService = Mockito.mock(ResourceService.class);
+
     private PostgreClusterInstanceProvider provider = new PostgreClusterInstanceProvider(environmentService,
-        instanceResourceService, agentUnifiedService);
+        instanceResourceService, agentUnifiedService, resourceService);
 
     @Before
     public void init() {
@@ -66,6 +72,23 @@ public class PostgreClusterInstanceProviderTest {
         Assert.assertTrue(provider.applicable(resource));
         resource.setSubType(ResourceSubTypeEnum.MYSQL.getType());
         Assert.assertFalse(provider.applicable(resource));
+    }
+
+    @Test
+    public void test_supplyDependency() {
+        ProtectedResource protectedResource = new ProtectedResource();
+        protectedResource.setType(ResourceTypeEnum.DATABASE.getType());
+        protectedResource.setSubType(ResourceSubTypeEnum.POSTGRE_CLUSTER_INSTANCE.getType());
+        protectedResource.setUuid("test1");
+        ProtectedEnvironment protectedEnvironment = new ProtectedEnvironment();
+        protectedEnvironment.setUuid("uuid");
+        protectedEnvironment.setName("name1");
+        protectedEnvironment.setEndpoint("endpoint1");
+        List<ProtectedResource> list = new ArrayList<>();
+        list.add(protectedEnvironment);
+        PowerMockito.when(resourceService.queryDependencyResources(Mockito.anyBoolean(), Mockito.any(), Mockito.any()))
+            .thenReturn(list);
+        Assert.assertTrue(provider.supplyDependency(protectedResource));
     }
 
     /**

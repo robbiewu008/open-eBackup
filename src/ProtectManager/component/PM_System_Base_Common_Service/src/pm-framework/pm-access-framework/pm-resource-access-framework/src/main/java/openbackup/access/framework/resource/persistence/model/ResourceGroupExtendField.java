@@ -12,9 +12,8 @@
 */
 package openbackup.access.framework.resource.persistence.model;
 
-import openbackup.system.base.query.PageQueryConfig;
-
 import lombok.Data;
+import openbackup.system.base.query.PageQueryConfig;
 
 /**
  * 功能描述

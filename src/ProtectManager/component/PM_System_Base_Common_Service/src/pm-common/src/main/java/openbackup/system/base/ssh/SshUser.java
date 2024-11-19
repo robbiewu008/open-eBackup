@@ -16,8 +16,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.enums.SshMacs;
+import openbackup.system.base.common.utils.VerifyUtil;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sshd.common.NamedFactory;
+import org.apache.sshd.common.mac.Mac;
+
+import java.util.List;
 
 /**
  * 功能描述
@@ -27,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Slf4j
 public class SshUser {
     /**
      * 默认的port
@@ -53,6 +61,12 @@ public class SshUser {
 
     private String destPath;
 
+    // macs签名算法类型
+    // safe 安全算法， compatible 兼容性算法
+    private String macsName;
+
+    private List<NamedFactory<Mac>> macTypeList;
+
     /**
      * 是否sudo免密
      */
@@ -68,5 +82,18 @@ public class SshUser {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new IllegalArgumentException("username or password can't be empty");
         }
+    }
+
+    /**
+     * 根据关键字初始化一个自定义的 BuiltinMacs 列表
+     * 注意在调用此方法之前 请确保macs字段不为正确数值 而不是空
+     * 如果找不到也会返回空列表 交由外面判断
+     */
+    public void initMacs() {
+        macTypeList = SshMacs.getMacTypeListByName(macsName);
+        if (VerifyUtil.isEmpty(macTypeList)) {
+            throw new IllegalArgumentException("cannot find suitable MAC algorithm with name:" + macsName);
+        }
+        log.info("success to convert mac name:{} to macType List:{}", macsName, macTypeList);
     }
 }

@@ -53,6 +53,11 @@ public class GoldenDbConstant {
     public static final long NODE_TYPE_MISMATCH = 1577209938L;
 
     /**
+     * 插件指定PM需要捕获的错误码
+     */
+    public static final long LOGIN_FAILED = 1677929488L;
+
+    /**
      * subType
      */
     public static final String SUBTYPE = "subType";
@@ -66,6 +71,16 @@ public class GoldenDbConstant {
      * 参数
      */
     public static final String PARAMETERS = "parameters";
+
+    /**
+     * 节点类型
+     */
+    public static final String NODE_TYPE = "nodeType";
+
+    /**
+     * 错误码
+     */
+    public static final String AGENT_PLUGIN_BODY_ERR = "bodyErr";
 
     /**
      * 截取node长度

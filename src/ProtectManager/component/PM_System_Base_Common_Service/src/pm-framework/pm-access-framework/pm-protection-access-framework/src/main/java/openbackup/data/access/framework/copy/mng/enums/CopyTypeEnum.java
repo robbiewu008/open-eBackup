@@ -12,10 +12,9 @@
 */
 package openbackup.data.access.framework.copy.mng.enums;
 
-import openbackup.system.base.common.enums.TimeUnitEnum;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import openbackup.system.base.common.enums.TimeUnitEnum;
 
 import java.util.Arrays;
 

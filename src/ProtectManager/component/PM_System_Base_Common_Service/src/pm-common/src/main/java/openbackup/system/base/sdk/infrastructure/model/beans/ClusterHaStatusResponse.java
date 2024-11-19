@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.infrastructure.model.beans;
 
-import openbackup.system.base.sdk.cluster.model.JobLog;
-
 import lombok.Data;
+import openbackup.system.base.sdk.cluster.model.JobLog;
 
 import java.util.List;
 

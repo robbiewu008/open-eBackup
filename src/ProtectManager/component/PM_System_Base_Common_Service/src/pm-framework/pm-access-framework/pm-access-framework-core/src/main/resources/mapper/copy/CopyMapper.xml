@@ -223,4 +223,15 @@
         </if>
         group by resource_type, resource_sub_type
     </select>
+
+    <update id="updateCopyResourceName">
+        update copies set resource_name = #{new_resource_name} where resource_id = #{resource_id}
+    </update>
+
+    <update id="updateWormCopyExpiredStatus">
+        update copies
+        set worm_status=5
+        where worm_expiration_time &lt; #{current_time}
+          and worm_status = 3
+    </update>
 </mapper>

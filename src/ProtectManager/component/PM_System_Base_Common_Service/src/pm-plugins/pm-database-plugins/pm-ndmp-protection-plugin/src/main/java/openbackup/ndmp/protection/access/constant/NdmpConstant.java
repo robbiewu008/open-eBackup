@@ -38,6 +38,17 @@ public class NdmpConstant {
     public static final String AGENTS = "agents";
 
     /**
+     * 租户名称
+     */
+    public static final String TENANT_NAME = "tenantName";
+
+
+    /**
+     * 完整名称
+     */
+    public static final String FULL_NAME = "fullName";
+
+    /**
      * NDMP的使用状态 扩展信息 extendInfo 中 version 的 Key 名称
      */
     public static final String EXTEND_INFO_KEY_STATE = "cluster_state";
@@ -163,4 +174,44 @@ public class NdmpConstant {
      * COPY_FORMAT 副本格式
      */
     public static final String COPY_FORMAT = "copyFormat";
+
+    /**
+     * 备份网络平面ip
+     */
+    public static final String MULTI_IP = "multiIp";
+
+    /**
+     * 是否是文件系统标识
+     */
+    public static final String IS_FILE_SYSTEM = "isFs";
+
+    /**
+     * NDMP目录标识
+     */
+    public static final String DIR = "0";
+
+    /**
+     * 注册的扩展参数，资源上最大任务并发数，1-20, 默认为8
+     */
+    public static final String MAX_CONCURRENT_JOB_NUMBER = "maxConcurrentJobNumber";
+
+    /**
+     * 目标位置
+     */
+    public static final String TARGET_ENV = "targetEnv";
+
+    /**
+     * uuid
+     */
+    public static final String UUID = "uuid";
+
+    /**
+     * ndmp类型
+     */
+    public static final String NDMP_TYPE = "ndmpType";
+
+    /**
+     * type
+     */
+    public static final String TYPE = "type";
 }

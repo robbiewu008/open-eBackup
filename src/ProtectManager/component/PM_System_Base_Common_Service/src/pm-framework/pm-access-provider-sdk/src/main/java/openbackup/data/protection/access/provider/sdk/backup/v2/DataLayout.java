@@ -12,9 +12,9 @@
 */
 package openbackup.data.protection.access.provider.sdk.backup.v2;
 
-import openbackup.data.protection.access.provider.sdk.base.v2.BaseDataLayout;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import openbackup.data.protection.access.provider.sdk.base.v2.BaseDataLayout;
 
 /**
  * 数据布局

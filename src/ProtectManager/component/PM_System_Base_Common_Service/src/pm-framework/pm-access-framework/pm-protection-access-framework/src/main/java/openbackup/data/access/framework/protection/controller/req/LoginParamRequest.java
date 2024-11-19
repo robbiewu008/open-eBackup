@@ -12,11 +12,10 @@
 */
 package openbackup.data.access.framework.protection.controller.req;
 
-import openbackup.system.base.common.utils.JSONObject;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.common.utils.JSONObject;
 
 /**
  * HDFS Login Params

@@ -48,6 +48,11 @@ public class FeignClientConstant {
     public static final int MEMBER_READ_TIMEOUT = 5 * 60 * 1000; // 5分钟
 
     /**
+     * Dme FeignClient读取默认超时(ms)
+     */
+    public static final int DME_READ_TIMEOUT = 5 * 60 * 1000; // 5分钟
+
+    /**
      * FeignClient Retry 间隔周期(ms)
      */
     public static final int PERIOD = 60 * 1000; // 1分钟
@@ -71,4 +76,29 @@ public class FeignClientConstant {
      * FeignClient Retry 重试次数
      */
     public static final int MAX_ATTEMPTS = 3;
+
+    /**
+     * 路由服务单次连接超时时间 5s
+     */
+    public static final int ROUTE_SERVICE_CONNECT_TIMEOUT = 5 * 1000;
+
+    /**
+     * 路由服务单次读取超时时间 10s
+     */
+    public static final int ROUTE_SERVICE_READ_TIMEOUT = 10 * 1000;
+
+    /**
+     * 路由服务 Retry 重试间隔 3s
+     */
+    public static final int ROUTE_SERVICE_PERIOD = 3 * 1000;
+
+    /**
+     * 路由服务 Retry 重试最大间隔 3s
+     */
+    public static final int ROUTE_SERVICE_MAX_PERIOD = 3 * 1000;
+
+    /**
+     * 路由服务 Retry 最大重试次数
+     */
+    public static final int ROUTE_SERVICE_ATTEMPT = 3;
 }

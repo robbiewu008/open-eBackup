@@ -101,4 +101,14 @@ public class PostgreConstants {
      * CLup Server集群校验值value
      */
     public static final String QUERY_CLUP_SERVER = "queryClupServer";
+
+    /**
+     * CLup集群在线状态码
+     */
+    public static final String CLUP_CLUSTER_ONLINE = "1";
+
+    /**
+     * CLup集群离线状态码
+     */
+    public static final String CLUP_CLUSTER_OFFLINE = "0";
 }
