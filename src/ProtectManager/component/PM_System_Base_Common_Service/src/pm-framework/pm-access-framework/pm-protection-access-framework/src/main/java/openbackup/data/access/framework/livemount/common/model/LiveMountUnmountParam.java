@@ -12,12 +12,11 @@
 */
 package openbackup.data.access.framework.livemount.common.model;
 
-import openbackup.system.base.common.model.livemount.LiveMountEntity;
-import openbackup.system.base.sdk.copy.model.Copy;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.common.model.livemount.LiveMountEntity;
+import openbackup.system.base.sdk.copy.model.Copy;
 
 /**
  * Live Mount Destroy Param

@@ -12,6 +12,9 @@
 */
 package openbackup.access.framework.resource.schedule;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.ResourceCertConstant;
 import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
 import openbackup.access.framework.resource.util.ResourceCertAlarmUtil;
@@ -21,15 +24,12 @@ import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceQueryParams;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.system.base.common.utils.StringUtil;
 import openbackup.system.base.pack.lock.Lock;
 import openbackup.system.base.pack.lock.LockService;
 import openbackup.system.base.sdk.alarm.CommonAlarmService;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.AdapterUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

@@ -18,6 +18,16 @@ import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.US
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterQueryService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterService;
+import com.huawei.oceanprotect.functionswitch.template.service.FunctionSwitchService;
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants;
+import com.huawei.oceanprotect.sla.common.constants.SlaConstants;
+import com.huawei.oceanprotect.sla.sdk.enums.ReplicationMode;
+import com.huawei.oceanprotect.system.base.user.service.UserService;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -29,11 +39,6 @@ import openbackup.data.protection.access.provider.sdk.backup.Repository;
 import openbackup.data.protection.access.provider.sdk.replication.ReplicationProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import com.huawei.oceanprotect.functionswitch.template.service.FunctionSwitchService;
-import com.huawei.oceanprotect.job.sdk.JobService;
-import com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants;
-import com.huawei.oceanprotect.sla.common.constants.SlaConstants;
-import com.huawei.oceanprotect.sla.sdk.enums.ReplicationMode;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.constants.RedisConstants;
@@ -55,11 +60,6 @@ import openbackup.system.base.sdk.resource.ResourceRestApi;
 import openbackup.system.base.sdk.resource.model.ResourceEntity;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.ApplicationContextService;
-import com.huawei.oceanprotect.system.base.user.service.UserService;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -253,6 +253,10 @@ public class ProtectionReplicationListener {
 
     private void checkExtraRepQuota(PolicyBo policyBo, String targetUserId, TargetClusterVo targetCluster) {
         String dpUserName = getDpUserName(policyBo.getExtParameters());
+        // 1.5升级1.6默认是远端设备管理员用户信息
+        if (StringUtils.isEmpty(dpUserName) || dpUserName.equals(targetCluster.getUsername())) {
+            return;
+        }
         UserPageListResponse<UserResponse> allDPUser = userService.getAllDPUser(
             Integer.parseInt(targetCluster.getClusterId()));
 

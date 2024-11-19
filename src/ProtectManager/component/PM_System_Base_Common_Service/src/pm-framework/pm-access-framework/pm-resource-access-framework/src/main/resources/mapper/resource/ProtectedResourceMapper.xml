@@ -94,4 +94,7 @@
         <include refid="SELECT_SQL"/>
         where r.uuid = #{uuid}
     </select>
+    <select id="getAllSubTypeList" resultType="java.lang.String">
+        select sub_type from resources group by sub_type
+    </select>
 </mapper>

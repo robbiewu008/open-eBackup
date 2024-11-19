@@ -12,17 +12,17 @@
 */
 package openbackup.access.framework.resource.persistence.dao;
 
-import openbackup.access.framework.resource.dto.ResourceDependencyRelation;
-import openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentPo;
-import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
-import openbackup.system.base.security.callee.CalleeMethod;
-import openbackup.system.base.security.callee.CalleeMethods;
-
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+
+import openbackup.access.framework.resource.dto.ResourceDependencyRelation;
+import openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentPo;
+import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
+import openbackup.system.base.security.callee.CalleeMethod;
+import openbackup.system.base.security.callee.CalleeMethods;
 
 import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Mapper;
@@ -102,7 +102,7 @@ public interface ProtectedResourceMapper extends BaseMapper<ProtectedResourcePo>
             + " left join protected_object po on po.uuid = r.uuid"
             + " left join resources as rr on rr.discriminator = 'environments' and r.root_uuid = rr.uuid"
             + " left join environments as re on r.root_uuid = re.uuid where r.uuid in "
-            + "(select resource_id from RES_EXTEND_INFO <where>"
+            + "(select distinct resource_id from RES_EXTEND_INFO <where>"
             + "<if test='key != null'> and key like '$citations_'||#{key}||'%'</if>"
             + "<if test='ids != null and ids.size > 0'> and value in" + ID_LIST + "</if></where>)</script>";
 
@@ -214,13 +214,6 @@ public interface ProtectedResourceMapper extends BaseMapper<ProtectedResourcePo>
                         + "ProtectedResourceExtendInfoMapper.selectByResourceId")),
         @Result(
             column = "uuid",
-            property = "labelList",
-            many =
-            @Many(
-                select =
-                    "com.huawei.oceanprotect.system.base.label.dao.LabelServiceDao.getLabelsByResourceId")),
-        @Result(
-            column = "uuid",
             property = "desesitizationPo",
             one =
             @One(
@@ -265,13 +258,6 @@ public interface ProtectedResourceMapper extends BaseMapper<ProtectedResourcePo>
                                 select =
                                         "openbackup.access.framework.resource.persistence.dao."
                                                 + "ProtectedResourceExtendInfoMapper.selectByResourceId")),
-        @Result(
-            column = "uuid",
-            property = "labelList",
-            many =
-            @Many(
-                select =
-                    "com.huawei.oceanprotect.system.base.label.dao.LabelServiceDao.getLabelsByResourceId")),
         @Result(
                 column = "uuid",
                 property = "protectedObjectPo",
@@ -343,7 +329,6 @@ public interface ProtectedResourceMapper extends BaseMapper<ProtectedResourcePo>
      * @return 资源
      */
     ProtectedEnvironmentPo queryResourceById(@Param("uuid") String uuid);
-
 
     /**
      * query sub resource uuid list
@@ -432,4 +417,11 @@ public interface ProtectedResourceMapper extends BaseMapper<ProtectedResourcePo>
     @Update("update resources set USER_ID = null, AUTHORIZED_USER = null where PARENT_UUID = #{parentUuid} and TYPE = "
         + "'Plugin'")
     void updatePluginResourceUserId(@Param("parentUuid") String parentUuid);
+
+    /**
+     * 获取所有已存在资源的子类型
+     *
+     * @return 所有子类型的列表
+     */
+    List<String> getAllSubTypeList();
 }

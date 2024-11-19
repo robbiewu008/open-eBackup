@@ -22,12 +22,6 @@ import openbackup.access.framework.resource.persistence.dao.ProtectedResourceExt
 import openbackup.access.framework.resource.persistence.dao.ProtectedResourceMapper;
 import openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentPo;
 import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
-import openbackup.access.framework.resource.service.JobScheduleService;
-import openbackup.access.framework.resource.service.ProtectedResourceDecryptService;
-import openbackup.access.framework.resource.service.ProtectedResourceMonitorService;
-import openbackup.access.framework.resource.service.ProtectedResourceRepository;
-import openbackup.access.framework.resource.service.ProtectedResourceServiceImpl;
-import openbackup.access.framework.resource.service.ResourceScanService;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.backup.NextBackupChangeCauseEnum;
 import openbackup.data.protection.access.provider.sdk.backup.NextBackupModifyReq;
@@ -47,6 +41,7 @@ import openbackup.data.protection.access.provider.sdk.resource.model.ResourceExt
 import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.UUIDGenerator;
 import openbackup.system.base.query.SessionService;
 import openbackup.system.base.sdk.copy.model.BasePage;
@@ -62,6 +57,7 @@ import com.huawei.oceanprotect.system.sdk.service.SystemSwitchInternalService;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -69,6 +65,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.sql.Timestamp;
@@ -79,6 +76,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Timer;
 import java.util.stream.Collectors;
 
 /**
@@ -127,8 +125,6 @@ public class ProtectedResourceServiceImplTest {
 
     @Before
     public void prepare() throws Exception {
-        protectedResourceService = new ProtectedResourceServiceImpl(repository, protectedResourceMonitorService,
-                protectedResourceMapper, decryptService, messageTemplate);
         protectedResourceService.setDeployTypeService(deployTypeService);
         protectedResourceService.setJobScheduleService(jobScheduleService);
         protectedResourceService.setResourceScanService(resourceScanService);
@@ -322,8 +318,6 @@ public class ProtectedResourceServiceImplTest {
 
     @Test
     public void test_update_source_type() {
-        protectedResourceService = new ProtectedResourceServiceImpl(repository, protectedResourceMonitorService,
-                protectedResourceMapper, decryptService, messageTemplate);
         protectedResourceService.setDeployTypeService(deployTypeService);
         protectedResourceService.setJobScheduleService(jobScheduleService);
         protectedResourceService.setResourceScanService(resourceScanService);
@@ -336,8 +330,6 @@ public class ProtectedResourceServiceImplTest {
 
     @Test
     public void test_update_sub_source() {
-        protectedResourceService = new ProtectedResourceServiceImpl(repository, protectedResourceMonitorService,
-                protectedResourceMapper, decryptService, messageTemplate);
         protectedResourceService.setDeployTypeService(deployTypeService);
         protectedResourceService.setJobScheduleService(jobScheduleService);
         protectedResourceService.setResourceScanService(resourceScanService);
@@ -530,4 +522,19 @@ public class ProtectedResourceServiceImplTest {
         verify(resourceSetApi, times(1)).addResourceSetRelation(any());
     }
 
+    /**
+     * 用例场景：创建timer对象成功
+     * 前置条件：无
+     * 检查点：计时器创建正常
+     */
+    @Test
+    public void test_create_timer() throws Exception {
+        List<JobBo> jobBos = new ArrayList<>();
+        JobBo jobBo = new JobBo();
+        jobBo.setJobId("12");
+        jobBos.add(jobBo);
+        PowerMockito.when(resourceScanService.queryManualScanRunningJobByResId("21D123")).thenReturn(jobBos);
+        Timer timer = Whitebox.invokeMethod(protectedResourceService, "setTimer", "21D123");
+        verify(resourceScanService, times(1)).queryManualScanRunningJobByResId("21D123");
+    }
 }

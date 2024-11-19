@@ -33,9 +33,14 @@ public abstract class CopyResourcePropertiesConstant {
     public static final String SMALL_FILE_AGGREGATION = "small_file_aggregation";
 
     /**
-     * 归档自动索引
+     * 对象归档自动索引
      */
     public static final String ARCHIVE_RES_AUTO_INDEX = "archive_res_auto_index";
+
+    /**
+     * 磁带归档自动索引
+     */
+    public static final String TAPE_ARCHIVE_AUTO_INDEX = "tape_archive_auto_index";
 
     /**
      * 备份自动索引

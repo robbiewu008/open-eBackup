@@ -12,10 +12,11 @@
 */
 package openbackup.data.access.client.sdk.api.framework.agent.dto;
 
+import lombok.Data;
 import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.utils.VerifyUtil;
 
-import lombok.Data;
+import java.util.List;
 
 /**
  * Agent Base Dto
@@ -24,7 +25,7 @@ import lombok.Data;
 @Data
 public class AgentBaseDto {
     private String errorCode;
-
+    private List<String> detailParams;
     private String errorMessage;
 
     /**

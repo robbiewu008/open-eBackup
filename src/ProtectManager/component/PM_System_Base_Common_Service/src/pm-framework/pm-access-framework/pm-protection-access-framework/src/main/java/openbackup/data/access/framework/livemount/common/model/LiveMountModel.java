@@ -12,10 +12,9 @@
 */
 package openbackup.data.access.framework.livemount.common.model;
 
+import lombok.Data;
 import openbackup.system.base.common.model.livemount.LiveMountEntity;
 import openbackup.system.base.query.PageQueryConfig;
-
-import lombok.Data;
 
 /**
  * Live Mount Model

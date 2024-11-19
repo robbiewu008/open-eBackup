@@ -12,6 +12,10 @@
 */
 package openbackup.access.framework.resource.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.persistence.dao.ProtectedResourceExtendInfoMapper;
 import openbackup.access.framework.resource.persistence.model.ProtectedResourceExtendInfoPo;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceExtendInfoService;
@@ -19,11 +23,6 @@ import openbackup.data.protection.access.provider.sdk.resource.model.ProtectedRe
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.VerifyUtil;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

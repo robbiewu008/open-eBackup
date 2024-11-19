@@ -15,6 +15,10 @@ package openbackup.data.access.framework.core.common.util;
 import static openbackup.data.protection.access.provider.sdk.backup.ResourceExtendInfoConstants.CONNECTION_RESULT_KEY;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.EnvironmentConnectionResult;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
@@ -23,10 +27,6 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.util.BeanTools;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -54,30 +54,48 @@ public class EnvironmentLinkStatusHelper {
      */
     public static String getLinkStatusAdaptMultiCluster(ProtectedEnvironment protectedEnvironment) {
         if (memberClusterService.clusterEstablished()) {
-            String resultString = protectedEnvironment.getExtendInfoByKey(CONNECTION_RESULT_KEY);
-            if (VerifyUtil.isEmpty(resultString)) {
-                log.error("get env link status by ext info failed,env id: {}", protectedEnvironment.getUuid());
-                return protectedEnvironment.getLinkStatus();
-            }
-            try {
-                Map<String, EnvironmentConnectionResult> connectionResult = JsonUtil.read(resultString,
-                    new TypeReference<Map<String, EnvironmentConnectionResult>>() {
-                    });
-                String localEsn = memberClusterService.getCurrentClusterEsn();
-                EnvironmentConnectionResult connectionResultOfLocal = connectionResult.get(localEsn);
-                if (!VerifyUtil.isEmpty(connectionResultOfLocal) && !VerifyUtil.isEmpty(
-                    connectionResultOfLocal.getLinkStatus())) {
-                    return String.valueOf(connectionResultOfLocal.getLinkStatus());
-                } else {
-                    return protectedEnvironment.getLinkStatus();
-                }
-            } catch (DataMoverCheckedException e) {
-                log.error("get env link status by ext info failed(json parsing failed),env id: {}",
-                    protectedEnvironment.getUuid());
-                return protectedEnvironment.getLinkStatus();
-            }
+            String localEsn = memberClusterService.getCurrentClusterEsn();
+            return getLinkStatusByTargetEsn(protectedEnvironment, localEsn);
         }
         return protectedEnvironment.getLinkStatus();
+    }
+
+    /**
+     * 获取受保护环境与目标target的连接状态，适配多集群场景，获取单个节点对环境的连通状态
+     *
+     * @param protectedEnvironment 受保护环境
+     * @param targetEsn 目标节点
+     * @return 连接状态
+     */
+    public static String getLinkStatusAdaptMultiCluster(ProtectedEnvironment protectedEnvironment, String targetEsn) {
+        if (targetEsn == null) {
+            return getLinkStatusAdaptMultiCluster(protectedEnvironment);
+        }
+        return getLinkStatusByTargetEsn(protectedEnvironment, targetEsn);
+    }
+
+    private static String getLinkStatusByTargetEsn(ProtectedEnvironment protectedEnvironment, String targetEsn) {
+        String resultString = protectedEnvironment.getExtendInfoByKey(CONNECTION_RESULT_KEY);
+        if (VerifyUtil.isEmpty(resultString)) {
+            log.error("get env link status by ext info failed,env id: {}", protectedEnvironment.getUuid());
+            return protectedEnvironment.getLinkStatus();
+        }
+        try {
+            Map<String, EnvironmentConnectionResult> connectionResult = JsonUtil.read(resultString,
+                    new TypeReference<Map<String, EnvironmentConnectionResult>>() {
+                    });
+            EnvironmentConnectionResult connectionResultOfLocal = connectionResult.get(targetEsn);
+            if (!VerifyUtil.isEmpty(connectionResultOfLocal) && !VerifyUtil.isEmpty(
+                    connectionResultOfLocal.getLinkStatus())) {
+                return String.valueOf(connectionResultOfLocal.getLinkStatus());
+            } else {
+                return protectedEnvironment.getLinkStatus();
+            }
+        } catch (DataMoverCheckedException e) {
+            log.error("get env link status by ext info failed(json parsing failed),env id: {}",
+                    protectedEnvironment.getUuid());
+            return protectedEnvironment.getLinkStatus();
+        }
     }
 
     /**

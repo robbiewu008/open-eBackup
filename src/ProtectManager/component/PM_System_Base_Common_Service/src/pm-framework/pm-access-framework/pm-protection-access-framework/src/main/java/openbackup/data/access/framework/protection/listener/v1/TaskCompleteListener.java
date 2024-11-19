@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.protection.listener.v1;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.common.enums.DmcJobStatus;
@@ -27,8 +28,6 @@ import openbackup.system.base.sdk.job.util.JobUpdateUtil;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.RedissonService;
 import openbackup.system.base.util.ProviderRegistry;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RMap;
 import org.springframework.beans.BeanUtils;

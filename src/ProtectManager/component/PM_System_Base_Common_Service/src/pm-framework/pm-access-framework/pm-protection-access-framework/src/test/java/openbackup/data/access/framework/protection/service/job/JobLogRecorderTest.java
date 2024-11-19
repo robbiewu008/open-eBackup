@@ -37,8 +37,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.Collections;
 import java.util.UUID;
 
-/**
- **/
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JobLogRecorder.class)
 public class JobLogRecorderTest {

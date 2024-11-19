@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.protection.handler.v1.replication;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.common.enums.DmeJobStatusEnum;
 import openbackup.data.access.framework.protection.handler.TaskCompleteHandler;
@@ -26,14 +27,13 @@ import openbackup.system.base.common.utils.JobSpeedConverter;
 import openbackup.system.base.sdk.cluster.model.TargetClusterVo;
 import openbackup.system.base.sdk.job.JobCenterRestApi;
 import openbackup.system.base.sdk.job.model.JobLogBo;
+import openbackup.system.base.sdk.job.model.JobLogLevelEnum;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.util.MessageTemplate;
 import openbackup.system.base.util.ProviderRegistry;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
@@ -124,6 +124,7 @@ public class ReplicationTaskCompleteHandler implements TaskCompleteHandler {
         jobLogBo.setStartTime(System.currentTimeMillis());
         jobLogBo.setLogInfo("job_log_copy_replication_replicated_label");
         jobLogBo.setLogInfoParam(Collections.singletonList(String.valueOf(count)));
+        jobLogBo.setLevel(JobLogLevelEnum.INFO.getValue());
         UpdateJobRequest request = new UpdateJobRequest();
         String jobStatus = map.get("job_status");
         log.info("update replication job status: {}", jobStatus);

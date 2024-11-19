@@ -37,8 +37,6 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-/**
- **/
 public class ArchiveJobServiceTest {
     private final ArchiveTaskService archiveTaskService = mock(ArchiveTaskService.class);
     private final CopyRestApi copyRestApi = mock(CopyRestApi.class);

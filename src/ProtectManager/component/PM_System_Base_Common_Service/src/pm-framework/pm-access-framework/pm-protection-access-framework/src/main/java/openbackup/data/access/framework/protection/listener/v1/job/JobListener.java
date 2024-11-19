@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.protection.listener.v1.job;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.common.util.EngineUtil;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -19,8 +20,6 @@ import openbackup.data.protection.access.provider.sdk.job.JobProvider;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.sdk.job.model.JobBo;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;

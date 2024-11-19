@@ -12,6 +12,13 @@
 */
 package openbackup.data.access.framework.protection.listener.v1.archive;
 
+import com.huawei.oceanprotect.functionswitch.template.service.FunctionSwitchService;
+import com.huawei.oceanprotect.system.base.user.service.UserInternalService;
+
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.protection.service.archive.ArchiveTaskManager;
@@ -19,7 +26,6 @@ import openbackup.data.access.framework.protection.service.quota.UserQuotaManage
 import openbackup.data.protection.access.provider.sdk.archive.ArchiveObject;
 import openbackup.data.protection.access.provider.sdk.archive.ArchiveProvider;
 import openbackup.data.protection.access.provider.sdk.sla.Policy;
-import com.huawei.oceanprotect.functionswitch.template.service.FunctionSwitchService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.VerifyUtil;
@@ -27,11 +33,6 @@ import openbackup.system.base.kafka.annotations.MessageListener;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RMap;
@@ -67,6 +68,7 @@ public class ArchiveListener {
     private final UserQuotaManager userQuotaManager;
 
     private CopyRestApi copyRestApi;
+    private UserInternalService userInternalService;
 
     // 老框架已经支持资源类型列表
     @Value("${supported.resources.archive}")
@@ -87,6 +89,11 @@ public class ArchiveListener {
         this.copyRestApi = copyRestApi;
     }
 
+    @Autowired
+    public void setUserInternalService(final UserInternalService userInternalService) {
+        this.userInternalService = userInternalService;
+    }
+
     /**
      * Consume restore topic message
      *
@@ -94,8 +101,8 @@ public class ArchiveListener {
      * @param acknowledgment Acknowledgment
      */
     @ExterAttack
-    @MessageListener(topics = TopicConstants.PROTECTION_ARCHIVE, containerFactory = "retryFactory", log = {
-            "job_log_protection_archive_execute_label", JOB_STATUS_LOG})
+    @MessageListener(topics = TopicConstants.PROTECTION_ARCHIVE, containerFactory = "retryFactory",
+        log = {"job_log_protection_archive_execute_label", JOB_STATUS_LOG})
     public void archiving(String msg, Acknowledgment acknowledgment) {
         log.info("ArchiveListener receive topic:{}", TopicConstants.PROTECTION_ARCHIVE);
         if (msg == null) {
@@ -128,13 +135,11 @@ public class ArchiveListener {
             return;
         }
 
-        String userId = copy.getUserId();
-
         // 校验归档额度
-        checkArchiveQuota(rMap, userId);
+        checkArchiveQuota(rMap, copyId, copy.getUserId());
     }
 
-    private void checkArchiveQuota(RMap<String, String> rMap, String userId) {
+    private void checkArchiveQuota(RMap<String, String> rMap, String copyId, String associatedUserId) {
         // 目前只支持对象存储额度管理
         // 校验对象存储归档额度开关
         Policy policy = openbackup.system.base.common.utils.JSONObject.fromObject(rMap.get("policy"))
@@ -144,8 +149,19 @@ public class ArchiveListener {
         }
         JsonNode protocol = policy.getExtParameters().get("protocol");
         if (!VerifyUtil.isEmpty(protocol) && CLOUD_ARCHIVE_PROTOCOL.equals(protocol.asText())) {
-            log.info("Start to checkArchiveQuota!userId:{}", userId);
-            userQuotaManager.checkCloudArchiveQuota(userId, null);
+            List<String> userIdList = userInternalService.getUserIdListByResourceObjectId(copyId);
+            if (VerifyUtil.isEmpty(userIdList)) {
+                log.warn(
+                    "Fail to find user id by resource, "
+                        + "will check archive quota with user: {} associated to current copy :{}",
+                        associatedUserId, copyId);
+                userQuotaManager.checkCloudArchiveQuota(associatedUserId, null);
+                return;
+            }
+            for (String userId : userIdList) {
+                userQuotaManager.checkCloudArchiveQuota(userId, null);
+            }
+            log.info("User list: {}, all have enough archive quota.", userIdList);
         }
     }
 

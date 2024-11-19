@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.core.security.journal;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.security.Evaluation;
 import openbackup.data.protection.access.provider.sdk.exception.DataProtectionAccessException;
 import openbackup.data.protection.access.provider.sdk.exception.DataProtectionRejectException;
@@ -35,8 +36,6 @@ import openbackup.system.base.security.context.Context;
 import openbackup.system.base.security.journal.Logging;
 import openbackup.system.base.security.journal.Loggings;
 import openbackup.system.base.service.DeployTypeService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.logging.log4j.util.Strings;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -423,6 +422,12 @@ public class LoggingAspect implements ApplicationContextAware {
 
     private String getUserIdFromAuthToken() {
         TokenBo token = tokenVerificationService.parsingTokenFromRequest();
+        if (VerifyUtil.isEmpty(token) || VerifyUtil.isEmpty(token.getUser())
+            || VerifyUtil.isEmpty(token.getUser().getId())) {
+            // 特定场景 如当触发邮箱找回密码操作时 用户未登录 则没有对应的userId
+            log.warn("Logging aspect, fail to find userId from token.");
+            return Strings.EMPTY;
+        }
         return token.getUser().getId();
     }
 }

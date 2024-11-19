@@ -14,6 +14,7 @@ package openbackup.data.access.framework.copy.mng.service.impl;
 
 import static openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum.COPY_GENERATED_BY_REPLICATION;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.service.CopyAuthVerifyService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.TokenBo;
@@ -24,8 +25,6 @@ import openbackup.system.base.sdk.user.DomainResourceSetServiceApi;
 import openbackup.system.base.sdk.user.ResourceSetResourceServiceApi;
 import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -12,13 +12,12 @@
 */
 package openbackup.data.access.framework.protection.handler.v2.archive;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.enums.DmcJobStatus;
 import openbackup.data.access.framework.protection.handler.v2.UnifiedTaskCompleteHandler;
 import openbackup.data.access.framework.protection.service.archive.ArchiveTaskManager;
 import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

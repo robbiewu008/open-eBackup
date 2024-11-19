@@ -51,7 +51,7 @@
             <result column="value" property="value"/>
         </collection>
         <collection property="labelList" column="uuid"
-                    ofType="com.huawei.oceanprotect.system.base.label.entity.Label"
+                    ofType="com.huawei.oceanprotect.system.base.label.entity.LabelVo"
                     select="com.huawei.oceanprotect.system.base.label.dao.LabelServiceDao.getLabelsByResourceId">
             <id column="uuid" property="uuid"/>
             <result column="NAME" property="name"/>
@@ -190,8 +190,8 @@
         <if test="version != null and version != ''">
             AND r.version like #{version}
         </if>
-        <if test="labelName != null and labelName != ''">
-            AND UPPER(l.name) LIKE CONCAT('%', UPPER(#{labelName}), '%')
+        <if test="labelName != null and labelName != '' and userName != null and userName != ''">
+            AND UPPER(l.name) LIKE CONCAT('%', UPPER(#{labelName}), '%') AND l.BUILDER_NAME = #{userName}
         </if>
         <if test="authorizedUser != null and authorizedUser != ''">
             AND r.authorized_user like #{authorizedUser}
@@ -305,6 +305,9 @@
     </select>
 
     <select id="querySharedAgentIds" resultType="java.lang.String">
-            select UUID from T_HOST_AGENT_INFO where IS_SHARED = true;
+            select UUID from T_HOST_AGENT_INFO where IS_SHARED = true
+    </select>
+    <select id="queryInternalAgentIds" resultType="java.lang.String">
+        select resource_id from RES_EXTEND_INFO where key = 'scenario' and value = 1
     </select>
 </mapper>

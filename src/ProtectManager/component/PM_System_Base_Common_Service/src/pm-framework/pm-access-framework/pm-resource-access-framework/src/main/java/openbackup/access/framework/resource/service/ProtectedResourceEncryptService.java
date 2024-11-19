@@ -12,14 +12,14 @@
 */
 package openbackup.access.framework.resource.service;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.validator.JsonSchemaValidator;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.system.base.invoke.Invocation;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

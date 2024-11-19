@@ -12,15 +12,15 @@
 */
 package openbackup.access.framework.resource.schedule;
 
-import openbackup.access.framework.resource.service.ProtectObjectConsistentService;
-import openbackup.system.base.common.enums.DeployTypeEnum;
-import openbackup.system.base.service.DeployTypeService;
 import com.huawei.oceanprotect.system.sdk.dto.SystemSwitchDto;
 import com.huawei.oceanprotect.system.sdk.enums.SwitchNameEnum;
 import com.huawei.oceanprotect.system.sdk.enums.SwitchStatusEnum;
 import com.huawei.oceanprotect.system.sdk.service.SystemSwitchInternalService;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.access.framework.resource.service.ProtectObjectConsistentService;
+import openbackup.system.base.common.enums.DeployTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.PropertySource;

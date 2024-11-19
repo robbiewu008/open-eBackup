@@ -37,10 +37,11 @@ import openbackup.data.access.framework.core.common.enums.CopyIndexStatus;
 import openbackup.data.access.framework.core.copy.CopyManagerService;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.protection.common.constants.AgentKeyConstant;
-import openbackup.data.access.framework.protection.common.constants.ArchivePolicyKeyConstant;
 import openbackup.data.access.framework.protection.service.repository.TaskRepositoryManager;
 import openbackup.data.protection.access.provider.sdk.agent.CommonAgentService;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
+import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
+import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.copy.CopyBo;
 import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.data.protection.access.provider.sdk.index.v2.CopyIndexProvider;
@@ -231,24 +232,27 @@ public class UnifiedCopyIndexService implements ICopyIndexService {
             log.info("Do not find the policy.");
             return false;
         }
+        // cloudbackup 索引标识从sla策略的高级参数中取，其他部署形态从保护对象的高级参数中取
         final JSONObject resourcePropertiesJsonObject = JSONObjectCovert.covertLowerUnderscoreKeyToLowerCamel(
                 JSONObject.fromObject(copy.getResourceProperties()));
         final ProtectedObject protectedObject = resourcePropertiesJsonObject.toBean(ProtectedObject.class);
         Map<String, Object> extParameters = protectedObject.getExtParameters();
         if (extParameters != null) {
-            if (CopyIndexConstants.NOT_SUPPORT_INDEX_GENERATED_BY.contains(copy.getGeneratedBy())) {
-                if (getAutoIndexFlag(protectedObject, CopyResourcePropertiesConstant.ARCHIVE_RES_AUTO_INDEX)
-                        .isPresent()) {
-                    return getAutoIndexFlag(protectedObject, CopyResourcePropertiesConstant.ARCHIVE_RES_AUTO_INDEX)
-                            .get();
-                }
-            } else {
-                if (getAutoIndexFlag(protectedObject, CopyResourcePropertiesConstant.BACKUP_RES_AUTO_INDEX)
-                        .isPresent()) {
-                    return getAutoIndexFlag(protectedObject, CopyResourcePropertiesConstant.BACKUP_RES_AUTO_INDEX)
-                            .get();
-                }
+            if (CopyGeneratedByEnum.BY_CLOUD_ARCHIVE.value().equals(copy.getGeneratedBy()) && getAutoIndexFlag(
+                protectedObject, CopyResourcePropertiesConstant.ARCHIVE_RES_AUTO_INDEX).isPresent()) {
+                return getAutoIndexFlag(protectedObject, CopyResourcePropertiesConstant.ARCHIVE_RES_AUTO_INDEX).get();
             }
+            if (CopyGeneratedByEnum.BY_TAPE_ARCHIVE.value().equals(copy.getGeneratedBy()) && getAutoIndexFlag(
+                protectedObject, CopyResourcePropertiesConstant.TAPE_ARCHIVE_AUTO_INDEX).isPresent()) {
+                return getAutoIndexFlag(protectedObject, CopyResourcePropertiesConstant.TAPE_ARCHIVE_AUTO_INDEX).get();
+            }
+            if (CopyGeneratedByEnum.BY_BACKUP.value().equals(copy.getGeneratedBy()) && getAutoIndexFlag(protectedObject,
+                CopyResourcePropertiesConstant.BACKUP_RES_AUTO_INDEX).isPresent()) {
+                return getAutoIndexFlag(protectedObject, CopyResourcePropertiesConstant.BACKUP_RES_AUTO_INDEX).get();
+            }
+        }
+        if (!deployTypeService.isCloudBackup() && !isManualArchive(JSONObject.fromObject(copy.getProperties()))) {
+            return false;
         }
         JsonNode autoIndex = policy.getExtParameters().get("auto_index");
         if (autoIndex == null) {
@@ -256,6 +260,10 @@ public class UnifiedCopyIndexService implements ICopyIndexService {
             return false;
         }
         return autoIndex.asBoolean();
+    }
+
+    private boolean isManualArchive(JSONObject propertiesJson) {
+        return propertiesJson.getBoolean(CopyPropertiesKeyConstant.IS_MANUAL_ARCHIVE, false);
     }
 
     private Optional<Boolean> getAutoIndexFlag(ProtectedObject protectedObject, String key) {
@@ -266,6 +274,10 @@ public class UnifiedCopyIndexService implements ICopyIndexService {
     }
 
     private PolicyBo getThePolicyThCopyCreatedBy(CopyBo copy) {
+        JSONObject propertiesJson = JSONObject.fromObject(copy.getProperties());
+        if (isManualArchive(propertiesJson)) {
+            return propertiesJson.getBean(CopyPropertiesKeyConstant.MANUAL_ARCHIVE_POLICY, PolicyBo.class);
+        }
         String slaJsonStr = copy.getSlaProperties();
         SlaBo slaBo = JSONObject.toBean(slaJsonStr, SlaBo.class);
         return Optional.ofNullable(slaBo)
@@ -283,9 +295,7 @@ public class UnifiedCopyIndexService implements ICopyIndexService {
 
         // 归档副本策略
         if (copy.getIsArchived() && SlaPolicyTypeEnum.ARCHIVING.getName().equals(policy.getType())) {
-            String storageId = JSONObject.fromObject(copy.getProperties())
-                .getString(CopyPropertiesKeyConstant.KEY_ARCHIVE_REPOSITORY_ID);
-            return policy.getExtParameters().get(ArchivePolicyKeyConstant.STORAGE_ID_KEY).asText().equals(storageId);
+            return true;
         }
         return false;
     }
@@ -304,13 +314,16 @@ public class UnifiedCopyIndexService implements ICopyIndexService {
         ResourceEntity tmpRes = JSONObject.fromObject(copy.getResourceProperties()).toBean(ResourceEntity.class);
         copyInfo.setResourcePlatform(tmpRes.getEnvironmentOsType());
         copyInfo.setEsn(copy.getDeviceEsn());
+        // 手动备份副本会有userId，影响索引，置为null
+        copyInfo.setUserId(null);
         indexTask.setCopyInfo(copyInfo);
 
         indexTask.setAgents(queryAgents(copy.getResourceType(), copy.getResourceSubType(), buildParameters(copy)));
         Copy newCopy = new Copy();
         BeanUtils.copyProperties(copy, newCopy);
-        indexTask.setProtectObject(copyManagerService.buildTaskResource(newCopy));
-        indexTask.setProtectEnv(copyManagerService.buildTaskEnvironment(indexTask.getProtectObject().getRootUuid()));
+        // 插件反馈下发请求时不需要protectEnv、protectObject参数，为适配复制副本索引功能，现去掉
+        indexTask.setProtectObject(new TaskResource());
+        indexTask.setProtectEnv(new TaskEnvironment());
 
         commonAgentService.supplyAgentCommonInfo(indexTask.getAgents());
         indexTask.setStorageRepository(

@@ -12,10 +12,14 @@
 */
 package openbackup.access.framework.resource.service.impl;
 
-import openbackup.access.framework.resource.service.ProtectObjectConsistentService;
-import openbackup.access.framework.resource.service.ProtectedResourceRepository;
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import openbackup.access.framework.resource.service.ProtectObjectConsistentService;
+import openbackup.access.framework.resource.service.ProtectedResourceRepository;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeCopyInfo;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
 import openbackup.data.access.framework.core.dao.CopyMapper;
@@ -36,11 +40,6 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.storage.service.LocalDoradoFileSystemService;
 import openbackup.system.base.util.SQLDistributeLock;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

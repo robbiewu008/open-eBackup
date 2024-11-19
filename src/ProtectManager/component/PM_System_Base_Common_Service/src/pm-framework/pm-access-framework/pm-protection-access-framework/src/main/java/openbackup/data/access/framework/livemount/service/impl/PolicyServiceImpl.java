@@ -12,6 +12,15 @@
 */
 package openbackup.data.access.framework.livemount.service.impl;
 
+import com.huawei.oceanprotect.system.base.user.common.enums.ResourceSetScopeModuleEnum;
+import com.huawei.oceanprotect.system.base.user.entity.ResourceSetResourceBo;
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.livemount.bo.PolicyBo;
 import openbackup.data.access.framework.livemount.common.enums.RetentionType;
 import openbackup.data.access.framework.livemount.common.enums.RetentionUnit;
@@ -38,15 +47,6 @@ import openbackup.system.base.query.PageQueryParam;
 import openbackup.system.base.query.PageQueryService;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
-import com.huawei.oceanprotect.system.base.user.common.enums.ResourceSetScopeModuleEnum;
-import com.huawei.oceanprotect.system.base.user.entity.ResourceSetResourceBo;
-import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -433,5 +433,10 @@ public class PolicyServiceImpl implements PolicyService, PolicyServiceApi {
             .stream()
             .map(LiveMountPolicyEntity::getPolicyId)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public Integer getAllCount() {
+        return liveMountPolicyEntityDao.getAllCount();
     }
 }

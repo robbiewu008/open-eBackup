@@ -12,9 +12,10 @@
 */
 package openbackup.data.access.framework.protection.service.job;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
 import openbackup.data.access.framework.protection.common.constants.JobStatusLabelConstant;
 import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnum;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.sdk.job.model.JobLogBo;
 import openbackup.system.base.sdk.job.model.JobLogLevelEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;

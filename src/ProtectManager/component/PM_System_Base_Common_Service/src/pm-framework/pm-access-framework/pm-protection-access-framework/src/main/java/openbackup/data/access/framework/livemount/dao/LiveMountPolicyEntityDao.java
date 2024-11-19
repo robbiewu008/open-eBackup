@@ -12,14 +12,14 @@
 */
 package openbackup.data.access.framework.livemount.dao;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import openbackup.data.access.framework.livemount.entity.LiveMountPolicyEntity;
 import openbackup.system.base.common.annotation.DbMangerMapper;
 import openbackup.system.base.security.callee.CalleeMethod;
 import openbackup.system.base.security.callee.CalleeMethods;
-
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -65,4 +65,11 @@ public interface LiveMountPolicyEntityDao extends BaseMapper<LiveMountPolicyEnti
      * @return policy
      */
     LiveMountPolicyEntity selectPolicy(String policyId);
+
+    /**
+     * 获取挂载策略的总数量
+     *
+     * @return 挂载策略的总数量
+     */
+    Integer getAllCount();
 }

@@ -12,26 +12,31 @@
 */
 package openbackup.data.access.framework.protection.service.repository.strategies;
 
+import com.huawei.oceanprotect.repository.s3.entity.S3Storage;
+import com.huawei.oceanprotect.repository.s3.service.S3StorageService;
+import com.huawei.oceanprotect.system.base.cert.service.ObjectCertDependencyService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.BaseStorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.Proxy;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.enums.RepositoryProtocolEnum;
-import com.huawei.oceanprotect.repository.s3.entity.S3Storage;
-import com.huawei.oceanprotect.repository.s3.service.S3StorageService;
-import com.huawei.oceanprotect.system.base.cert.service.ObjectCertDependencyService;
 import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.enums.StorageTypeEnum;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.utils.VerifyUtil;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.URIScheme;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * S3存储库的策略类
@@ -40,9 +45,13 @@ import java.util.Map;
 @Component("s3RepositoryStrategy")
 @Slf4j
 public class S3RepositoryStrategy implements RepositoryStrategy {
+    private static final String AZURE_STR_CONNECT_DOMAIN_REG = "EndpointSuffix=(https?://)?([^/:]+)";
+    private static final String AZURE_STR_CONNECT_IP_REG = "BlobEndpoint=(https?://)?([^/:]+)(:\\d+)?";
+
     private final S3StorageService s3StorageService;
 
     private final ObjectCertDependencyService objectCertDependencyService;
+
 
     public S3RepositoryStrategy(S3StorageService s3StorageService,
         ObjectCertDependencyService objectCertDependencyService) {
@@ -62,7 +71,7 @@ public class S3RepositoryStrategy implements RepositoryStrategy {
         newAuthInfo.setAuthKey(s3Storage.getAk());
         newAuthInfo.setAuthPwd(s3Storage.getSk());
         newAuthInfo.setAuthType(Authentication.AKSK);
-        if (s3Storage.isHttps()) {
+        if (s3Storage.isHttps() || Integer.valueOf(1).equals(s3Storage.getConnectType())) {
             Map<String, String> map = new HashMap<>();
             map.put("certName", objectCertDependencyService.getCertNameByObjectId(s3Storage.getId()).getCertName());
             newAuthInfo.setExtendInfo(map);
@@ -81,6 +90,15 @@ public class S3RepositoryStrategy implements RepositoryStrategy {
         String repositoryId = baseRepository.getId();
         StorageRepository storageRepository = new StorageRepository();
         final S3Storage storageInfo = queryStorage(repositoryId);
+        String sk = storageInfo.getSk();
+        if (storageInfo.getCloudType() == StorageTypeEnum.AZURE_BLOB.getStorageType()
+                && Integer.valueOf(1).equals(storageInfo.getConnectType())) {
+            String domain = extractDomain(sk);
+            String ip = extractIp(sk);
+            String endPoint = VerifyUtil.isEmpty(domain) ? ip : domain;
+            storageInfo.setEndpoint(endPoint);
+        }
+
         final Endpoint endpoint = new Endpoint(storageInfo.getId(), storageInfo.getEndpoint(), storageInfo.getPort());
         // s3存储extendInfo为空，path为数据桶名称
         BeanUtils.copyProperties(baseRepository, storageRepository);
@@ -94,6 +112,18 @@ public class S3RepositoryStrategy implements RepositoryStrategy {
         storageRepository.setCloudType(storageInfo.getCloudType());
         storageRepository.setConnectType(storageInfo.getConnectType());
         return storageRepository;
+    }
+
+    private String extractDomain(String connStr) {
+        Pattern pattern = Pattern.compile(AZURE_STR_CONNECT_DOMAIN_REG);
+        Matcher matcher = pattern.matcher(connStr);
+        return matcher.find() ? matcher.group(2) : StringUtils.EMPTY;
+    }
+
+    private String extractIp(String connStr) {
+        Pattern pattern = Pattern.compile(AZURE_STR_CONNECT_IP_REG);
+        Matcher matcher = pattern.matcher(connStr);
+        return matcher.find() ? matcher.group(2) : StringUtils.EMPTY;
     }
 
     private Proxy covertToProxy(S3Storage s3Storage) {

@@ -12,9 +12,9 @@
 */
 package openbackup.data.access.framework.core.dao;
 
-import openbackup.data.access.framework.core.entity.ProtectionPlanEntity;
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import openbackup.data.access.framework.core.entity.ProtectionPlanEntity;
 
 import org.springframework.stereotype.Component;
 

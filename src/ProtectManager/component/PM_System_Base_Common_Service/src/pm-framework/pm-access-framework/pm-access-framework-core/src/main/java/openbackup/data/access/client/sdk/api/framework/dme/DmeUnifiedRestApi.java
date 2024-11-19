@@ -85,6 +85,16 @@ public interface DmeUnifiedRestApi {
     void abortJob(@PathVariable("task_id") String taskId, @RequestParam("request_id") String requestId);
 
     /**
+     * 查询本次任务是否生成了副本
+     *
+     * @param taskId 任务ID
+     * @return 副本信息
+     */
+    @ExterAttack
+    @GetMapping(path = "/v1/internal/dme-unified/tasks/backup/{task_id}/copy-added")
+    boolean queryCopyAdded(@PathVariable("task_id") String taskId);
+
+    /**
      * 查询数据面副本信息
      *
      * @param copyId 副本ID

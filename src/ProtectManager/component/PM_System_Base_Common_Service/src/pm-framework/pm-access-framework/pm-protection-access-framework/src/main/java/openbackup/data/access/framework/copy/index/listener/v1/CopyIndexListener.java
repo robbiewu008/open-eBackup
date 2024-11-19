@@ -12,6 +12,9 @@
 */
 package openbackup.data.access.framework.copy.index.listener.v1;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.constant.CopyResourcePropertiesConstant;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.CopyIndexConstants;
@@ -33,10 +36,6 @@ import openbackup.system.base.sdk.protection.model.PolicyBo;
 import openbackup.system.base.sdk.protection.model.SlaBo;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.DeployTypeService;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -178,15 +177,7 @@ public class CopyIndexListener extends GenCopyIndex {
             log.info("Sla policy is null, do nothing");
             return false;
         }
-        // 从备份策略中获取细粒度恢复字段值
-        JsonNode fineGrainedRestorePara = null;
-        for (PolicyBo policy : policyBoList) {
-            if (CopyIndexConstants.BACK_UP.equals(policy.getType())) {
-                fineGrainedRestorePara = policy.getExtParameters().get(CopyIndexConstants.FINE_GRAINED_RESTORE);
-                break;
-            }
-        }
-
+        // cloudbackup 索引标识从sla的高级参数中取，其他部署形态从保护对象的高级参数中取
         final JSONObject resourcePropertiesJsonObject = JSONObjectCovert.covertLowerUnderscoreKeyToLowerCamel(
                 JSONObject.fromObject(copy.getResourceProperties()));
         final ProtectedObject protectedObject = resourcePropertiesJsonObject.toBean(ProtectedObject.class);
@@ -199,6 +190,17 @@ public class CopyIndexListener extends GenCopyIndex {
                 log.info("Resource: {} backup auto index tag is: {}", protectedObject.getResourceId(),
                         backupResAutoIndex);
                 return backupResAutoIndex;
+            }
+        }
+        if (!deployTypeService.isCloudBackup()) {
+            return false;
+        }
+        // 从备份策略中获取细粒度恢复字段值
+        JsonNode fineGrainedRestorePara = null;
+        for (PolicyBo policy : policyBoList) {
+            if (CopyIndexConstants.BACK_UP.equals(policy.getType())) {
+                fineGrainedRestorePara = policy.getExtParameters().get(CopyIndexConstants.FINE_GRAINED_RESTORE);
+                break;
             }
         }
         if (fineGrainedRestorePara == null) {

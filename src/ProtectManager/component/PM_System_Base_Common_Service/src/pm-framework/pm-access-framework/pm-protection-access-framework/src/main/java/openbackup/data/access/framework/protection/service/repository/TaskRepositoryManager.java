@@ -279,9 +279,8 @@ public class TaskRepositoryManager {
 
     private boolean capacityLimitExceeded(BackupClusterVo clusterStorage) {
         int availableCapacityRatio = clusterStorage.getAvailableCapacityRatio();
-        BigDecimal count = clusterStorage.getUsedCapacity()
-            .divide(clusterStorage.getCapacity(), RoundingMode.HALF_UP)
-            .multiply(BigDecimal.valueOf(PERCENTAGE));
+        BigDecimal count = clusterStorage.getUsedCapacity().multiply(BigDecimal.valueOf(PERCENTAGE))
+                .divide(clusterStorage.getCapacity(), RoundingMode.HALF_UP);
         return count.compareTo(BigDecimal.valueOf(availableCapacityRatio)) < 0;
     }
 

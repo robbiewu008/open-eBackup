@@ -12,12 +12,11 @@
 */
 package openbackup.data.access.framework.copy.index.listener.v1;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.copy.CopyBo;
 import openbackup.data.protection.access.provider.sdk.index.IndexerProvider;
 import openbackup.system.base.common.utils.ExceptionUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;

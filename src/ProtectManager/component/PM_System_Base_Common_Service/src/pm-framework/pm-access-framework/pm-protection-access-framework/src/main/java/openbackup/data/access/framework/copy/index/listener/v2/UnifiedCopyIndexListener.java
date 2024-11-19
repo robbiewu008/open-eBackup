@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.copy.index.listener.v2;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.index.service.impl.UnifiedCopyIndexService;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.common.model.CopyIndexResponse;
@@ -22,8 +23,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.DeployTypeService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;

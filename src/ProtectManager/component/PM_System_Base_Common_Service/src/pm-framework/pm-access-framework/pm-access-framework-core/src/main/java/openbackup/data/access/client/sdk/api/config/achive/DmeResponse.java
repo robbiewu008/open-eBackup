@@ -12,13 +12,12 @@
 */
 package openbackup.data.access.client.sdk.api.config.achive;
 
-import openbackup.system.base.common.exception.LegoCheckedException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 import java.util.Optional;
 

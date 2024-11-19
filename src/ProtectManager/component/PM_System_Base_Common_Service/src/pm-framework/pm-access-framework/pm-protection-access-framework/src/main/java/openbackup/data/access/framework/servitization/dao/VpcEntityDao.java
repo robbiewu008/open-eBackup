@@ -12,10 +12,10 @@
 */
 package openbackup.data.access.framework.servitization.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
 import openbackup.data.access.framework.servitization.entity.VpcInfoEntity;
 import openbackup.system.base.common.annotation.DbMangerMapper;
-
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * VpcEntityDao

@@ -14,6 +14,9 @@ package openbackup.data.access.framework.core.security.permission;
 
 import static openbackup.system.base.common.aspect.OperationLogAspect.TOKEN_BO;
 
+import com.huawei.oceanprotect.system.base.user.service.UserInternalService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.core.security.Evaluation;
 import openbackup.system.base.common.aspect.DomainBasedOwnershipVerifier;
@@ -24,14 +27,12 @@ import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.enums.UserTypeEnum;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.scurity.TokenVerificationService;
+import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.user.model.RolePo;
 import openbackup.system.base.security.download.DownloadRightsControl;
 import openbackup.system.base.security.permission.Permission;
 import openbackup.system.base.service.DeployTypeService;
-import com.huawei.oceanprotect.system.base.user.service.UserInternalService;
 import openbackup.system.base.util.DefaultRoleHelper;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -129,6 +130,9 @@ public class PermissionAspect {
         if (StringUtils.equals(Constants.ROLE_DEVICE_MANAGER, userBo.getRoles().get(0).getId())) {
             assignTokenAsRequestAttribute(tokenBo);
             return joinPoint.proceed();
+        }
+        if (VerifyUtil.isEmpty(userBo.getDomainId())) {
+            userBo.setDomainId(userInternalService.getDomainIdByUserId(userBo.getId()));
         }
         RolePo defaultRole = userInternalService.getDomainDefaultRoleSet(userBo.getDomainId());
         if (deployTypeService.isNotSupportRBACType()

@@ -25,6 +25,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LunInfo {
     /**
+     * resId
+     */
+    private String resId;
+
+    /**
      * LunID
      */
     private String lunId;

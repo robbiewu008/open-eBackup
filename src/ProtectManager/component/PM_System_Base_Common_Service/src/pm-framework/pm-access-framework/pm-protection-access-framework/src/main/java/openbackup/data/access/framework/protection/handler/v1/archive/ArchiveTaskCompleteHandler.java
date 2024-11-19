@@ -13,6 +13,11 @@
 package openbackup.data.access.framework.protection.handler.v1.archive;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
+import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
+
+import jodd.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
@@ -25,9 +30,9 @@ import openbackup.data.protection.access.provider.sdk.copy.CopyBo;
 import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
 import openbackup.data.protection.access.provider.sdk.copy.CopyProvider;
 import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
-import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
+import openbackup.system.base.common.enums.WormValidityTypeEnum;
 import openbackup.system.base.common.exception.DataMoverCheckedException;
 import openbackup.system.base.common.msg.NotifyManager;
 import openbackup.system.base.common.utils.JSONObject;
@@ -36,14 +41,11 @@ import openbackup.system.base.sdk.common.model.UuidObject;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.copy.model.CopyInfo;
+import openbackup.system.base.sdk.copy.model.CopyWormStatus;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.protection.model.PolicyBo;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.security.exterattack.ExterAttack;
-import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
-
-import jodd.util.StringUtil;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -153,6 +155,11 @@ public class ArchiveTaskCompleteHandler implements TaskCompleteHandler {
         // 调用rest接口副本入库
         CopyInfo copyinfo = new CopyInfo();
         BeanUtils.copyProperties(copy, copyinfo);
+        // 归档设置默认未设置
+        copyinfo.setWormStatus(CopyWormStatus.UNSET.getStatus());
+        copyinfo.setWormExpirationTime(null);
+        copyinfo.setWormValidityType(WormValidityTypeEnum.WORM_NOT_OPEN.getType());
+        copyinfo.setWormDurationUnit(null);
         copyinfo.setDeviceEsn(memberClusterService.getCurrentClusterEsn());
         UuidObject resp = copyRestApi.saveCopy(copyinfo);
         resourceSetApi.createCopyResourceSetRelation(resp.getUuid(), copyId, Strings.EMPTY);

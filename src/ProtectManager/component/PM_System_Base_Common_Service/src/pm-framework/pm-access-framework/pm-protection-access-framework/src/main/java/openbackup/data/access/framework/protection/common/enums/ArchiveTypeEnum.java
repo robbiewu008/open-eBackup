@@ -12,6 +12,10 @@
 */
 package openbackup.data.access.framework.protection.common.enums;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.enums.CopyTypeEnum;
 import openbackup.data.access.framework.core.common.util.CopyInfoBuilder;
 import openbackup.data.access.framework.protection.common.constants.ArchivePolicyKeyConstant;
@@ -23,11 +27,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.sdk.protection.model.PolicyBo;
 import openbackup.system.base.sdk.protection.model.RetentionBo;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Date;

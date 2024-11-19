@@ -12,9 +12,9 @@
 */
 package openbackup.access.framework.resource.persistence.dao;
 
-import openbackup.access.framework.resource.persistence.model.ProtectedAgentExtendPo;
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import openbackup.access.framework.resource.persistence.model.ProtectedAgentExtendPo;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;

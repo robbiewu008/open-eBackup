@@ -12,12 +12,14 @@
 */
 package openbackup.access.framework.resource.service.impl;
 
-import openbackup.access.framework.resource.lock.ResourceLockConstant;
-import openbackup.access.framework.resource.service.ResourceRedisLockService;
 import com.huawei.oceanprotect.base.cluster.sdk.dto.MemberClusterBo;
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.job.sdk.JobService;
 
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import openbackup.access.framework.resource.lock.ResourceLockConstant;
+import openbackup.access.framework.resource.service.ResourceRedisLockService;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.StringUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
@@ -26,9 +28,6 @@ import openbackup.system.base.sdk.cluster.BackupClusterJobClient;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.resource.model.ResourceLockEntity;
 import openbackup.system.base.sdk.resource.model.ResourceLockRequest;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RBucket;
 import org.redisson.api.RSet;

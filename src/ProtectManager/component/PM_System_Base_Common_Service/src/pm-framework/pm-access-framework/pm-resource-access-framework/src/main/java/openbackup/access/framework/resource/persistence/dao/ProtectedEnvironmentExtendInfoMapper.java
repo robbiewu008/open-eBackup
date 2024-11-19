@@ -12,11 +12,11 @@
 */
 package openbackup.access.framework.resource.persistence.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
 import openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentExtendInfoPo;
 import openbackup.system.base.security.callee.CalleeMethod;
 import openbackup.system.base.security.callee.CalleeMethods;
-
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;

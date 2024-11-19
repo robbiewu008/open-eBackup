@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.protection.service.replication;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.job.JobCallbackProvider;
 import openbackup.system.base.common.constants.RedisConstants;
 import openbackup.system.base.common.model.job.JobBo;
@@ -19,8 +20,6 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.cluster.model.TargetClusterVo;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;

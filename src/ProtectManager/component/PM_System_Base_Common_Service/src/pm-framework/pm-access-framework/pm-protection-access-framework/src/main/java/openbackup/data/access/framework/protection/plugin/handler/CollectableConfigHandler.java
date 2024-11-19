@@ -12,11 +12,11 @@
 */
 package openbackup.data.access.framework.protection.plugin.handler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import openbackup.data.protection.access.provider.sdk.plugin.CollectableConfig;
 import openbackup.data.protection.access.provider.sdk.plugin.ResourceExtensionHandler;
 import openbackup.system.base.common.utils.json.JsonUtil;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import org.springframework.stereotype.Component;
 

@@ -12,9 +12,8 @@
 */
 package openbackup.data.access.client.sdk.api.framework.agent.dto;
 
-import openbackup.data.protection.access.provider.sdk.base.Authentication;
-
 import lombok.Data;
+import openbackup.data.protection.access.provider.sdk.base.Authentication;
 
 import java.util.List;
 import java.util.Map;

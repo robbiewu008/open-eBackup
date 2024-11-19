@@ -15,13 +15,16 @@ package openbackup.data.access.framework.protection.service.replication;
 import com.huawei.oceanprotect.base.cluster.sdk.entity.TargetCluster;
 import com.huawei.oceanprotect.base.cluster.sdk.service.ArrayTargetClusterService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterQueryService;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.anti.api.AntiRansomwareApi;
 import openbackup.system.base.sdk.anti.model.AntiRansomwarePolicyRes;
 import openbackup.system.base.sdk.anti.model.AntiRansomwareScheduleRes;
+import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
 import openbackup.system.base.sdk.license.LicenseServiceApi;
 import openbackup.system.base.sdk.license.enums.FunctionEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -113,6 +116,10 @@ public class ReplicationService {
      */
     public void checkManualRep(Integer clusterId, String storageType, String storageId, String resourceId) {
         TargetCluster targetClusterById = clusterQueryService.getTargetClusterById(clusterId);
+        if (ClusterEnum.StatusEnum.ONLINE.getStatus() != targetClusterById.getStatus()) {
+            throw new LegoCheckedException(CommonErrorCode.REPLICATION_CLUSTER_AUTH_FAILED,
+                "Replica Cluster is not Online.");
+        }
         arrayTargetClusterService.checkBeforeManualReplication(targetClusterById, storageType, storageId, resourceId);
     }
 }

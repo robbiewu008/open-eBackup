@@ -12,12 +12,11 @@
 */
 package openbackup.data.access.framework.copy.index.listener.v1;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.enums.CopyIndexStatus;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.copy.CopyRestApi;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.Acknowledgment;

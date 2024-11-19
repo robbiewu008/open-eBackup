@@ -12,6 +12,18 @@
 */
 package openbackup.access.framework.resource.persistence.dao;
 
+import com.huawei.oceanprotect.system.base.user.common.enums.ResourceSetScopeModuleEnum;
+import com.huawei.oceanprotect.system.base.user.entity.ResourceSetResourceBo;
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
+
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.persistence.model.ResourceGroupExtendField;
 import openbackup.access.framework.resource.persistence.model.ResourceGroupMemberPo;
 import openbackup.access.framework.resource.persistence.model.ResourceGroupPo;
@@ -39,18 +51,7 @@ import openbackup.system.base.sdk.resource.model.ProtectedObjectInfo;
 import openbackup.system.base.sdk.resource.model.ProtectionBatchOperationReq;
 import openbackup.system.base.sdk.resource.model.ProtectionModifyDto;
 import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
-import com.huawei.oceanprotect.system.base.user.common.enums.ResourceSetScopeModuleEnum;
-import com.huawei.oceanprotect.system.base.user.entity.ResourceSetResourceBo;
-import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
-
-import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.service.ResourceGroupService;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -75,7 +76,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class ResourceGroupRepositoryImpl implements ResourceGroupRepository {
+public class ResourceGroupRepositoryImpl implements ResourceGroupRepository, ResourceGroupService {
     private static final String RESOURCE_SET_ID = "resourceSetId";
 
     private static final String RESOURCE_UUID = "uuid";
@@ -435,7 +436,6 @@ public class ResourceGroupRepositoryImpl implements ResourceGroupRepository {
         log.info("Finish delete resource group with id {} and it's members.", resourceGroupId);
     }
 
-
     @Override
     public Optional<ProtectedObjectPo> selectProtectedObjectById(String resourceGroupId) {
         LambdaQueryWrapper<ProtectedObjectPo> wrapper =
@@ -445,5 +445,10 @@ public class ResourceGroupRepositoryImpl implements ResourceGroupRepository {
             return Optional.empty();
         }
         return Optional.of(protectedObjectPos.get(0));
+    }
+
+    @Override
+    public boolean isResourceGroupExit(String id) {
+        return !VerifyUtil.isEmpty(resourceGroupMapper.selectById(id));
     }
 }

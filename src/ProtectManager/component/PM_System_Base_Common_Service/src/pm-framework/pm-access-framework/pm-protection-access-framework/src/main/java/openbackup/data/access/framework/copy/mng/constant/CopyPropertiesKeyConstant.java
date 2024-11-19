@@ -180,4 +180,14 @@ public abstract class CopyPropertiesKeyConstant {
      * 克隆文件系统共享信息
      */
     public static final String KEY_RESOURCE_PROPERTIES_FILESYSTEM_SHARE_INFO = "fileSystemShareInfo";
+
+    /**
+     * 是否手动归档
+     */
+    public static final String IS_MANUAL_ARCHIVE = "is_manual_archive";
+
+    /**
+     * 手动归档策略参数
+     */
+    public static final String MANUAL_ARCHIVE_POLICY = "manual_archive_policy";
 }

@@ -85,6 +85,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -261,13 +262,13 @@ public class AdvanceReplicationProviderTest {
         copyDetailDmeResponse.setData(copyDetail);
         PowerMockito.when(dmcCopyService.queryCopyById(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
             .thenReturn(copyDetailDmeResponse);
-        advanceReplicationProvider.buildCopyProperties(copyInfo, importParam);
+        advanceReplicationProvider.buildCopyProperties(copyInfo, importParam, new ResourceEntity());
         Assert.assertNull(copyInfo.getResourceType());
         copyInfo.setResourceSubType(ResourceSubTypeEnum.VMWARE.getType());
-        advanceReplicationProvider.buildCopyProperties(copyInfo, importParam);
+        advanceReplicationProvider.buildCopyProperties(copyInfo, importParam, new ResourceEntity());
         Assert.assertNull(copyInfo.getResourceType());
         copyInfo.setResourceSubType(ResourceSubTypeEnum.IMPORT_COPY.getType());
-        advanceReplicationProvider.buildCopyProperties(copyInfo, importParam);
+        advanceReplicationProvider.buildCopyProperties(copyInfo, importParam, new ResourceEntity());
         Assert.assertNull(copyInfo.getResourceType());
     }
 
@@ -305,7 +306,7 @@ public class AdvanceReplicationProviderTest {
 
         copyInfo.setRetentionType(RetentionTypeEnum.TEMPORARY.getType());
 
-        advanceReplicationProvider.buildCopyProperties(copyInfo, importParam);
+        advanceReplicationProvider.buildCopyProperties(copyInfo, StringUtils.EMPTY);
         Assert.assertEquals(copyInfo.getRetentionType(), RetentionTypeEnum.TEMPORARY.getType().intValue());
     }
 

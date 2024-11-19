@@ -12,14 +12,13 @@
 */
 package openbackup.access.framework.resource.persistence.model;
 
-import openbackup.system.base.common.constants.IsmNumberConstant;
-
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.common.constants.IsmNumberConstant;
 
 /**
  * ProtectedAgentExtendPo

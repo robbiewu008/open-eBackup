@@ -12,13 +12,12 @@
 */
 package openbackup.data.access.client.sdk.api.framework.dmc.model;
 
-import openbackup.system.base.common.utils.JSONObject;
-import openbackup.system.base.sdk.resource.model.DiskInfo;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.common.utils.JSONObject;
+import openbackup.system.base.sdk.resource.model.DiskInfo;
 
 import java.util.List;
 

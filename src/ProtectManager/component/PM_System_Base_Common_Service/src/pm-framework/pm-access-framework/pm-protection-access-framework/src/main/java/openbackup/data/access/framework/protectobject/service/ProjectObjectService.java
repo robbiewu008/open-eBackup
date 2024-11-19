@@ -29,14 +29,6 @@ public interface ProjectObjectService {
     /**
      * 校验该资源之前的备份副本所在的存储单元：1.等于当前SLA中选择的存储单元 2.被包含在在当前SLA选择的存储单元组中
      *
-     * @param slaId slaId
-     * @param resourceId resourceId
-     */
-    void checkExistCopiesLocationBeforeProtect(String slaId, String resourceId);
-
-    /**
-     * 校验该资源之前的备份副本所在的存储单元：1.等于当前SLA中选择的存储单元 2.被包含在在当前SLA选择的存储单元组中
-     *
      * @param storageType storageType
      * @param storageId storageId
      * @param resourceId resourceId

@@ -12,9 +12,8 @@
 */
 package openbackup.data.access.client.sdk.api.framework.agent.dto;
 
-import openbackup.data.access.client.sdk.api.framework.agent.dto.model.WwpnOrIqnInfo;
-
 import lombok.Data;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.model.WwpnOrIqnInfo;
 
 import java.util.List;
 

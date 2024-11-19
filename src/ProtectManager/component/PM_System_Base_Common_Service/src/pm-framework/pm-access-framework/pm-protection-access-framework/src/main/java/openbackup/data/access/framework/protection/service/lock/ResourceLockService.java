@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.protection.service.lock;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.protection.common.constants.ResourceLockLabelConstant;
 import openbackup.data.access.framework.protection.service.job.JobLogRecorder;
 import openbackup.system.base.common.errors.ResourceLockErrorCode;
@@ -21,8 +22,6 @@ import openbackup.system.base.sdk.lock.LockRequest;
 import openbackup.system.base.sdk.lock.LockResponse;
 import openbackup.system.base.sdk.lock.ResourceLockRestApi;
 import openbackup.system.base.service.DeployTypeService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 

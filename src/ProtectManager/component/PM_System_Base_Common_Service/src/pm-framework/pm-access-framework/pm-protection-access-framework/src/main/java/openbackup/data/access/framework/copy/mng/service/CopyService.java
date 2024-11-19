@@ -120,4 +120,12 @@ public interface CopyService {
      * @param copyId copyId
      */
     void closeCopyGuestSystem(String copyId);
+
+    /**
+     * 删除关联无效副本（任务重试的）
+     *
+     * @param sourceId 资源ID
+     * @param limit 上限
+     */
+    void deleteInvalidCopies(String sourceId, int limit);
 }

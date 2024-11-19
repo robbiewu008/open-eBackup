@@ -16,20 +16,21 @@ import com.huawei.oceanprotect.base.cluster.sdk.enums.StorageUnitTypeEnum;
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
 import com.huawei.oceanprotect.client.resource.manager.service.dto.AgentConnectedIps;
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import openbackup.data.access.framework.backup.constant.BackupConstant;
 import openbackup.data.protection.access.provider.sdk.agent.CommonAgentService;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.enums.AgentMountTypeEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceExtendInfoService;
 import openbackup.data.protection.access.provider.sdk.resource.model.ProtectedResourceExtendInfo;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.ResExtendConstant;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import org.springframework.stereotype.Service;
 

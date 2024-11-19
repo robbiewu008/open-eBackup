@@ -12,9 +12,8 @@
 */
 package openbackup.data.access.client.sdk.api.framework.dme;
 
-import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
-
 import lombok.Data;
+import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 
 import java.util.List;
 

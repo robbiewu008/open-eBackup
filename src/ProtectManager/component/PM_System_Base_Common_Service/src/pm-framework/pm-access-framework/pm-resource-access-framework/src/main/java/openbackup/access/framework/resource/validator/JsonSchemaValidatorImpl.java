@@ -12,6 +12,9 @@
 */
 package openbackup.access.framework.resource.validator;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.validator.enums.SchemaKeywordsEnum;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.ErrorCodeConstant;
@@ -19,10 +22,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.validator.JsonSchemaValidatorUtil;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

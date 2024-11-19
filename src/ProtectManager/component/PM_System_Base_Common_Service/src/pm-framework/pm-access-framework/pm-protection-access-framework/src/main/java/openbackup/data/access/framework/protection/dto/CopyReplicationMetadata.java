@@ -12,13 +12,12 @@
 */
 package openbackup.data.access.framework.protection.dto;
 
-import openbackup.system.base.common.utils.JSONObject;
-import openbackup.system.base.sdk.protection.model.PolicyBo;
-
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Data;
+import openbackup.system.base.common.utils.JSONObject;
+import openbackup.system.base.sdk.protection.model.PolicyBo;
 
 /**
  * Copy Replication Metadata

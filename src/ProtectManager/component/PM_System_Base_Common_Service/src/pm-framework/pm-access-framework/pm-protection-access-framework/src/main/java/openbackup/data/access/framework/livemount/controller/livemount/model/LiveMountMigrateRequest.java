@@ -23,5 +23,5 @@ import javax.validation.Valid;
 @Data
 public class LiveMountMigrateRequest {
     @Valid
-    private VMWareMigrateParam vmWareMigrateParam;
+    private VmwareMigrateParam vmWareMigrateParam;
 }

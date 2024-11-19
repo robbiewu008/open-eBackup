@@ -12,12 +12,11 @@
 */
 package openbackup.data.access.framework.livemount.common.model;
 
-import openbackup.system.base.common.model.livemount.LiveMountEntity;
-
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Data;
+import openbackup.system.base.common.model.livemount.LiveMountEntity;
 
 /**
  * Live Mount Refresh Param

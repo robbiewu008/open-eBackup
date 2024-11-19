@@ -249,6 +249,12 @@ public class CopiesEntity {
     private String wormStatus;
 
     /**
+     * worm过期时间
+     */
+    @TableField("worm_expiration_time")
+    private Timestamp wormExpirationTime;
+
+    /**
      * 设备Esn
      */
     @TableField("device_esn")

@@ -12,10 +12,12 @@
 */
 package openbackup.data.access.framework.core.config;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.base.RestClient;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.DataMoverCheckedException;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -29,8 +31,6 @@ import openbackup.system.base.sdk.job.model.JobLogLevelEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 import openbackup.system.base.sdk.job.util.JobLogBoUtil;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;

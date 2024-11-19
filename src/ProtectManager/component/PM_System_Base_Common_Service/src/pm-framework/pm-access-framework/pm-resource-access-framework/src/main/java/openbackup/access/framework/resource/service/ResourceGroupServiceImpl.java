@@ -342,6 +342,7 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
      * @param queryParams queryParams
      * @return PageListResponse<ResourceGroupVo>
      */
+    @Override
     public PageListResponse<ResourceGroupVo> queryResourceGroups(ResourceGroupQueryParams queryParams) {
         BasePage<ResourceGroupDto> resourceGroupPoBasePage = resourceGroupRepository.queryResourceGroups(queryParams);
         PageListResponse<ResourceGroupVo> voPageListResponse = new PageListResponse<>();
@@ -619,14 +620,8 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
             throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, "The protected object of resource group "
                     + "with no member can not be modified.");
         }
-        // 如果资源组类型为虚拟机组，不能修改绑定为通用sla
-        ProtectionInterceptorProvider provider = providerManager.findProvider(ProtectionInterceptorProvider.class,
-                resourceGroupDto.getSourceSubType(), null);
-        if (provider != null) {
-            log.debug("Protection interceptor for {} is provided, and the interceptor will be used!",
-                    resourceGroupDto.getSourceSubType());
-            provider.preCheck(buildUpdateProtectedObjectRequest(updateReq));
-        }
+        // 校验资源组绑定sla是否发生更改，如果发生更改，类型为虚拟机组的资源不能修改绑定为通用sla
+        checkSlaIsChanged(updateReq, resourceGroupDto);
         // 存在运行中任务的资源组不允许修改保护
         if (checkHasUnfinishedJob(resourceGroupDto.getUuid())) {
             throw new LegoCheckedException(CommonErrorCode.HAVE_RUNNING_JOB, "There are some unfinished jobs with "
@@ -679,6 +674,19 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
         queryJobRequest.setResourceGroupId(resourceGroupId);
         Integer jobCount = jobService.getJobCount(queryJobRequest);
         return jobCount != 0;
+    }
+
+    private void checkSlaIsChanged(UpdateResourceGroupProtectedObjectRequest updateReq,
+                                   ResourceGroupDto resourceGroupDto) {
+        if (!updateReq.getSlaId().equals(resourceGroupDto.getProtectedObjectDto().getSlaId())) {
+            ProtectionInterceptorProvider provider = providerManager.findProvider(ProtectionInterceptorProvider.class,
+                    resourceGroupDto.getSourceSubType(), null);
+            if (provider != null) {
+                log.debug("Protection interceptor for {} is provided, and the interceptor will be used!",
+                        resourceGroupDto.getSourceSubType());
+                provider.preCheck(buildUpdateProtectedObjectRequest(updateReq));
+            }
+        }
     }
 
     @Override
