@@ -26,6 +26,12 @@ function main() {
     echo -e "Build dme images failed"
     return 1
   fi
+
+  sh build_dme_openstorageapi_csi_plugin.sh
+  if [ $? -ne 0 ];then
+    echo -e "Build csi plugin images failed"
+    return 1
+  fi
 }
 
 main

@@ -63,7 +63,7 @@ function buildall() {
         echo "Check dependent images failed"
         exit 1
     fi
-    DOCKER_NAME=$(ls "${BASE_PATH}/build/dockerfiles" | grep  ".dockerfile")
+    DOCKER_NAME=$(ls "${BASE_PATH}/build/dockerfiles" | grep  ".dockerfile" | grep -v "dme_openstorageapi_csi_plugin")
     for NAME in ${G_FIST_BUILD}.dockerfile ${DOCKER_NAME}
     do
         MS_NAME=$(basename $NAME .dockerfile)
